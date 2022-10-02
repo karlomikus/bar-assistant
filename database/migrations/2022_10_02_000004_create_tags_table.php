@@ -16,14 +16,12 @@ return new class extends Migration
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->timestamps();
         });
 
-        Schema::create('cocktail_tags', function (Blueprint $table) {
+        Schema::create('cocktail_tag', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tag_id')->constrained();
             $table->foreignId('cocktail_id')->constrained();
-            $table->timestamps();
         });
     }
 
@@ -34,7 +32,7 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('cocktail_tag');
         Schema::dropIfExists('tags');
-        Schema::dropIfExists('cocktail_tags');
     }
 };

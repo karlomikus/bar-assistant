@@ -25,5 +25,6 @@ Route::prefix('ingredients')->group(function() {
 });
 
 Route::prefix('cocktails')->group(function() {
+    Route::get('/', [CocktailController::class, 'index']);
     Route::post('/', [CocktailController::class, 'store']);
 });

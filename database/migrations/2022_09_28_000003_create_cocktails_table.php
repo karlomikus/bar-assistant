@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('instructions');
-            $table->string('image_path')->nullable();
+            $table->string('image')->nullable();
             $table->text('description')->nullable();
             $table->string('source')->nullable();
             $table->timestamps();
@@ -30,7 +30,6 @@ return new class extends Migration
             $table->integer('amount');
             $table->string('units');
             $table->integer('sort')->default(0);
-            $table->timestamps();
         });
     }
 
@@ -41,7 +40,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cocktails');
         Schema::dropIfExists('cocktail_ingredients');
+        Schema::dropIfExists('cocktails');
     }
 };

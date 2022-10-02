@@ -4,12 +4,20 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Services\CocktailService;
+use Kami\Cocktail\Http\Resources\CocktailResource;
 
 class CocktailController extends Controller
 {
-    public function store(CocktailService $cocktailService, Request $request): JsonResponse
+    public function index()
+    {
+        $cocktails = Cocktail::paginate(30);
+
+        return CocktailResource::collection($cocktails);
+    }
+
+    public function store(CocktailService $cocktailService, Request $request)
     {
         $cocktail = $cocktailService->createCocktail(
             $request->post('name'),
@@ -18,8 +26,9 @@ class CocktailController extends Controller
             $request->post('description'),
             $request->post('source'),
             $request->post('image'),
+            $request->post('tags'),
         );
 
-        return response()->json($cocktail);
+        return new CocktailResource($cocktail);
     }
 }

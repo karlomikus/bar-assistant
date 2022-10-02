@@ -67,9 +67,9 @@ class CocktailService
             }
 
             $dbTags = [];
-            foreach($tags as $tag) {
+            foreach($tags as $tagName) {
                 $tag = new Tag();
-                $tag->name = $tag;
+                $tag->name = $tagName;
                 $tag->save();
                 $dbTags[] = $tag->id;
             }
@@ -90,8 +90,8 @@ class CocktailService
                 $image = $this->image->make($imageAsBase64);
                 $imageName = sprintf('%s_%s.jpg', $cocktail->id, Str::slug($name));
 
-                if ($this->filesystem->disk('public')->put('cocktails/' . $imageName, $image->encode('jpg'))) {
-                    $cocktail->image_path = $imageName;
+                if ($this->filesystem->disk('public')->put('cocktails/' . $imageName, (string) $image->encode('jpg'))) {
+                    $cocktail->image = $imageName;
                     $cocktail->save();
                 }
             } catch (Throwable $e) {

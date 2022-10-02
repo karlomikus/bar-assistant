@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('strength')->default(0.0);
             $table->text('description')->nullable();
-            $table->text('image_path')->nullable();
+            $table->text('image')->nullable();
             $table->foreignId('ingredient_category_id')->constrained();
             $table->timestamps();
         });
