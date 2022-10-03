@@ -4,7 +4,7 @@ namespace Kami\Cocktail\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class IngredientResource extends JsonResource
+class IngredientCategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,10 +17,6 @@ class IngredientResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'strength' => $this->strength,
-            'description' => $this->description,
-            'image' => $this->image,
-            'category' => new IngredientCategoryResource($this->category),
         ];
     }
 }

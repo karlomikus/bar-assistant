@@ -3,13 +3,15 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Http\Resources\IngredientResource;
 
 class IngredientController extends Controller
 {
-    public function index(): JsonResponse
+    public function index()
     {
-        return response()->json(Ingredient::all());
+        $ingredients = Ingredient::all();
+
+        return IngredientResource::collection($ingredients);
     }
 }
