@@ -21,7 +21,9 @@
         "nunomaduro/larastan": "^2.0",
         "phpstan/phpstan": "^1.8",
         "phpunit/phpunit": "^9.5.10",
-        "spatie/laravel-ignition": "^1.0"
+        "spatie/laravel-ignition": "^1.0",
+        "symfony/browser-kit": "^6.1",
+        "symfony/http-client": "^6.1"
     },
     "autoload": {
         "psr-4": {

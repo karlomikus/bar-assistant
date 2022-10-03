@@ -22,6 +22,7 @@ class CocktailResource extends JsonResource
             'source' => $this->source,
             'image' => $this->image,
             'tags' => $this->tags->pluck('name'),
+            'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
         ];
     }
 }
