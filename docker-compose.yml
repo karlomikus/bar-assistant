@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  meilisearch:
+    container_name: meilisearch
+    image: getmeili/meilisearch
+    restart: unless-stopped
+    environment:
+      - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
+    ports:
+      - 7700:7700
+    volumes:
+      - ${MEILISEARCH_DATA_FOLDER}:/meili_data
