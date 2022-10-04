@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->text('description')->nullable();
             $table->string('source')->nullable();
+            $table->text('garnish')->nullable();
             $table->timestamps();
         });
 

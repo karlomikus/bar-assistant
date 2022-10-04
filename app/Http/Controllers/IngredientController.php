@@ -10,7 +10,7 @@ class IngredientController extends Controller
 {
     public function index()
     {
-        $ingredients = Ingredient::all();
+        $ingredients = Ingredient::orderBy('name')->paginate(30);
 
         return IngredientResource::collection($ingredients);
     }
