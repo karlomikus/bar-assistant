@@ -31,6 +31,7 @@ class CocktailService
      * @param string $instructions
      * @param array $ingredients
      * @param string|null $description
+     * @param string|null $garnish
      * @param string|null $cocktailSource
      * @param string|null $imageAsBase64
      * @param array<string> $tags
@@ -41,6 +42,7 @@ class CocktailService
         string $instructions,
         array $ingredients,
         ?string $description = null,
+        ?string $garnish = null,
         ?string $cocktailSource = null,
         ?string $imageAsBase64 = null,
         array $tags = [],
@@ -53,6 +55,7 @@ class CocktailService
             $cocktail->name = $name;
             $cocktail->instructions = $instructions;
             $cocktail->description = $description;
+            $cocktail->garnish = $garnish;
             $cocktail->source = $cocktailSource;
             $cocktail->save();
 

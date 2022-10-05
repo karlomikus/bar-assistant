@@ -18,11 +18,13 @@ class CocktailResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'instructions' => $this->instructions,
+            'garnish' => $this->garnish,
             'description' => $this->description,
             'source' => $this->source,
             'image' => $this->image,
             'tags' => $this->tags->pluck('name'),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
+            'ingredients' => CocktailIngredientResource::collection($this->ingredients),
         ];
     }
 }
