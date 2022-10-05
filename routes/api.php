@@ -28,4 +28,5 @@ Route::prefix('cocktails')->group(function() {
     Route::get('/', [CocktailController::class, 'index']);
     Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show');
     Route::post('/', [CocktailController::class, 'store']);
+    Route::delete('/{id}', [CocktailController::class, 'delete']);
 });

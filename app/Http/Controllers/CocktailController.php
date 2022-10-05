@@ -3,17 +3,20 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Http\Resources\CocktailResource;
+use Kami\Cocktail\Http\Resources\DeleteSuccessResource;
+use Kami\Cocktail\Http\Resources\ErrorResource;
 
 class CocktailController extends Controller
 {
     public function index()
     {
-        $cocktails = Cocktail::paginate(30)->load('ingredients.ingredient');
+        $cocktails = Cocktail::with('ingredients.ingredient')->paginate(15);
 
         return CocktailResource::collection($cocktails);
     }
@@ -41,5 +44,16 @@ class CocktailController extends Controller
         return (new CocktailResource($cocktail))
             ->response()
             ->header('Location', route('cocktails.show', $cocktail->id));
+    }
+
+    public function delete(int $id)
+    {
+        try {
+            Cocktail::find($id)->delete();
+        } catch (Throwable $e) {
+            return new ErrorResource($e);
+        }
+
+        return new DeleteSuccessResource((object) ['id' => $id]);
     }
 }

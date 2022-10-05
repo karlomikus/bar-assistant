@@ -40,15 +40,33 @@ class DatabaseSeeder extends Seeder
         $beverages = IngredientCategory::create(['name' => 'Beverages']);
         $misc = IngredientCategory::create(['name' => 'Misc.']);
 
+        // Fruits
+        $lime = Ingredient::create(['name' => 'Lime', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'TODO']);
+
         // Misc
         $ice = Ingredient::create(['name' => 'Ice', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Ice cubes.']);
         $wPeachPuree = Ingredient::create(['name' => 'White Peach Puree', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'TODO']);
+        $cream = Ingredient::create(['name' => 'Cream', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'TODO']);
+        $salt = Ingredient::create(['name' => 'Salt', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'TODO']);
+        $pepper = Ingredient::create(['name' => 'Pepper', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'TODO']);
+        $tabasco = Ingredient::create(['name' => 'Tabasco', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'TODO']);
+        $worSauce = Ingredient::create(['name' => 'Worcestershire Sauce', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'TODO']);
+        $sugar = Ingredient::create(['name' => 'Sugar', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'TODO']);
+        $eggWhite = Ingredient::create(['name' => 'Egg White', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Egg Yolk', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Mint', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Ginger', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Coconut Cream', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Vanilla Extract', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Chili Pepper', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'TODO']);
 
         // Bitters
         Ingredient::create(['name' => 'Orange bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 28.0, 'image' => '/ingredients/bitters/angostura_orange.png', 'description' => 'Orange bitters is a form of bitters, a cocktail flavoring made from such ingredients as the peels of Seville oranges, cardamom, caraway seed, coriander, anise, and burnt sugar in an alcohol base.']);
         $angostura = Ingredient::create(['name' => 'Angostura aromatic bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 44.7, 'image' => '/ingredients/bitters/angostura_aromatic.png', 'description' => 'Angostura bitters is a concentrated bitters (herbal alcoholic preparation) based on gentian, herbs, and spices, by House of Angostura in Trinidad and Tobago.']);
         Ingredient::create(['name' => 'Peach bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 35.0, 'image' => '/ingredients/bitters/peach_bitters.jpg', 'description' => 'Peach bitters flavored with peaches and herbs.']);
         Ingredient::create(['name' => 'Angostura cocoa bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 38.0, 'image' => '/ingredients/bitters/angostura_cocoa.png', 'description' => 'Top notes of rich bitter, floral, nutty cocoa with a bold infusion of aromatic botanicals provide endless possibilities to remix classic cocktails.']);
+        Ingredient::create(['name' => 'Fernet Branca', 'ingredient_category_id' => $bitters->id, 'strength' => 39.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Peychauds Bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 35.0, 'description' => 'TODO']);
 
         // Liqueurs
         $campari = Ingredient::create(['name' => 'Campari', 'ingredient_category_id' => $liqueurs->id, 'strength' => 25.0, 'description' => 'TODO']);
@@ -57,10 +75,29 @@ class DatabaseSeeder extends Seeder
         Ingredient::create(['name' => 'Amaretto', 'ingredient_category_id' => $liqueurs->id, 'strength' => 24.0, 'description' => 'Sweet almond-flavored liqueur']);
         Ingredient::create(['name' => 'Dark Crème de Cacao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 25.0, 'description' => 'TODO']);
         Ingredient::create(['name' => 'White Crème de Cacao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 25.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Menthe Crème de Cacao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 25.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Crème de cassis', 'ingredient_category_id' => $liqueurs->id, 'strength' => 15.0, 'description' => 'TODO']);
         Ingredient::create(['name' => 'Cointreau', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'TODO']);
         Ingredient::create(['name' => 'Grand Marnier', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'TODO']);
         Ingredient::create(['name' => 'Suze', 'ingredient_category_id' => $liqueurs->id, 'strength' => 15.0, 'description' => 'TODO']);
         Ingredient::create(['name' => 'Triple Sec', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Maraschino Luxardo', 'ingredient_category_id' => $liqueurs->id, 'strength' => 32.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Crème de Violette', 'ingredient_category_id' => $liqueurs->id, 'strength' => 16.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Galliano', 'ingredient_category_id' => $liqueurs->id, 'strength' => 42.3, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Crème de mûre (blackberry liqueur)', 'ingredient_category_id' => $liqueurs->id, 'strength' => 42.3, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Orange Curaçao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Blue Curaçao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Raspberry Liqueur', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Falernum', 'ingredient_category_id' => $liqueurs->id, 'strength' => 11.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Green Chartreuse', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Yellow Chartreuse', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Maraschino Liqueur', 'ingredient_category_id' => $liqueurs->id, 'strength' => 32.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Aperol', 'ingredient_category_id' => $liqueurs->id, 'strength' => 11.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Amaro Nonino', 'ingredient_category_id' => $liqueurs->id, 'strength' => 35.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Drambuie', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Bénédictine', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Pernod', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Cherry liqueur', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'TODO']);
 
         // Juices
         $lemJuice = Ingredient::create(['name' => 'Lemon juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed lemon juice.']);
@@ -70,6 +107,8 @@ class DatabaseSeeder extends Seeder
         $cranJuice = Ingredient::create(['name' => 'Cranberry juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Cranberry juice.']);
         $tmtJuice = Ingredient::create(['name' => 'Tomato juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Tomato juice.']);
         $pineaJuice = Ingredient::create(['name' => 'Pineapple juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Elderflower Cordial', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Chamomile cordial', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'TODO']);
 
         // Beverages
         Ingredient::create(['name' => 'Cola', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => 'Coca cola.']);
@@ -79,27 +118,45 @@ class DatabaseSeeder extends Seeder
         Ingredient::create(['name' => 'Ginger beer', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => 'TODO']);
         Ingredient::create(['name' => 'Water', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => 'TODO']);
         Ingredient::create(['name' => 'Coffee', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Espresso', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Coffee', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Orange Flower Water', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => 'TODO']);
 
         // Spirits
         $vodka = Ingredient::create(['name' => 'Vodka', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'Vodka desc.']);
         $whiskey = Ingredient::create(['name' => 'Whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'Whiskey desc.']);
-        $bourbon = Ingredient::create(['name' => 'Bourbon', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'Bourbon desc.']);
+        $bourbon = Ingredient::create(['name' => 'Bourbon Whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'Bourbon desc.']);
         $ryeWhiskey = Ingredient::create(['name' => 'Rye whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
         $scotchWhiskey = Ingredient::create(['name' => 'Scotch whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
+         Ingredient::create(['name' => 'Islay Scotch', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
         $irishWhiskey = Ingredient::create(['name' => 'Irish whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
         $gin = Ingredient::create(['name' => 'Gin', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
         $cognac = Ingredient::create(['name' => 'Cognac', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
         $brandy = Ingredient::create(['name' => 'Brandy', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
+        $apricotBrandy = Ingredient::create(['name' => 'Apricot Brandy', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
         $calvados = Ingredient::create(['name' => 'Calvados', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
         $tequila = Ingredient::create(['name' => 'Tequila', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
         $mezcal = Ingredient::create(['name' => 'Mezcal', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
         $absinthe = Ingredient::create(['name' => 'Absinthe', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
         $cachaca = Ingredient::create(['name' => 'Cachaca', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
+        $goldRum = Ingredient::create(['name' => 'Gold Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
+        $whiteRum = Ingredient::create(['name' => 'White Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
+        $whiteRum = Ingredient::create(['name' => 'Demerara Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
+        $darkRum = Ingredient::create(['name' => 'Dark Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
+        $cachaca = Ingredient::create(['name' => 'Cachaça', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Pisco', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Jamaican rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Peach Schnapps', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Grappa', 'ingredient_category_id' => $spirits->id, 'strength' => 50.0, 'description' => 'TODO']);
 
         // Syrups
-        $simpleSyrup = Ingredient::create(['name' => 'Simple syrup', 'ingredient_category_id' => $syrups->id, 'strength' => 0.0, 'description' => 'Equal parts water and sugar.']);
-        $orgeatSyrup = Ingredient::create(['name' => 'Orgeat syrup', 'ingredient_category_id' => $syrups->id, 'strength' => 0.0, 'description' => 'Orgeat syrup is a sweet syrup made from almonds, sugar, and rose water or orange flower water.']);
-        $honeySyrup = Ingredient::create(['name' => 'Honey syrup', 'ingredient_category_id' => $syrups->id, 'strength' => 0.0, 'description' => 'TODO']);
+        $simpleSyrup = Ingredient::create(['name' => 'Simple Syrup', 'ingredient_category_id' => $syrups->id, 'strength' => 0.0, 'description' => 'Equal parts water and sugar.']);
+        $orgeatSyrup = Ingredient::create(['name' => 'Orgeat Syrup', 'ingredient_category_id' => $syrups->id, 'strength' => 0.0, 'description' => 'Orgeat syrup is a sweet syrup made from almonds, sugar, and rose water or orange flower water.']);
+        $honeySyrup = Ingredient::create(['name' => 'Honey Syrup', 'ingredient_category_id' => $syrups->id, 'strength' => 0.0, 'description' => 'TODO']);
+        $raspbSyrup = Ingredient::create(['name' => 'Raspberry Syrup', 'ingredient_category_id' => $syrups->id, 'strength' => 0.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Grenadine Syrup', 'ingredient_category_id' => $syrups->id, 'strength' => 0.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Agave Syrup', 'ingredient_category_id' => $syrups->id, 'strength' => 0.0, 'description' => 'TODO']);
+        Ingredient::create(['name' => 'Donn\'s Mix', 'ingredient_category_id' => $syrups->id, 'strength' => 0.0, 'description' => '2 parts fresh yellow grapefruit and 1 part cinnamon syrup']);
 
         // Wines
         $sweetVermouth = Ingredient::create(['name' => 'Sweet Vermouth', 'ingredient_category_id' => $wines->id, 'strength' => 18.0, 'description' => 'TODO']);
@@ -108,43 +165,44 @@ class DatabaseSeeder extends Seeder
         $redWine = Ingredient::create(['name' => 'Red wine', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'TODO']);
         $prosecco = Ingredient::create(['name' => 'Prosecco', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'TODO']);
         $champagne = Ingredient::create(['name' => 'Champagne', 'ingredient_category_id' => $wines->id, 'strength' => 12.0, 'description' => 'TODO']);
+        $lilletBlanc = Ingredient::create(['name' => 'Lillet Blanc', 'ingredient_category_id' => $wines->id, 'strength' => 17.0, 'description' => 'TODO']);
 
         // Cocktails
-        $whSour = Cocktail::create(['name' => 'Whiskey Sour', 'instructions' => '1. Do this 2. Do that 3. Share 4. Pour', 'image' => 'whiskey-sour.png']);
-        $whSour->ingredients()->createMany([
-            ['ingredient_id' => $bourbon->id, 'amount' => 45, 'units' => 'ml'],
-            ['ingredient_id' => $lemJuice->id, 'amount' => 30, 'units' => 'ml'],
-            ['ingredient_id' => $simpleSyrup->id, 'amount' => 15, 'units' => 'ml'],
-        ]);
+        // $whSour = Cocktail::create(['name' => 'Whiskey Sour', 'instructions' => '1. Do this 2. Do that 3. Share 4. Pour', 'image' => 'whiskey-sour.png']);
+        // $whSour->ingredients()->createMany([
+        //     ['ingredient_id' => $bourbon->id, 'amount' => 45, 'units' => 'ml'],
+        //     ['ingredient_id' => $lemJuice->id, 'amount' => 30, 'units' => 'ml'],
+        //     ['ingredient_id' => $simpleSyrup->id, 'amount' => 15, 'units' => 'ml'],
+        // ]);
 
-        $garibaldi = Cocktail::create(['name' => 'Garibaldi', 'instructions' => '1. Do this 2. Do that 3. Share 4. Pour', 'image' => 'garibaldi.jpg']);
-        $garibaldi->ingredients()->createMany([
-            ['ingredient_id' => $campari->id, 'amount' => 45, 'units' => 'ml'],
-            ['ingredient_id' => $oranJuice->id, 'amount' => 120, 'units' => 'ml'],
-            ['ingredient_id' => $ice->id, 'amount' => 1, 'units' => 'cubes'],
-        ]);
+        // $garibaldi = Cocktail::create(['name' => 'Garibaldi', 'instructions' => '1. Do this 2. Do that 3. Share 4. Pour', 'image' => 'garibaldi.jpg']);
+        // $garibaldi->ingredients()->createMany([
+        //     ['ingredient_id' => $campari->id, 'amount' => 45, 'units' => 'ml'],
+        //     ['ingredient_id' => $oranJuice->id, 'amount' => 120, 'units' => 'ml'],
+        //     ['ingredient_id' => $ice->id, 'amount' => 1, 'units' => 'cubes'],
+        // ]);
 
-        $garibaldi = Cocktail::create(['name' => 'Negroni', 'instructions' => '1. Do this 2. Do that 3. Share 4. Pour', 'image' => 'negorni.jpg']);
-        $garibaldi->ingredients()->createMany([
-            ['ingredient_id' => $gin->id, 'amount' => 30, 'units' => 'ml'],
-            ['ingredient_id' => $campari->id, 'amount' => 30, 'units' => 'ml'],
-            ['ingredient_id' => $sweetVermouth->id, 'amount' => 30, 'units' => 'ml'],
-            ['ingredient_id' => $ice->id, 'amount' => 1, 'units' => 'cubes'],
-        ]);
+        // $garibaldi = Cocktail::create(['name' => 'Negroni', 'instructions' => '1. Do this 2. Do that 3. Share 4. Pour', 'image' => 'negorni.jpg']);
+        // $garibaldi->ingredients()->createMany([
+        //     ['ingredient_id' => $gin->id, 'amount' => 30, 'units' => 'ml'],
+        //     ['ingredient_id' => $campari->id, 'amount' => 30, 'units' => 'ml'],
+        //     ['ingredient_id' => $sweetVermouth->id, 'amount' => 30, 'units' => 'ml'],
+        //     ['ingredient_id' => $ice->id, 'amount' => 1, 'units' => 'cubes'],
+        // ]);
 
-        $manhattan = Cocktail::create(['name' => 'Manhattan', 'instructions' => '1. Do this 2. Do that 3. Share 4. Pour', 'image' => 'manhattan.jpg']);
-        $manhattan->ingredients()->createMany([
-            ['ingredient_id' => $whiskey->id, 'amount' => 50, 'units' => 'ml'],
-            ['ingredient_id' => $sweetVermouth->id, 'amount' => 20, 'units' => 'ml'],
-            ['ingredient_id' => $angostura->id, 'amount' => 1, 'units' => 'dash'],
-            ['ingredient_id' => $ice->id, 'amount' => 1, 'units' => 'cubes'],
-        ]);
+        // $manhattan = Cocktail::create(['name' => 'Manhattan', 'instructions' => '1. Do this 2. Do that 3. Share 4. Pour', 'image' => 'manhattan.jpg']);
+        // $manhattan->ingredients()->createMany([
+        //     ['ingredient_id' => $whiskey->id, 'amount' => 50, 'units' => 'ml'],
+        //     ['ingredient_id' => $sweetVermouth->id, 'amount' => 20, 'units' => 'ml'],
+        //     ['ingredient_id' => $angostura->id, 'amount' => 1, 'units' => 'dash'],
+        //     ['ingredient_id' => $ice->id, 'amount' => 1, 'units' => 'cubes'],
+        // ]);
 
-        $oldFashioned = Cocktail::create(['name' => 'Old Fashioned', 'instructions' => '1. Do this 2. Do that 3. Share 4. Pour', 'image' => 'old-fashioned.png']);
-        $oldFashioned->ingredients()->createMany([
-            ['ingredient_id' => $whiskey->id, 'amount' => 45, 'units' => 'ml'],
-            ['ingredient_id' => $angostura->id, 'amount' => 2, 'units' => 'dashes'],
-            ['ingredient_id' => $simpleSyrup->id, 'amount' => 15, 'units' => 'ml'],
-        ]);
+        // $oldFashioned = Cocktail::create(['name' => 'Old Fashioned', 'instructions' => '1. Do this 2. Do that 3. Share 4. Pour', 'image' => 'old-fashioned.png']);
+        // $oldFashioned->ingredients()->createMany([
+        //     ['ingredient_id' => $whiskey->id, 'amount' => 45, 'units' => 'ml'],
+        //     ['ingredient_id' => $angostura->id, 'amount' => 2, 'units' => 'dashes'],
+        //     ['ingredient_id' => $simpleSyrup->id, 'amount' => 15, 'units' => 'ml'],
+        // ]);
     }
 }

@@ -57,7 +57,7 @@ class ScrapIBACocktails extends Command
                 $crawler = new Crawler($browser->getResponse());
 
                 $cocktailName = $crawler->filter('h1.entry-title')->first()->text();
-                $cocktailCategory = $crawler->filter('.et_pb_title_container a[rel="category tag"]')->first()->text();
+                $cocktailCategory = $crawler->filter('.et_pb_title_container .et_pb_title_meta_container')->first()->text();
 
                 $this->info('Proccessing ' . $cocktailName);
 
