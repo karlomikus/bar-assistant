@@ -31,6 +31,7 @@ return new class extends Migration
             $table->integer('amount');
             $table->string('units');
             $table->integer('sort')->default(0);
+            $table->boolean('optional')->default(false);
         });
     }
 

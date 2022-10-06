@@ -3,6 +3,8 @@
 namespace Kami\Cocktail\Console\Commands;
 
 use Throwable;
+use Illuminate\Support\Str;
+use Kami\Cocktail\Models\Tag;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
@@ -46,7 +48,16 @@ class ImportFromJson extends Command
                 $cocktail->name = $sCocktail['name'];
                 $cocktail->instructions = $sCocktail['instructions'][0];
                 $cocktail->garnish = $sCocktail['garnish'][0];
+                $cocktail->image = Str::slug($sCocktail['name']) . '.jpg';
                 $cocktail->save();
+
+                foreach ($sCocktail['categories'] as $sCat) {
+                    $tag = Tag::firstOrNew([
+                        'name' => $sCat,
+                    ]);
+                    $tag->save();
+                    $cocktail->tags()->attach($tag->id);
+                }
 
                 foreach ($sCocktail['ingredients'] as $cIngredient) {
                     $split = explode(' ', $cIngredient);
