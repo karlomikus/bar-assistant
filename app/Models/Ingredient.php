@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Models;
 use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Ingredient extends Model
@@ -15,6 +16,11 @@ class Ingredient extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(IngredientCategory::class, 'ingredient_category_id', 'id');
+    }
+
+    public function images(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable');
     }
 
     public function toSearchableArray(): array

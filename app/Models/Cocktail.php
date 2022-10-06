@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Laravel\Scout\Searchable;
 
 class Cocktail extends Model
@@ -23,6 +24,16 @@ class Cocktail extends Model
         return $this->belongsToMany(Tag::class);
     }
 
+    public function latestImageFilePath()
+    {
+        return $this->images->first()->file_path;
+    }
+
+    public function images(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
     public function toSearchableArray(): array
     {
         return [
@@ -31,6 +42,7 @@ class Cocktail extends Model
             'description' => $this->description,
             'source' => $this->source,
             'garnish' => $this->garnish,
+            'tags' => $this->tags->pluck('name'),
         ];
     }
 }

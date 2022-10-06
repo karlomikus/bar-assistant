@@ -21,7 +21,7 @@ class CocktailResource extends JsonResource
             'garnish' => $this->garnish,
             'description' => $this->description,
             'source' => $this->source,
-            'image' => $this->image,
+            'image' => $this->latestImageFilePath(),
             'tags' => $this->tags->pluck('name'),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'ingredients' => CocktailIngredientResource::collection($this->ingredients),

@@ -23,7 +23,7 @@ class CocktailController extends Controller
 
     public function show(int $id)
     {
-        $cocktail = Cocktail::find($id)->load('ingredients.ingredient');
+        $cocktail = Cocktail::find($id)->load('ingredients.ingredient', 'images', 'tags');
 
         return new CocktailResource($cocktail);
     }

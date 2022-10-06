@@ -6,6 +6,7 @@ use Throwable;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Tag;
 use Illuminate\Console\Command;
+use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\CocktailIngredient;
@@ -46,11 +47,17 @@ class ImportFromJson extends Command
             try {
                 $cocktail = new Cocktail();
                 $cocktail->name = $sCocktail['name'];
+                $cocktail->description = 'Nam aliquam sem et tortor consequat. Odio tempor orci dapibus ultrices in iaculis. Vitae proin sagittis nisl rhoncus mattis rhoncus.';
                 $cocktail->instructions = $sCocktail['instructions'][0];
                 $cocktail->garnish = $sCocktail['garnish'][0];
-                $cocktail->image = Str::slug($sCocktail['name']) . '.jpg';
+                $cocktail->source = $sCocktail['source'];
                 $cocktail->user_id = 1;
                 $cocktail->save();
+
+                $image = new Image();
+                $image->file_path = Str::slug($sCocktail['name']) . '.jpg';
+                $image->copyright = 'Copyright (c) Some website';
+                $cocktail->images()->save($image);
 
                 foreach ($sCocktail['categories'] as $sCat) {
                     $tag = Tag::firstOrNew([
