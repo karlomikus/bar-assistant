@@ -49,6 +49,7 @@ class ImportFromJson extends Command
                 $cocktail->instructions = $sCocktail['instructions'][0];
                 $cocktail->garnish = $sCocktail['garnish'][0];
                 $cocktail->image = Str::slug($sCocktail['name']) . '.jpg';
+                $cocktail->user_id = 1;
                 $cocktail->save();
 
                 foreach ($sCocktail['categories'] as $sCat) {

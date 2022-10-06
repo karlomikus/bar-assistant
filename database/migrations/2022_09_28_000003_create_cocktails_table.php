@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('source')->nullable();
             $table->text('garnish')->nullable();
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
 
