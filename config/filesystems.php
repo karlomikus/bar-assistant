@@ -44,13 +44,13 @@ return [
             'throw' => false,
         ],
 
-        // 'cocktails' => [
-        //     'driver' => 'local',
-        //     'root' => storage_path('app/cocktails'),
-        //     'url' => env('APP_URL').'/cocktails',
-        //     'visibility' => 'public',
-        //     'throw' => false,
-        // ],
+        'app_images' => [
+            'driver' => 'local',
+            'root' => resource_path('app_images'),
+            'url' => env('APP_URL').'/app_images',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
 
         's3' => [
             'driver' => 's3',
@@ -79,6 +79,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('app_images') => resource_path('app_images'),
     ],
 
 ];

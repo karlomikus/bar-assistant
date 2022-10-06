@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CocktailResource extends JsonResource
@@ -22,6 +24,7 @@ class CocktailResource extends JsonResource
             'description' => $this->description,
             'source' => $this->source,
             'image' => $this->latestImageFilePath(),
+            'image_url' => Storage::disk('app_images')->url('cocktails/' . $this->latestImageFilePath()),
             'tags' => $this->tags->pluck('name'),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'ingredients' => CocktailIngredientResource::collection($this->ingredients),
