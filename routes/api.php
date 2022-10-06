@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Kami\Cocktail\Http\Controllers\LoginController;
+use Kami\Cocktail\Http\Controllers\ShelfController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 
@@ -25,8 +26,14 @@ Route::post('login', [LoginController::class, 'authenticate']);
         return $request->user();
     });
 
+    Route::prefix('shelf')->group(function() {
+        Route::post('/{ingredientId}', [ShelfController::class, 'save']);
+        Route::delete('/{ingredientId}', [ShelfController::class, 'delete']);
+    });
+
     Route::prefix('ingredients')->group(function() {
         Route::get('/', [IngredientController::class, 'index']);
+        Route::get('/categories', [IngredientController::class, 'categories']);
     });
 
     Route::prefix('cocktails')->group(function() {
