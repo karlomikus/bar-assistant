@@ -3,18 +3,23 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\IngredientCategory;
 use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Resources\IngredientCategoryResource;
-use Kami\Cocktail\Models\IngredientCategory;
 
 class IngredientController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $ingredients = Ingredient::orderBy('name')->paginate(30);
+        $ingredients = Ingredient::with('category')->orderBy('name');
 
-        return IngredientResource::collection($ingredients);
+        if ($request->has('category_id')) {
+            $ingredients->where('ingredient_category_id', $request->get('category_id'));
+        }
+
+        return IngredientResource::collection($ingredients->get());
     }
 
     public function categories()

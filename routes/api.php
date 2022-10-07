@@ -43,4 +43,8 @@ Route::post('login', [LoginController::class, 'authenticate']);
         Route::delete('/{id}', [CocktailController::class, 'delete'])->name('cocktails.delete');
     });
 
+    Route::prefix('images')->group(function() {
+        Route::get('/{id}', [CocktailController::class, 'index'])->name('cocktails.index');
+    });
+
 // });

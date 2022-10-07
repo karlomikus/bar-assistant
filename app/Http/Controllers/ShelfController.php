@@ -4,23 +4,20 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Kami\Cocktail\Models\UserIngredient;
 
 class ShelfController extends Controller
 {
-    public function authenticate(Request $request)
+    public function save(Request $request, int $ingredientId)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $userIngredient = new UserIngredient();
+        $userIngredient->ingredient_id = $ingredientId;
 
-        if (Auth::attempt($credentials)) {
-            $token = $request->user()->createToken('web_app_login');
+        $request->user()->shelfIngredients()->save($userIngredient);
+    }
 
-            return response()->json(['token' => $token->plainTextToken]);
-        }
-
-        return response()->json(['type' => 'api_error', 'message' => 'Login failed']);
+    public function delete(Request $request, int $ingredientId)
+    {
+        
     }
 }

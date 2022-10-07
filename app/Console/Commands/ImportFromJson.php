@@ -88,7 +88,7 @@ class ImportFromJson extends Command
                     $cocktailIng->save();
                 }
             } catch(Throwable $e) {
-                dd($e->getMessage());
+                dd($e);
                 DB::rollBack();
             }
             DB::commit();

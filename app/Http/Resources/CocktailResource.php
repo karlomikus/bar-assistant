@@ -24,7 +24,7 @@ class CocktailResource extends JsonResource
             'description' => $this->description,
             'source' => $this->source,
             'image' => $this->latestImageFilePath(),
-            'image_url' => Storage::disk('app_images')->url('cocktails/' . $this->latestImageFilePath()),
+            'image_url' => $this->getImageUrl(),
             'tags' => $this->tags->pluck('name'),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'ingredients' => CocktailIngredientResource::collection($this->ingredients),

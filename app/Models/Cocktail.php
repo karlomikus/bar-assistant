@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Laravel\Scout\Searchable;
 
 class Cocktail extends Model
 {
@@ -24,9 +25,21 @@ class Cocktail extends Model
         return $this->belongsToMany(Tag::class);
     }
 
-    public function latestImageFilePath()
+    public function latestImageFilePath(): ?string
     {
-        return $this->images->first()->file_path;
+        return $this->images->first()->file_path ?? null;
+    }
+
+    public function getImageUrl(): string
+    {
+        $filePath = $this->latestImageFilePath();
+        $cocktailFilePath = 'cocktails/' . $filePath;
+
+        if (!$filePath || !Storage::disk('app_images')->exists($cocktailFilePath)) {
+            return Storage::disk('app_images')->url('cocktails/no-image.jpg');
+        }
+
+        return Storage::disk('app_images')->url($cocktailFilePath);
     }
 
     public function images(): MorphMany
@@ -42,6 +55,8 @@ class Cocktail extends Model
             'description' => $this->description,
             'source' => $this->source,
             'garnish' => $this->garnish,
+            'image_url' => $this->getImageUrl(),
+            'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'tags' => $this->tags->pluck('name'),
         ];
     }
