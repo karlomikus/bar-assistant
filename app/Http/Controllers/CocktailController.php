@@ -16,7 +16,7 @@ class CocktailController extends Controller
 {
     public function index()
     {
-        $cocktails = Cocktail::with('ingredients.ingredient')->paginate(15);
+        $cocktails = Cocktail::with('ingredients.ingredient', 'images', 'tags')->paginate(15);
 
         return CocktailResource::collection($cocktails);
     }
@@ -55,5 +55,13 @@ class CocktailController extends Controller
         }
 
         return new DeleteSuccessResource((object) ['id' => $id]);
+    }
+
+    public function user(CocktailService $cocktailService, Request $request)
+    {
+        $cocktails = $cocktailService->getCocktailsByUserIngredients($request->user()->id)
+            ->load('ingredients.ingredient', 'images', 'tags');
+
+        return CocktailResource::collection($cocktails);
     }
 }

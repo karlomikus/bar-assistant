@@ -19,7 +19,9 @@ class IngredientResource extends JsonResource
             'name' => $this->name,
             'strength' => $this->strength,
             'description' => $this->description,
+            'origin' => $this->origin,
             'image' => $this->image,
+            'cocktails' => $this->cocktails->pluck('id'),
             'category' => new IngredientCategoryResource($this->category),
         ];
     }

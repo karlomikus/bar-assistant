@@ -17,4 +17,9 @@ class CocktailIngredient extends Model
     {
         return $this->belongsTo(Ingredient::class);
     }
+
+    public function cocktail(): BelongsTo
+    {
+        return $this->belongsTo(Cocktail::class);
+    }
 }

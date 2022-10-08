@@ -22,6 +22,13 @@ class IngredientController extends Controller
         return IngredientResource::collection($ingredients->get());
     }
 
+    public function show(int $id)
+    {
+        $ingredient = Ingredient::find($id);
+
+        return new IngredientResource($ingredient);
+    }
+
     public function categories()
     {
         $categories = IngredientCategory::all();

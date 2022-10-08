@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ingredient extends Model
 {
@@ -16,6 +17,11 @@ class Ingredient extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(IngredientCategory::class, 'ingredient_category_id', 'id');
+    }
+
+    public function cocktails(): BelongsToMany
+    {
+        return $this->belongsToMany(Cocktail::class, CocktailIngredient::class);
     }
 
     public function images(): MorphMany

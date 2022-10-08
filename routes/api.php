@@ -20,13 +20,14 @@ use Kami\Cocktail\Http\Controllers\IngredientController;
 
 Route::post('login', [LoginController::class, 'authenticate']);
 
-// Route::middleware('auth:sanctum')->group(function() {
+Route::middleware('auth:sanctum')->group(function() {
 
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
 
     Route::prefix('shelf')->group(function() {
+        Route::get('/', [ShelfController::class, 'index']);
         Route::post('/{ingredientId}', [ShelfController::class, 'save']);
         Route::delete('/{ingredientId}', [ShelfController::class, 'delete']);
     });
@@ -34,10 +35,12 @@ Route::post('login', [LoginController::class, 'authenticate']);
     Route::prefix('ingredients')->group(function() {
         Route::get('/', [IngredientController::class, 'index']);
         Route::get('/categories', [IngredientController::class, 'categories']);
+        Route::get('/{id}', [IngredientController::class, 'show']);
     });
 
     Route::prefix('cocktails')->group(function() {
         Route::get('/', [CocktailController::class, 'index'])->name('cocktails.index');
+        Route::get('/user', [CocktailController::class, 'user'])->name('cocktails.user');
         Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show');
         Route::post('/', [CocktailController::class, 'store'])->name('cocktails.store');
         Route::delete('/{id}', [CocktailController::class, 'delete'])->name('cocktails.delete');
@@ -47,4 +50,4 @@ Route::post('login', [LoginController::class, 'authenticate']);
         Route::get('/{id}', [CocktailController::class, 'index'])->name('cocktails.index');
     });
 
-// });
+});
