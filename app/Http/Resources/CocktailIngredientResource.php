@@ -15,6 +15,7 @@ class CocktailIngredientResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'sort' => $this->sort,
             'amount' => $this->amount,
             'units' => $this->units,

@@ -58,6 +58,7 @@ class Cocktail extends Model
             'image_url' => $this->getImageUrl(),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'tags' => $this->tags->pluck('name'),
+            'date' => $this->updated_at->format('Y-m-d H:i:s')
         ];
     }
 }
