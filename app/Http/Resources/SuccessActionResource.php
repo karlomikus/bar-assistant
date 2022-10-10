@@ -4,7 +4,7 @@ namespace Kami\Cocktail\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DeleteSuccessResource extends JsonResource
+class SuccessActionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

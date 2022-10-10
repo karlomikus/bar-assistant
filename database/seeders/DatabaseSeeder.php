@@ -3,10 +3,16 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Throwable;
 use Illuminate\Support\Str;
+use Kami\Cocktail\Models\Tag;
 use Illuminate\Database\Seeder;
+use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Illuminate\Support\Facades\Artisan;
+use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\IngredientCategory;
 
 class DatabaseSeeder extends Seeder
@@ -94,15 +100,15 @@ class DatabaseSeeder extends Seeder
         Ingredient::create(['name' => 'Dark Crème de Cacao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 25.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'White Crème de Cacao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 25.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Menthe Crème de Cacao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 25.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Crème de cassis', 'ingredient_category_id' => $liqueurs->id, 'strength' => 15.0, 'description' => $faker->sentence()]);
+        Ingredient::create(['name' => 'Crème de cassis (blackcurrant liqueur)', 'ingredient_category_id' => $liqueurs->id, 'strength' => 15.0, 'description' => $faker->sentence()]);
+        Ingredient::create(['name' => 'Crème de Violette', 'ingredient_category_id' => $liqueurs->id, 'strength' => 16.0, 'description' => 'Crème de violette is a delicate, barely-sweet liqueur made from violet flower petals.']);
+        Ingredient::create(['name' => 'Crème de mûre (blackberry liqueur)', 'ingredient_category_id' => $liqueurs->id, 'strength' => 42.3, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Cointreau', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Grand Marnier', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Suze', 'ingredient_category_id' => $liqueurs->id, 'strength' => 15.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Triple Sec', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Maraschino Luxardo', 'ingredient_category_id' => $liqueurs->id, 'strength' => 32.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Crème de Violette', 'ingredient_category_id' => $liqueurs->id, 'strength' => 16.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Galliano', 'ingredient_category_id' => $liqueurs->id, 'strength' => 42.3, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Crème de mûre (blackberry liqueur)', 'ingredient_category_id' => $liqueurs->id, 'strength' => 42.3, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Orange Curaçao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Blue Curaçao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Raspberry Liqueur', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
@@ -128,12 +134,11 @@ class DatabaseSeeder extends Seeder
         Ingredient::create(['name' => 'Chamomile cordial', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
 
         // Beverages
-        Ingredient::create(['name' => 'Cola', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => 'Coca cola.']);
+        Ingredient::create(['name' => 'Water', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Club soda', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Tonic', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => '7up', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
+        Ingredient::create(['name' => 'Cola', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => 'Coca cola.']);
         Ingredient::create(['name' => 'Ginger beer', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Water', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Espresso', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Coffee', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Orange Flower Water', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
@@ -158,9 +163,9 @@ class DatabaseSeeder extends Seeder
         Ingredient::create(['name' => 'White Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Demerara Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Dark Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
+        Ingredient::create(['name' => 'Jamaican rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Cachaça', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Pisco', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Jamaican rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Peach Schnapps', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
         Ingredient::create(['name' => 'Grappa', 'ingredient_category_id' => $spirits->id, 'strength' => 50.0, 'description' => $faker->sentence()]);
 
@@ -181,5 +186,82 @@ class DatabaseSeeder extends Seeder
         Ingredient::create(['name' => 'Prosecco', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Sparkling wine made from Prosecco grapes.']);
         Ingredient::create(['name' => 'Champagne', 'ingredient_category_id' => $wines->id, 'strength' => 12.0, 'description' => 'Sparkling wine.']);
         Ingredient::create(['name' => 'Lillet Blanc', 'ingredient_category_id' => $wines->id, 'strength' => 17.0, 'description' => 'Aromatized sweet wine.']);
+
+        // Create image for every ingredient
+        $ingredients = Ingredient::all();
+        foreach ($ingredients as $ing) {
+            $image = new Image();
+            $image->file_path = Str::slug($ing->name) . '.png';
+            $image->copyright = 'Copyright (c) Some website';
+            $ing->images()->save($image);
+        }
+
+        $this->importIBACocktailsFromJson();
+
+        Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
+        Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);
+    }
+
+    private function importIBACocktailsFromJson()
+    {
+        $dbIngredients = DB::table('ingredients')->select(['name', 'id'])->get()->map(function ($ing) {
+            $ing->name = strtolower($ing->name);
+
+            return $ing;
+        });
+        // dd($dbIngredients);
+        $source = json_decode(file_get_contents(resource_path('/data/iba_cocktails.json')), true);
+        
+        foreach ($source as $sCocktail) {
+            DB::beginTransaction();
+            try {
+                $cocktail = new Cocktail();
+                $cocktail->name = $sCocktail['name'];
+                $cocktail->description = 'Nam aliquam sem et tortor consequat. Odio tempor orci dapibus ultrices in iaculis. Vitae proin sagittis nisl rhoncus mattis rhoncus.';
+                $cocktail->instructions = $sCocktail['instructions'][0];
+                $cocktail->garnish = $sCocktail['garnish'][0];
+                $cocktail->source = $sCocktail['source'];
+                $cocktail->user_id = 1;
+                $cocktail->save();
+
+                $image = new Image();
+                $image->file_path = Str::slug($sCocktail['name']) . '.jpg';
+                $image->copyright = 'Copyright (c) Some website';
+                $cocktail->images()->save($image);
+
+                foreach ($sCocktail['categories'] as $sCat) {
+                    $tag = Tag::firstOrNew([
+                        'name' => $sCat,
+                    ]);
+                    $tag->save();
+                    $cocktail->tags()->attach($tag->id);
+                }
+
+                foreach ($sCocktail['ingredients'] as $cIngredient) {
+                    $split = explode(' ', $cIngredient);
+                    $amount = $split[0];
+                    $units = $split[1];
+                    $output = array_splice($split, 2);
+                    $sIngredient = implode(' ', $output);
+
+                    if (!$dbIngredients->contains('name', strtolower($sIngredient))) {
+                        dump('Ingredient not found: [' . $sCocktail['name'] . '] ' . $sIngredient);
+                        continue;
+                    }
+                    $dbId = $dbIngredients->filter(fn ($item) => $item->name == strtolower($sIngredient))->first()->id;
+
+                    $cocktailIng = new CocktailIngredient();
+                    $cocktailIng->cocktail_id = $cocktail->id;
+                    $cocktailIng->ingredient_id = $dbId;
+                    $cocktailIng->amount = floatval($amount);
+                    $cocktailIng->units = strtolower($units);
+                    $cocktailIng->save();
+                }
+            } catch(Throwable $e) {
+                dd($e);
+                DB::rollBack();
+            }
+            DB::commit();
+        }
     }
 }

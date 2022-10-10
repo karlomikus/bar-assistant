@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('ingredients', function (Blueprint $table) {
             $table->id();
+            $table->string('slug');
             $table->string('name');
             $table->decimal('strength')->default(0.0);
             $table->string('description')->nullable();

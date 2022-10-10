@@ -9,7 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Http\Resources\CocktailResource;
-use Kami\Cocktail\Http\Resources\DeleteSuccessResource;
+use Kami\Cocktail\Http\Resources\SuccessActionResource;
 use Kami\Cocktail\Http\Resources\ErrorResource;
 
 class CocktailController extends Controller
@@ -54,7 +54,7 @@ class CocktailController extends Controller
             return new ErrorResource($e);
         }
 
-        return new DeleteSuccessResource((object) ['id' => $id]);
+        return new SuccessActionResource((object) ['id' => $id]);
     }
 
     public function user(CocktailService $cocktailService, Request $request)
@@ -63,5 +63,14 @@ class CocktailController extends Controller
             ->load('ingredients.ingredient', 'images', 'tags');
 
         return CocktailResource::collection($cocktails);
+    }
+
+    public function favorite(Request $request, int $id)
+    {
+        $cocktail = Cocktail::find($id);
+
+        $request->user()->favoriteCocktail($cocktail);
+
+        return new SuccessActionResource((object) ['id' => $id]);
     }
 }

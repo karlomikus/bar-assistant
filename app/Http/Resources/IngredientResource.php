@@ -16,11 +16,12 @@ class IngredientResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'slug' => $this->slug,
             'name' => $this->name,
             'strength' => $this->strength,
             'description' => $this->description,
             'origin' => $this->origin,
-            'image' => $this->image,
+            'image_url' => $this->getImageUrl(),
             'category' => new IngredientCategoryResource($this->category),
             'cocktails' => $this->cocktails->map(function ($c) {
                 return [

@@ -7,7 +7,7 @@ use Throwable;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Http\Resources\ErrorResource;
-use Kami\Cocktail\Http\Resources\DeleteSuccessResource;
+use Kami\Cocktail\Http\Resources\SuccessActionResource;
 use Kami\Cocktail\Http\Resources\UserIngredientResource;
 
 class ShelfController extends Controller
@@ -39,6 +39,6 @@ class ShelfController extends Controller
             return new ErrorResource($e);
         }
 
-        return new DeleteSuccessResource((object) ['id' => $ingredientId]);
+        return new SuccessActionResource((object) ['id' => $ingredientId]);
     }
 }
