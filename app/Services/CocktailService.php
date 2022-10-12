@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Cocktail;
 use Intervention\Image\ImageManager;
 use Illuminate\Database\DatabaseManager;
@@ -98,9 +99,11 @@ class CocktailService
                 $image = $this->image->make($imageAsBase64);
                 $imageName = sprintf('%s_%s.jpg', $cocktail->id, Str::slug($name));
 
-                if ($this->filesystem->disk('public')->put('cocktails/' . $imageName, (string) $image->encode('jpg'))) {
-                    $cocktail->image = $imageName;
-                    $cocktail->save();
+                if ($this->filesystem->disk('app_images')->put('cocktails/' . $imageName, (string) $image->encode('jpg'))) {
+                    $imageModel = new Image();
+                    $imageModel->file_path = $imageName;
+                    $imageModel->copyright = 'Copyright (c) Some website';
+                    $cocktail->images()->save($imageModel);
                 }
             } catch (Throwable $e) {
                 $this->log->error('[COCKTAIL_SERVICE] File upload error. ' . $e->getMessage());
