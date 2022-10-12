@@ -7,9 +7,11 @@ use Throwable;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
+use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Cocktail;
 use Intervention\Image\ImageManager;
 use Illuminate\Database\DatabaseManager;
+use Kami\Cocktail\Models\CocktailFavorite;
 use Illuminate\Filesystem\FilesystemManager;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Exceptions\CocktailException;
@@ -30,6 +32,7 @@ class CocktailService
      * @param string $name
      * @param string $instructions
      * @param array $ingredients
+     * @param int $userId
      * @param string|null $description
      * @param string|null $garnish
      * @param string|null $cocktailSource
@@ -41,6 +44,7 @@ class CocktailService
         string $name,
         string $instructions,
         array $ingredients,
+        int $userId,
         ?string $description = null,
         ?string $garnish = null,
         ?string $cocktailSource = null,
@@ -57,6 +61,7 @@ class CocktailService
             $cocktail->description = $description;
             $cocktail->garnish = $garnish;
             $cocktail->source = $cocktailSource;
+            $cocktail->user_id = $userId;
             $cocktail->save();
 
             foreach($ingredients as $ingredient) {
@@ -64,7 +69,7 @@ class CocktailService
                 $cIngredient->ingredient_id = $ingredient['ingredient_id'];
                 $cIngredient->amount = $ingredient['amount'];
                 $cIngredient->units = $ingredient['units'];
-                $cIngredient->sort = $ingredient['sort'];
+                $cIngredient->sort = $ingredient['sort'] ?? 0;
 
                 $cocktail->ingredients()->save($cIngredient);
             }
@@ -104,9 +109,21 @@ class CocktailService
 
         $this->log->info('[COCKTAIL_SERVICE] Cocktail "' . $name . '" created with id: ' . $cocktail->id);
 
+        // Refresh model for response
+        $cocktail->refresh();
+        // Upsert scout index
+        $cocktail->searchable();
+
         return $cocktail;
     }
 
+    /**
+     * Return all cocktails that user can create with
+     * ingredients in his shelf
+     *
+     * @param int $userId
+     * @return \Illuminate\Database\Eloquent\Collection<\Kami\Cocktail\Models\Cocktail>
+     */
     public function getCocktailsByUserIngredients(int $userId)
     {
         // Cocktails with possible ingredients
@@ -139,5 +156,31 @@ class CocktailService
             ->pluck('id');
 
         return Cocktail::find($cocktailIds);
+    }
+
+    /**
+     * Toggle user favorite cocktail
+     *
+     * @param \Kami\Cocktail\Models\User $user
+     * @param int $cocktailId
+     * @return bool
+     */
+    public function toggleFavorite(User $user, int $cocktailId): bool
+    {
+        $cocktail = Cocktail::find($cocktailId);
+
+        $existing = CocktailFavorite::where('cocktail_id', $cocktailId)->where('user_id', $user->id)->first();
+        if ($existing) {
+            $existing->delete();
+
+            return false;
+        }
+
+        $cocktailFavorite = new CocktailFavorite();
+        $cocktailFavorite->cocktail_id = $cocktail->id;
+
+        $user->favorites()->save($cocktailFavorite);
+
+        return true;
     }
 }

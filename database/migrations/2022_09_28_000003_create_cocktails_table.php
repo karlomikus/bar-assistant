@@ -15,24 +15,31 @@ return new class extends Migration
     {
         Schema::create('cocktails', function (Blueprint $table) {
             $table->id();
+            // $table->string('slug');
             $table->string('name');
             $table->text('instructions');
             $table->text('description')->nullable();
             $table->string('source')->nullable();
             $table->text('garnish')->nullable();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('parent_cocktail_id')->nullable()->constrained('cocktails');
             $table->timestamps();
         });
 
         Schema::create('cocktail_ingredients', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ingredient_id')->constrained();
-            $table->foreignId('cocktail_id')->constrained();
+            $table->foreignId('cocktail_id')->constrained()->onDelete('cascade');
             $table->integer('amount');
             $table->string('units');
             $table->integer('sort')->default(0);
             $table->boolean('optional')->default(false);
+        });
+
+        Schema::create('cocktail_favorites', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('cocktail_id')->unique()->constrained();
+            $table->timestamps();
         });
     }
 
@@ -43,6 +50,7 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('cocktail_favorites');
         Schema::dropIfExists('cocktail_ingredients');
         Schema::dropIfExists('cocktails');
     }

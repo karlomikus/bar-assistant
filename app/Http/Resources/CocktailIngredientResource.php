@@ -21,6 +21,7 @@ class CocktailIngredientResource extends JsonResource
             'units' => $this->units,
             'ingredient_id' => $this->ingredient_id,
             'name' => $this->ingredient->name,
+            'ingredient_slug' => $this->ingredient->slug,
         ];
     }
 }

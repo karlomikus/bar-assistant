@@ -4,7 +4,7 @@ namespace Kami\Cocktail\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SuccessActionResource extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,6 +14,11 @@ class SuccessActionResource extends JsonResource
      */
     public function toArray($request)
     {
-        return array_merge((array) $this->resource, ['success' => true]);
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'favorite_cocktails' => $this->favorites->pluck('cocktail_id')
+        ];
     }
 }

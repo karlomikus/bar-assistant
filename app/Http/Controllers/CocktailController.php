@@ -34,6 +34,7 @@ class CocktailController extends Controller
             $request->post('name'),
             $request->post('instructions'),
             $request->post('ingredients'),
+            $request->user()->id,
             $request->post('description'),
             $request->post('garnish'),
             $request->post('source'),
@@ -65,12 +66,10 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails);
     }
 
-    public function favorite(Request $request, int $id)
+    public function favorite(CocktailService $cocktailService, Request $request, int $id)
     {
-        $cocktail = Cocktail::find($id);
+        $isFavorite = $cocktailService->toggleFavorite($request->user(), $id);
 
-        $request->user()->favoriteCocktail($cocktail);
-
-        return new SuccessActionResource((object) ['id' => $id]);
+        return new SuccessActionResource((object) ['id' => $id, 'is_favorited' => $isFavorite]);
     }
 }
