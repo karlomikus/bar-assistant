@@ -22,6 +22,12 @@ class Ingredient extends Model
         static::saving(function ($ing) {
             $ing->slug = Str::slug($ing->name);
         });
+
+        static::saved(function($ing) {
+            app(\Laravel\Scout\EngineManager::class)->engine()->index('site_search_index')->addDocuments([
+                $ing->toSiteSearchArray()
+            ], 'key');
+        });
     }
 
     public function category(): BelongsTo
@@ -54,6 +60,17 @@ class Ingredient extends Model
         }
 
         return Storage::disk('app_images')->url($cocktailFilePath);
+    }
+
+    public function toSiteSearchArray()
+    {
+        return [
+            'key' => 'in_' . (string) $this->id,
+            'id' => $this->id,
+            'name' => $this->name,
+            'image_url' => $this->getImageUrl(),
+            'type' => 'ingredient',
+        ];
     }
 
     public function toSearchableArray(): array

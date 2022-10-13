@@ -72,4 +72,11 @@ class CocktailController extends Controller
 
         return new SuccessActionResource((object) ['id' => $id, 'is_favorited' => $isFavorite]);
     }
+
+    public function userFavorites(Request $request)
+    {
+        $cocktails = $request->user()->favorites->pluck('cocktail');
+
+        return CocktailResource::collection($cocktails);
+    }
 }

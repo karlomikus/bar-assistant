@@ -15,6 +15,15 @@ class Cocktail extends Model
 {
     use HasFactory, Searchable;
 
+    protected static function booted()
+    {
+        static::saved(function($cocktail) {
+            app(\Laravel\Scout\EngineManager::class)->engine()->index('site_search_index')->addDocuments([
+                $cocktail->toSiteSearchArray()
+            ], 'key');
+        });
+    }
+
     public function ingredients(): HasMany
     {
         return $this->hasMany(CocktailIngredient::class);
@@ -45,6 +54,17 @@ class Cocktail extends Model
     public function images(): MorphMany
     {
         return $this->morphMany(Image::class, 'imageable');
+    }
+
+    public function toSiteSearchArray()
+    {
+        return [
+            'key' => 'co_' . (string) $this->id,
+            'id' => $this->id,
+            'name' => $this->name,
+            'image_url' => $this->getImageUrl(),
+            'type' => 'cocktail',
+        ];
     }
 
     public function toSearchableArray(): array

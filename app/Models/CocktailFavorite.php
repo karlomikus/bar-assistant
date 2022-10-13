@@ -9,4 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class CocktailFavorite extends Model
 {
     use HasFactory;
+
+    public function cocktail()
+    {
+        return $this->belongsTo(Cocktail::class);
+    }
 }

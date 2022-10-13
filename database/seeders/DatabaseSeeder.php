@@ -194,6 +194,8 @@ class DatabaseSeeder extends Seeder
             $image->file_path = Str::slug($ing->name) . '.png';
             $image->copyright = 'Copyright (c) Some website';
             $ing->images()->save($image);
+
+            $ing->refresh();
         }
 
         $this->importIBACocktailsFromJson();
