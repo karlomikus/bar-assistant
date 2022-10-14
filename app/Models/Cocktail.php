@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Laravel\Scout\Searchable;
+use Kami\Cocktail\UpdateSiteSearch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,9 +19,7 @@ class Cocktail extends Model
     protected static function booted()
     {
         static::saved(function($cocktail) {
-            app(\Laravel\Scout\EngineManager::class)->engine()->index('site_search_index')->addDocuments([
-                $cocktail->toSiteSearchArray()
-            ], 'key');
+            UpdateSiteSearch::update($cocktail);
         });
     }
 

@@ -5,9 +5,9 @@ namespace Kami\Cocktail\Models;
 
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
+use Kami\Cocktail\UpdateSiteSearch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,9 +35,7 @@ class Ingredient extends Model
         });
 
         static::saved(function($ing) {
-            app(\Laravel\Scout\EngineManager::class)->engine()->index('site_search_index')->addDocuments([
-                $ing->toSiteSearchArray()
-            ], 'key');
+            UpdateSiteSearch::update($ing);
         });
     }
 
