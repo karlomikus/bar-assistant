@@ -23,7 +23,11 @@ class CocktailController extends Controller
 
     public function show(int $id)
     {
-        $cocktail = Cocktail::find($id)->load('ingredients.ingredient', 'images', 'tags');
+        try {
+            $cocktail = Cocktail::findOrFail($id)->load('ingredients.ingredient', 'images', 'tags');
+        } catch (Throwable $e) {
+            return new ErrorResource($e);
+        }
 
         return new CocktailResource($cocktail);
     }
@@ -47,10 +51,30 @@ class CocktailController extends Controller
             ->header('Location', route('cocktails.show', $cocktail->id));
     }
 
+    public function update(CocktailService $cocktailService, Request $request, int $id): JsonResponse
+    {
+        $cocktail = $cocktailService->updateCocktail(
+            $id,
+            $request->post('name'),
+            $request->post('instructions'),
+            $request->post('ingredients'),
+            $request->user()->id,
+            $request->post('description'),
+            $request->post('garnish'),
+            $request->post('source'),
+            $request->post('image'),
+            $request->post('tags'),
+        );
+
+        return (new CocktailResource($cocktail))
+            ->response()
+            ->header('Location', route('cocktails.show', $cocktail->id));
+    }
+
     public function delete(int $id)
     {
         try {
-            Cocktail::find($id)->delete();
+            Cocktail::findOrFail($id)->delete();
         } catch (Throwable $e) {
             return new ErrorResource($e);
         }

@@ -1,9 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin \Kami\Cocktail\Models\User
+ */
 class UserResource extends JsonResource
 {
     /**

@@ -77,8 +77,9 @@ class CocktailService
 
             $dbTags = [];
             foreach($tags as $tagName) {
-                $tag = new Tag();
-                $tag->name = $tagName;
+                $tag = Tag::firstOrNew([
+                    'name' => trim($tagName),
+                ]);
                 $tag->save();
                 $dbTags[] = $tag->id;
             }
@@ -111,6 +112,104 @@ class CocktailService
         }
 
         $this->log->info('[COCKTAIL_SERVICE] Cocktail "' . $name . '" created with id: ' . $cocktail->id);
+
+        // Refresh model for response
+        $cocktail->refresh();
+        // Upsert scout index
+        $cocktail->searchable();
+
+        return $cocktail;
+    }
+
+    /**
+     * Update cocktail by id
+     *
+     * @param int $id
+     * @param string $name
+     * @param string $instructions
+     * @param array $ingredients
+     * @param int $userId
+     * @param string|null $description
+     * @param string|null $garnish
+     * @param string|null $cocktailSource
+     * @param string|null $imageAsBase64
+     * @param array<string> $tags
+     * @return \Kami\Cocktail\Models\Cocktail
+     */
+    public function updateCocktail(
+        int $id,
+        string $name,
+        string $instructions,
+        array $ingredients,
+        int $userId,
+        ?string $description = null,
+        ?string $garnish = null,
+        ?string $cocktailSource = null,
+        ?string $imageAsBase64 = null,
+        array $tags = [],
+    ): Cocktail
+    {
+        $this->db->beginTransaction();
+
+        try {
+            $cocktail = Cocktail::findOrFail($id);
+            $cocktail->name = $name;
+            $cocktail->instructions = $instructions;
+            $cocktail->description = $description;
+            $cocktail->garnish = $garnish;
+            $cocktail->source = $cocktailSource;
+            $cocktail->user_id = $userId;
+            $cocktail->save();
+
+            // TODO: Implement upsert and delete
+            $cocktail->ingredients()->delete();
+            foreach($ingredients as $ingredient) {
+                $cIngredient = new CocktailIngredient();
+                $cIngredient->ingredient_id = $ingredient['ingredient_id'];
+                $cIngredient->amount = $ingredient['amount'];
+                $cIngredient->units = $ingredient['units'];
+                $cIngredient->sort = $ingredient['sort'] ?? 0;
+
+                $cocktail->ingredients()->save($cIngredient);
+            }
+
+            $dbTags = [];
+            foreach($tags as $tagName) {
+                $tag = Tag::firstOrNew([
+                    'name' => trim($tagName),
+                ]);
+                $tag->save();
+                $dbTags[] = $tag->id;
+            }
+
+            $cocktail->tags()->sync($dbTags);
+
+        } catch (Throwable $e) {
+            $this->log->error('[COCKTAIL_SERVICE] ' . $e->getMessage());
+            $this->db->rollBack();
+
+            throw new CocktailException('Error occured while updating a cocktail with id "' . $id . '"!', 0, $e);
+        }
+
+        $this->db->commit();
+
+        // if ($imageAsBase64) {
+        //     try {
+        //         $image = $this->image->make($imageAsBase64);
+        //         $imageName = sprintf('%s_%s.jpg', $cocktail->id, Str::slug($name));
+
+        //         if ($this->filesystem->disk('app_images')->put('cocktails/' . $imageName, (string) $image->encode('jpg'))) {
+        //             $imageModel = new Image();
+        //             $imageModel->file_path = $imageName;
+        //             $imageModel->copyright = 'Copyright (c) Some website';
+        //             $cocktail->images()->save($imageModel);
+        //         }
+        //     } catch (Throwable $e) {
+        //         $this->log->error('[COCKTAIL_SERVICE] File upload error. ' . $e->getMessage());
+        //     }
+        // }
+
+        $this->log->info('[COCKTAIL_SERVICE] Updated cocktail with id: ' . $cocktail->id);
 
         // Refresh model for response
         $cocktail->refresh();
@@ -155,7 +254,6 @@ class CocktailService
             ->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
             ->groupBy('c.id')
             ->havingRaw('SUM(CASE WHEN i.id IN (SELECT ingredient_id FROM user_ingredients WHERE user_id = ?) THEN 1 ELSE 0 END) = COUNT(*)', [$userId])
-            ->get()
             ->pluck('id');
 
         return Cocktail::find($cocktailIds);

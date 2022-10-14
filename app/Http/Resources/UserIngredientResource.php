@@ -5,6 +5,9 @@ namespace Kami\Cocktail\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin \Kami\Cocktail\Models\UserIngredient
+ */
 class UserIngredientResource extends JsonResource
 {
     /**
