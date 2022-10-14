@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->text('origin')->nullable();
             $table->text('history')->nullable();
-            $table->text('image')->nullable();
             $table->string('color')->nullable();
             $table->foreignId('ingredient_category_id')->constrained();
             $table->foreignId('parent_ingredient_id')->nullable()->constrained('ingredients');

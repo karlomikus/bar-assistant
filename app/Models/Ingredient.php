@@ -17,6 +17,17 @@ class Ingredient extends Model
 {
     use HasFactory, Searchable;
 
+    protected $fillable = [
+        'name',
+        'strength',
+        'description',
+        'history',
+        'origin',
+        'color',
+        'ingredient_category_id',
+        'parent_ingredient_id',
+    ];
+
     protected static function booted()
     {
         static::saving(function ($ing) {

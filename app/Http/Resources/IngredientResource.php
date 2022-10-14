@@ -26,6 +26,7 @@ class IngredientResource extends JsonResource
             'description' => $this->description,
             'origin' => $this->origin,
             'image_url' => $this->getImageUrl(),
+            'parent_ingredient_id' => $this->parent_ingredient_id,
             'category' => new IngredientCategoryResource($this->category),
             'cocktails' => $this->cocktails->map(function ($c) {
                 return [

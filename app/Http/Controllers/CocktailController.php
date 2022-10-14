@@ -82,7 +82,7 @@ class CocktailController extends Controller
         return new SuccessActionResource((object) ['id' => $id]);
     }
 
-    public function user(CocktailService $cocktailService, Request $request)
+    public function userShelf(CocktailService $cocktailService, Request $request)
     {
         $cocktails = $cocktailService->getCocktailsByUserIngredients($request->user()->id)
             ->load('ingredients.ingredient', 'images', 'tags');

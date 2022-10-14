@@ -32,13 +32,16 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::prefix('ingredients')->group(function() {
         Route::get('/', [IngredientController::class, 'index']);
+        Route::post('/', [IngredientController::class, 'store']);
         Route::get('/categories', [IngredientController::class, 'categories']);
         Route::get('/{id}', [IngredientController::class, 'show']);
+        Route::put('/{id}', [IngredientController::class, 'update']);
+        Route::delete('/{id}', [IngredientController::class, 'delete']);
     });
 
     Route::prefix('cocktails')->group(function() {
         Route::get('/', [CocktailController::class, 'index'])->name('cocktails.index');
-        Route::get('/user', [CocktailController::class, 'user'])->name('cocktails.user');
+        Route::get('/user-shelf', [CocktailController::class, 'userShelf'])->name('cocktails.user-shelf');
         Route::get('/user-favorites', [CocktailController::class, 'userFavorites'])->name('cocktails.user-favorites');
         Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show');
         Route::post('/{id}/favorite', [CocktailController::class, 'favorite'])->name('cocktails.favorite');
