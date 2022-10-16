@@ -42,7 +42,7 @@ class IngredientController extends Controller
         $ingredient->origin = $request->post('origin');
         $ingredient->color = $request->post('color');
         $ingredient->ingredient_category_id = (int) $request->post('ingredient_category_id');
-        $ingredient->parent_ingredient_id = (int) $request->post('parent_ingredient_id');
+        $ingredient->parent_ingredient_id = $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null;
         $ingredient->save();
 
         return new IngredientResource($ingredient);
@@ -63,7 +63,7 @@ class IngredientController extends Controller
         $ingredient->origin = $request->post('origin');
         $ingredient->color = $request->post('color');
         $ingredient->ingredient_category_id = (int) $request->post('ingredient_category_id');
-        $ingredient->parent_ingredient_id = (int) $request->post('parent_ingredient_id');
+        $ingredient->parent_ingredient_id = $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null;
         $ingredient->save();
 
         return new IngredientResource($ingredient);

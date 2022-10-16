@@ -147,30 +147,30 @@ class DatabaseSeeder extends Seeder
         Ingredient::create(['name' => 'Orange Flower Water', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
 
         // Spirits
-        Ingredient::create(['name' => 'Vodka', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'Vodka desc.']);
-        Ingredient::create(['name' => 'Whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'Whiskey desc.']);
-        Ingredient::create(['name' => 'Bourbon Whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => 'Bourbon desc.']);
-        Ingredient::create(['name' => 'Rye whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Scotch whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Islay Scotch', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Irish whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Gin', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Cognac', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Brandy', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Apricot Brandy', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Calvados', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Tequila', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Mezcal', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Absinthe', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Gold Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'White Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Demerara Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Dark Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Jamaican rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Cachaça', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Pisco', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Peach Schnapps', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Grappa', 'ingredient_category_id' => $spirits->id, 'strength' => 50.0, 'description' => $faker->sentence()]);
+        Ingredient::create(['name' => 'Vodka', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Clear alcoholic beverage distilled from cereal grains and potatos.', 'origin' => 'Russia']);
+        Ingredient::create(['name' => 'Whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Distilled alcoholic beverage made from fermented grain mash.', 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Bourbon Whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Barrel-aged distilled liquor made primarily from corn.', 'origin' => 'North America']);
+        Ingredient::create(['name' => 'Rye whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Whiskey made with at least 51 percent rye grain.', 'origin' => 'North America']);
+        Ingredient::create(['name' => 'Scotch whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Malt whisky or grain whisky (or a blend of the two), made in Scotland.', 'origin' => 'Scotland']);
+        Ingredient::create(['name' => 'Islay Scotch', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Scotch whisky made on Islay island.', 'origin' => 'Scotland']);
+        Ingredient::create(['name' => 'Irish whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Whiskey made on the island of Ireland.', 'origin' => 'Ireland']);
+        Ingredient::create(['name' => 'Gin', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Distilled alcoholic drink that derives its flavour from juniper berries.', 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Cognac', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#7b1c0a', 'description' => 'A variety of brandy named after the commune of Cognac, France.', 'origin' => 'France']);
+        Ingredient::create(['name' => 'Brandy', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#e66500', 'description' => 'Liquor produced by distilling wine.', 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Apricot Brandy', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ca5210', 'description' => 'Liquor distilled from fermented apricot juice or a liqueur made from apricot flesh and kernels.', 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Calvados', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ca5210', 'description' => 'Brandy made from apples or pears.', 'origin' => 'France']);
+        Ingredient::create(['name' => 'Tequila', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Distilled beverage made from the blue agave plant.', 'origin' => 'Mexico']);
+        Ingredient::create(['name' => 'Mezcal', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Distilled alcoholic beverage made from any type of agave.', 'origin' => 'Mexico']);
+        Ingredient::create(['name' => 'Absinthe', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#b7ca8e', 'description' => 'Anise-flavoured spirit derived from several plants, including wormwood.', 'origin' => 'France']);
+        Ingredient::create(['name' => 'Gold Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#c79141', 'description' => 'Medium-bodied rum aged in wooden barrels.']);
+        Ingredient::create(['name' => 'White Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Liquor made by fermenting and then distilling sugarcane molasses or sugarcane juice.', 'origin' => 'Caribbean']);
+        Ingredient::create(['name' => 'Demerara Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ca5210', 'description' => 'Rum made with demerara sugar', 'origin' => 'Caribbean']);
+        Ingredient::create(['name' => 'Dark Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ca5210', 'description' => 'Rum made from caramelized sugar or molasses.', 'origin' => 'Caribbean']);
+        Ingredient::create(['name' => 'Jamaican rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ca5210', 'description' => 'Rum made in Jamaica.', 'origin' => 'Jamaica']);
+        Ingredient::create(['name' => 'Cachaça', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Distilled spirit made from fermented sugarcane juice.', 'origin' => 'Brazil']);
+        Ingredient::create(['name' => 'Pisco', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Made by distilling fermented grape juice into a high-proof spirit.', 'origin' => 'South America']);
+        Ingredient::create(['name' => 'Peach Schnapps', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Schnapps made from peaches.', 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Grappa', 'ingredient_category_id' => $spirits->id, 'strength' => 50.0, 'color' => '#ffffff', 'description' => 'Fragrant, grape-based pomace brandy.', 'origin' => 'Italy']);
 
         // Syrups
         Ingredient::create(['name' => 'Simple Syrup', 'ingredient_category_id' => $syrups->id, 'description' => 'Equal parts water and sugar.', 'color' => '#e6dfcc']);
