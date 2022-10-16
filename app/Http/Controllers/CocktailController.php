@@ -8,9 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Services\CocktailService;
+use Kami\Cocktail\Http\Resources\ErrorResource;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
-use Kami\Cocktail\Http\Resources\ErrorResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CocktailController extends Controller
 {
@@ -21,12 +22,14 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails);
     }
 
-    public function show(int $id)
+    public function show(int|string $idOrSlug)
     {
         try {
-            $cocktail = Cocktail::findOrFail($id)->load('ingredients.ingredient', 'images', 'tags');
+            $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->firstOrFail()->load('ingredients.ingredient', 'images', 'tags');
+        } catch (ModelNotFoundException $e) {
+            return (new ErrorResource($e))->response()->setStatusCode(404);
         } catch (Throwable $e) {
-            return new ErrorResource($e);
+            return (new ErrorResource($e))->response()->setStatusCode(400);
         }
 
         return new CocktailResource($cocktail);

@@ -76,6 +76,7 @@ class Ingredient extends Model
         return [
             'key' => 'in_' . (string) $this->id,
             'id' => $this->id,
+            'slug' => $this->slug,
             'name' => $this->name,
             'image_url' => $this->getImageUrl(),
             'type' => 'ingredient',
@@ -86,6 +87,7 @@ class Ingredient extends Model
     {
         return [
             'id' => $this->id,
+            'slug' => $this->slug,
             'name' => $this->name,
             'image_url' => $this->getImageUrl(),
             'description' => $this->description,

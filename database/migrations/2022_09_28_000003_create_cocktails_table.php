@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('cocktails', function (Blueprint $table) {
             $table->id();
-            // $table->string('slug');
+            $table->string('slug')->unique();
             $table->string('name');
             $table->text('instructions');
             $table->text('description')->nullable();

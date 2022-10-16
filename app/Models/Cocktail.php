@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Kami\Cocktail\UpdateSiteSearch;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +19,10 @@ class Cocktail extends Model
 
     protected static function booted()
     {
+        static::saving(function ($cocktail) {
+            $cocktail->slug = Str::slug($cocktail->name);
+        });
+
         static::saved(function($cocktail) {
             UpdateSiteSearch::update($cocktail);
         });
@@ -60,6 +65,7 @@ class Cocktail extends Model
         return [
             'key' => 'co_' . (string) $this->id,
             'id' => $this->id,
+            'slug' => $this->slug,
             'name' => $this->name,
             'image_url' => $this->getImageUrl(),
             'type' => 'cocktail',
@@ -71,6 +77,7 @@ class Cocktail extends Model
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'slug' => $this->slug,
             'description' => $this->description,
             'source' => $this->source,
             'garnish' => $this->garnish,

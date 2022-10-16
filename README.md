@@ -9,9 +9,21 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Bar assistant API
+## 🍸 Bar assistant API
 
 Bar assistant is an application for organizing and creating your cocktails.
+
+Checkout Salt Rim for a Vue based web client.
+
+## Features
+
+- All 95 current IBA cocktails
+- Over 100 ingredients
+- Ability to favorite, create and edit cocktails
+- Mark ingredients you have and get all cocktails that you can make
+- Create personal cocktail collections
+- Automatically add missing ingredients to your shopping cart
+- Detailed cocktail and ingredient information
 
 ## Contributing
 

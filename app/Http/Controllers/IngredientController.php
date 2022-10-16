@@ -25,7 +25,7 @@ class IngredientController extends Controller
         return IngredientResource::collection($ingredients->get());
     }
 
-    public function show(int $id)
+    public function show(int|string $id)
     {
         $ingredient = Ingredient::where('id', $id)->orWhere('slug', $id)->first();
 

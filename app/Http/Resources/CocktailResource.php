@@ -21,6 +21,7 @@ class CocktailResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'slug' => $this->slug,
             'instructions' => $this->instructions,
             'garnish' => $this->garnish,
             'description' => $this->description,
