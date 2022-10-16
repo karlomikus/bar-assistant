@@ -32,6 +32,7 @@ class IngredientResource extends JsonResource
                 return [
                     'id' => $c->id,
                     'name' => $c->name,
+                    'slug' => $c->slug,
                 ];
             })
         ];

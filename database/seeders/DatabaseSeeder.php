@@ -24,6 +24,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Cocktail"]);
+        Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
+
         $faker = \Faker\Factory::create();
 
         DB::table('users')->insert([
@@ -228,7 +231,7 @@ class DatabaseSeeder extends Seeder
 
                 $image = new Image();
                 $image->file_path = Str::slug($sCocktail['name']) . '.jpg';
-                $image->copyright = 'Copyright (c) Some website';
+                $image->copyright = $sCocktail['image_copyright'] ?? null;
                 $cocktail->images()->save($image);
 
                 foreach ($sCocktail['categories'] as $sCat) {

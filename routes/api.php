@@ -1,11 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Kami\Cocktail\Http\Controllers\UserController;
+use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\LoginController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
-use Kami\Cocktail\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,7 +52,7 @@ Route::middleware('auth:sanctum')->group(function() {
     });
 
     Route::prefix('images')->group(function() {
-        Route::get('/{id}', [CocktailController::class, 'index'])->name('cocktails.index');
+        Route::post('/', [ImageController::class, 'store']);
     });
 
 });
