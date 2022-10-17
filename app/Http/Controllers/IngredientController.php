@@ -16,7 +16,7 @@ class IngredientController extends Controller
 {
     public function index(Request $request)
     {
-        $ingredients = Ingredient::with('category')->orderBy('name');
+        $ingredients = Ingredient::with('category')->orderBy('name')->orderBy('ingredient_category_id');
 
         if ($request->has('category_id')) {
             $ingredients->where('ingredient_category_id', $request->get('category_id'));

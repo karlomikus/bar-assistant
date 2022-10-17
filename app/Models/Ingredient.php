@@ -61,14 +61,14 @@ class Ingredient extends Model
 
     public function getImageUrl(): string
     {
+        $disk = Storage::disk('app_images');
         $filePath = $this->latestImageFilePath();
-        $cocktailFilePath = 'ingredients/' . $filePath;
 
-        if (!$filePath || !Storage::disk('app_images')->exists($cocktailFilePath)) {
-            return Storage::disk('app_images')->url('ingredients/no-image.png');
+        if (!$filePath || !$disk->exists($filePath)) {
+            return $disk->url('ingredients/no-image.png');
         }
 
-        return Storage::disk('app_images')->url($cocktailFilePath);
+        return $disk->url($filePath);
     }
 
     public function toSiteSearchArray()

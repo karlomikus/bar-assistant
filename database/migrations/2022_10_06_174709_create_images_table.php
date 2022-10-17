@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->nullableMorphs('imageable');
             $table->string('file_path');
+            $table->string('file_extension');
             $table->string('copyright')->nullable();
             $table->timestamps();
         });

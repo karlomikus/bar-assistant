@@ -8,6 +8,7 @@ use Laravel\Scout\Searchable;
 use Kami\Cocktail\UpdateSiteSearch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -38,6 +39,31 @@ class Cocktail extends Model
         return $this->belongsToMany(Tag::class);
     }
 
+    public function attachImages(Collection $images): void
+    {
+        $disk = Storage::disk('app_images');
+
+        foreach($images as $image) {
+            if ($image->imageable_id !== null) {
+                continue;
+            }
+
+            $oldFilePath = $image->file_path;
+            $newFilePath = 'cocktails/' . Str::slug($this->name) . '.' . $image->file_extension;
+
+            if ($disk->exists($oldFilePath)) {
+                $disk->move($oldFilePath, $newFilePath);
+
+                $image->file_path = $newFilePath;
+                $image->save();
+            } else {
+                $image->delete();
+            }
+        }
+
+        $this->images()->saveMany($images);
+    }
+
     public function latestImageFilePath(): ?string
     {
         return $this->images->first()->file_path ?? null;
@@ -45,14 +71,15 @@ class Cocktail extends Model
 
     public function getImageUrl(): string
     {
-        $filePath = $this->latestImageFilePath();
-        $cocktailFilePath = 'cocktails/' . $filePath;
+        $disk = Storage::disk('app_images');
 
-        if (!$filePath || !Storage::disk('app_images')->exists($cocktailFilePath)) {
-            return Storage::disk('app_images')->url('cocktails/no-image.jpg');
+        $filePath = $this->latestImageFilePath();
+
+        if (!$filePath || !$disk->exists($filePath)) {
+            return $disk->url('cocktails/no-image.jpg');
         }
 
-        return Storage::disk('app_images')->url($cocktailFilePath);
+        return $disk->url($filePath);
     }
 
     public function images(): MorphMany

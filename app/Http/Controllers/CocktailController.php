@@ -45,8 +45,8 @@ class CocktailController extends Controller
             $request->post('description'),
             $request->post('garnish'),
             $request->post('source'),
-            $request->post('images'),
-            $request->post('tags'),
+            $request->post('images', []),
+            $request->post('tags', []),
         );
 
         return (new CocktailResource($cocktail))

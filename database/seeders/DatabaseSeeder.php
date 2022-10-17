@@ -194,8 +194,9 @@ class DatabaseSeeder extends Seeder
         $ingredients = Ingredient::all();
         foreach ($ingredients as $ing) {
             $image = new Image();
-            $image->file_path = Str::slug($ing->name) . '.png';
-            $image->copyright = 'Copyright (c) Some website';
+            $image->file_path = 'ingredients/' . Str::slug($ing->name) . '.png';
+            $image->file_extension = 'png';
+            $image->copyright = null;
             $ing->images()->save($image);
 
             $ing->refresh();
@@ -230,7 +231,8 @@ class DatabaseSeeder extends Seeder
                 $cocktail->save();
 
                 $image = new Image();
-                $image->file_path = Str::slug($sCocktail['name']) . '.jpg';
+                $image->file_path = 'cocktails/' . Str::slug($sCocktail['name']) . '.jpg';
+                $image->file_extension = 'jpg';
                 $image->copyright = $sCocktail['image_copyright'] ?? null;
                 $cocktail->images()->save($image);
 
