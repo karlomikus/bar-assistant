@@ -25,7 +25,10 @@ class CocktailController extends Controller
     public function show(int|string $idOrSlug)
     {
         try {
-            $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->firstOrFail()->load('ingredients.ingredient', 'images', 'tags');
+            $cocktail = Cocktail::where('id', $idOrSlug)
+                ->orWhere('slug', $idOrSlug)
+                ->firstOrFail()
+                ->load('ingredients.ingredient', 'images', 'tags');
         } catch (ModelNotFoundException $e) {
             return (new ErrorResource($e))->response()->setStatusCode(404);
         } catch (Throwable $e) {
@@ -37,17 +40,21 @@ class CocktailController extends Controller
 
     public function store(CocktailService $cocktailService, Request $request): JsonResponse
     {
-        $cocktail = $cocktailService->createCocktail(
-            $request->post('name'),
-            $request->post('instructions'),
-            $request->post('ingredients'),
-            $request->user()->id,
-            $request->post('description'),
-            $request->post('garnish'),
-            $request->post('source'),
-            $request->post('images', []),
-            $request->post('tags', []),
-        );
+        try {
+            $cocktail = $cocktailService->createCocktail(
+                $request->post('name'),
+                $request->post('instructions'),
+                $request->post('ingredients'),
+                $request->user()->id,
+                $request->post('description'),
+                $request->post('garnish'),
+                $request->post('source'),
+                $request->post('images', []),
+                $request->post('tags', []),
+            );
+        } catch (Throwable $e) {
+            return (new ErrorResource($e))->response()->setStatusCode(400);
+        }
 
         return (new CocktailResource($cocktail))
             ->response()
@@ -65,8 +72,8 @@ class CocktailController extends Controller
             $request->post('description'),
             $request->post('garnish'),
             $request->post('source'),
-            $request->post('images'),
-            $request->post('tags'),
+            $request->post('images', []),
+            $request->post('tags', []),
         );
 
         return (new CocktailResource($cocktail))

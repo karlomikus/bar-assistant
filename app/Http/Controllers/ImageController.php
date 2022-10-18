@@ -15,6 +15,19 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ImageController extends Controller
 {
+    public function show(int $id)
+    {
+        try {
+            $image = Image::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return (new ErrorResource($e))->response()->setStatusCode(404);
+        } catch (Throwable $e) {
+            return (new ErrorResource($e))->response()->setStatusCode(400);
+        }
+
+        return new ImageResource($image);
+    }
+
     public function store(Request $request)
     {
         $imagesWithMeta = $request->images;

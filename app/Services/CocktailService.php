@@ -70,6 +70,7 @@ class CocktailService
                 $cIngredient->ingredient_id = $ingredient['ingredient_id'];
                 $cIngredient->amount = $ingredient['amount'];
                 $cIngredient->units = $ingredient['units'];
+                $cIngredient->optional = $ingredient['optional'] ?? false;
                 $cIngredient->sort = $ingredient['sort'] ?? 0;
 
                 $cocktail->ingredients()->save($cIngredient);
@@ -101,6 +102,8 @@ class CocktailService
                 $cocktail->attachImages($imageModels);
             } catch (Throwable $e) {
                 $this->log->error('[COCKTAIL_SERVICE] Image attach error. ' . $e->getMessage());
+
+                throw new CocktailException('Error occured while attaching images to cocktail!', 0, $e);
             }
         }
 
@@ -125,7 +128,7 @@ class CocktailService
      * @param string|null $description
      * @param string|null $garnish
      * @param string|null $cocktailSource
-     * @param array $images
+     * @param array<int> $images
      * @param array<string> $tags
      * @return \Kami\Cocktail\Models\Cocktail
      */
@@ -161,6 +164,7 @@ class CocktailService
                 $cIngredient->ingredient_id = $ingredient['ingredient_id'];
                 $cIngredient->amount = $ingredient['amount'];
                 $cIngredient->units = $ingredient['units'];
+                $cIngredient->optional = $ingredient['optional'] ?? false;
                 $cIngredient->sort = $ingredient['sort'] ?? 0;
 
                 $cocktail->ingredients()->save($cIngredient);
@@ -187,21 +191,14 @@ class CocktailService
         $this->db->commit();
 
         if (count($images) > 0) {
-            $imageAsBase64 = $images[0]['image'];
-            $copyright = $images[0]['copyright'];
-            $cocktail->images()->delete();
+            $cocktail->deleteImages();
             try {
-                $image = $this->image->make($imageAsBase64);
-                $imageName = sprintf('%s.jpg', Str::slug($name));
-
-                if ($this->filesystem->disk('app_images')->put('cocktails/' . $imageName, (string) $image->encode('jpg'))) {
-                    $imageModel = new Image();
-                    $imageModel->file_path = $imageName;
-                    $imageModel->copyright = $copyright;
-                    $cocktail->images()->save($imageModel);
-                }
+                $imageModels = Image::findOrFail($images);
+                $cocktail->attachImages($imageModels);
             } catch (Throwable $e) {
-                $this->log->error('[COCKTAIL_SERVICE] File upload error. ' . $e->getMessage());
+                $this->log->error('[COCKTAIL_SERVICE] Image attach error. ' . $e->getMessage());
+
+                throw new CocktailException('Error occured while attaching images to cocktail!', 0, $e);
             }
         }
 

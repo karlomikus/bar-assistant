@@ -87,6 +87,26 @@ class Cocktail extends Model
         return $this->morphMany(Image::class, 'imageable');
     }
 
+    public function deleteImages(): void
+    {
+        $disk = Storage::disk('app_images');
+
+        foreach ($this->images as $image) {
+            if ($disk->exists($image->file_path)) {
+                $disk->delete($image->file_path);
+            }
+        }
+
+        $this->images()->delete();
+    }
+
+    public function delete()
+    {
+        $this->deleteImages();
+
+        return parent::delete();
+    }
+
     public function toSiteSearchArray()
     {
         return [

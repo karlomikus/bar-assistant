@@ -1,6 +1,7 @@
 [
     {
         "name": "Trinidad Sour",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Angostura aromatic bitters",
             "30 ml Orgeat Syrup",
@@ -23,6 +24,7 @@
     },
     {
         "name": "Alexander",
+        "description": "The Alexander cocktail was born in London in 1922 by Hery Mc Elhone, at Ciro’s Club in honor of a famous bride, at the beginning it was called Panama, Gin was used instead of Cognac and light cocoa cream instead of dark.\nThroughout its history, Alexander has given rise to many other variations:\n**Grasshopper**: This variant is also part of the Iba list and involves the use of crème de menthe verde instead of cognac.\n**Alexandra**: Use the light cocoa cream instead of the dark one and replace the nutmeg with cocoa.\n**Alexander’s Sister**: Use crème de menthe instead of crème de cacao\n**Alejandro**: Replace cognac with rum",
         "ingredients": [
             "30 ml Cognac",
             "30 ml Dark Crème de Cacao",
@@ -45,6 +47,7 @@
     },
     {
         "name": "Americano",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml Campari",
             "30 ml Sweet Vermouth",
@@ -66,6 +69,7 @@
     },
     {
         "name": "Angel Face",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml Gin",
             "30 ml Apricot Brandy",
@@ -89,6 +93,7 @@
     },
     {
         "name": "Aviation",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Gin",
             "15 ml Maraschino Luxardo",
@@ -112,6 +117,7 @@
     },
     {
         "name": "Barracuda",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Gold Rum",
             "15 ml Galliano",
@@ -136,6 +142,7 @@
     },
     {
         "name": "Bee\u2019s Knees",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "52.5 ml Gin",
             "2 teaspoon Honey Syrup",
@@ -159,6 +166,7 @@
     },
     {
         "name": "Bellini",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "100 ml Prosecco",
             "50 ml White Peach Puree"
@@ -180,6 +188,7 @@
     },
     {
         "name": "Between the Sheets",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml White Rum",
             "30 ml Cognac",
@@ -203,6 +212,7 @@
     },
     {
         "name": "Black Russian",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml Vodka",
             "20 ml Kahlua coffee liqueur"
@@ -224,6 +234,7 @@
     },
     {
         "name": "Bloody Mary",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Vodka",
             "90 ml Tomato Juice",
@@ -250,6 +261,7 @@
     },
     {
         "name": "Boulevardier",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Whiskey",
             "30 ml Campari",
@@ -272,6 +284,7 @@
     },
     {
         "name": "Bramble",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml Gin",
             "25 ml Lemon juice",
@@ -295,6 +308,7 @@
     },
     {
         "name": "Brandy Crusta",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "52,5 ml Brandy",
             "7,5 ml Maraschino Luxardo",
@@ -320,6 +334,7 @@
     },
     {
         "name": "Canchanchara",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "60 ml White rum",
             "15 ml Lime Juice",
@@ -343,6 +358,7 @@
     },
     {
         "name": "Caipirinha",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "60 ml Cacha\u00e7a",
             "4 wedge Lime",
@@ -364,6 +380,7 @@
     },
     {
         "name": "Casino",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "40 ml Gin",
             "10 ml Maraschino Luxardo",
@@ -387,6 +404,7 @@
     },
     {
         "name": "Champagne Cocktail",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "90 ml Champagne",
             "10 ml Cognac",
@@ -411,6 +429,7 @@
     },
     {
         "name": "Clover Club",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Gin",
             "15 ml Raspberry Syrup",
@@ -434,6 +453,7 @@
     },
     {
         "name": "Corpse Reviver #2",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml Gin",
             "30 ml Cointreau",
@@ -458,6 +478,7 @@
     },
     {
         "name": "Cosmopolitan",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "40 ml Vodka",
             "15 ml Cointreau",
@@ -481,6 +502,7 @@
     },
     {
         "name": "Cuba Libre",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml White Rum",
             "120 ml Cola",
@@ -503,6 +525,7 @@
     },
     {
         "name": "Daiquiri",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "60 ml White Rum",
             "20 ml Lime Juice",
@@ -525,6 +548,7 @@
     },
     {
         "name": "Dark \u2018n\u2019 stormy",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "60 ml Dark Rum",
             "100 ml Ginger Beer"
@@ -546,6 +570,7 @@
     },
     {
         "name": "Dry Martini",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "60 ml Gin",
             "10 ml Dry Vermouth"
@@ -567,6 +592,7 @@
     },
     {
         "name": "Espresso Martini",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml Vodka",
             "30 ml Kahlua coffee liqueur",
@@ -590,6 +616,7 @@
     },
     {
         "name": "Fernandito",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml Fernet Branca",
             "120 ml Cola"
@@ -610,6 +637,7 @@
     },
     {
         "name": "French 75",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml Gin",
             "15 ml Lemon juice",
@@ -633,6 +661,7 @@
     },
     {
         "name": "French Connection",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "35 ml Cognac",
             "35 ml Amaretto"
@@ -654,6 +683,7 @@
     },
     {
         "name": "French Martini",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Vodka",
             "15 ml Raspberry Liqueur",
@@ -675,6 +705,7 @@
     },
     {
         "name": "Gin Fizz",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Gin",
             "30 ml Lemon juice",
@@ -697,6 +728,7 @@
     },
     {
         "name": "Golden Dream",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "20 ml Galliano",
             "20 ml Triple Sec",
@@ -718,6 +750,7 @@
     },
     {
         "name": "Grasshopper",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "20 ml White Crème de Cacao",
             "20 ml Menthe Crème de Cacao",
@@ -738,6 +771,7 @@
     },
     {
         "name": "Hanky Panky",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Gin",
             "45 ml Sweet Vermouth",
@@ -759,6 +793,7 @@
     },
     {
         "name": "Hemingway Special",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "60 ml Dark Rum",
             "40 ml Grapefruit Juice",
@@ -781,6 +816,7 @@
     },
     {
         "name": "Horse\u2019s Neck",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "40 ml Cognac",
             "120 ml Ginger beer",
@@ -802,6 +838,7 @@
     },
     {
         "name": "Illegal",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml Mezcal",
             "15 ml White Rum",
@@ -827,6 +864,7 @@
     },
     {
         "name": "Irish Coffee",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml Irish Whiskey",
             "120 ml Coffee",
@@ -849,6 +887,7 @@
     },
     {
         "name": "John Collins",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Gin",
             "30 ml Lemon juice",
@@ -871,6 +910,7 @@
     },
     {
         "name": "KIR",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "90 ml White Wine",
             "10 ml Crème de cassis (blackcurrant liqueur)"
@@ -891,6 +931,7 @@
     },
     {
         "name": "Last word",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "22.5 ml Gin",
             "22.5 ml Green Chartreuse",
@@ -913,6 +954,7 @@
     },
     {
         "name": "Lemon drop Martini",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml Vodka",
             "20 ml Triple Sec",
@@ -934,6 +976,7 @@
     },
     {
         "name": "Long Island Ice Tea",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "15 ml Vodka",
             "15 ml Tequila",
@@ -959,6 +1002,7 @@
     },
     {
         "name": "Mai-Tai",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml White Rum",
             "30 ml Dark Rum",
@@ -983,6 +1027,7 @@
     },
     {
         "name": "Manhattan",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml Rye Whiskey",
             "20 ml Sweet Vermouth",
@@ -1004,6 +1049,7 @@
     },
     {
         "name": "Margarita",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml Tequila",
             "20 ml Triple Sec",
@@ -1025,6 +1071,7 @@
     },
     {
         "name": "Martinez",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Gin",
             "45 ml Sweet Vermouth",
@@ -1047,6 +1094,7 @@
     },
     {
         "name": "Mary Pickford",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml White Rum",
             "45 ml Pineapple Juice",
@@ -1069,6 +1117,7 @@
     },
     {
         "name": "Mimosa",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "75 ml orange juice",
             "75 ml Prosecco"
@@ -1089,6 +1138,7 @@
     },
     {
         "name": "Mint Julep",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "60 ml Bourbon Whiskey",
             "4 sprigs Mint",
@@ -1111,6 +1161,7 @@
     },
     {
         "name": "Mojito",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml White Rum",
             "20 ml Lime Juice",
@@ -1134,6 +1185,7 @@
     },
     {
         "name": "Monkey Gland",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Gin",
             "45 ml Orange Juice",
@@ -1156,6 +1208,7 @@
     },
     {
         "name": "Moscow Mule",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Vodka",
             "120 ml Ginger Beer",
@@ -1177,6 +1230,7 @@
     },
     {
         "name": "Naked and Famous",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "22.5 ml Mezcal",
             "22.5 ml Yellow Chartreuse",
@@ -1199,6 +1253,7 @@
     },
     {
         "name": "Negroni",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml Gin",
             "30 ml Campari",
@@ -1220,6 +1275,7 @@
     },
     {
         "name": "New York Sour",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "60 ml Whiskey",
             "22.5 ml Simple syrup",
@@ -1243,6 +1299,7 @@
     },
     {
         "name": "Old Cuban",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "6 sprigs Mint",
             "45 ml Dark Rum",
@@ -1267,6 +1324,7 @@
     },
     {
         "name": "Old Fashioned",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Bourbon whiskey",
             "1 cube Sugar",
@@ -1289,6 +1347,7 @@
     },
     {
         "name": "Paloma",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml Tequila",
             "5 ml lime juice",
@@ -1311,6 +1370,7 @@
     },
     {
         "name": "Paper Plane",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml Bourbon whiskey",
             "30 ml Amaro Nonino",
@@ -1333,6 +1393,7 @@
     },
     {
         "name": "Paradise",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml Gin",
             "20 ml Apricot Brandy",
@@ -1354,6 +1415,7 @@
     },
     {
         "name": "Penicillin",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "60 ml Scotch Whiskey",
             "7.5 ml Islay Scotch",
@@ -1377,6 +1439,7 @@
     },
     {
         "name": "Pina Colada",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml White Rum",
             "30 ml Coconut Cream",
@@ -1398,6 +1461,7 @@
     },
     {
         "name": "Pisco Sour",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "60 ml Pisco",
             "30 ml Lemon juice",
@@ -1419,6 +1483,7 @@
     },
     {
         "name": "Planter\u2019s Punch",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Jamaican Rum",
             "15 ml Lime Juice",
@@ -1440,6 +1505,7 @@
     },
     {
         "name": "Porto Flip",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "15 ml Brandy",
             "45 ml Red Wine",
@@ -1462,6 +1528,7 @@
     },
     {
         "name": "Ramos Fizz",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Gin",
             "15 ml Lime Juice",
@@ -1489,6 +1556,7 @@
     },
     {
         "name": "Russian Spring Punch",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "25 ml Vodka",
             "25 ml Lemon juice",
@@ -1512,6 +1580,7 @@
     },
     {
         "name": "Rusty Nail",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Scotch Whiskey",
             "25 ml Drambuie"
@@ -1532,6 +1601,7 @@
     },
     {
         "name": "Sazerac",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml Cognac",
             "10 ml Absinthe",
@@ -1554,6 +1624,7 @@
     },
     {
         "name": "Sea Breeze",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "40 ml Vodka",
             "120 ml Cranberry Juice",
@@ -1575,6 +1646,7 @@
     },
     {
         "name": "Sex on the Beach",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "40 ml Vodka",
             "20 ml Peach Schnapps",
@@ -1597,6 +1669,7 @@
     },
     {
         "name": "Sidecar",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml Cognac",
             "20 ml Triple Sec",
@@ -1618,6 +1691,7 @@
     },
     {
         "name": "Singapore Sling",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml Gin",
             "15 ml Cherry liqueur",
@@ -1644,6 +1718,7 @@
     },
     {
         "name": "Southside",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "60 ml Gin",
             "30 ml Lemon juice",
@@ -1666,6 +1741,7 @@
     },
     {
         "name": "Spicy Fifty",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml Vodka",
             "15 ml Elderflower Cordial",
@@ -1689,6 +1765,7 @@
     },
     {
         "name": "Spritz",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "90 ml Prosecco",
             "60 ml Aperol",
@@ -1710,6 +1787,7 @@
     },
     {
         "name": "Stinger",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml Cognac",
             "20 ml Menthe Crème de Cacao"
@@ -1730,6 +1808,7 @@
     },
     {
         "name": "Suffering Bastard",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml Cognac",
             "30 ml Gin",
@@ -1754,6 +1833,7 @@
     },
     {
         "name": "Tequila Sunrise",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Tequila",
             "90 ml Orange Juice",
@@ -1775,6 +1855,7 @@
     },
     {
         "name": "Tipperary",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "50 ml Irish Whiskey",
             "25 ml Sweet Vermouth",
@@ -1797,6 +1878,7 @@
     },
     {
         "name": "Tommy\u2019s Margarita",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "60 ml Tequila",
             "30 ml Lime Juice",
@@ -1818,6 +1900,7 @@
     },
     {
         "name": "Tuxedo",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml Gin",
             "30 ml Dry Vermouth",
@@ -1841,6 +1924,7 @@
     },
     {
         "name": "VE.N.TO",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Grappa",
             "22.5 ml lemon juice",
@@ -1862,6 +1946,7 @@
     },
     {
         "name": "Vesper",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Gin",
             "15 ml Vodka",
@@ -1883,6 +1968,7 @@
     },
     {
         "name": "Vieux Carr\u00e8",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml Rye Whiskey",
             "30 ml Cognac",
@@ -1907,6 +1993,7 @@
     },
     {
         "name": "Whiskey Sour",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Bourbon Whiskey",
             "25 ml Lemon juice",
@@ -1928,6 +2015,7 @@
     },
     {
         "name": "White Lady",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "40 ml Gin",
             "30 ml Triple Sec",
@@ -1949,6 +2037,7 @@
     },
     {
         "name": "Yellow Bird",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "30 ml White rum",
             "15 ml Galliano",
@@ -1971,6 +2060,7 @@
     },
     {
         "name": "Zombie",
+        "description": "DESCRIPTIONTODO",
         "ingredients": [
             "45 ml Jamaican rum",
             "45 ml Gold rum",

@@ -23,7 +23,7 @@ class CocktailIngredientResource extends JsonResource
             'sort' => $this->sort,
             'amount' => $this->amount,
             'units' => $this->units,
-            'optional' => $this->optional,
+            'optional' => (bool) $this->optional,
             'ingredient_id' => $this->ingredient_id,
             'name' => $this->ingredient->name,
             'ingredient_slug' => $this->ingredient->slug,

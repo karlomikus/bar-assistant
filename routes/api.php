@@ -52,6 +52,7 @@ Route::middleware('auth:sanctum')->group(function() {
     });
 
     Route::prefix('images')->group(function() {
+        Route::get('/{id}', [ImageController::class, 'show']);
         Route::post('/', [ImageController::class, 'store']);
         Route::delete('/{id}', [ImageController::class, 'delete']);
     });
