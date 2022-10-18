@@ -14,4 +14,12 @@ class UpdateSiteSearch
             $model->toSiteSearchArray()
         ], 'key');
     }
+
+    public static function delete($model)
+    {
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine */
+        $engine = app(\Laravel\Scout\EngineManager::class)->engine();
+
+        $engine->index('site_search_index')->deleteDocument($model->toSiteSearchArray()['key']);
+    }
 }

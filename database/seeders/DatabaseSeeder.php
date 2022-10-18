@@ -199,7 +199,9 @@ class DatabaseSeeder extends Seeder
             $image->copyright = null;
             $ing->images()->save($image);
 
+            // Update site search index
             $ing->refresh();
+            $ing->save();
         }
 
         $this->importIBACocktailsFromJson();
@@ -264,6 +266,9 @@ class DatabaseSeeder extends Seeder
                     $cocktailIng->units = strtolower($units);
                     $cocktailIng->save();
                 }
+
+                $cocktail->refresh();
+                $cocktail->save();
             } catch(Throwable $e) {
                 dd($e);
                 DB::rollBack();
