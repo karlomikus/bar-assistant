@@ -10,6 +10,7 @@ use Kami\Cocktail\Models\IngredientCategory;
 use Kami\Cocktail\Http\Resources\ErrorResource;
 use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Kami\Cocktail\Http\Resources\IngredientCategoryResource;
 
 class IngredientController extends Controller
@@ -27,7 +28,13 @@ class IngredientController extends Controller
 
     public function show(int|string $id)
     {
-        $ingredient = Ingredient::where('id', $id)->orWhere('slug', $id)->first();
+        try {
+            $ingredient = Ingredient::where('id', $id)->orWhere('slug', $id)->firstOrFail();
+        } catch (ModelNotFoundException $e) {
+            return (new ErrorResource($e))->response()->setStatusCode(404);
+        } catch (Throwable $e) {
+            return (new ErrorResource($e))->response()->setStatusCode(400);
+        }
 
         return new IngredientResource($ingredient);
     }

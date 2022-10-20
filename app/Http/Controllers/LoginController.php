@@ -21,6 +21,6 @@ class LoginController extends Controller
             return response()->json(['token' => $token->plainTextToken]);
         }
 
-        return response()->json(['type' => 'api_error', 'message' => 'Login failed']);
+        return response()->json(['type' => 'api_error', 'message' => 'User authentication failed. Check your username and password and try again.'], 404);
     }
 }
