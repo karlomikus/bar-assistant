@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('source')->nullable();
             $table->text('garnish')->nullable();
             $table->foreignId('user_id')->constrained();
+            // $table->string('glass')->nullable();
+            // $table->string('ice')->nullable();
+            // $table->string('method')->nullable();
             $table->timestamps();
         });
 

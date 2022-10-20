@@ -217,16 +217,17 @@ class DatabaseSeeder extends Seeder
             return $ing;
         });
         // dd($dbIngredients);
-        $source = json_decode(file_get_contents(resource_path('/data/iba_cocktails.json')), true);
-        
+        // $source = json_decode(file_get_contents(resource_path('/data/iba_cocktails.json')), true);
+        $source = \Symfony\Component\Yaml\Yaml::parseFile(resource_path('/data/iba_cocktails.yml'));
+
         foreach ($source as $sCocktail) {
             DB::beginTransaction();
             try {
                 $cocktail = new Cocktail();
                 $cocktail->name = $sCocktail['name'];
-                $cocktail->description = 'Nam aliquam sem et tortor consequat. Odio tempor orci dapibus ultrices in iaculis. Vitae proin sagittis nisl rhoncus mattis rhoncus.';
-                $cocktail->instructions = $sCocktail['instructions'][0];
-                $cocktail->garnish = $sCocktail['garnish'][0];
+                $cocktail->description = $sCocktail['description'];
+                $cocktail->instructions = is_array($sCocktail['instructions']) ? $sCocktail['instructions'][0] : $sCocktail['instructions'];
+                $cocktail->garnish = $sCocktail['garnish'];
                 $cocktail->source = $sCocktail['source'];
                 $cocktail->user_id = 1;
                 $cocktail->save();

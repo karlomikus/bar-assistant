@@ -1,0 +1,1573 @@
+---
+- name: Trinidad Sour
+  description:
+  ingredients:
+    - 45 ml Angostura aromatic bitters
+    - 30 ml Orgeat Syrup
+    - 22.5 ml Lemon juice
+    - 15 ml Rye whiskey
+  instructions:
+    - |-
+      1. Pour all ingredients into a cocktail shaker
+      2. Shake well with ice
+      3. Strain into a chilled cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/trinidad-sour/
+  image_copyright: A couple cooks
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+- name: Alexander
+  description: |-
+    The Alexander cocktail was born in London in 1922 by Hery Mc Elhone, at Ciro’s Club in honor of a famous bride, at the beginning it was called Panama, Gin was used instead of Cognac and light cocoa cream instead of dark.
+
+    Throughout its history, Alexander has given rise to many other variations:
+
+    **Grasshopper**: This variant is also part of the Iba list and involves the use of crème de menthe verde instead of cognac.
+
+    **Alexandra**: Use the light cocoa cream instead of the dark one and replace the nutmeg with cocoa.
+
+    **Alexander’s Sister**: Use crème de menthe instead of crème de cacao
+
+    **Alejandro**: Replace cognac with rum
+  ingredients:
+    - 30 ml Cognac
+    - 30 ml Dark Crème de Cacao
+    - 30 ml Cream
+  instructions:
+    - |-
+      1. Pour all ingredients into cocktail shaker filled with ice cubes.
+      2. Shake and strain into a chilled cocktail glass.
+  garnish: Sprinkle ground nutmeg on top.
+  source: https://iba-world.com/alexander/
+  image_copyright: Liquor.com / Tim Nusog
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Brandy
+- name: Americano
+  description: |-
+    The story of the Americano dates back to the second half of the 1800s in Gaspare Campari’s bar in Milan.  Over the years the cocktail acquires notoriety thanks to some homages from the world of cinema, including James Bond (007 Casino Royale) whose favorite cocktail was, precisely, the Americano.
+
+    The nickname “American” was born when Primo Carnera, a giant Italian boxer, became world heavyweight champion at Madison Square Garden in New York.  When Carnera returned to Italy with the title, he was greeted with this very Italian cocktail which, for the occasion, was called “Americano”.
+
+    The Americano entered the IBA Cocktail List only in 1987 but, in reality, it was a cocktail that spread all over Italy during the 1930s.
+  ingredients:
+    - 30 ml Campari
+    - 30 ml Sweet Vermouth
+    - 1 splash Club soda
+  instructions: |-
+    1. Mix the ingredients directly in an old fashioned glass filled with ice cubes.
+    2. Add a splash of Soda Water.
+    3. Stir gently.
+  garnish: Garnish with half orange slice and a lemon zest.
+  source: https://iba-world.com/americano/
+  image_copyright: Jo Cooks
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+- name: Angel Face
+  description: |-
+    Although the origin of the cocktail is not known, the main hypotheses assume that it was born in the twenties of the twentieth century in France: this thesis would prove the presence of calvados, a liqueur commonly used in France and, in particular, in that period, as an epidemic of phylloxera in European vineyards had limited the production of brandy.
+    On this basis, one of the most frequent hypotheses has it that the cocktail was created by Harry MacElhone, founder of Harry’s New York Bar in Paris on July 19, 1919, in honor of the celebrations for the victory of the First World War.
+    The first reliable evidence, however, dates back to 1930 when Harry Craddock included the Angel Face among the recipes of his book “Savoy cocktail book”. Some sources indicate that the name derives from that of an American gangster active during Prohibition; less likely the dedication to Rick Blaine, the protagonist of Casablanca played by Humphrey Bogart, as the film follows the first testimonies (1942).
+  ingredients:
+    - 30 ml Gin
+    - 30 ml Apricot Brandy
+    - 30 ml Calvados
+  instructions: |-
+    1. Pour all ingredients into cocktail shaker filled with ice cubes.
+    2. Shake and strain into a chilled cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/angel-face/
+  image_copyright: Wine Enthusiast / Tyler Zieliniski
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+    - Brandy
+- name: Aviation
+  description: |-
+    Aviation was created in New York at the Walkick hotel by the head bartender Hugo Ensslin while he was writing his book “Recipes for Mixed Drinks” (1916) one of the last cocktail books published before the start of American Prohibition.
+
+    Lately David Wondrich found the aviation recipe in a 1911 magazine, so the recipe is thought to have been born earlier then 1916.
+
+    In his book Ensslin also indicates the type of Gin to be used ‘El Bart Gin “and the recipe is made up in addition to gin, with lemon juice, maraschino Luxardo and Creme di Violette.
+
+    The recipe is found again in Harry Craddock’s 1930 Savoy Cocktail Book but without the Creme de Violette, this probably due to the difficulty of finding the violet cream during the post-war period In the 1960s it was still unavailable and therefore, simply, the basic ingredient of the Aviation cocktail was discontinued and the bartenders definitively gave up the characteristic blue color of the drink.
+
+    The IBA proposes it today in its original version with the creme de violette which is now on the market again.  This fragrant ingredient not only gave the mix a sweetly floral taste, but also gave it a beautiful sky blue color.
+  ingredients:
+    - 45 ml Gin
+    - 15 ml Maraschino Luxardo
+    - 15 ml Lemon juice
+    - 1 teaspoon Crème de Violette
+  instructions: |-
+    1. Add all ingredients into a cocktail shaker.
+    2. Shake with cracked ice and strain into a chilled cocktail glass.
+  garnish: Optional Maraschino Cherry.
+  source: https://iba-world.com/692/
+  image_copyright: The Spruce Eats / Cara Cormack
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: Barracuda
+  description: null
+  ingredients:
+    - 45 ml Gold Rum
+    - 15 ml Galliano
+    - 60 ml Pineapple Juice
+    - 1 dash Lime Juice
+    - 1 dash Prosecco
+  instructions: |-
+    1. Pour all ingredients into cocktail shaker except the Prosecco
+    2. Shake well with ice
+    3. Strain into chilled highball glass filled with ice
+    4. Top up with Prosecco
+  garnish: Pineapple and Cherry, optional mint sprig for additional aroma.
+  source: https://iba-world.com/barracuda/
+  image_copyright: Ape Time
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Rum
+- name: Bee’s Knees
+  description: null
+  ingredients:
+    - 52.5 ml Gin
+    - 2 teaspoon Honey Syrup
+    - 22.5 ml Lemon juice
+    - 22.5 ml Orange Juice
+  instructions: |-
+    1. Stir honey with lemon and orange juices until it dissolves
+    2. Add gin and shake with ice
+    3. Strain into a chilled cocktail glass
+  garnish: Optionally garnish with a lemon or orange zest.
+  source: https://iba-world.com/bees-knees/
+  image_copyright: Kitchen Swagger
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Gin
+- name: Bellini
+  description: |-
+    Variations:
+
+    **PUCCINI** – Fresh Mandarin Orange Juice;
+
+    **ROSSINI** – Fresh Strawberry Puree;
+
+    **TINTORETTO** – Fresh Pomegranate Juice.
+  ingredients:
+    - 100 ml Prosecco
+    - 50 ml White Peach Puree
+  instructions: |-
+    1. Pour peach puree into the mixing glass with ice
+    2. Add the Prosecco wine.
+    3. Stir gently and pour in a chilled flute glass.
+  garnish: N/A
+  source: https://iba-world.com/bellini/
+  image_copyright: Olive & Mango
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Wine
+- name: Between the Sheets
+  description: null
+  ingredients:
+    - 30 ml White Rum
+    - 30 ml Cognac
+    - 30 ml Triple Sec
+    - 20 ml Lemon juice
+  instructions: |-
+    1. Add all ingredients into a cocktail shaker
+    2. Shake with ice and strain into a chilled cocktail glass
+  garnish: N/A
+  source: https://iba-world.com/between-the-sheets/
+  image_copyright: A couple cooks
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Rum
+- name: Black Russian
+  description: |-
+    Variations:
+
+    **WHITE RUSSIAN** – Float fresh cream on the top and stir in slowly.
+  ingredients:
+    - 50 ml Vodka
+    - 20 ml Kahlua coffee liqueur
+  instructions:
+    - Pour the ingredients into the old fashioned glass filled with ice cubes. Stir gently.
+  garnish: N/A
+  source: https://iba-world.com/black-russian/
+  image_copyright: Liquor.com / Tim Nusog
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Vodka
+- name: Bloody Mary
+  description: If requested served with ice, pour into highball glass.
+  ingredients:
+    - 45 ml Vodka
+    - 90 ml Tomato Juice
+    - 15 ml Lemon juice
+    - 2 dashes Worcestershire Sauce
+    - 1 dash Tabasco
+    - 1 pinch Pepper
+    - 1 pinch Salt
+  instructions: |-
+      Stir gently all the ingredients in a mixing glass with ice, pour into rocks glass.
+  garnish: Celery, Lemon Wedge (Optional)
+  source: https://iba-world.com/bloody-mary/
+  image_copyright: Ocado
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Vodka
+- name: Boulevardier
+  description: null
+  ingredients:
+    - 45 ml Whiskey
+    - 30 ml Campari
+    - 30 ml Sweet Vermouth
+  instructions:
+    - Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into a chilled cocktail glass.
+  garnish: Garnish with orange zest, optionally a lemon zest.
+  source: https://iba-world.com/boulevardier/
+  image_copyright: BBC Good Food
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Whiskey
+- name: Bramble
+  description: null
+  ingredients:
+    - 50 ml Gin
+    - 25 ml Lemon juice
+    - 12,5 ml Simple Syrup
+    - 15 ml Crème de Mûre (blackberry liqueur)
+  instructions: |-
+    1. Pour all ingredients into a cocktail shaker except the Crème de Mûre
+    2. Shake well with ice
+    3. Strain into chilled old fashioned glass filled with crushed ice
+    4. Pour the blackberry liqueur (Crème de Mûre) over the top of the drink, in a circular motion.
+  garnish: Garnish optionally with a lemon slice and blackberries.
+  source: https://iba-world.com/bramble/
+  image_copyright: The Spruce / Julia Hartbeck
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Gin
+- name: Brandy Crusta
+  description: null
+  ingredients:
+    - 52,5 ml Brandy
+    - 7,5 ml Maraschino Luxardo
+    - 1 teaspoon Orange Curaçao
+    - 15 ml Lemon juice
+    - 1 teaspoon Simple Syrup
+    - 2 Dashes Angostura aromatic bitters
+  instructions:
+    - Mix together all ingredients with ice cubes in a mixing glass and strain into
+      prepared slim cocktail glass.
+  garnish:
+    Rub a slice of orange (or lemon) around the rim of the glass and dip it
+    in pulverized white sugar, so that the sugar will adhere to the edge of the glass.
+    Carefully curling place the orange/lemon peel around the inside of the glass.
+  source: https://iba-world.com/brandy-crusta/
+  image_copyright: Mangosalsa
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Brandy
+- name: Canchanchara
+  description: null
+  ingredients:
+    - 60 ml White rum
+    - 15 ml Lime Juice
+    - 15 ml Honey Syrup
+    - 50 ml Water
+  instructions:
+    - Mix honey with water and lime juice and spread the mixture on the bottom and sides
+      of the glass. Add cracked ice, and then the rum. End by energetically stirring
+      from bottom to top.
+  garnish: Lime wedge.
+  source: https://iba-world.com/cachanchara/
+  image_copyright: Liquor.com / Tim Nusog
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Rum
+- name: Caipirinha
+  description: |-
+    Variations:
+
+    **CAIPIROSKA** – Instead of Cachaça use Vodka;
+  ingredients:
+    - 60 ml Cachaça
+    - 4 wedge Lime
+    - 4 Teaspoons Sugar
+  instructions: |-
+    1. Place lime and sugar into a double old fashioned glass and muddle gently.
+    2. Fill the glass with cracked ice and add Cachaça.
+    3. Stir gently to involve ingredients.
+  garnish: N/A
+  source: https://iba-world.com/caipirinha/
+  image_copyright: Liquor.com / Tim Nusog
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+- name: Casino
+  description: null
+  ingredients:
+    - 40 ml Gin
+    - 10 ml Maraschino Luxardo
+    - 10 ml Lemon juice
+    - 2 Dashes Orange bitters
+  instructions:
+    - Pour all ingredients into cocktails shaker, shake well with ice, strain into chilled
+      rocks glass with ice.
+  garnish: Garnish with lemon zest and a maraschino cherry.
+  source: https://iba-world.com/casino/
+  image_copyright: Cocktail Society
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: Champagne Cocktail
+  description: null
+  ingredients:
+    - 90 ml Champagne
+    - 10 ml Cognac
+    - 2 dashes Angostura aromatic bitters
+    - 1 drops Grand Marnier
+    - 1 cube Sugar
+  instructions:
+    - Place the sugar cube with 2 dashes of bitters in a large Champagne glass, add
+      the cognac. Pour gently chilled Champagne.
+  garnish: Garnish with orange zest and maraschino cherry.
+  source: https://iba-world.com/champagne-cocktail/
+  image_copyright: A couple cooks
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Wine
+- name: Clover Club
+  description: null
+  ingredients:
+    - 45 ml Gin
+    - 15 ml Raspberry Syrup
+    - 15 ml Lemon juice
+    - 1 drop Egg White
+  instructions:
+    - Pour all ingredients into cocktails shaker, shake well with ice, strain into chilled
+      cocktail glass.
+  garnish: Fresh raspberries
+  source: https://iba-world.com/clover-club/
+  image_copyright: A couple cooks
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: "Corpse Reviver #2"
+  description: null
+  ingredients:
+    - 30 ml Gin
+    - 30 ml Cointreau
+    - 30 ml Lillet Blanc
+    - 30 ml Lemon juice
+    - 1 dash Absinthe
+  instructions:
+    - Pour all ingredients into shaker with ice. Shake well and strain in chilled cocktail
+      glass.
+  garnish: Garnish with orange zest
+  source: https://iba-world.com/corpse-reviver-2/
+  image_copyright: Punch Drink
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Gin
+- name: Cosmopolitan
+  description: null
+  ingredients:
+    - 40 ml Vodka
+    - 15 ml Cointreau
+    - 15 ml Lime Juice
+    - 30 ml Cranberry Juice
+  instructions:
+    - Add all ingredients into a cocktail shaker filled with ice. Shake well and strain
+      into a large cocktail glass.
+  garnish: Garnish with a lemon twist.
+  source: https://iba-world.com/cosmopolitan/
+  image_copyright: Amanda's Cookin'
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Vodka
+- name: Cuba Libre
+  description: null
+  ingredients:
+    - 50 ml White Rum
+    - 120 ml Cola
+    - 10 ml Lime Juice
+  instructions:
+    - Build all ingredients in a highball glass filled with ice.
+  garnish: Garnish with lime wedge.
+  source: https://iba-world.com/cuba-libre/
+  image_copyright: Jamie Oliver
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Rum
+- name: Daiquiri
+  description: null
+  ingredients:
+    - 60 ml White Rum
+    - 20 ml Lime Juice
+    - 2 teaspoons Sugar
+  instructions:
+    - In a cocktail shaker add all ingredients. Stir well to dissolve the sugar. Add
+      ice and shake. Strain into chilled cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/daiquiri/
+  image_copyright: A couple cooks
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Rum
+- name: Dark ‘n’ stormy
+  description: null
+  ingredients:
+    - 60 ml Dark Rum
+    - 100 ml Ginger Beer
+  instructions:
+    - In a highball glass filled with ice pour the ginger beer and top floating with
+      the Rum.
+  garnish: Garnish with a lime wedge or slice.
+  source: https://iba-world.com/dark-n-stormy/
+  image_copyright: The Spruce / Madhumita Sathishkumar
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Rum
+- name: Dry Martini
+  description: null
+  ingredients:
+    - 60 ml Gin
+    - 10 ml Dry Vermouth
+  instructions:
+    - Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into
+      chilled martini cocktail glass.
+  garnish:
+    Squeeze oil from lemon peel onto the drink, or garnish with green olives
+    if requested.
+  source: https://iba-world.com/dry-martini/
+  image_copyright: Getty Images/iStockphoto
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: Espresso Martini
+  description: null
+  ingredients:
+    - 50 ml Vodka
+    - 30 ml Kahlua coffee liqueur
+    - 10 ml Simple Syrup
+    - 1 strong Espresso
+  instructions:
+    - Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled
+      cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/espresso-martini/
+  image_copyright: It's Liv B.
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Vodka
+- name: Fernandito
+  description: null
+  ingredients:
+    - 50 ml Fernet Branca
+    - 120 ml Cola
+  instructions:
+    - Pour the Fernet Branca into a double old fashioned glass with ice, fill the glass
+      up with Cola. Gently stir.
+  garnish: N/A
+  source: https://iba-world.com/fernandito/
+  image_copyright: The daily meal
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+- name: French 75
+  description: null
+  ingredients:
+    - 30 ml Gin
+    - 15 ml Lemon juice
+    - 15 ml Simple Syrup
+    - 60 ml Champagne
+  instructions:
+    - Pour all the ingredients, except Champagne, into a shaker. Shake well and strain
+      into a Champagne flute. Top up with Champagne. Stir gently.
+  garnish: N/A
+  source: https://iba-world.com/french-75/
+  image_copyright: Sip and Feast
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Gin
+- name: French Connection
+  description: null
+  ingredients:
+    - 35 ml Cognac
+    - 35 ml Amaretto
+  instructions:
+    - Pour all ingredients directly into an old fashioned glass filled with ice cubes.
+      Stir gently.
+  garnish: N/A
+  source: https://iba-world.com/french-connection/
+  image_copyright: Punch Drink
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Brandy
+- name: French Martini
+  description: null
+  ingredients:
+    - 45 ml Vodka
+    - 15 ml Raspberry Liqueur
+    - 15 ml Pineapple Juice
+  instructions:
+    - Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled
+      cocktail glass.
+  garnish: Squeeze oil from lemon peel onto the drink.
+  source: https://iba-world.com/french-martini/
+  image_copyright: Supergolden Bakes
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Vodka
+- name: Gin Fizz
+  description: null
+  ingredients:
+    - 45 ml Gin
+    - 30 ml Lemon juice
+    - 10 ml Simple Syrup
+    - 1 splash Club Soda
+  instructions: |-
+    1. Shake all ingredients with ice except soda water.
+    2. Pour into thin tall Tumbler glass
+    3. Top with a splash soda water
+    4. Serve without ice
+  garnish: Garnish with a lemon slice, optional lemon zest.
+  source: https://iba-world.com/gin-fizz/
+  image_copyright: A couple cooks
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: Golden Dream
+  description: null
+  ingredients:
+    - 20 ml Galliano
+    - 20 ml Triple Sec
+    - 20 ml Orange Juice
+    - 10 ml Cream
+  instructions:
+    - Pour all ingredients into shaker filled with ice. Shake briskly for few seconds.
+      Strain into chilled cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/golden-dream/
+  image_copyright: Liquor.com / Tim Nusog
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+- name: Grasshopper
+  description: null
+  ingredients:
+    - 20 ml White Crème de Cacao
+    - 20 ml Menthe Crème de Cacao
+    - 20 ml Cream
+  instructions:
+    - |-
+      Pour all ingredients into shaker filled with ice.
+      Shake briskly for few seconds. Strain into chilled cocktail glass.
+  garnish: N/A, optional mint leaf
+  source: https://iba-world.com/grasshopper/
+  image_copyright: Liquor.com / Tim Nusog
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+- name: Hanky Panky
+  description: null
+  ingredients:
+    - 45 ml Gin
+    - 45 ml Sweet Vermouth
+    - 7.5 ml Fernet Branca
+  instructions:
+    - Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into
+      chilled cocktail glass.
+  garnish: Orange zest.
+  source: https://iba-world.com/hanky-panky/
+  image_copyright: Punch / Daniel Krieger
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: Hemingway Special
+  description: null
+  ingredients:
+    - 60 ml Dark Rum
+    - 40 ml Grapefruit Juice
+    - 15 ml Maraschino Luxardo
+    - 15 ml Lime juice
+  instructions:
+    - Pour all ingredients into a shaker with ice. Shake well and strain into a large
+      cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/hemingway-special/
+  image_copyright: Liquor.com / Tim Nusog
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Rum
+- name: Horse’s Neck
+  description: null
+  ingredients:
+    - 40 ml Cognac
+    - 120 ml Ginger beer
+    - 1 Dash Angostura aromatic bitters
+  instructions: |-
+    1. Pour Cognac and ginger ale directly into a highball glass with ice cubes.
+    2. Stir gently.
+    3. If preferred, add dashes of Angostura Bitter.
+  garnish: Garnish with a rind of one lemon spiral.
+  source: https://iba-world.com/horses-neck/
+  image_copyright: Liquor.com / Tim Nusog
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Brandy
+- name: Illegal
+  description: null
+  ingredients:
+    - 30 ml Mezcal
+    - 15 ml White Rum
+    - 15 ml Falernum
+    - 1 teaspoon Maraschino Luxardo
+    - 22.5 ml Lime Juice
+    - 15 ml Simple Syrup
+    - 1 Drops Egg White
+  instructions:
+    - Pour all ingredients into the shaker. Shake vigorously with ice.  Strain into
+      a chilled cocktail glass, or “on the rocks” in a traditional clay or terracotta
+      mug.
+  garnish: N/A
+  source: https://iba-world.com/illegal/
+  image_copyright: The Shaken Cocktail
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Tequila
+- name: Irish Coffee
+  description: null
+  ingredients:
+    - 50 ml Irish Whiskey
+    - 120 ml Coffee
+    - 50 ml cream
+    - 1 teaspoon Sugar
+  instructions: |-
+    1. Warm black coffee is poured into a pre-heated Irish coffee glass.
+    2. Whiskey and at least one teaspoon of sugar is added and stirred until dissolved.
+    3. Fresh thick chilled cream is carefully poured over the back of a spoon held just above the surface of the coffee.
+    4. The layer of cream will float on the coffee without mixing.
+    5. Plain sugar can be replaced with sugar syrup
+  garnish: N/A
+  source: https://iba-world.com/irish-coffee/
+  image_copyright: VinePair
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Whiskey
+- name: John Collins
+  description: null
+  ingredients:
+    - 45 ml Gin
+    - 30 ml Lemon juice
+    - 15 ml Simple Syrup
+    - 60 ml Club soda
+  instructions: |-
+    Pour all ingredients directly into a highball filled with ice. Stir gently.
+
+    NOTE:
+
+    Use ‘Old Tom’ Gin for Tom Collins.
+  garnish: Garnish with a lemon slice and maraschino cherry.
+  source: https://iba-world.com/john-collins/
+  image_copyright: A couple cooks
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: KIR
+  description: null
+  ingredients:
+    - 90 ml White Wine
+    - 10 ml Crème de cassis (blackcurrant liqueur)
+  instructions: |-
+      Pour Crème de cassis into glass, top up with white wine.
+
+      Note:
+
+      KIR ROYAL – Use Champagne instead of white wine
+  garnish: N/A
+  source: https://iba-world.com/kir/
+  image_copyright: Liquor.com / Tim Nusog
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Wine
+- name: Last word
+  description: null
+  ingredients:
+    - 22.5 ml Gin
+    - 22.5 ml Green Chartreuse
+    - 22.5 ml Maraschino Luxardo
+    - 22.5 ml Lime Juice
+  instructions:
+    - Add all ingredients into a cocktail shaker. Shake with ice and strain into a chilled
+      cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/last-word/
+  image_copyright: A Serious Eats / Vicky Wasik
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: Lemon drop Martini
+  description: null
+  ingredients:
+    - 30 ml Vodka
+    - 20 ml Triple Sec
+    - 15 ml Lemon juice
+  instructions:
+    - Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled
+      cocktail glass.
+  garnish: Garnish with sugar rim around the glass.
+  source: https://iba-world.com/lemon-drop-martini/
+  image_copyright: Basil & Bubbly
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Vodka
+- name: Long Island Ice Tea
+  description: null
+  ingredients:
+    - 15 ml Vodka
+    - 15 ml Tequila
+    - 15 ml White rum
+    - 15 ml Gin
+    - 15 ml Cointreau
+    - 30 ml Lemon juice
+    - 20 ml Simple syrup
+    - 1 topup Cola
+  instructions:
+    - |-
+      Add all ingredients into a highball glass filled with ice.
+      Stir gently.
+  garnish: Lemon Slice (Optional)
+  source: https://iba-world.com/long-island-ice-tea/
+  image_copyright: Kitchen Stories
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+- name: Mai-Tai
+  description: null
+  ingredients:
+    - 30 ml White Rum
+    - 30 ml Dark Rum
+    - 15 ml Orange Curaçao
+    - 15 ml Orgeat Syrup
+    - 30 ml Lime Juice
+    - 7.5 ml Simple Syrup
+  instructions: |-
+    1. Add all ingredients into a shaker with ice.
+    2. Shake and pour into a double rocks glass or a highball glass.
+
+    *The Martinique molasses rum used by Trader Vic was not an Agricole rum but a type of “rummy” from molasses.*
+  garnish: Garnish with pineapple spear, mint leaves, and lime peel.
+  source: https://iba-world.com/mai-tai/
+  image_copyright: A couple cooks
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Rum
+- name: Manhattan
+  description: null
+  ingredients:
+    - 50 ml Rye Whiskey
+    - 20 ml Sweet Vermouth
+    - 1 dash Angostura aromatic bitters
+  instructions: |-
+    Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into a chilled cocktail glass.
+  garnish: Garnish with a cocktail cherry.
+  source: https://iba-world.com/manhattan/
+  image_copyright: Sainsbury's Magazine / Toby Scott
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Whiskey
+- name: Margarita
+  description: null
+  ingredients:
+    - 50 ml Tequila
+    - 20 ml Triple Sec
+    - 15 ml Lime Juice
+  instructions:
+    - |-
+      Add all ingredients into a shaker with ice.
+      Shake and strain into a chilled cocktail glass
+  garnish: Half salt rim (Optional)
+  source: https://iba-world.com/margarita/
+  image_copyright: Jamie Oliver
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Tequila
+- name: Martinez
+  description: null
+  ingredients:
+    - 45 ml Gin
+    - 45 ml Sweet Vermouth
+    - 1 teaspoon Maraschino Luxardo
+    - 2 Dashes Orange Bitters
+  instructions:
+    - Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into
+      a chilled cocktail glass.
+  garnish: Lemon zest.
+  source: https://iba-world.com/martinez/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: Mary Pickford
+  description: null
+  ingredients:
+    - 45 ml White Rum
+    - 45 ml Pineapple Juice
+    - 7.5 ml Maraschino Luxardo
+    - 5 ml Grenadine Syrup
+  instructions:
+    - Pour all ingredients into a cocktail shaker, shake well with ice, strain into
+      a chilled cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/mary-pickford/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Rum
+- name: Mimosa
+  description: null
+  ingredients:
+    - 75 ml orange juice
+    - 75 ml Prosecco
+  instructions:
+    - |-
+      Pour orange juice into a flute glass and gently pour the sparkling wine. Stir gently.
+      Note:
+      Also known as Buck’s Fizz.
+  garnish: Garnish with an orange twist (optional).
+  source: https://iba-world.com/mimosa/
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Wine
+- name: Mint Julep
+  description: null
+  ingredients:
+    - 60 ml Bourbon Whiskey
+    - 4 sprigs Mint
+    - 1 tsp Sugar
+    - 2 tsp Water
+  instructions:
+    - In Julep Stainless Steel Cup gently muddle the mint with sugar and water. Fill
+      the glass with cracked ice, add the Bourbon and stir well until the cup frosts.
+  garnish: Garnish with a mint sprig.
+  source: https://iba-world.com/mint-julep/
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Whiskey
+- name: Mojito
+  description: null
+  ingredients:
+    - 45 ml White Rum
+    - 20 ml Lime Juice
+    - 6 sprigs Mint
+    - 2 tsp Sugar
+    - 1 topup Club soda
+  instructions:
+    - Mix mint springs with sugar and lime juice. Add splash of soda water and fill
+      the glass with ice. Pour the rum and top with soda water. Light stir to involve
+      all ingredients.
+  garnish: Garnish with sprigs of mint and slice of lime.
+  source: https://iba-world.com/mojito/
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Rum
+- name: Monkey Gland
+  description: null
+  ingredients:
+    - 45 ml Gin
+    - 45 ml Orange Juice
+    - 1 tablespoon Absinthe
+    - 1 tablespoon Grenadine Syrup
+  instructions:
+    - Pour all ingredients into a cocktail shaker, shake well with ice, strain into
+      a chilled cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/monkey-gland/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: Moscow Mule
+  description: null
+  ingredients:
+    - 45 ml Vodka
+    - 120 ml Ginger Beer
+    - 10 ml lime juice
+  instructions:
+    - In a Mule Cup or rocks glass, combine the vodka and ginger beer. Add lime juice
+      and gently stir to involve all ingredients.
+  garnish: Garnish with a lime slice
+  source: https://iba-world.com/moscow-mule/
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Vodka
+- name: Naked and Famous
+  description: null
+  ingredients:
+    - 22.5 ml Mezcal
+    - 22.5 ml Yellow Chartreuse
+    - 22.5 ml Aperol
+    - 22.5 ml Lime Juice
+  instructions:
+    - Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled
+      cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/naked-and-famous/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Tequila
+- name: Negroni
+  description: null
+  ingredients:
+    - 30 ml Gin
+    - 30 ml Campari
+    - 30 ml Sweet Vermouth
+  instructions:
+    - Pour all ingredients directly into a chilled old fashioned glass filled with ice,
+      Stir gently.
+  garnish: Garnish with a half orange slice.
+  source: https://iba-world.com/negroni/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: New York Sour
+  description: null
+  ingredients:
+    - 60 ml Whiskey
+    - 22.5 ml Simple syrup
+    - 30 ml lemon juice
+    - 1 Drops Egg White
+    - 15 ml Red wine
+  instructions:
+    - Pour all ingredients into the shaker. Shake vigorously with ice.  Strain into
+      a chilled rocks glass filled with ice. Float the wine on top.
+  garnish: Garnish with lemon or orange zest with cherry.
+  source: https://iba-world.com/new-york-sour/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Whiskey
+- name: Old Cuban
+  description: null
+  ingredients:
+    - 6 sprigs Mint
+    - 45 ml Dark Rum
+    - 22.5 ml Lime Juice
+    - 30 ml Simple Syrup
+    - 2 Dashes Angostura aromatic bitters
+    - 60 ml Champagne
+  instructions:
+    - Pour all ingredients into cocktail shaker except the wine, shake well with ice,
+      strain into chilled elegant cocktail glass. Top up with the sparkling wine.
+  garnish: Garnish with mint springs.
+  source: https://iba-world.com/old-cuban/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Rum
+- name: Old Fashioned
+  description: null
+  ingredients:
+    - 45 ml Bourbon whiskey
+    - 1 cube Sugar
+    - 2 Dashes Angostura aromatic bitters
+    - 2 Dashes Water
+  instructions:
+    - Place sugar cube in old fashioned glass and saturate with bitter, add few dashes
+      of plain water. Muddle until dissolved. Fill the glass with ice cubes and add
+      whiskey. Stir gently.
+  garnish: Garnish with an orange slice or zest, and a cocktail cherry.
+  source: https://iba-world.com/old-fashioned/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Whiskey
+- name: Paloma
+  description: null
+  ingredients:
+    - 50 ml Tequila
+    - 5 ml lime juice
+    - 1 pinch salt
+    - 100 ml Grapefruit juice
+  instructions:
+    - Poor the tequila into a highball glass, squeeze the lime juice. Add ice and salt,
+      fill up pink grapefruit soda. Stir gently.
+  garnish: Garnish with a slice of lime.
+  source: https://iba-world.com/paloma/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Tequila
+- name: Paper Plane
+  description: null
+  ingredients:
+    - 30 ml Bourbon whiskey
+    - 30 ml Amaro Nonino
+    - 30 ml Aperol
+    - 30 ml Lemon juice
+  instructions:
+    - Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled
+      cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/paper-plane/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Whiskey
+- name: Paradise
+  description: null
+  ingredients:
+    - 30 ml Gin
+    - 20 ml Apricot Brandy
+    - 15 ml Orange Juice
+  instructions:
+    - Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled
+      cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/paradise/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: Penicillin
+  description: null
+  ingredients:
+    - 60 ml Scotch Whiskey
+    - 7.5 ml Islay Scotch
+    - 22.5 ml Lemon juice
+    - 22.5 ml Honey Syrup
+    - 2 slices Ginger
+  instructions:
+    - Muddle ginger in a shaker and add the remaining ingredients, except for the Islay
+      single malt whiskey. Fill the shaker with ice and shake. Double-strain into a
+      chilled old fashioned glass with ice. Float the single malt whiskey on top.
+  garnish: Garnish with candied ginger.
+  source: https://iba-world.com/penicillin/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Whiskey
+- name: Pina Colada
+  description: null
+  ingredients:
+    - 50 ml White Rum
+    - 30 ml Coconut Cream
+    - 50 ml Pineapple Juice
+  instructions:
+    - Blend all the ingredients with ice in an electric blender, pour into a large glass,
+      and serve with straws.
+  garnish: |-
+    Note:
+    Historically a few drops of lime juice were added to taste. 4 slices of pineapple can be used instead of juice
+  source: https://iba-world.com/pina-colada/
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Rum
+- name: Pisco Sour
+  description: null
+  ingredients:
+    - 60 ml Pisco
+    - 30 ml Lemon juice
+    - 20 ml Simple Syrup
+    - 1 dash Egg White
+  instructions:
+    - |-
+      Add all ingredients into a shaker with ice.
+      Shake and strain into a chilled goblet glass.
+  garnish: Few dashes of Amargo bitters on top as an aromatic garnish.
+  source: https://iba-world.com/pisco-sour/
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+- name: Planter’s Punch
+  description: null
+  ingredients:
+    - 45 ml Jamaican Rum
+    - 15 ml Lime Juice
+    - 30 ml Simple syrup
+  instructions:
+    - |-
+      Pour all ingredients directly in a small tumbler or a typical terracotta glass.
+      NOTE:
+      Add dilution up to taste, it can be given by water, ice or juices.
+  garnish: Garnish with orange zest.
+  source: https://iba-world.com/planters-punch/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Rum
+- name: Porto Flip
+  description: null
+  ingredients:
+    - 15 ml Brandy
+    - 45 ml Red Wine
+    - 10 ml Egg Yolk
+  instructions:
+    - Pour all ingredients into a cocktail shaker, shake well with ice, strain into
+      a chilled cocktail glass.
+  garnish: Sprinkle with ground nutmeg.
+  source: https://iba-world.com/porto-flip/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Brandy
+    - Wine
+- name: Ramos Fizz
+  description: null
+  ingredients:
+    - 45 ml Gin
+    - 15 ml Lime Juice
+    - 15 ml Lemon juice
+    - 30 ml Simple Syrup
+    - 60 ml Cream
+    - 30 ml Egg white
+    - 3 Dashes Orange Flower Water
+    - 2 Drops Vanilla Extract
+    - 1 topup Club soda
+  instructions:
+    - |-
+      Pour all ingredients except soda water in a cocktail shaker with ice, Shake for two minutes, double strain in a glass, pour the drink back in the shaker, and hard shake without ice for one minute. Strain into a highball glass, top up with soda.
+      NOTE:
+      The drink was invented by Henry Ramos in 1888, at his bar Meyer’s Table d’Hôtel Internationale in New Orleans. The Ramos Fizz was originally shaken for 12 minutes by a crew of 30 bartenders who passed the shaker from one to another.
+  garnish: N/A
+  source: https://iba-world.com/ramos-fizz/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: Russian Spring Punch
+  description: null
+  ingredients:
+    - 25 ml Vodka
+    - 25 ml Lemon juice
+    - 15 ml Crème de cassis (blackcurrant liqueur)
+    - 10 ml Simple syrup
+    - 1 topup Champagne
+  instructions:
+    - Pour all ingredients into a cocktail shaker except the sparkling wine, shake well
+      with ice, strain into a chilled tall tumbler glass filled with ice, and top up
+      with sparkling wine.
+  garnish: Garnish with blackberries and optionally a lemon slice as well.
+  source: https://iba-world.com/russian-spring-punch/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Vodka
+- name: Rusty Nail
+  description: null
+  ingredients:
+    - 45 ml Scotch Whiskey
+    - 25 ml Drambuie
+  instructions:
+    - Pour all ingredients directly into an old fashioned glass filled with ice. Stir
+      gently.
+  garnish: Garnish with lemon zest.
+  source: https://iba-world.com/rusty-nail/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Whiskey
+- name: Sazerac
+  description: null
+  ingredients:
+    - 50 ml Cognac
+    - 10 ml Absinthe
+    - 1 cube Sugar
+    - 2 Dashes Peychauds Bitters
+  instructions:
+    - Rinse a chilled old-fashioned glass with the absinthe, add crushed ice and set
+      it aside. Stir the remaining ingredients over ice in a mixing glass. Discard the
+      ice and any excess absinthe from the prepared glass, strain the mixed drink into
+      the glass.
+  garnish: |-
+    NOTE:
+    The original recipe changed after the American Civil War, Rye Whiskey substituted Cognac as it became hard to obtain.
+  source: https://iba-world.com/sazerac/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Brandy
+- name: Sea Breeze
+  description: null
+  ingredients:
+    - 40 ml Vodka
+    - 120 ml Cranberry Juice
+    - 30 ml Grapefruit Juice
+  instructions:
+    - Build all ingredients in a highball glass filled with ice.
+  garnish: Garnish with orange zest and cherry
+  source: https://iba-world.com/sea-breeze/
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Vodka
+- name: Sex on the Beach
+  description: null
+  ingredients:
+    - 40 ml Vodka
+    - 20 ml Peach Schnapps
+    - 40 ml Orange Juice
+    - 40 ml Cranberry Juice
+  instructions:
+    - Build all ingredients in a highball glass filled with ice.
+  garnish: Garnish with a half orange slice.
+  source: https://iba-world.com/sex-on-the-beach/
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Vodka
+- name: Sidecar
+  description: null
+  ingredients:
+    - 50 ml Cognac
+    - 20 ml Triple Sec
+    - 20 ml Lemon juice
+  instructions:
+    - Pour all ingredients into a cocktail shaker, shake well with ice, strain into
+      a chilled cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/sidecar/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Brandy
+- name: Singapore Sling
+  description: null
+  ingredients:
+    - 30 ml Gin
+    - 15 ml Cherry liqueur
+    - 7.5 ml Cointreau
+    - 7.5 ml Bénédictine
+    - 120 ml Pineapple Juice
+    - 15 ml Lime Juice
+    - 10 ml Grenadine Syrup
+    - 1 dash Angostura aromatic bitters
+  instructions:
+    - Pour all ingredients into a cocktail shaker filled with ice cubes. Shake well.
+      Strain into Hurricane glass.
+  garnish: Garnish with pineapple and maraschino cherry
+  source: https://iba-world.com/singapore-sling/
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Gin
+- name: Southside
+  description: null
+  ingredients:
+    - 60 ml Gin
+    - 30 ml Lemon juice
+    - 15 ml Simple Syrup
+    - 5 sprigs Mint
+  instructions:
+    - |-
+      Pour all ingredients into a cocktail shaker, shake well with ice, double-strain into chilled cocktail glass.
+      Note:
+      If egg white is used shake vigorously.
+  garnish: Garnish with mint springs.
+  source: https://iba-world.com/southside/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Gin
+- name: Spicy Fifty
+  description: null
+  ingredients:
+    - 50 ml Vodka
+    - 15 ml Elderflower Cordial
+    - 15 ml Lime Juice
+    - 10 ml Honey Syrup
+    - 2 Slices Chili Pepper
+  instructions:
+    - Pour all ingredients into a cocktail shaker, shake well with ice, double-strain
+      into chilled cocktail glass.
+  garnish: Garnish with a red chili pepper
+  source: https://iba-world.com/spicy-fifty/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Vodka
+- name: Spritz
+  description: null
+  ingredients:
+    - 90 ml Prosecco
+    - 60 ml Aperol
+    - 1 Splash Club soda
+  instructions:
+    - |-
+      Build all ingredients into a wine glass filled with ice. Stir gently.
+      NOTE:
+      There are other versions of the Spritz that use Campari, Cynar or Select instead of Aperol.
+  garnish: Garnish with a slice of orange.
+  source: https://iba-world.com/spritz/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Wine
+- name: Stinger
+  description: null
+  ingredients:
+    - 50 ml Cognac
+    - 20 ml Menthe Crème de Cacao
+  instructions:
+    - Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into
+      chilled martini cocktail glass.
+  garnish: Optional mint leave.
+  source: https://iba-world.com/stinger/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Brandy
+- name: Suffering Bastard
+  description: null
+  ingredients:
+    - 30 ml Cognac
+    - 30 ml Gin
+    - 15 ml Lime Juice
+    - 2 Dashes Angostura aromatic bitters
+    - 1 topup Ginger beer
+  instructions:
+    - Pour all ingredients into a cocktail shaker except the ginger beer, shake well
+      with ice, Pour unstrained into a Collins glass or in the original S. Bastard mug
+      and top up with ginger beer.
+  garnish: Garnish with mint springs and optionally an orange slice as well.
+  source: https://iba-world.com/suffering-bastard/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Brandy
+    - Gin
+- name: Tequila Sunrise
+  description: null
+  ingredients:
+    - 45 ml Tequila
+    - 90 ml Orange Juice
+    - 15 ml Grenadine Syrup
+  instructions:
+    - Pour tequila and orange juice directly into highball glass filled with ice cubes.
+      Add the grenadine syrup to create chromatic effect (sunrise), do not stir.
+  garnish: Garnish with half orange slice or an orange zest
+  source: https://iba-world.com/tequila-sunrise/
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Tequila
+- name: Tipperary
+  description: null
+  ingredients:
+    - 50 ml Irish Whiskey
+    - 25 ml Sweet Vermouth
+    - 15 ml Green Chartreuse
+    - 2 Dashes Angostura aromatic bitters
+  instructions:
+    - Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into
+      chilled martini cocktail glass.
+  garnish: Garnish with a slice of orange.
+  source: https://iba-world.com/tipperary/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Whiskey
+- name: Tommy’s Margarita
+  description: null
+  ingredients:
+    - 60 ml Tequila
+    - 30 ml Lime Juice
+    - 30 ml Agave Syrup
+  instructions:
+    - Pour all ingredients into a cocktail shaker, shake well with ice, strain into
+      a chilled rocks glass filled with ice.
+  garnish: Garnish with a lime slice.
+  source: https://iba-world.com/tommys-margarita/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Whiskey
+- name: Tuxedo
+  description: null
+  ingredients:
+    - 30 ml Gin
+    - 30 ml Dry Vermouth
+    - 1 teaspoon Maraschino Luxardo
+    - 2 teaspoon Absinthe
+    - 3 Dashes Orange Bitters
+  instructions:
+    - Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into
+      chilled martini cocktail glass.
+  garnish: Garnish with cherry and lemon zest
+  source: https://iba-world.com/tuxedo/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: VE.N.TO
+  description: null
+  ingredients:
+    - 45 ml Grappa
+    - 22.5 ml lemon juice
+    - 15 ml Honey syrup
+    - 15 ml Chamomile cordial
+  instructions:
+    - |-
+      Pour all ingredients into the shaker. Shake vigorously with ice.  Strain into a chilled small tumbler glass filled with ice.
+      Notes:
+      *If desired water can be replaced by chamomile infusion in the honey mix.
+  garnish: Garnish with lemon zest and white grapes.
+  source: https://iba-world.com/ve-n-to/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+- name: Vesper
+  description: null
+  ingredients:
+    - 45 ml Gin
+    - 15 ml Vodka
+    - 7.5 ml Lillet Blanc
+  instructions:
+    - Pour all ingredients into a cocktail shaker filled with ice cubes. Shake and strain
+      into a chilled cocktail glass.
+  garnish: Lemon zest
+  source: https://iba-world.com/vesper/
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Gin
+- name: Vieux Carrè
+  description: null
+  ingredients:
+    - 30 ml Rye Whiskey
+    - 30 ml Cognac
+    - 30 ml Sweet Vermouth
+    - 1 teaspoon Bénédictine
+    - 2 Dashes Peychauds Bitters
+  instructions:
+    - Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into
+      a chilled cocktail glass.
+  garnish: Garnish with orange zest and maraschino cherry.
+  source: https://iba-world.com/vieux-carre/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Whiskey
+    - Brandy
+- name: Whiskey Sour
+  description: null
+  ingredients:
+    - 45 ml Bourbon Whiskey
+    - 25 ml Lemon juice
+    - 20 ml Simple Syrup
+  instructions:
+    - Pour all ingredients into a cocktail shaker filled with ice. Shake well. Strain
+      into cobbler glass. If served “On the rocks”, strain ingredients into an old fashioned
+      glass filled with ice.
+  garnish: |-
+    NOTE:
+    If egg white is used shake little harder to release and incorporate the foam from the egg white.
+  source: https://iba-world.com/whiskey-sour/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Whiskey
+- name: White Lady
+  description: null
+  ingredients:
+    - 40 ml Gin
+    - 30 ml Triple Sec
+    - 20 ml Lemon juice
+  instructions:
+    - Pour all ingredients into a cocktail shaker, shake well with ice, strain into
+      a chilled cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/white-lady/
+  categories:
+    - IBA Cocktail
+    - The Unforgettables
+    - Gin
+- name: Yellow Bird
+  description: null
+  ingredients:
+    - 30 ml White rum
+    - 15 ml Galliano
+    - 15 ml Triple Sec
+    - 15 ml Lime Juice
+  instructions:
+    - Pour all ingredients into a cocktail shaker, shake well with ice, strain into
+      chilled cocktail glass.
+  garnish: N/A
+  source: https://iba-world.com/yellow-bird/
+  categories:
+    - IBA Cocktail
+    - New Era Drinks
+    - Rum
+- name: Zombie
+  description: null
+  ingredients:
+    - 45 ml Jamaican rum
+    - 45 ml Gold rum
+    - 30 ml Demerara Rum
+    - 20 ml lime juice
+    - 15 ml Falernum
+    - 15 ml Donn's Mix
+    - 1 tsp Grenadine syrup
+    - 1 dash Angostura aromatic bitters
+    - 6 drops Pernod
+  instructions:
+    - Add all ingredients into an electric blender with 170 grams of cracked ice. With
+      pulse bottom blend for a few seconds. Serve in a tall tumbler glass.
+  garnish: |-
+    Note:
+    *Donn’s Mix: 2 parts of yellow grapefruit and 1 part of cinnamon syrup
+  source: https://iba-world.com/zombie/
+  categories:
+    - Contemporary Classics
+    - IBA Cocktail
+    - Rum

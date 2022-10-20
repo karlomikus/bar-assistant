@@ -13,7 +13,8 @@
         "laravel/sanctum": "^3.0",
         "laravel/scout": "^9.4",
         "laravel/tinker": "^2.7",
-        "meilisearch/meilisearch-php": "^0.25.0"
+        "meilisearch/meilisearch-php": "^0.25.0",
+        "symfony/yaml": "^6.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
