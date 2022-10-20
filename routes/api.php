@@ -6,6 +6,7 @@ use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\LoginController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
+use Kami\Cocktail\Http\Controllers\HealthController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 
 /*
@@ -20,6 +21,7 @@ use Kami\Cocktail\Http\Controllers\IngredientController;
 */
 
 Route::post('login', [LoginController::class, 'authenticate']);
+Route::get('/version', [HealthController::class, 'version']);
 
 Route::middleware('auth:sanctum')->group(function() {
 
