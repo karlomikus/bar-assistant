@@ -118,7 +118,6 @@ class DatabaseSeeder extends Seeder
         Ingredient::create(['name' => 'Falernum', 'ingredient_category_id' => $liqueurs->id, 'strength' => 11.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
         Ingredient::create(['name' => 'Green Chartreuse', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
         Ingredient::create(['name' => 'Yellow Chartreuse', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
-        Ingredient::create(['name' => 'Maraschino Liqueur', 'ingredient_category_id' => $liqueurs->id, 'strength' => 32.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
         Ingredient::create(['name' => 'Amaro Nonino', 'ingredient_category_id' => $liqueurs->id, 'strength' => 35.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
         Ingredient::create(['name' => 'Drambuie', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
         Ingredient::create(['name' => 'Bénédictine', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
