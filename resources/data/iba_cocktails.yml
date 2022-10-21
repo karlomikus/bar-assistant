@@ -13,7 +13,7 @@
       3. Strain into a chilled cocktail glass.
   garnish: N/A
   source: https://iba-world.com/trinidad-sour/
-  image_copyright: A couple cooks
+  image_copyright: A Couple Cooks
   categories:
     - IBA Cocktail
     - New Era Drinks
@@ -185,7 +185,7 @@
     2. Shake with ice and strain into a chilled cocktail glass
   garnish: N/A
   source: https://iba-world.com/between-the-sheets/
-  image_copyright: A couple cooks
+  image_copyright: A Couple Cooks
   categories:
     - IBA Cocktail
     - The Unforgettables
@@ -349,7 +349,7 @@
       the cognac. Pour gently chilled Champagne.
   garnish: Garnish with orange zest and maraschino cherry.
   source: https://iba-world.com/champagne-cocktail/
-  image_copyright: A couple cooks
+  image_copyright: A Couple Cooks
   categories:
     - Contemporary Classics
     - IBA Cocktail
@@ -366,7 +366,7 @@
       cocktail glass.
   garnish: Fresh raspberries
   source: https://iba-world.com/clover-club/
-  image_copyright: A couple cooks
+  image_copyright: A Couple Cooks
   categories:
     - IBA Cocktail
     - The Unforgettables
@@ -389,6 +389,7 @@
     - Contemporary Classics
     - IBA Cocktail
     - Gin
+    - Tiki
 - name: Cosmopolitan
   description: null
   ingredients:
@@ -432,7 +433,7 @@
       ice and shake. Strain into chilled cocktail glass.
   garnish: N/A
   source: https://iba-world.com/daiquiri/
-  image_copyright: A couple cooks
+  image_copyright: A Couple Cooks
   categories:
     - IBA Cocktail
     - The Unforgettables
@@ -562,7 +563,7 @@
     4. Serve without ice
   garnish: Garnish with a lemon slice, optional lemon zest.
   source: https://iba-world.com/gin-fizz/
-  image_copyright: A couple cooks
+  image_copyright: A Couple Cooks
   categories:
     - IBA Cocktail
     - The Unforgettables
@@ -705,7 +706,7 @@
     Use ‘Old Tom’ Gin for Tom Collins.
   garnish: Garnish with a lemon slice and maraschino cherry.
   source: https://iba-world.com/john-collins/
-  image_copyright: A couple cooks
+  image_copyright: A Couple Cooks
   categories:
     - IBA Cocktail
     - The Unforgettables
@@ -798,11 +799,12 @@
     *The Martinique molasses rum used by Trader Vic was not an Agricole rum but a type of “rummy” from molasses.*
   garnish: Garnish with pineapple spear, mint leaves, and lime peel.
   source: https://iba-world.com/mai-tai/
-  image_copyright: A couple cooks
+  image_copyright: A Couple Cooks
   categories:
     - Contemporary Classics
     - IBA Cocktail
     - Rum
+    - Tiki
 - name: Manhattan
   description: null
   ingredients:
@@ -836,7 +838,10 @@
     - IBA Cocktail
     - Tequila
 - name: Martinez
-  description: null
+  description: |-
+    The Martinez is a classic cocktail that is widely regarded as the direct precursor to the Martini.
+    It serves as the basis for many modern cocktails, and several different versions of the original exist.
+    These are generally distinguished by the accompaniment of either Maraschino or Curacao, as well as differences in gin or bitters. 
   ingredients:
     - 45 ml Gin
     - 45 ml Sweet Vermouth
@@ -847,6 +852,7 @@
       a chilled cocktail glass.
   garnish: Lemon zest.
   source: https://iba-world.com/martinez/
+  image_copyright: Wikipedia
   categories:
     - IBA Cocktail
     - The Unforgettables
@@ -863,6 +869,7 @@
       a chilled cocktail glass.
   garnish: N/A
   source: https://iba-world.com/mary-pickford/
+  image_copyright: Drinkoteket
   categories:
     - IBA Cocktail
     - The Unforgettables
@@ -875,10 +882,12 @@
   instructions:
     - |-
       Pour orange juice into a flute glass and gently pour the sparkling wine. Stir gently.
+
       Note:
       Also known as Buck’s Fizz.
   garnish: Garnish with an orange twist (optional).
   source: https://iba-world.com/mimosa/
+  image_copyright: Inspired Taste
   categories:
     - Contemporary Classics
     - IBA Cocktail
@@ -895,6 +904,7 @@
       the glass with cracked ice, add the Bourbon and stir well until the cup frosts.
   garnish: Garnish with a mint sprig.
   source: https://iba-world.com/mint-julep/
+  image_copyright: Liquor.com / Tim Nusog
   categories:
     - Contemporary Classics
     - IBA Cocktail
@@ -913,6 +923,7 @@
       all ingredients.
   garnish: Garnish with sprigs of mint and slice of lime.
   source: https://iba-world.com/mojito/
+  image_copyright: Bon Apetite
   categories:
     - Contemporary Classics
     - IBA Cocktail
@@ -929,6 +940,7 @@
       a chilled cocktail glass.
   garnish: N/A
   source: https://iba-world.com/monkey-gland/
+  image_copyright: The Spruce
   categories:
     - IBA Cocktail
     - The Unforgettables
@@ -944,6 +956,7 @@
       and gently stir to involve all ingredients.
   garnish: Garnish with a lime slice
   source: https://iba-world.com/moscow-mule/
+  image_copyright: Bake It With Love
   categories:
     - Contemporary Classics
     - IBA Cocktail
@@ -960,12 +973,14 @@
       cocktail glass.
   garnish: N/A
   source: https://iba-world.com/naked-and-famous/
+  image_copyright: Epicurious
   categories:
     - IBA Cocktail
     - New Era Drinks
     - Tequila
 - name: Negroni
-  description: null
+  description: |-
+    A traditionally made Negroni is stirred, not shaken; it is built over ice in an old-fashioned or rocks glass and garnished with a slice of orange. Outside of Italy, an orange peel is often used in place of an orange slice.
   ingredients:
     - 30 ml Gin
     - 30 ml Campari
@@ -975,12 +990,14 @@
       Stir gently.
   garnish: Garnish with a half orange slice.
   source: https://iba-world.com/negroni/
+  image_copyright: Kitchen Swagger
   categories:
     - IBA Cocktail
     - The Unforgettables
     - Gin
 - name: New York Sour
-  description: null
+  description: |-
+    Largely similar to the whiskey sour, the New York sour adds a float of dry red wine to the drink.
   ingredients:
     - 60 ml Whiskey
     - 22.5 ml Simple syrup
@@ -992,6 +1009,7 @@
       a chilled rocks glass filled with ice. Float the wine on top.
   garnish: Garnish with lemon or orange zest with cherry.
   source: https://iba-world.com/new-york-sour/
+  image_copyright: Kitchen Swagger
   categories:
     - IBA Cocktail
     - New Era Drinks
@@ -1010,12 +1028,14 @@
       strain into chilled elegant cocktail glass. Top up with the sparkling wine.
   garnish: Garnish with mint springs.
   source: https://iba-world.com/old-cuban/
+  image_copyright: NYT Cooking
   categories:
     - IBA Cocktail
     - New Era Drinks
     - Rum
 - name: Old Fashioned
-  description: null
+  description: |-
+    Developed during the 19th century and given its name in the 1880s, it is an IBA Official Cocktail. It is also one of six basic drinks listed in David A. Embury's The Fine Art of Mixing Drinks. 
   ingredients:
     - 45 ml Bourbon whiskey
     - 1 cube Sugar
@@ -1027,12 +1047,14 @@
       whiskey. Stir gently.
   garnish: Garnish with an orange slice or zest, and a cocktail cherry.
   source: https://iba-world.com/old-fashioned/
+  image_copyright: Epicurious
   categories:
     - IBA Cocktail
     - The Unforgettables
     - Whiskey
 - name: Paloma
-  description: null
+  description: |-
+    The Paloma is a refreshing, easy-to-make cooler that combines tequila, lime juice and grapefruit soda. Its origin story is nebulous, but most reports peg its creation to the 1950s. Blanco tequila is the traditional choice, but lightly aged reposado also makes a fine drink. In this case, it’s best to keep the añejo capped, as the well-aged expression’s oaky profile disrupts that clean, refreshing taste you want in a Paloma. 
   ingredients:
     - 50 ml Tequila
     - 5 ml lime juice
@@ -1043,12 +1065,13 @@
       fill up pink grapefruit soda. Stir gently.
   garnish: Garnish with a slice of lime.
   source: https://iba-world.com/paloma/
+  image_copyright: Love and Lemons
   categories:
     - IBA Cocktail
     - New Era Drinks
     - Tequila
 - name: Paper Plane
-  description: null
+  description: "Developed around 2007 by Sasha Petraske and Sam Ross of Milk & Honey for their former colleague Toby Maloney's Chicago bar The Violet Hour. The recipe is a riff on a Last Word, which is a riff on the classic Corpse Reviver #2."
   ingredients:
     - 30 ml Bourbon whiskey
     - 30 ml Amaro Nonino
@@ -1059,12 +1082,13 @@
       cocktail glass.
   garnish: N/A
   source: https://iba-world.com/paper-plane/
+  image_copyright: Bon Apetite
   categories:
     - IBA Cocktail
     - New Era Drinks
     - Whiskey
 - name: Paradise
-  description: null
+  description: The earliest known in-print recipe for the Paradise Cocktail was written by Harry Craddock in 1930. This cocktail is prepared using gin, apricot brandy (apricot liqueur), and orange juice in a 2:1:1 ratio, with a splash of lemon juice.
   ingredients:
     - 30 ml Gin
     - 20 ml Apricot Brandy
@@ -1074,22 +1098,25 @@
       cocktail glass.
   garnish: N/A
   source: https://iba-world.com/paradise/
+  image_copyright: Wikipedia
   categories:
     - IBA Cocktail
     - The Unforgettables
     - Gin
 - name: Penicillin
-  description: null
+  description: The drink was created in 2005 by Australian bartender Sam Ross living in New York at the time. Its name derives from the drug penicillin, discovered by Scottish scientist Alexander Fleming, hinting to the medicinal properties of some of its ingredients, with suggested effects similar to that of a hot toddy which is said to relieve the symptoms of cold and flu.
   ingredients:
     - 60 ml Scotch Whiskey
     - 7.5 ml Islay Scotch
     - 22.5 ml Lemon juice
     - 22.5 ml Honey Syrup
     - 2 slices Ginger
-  instructions:
-    - Muddle ginger in a shaker and add the remaining ingredients, except for the Islay
-      single malt whiskey. Fill the shaker with ice and shake. Double-strain into a
-      chilled old fashioned glass with ice. Float the single malt whiskey on top.
+  instructions: |-
+    1. Muddle ginger in a shaker.
+    2. Add the remaining ingredients, except for the Islay single malt whiskey.
+    3. Fill the shaker with ice and shake.
+    4. Double-strain into a chilled old fashioned glass with ice.
+    5. Float the single malt whiskey on top.
   garnish: Garnish with candied ginger.
   source: https://iba-world.com/penicillin/
   categories:
@@ -1097,24 +1124,29 @@
     - New Era Drinks
     - Whiskey
 - name: Pina Colada
-  description: null
+  description: The name piña colada (Spanish) literally means "strained pineapple", a reference to the freshly pressed and strained pineapple juice used in the drink's preparation. 
   ingredients:
     - 50 ml White Rum
     - 30 ml Coconut Cream
     - 50 ml Pineapple Juice
-  instructions:
-    - Blend all the ingredients with ice in an electric blender, pour into a large glass,
-      and serve with straws.
-  garnish: |-
-    Note:
-    Historically a few drops of lime juice were added to taste. 4 slices of pineapple can be used instead of juice
+  instructions: |-
+    Blend all the ingredients with ice in an electric blender, pour into a large glass, and serve with straws.
+
+    **Note:**
+    Historically a few drops of fresh lime juice were added to taste. 4 slices of fresh pineapple can be used instead of juice
+  garnish: Garnish with a slice of pineapple with a cocktail cherry.
   source: https://iba-world.com/pina-colada/
+  image_copyright: A Couple Cooks
   categories:
     - Contemporary Classics
     - IBA Cocktail
     - Rum
 - name: Pisco Sour
-  description: null
+  description: |-
+    A pisco sour is an alcoholic cocktail of Peruvian origin that is typical of the cuisines from Peru. The drink's name comes from pisco, which is its base liquor, and the cocktail term sour, in reference to sour citrus juice and sweetener components.
+    The Peruvian pisco sour uses Peruvian pisco as the base liquor and adds freshly squeezed lemon juice, simple syrup, ice, egg white, and Angostura bitters.
+    The Chilean version is similar, but uses Chilean pisco and Pica lime, and excludes the bitters and egg white.
+    Other variants of the cocktail include those created with fruits like pineapple or plants such as coca leaves.
   ingredients:
     - 60 ml Pisco
     - 30 ml Lemon juice
@@ -1124,13 +1156,14 @@
     - |-
       Add all ingredients into a shaker with ice.
       Shake and strain into a chilled goblet glass.
-  garnish: Few dashes of Amargo bitters on top as an aromatic garnish.
+  garnish: Few dashes of Amargo or Angostura bitters on top as an aromatic garnish.
   source: https://iba-world.com/pisco-sour/
+  image_copyright: Liquor.com / Tim Nusog
   categories:
     - Contemporary Classics
     - IBA Cocktail
 - name: Planter’s Punch
-  description: null
+  description: The cocktail has been said to have originated at the Planters Hotel in Charleston, South Carolina, but actually originated in Jamaica.
   ingredients:
     - 45 ml Jamaican Rum
     - 15 ml Lime Juice
@@ -1142,12 +1175,14 @@
       Add dilution up to taste, it can be given by water, ice or juices.
   garnish: Garnish with orange zest.
   source: https://iba-world.com/planters-punch/
+  image_copyright: Wikipedia
   categories:
     - IBA Cocktail
     - The Unforgettables
     - Rum
+    - Tiki
 - name: Porto Flip
-  description: null
+  description: "The Porto Flip was first recorded by Jerry Thomas in his 1862 book The Bartender’s Guide: How to Mix Drinks; A Bon Vivant’s Companion. albeit under the name \"Coffee Cocktail\", named for its appearance rather than its ingredients."
   ingredients:
     - 15 ml Brandy
     - 45 ml Red Wine
@@ -1157,13 +1192,14 @@
       a chilled cocktail glass.
   garnish: Sprinkle with ground nutmeg.
   source: https://iba-world.com/porto-flip/
+  image_copyright: Liquor.com / Tim Nusog
   categories:
     - IBA Cocktail
     - The Unforgettables
     - Brandy
     - Wine
 - name: Ramos Fizz
-  description: null
+  description: The drink was invented by Henry Ramos in 1888, at his bar Meyer’s Table d’Hôtel Internationale in New Orleans. The Ramos Fizz was originally shaken for 12 minutes by a crew of 30 bartenders who passed the shaker from one to another.
   ingredients:
     - 45 ml Gin
     - 15 ml Lime Juice
@@ -1174,19 +1210,21 @@
     - 3 Dashes Orange Flower Water
     - 2 Drops Vanilla Extract
     - 1 topup Club soda
-  instructions:
-    - |-
-      Pour all ingredients except soda water in a cocktail shaker with ice, Shake for two minutes, double strain in a glass, pour the drink back in the shaker, and hard shake without ice for one minute. Strain into a highball glass, top up with soda.
-      NOTE:
-      The drink was invented by Henry Ramos in 1888, at his bar Meyer’s Table d’Hôtel Internationale in New Orleans. The Ramos Fizz was originally shaken for 12 minutes by a crew of 30 bartenders who passed the shaker from one to another.
+  instructions: |-
+    1. Pour all ingredients except soda water in a cocktail shaker with ice.
+    2. Shake for two minutes.
+    3. Double strain in a glass.
+    4. Pour the drink back in the shaker, and hard shake without ice for one minute.
+    5. Strain into a highball glass, top up with soda.
   garnish: N/A
   source: https://iba-world.com/ramos-fizz/
+  image_copyright: Punch Drink
   categories:
     - IBA Cocktail
     - The Unforgettables
     - Gin
 - name: Russian Spring Punch
-  description: null
+  description: The Russian Spring Punch was created in London, England by Dick Bradsell in the 1980s. He claims not to remember which bar he was working at at the time, but tells the story of how he created the recipe for personal friends wishing to hold a cocktail party while minimizing the amount of money they had to spend on alcohol. Participants were provided with the vodka, cassis, sugar syrup and lemon juice, and were asked to bring their own sparkling wine. It is named for the russian vodka, and the Tom Collins, which is a spring drink.
   ingredients:
     - 25 ml Vodka
     - 25 ml Lemon juice
@@ -1199,12 +1237,21 @@
       with sparkling wine.
   garnish: Garnish with blackberries and optionally a lemon slice as well.
   source: https://iba-world.com/russian-spring-punch/
+  image_copyright: Liquido Spirits
   categories:
     - IBA Cocktail
     - New Era Drinks
     - Vodka
 - name: Rusty Nail
-  description: null
+  description: |-
+    A Rusty Nail can be served in an old-fashioned glass on the rocks, or "up" in a stemmed glass. It is most commonly served over ice. A Rusty Nail served without ice is sometimes called a Straight Up Nail.
+
+      - **The Rusty Bob**, which substitutes Bourbon whiskey for blended Scotch whisky
+      - **The Rusty Ale**, in which a shot of Drambuie is added to any beer, served without ice.
+      - **The Smoky Nail**, which uses Islay whisky (very smoky in flavor) in place of blended Scotch whisky.
+      - **The Clavo Ahumado** (Spanish for "smoky nail"), using mezcal instead of blended Scotch whisky.
+      - **The Railroad Spike**, often served at brunch and made with approximately four parts Cold brewed coffee to one part Drambuie in a tall glass over ice.
+      - **The Donald Sutherland**, which substitutes Canadian rye whisky for blended Scotch whisky.
   ingredients:
     - 45 ml Scotch Whiskey
     - 25 ml Drambuie
@@ -1213,32 +1260,36 @@
       gently.
   garnish: Garnish with lemon zest.
   source: https://iba-world.com/rusty-nail/
+  image_copyright: Serious Eats
   categories:
     - IBA Cocktail
     - The Unforgettables
     - Whiskey
 - name: Sazerac
-  description: null
+  description: |-
+    The Sazerac is a local variation of a cognac or whiskey cocktail originally from New Orleans, named for the Sazerac de Forge et Fils brand of cognac brandy that served as its original main ingredient.
+    The drink is most traditionally a combination of cognac or rye whiskey, absinthe, Peychaud's Bitters, and sugar, although bourbon whiskey is sometimes substituted for the rye and Herbsaint is sometimes substituted for the absinthe.
+    Some claim it is the oldest known American cocktail, with origins in antebellum New Orleans, although drink historian David Wondrich is among those who dispute this, and American instances of published usage of the word cocktail to describe a mixture of spirits, bitters, and sugar can be traced to the dawn of the 19th century.
   ingredients:
     - 50 ml Cognac
     - 10 ml Absinthe
     - 1 cube Sugar
     - 2 Dashes Peychauds Bitters
-  instructions:
-    - Rinse a chilled old-fashioned glass with the absinthe, add crushed ice and set
-      it aside. Stir the remaining ingredients over ice in a mixing glass. Discard the
-      ice and any excess absinthe from the prepared glass, strain the mixed drink into
-      the glass.
-  garnish: |-
-    NOTE:
-    The original recipe changed after the American Civil War, Rye Whiskey substituted Cognac as it became hard to obtain.
+  instructions: |-
+    1. Rinse a chilled old-fashioned glass with the absinthe.
+    2. Add crushed ice and set it aside.
+    3. Stir the remaining ingredients over ice in a mixing glass.
+    4. Discard the ice and any excess absinthe from the prepared glass.
+    5. Strain the mixed drink into the glass.
+  garnish: Garnish with lemon zest.
   source: https://iba-world.com/sazerac/
+  image_copyright: The Spruce Eats
   categories:
     - IBA Cocktail
     - The Unforgettables
     - Brandy
 - name: Sea Breeze
-  description: null
+  description: The cocktail is usually consumed during summer months. The drink may be shaken in order to create a foamy surface.
   ingredients:
     - 40 ml Vodka
     - 120 ml Cranberry Juice
@@ -1247,12 +1298,19 @@
     - Build all ingredients in a highball glass filled with ice.
   garnish: Garnish with orange zest and cherry
   source: https://iba-world.com/sea-breeze/
+  image_copyright: Liquor.com / Tim Nusog
   categories:
     - Contemporary Classics
     - IBA Cocktail
     - Vodka
 - name: Sex on the Beach
-  description: null
+  description: |-
+    There are two general types of the cocktail:
+
+    - The IBA official cocktail is made from vodka, peach schnapps, orange juice, and cranberry juice.
+    - The 2008 Mr. Boston Official Bartender's Guide (67th edition) provides an alternative recipe made from vodka, Chambord, Midori Melon Liqueur, pineapple juice, and cranberry juice.
+
+    The drink is built over ice in a highball glass and garnished with an orange slice. Sometimes they are mixed in smaller amounts and served as a shooter.
   ingredients:
     - 40 ml Vodka
     - 20 ml Peach Schnapps
@@ -1262,12 +1320,16 @@
     - Build all ingredients in a highball glass filled with ice.
   garnish: Garnish with a half orange slice.
   source: https://iba-world.com/sex-on-the-beach/
+  image_copyright: Copy Kat Recipes
   categories:
     - Contemporary Classics
     - IBA Cocktail
     - Vodka
 - name: Sidecar
-  description: null
+  description: |-
+    The exact origin of the sidecar is unclear, but it is thought to have been invented around the end of World War I in either London or Paris. The drink was directly named for the motorcycle attachment, which was very commonly used back then.
+
+    Like the daiquiri, the sidecar evolved from the original sour formula, but sidecars are often drier than sours, combining liqueurs like curaçao with citrus. Sidecars are considered more of a challenge for bartenders because the proportion of ingredients is more difficult to balance for liqueurs of variable sweetness.
   ingredients:
     - 50 ml Cognac
     - 20 ml Triple Sec
@@ -1277,12 +1339,13 @@
       a chilled cocktail glass.
   garnish: N/A
   source: https://iba-world.com/sidecar/
+  image_copyright: A Couple Cooks
   categories:
     - IBA Cocktail
     - The Unforgettables
     - Brandy
 - name: Singapore Sling
-  description: null
+  description: This long drink was developed sometime before 1915 by bartender Ngiam Tong Boon, who was working at the Long Bar in Raffles Hotel, Singapore. It was initially called the gin sling – a sling was originally a North American drink composed of spirit and water, sweetened and flavored.
   ingredients:
     - 30 ml Gin
     - 15 ml Cherry liqueur
@@ -1297,12 +1360,14 @@
       Strain into Hurricane glass.
   garnish: Garnish with pineapple and maraschino cherry
   source: https://iba-world.com/singapore-sling/
+  image_copyright: The Spruce Eats
   categories:
     - Contemporary Classics
     - IBA Cocktail
     - Gin
+    - Tiki
 - name: Southside
-  description: null
+  description: Its origins are subject to speculation. It has been proposed that it gets its name from either the South Side district of the city of Chicago, Illinois, or from the Southside Sportsmen's Club on Long Island.
   ingredients:
     - 60 ml Gin
     - 30 ml Lemon juice
@@ -1315,6 +1380,7 @@
       If egg white is used shake vigorously.
   garnish: Garnish with mint springs.
   source: https://iba-world.com/southside/
+  image_copyright: Limoncello Kitchen
   categories:
     - IBA Cocktail
     - New Era Drinks
@@ -1332,12 +1398,13 @@
       into chilled cocktail glass.
   garnish: Garnish with a red chili pepper
   source: https://iba-world.com/spicy-fifty/
+  image_copyright: MixolopediA
   categories:
     - IBA Cocktail
     - New Era Drinks
     - Vodka
 - name: Spritz
-  description: null
+  description: A Spritz is a Venetian wine-based cocktail, commonly served as an aperitif in Northeast Italy. It consists of prosecco, digestive bitters and soda water. The Spritz became widely popular outside of Italy around 2018 and Aperol Spritz was ranked as the world's ninth bestselling cocktail in 2019 by the website Drinks International.
   ingredients:
     - 90 ml Prosecco
     - 60 ml Aperol
@@ -1349,12 +1416,13 @@
       There are other versions of the Spritz that use Campari, Cynar or Select instead of Aperol.
   garnish: Garnish with a slice of orange.
   source: https://iba-world.com/spritz/
+  image_copyright: Kitchen Swagger
   categories:
     - IBA Cocktail
     - New Era Drinks
     - Wine
 - name: Stinger
-  description: null
+  description: A Stinger is a duo cocktail made by adding crème de menthe to brandy (although recipes vary). The cocktail's origins can be traced to the United States in the 1890s, and the beverage remained widely popular in America until the 1970s. It was seen as a drink of the upper class, and has had a somewhat wide cultural impact. 
   ingredients:
     - 50 ml Cognac
     - 20 ml Menthe Crème de Cacao
@@ -1363,12 +1431,13 @@
       chilled martini cocktail glass.
   garnish: Optional mint leave.
   source: https://iba-world.com/stinger/
+  image_copyright: A Couple Cooks
   categories:
     - IBA Cocktail
     - The Unforgettables
     - Brandy
 - name: Suffering Bastard
-  description: null
+  description: When ordered in Tiki bars the Suffering Bastard is often served in the uniquely shaped and eponymously named "Suffering Bastard Tiki mug", made to look like a squat fellow with a hangover holding his hands over the top of his head in pain.
   ingredients:
     - 30 ml Cognac
     - 30 ml Gin
@@ -1381,13 +1450,15 @@
       and top up with ginger beer.
   garnish: Garnish with mint springs and optionally an orange slice as well.
   source: https://iba-world.com/suffering-bastard/
+  image_copyright: Keg Works
   categories:
     - IBA Cocktail
     - New Era Drinks
     - Brandy
     - Gin
+    - Tiki
 - name: Tequila Sunrise
-  description: null
+  description: The original tequila sunrise contained tequila, creme de cassis, lime juice, and soda water, and was served at the Arizona Biltmore Hotel where it was created by Gene Sulit in the 1930s or 1940s.
   ingredients:
     - 45 ml Tequila
     - 90 ml Orange Juice
@@ -1397,6 +1468,7 @@
       Add the grenadine syrup to create chromatic effect (sunrise), do not stir.
   garnish: Garnish with half orange slice or an orange zest
   source: https://iba-world.com/tequila-sunrise/
+  image_copyright: Homemade Hooplah
   categories:
     - Contemporary Classics
     - IBA Cocktail
@@ -1413,12 +1485,13 @@
       chilled martini cocktail glass.
   garnish: Garnish with a slice of orange.
   source: https://iba-world.com/tipperary/
+  image_copyright: MixolopediA
   categories:
     - IBA Cocktail
     - New Era Drinks
     - Whiskey
 - name: Tommy’s Margarita
-  description: null
+  description: Tommy's margarita was conceived in San Francisco in 1990 by Julio Bermejo at his parents' restaurant called Tommy's (not to be confused with Tommy's Place in Juárez, Mexico. See Margarita Origin). Bermejo had been recently introduced to agave nectar as an ingredient, and, although it was still expensive at the time, he preferred to use it to enhance the agave flavor of the cocktail instead of using triple sec to highlight the citrus flavor in the original Margarita recipe. In 2008, it became the first venue specific cocktail to be added to the IBA manual.
   ingredients:
     - 60 ml Tequila
     - 30 ml Lime Juice
@@ -1428,12 +1501,13 @@
       a chilled rocks glass filled with ice.
   garnish: Garnish with a lime slice.
   source: https://iba-world.com/tommys-margarita/
+  image_copyright: Moody Mixologist
   categories:
     - IBA Cocktail
     - New Era Drinks
     - Whiskey
 - name: Tuxedo
-  description: null
+  description: Related to the martini, the Tuxedo has had many variations since its inception in the 1880s. The cocktail is named after the Tuxedo Club in Orange County, New York where it was first mixed. Tuxedo Park, the planned community where the club was built, is itself a derivation of the Lenape word tucseto. The form of menswear by the same name originated at the same country club around the same time.
   ingredients:
     - 30 ml Gin
     - 30 ml Dry Vermouth
@@ -1445,29 +1519,33 @@
       chilled martini cocktail glass.
   garnish: Garnish with cherry and lemon zest
   source: https://iba-world.com/tuxedo/
+  image_copyright: Punch
   categories:
     - IBA Cocktail
     - The Unforgettables
     - Gin
 - name: VE.N.TO
-  description: null
+  description: The Ve.n.to is one of the new additions to the IBA (International Bartender Association) cocktail list. And it is a truly unusual one, for it is the first-ever Grappa cocktail that made it into one of the lists of the IBA.
   ingredients:
     - 45 ml Grappa
     - 22.5 ml lemon juice
     - 15 ml Honey syrup
     - 15 ml Chamomile cordial
-  instructions:
-    - |-
-      Pour all ingredients into the shaker. Shake vigorously with ice.  Strain into a chilled small tumbler glass filled with ice.
+  instructions: |-
+      1. Pour all ingredients into the shaker.
+      2. Shake vigorously with ice.
+      3. Strain into a chilled small tumbler glass filled with ice.
+
       Notes:
-      *If desired water can be replaced by chamomile infusion in the honey mix.
+      If desired water can be replaced by chamomile infusion in the honey mix.
   garnish: Garnish with lemon zest and white grapes.
   source: https://iba-world.com/ve-n-to/
+  image_copyright: IBA World
   categories:
     - IBA Cocktail
     - New Era Drinks
 - name: Vesper
-  description: null
+  description: The Vesper or Vesper Martini is a cocktail that was originally made of gin, vodka, and Kina Lillet. The formulations of its ingredients have changed since its original publication in print, and so some modern bartenders have created new versions which attempt to more closely mimic the original taste. The drink was invented and named by Ian Fleming in the 1953 James Bond novel Casino Royale.
   ingredients:
     - 45 ml Gin
     - 15 ml Vodka
@@ -1477,12 +1555,13 @@
       into a chilled cocktail glass.
   garnish: Lemon zest
   source: https://iba-world.com/vesper/
+  image_copyright: A Couple Cooks
   categories:
     - Contemporary Classics
     - IBA Cocktail
     - Gin
 - name: Vieux Carrè
-  description: null
+  description: It originated with Walter Bergeron, a bartender at New Orleans’ Carousel Bar in the Hotel Monteleone. The name is French for "old square”, in reference to the city's French Quarter neighborhood.
   ingredients:
     - 30 ml Rye Whiskey
     - 30 ml Cognac
@@ -1494,31 +1573,35 @@
       a chilled cocktail glass.
   garnish: Garnish with orange zest and maraschino cherry.
   source: https://iba-world.com/vieux-carre/
+  image_copyright: Liquor.com / Tim Nusog
   categories:
     - IBA Cocktail
     - The Unforgettables
     - Whiskey
     - Brandy
 - name: Whiskey Sour
-  description: null
+  description: The oldest historical mention of a whiskey sour was published in the Wisconsin newspaper, Waukesha Plain Dealer, in 1870. With egg white included, it is sometimes called a Boston Sour; when the whiskey used is a Scotch, it is called a Scotch Sour. With a few bar spoons of full-bodied red wine floated on top, it is often referred to as a New York Sour. It is shaken and served either straight up or over ice.
   ingredients:
     - 45 ml Bourbon Whiskey
     - 25 ml Lemon juice
     - 20 ml Simple Syrup
-  instructions:
-    - Pour all ingredients into a cocktail shaker filled with ice. Shake well. Strain
-      into cobbler glass. If served “On the rocks”, strain ingredients into an old fashioned
-      glass filled with ice.
-  garnish: |-
+  instructions: |-
+    1. Pour all ingredients into a cocktail shaker filled with ice.
+    2. Shake well.
+    3. Strain into cobbler glass.
+    4. If served “On the rocks”, strain ingredients into an old fashioned glass filled with ice.
+
     NOTE:
     If egg white is used shake little harder to release and incorporate the foam from the egg white.
+  garnish: Garnish with a half orange slice and maraschino cherry, optionally use orange zest.
   source: https://iba-world.com/whiskey-sour/
+  image_copyright: VinePair
   categories:
     - IBA Cocktail
     - The Unforgettables
     - Whiskey
 - name: White Lady
-  description: null
+  description: The original recipe for the White Lady was devised by Harry MacElhone in 1919 at Ciro's Club in London. He originally used crème de menthe, but replaced it with gin at Harry's New York Bar in Paris in 1929. According to the American Bar at the Savoy Hotel, the drink was created there by Harry Craddock.
   ingredients:
     - 40 ml Gin
     - 30 ml Triple Sec
@@ -1528,6 +1611,7 @@
       a chilled cocktail glass.
   garnish: N/A
   source: https://iba-world.com/white-lady/
+  image_copyright: BBC Good Food
   categories:
     - IBA Cocktail
     - The Unforgettables
@@ -1544,12 +1628,13 @@
       chilled cocktail glass.
   garnish: N/A
   source: https://iba-world.com/yellow-bird/
+  image_copyright: Cooking to Entertain
   categories:
     - IBA Cocktail
     - New Era Drinks
     - Rum
 - name: Zombie
-  description: null
+  description: It first appeared in late 1934, invented by Donn Beach at his Hollywood Don the Beachcomber restaurant. It was popularized on the East coast soon afterwards at the 1939 New York World's Fair. 
   ingredients:
     - 45 ml Jamaican rum
     - 45 ml Gold rum
@@ -1560,14 +1645,17 @@
     - 1 tsp Grenadine syrup
     - 1 dash Angostura aromatic bitters
     - 6 drops Pernod
-  instructions:
-    - Add all ingredients into an electric blender with 170 grams of cracked ice. With
-      pulse bottom blend for a few seconds. Serve in a tall tumbler glass.
-  garnish: |-
-    Note:
-    *Donn’s Mix: 2 parts of yellow grapefruit and 1 part of cinnamon syrup
+  instructions: |-
+    1. Add all ingredients into an electric blender with 170 grams of cracked ice.
+    2. With pulse bottom blend for a few seconds.
+    3. Serve in a tall tumbler glass.
+
+    Donn’s Mix: 2 parts of fresh yellow grapefruit and 1 part of cinnamon syrup
+  garnish: Garnish with mint leaves.
   source: https://iba-world.com/zombie/
+  image_copyright: Punch Drink
   categories:
     - Contemporary Classics
     - IBA Cocktail
     - Rum
+    - Tiki
