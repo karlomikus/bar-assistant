@@ -69,7 +69,12 @@ class DatabaseSeeder extends Seeder
         $misc = IngredientCategory::create(['name' => 'Misc.']);
 
         // Fruits
-        Ingredient::create(['name' => 'Lime', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
+        Ingredient::create(['name' => 'Lime', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Lime fruit']);
+        Ingredient::create(['name' => 'Lemon', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Lemon fruit']);
+        Ingredient::create(['name' => 'Orange', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Orange fruit']);
+        Ingredient::create(['name' => 'Pineapple', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Pineapple fruit']);
+        Ingredient::create(['name' => 'Apple', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Apple fruit']);
+        Ingredient::create(['name' => 'Peach', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Peach fruit']);
 
         // Misc
         Ingredient::create(['name' => 'White Peach Puree', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
@@ -170,6 +175,7 @@ class DatabaseSeeder extends Seeder
         Ingredient::create(['name' => 'Pisco', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Made by distilling fermented grape juice into a high-proof spirit.', 'origin' => 'South America']);
         Ingredient::create(['name' => 'Peach Schnapps', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Schnapps made from peaches.', 'origin' => 'Worldwide']);
         Ingredient::create(['name' => 'Grappa', 'ingredient_category_id' => $spirits->id, 'strength' => 50.0, 'color' => '#ffffff', 'description' => 'Fragrant, grape-based pomace brandy.', 'origin' => 'Italy']);
+        Ingredient::create(['name' => 'Rhum agricole', 'ingredient_category_id' => $spirits->id, 'strength' => 50.0, 'color' => '#ffffff', 'description' => 'Rum distilled from freshly squeezed sugarcane juice rather than molasses.', 'origin' => 'Caribbean']);
 
         // Syrups
         Ingredient::create(['name' => 'Simple Syrup', 'ingredient_category_id' => $syrups->id, 'description' => 'Syrup made with sugar and water. Usually in 1:1 or 2:1 ratio.', 'color' => '#e6dfcc']);
