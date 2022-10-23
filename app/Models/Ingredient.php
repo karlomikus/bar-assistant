@@ -5,17 +5,18 @@ namespace Kami\Cocktail\Models;
 
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
-use Kami\Cocktail\UpdateSiteSearch;
+use Kami\Cocktail\SearchActions;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ingredient extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory, Searchable, HasImages;
+
+    private $appImagesDir = 'ingredients/';
+    private $missingImageFileName = 'no-image.png'; // TODO: WEBP
 
     protected $fillable = [
         'name',
@@ -35,7 +36,11 @@ class Ingredient extends Model
         });
 
         static::saved(function($ing) {
-            UpdateSiteSearch::update($ing);
+            SearchActions::update($ing);
+        });
+
+        static::deleted(function($ing) {
+            SearchActions::delete($ing);
         });
     }
 
@@ -47,28 +52,6 @@ class Ingredient extends Model
     public function cocktails(): BelongsToMany
     {
         return $this->belongsToMany(Cocktail::class, CocktailIngredient::class);
-    }
-
-    public function images(): MorphMany
-    {
-        return $this->morphMany(Image::class, 'imageable');
-    }
-
-    public function latestImageFilePath(): ?string
-    {
-        return $this->images->first()->file_path ?? null;
-    }
-
-    public function getImageUrl(): string
-    {
-        $disk = Storage::disk('app_images');
-        $filePath = $this->latestImageFilePath();
-
-        if (!$filePath || !$disk->exists($filePath)) {
-            return $disk->url('ingredients/no-image.png');
-        }
-
-        return $disk->url($filePath);
     }
 
     public function toSiteSearchArray()

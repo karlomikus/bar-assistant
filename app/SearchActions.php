@@ -3,8 +3,19 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail;
 
-class UpdateSiteSearch
+class SearchActions
 {
+    public static function updateCocktailIndex()
+    {
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine */
+        $engine = app(\Laravel\Scout\EngineManager::class)->engine();
+
+        $engine->index('cocktails')->updateSettings([
+            'filterableAttributes' => ['tags'],
+            'sortableAttributes' => ['id', 'name', 'date']
+        ]);
+    }
+
     public static function update($model)
     {
         /** @var \Laravel\Scout\Engines\MeiliSearchEngine */

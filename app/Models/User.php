@@ -53,4 +53,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(CocktailFavorite::class);
     }
+
+    public function shoppingLists(): HasMany
+    {
+        return $this->hasMany(UserShoppingList::class);
+    }
 }

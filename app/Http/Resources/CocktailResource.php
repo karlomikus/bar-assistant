@@ -26,7 +26,7 @@ class CocktailResource extends JsonResource
             'garnish' => e($this->garnish),
             'description' => e($this->description),
             'source' => $this->source,
-            'image_copyright' => $this->images->first()->copyright,
+            'image_copyright' => $this->images->first()->copyright ?? null,
             'image_url' => $this->getImageUrl(),
             'tags' => $this->tags->pluck('name'),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),

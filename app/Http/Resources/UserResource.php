@@ -24,6 +24,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'favorite_cocktails' => $this->favorites->pluck('cocktail_id'),
             'shelf_ingredients' => $this->shelfIngredients->pluck('ingredient_id'),
+            'shopping_lists' => $this->shoppingLists->pluck('ingredient_id'),
         ];
     }
 }

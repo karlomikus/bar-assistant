@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\Storage;
+use Kami\Cocktail\Http\Requests\ImageRequest;
 use Kami\Cocktail\Http\Resources\ErrorResource;
 use Kami\Cocktail\Http\Resources\ImageResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
@@ -28,7 +29,7 @@ class ImageController extends Controller
         return new ImageResource($image);
     }
 
-    public function store(Request $request)
+    public function store(ImageRequest $request)
     {
         $imagesWithMeta = $request->images;
 

@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Http\Resources\ErrorResource;
+use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -38,7 +39,7 @@ class CocktailController extends Controller
         return new CocktailResource($cocktail);
     }
 
-    public function store(CocktailService $cocktailService, Request $request): JsonResponse
+    public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
         try {
             $cocktail = $cocktailService->createCocktail(
@@ -61,7 +62,7 @@ class CocktailController extends Controller
             ->header('Location', route('cocktails.show', $cocktail->id));
     }
 
-    public function update(CocktailService $cocktailService, Request $request, int $id): JsonResponse
+    public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): JsonResponse
     {
         $cocktail = $cocktailService->updateCocktail(
             $id,

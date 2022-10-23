@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user();
+        $user = $request->user()->load('favorites', 'shelfIngredients', 'shoppingLists');
 
         return new UserResource($user);
     }

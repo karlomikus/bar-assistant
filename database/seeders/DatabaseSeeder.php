@@ -216,6 +216,8 @@ class DatabaseSeeder extends Seeder
 
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);
+
+        \Kami\Cocktail\UpdateSiteSearch::updateCocktailIndex();
     }
 
     private function importIBACocktailsFromJson()

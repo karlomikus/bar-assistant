@@ -7,6 +7,7 @@ use Throwable;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\IngredientCategory;
+use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Http\Resources\ErrorResource;
 use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
@@ -39,39 +40,35 @@ class IngredientController extends Controller
         return new IngredientResource($ingredient);
     }
 
-    public function store(Request $request)
+    public function store(IngredientService $ingredientService, Request $request)
     {
-        $ingredient = new Ingredient();
-        $ingredient->name = $request->post('name');
-        $ingredient->strength = floatval($request->post('strength'));
-        $ingredient->description = $request->post('description');
-        $ingredient->history = $request->post('history');
-        $ingredient->origin = $request->post('origin');
-        $ingredient->color = $request->post('color');
-        $ingredient->ingredient_category_id = (int) $request->post('ingredient_category_id');
-        $ingredient->parent_ingredient_id = $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null;
-        $ingredient->save();
+        $ingredient = $ingredientService->createIngredient(
+            $request->post('name'),
+            (int) $request->post('ingredient_category_id'),
+            floatval($request->post('strength', 0.0)),
+            $request->post('description'),
+            $request->post('origin'),
+            $request->post('color'),
+            $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null,
+            []
+        );
 
         return new IngredientResource($ingredient);
     }
 
-    public function update(Request $request, int $id)
+    public function update(IngredientService $ingredientService, Request $request, int $id)
     {
-        try {
-            $ingredient = Ingredient::findOrFail($id);
-        } catch(Throwable $e) {
-            return new ErrorResource($e);
-        }
-
-        $ingredient->name = $request->post('name');
-        $ingredient->strength = floatval($request->post('strength'));
-        $ingredient->description = $request->post('description');
-        $ingredient->history = $request->post('history');
-        $ingredient->origin = $request->post('origin');
-        $ingredient->color = $request->post('color');
-        $ingredient->ingredient_category_id = (int) $request->post('ingredient_category_id');
-        $ingredient->parent_ingredient_id = $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null;
-        $ingredient->save();
+        $ingredient = $ingredientService->updateIngredient(
+            $id,
+            $request->post('name'),
+            (int) $request->post('ingredient_category_id'),
+            floatval($request->post('strength', 0.0)),
+            $request->post('description'),
+            $request->post('origin'),
+            $request->post('color'),
+            $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null,
+            []
+        );
 
         return new IngredientResource($ingredient);
     }
@@ -92,5 +89,10 @@ class IngredientController extends Controller
         $categories = IngredientCategory::all();
 
         return IngredientCategoryResource::collection($categories);
+    }
+
+    public function addToShoppingList(Request $request)
+    {
+        // $request->user()->
     }
 }
