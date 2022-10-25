@@ -29,6 +29,23 @@ class ShelfController extends Controller
         return new UserIngredientResource($si);
     }
 
+    public function batch(Request $request)
+    {
+        // TODO Toggle
+        $ingredientIds = $request->post('ids');
+
+        $models = [];
+        foreach ($ingredientIds as $ingId) {
+            $userIngredient = new UserIngredient();
+            $userIngredient->ingredient_id = $ingId;
+            $models[] = $userIngredient;
+        }
+
+        $si = $request->user()->shelfIngredients()->saveMany($models);
+
+        return UserIngredientResource::collection($si);
+    }
+
     public function delete(Request $request, int $ingredientId)
     {
         try {

@@ -23,6 +23,21 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails);
     }
 
+    public function random()
+    {
+        try {
+            $cocktail = Cocktail::inRandomOrder()
+                ->firstOrFail()
+                ->load('ingredients.ingredient', 'images', 'tags');
+        } catch (ModelNotFoundException $e) {
+            return (new ErrorResource($e))->response()->setStatusCode(404);
+        } catch (Throwable $e) {
+            return (new ErrorResource($e))->response()->setStatusCode(400);
+        }
+
+        return new CocktailResource($cocktail);
+    }
+
     public function show(int|string $idOrSlug)
     {
         try {

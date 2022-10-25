@@ -30,12 +30,15 @@ class IngredientResource extends JsonResource
             'ingredient_category_id' => $this->ingredient_category_id,
             'color' => $this->color,
             'category' => new IngredientCategoryResource($this->category),
-            'cocktails' => $this->cocktails->map(function ($c) {
-                return [
-                    'id' => $c->id,
-                    'name' => $c->name,
-                    'slug' => $c->slug,
-                ];
+            'cocktails_count' => $this->whenCounted('cocktails'),
+            'cocktails' => $this->whenLoaded('cocktails', function () {
+                return $this->cocktails->map(function ($c) {
+                    return [
+                        'id' => $c->id,
+                        'name' => $c->name,
+                        'slug' => $c->slug,
+                    ];
+                });
             })
         ];
     }

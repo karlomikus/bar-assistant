@@ -54,6 +54,13 @@ class Ingredient extends Model
         return $this->belongsToMany(Cocktail::class, CocktailIngredient::class);
     }
 
+    public function delete()
+    {
+        $this->deleteImages();
+
+        return parent::delete();
+    }
+
     public function toSiteSearchArray()
     {
         return [

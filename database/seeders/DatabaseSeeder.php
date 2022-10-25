@@ -130,15 +130,15 @@ class DatabaseSeeder extends Seeder
         Ingredient::create(['name' => 'Cherry liqueur', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
 
         // Juices
-        Ingredient::create(['name' => 'Lemon juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed lemon juice.']);
-        Ingredient::create(['name' => 'Lime juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed lime juice.']);
-        Ingredient::create(['name' => 'Orange juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed orange juice.']);
-        Ingredient::create(['name' => 'Grapefruit juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed grapefruit juice.']);
-        Ingredient::create(['name' => 'Cranberry juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Cranberry juice.']);
-        Ingredient::create(['name' => 'Tomato juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Tomato juice.']);
-        Ingredient::create(['name' => 'Pineapple juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Elderflower Cordial', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
-        Ingredient::create(['name' => 'Chamomile cordial', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
+        Ingredient::create(['name' => 'Lemon juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed lemon juice.', 'color' => '#f3efda']);
+        Ingredient::create(['name' => 'Lime juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed lime juice.', 'color' => '#e9f1d7']);
+        Ingredient::create(['name' => 'Orange juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed orange juice.', 'color' => '#ff9518']);
+        Ingredient::create(['name' => 'Grapefruit juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed grapefruit juice.', 'color' => '#ed7500']);
+        Ingredient::create(['name' => 'Cranberry juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Juice made from cranberries.', 'color' => '#9c0024']);
+        Ingredient::create(['name' => 'Tomato juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Juice made from tomatoes.', 'color' => '#f16624']);
+        Ingredient::create(['name' => 'Pineapple juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Juice from pineapple fruit.', 'color' => '#eadb34']);
+        Ingredient::create(['name' => 'Elderflower Cordial', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Herbal juice made from elderflower.', 'color' => '#d9cfae']);
+        Ingredient::create(['name' => 'Chamomile cordial', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Herbal juice made from chamomile.', 'color' => '#e2dccc']);
 
         // Beverages
         Ingredient::create(['name' => 'Water', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'description' => $faker->sentence()]);
@@ -217,7 +217,7 @@ class DatabaseSeeder extends Seeder
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);
 
-        \Kami\Cocktail\UpdateSiteSearch::updateCocktailIndex();
+        \Kami\Cocktail\SearchActions::updateCocktailIndex();
     }
 
     private function importIBACocktailsFromJson()

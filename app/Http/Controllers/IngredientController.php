@@ -18,10 +18,18 @@ class IngredientController extends Controller
 {
     public function index(Request $request)
     {
-        $ingredients = Ingredient::with('category')->orderBy('name')->orderBy('ingredient_category_id');
+        $ingredients = Ingredient::with('category', 'images')
+            ->orderBy('name')
+            ->orderBy('ingredient_category_id')
+            ->withCount('cocktails');
 
         if ($request->has('category_id')) {
             $ingredients->where('ingredient_category_id', $request->get('category_id'));
+        }
+
+        if ($request->has('on_shopping_list')) {
+            $usersList = $request->user()->shoppingLists->pluck('ingredient_id');
+            $ingredients->whereIn('id', $usersList);
         }
 
         return IngredientResource::collection($ingredients->get());
@@ -30,7 +38,10 @@ class IngredientController extends Controller
     public function show(int|string $id)
     {
         try {
-            $ingredient = Ingredient::where('id', $id)->orWhere('slug', $id)->firstOrFail();
+            $ingredient = Ingredient::with('cocktails', 'images')
+                ->where('id', $id)
+                ->orWhere('slug', $id)
+                ->firstOrFail();
         } catch (ModelNotFoundException $e) {
             return (new ErrorResource($e))->response()->setStatusCode(404);
         } catch (Throwable $e) {
@@ -50,7 +61,7 @@ class IngredientController extends Controller
             $request->post('origin'),
             $request->post('color'),
             $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null,
-            []
+            $request->post('images', [])
         );
 
         return new IngredientResource($ingredient);
@@ -67,7 +78,7 @@ class IngredientController extends Controller
             $request->post('origin'),
             $request->post('color'),
             $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null,
-            []
+            $request->post('images', [])
         );
 
         return new IngredientResource($ingredient);
@@ -77,8 +88,10 @@ class IngredientController extends Controller
     {
         try {
             Ingredient::findOrFail($id)->delete();
+        } catch (ModelNotFoundException $e) {
+            return (new ErrorResource($e))->response()->setStatusCode(404);
         } catch (Throwable $e) {
-            return new ErrorResource($e);
+            return (new ErrorResource($e))->response()->setStatusCode(400);
         }
 
         return new SuccessActionResource((object) ['id' => $id]);
@@ -86,13 +99,9 @@ class IngredientController extends Controller
 
     public function categories()
     {
+        // TODO MOVE
         $categories = IngredientCategory::all();
 
         return IngredientCategoryResource::collection($categories);
-    }
-
-    public function addToShoppingList(Request $request)
-    {
-        // $request->user()->
     }
 }

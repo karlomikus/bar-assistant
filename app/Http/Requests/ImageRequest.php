@@ -24,7 +24,7 @@ class ImageRequest extends FormRequest
     public function rules()
     {
         return [
-            'images.*.image' => 'required|image|size:3000',
+            'images.*.image' => 'required|image',
         ];
     }
 }

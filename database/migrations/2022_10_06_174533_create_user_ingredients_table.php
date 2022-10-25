@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('ingredient_id')->constrained();
+
+            $table->unique(['user_id', 'ingredient_id']);
         });
     }
 

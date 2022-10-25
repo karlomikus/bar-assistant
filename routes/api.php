@@ -8,6 +8,7 @@ use Kami\Cocktail\Http\Controllers\ShelfController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\HealthController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
+use Kami\Cocktail\Http\Controllers\ShoppingListController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::prefix('shelf')->group(function() {
         Route::get('/', [ShelfController::class, 'index']);
+        Route::post('/batch', [ShelfController::class, 'batch']);
         Route::post('/{ingredientId}', [ShelfController::class, 'save']);
         Route::delete('/{ingredientId}', [ShelfController::class, 'delete']);
     });
@@ -44,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::prefix('cocktails')->group(function() {
         Route::get('/', [CocktailController::class, 'index'])->name('cocktails.index');
+        Route::get('/random', [CocktailController::class, 'random'])->name('cocktails.random');
         Route::get('/user-shelf', [CocktailController::class, 'userShelf'])->name('cocktails.user-shelf');
         Route::get('/user-favorites', [CocktailController::class, 'userFavorites'])->name('cocktails.user-favorites');
         Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show');
@@ -57,6 +60,11 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/{id}', [ImageController::class, 'show']);
         Route::post('/', [ImageController::class, 'store']);
         Route::delete('/{id}', [ImageController::class, 'delete']);
+    });
+
+    Route::prefix('shopping-lists')->group(function() {
+        Route::post('/batch', [ShoppingListController::class, 'batchStore']);
+        Route::delete('/batch', [ShoppingListController::class, 'batchDelete']);
     });
 
 });
