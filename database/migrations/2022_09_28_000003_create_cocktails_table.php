@@ -32,7 +32,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('ingredient_id')->constrained();
             $table->foreignId('cocktail_id')->constrained()->onDelete('cascade');
-            $table->integer('amount');
+            $table->decimal('amount');
             $table->string('units');
             $table->integer('sort')->default(0);
             $table->boolean('optional')->default(false);

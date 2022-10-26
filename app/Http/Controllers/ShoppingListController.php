@@ -20,16 +20,13 @@ class ShoppingListController extends Controller
         foreach ($ingredientIds as $ingId) {
             $usl = new UserShoppingList();
             $usl->ingredient_id = $ingId;
-            $models[] = $usl;
+            try {
+                $models[] = $request->user()->shoppingLists()->save($usl);
+            } catch (Throwable $e) {
+            }
         }
 
-        try {
-            $lists = $request->user()->shoppingLists()->saveMany($models);
-        } catch (Throwable $e) {
-            return (new ErrorResource($e))->response()->setStatusCode(400);
-        }
-
-        return UserShoppingListResource::collection($lists);
+        return UserShoppingListResource::collection($models);
     }
 
     public function batchDelete(Request $request)

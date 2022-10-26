@@ -111,23 +111,25 @@ class DatabaseSeeder extends Seeder
         Ingredient::create(['name' => 'Crème de cassis (blackcurrant liqueur)', 'ingredient_category_id' => $liqueurs->id, 'strength' => 15.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
         Ingredient::create(['name' => 'Crème de Violette', 'ingredient_category_id' => $liqueurs->id, 'strength' => 16.0, 'description' => 'Crème de violette is a delicate, barely-sweet liqueur made from violet flower petals.']);
         Ingredient::create(['name' => 'Crème de mûre (blackberry liqueur)', 'ingredient_category_id' => $liqueurs->id, 'strength' => 42.3, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
-        Ingredient::create(['name' => 'Cointreau', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Cointreau', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'Orange-flavoured triple sec liqueur.', 'color' => '#ffffff', 'origin' => 'France']);
         Ingredient::create(['name' => 'Grand Marnier', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
-        Ingredient::create(['name' => 'Suze', 'ingredient_category_id' => $liqueurs->id, 'strength' => 15.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Suze', 'ingredient_category_id' => $liqueurs->id, 'strength' => 15.0, 'description' => 'Bitter flavored drink made with the roots of the plant gentian.', 'color' => '#ffffff', 'origin' => 'Switzerland']);
         Ingredient::create(['name' => 'Triple Sec', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
         Ingredient::create(['name' => 'Maraschino Luxardo', 'ingredient_category_id' => $liqueurs->id, 'strength' => 32.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
         Ingredient::create(['name' => 'Galliano', 'ingredient_category_id' => $liqueurs->id, 'strength' => 42.3, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
-        Ingredient::create(['name' => 'Orange Curaçao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
-        Ingredient::create(['name' => 'Blue Curaçao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Orange Curaçao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 20.0, 'description' => 'Liqueur flavored with the dried peel of the bitter orange laraha, a citrus fruit grown on the Dutch island of Curaçao.', 'color' => '#edaa53', 'origin' => 'Netherlands']);
+        Ingredient::create(['name' => 'Blue Curaçao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 20.0, 'description' => 'Liqueur flavored with the dried peel of the bitter orange laraha, a citrus fruit grown on the Dutch island of Curaçao.', 'color' => '#0192fe', 'origin' => 'Netherlands']);
         Ingredient::create(['name' => 'Raspberry Liqueur', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
         Ingredient::create(['name' => 'Falernum', 'ingredient_category_id' => $liqueurs->id, 'strength' => 11.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
         Ingredient::create(['name' => 'Green Chartreuse', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
         Ingredient::create(['name' => 'Yellow Chartreuse', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
-        Ingredient::create(['name' => 'Amaro Nonino', 'ingredient_category_id' => $liqueurs->id, 'strength' => 35.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Amaro Nonino', 'ingredient_category_id' => $liqueurs->id, 'strength' => 35.0, 'description' => 'Sweet amaro', 'color' => '#c16e4b', 'origin' => 'Italy']);
         Ingredient::create(['name' => 'Drambuie', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
-        Ingredient::create(['name' => 'Bénédictine', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
-        Ingredient::create(['name' => 'Pernod', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Bénédictine', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'Herbal liqueur flavored with twenty-seven flowers, berries, herbs, roots, and spices.', 'color' => '#f39100', 'origin' => 'France']);
+        Ingredient::create(['name' => 'Pernod', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'Anise flavored liqueur', 'color' => '#c6c0a0', 'origin' => 'France']);
         Ingredient::create(['name' => 'Cherry liqueur', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'DESC', 'color' => '#ffffff', 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Pelinkovac', 'ingredient_category_id' => $liqueurs->id, 'strength' => 32.0, 'description' => 'Pelinkovac is a liqueur based on wormwood, it has a very bitter taste, resembling that of Jägermeister.', 'color' => '#573f42', 'origin' => 'Southeast Europe']);
+        Ingredient::create(['name' => 'Ouzo', 'ingredient_category_id' => $liqueurs->id, 'strength' => 35.0, 'description' => 'Dry anise-flavored aperitif that is widely consumed in Greece.', 'color' => '#ffffff', 'origin' => 'Greece']);
 
         // Juices
         Ingredient::create(['name' => 'Lemon juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed lemon juice.', 'color' => '#f3efda']);

@@ -26,6 +26,11 @@ class CocktailRequest extends FormRequest
         return [
             'name' => 'required',
             'instructions' => 'required',
+            'ingredients' => 'array',
+            'images' => 'array',
+            'ingredients.*.amount' => 'numeric',
+            'ingredients.*.units' => 'required_with:ingredients.*.amount',
+            'ingredients.*.optional' => 'boolean',
         ];
     }
 }

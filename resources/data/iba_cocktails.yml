@@ -133,7 +133,10 @@
     - New Era Drinks
     - Rum
 - name: Bee’s Knees
-  description: null
+  description: |-
+    The Bee's Knees was invented by Frank Meier, an Austrian-born, part Jewish bartender who was the first head bartender at the Ritz in Paris in 1921, when its Cafe Parisian opened its doors.
+
+    The name comes from prohibition-era slang meaning "the best".
   ingredients:
     - 52.5 ml Gin
     - 2 teaspoon Honey Syrup
@@ -143,6 +146,14 @@
     1. Stir honey with lemon and orange juices until it dissolves
     2. Add gin and shake with ice
     3. Strain into a chilled cocktail glass
+
+    **Variations:**
+    - Barr Hill Gin is sometimes recommended for its honey infusion, though other gins may be used (including Barr Hill's Tom Cat gin).
+    - The honey may be diluted 1:1 with warm water to thin the consistency.
+    - The honey may be diluted 1:1 with simple syrup instead of water.
+    - A sprig of basil or thyme may be used for garnish instead of lemon peel.
+    - Some variations contain orange juice
+    - Add 2 dashes of absinthe and 2 dashes of orange bitters to make a variation called "Oldest Living Confederate Widow"
   garnish: Optionally garnish with a lemon or orange zest.
   source: https://iba-world.com/bees-knees/
   image_copyright: Kitchen Swagger
@@ -152,6 +163,8 @@
     - Gin
 - name: Bellini
   description: |-
+    The Bellini was invented sometime between 1934 and 1948 by Giuseppe Cipriani, founder of Harry's Bar in Venice, Italy. He named the drink the Bellini because its unique pink color reminded him of the toga of a saint in a painting by 15th-century Venetian artist Giovanni Bellini.
+
     Variations:
 
     **PUCCINI** – Fresh Mandarin Orange Juice;
@@ -174,7 +187,8 @@
     - IBA Cocktail
     - Wine
 - name: Between the Sheets
-  description: null
+  description: |-
+    The origin of the cocktail is usually credited to Harry MacElhone at Harry's New York Bar in Paris in the 1930s as a derivative of the sidecar. However, competing theories exist that claim the cocktail was created at The Berkeley in approximately 1921, or in French brothels as an apéritif for consumption by the prostitutes.
   ingredients:
     - 30 ml White Rum
     - 30 ml Cognac
@@ -242,7 +256,7 @@
     - The Unforgettables
     - Whiskey
 - name: Bramble
-  description: null
+  description: The boulevardier is similar to a Negroni, sharing two of its three ingredients. It is differentiated by its use of bourbon whiskey or rye whiskey as its principal component instead of gin. Paul Clark, writing for the food blog Serious Eats, says, "This isn't a Negroni. It is, however, the Negroni's long-lost autumnal cousin."
   ingredients:
     - 50 ml Gin
     - 25 ml Lemon juice
@@ -261,7 +275,10 @@
     - New Era Drinks
     - Gin
 - name: Brandy Crusta
-  description: null
+  description: |-
+    The cocktail, named for the crust of sugar on the rim, was invented by Joseph Santini, a bartender in New Orleans at his bar, Jewel of the South.
+
+    Jerry Thomas was the first to publish the recipe in his 1862 cocktail manual.
   ingredients:
     - 52,5 ml Brandy
     - 7,5 ml Maraschino Luxardo
@@ -282,8 +299,8 @@
     - IBA Cocktail
     - The Unforgettables
     - Brandy
-- name: Canchanchara
-  description: null
+- name: Canchànchara
+  description: Known as the forerunner of the Daiquiri, and drunk by Cuban revolutionaries fighting off the Spanish at the end of the nineteenth century, the Canchànchara is a simple mix of honey, citrus and rum (originally aguardiente de caña rather than rum).
   ingredients:
     - 60 ml White rum
     - 15 ml Lime Juice
@@ -302,6 +319,8 @@
     - Rum
 - name: Caipirinha
   description: |-
+    Although the origin of the drink is unknown, one account says it came about around 1918 in the region of Alentejo in Portugal, with a popular recipe made with lemon, garlic, and honey, indicated for patients with the Spanish flu. Another account is that Caipirinha is based on Poncha, an alcoholic drink from Madeira, Portugal. The main ingredient is aguardente de cana, which is made from sugar cane. Sugar cane production was switched from Madeira to Brazil by the Portuguese as they needed more land to plant it on. Before this people in Madeira had already created aguardente de cana, which was the ancestor to cachaça.
+
     Variations:
 
     **CAIPIROSKA** – Instead of Cachaça use Vodka;
@@ -320,7 +339,7 @@
     - Contemporary Classics
     - IBA Cocktail
 - name: Casino
-  description: null
+  description: This version of the Casino Cocktail first appears in 1909, in The Reminder (3rd edition) by Jacob A. Didier.
   ingredients:
     - 40 ml Gin
     - 10 ml Maraschino Luxardo
@@ -337,7 +356,7 @@
     - The Unforgettables
     - Gin
 - name: Champagne Cocktail
-  description: null
+  description: A recipe for the cocktail appears as early as "Professor" Jerry Thomas' Bon Vivant's Companion (1862), which omits the brandy or cognac and is considered to be the "classic" American version.
   ingredients:
     - 90 ml Champagne
     - 10 ml Cognac
@@ -355,15 +374,18 @@
     - IBA Cocktail
     - Wine
 - name: Clover Club
-  description: null
+  description: The Clover Club Cocktail is a drink that pre-dates Prohibition in the United States, and is named for the Philadelphia men's club of the same name, which met in the Bellevue-Stratford Hotel at South Broad and Walnut Streets in Center City. The Clover Club was chartered in 1882.
   ingredients:
     - 45 ml Gin
     - 15 ml Raspberry Syrup
     - 15 ml Lemon juice
     - 1 drop Egg White
-  instructions:
-    - Pour all ingredients into cocktails shaker, shake well with ice, strain into chilled
-      cocktail glass.
+  instructions: |-
+    1. Pour all ingredients into cocktails shaker.
+    2. Shake well with ice.
+    3. Strain into chilled cocktail glass.
+
+    The egg white is not added for the purpose of giving the drink flavor, but rather acts as an emulsifier. Thus when the drink is shaken a characteristic foamy head is formed. 
   garnish: Fresh raspberries
   source: https://iba-world.com/clover-club/
   image_copyright: A Couple Cooks
@@ -371,8 +393,8 @@
     - IBA Cocktail
     - The Unforgettables
     - Gin
-- name: "Corpse Reviver #2"
-  description: null
+- name: "Corpse Reviver №2"
+  description: The Corpse Reviver №2 as described in the Savoy Cocktail Book is the most commonly drunk of the corpse revivers, and consists of equal parts gin, lemon juice, curaçao (commonly Cointreau), Kina Lillet (now usually replaced with Cocchi Americano, as a closer match to Kina Lillet than modern Lillet Blanc), and a dash of absinthe. The dash of absinthe can either be added to the mix before shaking, or added to the cocktail glass and moved around until the glass has been coated with a layer of absinthe to give a subtle absinthe aroma and flavor to the drink.
   ingredients:
     - 30 ml Gin
     - 30 ml Cointreau
