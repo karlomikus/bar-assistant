@@ -92,14 +92,14 @@
 
     Lately David Wondrich found the aviation recipe in a 1911 magazine, so the recipe is thought to have been born earlier then 1916.
 
-    In his book Ensslin also indicates the type of Gin to be used ‘El Bart Gin “and the recipe is made up in addition to gin, with lemon juice, maraschino Luxardo and Creme di Violette.
+    In his book Ensslin also indicates the type of Gin to be used ‘El Bart Gin “and the recipe is made up in addition to gin, with lemon juice, maraschino and Creme di Violette.
 
     The recipe is found again in Harry Craddock’s 1930 Savoy Cocktail Book but without the Creme de Violette, this probably due to the difficulty of finding the violet cream during the post-war period In the 1960s it was still unavailable and therefore, simply, the basic ingredient of the Aviation cocktail was discontinued and the bartenders definitively gave up the characteristic blue color of the drink.
 
     The IBA proposes it today in its original version with the creme de violette which is now on the market again.  This fragrant ingredient not only gave the mix a sweetly floral taste, but also gave it a beautiful sky blue color.
   ingredients:
     - 45 ml Gin
-    - 15 ml Maraschino Luxardo
+    - 15 ml Maraschino
     - 15 ml Lemon juice
     - 1 teaspoon Crème de Violette
   instructions: |-
@@ -241,7 +241,7 @@
     - IBA Cocktail
     - Vodka
 - name: Boulevardier
-  description: null
+  description: The boulevardier is similar to a Negroni, sharing two of its three ingredients. It is differentiated by its use of bourbon whiskey or rye whiskey as its principal component instead of gin. Paul Clark, writing for the food blog Serious Eats, says, "This isn't a Negroni. It is, however, the Negroni's long-lost autumnal cousin."
   ingredients:
     - 45 ml Whiskey
     - 30 ml Campari
@@ -256,7 +256,7 @@
     - The Unforgettables
     - Whiskey
 - name: Bramble
-  description: The boulevardier is similar to a Negroni, sharing two of its three ingredients. It is differentiated by its use of bourbon whiskey or rye whiskey as its principal component instead of gin. Paul Clark, writing for the food blog Serious Eats, says, "This isn't a Negroni. It is, however, the Negroni's long-lost autumnal cousin."
+  description: null
   ingredients:
     - 50 ml Gin
     - 25 ml Lemon juice
@@ -281,7 +281,7 @@
     Jerry Thomas was the first to publish the recipe in his 1862 cocktail manual.
   ingredients:
     - 52,5 ml Brandy
-    - 7,5 ml Maraschino Luxardo
+    - 7,5 ml Maraschino
     - 1 teaspoon Orange Curaçao
     - 15 ml Lemon juice
     - 1 teaspoon Simple Syrup
@@ -342,7 +342,7 @@
   description: This version of the Casino Cocktail first appears in 1909, in The Reminder (3rd edition) by Jacob A. Didier.
   ingredients:
     - 40 ml Gin
-    - 10 ml Maraschino Luxardo
+    - 10 ml Maraschino
     - 10 ml Lemon juice
     - 2 Dashes Orange bitters
   instructions:
@@ -559,7 +559,7 @@
   description: null
   ingredients:
     - 45 ml Vodka
-    - 15 ml Raspberry Liqueur
+    - 15 ml Chambord
     - 15 ml Pineapple Juice
   instructions:
     - Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled
@@ -643,7 +643,7 @@
   ingredients:
     - 60 ml Dark Rum
     - 40 ml Grapefruit Juice
-    - 15 ml Maraschino Luxardo
+    - 15 ml Maraschino
     - 15 ml Lime juice
   instructions:
     - Pour all ingredients into a shaker with ice. Shake well and strain into a large
@@ -678,7 +678,7 @@
     - 30 ml Mezcal
     - 15 ml White Rum
     - 15 ml Falernum
-    - 1 teaspoon Maraschino Luxardo
+    - 1 teaspoon Maraschino
     - 22.5 ml Lime Juice
     - 15 ml Simple Syrup
     - 1 Drops Egg White
@@ -756,7 +756,7 @@
   ingredients:
     - 22.5 ml Gin
     - 22.5 ml Green Chartreuse
-    - 22.5 ml Maraschino Luxardo
+    - 22.5 ml Maraschino
     - 22.5 ml Lime Juice
   instructions:
     - Add all ingredients into a cocktail shaker. Shake with ice and strain into a chilled
@@ -867,7 +867,7 @@
   ingredients:
     - 45 ml Gin
     - 45 ml Sweet Vermouth
-    - 1 teaspoon Maraschino Luxardo
+    - 1 teaspoon Maraschino
     - 2 Dashes Orange Bitters
   instructions:
     - Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into
@@ -884,7 +884,7 @@
   ingredients:
     - 45 ml White Rum
     - 45 ml Pineapple Juice
-    - 7.5 ml Maraschino Luxardo
+    - 7.5 ml Maraschino
     - 5 ml Grenadine Syrup
   instructions:
     - Pour all ingredients into a cocktail shaker, shake well with ice, strain into
@@ -1371,7 +1371,7 @@
   description: This long drink was developed sometime before 1915 by bartender Ngiam Tong Boon, who was working at the Long Bar in Raffles Hotel, Singapore. It was initially called the gin sling – a sling was originally a North American drink composed of spirit and water, sweetened and flavored.
   ingredients:
     - 30 ml Gin
-    - 15 ml Cherry liqueur
+    - 15 ml Maraschino
     - 7.5 ml Cointreau
     - 7.5 ml Bénédictine
     - 120 ml Pineapple Juice
@@ -1415,11 +1415,11 @@
     - 15 ml Elderflower Cordial
     - 15 ml Lime Juice
     - 10 ml Honey Syrup
-    - 2 Slices Chili Pepper
+    - 2 Slices Chilli Pepper
   instructions:
     - Pour all ingredients into a cocktail shaker, shake well with ice, double-strain
       into chilled cocktail glass.
-  garnish: Garnish with a red chili pepper
+  garnish: Garnish with a red chilli pepper
   source: https://iba-world.com/spicy-fifty/
   image_copyright: MixolopediA
   categories:
@@ -1534,7 +1534,7 @@
   ingredients:
     - 30 ml Gin
     - 30 ml Dry Vermouth
-    - 1 teaspoon Maraschino Luxardo
+    - 1 teaspoon Maraschino
     - 2 teaspoon Absinthe
     - 3 Dashes Orange Bitters
   instructions:

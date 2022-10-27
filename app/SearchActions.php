@@ -33,4 +33,12 @@ class SearchActions
 
         $engine->index('site_search_index')->deleteDocument($model->toSiteSearchArray()['key']);
     }
+
+    public static function flushSearchIndex()
+    {
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine */
+        $engine = app(\Laravel\Scout\EngineManager::class)->engine();
+
+        $engine->index('site_search_index')->delete();
+    }
 }

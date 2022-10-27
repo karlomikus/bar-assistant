@@ -1,0 +1,13 @@
+/vendor
+/node_modules
+/.vscode
+/public/build
+/public/hot
+/public/storage
+/public/app_images
+/storage/*.key
+/database/database.sqlite
+.env
+
+Dockerfile
+.dockerignore
