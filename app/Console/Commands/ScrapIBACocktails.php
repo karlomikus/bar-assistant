@@ -18,7 +18,7 @@ class ScrapIBACocktails extends Command
      *
      * @var string
      */
-    protected $signature = 'scrap:iba';
+    protected $signature = 'bar:scrap-iba-site';
 
     /**
      * The console command description.
