@@ -1,0 +1,904 @@
+{
+	"info": {
+		"_postman_id": "32c55565-19cc-482d-9900-93404c15bbf2",
+		"name": "Bar Assistant PHP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1762793"
+	},
+	"item": [
+		{
+			"name": "Ingredients",
+			"item": [
+				{
+					"name": "All ingredients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/ingredients",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ingredients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All ingredients on shopping list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/ingredients?on_shopping_list=true",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ingredients"
+							],
+							"query": [
+								{
+									"key": "on_shopping_list",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All ingredients filtered by category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/ingredients?category_id=2",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ingredients"
+							],
+							"query": [
+								{
+									"key": "category_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All ingredient categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/ingredients/categories",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ingredients",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show ingredient",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/ingredients/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ingredients",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New ingredient",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Ingredient name\",\r\n    \"strength\": 12.2,\r\n    \"description\": \"Description text\",\r\n    \"history\": \"History text\",\r\n    \"origin\": \"Worldwide\",\r\n    \"color\": \"#000000\",\r\n    \"ingredient_category_id\": 1,\r\n    \"parent_ingredient_id\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/ingredients",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ingredients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update ingredient",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Ingredient name 2\",\r\n    \"strength\": 12.2,\r\n    \"description\": \"Description text\",\r\n    \"history\": \"History text\",\r\n    \"origin\": \"Worldwide\",\r\n    \"color\": \"#000000\",\r\n    \"ingredient_category_id\": 1,\r\n    \"parent_ingredient_id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/ingredients/105",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ingredients",
+								"105"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete ingredient",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/ingredients/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ingredients",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ingredient Categories",
+			"item": []
+		},
+		{
+			"name": "Cocktails",
+			"item": [
+				{
+					"name": "All cocktails",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/cocktails",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All cocktails made by user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/cocktails?user_id=2",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktails"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cocktails in shelf",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/cocktails/user-shelf",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktails",
+								"user-shelf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User favorites",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/cocktails/user-favorites",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktails",
+								"user-favorites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show cocktail",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/cocktails/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktails",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Random cocktail",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/cocktails/random",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktails",
+								"random"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Favorite cocktail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/cocktails/6/favorite",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktails",
+								"6",
+								"favorite"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete cocktail",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/cocktails/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktails",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Cocktail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Martini 2\",\r\n    \"description\": \"Martini description\",\r\n    \"instructions\": \"First step, second step\",\r\n    \"garnish\": \"Olives\",\r\n    \"images\": [195, 196],\r\n    \"source\": \"IBA\",\r\n    \"tags\": [\"strong\", \"martini\"],\r\n    \"ingredients\": [\r\n        {\r\n            \"sort\": 1,\r\n            \"ingredient_id\": 1,\r\n            \"amount\": 30,\r\n            \"units\": \"ml\"\r\n        },\r\n        {\r\n            \"sort\": 2,\r\n            \"ingredient_id\": 2,\r\n            \"amount\": 24,\r\n            \"units\": \"ml\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/cocktails",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Cocktail",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Standard Martini\",\r\n    \"description\": \"Martini description\",\r\n    \"instructions\": \"- First step\\n- second step\",\r\n    \"garnish\": \"Olives\",\r\n    \"images\": [200],\r\n    \"source\": \"IBA\",\r\n    \"tags\": [\"strong\", \"Gin\", \"New one\"],\r\n    \"ingredients\": [\r\n        {\r\n            \"sort\": 1,\r\n            \"ingredient_id\": 74,\r\n            \"amount\": 30,\r\n            \"units\": \"ml\"\r\n        },\r\n        {\r\n            \"sort\": 2,\r\n            \"ingredient_id\": 99,\r\n            \"amount\": 30,\r\n            \"units\": \"ml\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/cocktails/91",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktails",
+								"91"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shelf",
+			"item": [
+				{
+					"name": "User ingredients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/shelf",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"shelf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add ingredient to shelf",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/shelf/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"shelf",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Batch add ingredients to shelf",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ingredient_ids\": [1, 2, 3, 4]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/shelf/batch",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"shelf",
+								"batch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove ingredient from shelf",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/shelf/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"shelf",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Images",
+			"item": [
+				{
+					"name": "Get image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/images/150",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"images",
+								"150"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save images",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "images[0][image]",
+									"type": "file",
+									"src": "/E:/OneDrive/Slike/1380991112711.jpg"
+								},
+								{
+									"key": "images[0][copyright]",
+									"value": "Copyright image 1",
+									"type": "text"
+								},
+								{
+									"key": "images[1][image]",
+									"type": "file",
+									"src": "/E:/OneDrive/Slike/12684_1_full.jpg"
+								},
+								{
+									"key": "images[1][copyright]",
+									"value": "Image copy 2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base}}/api/images",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"images"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete image",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "images[0][image]",
+									"type": "file",
+									"src": "/E:/OneDrive/Slike/12684_1_full.jpg"
+								},
+								{
+									"key": "images[0][copyright]",
+									"value": "Copyright image 1",
+									"type": "text"
+								},
+								{
+									"key": "images[1][image]",
+									"type": "file",
+									"src": "/E:/OneDrive/Slike/7190762857cb2334a585d4e4e83347fedd3d60f5_full.jpg"
+								},
+								{
+									"key": "images[1][copyright]",
+									"value": "Image copy 2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base}}/api/images/196",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"images",
+								"196"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Shopping List",
+			"item": [
+				{
+					"name": "Batch add ingredients",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ingredient_ids\": [40, 41, 56, 32, 12]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/shopping-lists/batch",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"shopping-lists",
+								"batch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Batch delete ingredients",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ingredient_ids\": [1, 2, 3, 4]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/shopping-lists/batch",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"shopping-lists",
+								"batch"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resp = pm.response.json();\r",
+							"\r",
+							"pm.collectionVariables.set(\"token\", resp.token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"admin@example.com\",\r\n    \"password\": \"password\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base}}/api/login",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user info",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base}}/api/user",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Version",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base}}/api/version",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"api",
+						"version"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.request.headers.add({key: 'Accept', value: 'application/json' });"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
