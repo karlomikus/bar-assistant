@@ -9,6 +9,7 @@ use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\IngredientCategory;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Http\Resources\ErrorResource;
+use Kami\Cocktail\Http\Requests\IngredientRequest;
 use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -51,12 +52,12 @@ class IngredientController extends Controller
         return new IngredientResource($ingredient);
     }
 
-    public function store(IngredientService $ingredientService, Request $request)
+    public function store(IngredientService $ingredientService, IngredientRequest $request)
     {
         $ingredient = $ingredientService->createIngredient(
             $request->post('name'),
             (int) $request->post('ingredient_category_id'),
-            floatval($request->post('strength', 0.0)),
+            floatval($request->post('strength', '0')),
             $request->post('description'),
             $request->post('origin'),
             $request->post('color'),
@@ -67,13 +68,13 @@ class IngredientController extends Controller
         return new IngredientResource($ingredient);
     }
 
-    public function update(IngredientService $ingredientService, Request $request, int $id)
+    public function update(IngredientService $ingredientService, IngredientRequest $request, int $id)
     {
         $ingredient = $ingredientService->updateIngredient(
             $id,
             $request->post('name'),
             (int) $request->post('ingredient_category_id'),
-            floatval($request->post('strength', 0.0)),
+            floatval($request->post('strength', '0')),
             $request->post('description'),
             $request->post('origin'),
             $request->post('color'),

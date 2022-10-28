@@ -4,16 +4,13 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Services;
 
 use Throwable;
-use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Cocktail;
-use Intervention\Image\ImageManager;
 use Illuminate\Database\DatabaseManager;
 use Kami\Cocktail\Models\CocktailFavorite;
-use Illuminate\Filesystem\FilesystemManager;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Exceptions\CocktailException;
 
@@ -22,8 +19,6 @@ class CocktailService
     public function __construct(
         private readonly DatabaseManager $db,
         private readonly LogManager $log,
-        private readonly ImageManager $image,
-        private readonly FilesystemManager $filesystem,
     ) {
     }
 

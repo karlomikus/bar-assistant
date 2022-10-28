@@ -1,21 +1,21 @@
 FROM php:8.1-apache
 
-ENV APP_URL=http://localhost
-ENV MEILISEARCH_HOST=
-ENV MEILISEARCH_KEY=
-
 RUN apt update \
     && apt-get install -y \
     git \
     unzip \
     sqlite3 \
     vim \
+    bash \
     && apt-get autoremove -y \
     && apt-get clean
 
 COPY ./resources/apache.conf /etc/apache2/sites-available/000-default.conf
 
 RUN a2enmod rewrite
+
+COPY ./resources/entrypoint.sh /usr/local/bin/entrypoint
+RUN chmod guo+rwx /usr/local/bin/entrypoint
 
 USER www-data:www-data
 
@@ -25,14 +25,10 @@ WORKDIR /var/www/cocktails
 
 COPY --chown=www-data:www-data . .
 
-RUN touch database/database.sqlite
-RUN mv .env.dist .env
-
-RUN composer install
-
-RUN php artisan key:generate \
-    && php artisan migrate:refresh --force
+RUN composer install --optimize-autoloader --no-dev
 
 EXPOSE 80
 
-CMD apache2-foreground
+VOLUME ["/var/www/cocktails/storage", "/var/www/cocktails/database"]
+
+ENTRYPOINT ["entrypoint"]

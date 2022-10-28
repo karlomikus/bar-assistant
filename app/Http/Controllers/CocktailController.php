@@ -16,11 +16,15 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CocktailController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $cocktails = Cocktail::with('ingredients.ingredient', 'images', 'tags')->paginate(15);
+        $cocktails = Cocktail::with('ingredients.ingredient', 'images', 'tags');
 
-        return CocktailResource::collection($cocktails);
+        if ($request->has('user_id')) {
+            $cocktails->where('user_id', $request->get('user_id'));
+        }
+
+        return CocktailResource::collection($cocktails->paginate(15));
     }
 
     public function random()

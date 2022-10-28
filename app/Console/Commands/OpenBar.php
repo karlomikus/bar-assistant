@@ -43,6 +43,16 @@ class OpenBar extends Command
     {
         Model::unguard();
 
+        $this->info('Checking connection to your search server [' . config('scout.meilisearch.host') . ']...');
+
+        try {
+            $this->info('Search server: ' . SearchActions::checkHealth()['status']);
+        } catch (Throwable $e) {
+            $this->error('Unable to connect to search server!');
+
+            throw $e;
+        }
+
         // Flush site search index in case anything is already there
         SearchActions::flushSearchIndex();
 
@@ -314,7 +324,6 @@ class OpenBar extends Command
                 $cocktail->refresh();
                 $cocktail->save();
             } catch(Throwable $e) {
-                dd($e);
                 DB::rollBack();
             }
             DB::commit();

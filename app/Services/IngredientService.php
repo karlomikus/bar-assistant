@@ -72,6 +72,7 @@ class IngredientService
      * @param string|null $origin
      * @param string|null $color
      * @param int|null $parentIngredientId
+     * @param array<int> $images
      * @return \Kami\Cocktail\Models\Ingredient
      */
     public function updateIngredient(
@@ -83,6 +84,7 @@ class IngredientService
         ?string $origin = null,
         ?string $color = null,
         ?int $parentIngredientId = null,
+        array $images = []
     ): Ingredient
     {
         try {
@@ -97,6 +99,16 @@ class IngredientService
             $ingredient->save();
         } catch (Throwable $e) {
             throw new IngredientException('Error occured while updating ingredient!', 0, $e);
+        }
+
+        if (count($images) > 0) {
+            $ingredient->deleteImages();
+            try {
+                $imageModels = Image::findOrFail($images);
+                $ingredient->attachImages($imageModels);
+            } catch (Throwable $e) {
+                throw new ImageException('Error occured while attaching images to ingredient with id "' . $ingredient->id . '"', 0, $e);
+            }
         }
 
         return $ingredient;

@@ -9,8 +9,11 @@ class HealthControllerTest extends TestCase
 {
     public function test_version_response()
     {
-        $response = $this->get('/api/version');
+        $response = $this->getJson('/api/version');
 
         $response->assertStatus(200);
+
+        $this->assertSame('Bar Assistant', $response['data']['name']);
+        $this->assertNotNull($response['data']['version']);
     }
 }

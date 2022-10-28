@@ -5,9 +5,17 @@ namespace Kami\Cocktail;
 
 class SearchActions
 {
+    public static function checkHealth()
+    {
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\MeiliSearch\Client */
+        $engine = app(\Laravel\Scout\EngineManager::class)->engine();
+
+        return $engine->health();
+    }
+
     public static function updateCocktailIndex()
     {
-        /** @var \Laravel\Scout\Engines\MeiliSearchEngine */
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\MeiliSearch\Client */
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         $engine->index('cocktails')->updateSettings([
@@ -18,7 +26,7 @@ class SearchActions
 
     public static function update($model)
     {
-        /** @var \Laravel\Scout\Engines\MeiliSearchEngine */
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\MeiliSearch\Client */
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         $engine->index('site_search_index')->addDocuments([
@@ -28,7 +36,7 @@ class SearchActions
 
     public static function delete($model)
     {
-        /** @var \Laravel\Scout\Engines\MeiliSearchEngine */
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\MeiliSearch\Client */
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         $engine->index('site_search_index')->deleteDocument($model->toSiteSearchArray()['key']);
@@ -36,7 +44,7 @@ class SearchActions
 
     public static function flushSearchIndex()
     {
-        /** @var \Laravel\Scout\Engines\MeiliSearchEngine */
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\MeiliSearch\Client */
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         $engine->index('site_search_index')->delete();
