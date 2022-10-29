@@ -1,19 +1,12 @@
 <p align="center">
-    <a href="https://karlomikus.com" target="_blank"><img src="https://i.imgur.com/B2lNNKw.png" alt="Bar assistant Logo"></a>
+    <a href="https://karlomikus.com" target="_blank"><img src="resources/art/logotype.svg" alt="Bar assistant Logo" width="300"></a>
 </p>
-
-<!-- <p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p> -->
 
 ## 🍸 Bar assistant
 
-Bar assistant is an application for organizing and creating your cocktails.
+Bar assistant is a self hosted application for managing your home bar. It allows you to add ingredients and create custom cocktail recipes.
 
-Checkout [Salt Rim for a Vue based web client](https://github.com/karlomikus/vue-salt-rim).
+This repository only contains the API server, if you want easy to use client, take a look at [Salt Rim](https://github.com/karlomikus/vue-salt-rim).
 
 ## Features
 
@@ -24,16 +17,60 @@ Checkout [Salt Rim for a Vue based web client](https://github.com/karlomikus/vue
 - Detailed cocktail and ingredient information
 - Ability to upload and assign images
 - Shopping list for missing ingredients
+- Automatic indexing of data in Meilisearch
+
+## Planned features
+
+- Cocktail recipe sharing
+- Finish multi user features
+- User defined cocktail collections
+- Cocktail ratings
+- Add user notes to cocktail
+- Add cocktail flavor profiles
+- Ingredient and cocktail aliasing
+- Ingredient substitutes
 
 ## Installation
 
-This app is made with PHP and Laravel, so you should [follow installation instructions](https://laravel.com/docs/9.x/deployment) for a basic Laravel project.
+This application is made with Laravel, so you should [follow installation instructions](https://laravel.com/docs/9.x/deployment) for a standard Laravel project.
 
 Requirements:
 
 - PHP >=8.1
-- Sqlite
-- Working Meilisearch instance
+- Sqlite 3
+- Working [Meilisearch server](https://github.com/meilisearch)
+
+After initial Laravel setup do the following:
+
+1. Update your environment variables
+
+```
+# Your application instance URL
+APP_URL=
+
+# Meilisearch instance URL
+MEILISEARCH_HOST=
+
+# Meilisearch search key
+MEILISEARCH_KEY=
+```
+
+2. Run the commands
+```
+# To setup the database:
+$ php artisan migrate
+
+# To setup correct image paths
+$ php artisan storage:link
+
+# To fill the database with data
+$ php artisan bar:open
+```
+
+Default login information is:
+
+- email: `admin@example.com`
+- password: `password`
 
 ## Docker
 
