@@ -74,7 +74,7 @@ Default login information is:
 
 ## Docker
 
-TODO
+[Docker image](https://hub.docker.com/r/kmikus12/bar-assistant-server)
 
 ## Contributing
 
