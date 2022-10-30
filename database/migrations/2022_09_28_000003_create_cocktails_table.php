@@ -30,7 +30,7 @@ return new class extends Migration
 
         Schema::create('cocktail_ingredients', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ingredient_id')->constrained();
+            $table->foreignId('ingredient_id')->constrained()->onDelete('cascade');
             $table->foreignId('cocktail_id')->constrained()->onDelete('cascade');
             $table->decimal('amount');
             $table->string('units');
