@@ -25,6 +25,7 @@ return new class extends Migration
             $table->foreignId('ingredient_category_id')->constrained();
             $table->foreignId('parent_ingredient_id')->nullable()->constrained('ingredients');
             $table->text('aliases')->nullable();
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
     }
