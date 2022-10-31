@@ -1,13 +1,17 @@
 #!/bin/bash
 
-# set -e
+set -e
 
 first_time_setup_check() {
+    # whoami
+
+    # ls -al /var/www/cocktails
+
     echo "Checking if database exists..."
 
-    if [ ! -f /var/www/cocktails/database/database.sqlite ]; then
+    if [ ! -f /var/www/cocktails/storage/database.sqlite ]; then
         echo "Database not found, starting first time setup!"
-        touch /var/www/cocktails/database/database.sqlite
+        touch /var/www/cocktails/storage/database.sqlite
 
         cd /var/www/cocktails
 
@@ -19,6 +23,8 @@ first_time_setup_check() {
         php artisan storage:link
         php artisan bar:open
     fi
+
+    echo "Database found, skipping first time setup!"
 }
 
 start_system() {

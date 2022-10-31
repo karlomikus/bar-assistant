@@ -3,14 +3,21 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Laravel\Scout\EngineManager;
+
 class HealthController extends Controller
 {
-    public function version()
+    public function version(EngineManager $engine)
     {
+        /** @var \MeiliSearch\Client */
+        $meilisearch = $engine->engine();
+
         return response()->json([
             'data' => [
-                'name' => 'Bar Assistant',
-                'version' => 'v0.1.0'
+                'name' => config('app.name'),
+                'version' => config('app.version'),
+                'meilisearch_host' => config('scout.meilisearch.host'),
+                'meilisearch_version' => $meilisearch->version()['pkgVersion'],
             ]
         ]);
     }

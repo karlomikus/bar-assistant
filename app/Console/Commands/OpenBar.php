@@ -53,13 +53,6 @@ class OpenBar extends Command
             throw $e;
         }
 
-        // Flush site search index in case anything is already there
-        SearchActions::flushSearchIndex();
-
-        // Also flush model indexes
-        Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Cocktail"]);
-        Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
-
         DB::table('users')->insert([
             [
                 'name' => 'BAR ASSISTANT BOT',
@@ -67,15 +60,24 @@ class OpenBar extends Command
                 'email' => 'bot@my-bar.localhost',
                 'email_verified_at' => null,
                 'remember_token' => null,
+                'search_api_key' => null,
             ],
             [
                 'name' => 'Bartender',
                 'password' => Hash::make($this->argument('pass')),
                 'email' => $this->argument('email'),
                 'email_verified_at' => now(),
-                'remember_token' => Str::random(10)
+                'remember_token' => Str::random(10),
+                'search_api_key' => SearchActions::getPublicApiKey() // TODO: Check if already exists in ENV
             ]
         ]);
+
+        // Flush site search index in case anything is already there
+        SearchActions::flushSearchIndex();
+
+        // Also flush model indexes
+        Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Cocktail"]);
+        Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
 
         DB::table('glasses')->insert([
             ['name' => 'Cocktail glass', 'description' => 'A cocktail glass is a stemmed glass with an inverted cone bowl, mainly used to serve straight-up cocktails. The term cocktail glass is often used interchangeably with martini glass, despite their differing slightly. A standard cocktail glass contains 90 to 300 millilitres.'],
@@ -248,7 +250,7 @@ class OpenBar extends Command
             $ing->save();
         }
 
-        $this->info('Find some cocktail recipes...');
+        $this->info('Finding some cocktail recipes...');
 
         $this->importIBACocktailsFromJson();
 

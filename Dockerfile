@@ -15,11 +15,13 @@ COPY ./resources/apache.conf /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
 
 COPY ./resources/entrypoint.sh /usr/local/bin/entrypoint
-RUN chmod guo+rwx /usr/local/bin/entrypoint
+RUN chmod +x /usr/local/bin/entrypoint
 
-USER www-data:www-data
+COPY ./resources/php.ini $PHP_INI_DIR/conf.d/99-bar-assistant.ini
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+USER www-data
 
 WORKDIR /var/www/cocktails
 
@@ -29,6 +31,6 @@ RUN composer install --optimize-autoloader --no-dev
 
 EXPOSE 80
 
-VOLUME ["/var/www/cocktails/storage", "/var/www/cocktails/database"]
+# VOLUME ["/var/www/cocktails/storage"]
 
 ENTRYPOINT ["entrypoint"]

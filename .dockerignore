@@ -7,6 +7,7 @@
 /public/app_images
 /storage/*.key
 /database/database.sqlite
+/storage/database.sqlite
 .env
 
 Dockerfile

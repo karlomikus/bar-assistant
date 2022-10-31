@@ -1,6 +1,6 @@
 ---
 - name: Trinidad Sour
-  description:
+  description: Unusually for a cocktail, it uses Angostura bitters as a base spirit rather than as a flavoring, the bitters being the single largest component of the drink in its IBA formulation. 
   ingredients:
     - 45 ml Angostura aromatic bitters
     - 30 ml Orgeat Syrup
@@ -113,7 +113,7 @@
     - The Unforgettables
     - Gin
 - name: Barracuda
-  description: null
+  description: The Barracuda cocktail is a bright yellow Rum cocktail. Its origin lies in Italy, where barkeeper Benito Cuppari created the recipe while working on a cruise ship.
   ingredients:
     - 45 ml Gold Rum
     - 15 ml Galliano
@@ -132,6 +132,7 @@
     - IBA Cocktail
     - New Era Drinks
     - Rum
+    - Tiki
 - name: Bee’s Knees
   description: |-
     The Bee's Knees was invented by Frank Meier, an Austrian-born, part Jewish bartender who was the first head bartender at the Ritz in Paris in 1921, when its Cafe Parisian opened its doors.
@@ -256,13 +257,15 @@
     - The Unforgettables
     - Whiskey
 - name: Bramble
-  description: null
+  description: The Bramble was created in London, in 1984, by Dick Bradsell. At the time, Bradsell worked at a bar in Soho called Fred's Club, and he wanted to create a British cocktail. Memories of going blackberrying in his childhood on the Isle of Wight provided the inspiration for the Bramble.
   ingredients:
     - 50 ml Gin
     - 25 ml Lemon juice
     - 12,5 ml Simple Syrup
     - 15 ml Crème de Mûre (blackberry liqueur)
   instructions: |-
+    If crème de mûre is unavailable, many bartenders will substitute creme de cassis for it.
+
     1. Pour all ingredients into a cocktail shaker except the Crème de Mûre
     2. Shake well with ice
     3. Strain into chilled old fashioned glass filled with crushed ice
@@ -413,7 +416,10 @@
     - Gin
     - Tiki
 - name: Cosmopolitan
-  description: null
+  description: |-
+    A cosmopolitan, or informally a cosmo, is a relative of cranberry coolers.
+
+    The cosmopolitan gained popularity in the 1990s. It was further popularized among young women by its frequent mention on the television program Sex and the City, where Sarah Jessica Parker's character, Carrie Bradshaw, commonly ordered the drink when out with her girlfriends. The film adaptation made a reference to its popularity when Miranda asks why they stopped drinking them, Carrie replies "because everyone else started."
   ingredients:
     - 40 ml Vodka
     - 15 ml Cointreau
@@ -430,7 +436,10 @@
     - IBA Cocktail
     - Vodka
 - name: Cuba Libre
-  description: null
+  description: |-
+    The cocktail originated in the early 20th century in Cuba, after the country won independence in the Spanish–American War. It subsequently became popular across Cuba, the United States, and other countries. Its simple recipe and inexpensive, ubiquitous ingredients have made it one of the world's most-popular alcoholic drinks. Drink critics often consider the drink mediocre, but it has been noted for its historical significance.
+
+    Traditionally, the cola ingredient is Coca-Cola ("Coke") and the alcohol is a light rum such as Bacardi; however, the drink may be made with various types of rums and cola brands, and lime juice may or may not be included. 
   ingredients:
     - 50 ml White Rum
     - 120 ml Cola
@@ -445,7 +454,7 @@
     - IBA Cocktail
     - Rum
 - name: Daiquiri
-  description: null
+  description: Daiquirí is also the name of a beach and an iron mine near Santiago de Cuba, and is a word of Taíno origin. The drink was supposedly invented by an American mining engineer named Jennings Cox, who was in Cuba (then at the tail-end of the Spanish Captaincy-General government) at the time of the Spanish–American War. It is also possible that William A. Chanler, a US congressman who purchased the Santiago iron mines in 1902, introduced the daiquiri to clubs in New York in that year.
   ingredients:
     - 60 ml White Rum
     - 20 ml Lime Juice
@@ -461,7 +470,10 @@
     - The Unforgettables
     - Rum
 - name: Dark ‘n’ stormy
-  description: null
+  description: |-
+    This drink is very similar to the Moscow mule except that the Dark 'n' Stormy has dark rum instead of vodka. The original Dark 'n' Stormy was made with Gosling Black Seal rum and Barritt's Ginger Beer, but after the partnership between the two failed and the companies parted ways, Gosling Brothers created its own ginger beer.
+
+    Gosling Brothers claims that the drink was invented in Bermuda just after World War I.
   ingredients:
     - 60 ml Dark Rum
     - 100 ml Ginger Beer
@@ -476,7 +488,7 @@
     - New Era Drinks
     - Rum
 - name: Dry Martini
-  description: null
+  description: A dry martini is made with little to no vermouth. Ordering a martini "extra dry" will result in even less or no vermouth added.
   ingredients:
     - 60 ml Gin
     - 10 ml Dry Vermouth
@@ -493,7 +505,7 @@
     - The Unforgettables
     - Gin
 - name: Espresso Martini
-  description: null
+  description: It is not a true martini as it contains neither gin nor vermouth, but is one of many drinks that incorporate the term martini into their names.
   ingredients:
     - 50 ml Vodka
     - 30 ml Kahlua coffee liqueur
@@ -510,7 +522,10 @@
     - New Era Drinks
     - Vodka
 - name: Fernandito
-  description: null
+  description: |-
+    The cocktail first became popular among the youth of the college town of Córdoba, in the 1980s and—impulsed by an advertising campaign led by Fratelli Branca—its consumption grew in popularity during the following decades to become widespread throughout the country, surpassed only by that of beer and wine. It is now considered a cultural icon of Argentina and is especially associated with its home province of Córdoba, where the drink is most consumed. The popularity of fernet con coca is such that Argentina consumes more than 75% of all fernet produced globally. The cocktail can also be found in some of its bordering countries, like Uruguay.
+
+    Although typically made with Fernet-Branca and Coca-Cola, several amaro brands have appeared in Argentina since its popularization, as well as ready-to-drink versions. 
   ingredients:
     - 50 ml Fernet Branca
     - 120 ml Cola
@@ -524,7 +539,7 @@
     - IBA Cocktail
     - New Era Drinks
 - name: French 75
-  description: null
+  description: The drink dates to World War I, and an early form was created in 1915 at the New York Bar in Paris—later Harry's New York Bar—by barman Harry MacElhone. The combination was said to have such a kick that it felt like being shelled with the powerful French 75mm field gun.
   ingredients:
     - 30 ml Gin
     - 15 ml Lemon juice
@@ -541,7 +556,7 @@
     - IBA Cocktail
     - Gin
 - name: French Connection
-  description: null
+  description: The cocktail is named for the Gene Hackman film of the same name.
   ingredients:
     - 35 ml Cognac
     - 35 ml Amaretto
@@ -556,7 +571,10 @@
     - IBA Cocktail
     - Brandy
 - name: French Martini
-  description: null
+  description: |-
+    It was invented in the 1980s at one of Keith McNally's New York City bars. It next appeared on the drinks menu at McNally's Balthazar in SoHo in 1996. The cocktail was produced during the 1980s–1990s cocktail renaissance.
+
+    It is not a true martini, but is one of many drinks that incorporate the term martini into their names. The key ingredient that makes a martini "French" is Chambord, a black raspberry liqueur that has been produced in France since 1685.
   ingredients:
     - 45 ml Vodka
     - 15 ml Chambord
@@ -572,7 +590,7 @@
     - New Era Drinks
     - Vodka
 - name: Gin Fizz
-  description: null
+  description: A gin fizz is the best-known cocktail in the fizz family. The drink is similar to a Tom Collins, with a possible distinction being a Tom Collins historically used "Old Tom Gin" (a slightly sweeter precursor to London Dry Gin), whereas the kind of gin historically used in a gin fizz is unknown.
   ingredients:
     - 45 ml Gin
     - 30 ml Lemon juice
@@ -591,7 +609,10 @@
     - The Unforgettables
     - Gin
 - name: Golden Dream
-  description: null
+  description: |-
+    The Golden Dream was popular during the 60s and 70s and originated at the Old King Bar in Miami, mixed by Raimundo Alvarez.
+
+    The cocktail was dedicated to actress Joan Crawford and became quite popular at the end of the 1960s on the east coast of the United States. 
   ingredients:
     - 20 ml Galliano
     - 20 ml Triple Sec
@@ -607,7 +628,7 @@
     - Contemporary Classics
     - IBA Cocktail
 - name: Grasshopper
-  description: null
+  description: A Grasshopper is a sweet, mint-flavored, after-dinner drink. The name of the drink derives from its green color, which comes from crème de menthe. A bar in the French Quarter of New Orleans, Louisiana, Tujague's, claims the drink was invented in 1918 by its owner, Philip Guichet. The drink gained popularity during the 1950s and 1960s throughout the American South.
   ingredients:
     - 20 ml White Crème de Cacao
     - 20 ml Menthe Crème de Cacao
@@ -623,7 +644,10 @@
     - Contemporary Classics
     - IBA Cocktail
 - name: Hanky Panky
-  description: null
+  description: |-
+    The Hanky-Panky was the brainchild of Ada Coleman (known as "Coley") who began as a bartender at the Savoy Hotel in 1903. Her benefactor was Rupert D'Oyly Carte, a member of the family that first produced Gilbert and Sullivan operas in London and that built the Savoy Hotel. When Rupert became chairman of the Savoy, Ada was given a position at the hotel's American Bar, where she eventually became the head bartender and made cocktails for the likes of Mark Twain, the Prince of Wales, Prince Wilhelm of Sweden, and Sir Charles Hawtrey.
+
+    Coleman created the Hanky-Panky for Hawtrey. He was a Victorian and Edwardian actor who mentored Noël Coward. 
   ingredients:
     - 45 ml Gin
     - 45 ml Sweet Vermouth
@@ -639,7 +663,7 @@
     - The Unforgettables
     - Gin
 - name: Hemingway Special
-  description: null
+  description: Ernest Hemingway, who stayed in Cuba, tried the Floridita's signature drink, the Floridita Daiquiri, and said "That's good but I prefer it without sugar and double rum," which became a cocktail now known as the Hemingway Daiquiri or the Papa Doble. This recipe was later modified further, adding grapefruit juice to the mix, at which point the drink was dubbed the "Hemingway Special".
   ingredients:
     - 60 ml Dark Rum
     - 40 ml Grapefruit Juice
@@ -656,7 +680,7 @@
     - IBA Cocktail
     - Rum
 - name: Horse’s Neck
-  description: null
+  description: Dating back to the 1890s, it was a non-alcoholic mixture of ginger ale, ice and lemon peel. By the 1910s, brandy, or bourbon would be added for a "Horse's Neck with a Kick" or a "Stiff Horse's Neck". The non-alcoholic version was still served in upstate New York in the late 1950s and early 60s, but eventually it was phased out. 
   ingredients:
     - 40 ml Cognac
     - 120 ml Ginger beer
@@ -694,7 +718,7 @@
     - New Era Drinks
     - Tequila
 - name: Irish Coffee
-  description: null
+  description: Caffeinated alcoholic drink consisting of Irish whiskey, hot coffee, and sugar, stirred, and topped with cream (sometimes cream liqueur) The coffee is drunk through the cream.
   ingredients:
     - 50 ml Irish Whiskey
     - 120 ml Coffee
@@ -714,7 +738,7 @@
     - IBA Cocktail
     - Whiskey
 - name: John Collins
-  description: null
+  description: A John Collins is a cocktail which was attested in 1869, but may be older. It is believed to have originated with a headwaiter of that name who worked at Limmer's Old House in Conduit Street in Mayfair, which was a popular London hotel and coffee house around 1790–1817.
   ingredients:
     - 45 ml Gin
     - 30 ml Lemon juice
@@ -734,7 +758,7 @@
     - The Unforgettables
     - Gin
 - name: KIR
-  description: null
+  description: In France it is usually drunk as an apéritif before a meal or snack. It was originally made with Bourgogne Aligoté, a white wine of Burgundy, but today various white wines are used throughout France, according to the region and the barkeeper. Many prefer a white Chardonnay-based Burgundy, such as Chablis.
   ingredients:
     - 90 ml White Wine
     - 10 ml Crème de cassis (blackcurrant liqueur)
@@ -752,7 +776,7 @@
     - IBA Cocktail
     - Wine
 - name: Last word
-  description: null
+  description: While the drink eventually fell out of favor, it enjoyed a renewed popularity after being rediscovered by the bartender Murray Stenson in 2004 during his tenure at the Zig Zag Café and becoming a cult hit in the Seattle area. 
   ingredients:
     - 22.5 ml Gin
     - 22.5 ml Green Chartreuse
@@ -769,7 +793,7 @@
     - The Unforgettables
     - Gin
 - name: Lemon drop Martini
-  description: null
+  description: The drink was invented sometime in the 1970s by Norman Jay Hobday, the founder and proprietor of Henry Africa's bar in San Francisco, California. Some variations of the drink exist, such as blueberry and raspberry lemon drops. It is served at some bars and restaurants in the United States, and in such establishments in other areas of the world.
   ingredients:
     - 30 ml Vodka
     - 20 ml Triple Sec
@@ -785,7 +809,7 @@
     - New Era Drinks
     - Vodka
 - name: Long Island Ice Tea
-  description: null
+  description: The cocktail has been criticized for its large number of ingredients, making it cumbersome to prepare in busy bars. It is considered a favorite of university students in the United States and it has thus garnered negative connotations as "an act of mixological atrocity favored by college students and wastrels", in the words of one food critic.
   ingredients:
     - 15 ml Vodka
     - 15 ml Tequila
@@ -806,7 +830,7 @@
     - Contemporary Classics
     - IBA Cocktail
 - name: Mai-Tai
-  description: null
+  description: Victor J. Bergeron claimed to have invented the Mai Tai in 1944 at his restaurant, Trader Vic's, in Oakland, California, US. Trader Vic's forerunner, Donn Beach, claimed to have instead first created it in 1933, although a longtime colleague said that Beach was actually just alleging that the Mai Tai was based on his Q.B. Cooler cocktail.
   ingredients:
     - 30 ml White Rum
     - 30 ml Rhum agricole
@@ -828,7 +852,7 @@
     - Rum
     - Tiki
 - name: Manhattan
-  description: null
+  description: Popular history suggests that the drink originated at the Manhattan Club in New York City in the mid-1870s, where it was invented by Iain Marshall for a banquet hosted by Jennie Jerome (Lady Randolph Churchill, mother of Winston) in honor of presidential candidate Samuel J. Tilden. The success of the banquet made the drink fashionable, later prompting several people to request the drink by referring to the name of the club where it originated—"the Manhattan cocktail". However, Lady Randolph was in France at the time and pregnant, so the story is likely a fiction.
   ingredients:
     - 50 ml Rye Whiskey
     - 20 ml Sweet Vermouth
@@ -843,7 +867,7 @@
     - The Unforgettables
     - Whiskey
 - name: Margarita
-  description: null
+  description: The drink is served shaken with ice (on the rocks), blended with ice (frozen margarita), or without ice (straight up). The drink is generally served in a stepped-diameter variant of a cocktail glass or champagne coupe called a margarita glass.
   ingredients:
     - 50 ml Tequila
     - 20 ml Triple Sec
