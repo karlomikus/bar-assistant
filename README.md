@@ -2,6 +2,12 @@
     <a href="https://karlomikus.com" target="_blank"><img src="resources/art/logotype.svg" alt="Bar assistant Logo" width="300"></a>
 </p>
 
+<p align="center">
+    <a href="https://hub.docker.com/r/kmikus12/bar-assistant-server"><img src="https://img.shields.io/docker/v/kmikus12/bar-assistant-server?style=for-the-badge" alt="Docker image"></a>
+    <img src="https://img.shields.io/github/license/karlomikus/bar-assistant?style=for-the-badge" alt="Docker image">
+    <img src="https://img.shields.io/github/workflow/status/karlomikus/bar-assistant/Test%20application?style=for-the-badge" alt="Docker image">
+</p>
+
 ## 🍸 Bar assistant
 
 Bar assistant is a self hosted application for managing your home bar. It allows you to add ingredients and create custom cocktail recipes.

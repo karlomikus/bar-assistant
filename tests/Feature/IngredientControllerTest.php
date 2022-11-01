@@ -17,6 +17,7 @@ class IngredientControllerTest extends TestCase
         Ingredient::factory()
             ->count(5)
             ->forCategory()
+            ->forUser()
             ->create();
 
         $response = $this->actingAs($user)
@@ -31,6 +32,7 @@ class IngredientControllerTest extends TestCase
         $user = User::factory()->create();
         Ingredient::factory()
             ->forCategory()
+            ->forUser()
             ->state([
                 'name' => 'Test ingredient',
                 'strength' => 45.5,
