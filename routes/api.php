@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Kami\Cocktail\Http\Controllers\UserController;
 use Kami\Cocktail\Http\Controllers\ImageController;
-use Kami\Cocktail\Http\Controllers\LoginController;
+use Kami\Cocktail\Http\Controllers\AuthController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\HealthController;
@@ -21,12 +21,13 @@ use Kami\Cocktail\Http\Controllers\ShoppingListController;
 |
 */
 
-Route::post('login', [LoginController::class, 'authenticate']);
+Route::post('login', [AuthController::class, 'authenticate']);
+Route::post('logout', [AuthController::class, 'logout']);
 Route::get('/version', [HealthController::class, 'version']);
 
 Route::middleware('auth:sanctum')->group(function() {
 
-    Route::get('/user', [UserController::class, 'index']);
+    Route::get('/user', [UserController::class, 'show']);
 
     Route::prefix('shelf')->group(function() {
         Route::get('/', [ShelfController::class, 'index']);

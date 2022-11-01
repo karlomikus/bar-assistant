@@ -8,10 +8,10 @@ use Kami\Cocktail\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
+    public function show(Request $request)
     {
-        $user = $request->user()->load('favorites', 'shelfIngredients', 'shoppingLists');
-
-        return new UserResource($user);
+        return new UserResource(
+            $request->user()->load('favorites', 'shelfIngredients', 'shoppingLists')
+        );
     }
 }

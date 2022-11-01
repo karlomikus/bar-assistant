@@ -16,6 +16,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CocktailController extends Controller
 {
+    /**
+     * List all cocktails
+     * - Paginated by 15 items
+     * Optional query strings:
+     * - user_id -> Filter by user id
+     */
     public function index(Request $request)
     {
         $cocktails = Cocktail::with('ingredients.ingredient', 'images', 'tags');
@@ -27,6 +33,9 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails->paginate(15));
     }
 
+    /**
+     * Return a single random cocktail
+     */
     public function random()
     {
         try {
@@ -42,6 +51,9 @@ class CocktailController extends Controller
         return new CocktailResource($cocktail);
     }
 
+    /**
+     * Show a single cocktail by it's id or URL slug
+     */
     public function show(int|string $idOrSlug)
     {
         try {
@@ -58,6 +70,9 @@ class CocktailController extends Controller
         return new CocktailResource($cocktail);
     }
 
+    /**
+     * Create a new cocktail
+     */
     public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
         try {
@@ -81,6 +96,9 @@ class CocktailController extends Controller
             ->header('Location', route('cocktails.show', $cocktail->id));
     }
 
+    /**
+     * Update a single cocktail by id
+     */
     public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): JsonResponse
     {
         $cocktail = $cocktailService->updateCocktail(
@@ -101,6 +119,9 @@ class CocktailController extends Controller
             ->header('Location', route('cocktails.show', $cocktail->id));
     }
 
+    /**
+     * Delete a single cocktail by id
+     */
     public function delete(int $id)
     {
         try {
@@ -112,6 +133,10 @@ class CocktailController extends Controller
         return new SuccessActionResource((object) ['id' => $id]);
     }
 
+    /**
+     * Show all cocktails that current user can make with
+     * the ingredients he added to his shelf
+     */
     public function userShelf(CocktailService $cocktailService, Request $request)
     {
         $cocktails = $cocktailService->getCocktailsByUserIngredients($request->user()->id)
@@ -120,6 +145,9 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails);
     }
 
+    /**
+     * Favorite a cocktail by id
+     */
     public function favorite(CocktailService $cocktailService, Request $request, int $id)
     {
         $isFavorite = $cocktailService->toggleFavorite($request->user(), $id);
@@ -127,6 +155,9 @@ class CocktailController extends Controller
         return new SuccessActionResource((object) ['id' => $id, 'is_favorited' => $isFavorite]);
     }
 
+    /**
+     * Show all cocktails that current user added to his favorites
+     */
     public function userFavorites(Request $request)
     {
         $cocktails = $request->user()->favorites->pluck('cocktail');

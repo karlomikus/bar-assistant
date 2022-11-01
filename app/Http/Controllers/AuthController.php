@@ -6,7 +6,7 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class LoginController extends Controller
+class AuthController extends Controller
 {
     public function authenticate(Request $request)
     {
@@ -22,5 +22,12 @@ class LoginController extends Controller
         }
 
         return response()->json(['type' => 'api_error', 'message' => 'User authentication failed. Check your username and password and try again.'], 404);
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+
+        return response()->json([]);
     }
 }
