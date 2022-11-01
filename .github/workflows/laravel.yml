@@ -27,7 +27,7 @@ jobs:
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       env:
         DB_CONNECTION: sqlite
-        DB_DATABASE: :memory:
+        DB_DATABASE: ":memory:"
       run: vendor/bin/phpunit
     - name: Execute PHPStan
       run: composer static
