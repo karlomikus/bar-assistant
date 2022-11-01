@@ -1,5 +1,7 @@
 FROM php:8.1-apache
 
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
 RUN apt update \
     && apt-get install -y \
     git \
@@ -21,11 +23,9 @@ COPY ./resources/php.ini $PHP_INI_DIR/conf.d/99-bar-assistant.ini
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-USER www-data
-
 WORKDIR /var/www/cocktails
 
-COPY --chown=www-data:www-data . .
+COPY . .
 
 RUN composer install --optimize-autoloader --no-dev
 

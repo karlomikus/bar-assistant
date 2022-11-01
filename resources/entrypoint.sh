@@ -3,28 +3,30 @@
 set -e
 
 first_time_setup_check() {
-    # whoami
-
-    # ls -al /var/www/cocktails
-
-    echo "Checking if database exists..."
-
-    if [ ! -f /var/www/cocktails/storage/database.sqlite ]; then
-        echo "Database not found, starting first time setup!"
-        touch /var/www/cocktails/storage/database.sqlite
+    if [ ! -f /var/www/cocktails/.env ]; then
+        echo "Application ENV file not found, assuming first time setup..."
 
         cd /var/www/cocktails
 
-        # TODO check for existing
         cp .env.dist .env
 
         php artisan key:generate
-        php artisan migrate --force
         php artisan storage:link
-        php artisan bar:open
-    fi
 
-    echo "Database found, skipping first time setup!"
+        if [ ! -f /var/www/cocktails/storage/database.sqlite ]; then
+            echo "Creating a new database..."
+
+            touch /var/www/cocktails/storage/database.sqlite
+            php artisan migrate --force
+            php artisan bar:open
+        fi
+
+        echo "Setting permissions..."
+
+        chown -R www-data:www-data /var/www/cocktails
+
+        echo "Done with first time setup..."
+    fi
 }
 
 start_system() {
