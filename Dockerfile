@@ -31,6 +31,6 @@ RUN composer install --optimize-autoloader --no-dev
 
 EXPOSE 80
 
-# VOLUME ["/var/www/cocktails/storage"]
+VOLUME ["/var/www/cocktails/storage"]
 
 ENTRYPOINT ["entrypoint"]

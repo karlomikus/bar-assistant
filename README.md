@@ -34,7 +34,7 @@ This repository only contains the API server, if you want easy to use client, ta
 
 This application is made with Laravel, so you should [follow installation instructions](https://laravel.com/docs/9.x/deployment) for a standard Laravel project.
 
-Requirements:
+### Requirements:
 
 - PHP >=8.1
 - Sqlite 3
@@ -74,7 +74,9 @@ Default login information is:
 
 ## Docker
 
-[Docker image](https://hub.docker.com/r/kmikus12/bar-assistant-server)
+[Docker image](https://hub.docker.com/r/kmikus12/bar-assistant-server).
+
+[Also checkout how to setup the whole Bar Assistant stack here.](https://github.com/karlomikus/vue-salt-rim#docker-compose)
 
 ## Contributing
 
