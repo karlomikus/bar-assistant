@@ -17,7 +17,7 @@ jobs:
         php-version: '8.1'
     - uses: actions/checkout@v3
     - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      run: php -r "file_exists('.env') || copy('.env.dist', '.env');"
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
     - name: Generate key
