@@ -6,9 +6,11 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\UserIngredient;
+use Kami\Cocktail\Models\UserShoppingList;
 use Kami\Cocktail\Http\Resources\ErrorResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
 use Kami\Cocktail\Http\Resources\UserIngredientResource;
+use Kami\Cocktail\Http\Requests\UserIngredientBatchRequest;
 
 class ShelfController extends Controller
 {
@@ -29,10 +31,12 @@ class ShelfController extends Controller
         return new UserIngredientResource($si);
     }
 
-    public function batch(Request $request)
+    public function batch(UserIngredientBatchRequest $request)
     {
-        // TODO Toggle
-        $ingredientIds = $request->post('ids');
+        $ingredientIds = $request->post('ingredient_ids');
+
+        // Let's remove ingredients from shopping list since they are on our shelf now
+        UserShoppingList::whereIn('ingredient_id', $ingredientIds)->delete();
 
         $models = [];
         foreach ($ingredientIds as $ingId) {
