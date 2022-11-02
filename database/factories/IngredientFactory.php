@@ -19,6 +19,8 @@ class IngredientFactory extends Factory
         return [
             'name' => fake()->name(),
             'strength' => fake()->randomFloat(2),
+            'ingredient_category_id' => \Kami\Cocktail\Models\IngredientCategory::factory(),
+            'user_id' => \Kami\Cocktail\Models\User::factory(),
         ];
     }
 }

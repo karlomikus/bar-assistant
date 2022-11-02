@@ -3,16 +3,13 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Throwable;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\IngredientCategory;
 use Kami\Cocktail\Services\IngredientService;
-use Kami\Cocktail\Http\Resources\ErrorResource;
 use Kami\Cocktail\Http\Requests\IngredientRequest;
 use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Kami\Cocktail\Http\Resources\IngredientCategoryResource;
 
 class IngredientController extends Controller
@@ -38,16 +35,10 @@ class IngredientController extends Controller
 
     public function show(int|string $id)
     {
-        try {
-            $ingredient = Ingredient::with('cocktails', 'images')
-                ->where('id', $id)
-                ->orWhere('slug', $id)
-                ->firstOrFail();
-        } catch (ModelNotFoundException $e) {
-            return (new ErrorResource($e))->response()->setStatusCode(404);
-        } catch (Throwable $e) {
-            return (new ErrorResource($e))->response()->setStatusCode(400);
-        }
+        $ingredient = Ingredient::with('cocktails', 'images')
+            ->where('id', $id)
+            ->orWhere('slug', $id)
+            ->firstOrFail();
 
         return new IngredientResource($ingredient);
     }
@@ -57,6 +48,7 @@ class IngredientController extends Controller
         $ingredient = $ingredientService->createIngredient(
             $request->post('name'),
             (int) $request->post('ingredient_category_id'),
+            auth()->user()->id,
             floatval($request->post('strength', '0')),
             $request->post('description'),
             $request->post('origin'),
@@ -87,13 +79,7 @@ class IngredientController extends Controller
 
     public function delete(int $id)
     {
-        try {
-            Ingredient::findOrFail($id)->delete();
-        } catch (ModelNotFoundException $e) {
-            return (new ErrorResource($e))->response()->setStatusCode(404);
-        } catch (Throwable $e) {
-            return (new ErrorResource($e))->response()->setStatusCode(400);
-        }
+        Ingredient::findOrFail($id)->delete();
 
         return new SuccessActionResource((object) ['id' => $id]);
     }

@@ -5,19 +5,18 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Ingredient;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class IngredientControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_index_response()
+    public function test_list_ingredients_response()
     {
         $user = User::factory()->create();
         Ingredient::factory()
             ->count(5)
-            ->forCategory()
-            ->forUser()
             ->create();
 
         $response = $this->actingAs($user)
@@ -27,12 +26,10 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonCount(5, 'data');
     }
 
-    public function test_show_response()
+    public function test_ingredient_show_response()
     {
         $user = User::factory()->create();
         Ingredient::factory()
-            ->forCategory()
-            ->forUser()
             ->state([
                 'name' => 'Test ingredient',
                 'strength' => 45.5,
@@ -49,5 +46,41 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonPath('data.name', 'Test ingredient');
         $response->assertJsonPath('data.strength', 45.5);
         $response->assertJsonPath('data.description', 'Test');
+    }
+
+    public function test_ingredient_store_response()
+    {
+        $user = User::factory()->create();
+        Ingredient::factory()
+            ->state([
+                'name' => 'Test ingredient',
+                'strength' => 45.5,
+                'description' => 'Test'
+            ])
+            ->create();
+
+        $response = $this->actingAs($user)
+            ->postJson('/api/ingredients', [
+                'name' => "Ingredient name",
+                'strength' => 12.2,
+                'description' => "Description text",
+                'origin' => "Worldwide",
+                'color' => "#000000",
+                'ingredient_category_id' => 1,
+                'parent_ingredient_id' => null
+            ]);
+
+        $response->assertStatus(201);
+        $response->assertJson(fn (AssertableJson $json) =>
+            $json->has('data.id')
+                ->where('data.name', 'Ingredient name')
+                ->where('data.strength', 12.2)
+                ->where('data.description', 'Description text')
+                ->where('data.origin', 'Worldwide')
+                ->where('data.color', '#000000')
+                ->where('data.ingredient_category_id', 1)
+                ->where('data.parent_ingredient_id', null)
+                ->etc()
+        );
     }
 }

@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Services\CocktailService;
-use Kami\Cocktail\Http\Resources\ErrorResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CocktailController extends Controller
 {
@@ -38,15 +36,9 @@ class CocktailController extends Controller
      */
     public function random()
     {
-        try {
-            $cocktail = Cocktail::inRandomOrder()
-                ->firstOrFail()
-                ->load('ingredients.ingredient', 'images', 'tags');
-        } catch (ModelNotFoundException $e) {
-            return (new ErrorResource($e))->response()->setStatusCode(404);
-        } catch (Throwable $e) {
-            return (new ErrorResource($e))->response()->setStatusCode(400);
-        }
+        $cocktail = Cocktail::inRandomOrder()
+            ->firstOrFail()
+            ->load('ingredients.ingredient', 'images', 'tags');
 
         return new CocktailResource($cocktail);
     }
@@ -56,16 +48,10 @@ class CocktailController extends Controller
      */
     public function show(int|string $idOrSlug)
     {
-        try {
-            $cocktail = Cocktail::where('id', $idOrSlug)
-                ->orWhere('slug', $idOrSlug)
-                ->firstOrFail()
-                ->load('ingredients.ingredient', 'images', 'tags');
-        } catch (ModelNotFoundException $e) {
-            return (new ErrorResource($e))->response()->setStatusCode(404);
-        } catch (Throwable $e) {
-            return (new ErrorResource($e))->response()->setStatusCode(400);
-        }
+        $cocktail = Cocktail::where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
+            ->firstOrFail()
+            ->load('ingredients.ingredient', 'images', 'tags');
 
         return new CocktailResource($cocktail);
     }
@@ -88,11 +74,12 @@ class CocktailController extends Controller
                 $request->post('tags', []),
             );
         } catch (Throwable $e) {
-            return (new ErrorResource($e))->response()->setStatusCode(400);
+            abort(500, $e->getMessage());
         }
 
         return (new CocktailResource($cocktail))
             ->response()
+            ->setStatusCode(201)
             ->header('Location', route('cocktails.show', $cocktail->id));
     }
 
@@ -101,21 +88,26 @@ class CocktailController extends Controller
      */
     public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): JsonResponse
     {
-        $cocktail = $cocktailService->updateCocktail(
-            $id,
-            $request->post('name'),
-            $request->post('instructions'),
-            $request->post('ingredients'),
-            $request->user()->id,
-            $request->post('description'),
-            $request->post('garnish'),
-            $request->post('source'),
-            $request->post('images', []),
-            $request->post('tags', []),
-        );
+        try {
+            $cocktail = $cocktailService->updateCocktail(
+                $id,
+                $request->post('name'),
+                $request->post('instructions'),
+                $request->post('ingredients'),
+                $request->user()->id,
+                $request->post('description'),
+                $request->post('garnish'),
+                $request->post('source'),
+                $request->post('images', []),
+                $request->post('tags', []),
+            );
+        } catch (Throwable $e) {
+            abort(500, $e->getMessage());
+        }
 
         return (new CocktailResource($cocktail))
             ->response()
+            ->setStatusCode(201)
             ->header('Location', route('cocktails.show', $cocktail->id));
     }
 
@@ -124,11 +116,7 @@ class CocktailController extends Controller
      */
     public function delete(int $id)
     {
-        try {
-            Cocktail::findOrFail($id)->delete();
-        } catch (Throwable $e) {
-            return new ErrorResource($e);
-        }
+        Cocktail::findOrFail($id)->delete();
 
         return new SuccessActionResource((object) ['id' => $id]);
     }

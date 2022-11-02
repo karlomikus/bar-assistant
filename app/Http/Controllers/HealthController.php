@@ -15,7 +15,7 @@ class HealthController extends Controller
         return response()->json([
             'data' => [
                 'name' => config('app.name'),
-                'version' => config('app.version'),
+                'version' => config('bar-assistant.version'),
                 'meilisearch_host' => config('scout.meilisearch.host'),
                 'meilisearch_version' => $meilisearch->version()['pkgVersion'],
             ]

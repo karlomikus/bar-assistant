@@ -23,6 +23,8 @@ use Kami\Cocktail\Http\Controllers\ShoppingListController;
 
 Route::post('login', [AuthController::class, 'authenticate']);
 Route::post('logout', [AuthController::class, 'logout']);
+Route::post('register', [AuthController::class, 'register']);
+
 Route::get('/version', [HealthController::class, 'version']);
 
 Route::middleware('auth:sanctum')->group(function() {
@@ -68,4 +70,11 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::delete('/batch', [ShoppingListController::class, 'batchDelete']);
     });
 
+});
+
+Route::fallback(function() {
+    return response()->json([
+        'type' => 'api_error',
+        'message' => 'Page Not Found.'
+    ], 404);
 });

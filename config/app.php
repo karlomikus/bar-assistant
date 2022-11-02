@@ -17,8 +17,6 @@ return [
 
     'name' => env('APP_NAME', 'Bar Assistant'),
 
-    'version' => 'v0.1.0',
-
     /*
     |--------------------------------------------------------------------------
     | Application Environment

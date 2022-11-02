@@ -12,7 +12,7 @@
 
 Bar assistant is a self hosted application for managing your home bar. It allows you to add ingredients and create custom cocktail recipes.
 
-This repository only contains the API server, if you want easy to use client, take a look at [Salt Rim](https://github.com/karlomikus/vue-salt-rim).
+This repository only contains the API server, if you are looking for easy to use web client, take a look at [Salt Rim](https://github.com/karlomikus/vue-salt-rim).
 
 ## Features
 
@@ -28,7 +28,6 @@ This repository only contains the API server, if you want easy to use client, ta
 ## Planned features
 
 - Cocktail recipe sharing
-- Finish multi user features
 - User defined cocktail collections
 - Cocktail ratings
 - Add user notes to cocktail
@@ -46,28 +45,39 @@ This application is made with Laravel, so you should [follow installation instru
 - Sqlite 3
 - Working [Meilisearch server](https://github.com/meilisearch)
 
-After initial Laravel setup do the following:
+### Meilisearch
+
+Bar Assistant is using Meilisearch as a primary Scout driver. It's used to index cocktails and ingredients used for filtering and full text search.
+
+### Setup
+
+After cloning the repository, you should do the following:
 
 1. Update your environment variables
 
+``` bash
+$ cp .env.dist .env
 ```
+
+``` env
 # Your application instance URL
 APP_URL=
-
 # Meilisearch instance URL
 MEILISEARCH_HOST=
-
 # Meilisearch search key
 MEILISEARCH_KEY=
 ```
 
 2. Run the commands
-```
-# To setup the database:
-$ php artisan migrate
+``` bash
+# Generate a key
+$ php artisan key:generate
 
 # To setup correct image paths
 $ php artisan storage:link
+
+# To setup the database:
+$ php artisan migrate
 
 # To fill the database with data
 $ php artisan bar:open
@@ -80,9 +90,15 @@ Default login information is:
 
 ## Docker
 
-[Docker image](https://hub.docker.com/r/kmikus12/bar-assistant-server).
-
 [Also checkout how to setup the whole Bar Assistant stack here.](https://github.com/karlomikus/vue-salt-rim#docker-compose)
+
+``` bash
+docker run -d \
+    -e APP_URL=http://localhost:8080 \
+    -e MEILISEARCH_HOST=http://localhost:7700 \
+    -e MEILISEARCH_KEY=TEST \
+    kmikus12/bar-assistant-server
+```
 
 ## Contributing
 
