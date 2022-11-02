@@ -44,9 +44,9 @@ class AuthController extends Controller
         }
 
         $user = new User();
-        $user->name = $req->string('name');
-        $user->password = Hash::make($req->string('password'));
-        $user->email = $req->string('email');
+        $user->name = $req->post('name');
+        $user->password = Hash::make($req->post('password'));
+        $user->email = $req->post('email');
         $user->email_verified_at = now();
         $user->search_api_key = SearchActions::getPublicApiKey();
         $user->save();

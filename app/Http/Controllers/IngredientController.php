@@ -66,6 +66,7 @@ class IngredientController extends Controller
             $id,
             $request->post('name'),
             (int) $request->post('ingredient_category_id'),
+            auth()->user()->id,
             floatval($request->post('strength', '0')),
             $request->post('description'),
             $request->post('origin'),

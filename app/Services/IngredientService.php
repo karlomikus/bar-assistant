@@ -70,6 +70,7 @@ class IngredientService
      * @param int $id
      * @param string $name
      * @param int $ingredientCategoryId
+     * @param int $userId
      * @param float $strength
      * @param string|null $description
      * @param string|null $origin
@@ -82,6 +83,7 @@ class IngredientService
         int $id,
         string $name,
         int $ingredientCategoryId,
+        int $userId,
         float $strength = 0.0,
         ?string $description = null,
         ?string $origin = null,
@@ -99,6 +101,7 @@ class IngredientService
             $ingredient->origin = $origin;
             $ingredient->color = $color;
             $ingredient->parent_ingredient_id = $parentIngredientId;
+            $ingredient->user_id = $userId;
             $ingredient->save();
         } catch (Throwable $e) {
             throw new IngredientException('Error occured while updating ingredient!', 0, $e);
