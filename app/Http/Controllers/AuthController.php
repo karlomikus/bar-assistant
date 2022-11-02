@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Kami\Cocktail\Http\Resources\UserResource;
 use Kami\Cocktail\Http\Requests\RegisterRequest;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthController extends Controller
 {
@@ -27,20 +26,20 @@ class AuthController extends Controller
             return response()->json(['token' => $token->plainTextToken]);
         }
 
-        return response()->json(['type' => 'api_error', 'message' => 'User authentication failed. Check your username and password and try again.'], 404);
+        abort(404, 'User not found. Check your username and password and try again.');
     }
 
     public function logout()
     {
         Auth::logout();
 
-        return response()->json([]);
+        return response()->json(['data' => ['success' => true]]);
     }
 
     public function register(RegisterRequest $req)
     {
         if (config('bar-assistant.allow_registration') == false) {
-            throw new NotFoundHttpException();
+            abort(404, 'Registrations are closed.');
         }
 
         $user = new User();

@@ -75,6 +75,6 @@ Route::middleware('auth:sanctum')->group(function() {
 Route::fallback(function() {
     return response()->json([
         'type' => 'api_error',
-        'message' => 'Page Not Found.'
+        'message' => 'Endpoint not found.'
     ], 404);
 });

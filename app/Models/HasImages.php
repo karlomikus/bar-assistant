@@ -35,15 +35,9 @@ trait HasImages
 
     public function deleteImages(): void
     {
-        $disk = Storage::disk('app_images');
-
         foreach ($this->images as $image) {
-            if ($disk->exists($image->file_path)) {
-                $disk->delete($image->file_path);
-            }
+            $image->delete();
         }
-
-        $this->images()->delete();
     }
 
     public function attachImages(Collection $images): void
