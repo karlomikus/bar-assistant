@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\UserShoppingList;
-use Kami\Cocktail\Http\Resources\ErrorResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
 use Kami\Cocktail\Http\Resources\UserShoppingListResource;
 
@@ -36,7 +35,7 @@ class ShoppingListController extends Controller
         try {
             $request->user()->shoppingLists()->whereIn('ingredient_id', $ingredientIds)->delete();
         } catch (Throwable $e) {
-            return (new ErrorResource($e))->response()->setStatusCode(400);
+            abort(500, $e->getMessage());
         }
 
         return new SuccessActionResource((object) ['ingredient_ids' => $ingredientIds]);

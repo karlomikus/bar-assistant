@@ -274,7 +274,7 @@ class OpenBar extends Command
             return $ing;
         });
 
-        $source = Yaml::parseFile(resource_path('/data/iba_cocktails.yml'));
+        $source = Yaml::parseFile(resource_path('/data/iba_cocktails_v0.1.0.yml'));
 
         foreach ($source as $sCocktail) {
             DB::beginTransaction();
@@ -282,7 +282,7 @@ class OpenBar extends Command
                 $cocktail = new Cocktail();
                 $cocktail->name = $sCocktail['name'];
                 $cocktail->description = $sCocktail['description'];
-                $cocktail->instructions = is_array($sCocktail['instructions']) ? $sCocktail['instructions'][0] : $sCocktail['instructions'];
+                $cocktail->instructions = $sCocktail['instructions'];
                 $cocktail->garnish = $sCocktail['garnish'];
                 $cocktail->source = $sCocktail['source'];
                 $cocktail->user_id = 1;
@@ -294,7 +294,7 @@ class OpenBar extends Command
                 $image->copyright = $sCocktail['image_copyright'] ?? null;
                 $cocktail->images()->save($image);
 
-                foreach ($sCocktail['categories'] as $sCat) {
+                foreach ($sCocktail['tags'] as $sCat) {
                     $tag = Tag::firstOrNew([
                         'name' => $sCat,
                     ]);
@@ -302,24 +302,19 @@ class OpenBar extends Command
                     $cocktail->tags()->attach($tag->id);
                 }
 
-                foreach ($sCocktail['ingredients'] as $cIngredient) {
-                    $split = explode(' ', $cIngredient);
-                    $amount = $split[0];
-                    $units = $split[1];
-                    $output = array_splice($split, 2);
-                    $sIngredient = implode(' ', $output);
-
-                    if (!$dbIngredients->contains('name', strtolower($sIngredient))) {
-                        dump('Ingredient not found: [' . $sCocktail['name'] . '] ' . $sIngredient);
+                foreach ($sCocktail['ingredients'] as $sIngredient) {
+                    if (!$dbIngredients->contains('name', strtolower($sIngredient['name']))) {
+                        dump('Ingredient not found: [' . $sCocktail['name'] . '] ' . $sIngredient['name']);
                         continue;
                     }
-                    $dbId = $dbIngredients->filter(fn ($item) => $item->name == strtolower($sIngredient))->first()->id;
+                    $dbId = $dbIngredients->filter(fn ($item) => $item->name == strtolower($sIngredient['name']))->first()->id;
 
                     $cocktailIng = new CocktailIngredient();
                     $cocktailIng->cocktail_id = $cocktail->id;
                     $cocktailIng->ingredient_id = $dbId;
-                    $cocktailIng->amount = floatval($amount);
-                    $cocktailIng->units = strtolower($units);
+                    $cocktailIng->amount = floatval($sIngredient['amount']);
+                    $cocktailIng->units = strtolower($sIngredient['units']);
+                    $cocktailIng->optional = $sIngredient['optional'];
                     $cocktailIng->save();
                 }
 
