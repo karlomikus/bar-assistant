@@ -80,15 +80,23 @@ class OpenBar extends Command
         Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
 
         DB::table('glasses')->insert([
-            ['name' => 'Cocktail glass', 'description' => 'A cocktail glass is a stemmed glass with an inverted cone bowl, mainly used to serve straight-up cocktails. The term cocktail glass is often used interchangeably with martini glass, despite their differing slightly. A standard cocktail glass contains 90 to 300 millilitres.'],
-            ['name' => 'Lowball glass', 'description' => 'The old fashioned glass, otherwise known as the rocks glass and lowball glass (or simply lowball), is a short tumbler used for serving spirits, such as whisky, neat or with ice cubes ("on the rocks"). Old fashioned glasses usually contain 180–300 ml.'],
-            ['name' => 'Highball glass', 'description' => 'A highball glass is a glass tumbler that can contain 240 to 350 millilitres (8 to 12 US fl oz).'],
-            ['name' => 'Shot glass', 'description' => 'A shot glass is a glass originally designed to hold or measure spirits or liquor, which is either imbibed straight from the glass ("a shot") or poured into a cocktail ("a drink").'],
-            ['name' => 'Coupe glass', 'description' => 'The champagne coupe is a shallow, broad-bowled saucer shaped stemmed glass generally capable of containing 180 to 240 ml (6.1 to 8.1 US fl oz) of liquid.'],
-            ['name' => 'Margarita glass', 'description' => 'A variant of the classic champagne coupe.'],
-            ['name' => 'Wine glass', 'description' => 'A wine glass is a type of glass that is used to drink and taste wine. Most wine glasses are stemware (goblets), i.e., they are composed of three parts: the bowl, stem, and foot.'],
-            ['name' => 'Champagne glass', 'description' => 'A champagne glass is stemware designed for champagne and other sparkling wines.'],
-            ['name' => 'Hurricane glass', 'description' => 'A hurricane glass is a form of drinking glass which typically will contain 20 US fluid ounces.'],
+            ['name' => 'Cocktail', 'description' => 'A cocktail glass is a stemmed glass with an inverted cone bowl, mainly used to serve straight-up cocktails. The term cocktail glass is often used interchangeably with martini glass, despite their differing slightly. A standard cocktail glass contains 90 to 300 millilitres.'],
+            ['name' => 'Lowball', 'description' => 'The old fashioned glass, otherwise known as the rocks glass and lowball glass (or simply lowball), is a short tumbler used for serving spirits, such as whisky, neat or with ice cubes ("on the rocks"). Old fashioned glasses usually contain 180–300 ml.'],
+            ['name' => 'Highball', 'description' => 'A highball glass is a glass tumbler that can contain 240 to 350 millilitres (8 to 12 US fl oz).'],
+            ['name' => 'Shot', 'description' => 'A shot glass is a glass originally designed to hold or measure spirits or liquor, which is either imbibed straight from the glass ("a shot") or poured into a cocktail ("a drink").'],
+            ['name' => 'Coupe', 'description' => 'The champagne coupe is a shallow, broad-bowled saucer shaped stemmed glass generally capable of containing 180 to 240 ml (6.1 to 8.1 US fl oz) of liquid.'],
+            ['name' => 'Margarita', 'description' => 'A variant of the classic champagne coupe.'],
+            ['name' => 'Wine', 'description' => 'A wine glass is a type of glass that is used to drink and taste wine. Most wine glasses are stemware (goblets), i.e., they are composed of three parts: the bowl, stem, and foot.'],
+            ['name' => 'Champagne', 'description' => 'A champagne glass is stemware designed for champagne and other sparkling wines.'],
+            ['name' => 'Hurricane', 'description' => 'A hurricane glass is a form of drinking glass which typically will contain 20 US fluid ounces.'],
+            ['name' => 'Nick and Nora', 'description' => 'A Nick & Nora glass is a stemmed glass with an inverted bowl, mainly used to serve straight-up cocktails. The glass is similar to a cocktail glass or martini glass.'],
+            ['name' => 'Fizzio', 'description' => 'Wide flat bowl on a stem.'],
+            ['name' => 'Sour', 'description' => 'Tulip shaped with a fatter stem.'],
+            ['name' => 'Julep', 'description' => 'Metal bucket shaped glass.'],
+            ['name' => 'Absinthe', 'description' => 'Absinthe glasses have a reservoir in the stem to measure the correct amount of Absinthe for one serving.'],
+            ['name' => 'Glass mug', 'description' => 'A mug made of glass.'],
+            ['name' => 'Copper mug', 'description' => 'A mug made of copper.'],
+            ['name' => 'Tiki', 'description' => 'The term "tiki mug" is a blanket term for the sculptural drinkware even though they vary in size and most do not contain handles.'],
         ]);
 
         $spirits = IngredientCategory::create(['name' => 'Spirits', 'description' => 'Alcoholic drinks produced by distillation of grains, fruits, vegetables, or sugar, that have already gone through alcoholic fermentation.']);
@@ -274,6 +282,12 @@ class OpenBar extends Command
             return $ing;
         });
 
+        $dbGlasses = DB::table('glasses')->select(['name', 'id'])->get()->map(function ($ing) {
+            $ing->name = strtolower($ing->name);
+
+            return $ing;
+        });
+
         $source = Yaml::parseFile(resource_path('/data/iba_cocktails_v0.1.0.yml'));
 
         foreach ($source as $sCocktail) {
@@ -286,6 +300,13 @@ class OpenBar extends Command
                 $cocktail->garnish = $sCocktail['garnish'];
                 $cocktail->source = $sCocktail['source'];
                 $cocktail->user_id = 1;
+
+                // Glass
+                if (!$dbGlasses->contains('name', strtolower($sCocktail['glass']))) {
+                    dump('Glass not found: [' . $sCocktail['name'] . '] ' . $sCocktail['glass']);
+                }
+                $cocktail->glass_id = $dbGlasses->filter(fn ($item) => $item->name == strtolower($sCocktail['glass']))->first()->id ?? null;
+                
                 $cocktail->save();
 
                 $image = new Image();

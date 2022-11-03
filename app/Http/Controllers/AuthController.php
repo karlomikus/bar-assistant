@@ -29,9 +29,9 @@ class AuthController extends Controller
         abort(404, 'User not found. Check your username and password and try again.');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        Auth::logout();
+        $request->user()->tokens()->delete();
 
         return response()->json(['data' => ['success' => true]]);
     }

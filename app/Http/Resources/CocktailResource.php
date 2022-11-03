@@ -29,6 +29,7 @@ class CocktailResource extends JsonResource
             'image_copyright' => $this->images->first()->copyright ?? null,
             'image_url' => $this->getImageUrl(),
             'tags' => $this->tags->pluck('name'),
+            'glass' => new GlassResource($this->whenLoaded('glass')),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'ingredients' => CocktailIngredientResource::collection($this->ingredients),
         ];
