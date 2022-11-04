@@ -265,7 +265,7 @@ class OpenBar extends Command
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);
 
-        SearchActions::updateCocktailIndex();
+        SearchActions::updateIndexSettings();
 
         Model::reguard();
 
