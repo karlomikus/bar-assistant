@@ -107,7 +107,7 @@ class CocktailService
         // Refresh model for response
         $cocktail->refresh();
         // Upsert scout index
-        $cocktail->searchable();
+        $cocktail->save();
 
         return $cocktail;
     }
@@ -202,7 +202,7 @@ class CocktailService
         // Refresh model for response
         $cocktail->refresh();
         // Upsert scout index
-        $cocktail->searchable();
+        $cocktail->save();
 
         return $cocktail;
     }

@@ -29,7 +29,7 @@ class SearchActions
         return $engine->health();
     }
 
-    public static function updateCocktailIndex()
+    public static function updateIndexSettings()
     {
         /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\MeiliSearch\Client */
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
@@ -37,6 +37,11 @@ class SearchActions
         $engine->index('cocktails')->updateSettings([
             'filterableAttributes' => ['tags'],
             'sortableAttributes' => ['id', 'name', 'date']
+        ]);
+
+        $engine->index('ingredients')->updateSettings([
+            'filterableAttributes' => ['category'],
+            'sortableAttributes' => ['name']
         ]);
     }
 

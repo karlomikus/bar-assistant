@@ -51,7 +51,7 @@ class CocktailController extends Controller
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
             ->firstOrFail()
-            ->load('ingredients.ingredient', 'images', 'tags');
+            ->load('ingredients.ingredient', 'images', 'tags', 'glass');
 
         return new CocktailResource($cocktail);
     }

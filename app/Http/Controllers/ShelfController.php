@@ -26,6 +26,8 @@ class ShelfController extends Controller
         $userIngredient = new UserIngredient();
         $userIngredient->ingredient_id = $ingredientId;
 
+        UserShoppingList::where('ingredient_id', $ingredientId)->delete();
+
         $si = $request->user()->shelfIngredients()->save($userIngredient);
 
         return new UserIngredientResource($si);
