@@ -107,7 +107,7 @@ class OpenBar extends Command
         $wines = IngredientCategory::create(['name' => 'Wines']);
         $bitters = IngredientCategory::create(['name' => 'Bitters']);
         $beverages = IngredientCategory::create(['name' => 'Beverages']);
-        $misc = IngredientCategory::create(['name' => 'Misc.']);
+        $misc = IngredientCategory::create(['name' => 'Uncategorized']);
 
         $this->info('Filling your bar with ingredients...');
 
