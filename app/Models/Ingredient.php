@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
+use Spatie\Sluggable\HasSlug;
 use Kami\Cocktail\SearchActions;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ingredient extends Model
 {
-    use HasFactory, Searchable, HasImages;
+    use HasFactory, Searchable, HasImages, HasSlug;
 
     private $appImagesDir = 'ingredients/';
     private $missingImageFileName = 'no-image.png'; // TODO: WEBP
@@ -31,10 +32,6 @@ class Ingredient extends Model
 
     protected static function booted()
     {
-        static::saving(function ($ing) {
-            $ing->slug = Str::slug($ing->name);
-        });
-
         static::saved(function($ing) {
             SearchActions::update($ing);
         });
@@ -42,6 +39,13 @@ class Ingredient extends Model
         static::deleted(function($ing) {
             SearchActions::delete($ing);
         });
+    }
+
+    public function getSlugOptions() : SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
     }
 
     public function category(): BelongsTo
