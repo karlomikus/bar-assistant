@@ -79,4 +79,61 @@ class CocktailControllerTest extends TestCase
         $response->assertStatus(201);
         $this->assertNotNull($response->headers->get('Location', null));
     }
+
+    public function test_cocktail_update_response()
+    {
+        $cocktail = Cocktail::factory()->create();
+
+        $gin = Ingredient::factory()
+            ->state([
+                'name' => 'Gin',
+                'strength' => 40,
+            ])
+            ->create();
+
+        $response = $this->putJson('/api/cocktails/' . $cocktail->id, [
+            'name' => "Cocktail name",
+            'instructions' => "1. Step\n2. Step",
+            'description' => "Cocktail description",
+            'garnish' => "Lemon peel",
+            'source' => "https://karlomikus.com",
+            'images' => [],
+            'tags' => ['Test', 'Gin'],
+            'ingredients' => [
+                [
+                    'ingredient_id' => $gin->id,
+                    'amount' => 30,
+                    'units' => 'ml',
+                    'optional' => false,
+                    'sort' => 1,
+                ]
+            ]
+        ]);
+
+        $response->assertStatus(201);
+        $this->assertNotNull($response->headers->get('Location', null));
+    }
+
+    public function test_cocktail_delete_response()
+    {
+        $cocktail = Cocktail::factory()->create();
+
+        $response = $this->deleteJson('/api/cocktails/' . $cocktail->id);
+
+        $response->assertStatus(200);
+    }
+
+    public function test_user_shelf_cocktails_response()
+    {
+        $response = $this->getJson('/api/cocktails/user-shelf');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_user_favorites_cocktails_response()
+    {
+        $response = $this->getJson('/api/cocktails/user-favorites');
+
+        $response->assertStatus(200);
+    }
 }
