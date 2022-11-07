@@ -79,6 +79,7 @@ class Cocktail extends Model
 
     public function toSearchableArray(): array
     {
+        // Some attributes are not searchable as per SearchActions settings
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -88,6 +89,7 @@ class Cocktail extends Model
             'garnish' => $this->garnish,
             'image_url' => $this->getImageUrl(),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
+            'user_id' => $this->user_id,
             'tags' => $this->tags->pluck('name'),
             'date' => $this->updated_at->format('Y-m-d H:i:s')
         ];

@@ -232,6 +232,20 @@ class CocktailService
         // ORDER BY total DESC
         // LIMIT 10;
 
+        // $cocktailIds = $this->db->table('cocktails AS c')
+        //     ->select(['c.id'])
+        //     ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id')
+        //     ->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
+        //     ->whereIn('ci.ingredient_id', function ($query) use ($userId) {
+        //         $query->select('ingredient_id')
+        //             ->from('user_ingredients')
+        //             ->where('user_id', $userId);
+        //     })
+        //     ->groupBy('c.id', 'c.name')
+        //     ->havingRaw('COUNT(*) <= 1')
+        //     ->pluck('id');
+        //     return Cocktail::find($cocktailIds);
+
         // Cocktails strictly available
         // https://stackoverflow.com/questions/19930070/mysql-query-to-select-all-except-something
         // SELECT c.*

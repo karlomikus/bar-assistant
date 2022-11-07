@@ -79,6 +79,8 @@ class OpenBar extends Command
         Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Cocktail"]);
         Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
 
+        SearchActions::updateIndexSettings();
+
         DB::table('glasses')->insert([
             ['name' => 'Cocktail', 'description' => 'A cocktail glass is a stemmed glass with an inverted cone bowl, mainly used to serve straight-up cocktails. The term cocktail glass is often used interchangeably with martini glass, despite their differing slightly. A standard cocktail glass contains 90 to 300 millilitres.'],
             ['name' => 'Lowball', 'description' => 'The old fashioned glass, otherwise known as the rocks glass and lowball glass (or simply lowball), is a short tumbler used for serving spirits, such as whisky, neat or with ice cubes ("on the rocks"). Old fashioned glasses usually contain 180–300 ml.'],
@@ -264,8 +266,6 @@ class OpenBar extends Command
 
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);
-
-        SearchActions::updateIndexSettings();
 
         Model::reguard();
 
