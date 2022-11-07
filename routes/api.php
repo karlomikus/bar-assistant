@@ -1,14 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Kami\Cocktail\Http\Controllers\AuthController;
 use Kami\Cocktail\Http\Controllers\UserController;
 use Kami\Cocktail\Http\Controllers\ImageController;
-use Kami\Cocktail\Http\Controllers\AuthController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
-use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\HealthController;
+use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
+use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,10 +43,13 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::prefix('ingredients')->group(function() {
         Route::get('/', [IngredientController::class, 'index']);
         Route::post('/', [IngredientController::class, 'store']);
-        Route::get('/categories', [IngredientController::class, 'categories']);
         Route::get('/{id}', [IngredientController::class, 'show']);
         Route::put('/{id}', [IngredientController::class, 'update']);
         Route::delete('/{id}', [IngredientController::class, 'delete']);
+    });
+
+    Route::prefix('ingredient-categories')->group(function() {
+        Route::get('/', [IngredientCategoryController::class, 'index']);
     });
 
     Route::prefix('cocktails')->group(function() {
