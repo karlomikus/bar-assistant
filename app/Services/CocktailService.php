@@ -34,6 +34,7 @@ class CocktailService
      * @param string|null $cocktailSource
      * @param array<int> $images
      * @param array<string> $tags
+     * @param int|null $glassId
      * @return \Kami\Cocktail\Models\Cocktail
      */
     public function createCocktail(
@@ -46,6 +47,7 @@ class CocktailService
         ?string $cocktailSource = null,
         array $images = [],
         array $tags = [],
+        ?int $glassId = null
     ): Cocktail
     {
         $this->db->beginTransaction();
@@ -58,6 +60,7 @@ class CocktailService
             $cocktail->garnish = $garnish;
             $cocktail->source = $cocktailSource;
             $cocktail->user_id = $userId;
+            $cocktail->glass_id = $glassId;
             $cocktail->save();
 
             foreach($ingredients as $ingredient) {
@@ -125,6 +128,7 @@ class CocktailService
      * @param string|null $cocktailSource
      * @param array<int> $images
      * @param array<string> $tags
+     * @param int|null $glassId
      * @return \Kami\Cocktail\Models\Cocktail
      */
     public function updateCocktail(
@@ -138,6 +142,7 @@ class CocktailService
         ?string $cocktailSource = null,
         array $images = [],
         array $tags = [],
+        ?int $glassId = null,
     ): Cocktail
     {
         $this->db->beginTransaction();
@@ -150,6 +155,7 @@ class CocktailService
             $cocktail->garnish = $garnish;
             $cocktail->source = $cocktailSource;
             $cocktail->user_id = $userId;
+            $cocktail->glass_id = $glassId;
             $cocktail->save();
 
             // TODO: Implement upsert and delete

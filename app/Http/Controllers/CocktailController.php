@@ -72,6 +72,7 @@ class CocktailController extends Controller
                 $request->post('source'),
                 $request->post('images', []),
                 $request->post('tags', []),
+                $request->post('glass_id'),
             );
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
@@ -100,6 +101,7 @@ class CocktailController extends Controller
                 $request->post('source'),
                 $request->post('images', []),
                 $request->post('tags', []),
+                $request->post('glass_id'),
             );
         } catch (Throwable $e) {
             abort(500, $e->getMessage());

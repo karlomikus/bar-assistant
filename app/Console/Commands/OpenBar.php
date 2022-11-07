@@ -99,6 +99,7 @@ class OpenBar extends Command
             ['name' => 'Tiki', 'description' => 'The term "tiki mug" is a blanket term for the sculptural drinkware even though they vary in size and most do not contain handles.'],
         ]);
 
+        $uncategorized = IngredientCategory::create(['id' => 1, 'name' => 'Uncategorized']);
         $spirits = IngredientCategory::create(['name' => 'Spirits', 'description' => 'Alcoholic drinks produced by distillation of grains, fruits, vegetables, or sugar, that have already gone through alcoholic fermentation.']);
         $liqueurs = IngredientCategory::create(['name' => 'Liqueurs', 'description' => 'Alcoholic drinks composed of spirits (often rectified spirit) and additional flavorings such as sugar, fruits, herbs, and spices.']);
         $juices = IngredientCategory::create(['name' => 'Juices', 'description' => 'Drinks made from the extraction or pressing of the natural liquid contained in fruit and vegetables.']);
@@ -107,7 +108,6 @@ class OpenBar extends Command
         $wines = IngredientCategory::create(['name' => 'Wines']);
         $bitters = IngredientCategory::create(['name' => 'Bitters']);
         $beverages = IngredientCategory::create(['name' => 'Beverages']);
-        $misc = IngredientCategory::create(['name' => 'Uncategorized']);
 
         $this->info('Filling your bar with ingredients...');
 
@@ -123,17 +123,17 @@ class OpenBar extends Command
         Ingredient::create(['name' => 'Chilli Pepper', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Hot pepper', 'user_id' => 1]);
 
         // Misc
-        Ingredient::create(['name' => 'White Peach Puree', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'A purée (or mash) is cooked food, usually vegetables, fruits or legumes, that has been ground, pressed, blended or sieved to the consistency of a creamy paste or liquid.', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Cream', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Cream is a dairy product composed of the higher-fat layer skimmed from the top of milk before homogenization.', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Salt', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Salt', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Pepper', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Black pepper', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Tabasco', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Hot sauce made from vinegar, tabasco peppers, and salt.', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Worcestershire Sauce', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Fermented liquid condiment created in the city of Worcester', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Sugar', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'White sugar', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Egg White', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Chicken egg without yolk.', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Egg Yolk', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Yolk from chicken egg', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Coconut Cream', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Opaque, milky-white liquid extracted from the grated pulp of mature coconuts.', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Vanilla Extract', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Solution made by macerating and percolating vanilla pods in a solution of ethanol and water.', 'user_id' => 1]);
+        Ingredient::create(['name' => 'White Peach Puree', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'A purée (or mash) is cooked food, usually vegetables, fruits or legumes, that has been ground, pressed, blended or sieved to the consistency of a creamy paste or liquid.', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Cream', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Cream is a dairy product composed of the higher-fat layer skimmed from the top of milk before homogenization.', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Salt', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Salt', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Pepper', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Black pepper', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Tabasco', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Hot sauce made from vinegar, tabasco peppers, and salt.', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Worcestershire Sauce', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Fermented liquid condiment created in the city of Worcester', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Sugar', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'White sugar', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Egg White', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Chicken egg without yolk.', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Egg Yolk', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Yolk from chicken egg', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Coconut Cream', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Opaque, milky-white liquid extracted from the grated pulp of mature coconuts.', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Vanilla Extract', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Solution made by macerating and percolating vanilla pods in a solution of ethanol and water.', 'user_id' => 1]);
 
         // Bitters
         Ingredient::create(['name' => 'Orange bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 28.0, 'description' => 'Orange bitters is a form of bitters, a cocktail flavoring made from such ingredients as the peels of Seville oranges, cardamom, caraway seed, coriander, anise, and burnt sugar in an alcohol base.', 'origin' => 'Worldwide', 'user_id' => 1]);
