@@ -33,7 +33,7 @@ class IngredientController extends Controller
 
     public function show(int|string $id)
     {
-        $ingredient = Ingredient::with('cocktails', 'images')
+        $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient')
             ->where('id', $id)
             ->orWhere('slug', $id)
             ->firstOrFail();

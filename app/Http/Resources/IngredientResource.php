@@ -26,17 +26,25 @@ class IngredientResource extends JsonResource
             'description' => $this->description,
             'origin' => $this->origin,
             'image_url' => $this->getImageUrl(),
-            'parent_ingredient_id' => $this->parent_ingredient_id,
             'ingredient_category_id' => $this->ingredient_category_id,
             'color' => $this->color,
             'category' => new IngredientCategoryResource($this->category),
             'cocktails_count' => $this->whenCounted('cocktails'),
+            'varieties' => $this->when($this->relationLoaded('varieties') || $this->relationLoaded('parentIngredient'), function () {
+                return $this->getAllRelatedIngredients()->map(function ($v) {
+                    return [
+                        'id' => $v->id,
+                        'slug' => $v->slug,
+                        'name' => $v->name,
+                    ];
+                })->toArray();
+            }),
             'cocktails' => $this->whenLoaded('cocktails', function () {
                 return $this->cocktails->map(function ($c) {
                     return [
                         'id' => $c->id,
-                        'name' => $c->name,
                         'slug' => $c->slug,
+                        'name' => $c->name,
                     ];
                 });
             })
