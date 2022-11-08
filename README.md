@@ -14,6 +14,8 @@ Bar assistant is a self hosted application for managing your home bar. It allows
 
 This repository only contains the API server, if you are looking for easy to use web client, take a look at [Salt Rim](https://github.com/karlomikus/vue-salt-rim).
 
+Note: This application is still in development and there will be breaking changes and loss of data. I do not recommend using this in a "production" environment until a stable version is released.
+
 ## Features
 
 - Includes all current IBA cocktails
@@ -96,7 +98,7 @@ Default login information is:
 docker run -d \
     -e APP_URL=http://localhost:8080 \
     -e MEILISEARCH_HOST=http://localhost:7700 \
-    -e MEILISEARCH_KEY=TEST \
+    -e MEILISEARCH_KEY=maskerKey \
     kmikus12/bar-assistant-server
 ```
 
