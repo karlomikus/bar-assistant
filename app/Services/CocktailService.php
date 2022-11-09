@@ -13,6 +13,7 @@ use Illuminate\Database\DatabaseManager;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Exceptions\CocktailException;
+use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 
 class CocktailService
 {
@@ -72,6 +73,10 @@ class CocktailService
                 $cIngredient->sort = $ingredient['sort'] ?? 0;
 
                 $cocktail->ingredients()->save($cIngredient);
+
+                $substitute = new CocktailIngredientSubstitute();
+                $substitute->ingredient_id = 42;
+                $cIngredient->substitutes()->save($substitute);
             }
 
             $dbTags = [];
