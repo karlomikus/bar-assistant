@@ -276,6 +276,7 @@ class CocktailService
             ->select('c.id')
             ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id')
             ->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
+            ->where('ci.optional', false)
             ->groupBy('c.id')
             ->havingRaw('SUM(CASE WHEN i.id IN (SELECT ingredient_id FROM user_ingredients WHERE user_id = ?) THEN 1 ELSE 0 END) = COUNT(*)', [$userId])
             ->pluck('id');
