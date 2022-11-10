@@ -75,11 +75,11 @@ class CocktailService
                 $cocktail->ingredients()->save($cIngredient);
 
                 // Substitutes
-                // foreach ($ingredient['substitutes'] ?? [] as $subId) {
-                //     $substitute = new CocktailIngredientSubstitute();
-                //     $substitute->ingredient_id = $subId;
-                //     $cIngredient->substitutes()->save($substitute);
-                // }
+                foreach ($ingredient['substitutes'] ?? [] as $subId) {
+                    $substitute = new CocktailIngredientSubstitute();
+                    $substitute->ingredient_id = $subId;
+                    $cIngredient->substitutes()->save($substitute);
+                }
             }
 
             $dbTags = [];
@@ -177,6 +177,14 @@ class CocktailService
                 $cIngredient->sort = $ingredient['sort'] ?? 0;
 
                 $cocktail->ingredients()->save($cIngredient);
+
+                // Substitutes
+                $cIngredient->substitutes()->delete();
+                foreach ($ingredient['substitutes'] ?? [] as $subId) {
+                    $substitute = new CocktailIngredientSubstitute();
+                    $substitute->ingredient_id = $subId;
+                    $cIngredient->substitutes()->save($substitute);
+                }
             }
 
             $dbTags = [];
