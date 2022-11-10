@@ -27,3 +27,127 @@
             units: dashes
             name: Angostura aromatic bitters
             optional: false
+-
+    name: 'Porn Star Martini'
+    description: |-
+        This easy passion fruit cocktail is bursting with zingy flavours and is perfect for celebrating with friends.
+    instructions: |-
+        1. Scoop the seeds from one of the passion fruits into the glass of a cocktail shaker
+        2. Add the vodka, passoa, lime juice and sugar syrup.
+        3. Add a handful of ice and shake well
+        4. Strain into a martini glass
+        5. Serve with shot of chilled Champagne on the side
+    garnish: 'Half a passion fruit on top'
+    source: 'Douglas Ankrah, The Townhouse | London'
+    image_copyright: 'Punch / Jamie Lau'
+    glass: Coupe
+    tags:
+        - Vodka
+    ingredients:
+        -
+            amount: 60
+            units: ml
+            name: Vanilla Vodka
+            optional: false
+            substitutes: [Vodka]
+        -
+            amount: 15
+            units: ml
+            name: Passoã
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Simple syrup
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Lime juice
+            optional: false
+        -
+            amount: 60
+            units: ml
+            name: Champagne
+            optional: true
+            substitutes: [Prosecco]
+-
+    name: 'Amaretto Sour'
+    description: |-
+        Amaretto is an Italian liqueur that’s typically flavored with almonds or apricot stones. Its distinctive flavor can be incorporated into numerous cocktails, but it’s best known for the Amaretto Sour, a drink that tends to get a bad rap. That’s because, too often, the cocktail is overly sweet and relies on premade sour mix. 
+    instructions: |-
+        1. Combine all ingredients and, if using an egg white, dry shake
+        2. Add ice and shake for 10 sec
+        3. Strain into a coupe, serve up
+    garnish: 'Spray aromatic bitters over foaming cocktail from atomiser and then garnish with lemon & cherry sail (lemon slice & Luxardo Maraschino cherry on stick)'
+    source: '1974'
+    image_copyright: 'The Spruce Eats'
+    glass: Lowball
+    tags:
+        - Sour
+    ingredients:
+        -
+            amount: 60
+            units: ml
+            name: Amaretto
+            optional: false
+        -
+            amount: 30
+            units: ml
+            name: Lemon juice
+            optional: false
+        -
+            amount: 1
+            units: dash
+            name: Angostura aromatic bitters
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Egg white
+            optional: true
+-
+    name: 'Cantaritos'
+    description: |-
+        Cantaritos are Mexican tequila cocktails served in clay cups! Similar to the Paloma, this drink stars grapefruit soda and citrus.
+    instructions: |-
+        1. If using the traditional clay cup for serving, soak it in cold water for 10 minutes before using. Otherwise, use a highball glass.
+        2. Combine the tequila, orange juice, lemon juice and lime juice in the glass with a pinch of salt.
+        3. Fill the glass with ice and top with grapefruit soda.
+    garnish: 'Citrus wedges'
+    source: 'Mexico'
+    image_copyright: 'A Couple Cooks'
+    glass: Highball
+    tags:
+        - Tequila
+    ingredients:
+        -
+            amount: 60
+            units: ml
+            name: Tequila reposado
+            optional: false
+        -
+            amount: 45
+            units: ml
+            name: Orange juice
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Lime juice
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Lemon juice
+            optional: false
+        -
+            amount: 90
+            units: ml
+            name: Grapefruit juice
+            optional: false
+        -
+            amount: 2
+            units: pinch
+            name: Salt
+            optional: true
