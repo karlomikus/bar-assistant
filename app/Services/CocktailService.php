@@ -74,9 +74,12 @@ class CocktailService
 
                 $cocktail->ingredients()->save($cIngredient);
 
-                $substitute = new CocktailIngredientSubstitute();
-                $substitute->ingredient_id = 42;
-                $cIngredient->substitutes()->save($substitute);
+                // Substitutes
+                // foreach ($ingredient['substitutes'] ?? [] as $subId) {
+                //     $substitute = new CocktailIngredientSubstitute();
+                //     $substitute->ingredient_id = $subId;
+                //     $cIngredient->substitutes()->save($substitute);
+                // }
             }
 
             $dbTags = [];

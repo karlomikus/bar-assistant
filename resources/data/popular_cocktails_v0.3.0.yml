@@ -1,0 +1,29 @@
+-
+    name: 'Japanese cocktail'
+    description: |-
+        The Japanese cocktail is notorious for a handful of things: it's a very old cocktail, published in Jerry Thomas’s landmark 1862 book How to Mix Drinks; it was the first mixed drink to be named something other than “Whiskey Cocktail”, “Brandy Cocktail”, or some other similarly obvious epithet; it might be the only cocktail Thomas invented himself; and finally, it was the first cocktail to feature more than a dash of a fancy sweetener, orgeat.
+    instructions: |-
+        1. Combine all ingredients in a mixing glass with ice and stir
+        2. Strain into a coupe, serve up
+    garnish: 'Lemon peel'
+    source: null
+    image_copyright: 'The Drink Blog'
+    glass: Coupe
+    tags:
+        - Brandy
+    ingredients:
+        -
+            amount: 60
+            units: ml
+            name: Brandy
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Orgeat Syrup
+            optional: false
+        -
+            amount: 2
+            units: dashes
+            name: Angostura aromatic bitters
+            optional: false

@@ -262,7 +262,8 @@ class OpenBar extends Command
 
         $this->info('Finding some cocktail recipes...');
 
-        $this->importIBACocktailsFromJson();
+        $this->importCocktailsFromJson(resource_path('/data/iba_cocktails_v0.1.0.yml'));
+        $this->importCocktailsFromJson(resource_path('/data/popular_cocktails_v0.3.0.yml'));
 
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);
@@ -274,7 +275,7 @@ class OpenBar extends Command
         return Command::SUCCESS;
     }
 
-    private function importIBACocktailsFromJson()
+    private function importCocktailsFromJson(string $sourcePath)
     {
         $dbIngredients = DB::table('ingredients')->select(['name', 'id'])->get()->map(function ($ing) {
             $ing->name = strtolower($ing->name);
@@ -288,7 +289,7 @@ class OpenBar extends Command
             return $ing;
         });
 
-        $source = Yaml::parseFile(resource_path('/data/iba_cocktails_v0.1.0.yml'));
+        $source = Yaml::parseFile($sourcePath);
 
         foreach ($source as $sCocktail) {
             DB::beginTransaction();
@@ -303,10 +304,10 @@ class OpenBar extends Command
 
                 // Glass
                 if (!$dbGlasses->contains('name', strtolower($sCocktail['glass']))) {
-                    dump('Glass not found: [' . $sCocktail['name'] . '] ' . $sCocktail['glass']);
+                    $this->warn('Glass not found: [' . $sCocktail['name'] . '] ' . $sCocktail['glass']);
                 }
                 $cocktail->glass_id = $dbGlasses->filter(fn ($item) => $item->name == strtolower($sCocktail['glass']))->first()->id ?? null;
-                
+
                 $cocktail->save();
 
                 $image = new Image();
@@ -325,7 +326,7 @@ class OpenBar extends Command
 
                 foreach ($sCocktail['ingredients'] as $sIngredient) {
                     if (!$dbIngredients->contains('name', strtolower($sIngredient['name']))) {
-                        dump('Ingredient not found: [' . $sCocktail['name'] . '] ' . $sIngredient['name']);
+                        $this->warn('Ingredient not found: [' . $sCocktail['name'] . '] ' . $sIngredient['name']);
                         continue;
                     }
                     $dbId = $dbIngredients->filter(fn ($item) => $item->name == strtolower($sIngredient['name']))->first()->id;

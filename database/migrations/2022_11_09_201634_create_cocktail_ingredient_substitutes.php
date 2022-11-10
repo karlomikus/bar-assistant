@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('cocktail_ingredient_substitutes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cocktail_ingredient_id')->constrained();
-            $table->foreignId('ingredient_id')->constrained();
+            $table->foreignId('cocktail_ingredient_id')->constrained()->onDelete('cascade');
+            $table->foreignId('ingredient_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cocktail_substitutes');
+        Schema::dropIfExists('cocktail_ingredient_substitutes');
     }
 };
