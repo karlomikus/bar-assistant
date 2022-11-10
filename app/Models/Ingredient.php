@@ -80,6 +80,7 @@ class Ingredient extends Model
         if ($this->parent_ingredient_id !== null) {
             return $this->parentIngredient
                 ->varieties
+                ->sortBy('name')
                 ->filter(fn ($ing) => $ing->id !== $this->id)
                 ->push($this->parentIngredient);
         }
