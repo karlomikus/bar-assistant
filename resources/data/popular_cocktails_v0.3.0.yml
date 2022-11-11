@@ -151,3 +151,33 @@
             units: pinch
             name: Salt
             optional: true
+-
+    name: 'White Negroni'
+    description: |-
+        The White Negroni is a fabulous use of the gentian's powers, and a downright brilliant twist on a bonafide classic. All of the flavor components of a classic Negroni are present, but only the gin remains verbatim.
+    instructions: |-
+        1. Combine all ingredients with ice and stir
+        2. Strain into a lowball glass
+    garnish: 'Lemon peel'
+    source: 'https://tuxedono2.com/white-negroni-cocktail-recipe'
+    image_copyright: 'A Couple Cooks'
+    glass: Lowball
+    tags:
+        - Gin
+    ingredients:
+        -
+            amount: 30
+            units: ml
+            name: Gin
+            optional: false
+        -
+            amount: 30
+            units: ml
+            name: Suze
+            optional: false
+            substitutes: [Salers]
+        -
+            amount: 30
+            units: ml
+            name: Lillet Blanc
+            optional: false

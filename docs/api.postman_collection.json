@@ -76,38 +76,19 @@
 					"response": []
 				},
 				{
-					"name": "All ingredient categories",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base}}/api/ingredients/categories",
-							"host": [
-								"{{base}}"
-							],
-							"path": [
-								"api",
-								"ingredients",
-								"categories"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Show ingredient",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base}}/api/ingredients/1",
+							"raw": "{{base}}/api/ingredients/73",
 							"host": [
 								"{{base}}"
 							],
 							"path": [
 								"api",
 								"ingredients",
-								"1"
+								"73"
 							]
 						}
 					},
@@ -120,7 +101,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Ingredient name\",\r\n    \"strength\": 12.2,\r\n    \"description\": \"Description text\",\r\n    \"history\": \"History text\",\r\n    \"origin\": \"Worldwide\",\r\n    \"color\": \"#000000\",\r\n    \"ingredient_category_id\": 1,\r\n    \"parent_ingredient_id\": null\r\n}",
+							"raw": "{\r\n    \"name\": \"Ingredient name\",\r\n    \"strength\": 12.2,\r\n    \"description\": \"Description text\",\r\n    \"origin\": \"Worldwide\",\r\n    \"color\": \"#000000\",\r\n    \"ingredient_category_id\": 1,\r\n    \"parent_ingredient_id\": null\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -191,7 +172,119 @@
 		},
 		{
 			"name": "Ingredient Categories",
-			"item": []
+			"item": [
+				{
+					"name": "All ingredient categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/ingredient-categories",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ingredient-categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show ingredient category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/ingredient-categories/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ingredient-categories",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New ingredient category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Postman category\",\r\n    \"description\": \"Lorem ipsum dolor sit amet\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/ingredient-categories",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ingredient-categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update ingredient category",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Postman category update\",\r\n    \"description\": \"Lorem ipsum dolor sit amet update\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/ingredient-categories/10",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ingredient-categories",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete ingredient category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/ingredient-categories/10",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ingredient-categories",
+								"10"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "Cocktails",
@@ -450,7 +543,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Martini 2\",\r\n    \"description\": \"Martini description\",\r\n    \"instructions\": \"First step, second step\",\r\n    \"garnish\": \"Olives\",\r\n    \"images\": [195, 196],\r\n    \"source\": \"IBA\",\r\n    \"tags\": [\"strong\", \"martini\"],\r\n    \"ingredients\": [\r\n        {\r\n            \"sort\": 1,\r\n            \"ingredient_id\": 1,\r\n            \"amount\": 30,\r\n            \"units\": \"ml\"\r\n        },\r\n        {\r\n            \"sort\": 2,\r\n            \"ingredient_id\": 2,\r\n            \"amount\": 24,\r\n            \"units\": \"ml\"\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"name\": \"Martini 2\",\r\n    \"description\": \"Martini description\",\r\n    \"instructions\": \"First step, second step\",\r\n    \"garnish\": \"Olives\",\r\n    \"images\": [195, 196],\r\n    \"source\": \"IBA\",\r\n    \"tags\": [\"strong\", \"martini\"],\r\n    \"ingredients\": [\r\n        {\r\n            \"sort\": 1,\r\n            \"ingredient_id\": 1,\r\n            \"amount\": 30,\r\n            \"units\": \"ml\",\r\n            \"substitutes\": [43, 12, 34]\r\n        },\r\n        {\r\n            \"sort\": 2,\r\n            \"ingredient_id\": 2,\r\n            \"amount\": 24,\r\n            \"units\": \"ml\"\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -768,6 +861,35 @@
 			]
 		},
 		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get current user info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base}}/api/user",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Login",
 			"event": [
 				{
@@ -811,24 +933,70 @@
 			"response": []
 		},
 		{
-			"name": "Get user info",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
+			"name": "Logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
 					}
-				],
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
 				"url": {
-					"raw": "{{base}}/api/user",
+					"raw": "{{base}}/api/logout",
 					"host": [
 						"{{base}}"
 					],
 					"path": [
 						"api",
-						"user"
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register a new user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"contact@karlomikus.com\",\r\n    \"name\": \"Postman\",\r\n    \"password\": \"12345\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base}}/api/register",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"api",
+						"register"
 					]
 				}
 			},
