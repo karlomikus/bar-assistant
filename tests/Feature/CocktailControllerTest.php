@@ -56,6 +56,8 @@ class CocktailControllerTest extends TestCase
                 'strength' => 40,
             ])
             ->create();
+        $ing2 = Ingredient::factory()->create();
+        $ing3 = Ingredient::factory()->create();
 
         $response = $this->postJson('/api/cocktails', [
             'name' => "Cocktail name",
@@ -72,12 +74,33 @@ class CocktailControllerTest extends TestCase
                     'units' => 'ml',
                     'optional' => false,
                     'sort' => 1,
+                ],
+                [
+                    'ingredient_id' => $ing2->id,
+                    'amount' => 30,
+                    'units' => 'ml',
+                    'optional' => false,
+                    'sort' => 2,
+                    'substitutes' => [$ing3->id]
                 ]
             ]
         ]);
 
         $response->assertStatus(201);
         $this->assertNotNull($response->headers->get('Location', null));
+        $response->assertJson(fn (AssertableJson $json) =>
+            $json
+                ->has('data.id')
+                ->where('data.name', 'Cocktail name')
+                ->where('data.description', 'Cocktail description')
+                ->where('data.garnish', 'Lemon peel')
+                ->has('data.ingredients', 2, function (AssertableJson $jsonIng) {
+                    $jsonIng
+                        ->has('id')
+                        ->etc();
+                })
+                ->etc()
+        );
     }
 
     public function test_cocktail_update_response()
