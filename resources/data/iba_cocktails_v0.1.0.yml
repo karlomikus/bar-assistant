@@ -1874,6 +1874,7 @@
         - 'IBA Cocktail'
         - 'New Era Drinks'
         - Whiskey
+        - Sour
     ingredients:
         -
             amount: 60
@@ -2163,6 +2164,7 @@
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
+        - Sour
     ingredients:
         -
             amount: 60
@@ -2841,6 +2843,7 @@
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
+        - Sour
     ingredients:
         -
             amount: 45
@@ -3024,6 +3027,7 @@
         - 'IBA Cocktail'
         - 'The Unforgettables'
         - Whiskey
+        - Sour
     ingredients:
         -
             amount: 45

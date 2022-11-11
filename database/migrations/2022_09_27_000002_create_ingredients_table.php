@@ -23,7 +23,7 @@ return new class extends Migration
             $table->text('history')->nullable();
             $table->string('color')->nullable();
             $table->foreignId('ingredient_category_id')->constrained();
-            $table->foreignId('parent_ingredient_id')->nullable()->constrained('ingredients');
+            $table->foreignId('parent_ingredient_id')->nullable()->constrained('ingredients')->onDelete('cascade');
             $table->text('aliases')->nullable();
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();

@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\IngredientCategory;
+use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 
 class OpenBar extends Command
 {
@@ -79,6 +80,8 @@ class OpenBar extends Command
         Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Cocktail"]);
         Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
 
+        SearchActions::updateIndexSettings();
+
         DB::table('glasses')->insert([
             ['name' => 'Cocktail', 'description' => 'A cocktail glass is a stemmed glass with an inverted cone bowl, mainly used to serve straight-up cocktails. The term cocktail glass is often used interchangeably with martini glass, despite their differing slightly. A standard cocktail glass contains 90 to 300 millilitres.'],
             ['name' => 'Lowball', 'description' => 'The old fashioned glass, otherwise known as the rocks glass and lowball glass (or simply lowball), is a short tumbler used for serving spirits, such as whisky, neat or with ice cubes ("on the rocks"). Old fashioned glasses usually contain 180–300 ml.'],
@@ -99,6 +102,7 @@ class OpenBar extends Command
             ['name' => 'Tiki', 'description' => 'The term "tiki mug" is a blanket term for the sculptural drinkware even though they vary in size and most do not contain handles.'],
         ]);
 
+        $uncategorized = IngredientCategory::create(['id' => 1, 'name' => 'Uncategorized']);
         $spirits = IngredientCategory::create(['name' => 'Spirits', 'description' => 'Alcoholic drinks produced by distillation of grains, fruits, vegetables, or sugar, that have already gone through alcoholic fermentation.']);
         $liqueurs = IngredientCategory::create(['name' => 'Liqueurs', 'description' => 'Alcoholic drinks composed of spirits (often rectified spirit) and additional flavorings such as sugar, fruits, herbs, and spices.']);
         $juices = IngredientCategory::create(['name' => 'Juices', 'description' => 'Drinks made from the extraction or pressing of the natural liquid contained in fruit and vegetables.']);
@@ -107,7 +111,6 @@ class OpenBar extends Command
         $wines = IngredientCategory::create(['name' => 'Wines']);
         $bitters = IngredientCategory::create(['name' => 'Bitters']);
         $beverages = IngredientCategory::create(['name' => 'Beverages']);
-        $misc = IngredientCategory::create(['name' => 'Uncategorized']);
 
         $this->info('Filling your bar with ingredients...');
 
@@ -123,24 +126,23 @@ class OpenBar extends Command
         Ingredient::create(['name' => 'Chilli Pepper', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Hot pepper', 'user_id' => 1]);
 
         // Misc
-        Ingredient::create(['name' => 'White Peach Puree', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'A purée (or mash) is cooked food, usually vegetables, fruits or legumes, that has been ground, pressed, blended or sieved to the consistency of a creamy paste or liquid.', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Cream', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Cream is a dairy product composed of the higher-fat layer skimmed from the top of milk before homogenization.', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Salt', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Salt', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Pepper', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Black pepper', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Tabasco', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Hot sauce made from vinegar, tabasco peppers, and salt.', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Worcestershire Sauce', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Fermented liquid condiment created in the city of Worcester', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Sugar', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'White sugar', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Egg White', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Chicken egg without yolk.', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Egg Yolk', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Yolk from chicken egg', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Coconut Cream', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Opaque, milky-white liquid extracted from the grated pulp of mature coconuts.', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Vanilla Extract', 'ingredient_category_id' => $misc->id, 'strength' => 0.0, 'description' => 'Solution made by macerating and percolating vanilla pods in a solution of ethanol and water.', 'user_id' => 1]);
+        Ingredient::create(['name' => 'White Peach Puree', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'A purée (or mash) is cooked food, usually vegetables, fruits or legumes, that has been ground, pressed, blended or sieved to the consistency of a creamy paste or liquid.', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Cream', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Cream is a dairy product composed of the higher-fat layer skimmed from the top of milk before homogenization.', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Salt', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Salt', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Pepper', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Black pepper', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Tabasco', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Hot sauce made from vinegar, tabasco peppers, and salt.', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Worcestershire Sauce', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Fermented liquid condiment created in the city of Worcester', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Sugar', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'White sugar', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Egg White', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Chicken egg without yolk.', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Egg Yolk', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Yolk from chicken egg', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Coconut Cream', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Opaque, milky-white liquid extracted from the grated pulp of mature coconuts.', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Vanilla Extract', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Solution made by macerating and percolating vanilla pods in a solution of ethanol and water.', 'user_id' => 1]);
 
         // Bitters
         Ingredient::create(['name' => 'Orange bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 28.0, 'description' => 'Orange bitters is a form of bitters, a cocktail flavoring made from such ingredients as the peels of Seville oranges, cardamom, caraway seed, coriander, anise, and burnt sugar in an alcohol base.', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Angostura aromatic bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 44.7, 'description' => 'Angostura bitters is a concentrated bitters (herbal alcoholic preparation) based on gentian, herbs, and spices, by House of Angostura in Trinidad and Tobago.', 'origin' => 'Trinidad & Tobago', 'user_id' => 1]);
         Ingredient::create(['name' => 'Peach bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 35.0, 'description' => 'Peach bitters flavored with peaches and herbs.', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Angostura cocoa bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 38.0, 'description' => 'Top notes of rich bitter, floral, nutty cocoa with a bold infusion of aromatic botanicals provide endless possibilities to remix classic cocktails.', 'origin' => 'Trinidad & Tobago', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Fernet Branca', 'ingredient_category_id' => $bitters->id, 'strength' => 39.0, 'description' => 'Fernet Branca is a bittersweet, herbal liqueur made with a number of different herbs and spices, including myrrh, rhubarb, chamomile, cardamom, aloe, and gentian root.', 'origin' => 'Italy', 'user_id' => 1]);
         Ingredient::create(['name' => 'Peychauds Bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 35.0, 'description' => 'It is a gentian-based bitters, comparable to Angostura bitters, but with a predominant anise aroma combined with a background of mint.', 'origin' => 'North America', 'user_id' => 1]);
 
         // Liqueurs
@@ -172,6 +174,8 @@ class OpenBar extends Command
         Ingredient::create(['name' => 'Pernod', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'Anise flavored liqueur', 'color' => '#c6c0a0', 'origin' => 'France', 'user_id' => 1]);
         Ingredient::create(['name' => 'Pelinkovac', 'ingredient_category_id' => $liqueurs->id, 'strength' => 32.0, 'description' => 'Pelinkovac is a liqueur based on wormwood, it has a very bitter taste, resembling that of Jägermeister.', 'color' => '#573f42', 'origin' => 'Southeast Europe', 'user_id' => 1]);
         Ingredient::create(['name' => 'Ouzo', 'ingredient_category_id' => $liqueurs->id, 'strength' => 35.0, 'description' => 'Dry anise-flavored aperitif that is widely consumed in Greece.', 'color' => '#ffffff', 'origin' => 'Greece', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Passoã', 'ingredient_category_id' => $liqueurs->id, 'strength' => 17.0, 'description' => 'Liqueur with passion fruit being the main ingredient.', 'color' => '#ea5f4c', 'origin' => 'France', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Fernet Branca', 'ingredient_category_id' => $liqueurs->id, 'strength' => 39.0, 'description' => 'Fernet Branca is a bittersweet, herbal liqueur made with a number of different herbs and spices, including myrrh, rhubarb, chamomile, cardamom, aloe, and gentian root.', 'origin' => 'Italy', 'user_id' => 1]);
 
         // Juices
         Ingredient::create(['name' => 'Lemon juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed lemon juice.', 'color' => '#f3efda', 'user_id' => 1]);
@@ -195,31 +199,44 @@ class OpenBar extends Command
         Ingredient::create(['name' => 'Orange Flower Water', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'Clear aromatic by-product of the distillation of fresh bitter-orange blossoms for their essential oil.', 'origin' => 'Mediterranean', 'user_id' => 1]);
 
         // Spirits
-        Ingredient::create(['name' => 'Vodka', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Clear alcoholic beverage distilled from cereal grains and potatos.', 'origin' => 'Russia', 'user_id' => 1]);
+        $gin = Ingredient::create(['name' => 'Gin', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Distilled alcoholic drink that derives its flavour from juniper berries.', 'origin' => 'Worldwide', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Sloe Gin', 'parent_ingredient_id' => $gin->id, 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'color' => '#d74536', 'description' => 'Sloe gin is a red liqueur made with gin and sloes. Sloes are the fruit (drupe) of Prunus spinosa, the blackthorn plant, a relative of the plum.', 'origin' => 'UK', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Old Tom Gin', 'parent_ingredient_id' => $gin->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => ' It is slightly sweeter than London Dry, but slightly drier than the Dutch Jenever, thus is sometimes called "the missing link".', 'origin' => 'UK', 'user_id' => 1]);
+
+        $vodka = Ingredient::create(['name' => 'Vodka', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Clear alcoholic beverage distilled from cereal grains and potatos.', 'origin' => 'Russia', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Vanilla Vodka', 'parent_ingredient_id' => $vodka->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Vodka with added vanilla essence.', 'origin' => 'Russia', 'user_id' => 1]);
+        
         $whiskey = Ingredient::create(['name' => 'Whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Distilled alcoholic beverage made from fermented grain mash.', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Bourbon Whiskey', 'parent_ingredient_id' => $whiskey->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Barrel-aged distilled liquor made primarily from corn.', 'origin' => 'North America', 'user_id' => 1]);
         Ingredient::create(['name' => 'Rye whiskey', 'parent_ingredient_id' => $whiskey->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Whiskey made with at least 51 percent rye grain.', 'origin' => 'North America', 'user_id' => 1]);
         Ingredient::create(['name' => 'Scotch whiskey', 'parent_ingredient_id' => $whiskey->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Malt whisky or grain whisky (or a blend of the two), made in Scotland.', 'origin' => 'Scotland', 'user_id' => 1]);
         Ingredient::create(['name' => 'Islay Scotch', 'parent_ingredient_id' => $whiskey->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Scotch whisky made on Islay island.', 'origin' => 'Scotland', 'user_id' => 1]);
         Ingredient::create(['name' => 'Irish whiskey', 'parent_ingredient_id' => $whiskey->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Whiskey made on the island of Ireland.', 'origin' => 'Ireland', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Gin', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Distilled alcoholic drink that derives its flavour from juniper berries.', 'origin' => 'Worldwide', 'user_id' => 1]);
+
         $brandy = Ingredient::create(['name' => 'Brandy', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#e66500', 'description' => 'Liquor produced by distilling wine.', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Cognac', 'parent_ingredient_id' => $brandy->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#7b1c0a', 'description' => 'A variety of brandy named after the commune of Cognac, France.', 'origin' => 'France', 'user_id' => 1]);
         Ingredient::create(['name' => 'Apricot Brandy', 'parent_ingredient_id' => $brandy->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ca5210', 'description' => 'Liquor distilled from fermented apricot juice or a liqueur made from apricot flesh and kernels.', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Calvados', 'parent_ingredient_id' => $brandy->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ca5210', 'description' => 'Brandy made from apples or pears.', 'origin' => 'France', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Tequila', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Distilled beverage made from the blue agave plant.', 'origin' => 'Mexico', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Mezcal', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Distilled alcoholic beverage made from any type of agave.', 'origin' => 'Mexico', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Absinthe', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#b7ca8e', 'description' => 'Anise-flavoured spirit derived from several plants, including wormwood.', 'origin' => 'France', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Gold Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#c79141', 'description' => 'Medium-bodied rum aged in wooden barrels.', 'user_id' => 1]);
-        Ingredient::create(['name' => 'White Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Liquor made by fermenting and then distilling sugarcane molasses or sugarcane juice.', 'origin' => 'Caribbean', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Demerara Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ca5210', 'description' => 'Rum made with demerara sugar', 'origin' => 'Caribbean', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Dark Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ca5210', 'description' => 'Rum made from caramelized sugar or molasses.', 'origin' => 'Caribbean', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Jamaican rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ca5210', 'description' => 'Rum made in Jamaica.', 'origin' => 'Jamaica', 'user_id' => 1]);
+
+        $tequila = Ingredient::create(['name' => 'Tequila', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Distilled beverage made from the blue agave plant.', 'origin' => 'Mexico', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Mezcal', 'parent_ingredient_id' => $tequila->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Distilled alcoholic beverage made from any type of agave.', 'origin' => 'Mexico', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Tequila Reposado', 'parent_ingredient_id' => $tequila->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d8cca6', 'description' => 'Tequila aged a minimum of two months, but less than a year in oak barrels of any size.', 'origin' => 'Mexico', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Tequila Añejo', 'parent_ingredient_id' => $tequila->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#f5d58a', 'description' => 'Tequila aged a minimum of one year, but less than three years in small oak barrels.', 'origin' => 'Mexico', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Tequila Extra Añejo', 'parent_ingredient_id' => $tequila->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#e8a934', 'description' => 'Tequila aged a minimum of three years in oak barrels.', 'origin' => 'Mexico', 'user_id' => 1]);
+
+        $rum = Ingredient::create(['name' => 'White Rum', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Liquor made by fermenting and then distilling sugarcane molasses or sugarcane juice.', 'origin' => 'Caribbean', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Gold Rum', 'parent_ingredient_id' => $rum->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#c79141', 'description' => 'Medium-bodied rum aged in wooden barrels.', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Demerara Rum', 'parent_ingredient_id' => $rum->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ca5210', 'description' => 'Rum made with demerara sugar', 'origin' => 'Caribbean', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Dark Rum', 'parent_ingredient_id' => $rum->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ca5210', 'description' => 'Rum made from caramelized sugar or molasses.', 'origin' => 'Caribbean', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Jamaican Rum', 'parent_ingredient_id' => $rum->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ca5210', 'description' => 'Rum made in Jamaica.', 'origin' => 'Jamaica', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Rhum agricole', 'parent_ingredient_id' => $rum->id, 'ingredient_category_id' => $spirits->id, 'strength' => 50.0, 'color' => '#ffffff', 'description' => 'Rum distilled from freshly squeezed sugarcane juice rather than molasses.', 'origin' => 'Caribbean', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Overproof Rum', 'parent_ingredient_id' => $rum->id, 'ingredient_category_id' => $spirits->id, 'strength' => 50.0, 'color' => '#ffffff', 'description' => 'Rum much higher than the standard 40% ABV (80 proof), with many as high as 75% (150 proof) to 80% (160 proof) available.', 'origin' => 'Caribbean', 'user_id' => 1]);
+
         Ingredient::create(['name' => 'Cachaça', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Distilled spirit made from fermented sugarcane juice.', 'origin' => 'Brazil', 'user_id' => 1]);
         Ingredient::create(['name' => 'Pisco', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Made by distilling fermented grape juice into a high-proof spirit.', 'origin' => 'South America', 'user_id' => 1]);
         Ingredient::create(['name' => 'Peach Schnapps', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Schnapps made from peaches.', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Grappa', 'ingredient_category_id' => $spirits->id, 'strength' => 50.0, 'color' => '#ffffff', 'description' => 'Fragrant, grape-based pomace brandy.', 'origin' => 'Italy', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Rhum agricole', 'ingredient_category_id' => $spirits->id, 'strength' => 50.0, 'color' => '#ffffff', 'description' => 'Rum distilled from freshly squeezed sugarcane juice rather than molasses.', 'origin' => 'Caribbean', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Absinthe', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#b7ca8e', 'description' => 'Anise-flavoured spirit derived from several plants, including wormwood.', 'origin' => 'France', 'user_id' => 1]);
 
         // Syrups
         Ingredient::create(['name' => 'Simple Syrup', 'ingredient_category_id' => $syrups->id, 'description' => 'Syrup made with sugar and water. Usually in 1:1 or 2:1 ratio.', 'color' => '#e6dfcc', 'user_id' => 1]);
@@ -260,12 +277,11 @@ class OpenBar extends Command
 
         $this->info('Finding some cocktail recipes...');
 
-        $this->importIBACocktailsFromJson();
+        $this->importCocktailsFromJson(resource_path('/data/iba_cocktails_v0.1.0.yml'));
+        $this->importCocktailsFromJson(resource_path('/data/popular_cocktails_v0.3.0.yml'));
 
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);
-
-        SearchActions::updateIndexSettings();
 
         Model::reguard();
 
@@ -274,7 +290,7 @@ class OpenBar extends Command
         return Command::SUCCESS;
     }
 
-    private function importIBACocktailsFromJson()
+    private function importCocktailsFromJson(string $sourcePath)
     {
         $dbIngredients = DB::table('ingredients')->select(['name', 'id'])->get()->map(function ($ing) {
             $ing->name = strtolower($ing->name);
@@ -288,7 +304,7 @@ class OpenBar extends Command
             return $ing;
         });
 
-        $source = Yaml::parseFile(resource_path('/data/iba_cocktails_v0.1.0.yml'));
+        $source = Yaml::parseFile($sourcePath);
 
         foreach ($source as $sCocktail) {
             DB::beginTransaction();
@@ -303,10 +319,10 @@ class OpenBar extends Command
 
                 // Glass
                 if (!$dbGlasses->contains('name', strtolower($sCocktail['glass']))) {
-                    dump('Glass not found: [' . $sCocktail['name'] . '] ' . $sCocktail['glass']);
+                    $this->warn('Glass not found: [' . $sCocktail['name'] . '] ' . $sCocktail['glass']);
                 }
                 $cocktail->glass_id = $dbGlasses->filter(fn ($item) => $item->name == strtolower($sCocktail['glass']))->first()->id ?? null;
-                
+
                 $cocktail->save();
 
                 $image = new Image();
@@ -325,8 +341,15 @@ class OpenBar extends Command
 
                 foreach ($sCocktail['ingredients'] as $sIngredient) {
                     if (!$dbIngredients->contains('name', strtolower($sIngredient['name']))) {
-                        dump('Ingredient not found: [' . $sCocktail['name'] . '] ' . $sIngredient['name']);
-                        continue;
+                        $this->warn('Ingredient not found: [' . $sCocktail['name'] . '] ' . $sIngredient['name']);
+                        $this->info('Adding ' . $sIngredient['name'] . ' to uncategorized ingredients.');
+                        $newIng = Ingredient::create([
+                            'name' => $sIngredient['name'],
+                            'ingredient_category_id' => 1,
+                            'user_id' => 1
+                        ]);
+                        $newIng->name = strtolower($newIng->name);
+                        $dbIngredients->push($newIng);
                     }
                     $dbId = $dbIngredients->filter(fn ($item) => $item->name == strtolower($sIngredient['name']))->first()->id;
 
@@ -337,6 +360,14 @@ class OpenBar extends Command
                     $cocktailIng->units = strtolower($sIngredient['units']);
                     $cocktailIng->optional = $sIngredient['optional'];
                     $cocktailIng->save();
+
+                    // if (isset($sIngredient['substitutes'])) {
+                    //     foreach ($sIngredient['substitutes'] ?? [] as $subName) {
+                    //         $substitute = new CocktailIngredientSubstitute();
+                    //         $substitute->ingredient_id = $dbIngredients->filter(fn ($item) => $item->name == strtolower($subName))->first()->id ?? null;
+                    //         $cocktailIng->substitutes()->save($substitute);
+                    //     }
+                    // }
                 }
 
                 $cocktail->refresh();
@@ -347,4 +378,20 @@ class OpenBar extends Command
             DB::commit();
         }
     }
+
+    // private function ingredientFinder($haystack, $needle) {
+    //     if (!$haystack->contains('name', strtolower($needle))) {
+    //         $this->warn('Ingredient not found: ' . $needle . '. Adding it to uncategorized category.');
+    //         $newIng = Ingredient::create([
+    //             'name' => $needle,
+    //             'ingredient_category_id' => 1,
+    //             'user_id' => 1
+    //         ]);
+
+    //         return $newIng;
+    //         $newIng->name = strtolower($newIng->name);
+    //         $haystack->push($newIng);
+    //     }
+    //     $dbId = $dbIngredients->filter(fn ($item) => $item->name == strtolower($needle))->first()->id;
+    // }
 }

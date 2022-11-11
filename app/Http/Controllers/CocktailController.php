@@ -51,7 +51,7 @@ class CocktailController extends Controller
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
             ->firstOrFail()
-            ->load('ingredients.ingredient', 'images', 'tags', 'glass');
+            ->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes');
 
         return new CocktailResource($cocktail);
     }
@@ -72,10 +72,13 @@ class CocktailController extends Controller
                 $request->post('source'),
                 $request->post('images', []),
                 $request->post('tags', []),
+                $request->post('glass_id') ? (int) $request->post('glass_id') : null,
             );
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
         }
+
+        $cocktail->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes');
 
         return (new CocktailResource($cocktail))
             ->response()
@@ -100,10 +103,13 @@ class CocktailController extends Controller
                 $request->post('source'),
                 $request->post('images', []),
                 $request->post('tags', []),
+                $request->post('glass_id') ? (int) $request->post('glass_id') : null,
             );
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
         }
+
+        $cocktail->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes');
 
         return (new CocktailResource($cocktail))
             ->response()

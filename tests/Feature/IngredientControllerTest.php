@@ -76,7 +76,6 @@ class IngredientControllerTest extends TestCase
                 ->where('data.origin', 'Worldwide')
                 ->where('data.color', '#000000')
                 ->where('data.ingredient_category_id', $ingCat->id)
-                ->where('data.parent_ingredient_id', null)
                 ->etc()
         );
     }

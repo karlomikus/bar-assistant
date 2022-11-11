@@ -3,17 +3,19 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
+use Spatie\Sluggable\HasSlug;
 use Kami\Cocktail\SearchActions;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ingredient extends Model
 {
-    use HasFactory, Searchable, HasImages;
+    use HasFactory, Searchable, HasImages, HasSlug;
 
     private $appImagesDir = 'ingredients/';
     private $missingImageFileName = 'no-image.png'; // TODO: WEBP
@@ -31,10 +33,6 @@ class Ingredient extends Model
 
     protected static function booted()
     {
-        static::saving(function ($ing) {
-            $ing->slug = Str::slug($ing->name);
-        });
-
         static::saved(function($ing) {
             SearchActions::update($ing);
         });
@@ -42,6 +40,13 @@ class Ingredient extends Model
         static::deleted(function($ing) {
             SearchActions::delete($ing);
         });
+    }
+
+    public function getSlugOptions() : SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
     }
 
     public function category(): BelongsTo
@@ -57,6 +62,30 @@ class Ingredient extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function varieties(): HasMany
+    {
+        return $this->hasMany(Ingredient::class, 'parent_ingredient_id', 'id');
+    }
+
+    public function parentIngredient(): BelongsTo
+    {
+        return $this->belongsTo(Ingredient::class, 'parent_ingredient_id', 'id');
+    }
+
+    public function getAllRelatedIngredients()
+    {
+        // This creates "Related" group of the ingredients "on-the-fly"
+        if ($this->parent_ingredient_id !== null) {
+            return $this->parentIngredient
+                ->varieties
+                ->sortBy('name')
+                ->filter(fn ($ing) => $ing->id !== $this->id)
+                ->push($this->parentIngredient);
+        }
+
+        return $this->varieties;
     }
 
     public function delete()

@@ -13,6 +13,7 @@ use Illuminate\Database\DatabaseManager;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Exceptions\CocktailException;
+use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 
 class CocktailService
 {
@@ -34,6 +35,7 @@ class CocktailService
      * @param string|null $cocktailSource
      * @param array<int> $images
      * @param array<string> $tags
+     * @param int|null $glassId
      * @return \Kami\Cocktail\Models\Cocktail
      */
     public function createCocktail(
@@ -46,6 +48,7 @@ class CocktailService
         ?string $cocktailSource = null,
         array $images = [],
         array $tags = [],
+        ?int $glassId = null
     ): Cocktail
     {
         $this->db->beginTransaction();
@@ -58,6 +61,7 @@ class CocktailService
             $cocktail->garnish = $garnish;
             $cocktail->source = $cocktailSource;
             $cocktail->user_id = $userId;
+            $cocktail->glass_id = $glassId;
             $cocktail->save();
 
             foreach($ingredients as $ingredient) {
@@ -69,6 +73,13 @@ class CocktailService
                 $cIngredient->sort = $ingredient['sort'] ?? 0;
 
                 $cocktail->ingredients()->save($cIngredient);
+
+                // Substitutes
+                foreach ($ingredient['substitutes'] ?? [] as $subId) {
+                    $substitute = new CocktailIngredientSubstitute();
+                    $substitute->ingredient_id = $subId;
+                    $cIngredient->substitutes()->save($substitute);
+                }
             }
 
             $dbTags = [];
@@ -125,6 +136,7 @@ class CocktailService
      * @param string|null $cocktailSource
      * @param array<int> $images
      * @param array<string> $tags
+     * @param int|null $glassId
      * @return \Kami\Cocktail\Models\Cocktail
      */
     public function updateCocktail(
@@ -138,6 +150,7 @@ class CocktailService
         ?string $cocktailSource = null,
         array $images = [],
         array $tags = [],
+        ?int $glassId = null,
     ): Cocktail
     {
         $this->db->beginTransaction();
@@ -150,6 +163,7 @@ class CocktailService
             $cocktail->garnish = $garnish;
             $cocktail->source = $cocktailSource;
             $cocktail->user_id = $userId;
+            $cocktail->glass_id = $glassId;
             $cocktail->save();
 
             // TODO: Implement upsert and delete
@@ -163,6 +177,14 @@ class CocktailService
                 $cIngredient->sort = $ingredient['sort'] ?? 0;
 
                 $cocktail->ingredients()->save($cIngredient);
+
+                // Substitutes
+                $cIngredient->substitutes()->delete();
+                foreach ($ingredient['substitutes'] ?? [] as $subId) {
+                    $substitute = new CocktailIngredientSubstitute();
+                    $substitute->ingredient_id = $subId;
+                    $cIngredient->substitutes()->save($substitute);
+                }
             }
 
             $dbTags = [];
@@ -226,6 +248,20 @@ class CocktailService
         // ORDER BY total DESC
         // LIMIT 10;
 
+        // $cocktailIds = $this->db->table('cocktails AS c')
+        //     ->select(['c.id'])
+        //     ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id')
+        //     ->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
+        //     ->whereIn('ci.ingredient_id', function ($query) use ($userId) {
+        //         $query->select('ingredient_id')
+        //             ->from('user_ingredients')
+        //             ->where('user_id', $userId);
+        //     })
+        //     ->groupBy('c.id', 'c.name')
+        //     ->havingRaw('COUNT(*) <= 1')
+        //     ->pluck('id');
+        //     return Cocktail::find($cocktailIds);
+
         // Cocktails strictly available
         // https://stackoverflow.com/questions/19930070/mysql-query-to-select-all-except-something
         // SELECT c.*
@@ -240,6 +276,7 @@ class CocktailService
             ->select('c.id')
             ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id')
             ->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
+            ->where('ci.optional', false)
             ->groupBy('c.id')
             ->havingRaw('SUM(CASE WHEN i.id IN (SELECT ingredient_id FROM user_ingredients WHERE user_id = ?) THEN 1 ELSE 0 END) = COUNT(*)', [$userId])
             ->pluck('id');

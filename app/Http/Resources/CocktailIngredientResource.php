@@ -27,6 +27,7 @@ class CocktailIngredientResource extends JsonResource
             'ingredient_id' => $this->ingredient_id,
             'name' => $this->ingredient->name,
             'ingredient_slug' => $this->ingredient->slug,
+            'substitutes' => CocktailIngredientSubstituteResource::collection($this->whenLoaded('substitutes')),
         ];
     }
 }

@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
+use Spatie\Sluggable\HasSlug;
 use Kami\Cocktail\SearchActions;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,17 +15,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Cocktail extends Model
 {
-    use HasFactory, Searchable, HasImages;
+    use HasFactory, Searchable, HasImages, HasSlug;
 
     private $appImagesDir = 'cocktails/';
     private $missingImageFileName = 'no-image.jpg'; // TODO: WEBP
 
     protected static function booted()
     {
-        static::saving(function ($cocktail) {
-            $cocktail->slug = Str::slug($cocktail->name);
-        });
-
         static::saved(function($cocktail) {
             SearchActions::update($cocktail);
         });
@@ -32,6 +29,13 @@ class Cocktail extends Model
         static::deleted(function($cocktail) {
             SearchActions::delete($cocktail);
         });
+    }
+
+    public function getSlugOptions() : SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
     }
 
     public function user(): BelongsTo
@@ -75,6 +79,7 @@ class Cocktail extends Model
 
     public function toSearchableArray(): array
     {
+        // Some attributes are not searchable as per SearchActions settings
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -84,6 +89,7 @@ class Cocktail extends Model
             'garnish' => $this->garnish,
             'image_url' => $this->getImageUrl(),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
+            'user_id' => $this->user_id,
             'tags' => $this->tags->pluck('name'),
             'date' => $this->updated_at->format('Y-m-d H:i:s')
         ];

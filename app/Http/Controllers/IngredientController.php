@@ -5,12 +5,10 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\Models\IngredientCategory;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Http\Requests\IngredientRequest;
 use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
-use Kami\Cocktail\Http\Resources\IngredientCategoryResource;
 
 class IngredientController extends Controller
 {
@@ -35,7 +33,7 @@ class IngredientController extends Controller
 
     public function show(int|string $id)
     {
-        $ingredient = Ingredient::with('cocktails', 'images')
+        $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient')
             ->where('id', $id)
             ->orWhere('slug', $id)
             ->firstOrFail();
@@ -83,13 +81,5 @@ class IngredientController extends Controller
         Ingredient::findOrFail($id)->delete();
 
         return new SuccessActionResource((object) ['id' => $id]);
-    }
-
-    public function categories()
-    {
-        // TODO MOVE
-        $categories = IngredientCategory::all();
-
-        return IngredientCategoryResource::collection($categories);
     }
 }

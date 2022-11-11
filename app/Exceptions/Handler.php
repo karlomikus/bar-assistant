@@ -6,6 +6,7 @@ use Throwable;
 use Illuminate\Database\RecordsNotFoundException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
@@ -55,6 +56,13 @@ class Handler extends ExceptionHandler
                 'type' => 'api_error',
                 'message' => $e->getMessage() == "" ? 'Resource record not found.' : $e->getMessage(),
             ], 404);
+        });
+
+        $this->renderable(function (MethodNotAllowedHttpException $e, $request) {
+            return response()->json([
+                'type' => 'api_error',
+                'message' => $e->getMessage(),
+            ], 405);
         });
     }
 }
