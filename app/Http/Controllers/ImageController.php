@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Http\Requests\ImageRequest;
@@ -23,6 +24,13 @@ class ImageController extends Controller
         $images = $imageservice->uploadAndSaveImages($request->images);
 
         return ImageResource::collection($images);
+    }
+
+    public function update(int $id, ImageService $imageservice, Request $request)
+    {
+        $image = $imageservice->updateImage($id, null, $request->input('copyright'));
+
+        return new ImageResource($image);
     }
 
     public function delete(int $id)

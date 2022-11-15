@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -21,6 +22,7 @@ class ImageResource extends JsonResource
         return [
             'id' => $this->id,
             'file_path' => $this->file_path,
+            'url' => $this->getImageUrl(),
             'copyright' => $this->copyright,
             'last_modified' => $this->updated_at,
         ];
