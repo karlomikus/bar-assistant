@@ -264,6 +264,9 @@ class OpenBar extends Command
         // Create image for every ingredient
         $ingredients = Ingredient::all();
         foreach ($ingredients as $ing) {
+            if (!file_exists(storage_path('uploads/ingredients/' . Str::slug($ing->name) . '.png'))) {
+                continue;
+            }
             $image = new Image();
             $image->file_path = 'ingredients/' . Str::slug($ing->name) . '.png';
             $image->file_extension = 'png';

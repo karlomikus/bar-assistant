@@ -61,6 +61,11 @@ class IngredientService
             }
         }
 
+        // Refresh model for response
+        $ingredient->refresh();
+        // Upsert scout index
+        $ingredient->save();
+
         return $ingredient;
     }
 
@@ -116,6 +121,11 @@ class IngredientService
                 throw new ImageException('Error occured while attaching images to ingredient with id "' . $ingredient->id . '"', 0, $e);
             }
         }
+
+        // Refresh model for response
+        $ingredient->refresh();
+        // Upsert scout index
+        $ingredient->save();
 
         return $ingredient;
     }

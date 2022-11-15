@@ -23,11 +23,13 @@ class Image extends Model
         parent::delete();
     }
 
-    public function getImageUrl(): string
+    public function getImageUrl(): ?string
     {
-        $disk = Storage::disk('app_images');
+        if (!$this->file_path) {
+            return null;
+        }
 
-        return $disk->url($this->file_path);
+        return Storage::disk('app_images')->url($this->file_path);
     }
 
     public function imageable(): MorphTo

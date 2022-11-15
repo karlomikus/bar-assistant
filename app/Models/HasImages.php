@@ -15,22 +15,9 @@ trait HasImages
         return $this->morphMany(Image::class, 'imageable');
     }
 
-    public function latestImageFilePath(): ?string
+    public function getMainImageUrl(): ?string
     {
-        return $this->images->first()->file_path ?? null;
-    }
-
-    public function getImageUrl(): string
-    {
-        $disk = Storage::disk('app_images');
-
-        $filePath = $this->latestImageFilePath();
-
-        if (!$filePath || !$disk->exists($filePath)) {
-            return $disk->url($this->appImagesDir . $this->missingImageFileName);
-        }
-
-        return $disk->url($filePath);
+        return $this->images->first()?->getImageUrl();
     }
 
     public function deleteImages(): void
