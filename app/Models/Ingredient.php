@@ -73,6 +73,16 @@ class Ingredient extends Model
         return $this->belongsTo(Ingredient::class, 'parent_ingredient_id', 'id');
     }
 
+    public function cocktailsAsSubstituteIngredient()
+    {
+        return $this->cocktailIngredientSubstitutes->pluck('cocktailIngredient.cocktail');
+    }
+
+    public function cocktailIngredientSubstitutes(): HasMany
+    {
+        return $this->hasMany(CocktailIngredientSubstitute::class);
+    }
+
     public function getAllRelatedIngredients()
     {
         // This creates "Related" group of the ingredients "on-the-fly"
