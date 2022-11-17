@@ -181,3 +181,306 @@
             units: ml
             name: Lillet Blanc
             optional: false
+-
+    name: 'B-52'
+    description: |-
+        The origins of the B-52 are not well documented, but one claim is that the B-52 was invented by Peter Fich, a head bartender at the Banff Springs Hotel in Alberta, Canada. Fich named all of his new drinks after favorite bands, albums, and songs, and he supposedly named the drink after the band of the same name, not directly after the US B-52 Stratofortress bomber after which the band was named.
+    instructions: |-
+        Refrigerate ingredients then layer in chilled glass by carefully pouring in the ingredient order.
+    garnish: null
+    source: 'https://en.wikipedia.org/wiki/B-52_(cocktail)'
+    image_copyright: Alchetron
+    glass: Shot
+    tags:
+        - Shot
+    ingredients:
+        -
+            amount: 15
+            units: ml
+            name: Kahlua coffee liqueur
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Baileys Irish Cream
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Grand Marnier
+            optional: false
+-
+    name: 'Bacardi Cocktail'
+    description: |-
+        The Bacardí Cocktail was originally the same as the Daiquiri, containing rum, lime juice, and sugar; The Grenadine version of the Bacardí Cocktail originated in the US, while the original non-red Bacardí company recipe originated from Cuba.
+        On April 28, 1936 the New York Supreme Court ruled that the drink must contain Bacardí rum in order to be called a Bacardí cocktail.
+    instructions: |-
+        Shake together with ice. Strain into glass and serve
+    garnish: 'Lime'
+    source: 'https://en.wikipedia.org/wiki/Bacardi_cocktail'
+    image_copyright: 'Liquor.com / Tim Nusog'
+    glass: Coupe
+    tags:
+        - Rum
+    ingredients:
+        -
+            amount: 60
+            units: ml
+            name: White rum
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Lime juice
+            optional: false
+        -
+            amount: 7.5
+            units: ml
+            name: Grenadine Syrup
+            optional: false
+        -
+            amount: 1
+            units: barspoon
+            name: Simple syrup
+            optional: false
+-
+    name: 'Bijou'
+    description: |-
+        This cocktail was invented by Harry Johnson, "the father of professional bartending", who called it bijou because it combined the colors of three jewels: gin for diamond, vermouth for ruby, and chartreuse for emerald.
+    instructions: |-
+        Stir in mixing glass with ice and strain
+    garnish: 'Maraschino cherry'
+    source: 'https://en.wikipedia.org/wiki/Bijou_(cocktail)'
+    image_copyright: 'A Couple Cooks'
+    glass: 'Nick and Nora'
+    tags:
+        - Gin
+    ingredients:
+        -
+            amount: 30
+            units: ml
+            name: Gin
+            optional: false
+        -
+            amount: 30
+            units: ml
+            name: Sweet vermouth
+            optional: false
+        -
+            amount: 30
+            units: ml
+            name: Green Chartreuse
+            optional: false
+        -
+            amount: 2
+            units: dashes
+            name: Orange bitters
+            optional: false
+-
+    name: 'Gin & Tonic'
+    description: |-
+        Called a “G and T” or gin tonic in some countries, this refreshing drink is made in countries all around the world. The Gin and Tonic was invented in the 1850’s by British soldiers, who mixed gin with their tonic water as a way to drink quinine (which was thought to cure malaria). Tonic water of today no longer has quinine, but the drink stuck around!
+    instructions: |-
+        1. Add lots of ice to a large cocktail or wine glass and stir to chill the glass. Drain any melted water.
+        2. Pour in the gin. Add the garnishes. Pour the tonic water onto a bar spoon into the glass (to increase the bubbles). Stir once and serve.
+    garnish: 'Any of the following to spice your cocktail: Lime, lemon, cucumber, mint, orange peel, juniper berries, blood orange slice, rosemary'
+    source: 'https://www.acouplecooks.com/best-gin-and-tonic/'
+    image_copyright: 'A Couple Cooks'
+    glass: 'Wine'
+    tags:
+        - Gin
+    ingredients:
+        -
+            amount: 60
+            units: ml
+            name: Gin
+            optional: false
+        -
+            amount: 120
+            units: ml
+            name: Tonic
+            optional: false
+-
+    name: 'Gin Gimlet'
+    description: |-
+        The word "gimlet" used in this sense is first attested in 1928. The most obvious derivation is from the tool for drilling small holes, a word also used figuratively to describe something as sharp or piercing. Thus, the cocktail may have been named for its "penetrating" effects on the drinker.
+    instructions: |-
+        1. Add gin, lime juice, and syrup to a cocktail shaker. Fill with ice and shake until cold.
+        2. Strain into glass and top with a splash of soda water, if desired.
+    garnish: 'Garnish with a lime wheel'
+    source: 'https://www.acouplecooks.com/gin-gimlet-cocktail/'
+    image_copyright: 'A Couple Cooks'
+    glass: 'Coupe'
+    tags:
+        - Gin
+    ingredients:
+        -
+            amount: 60
+            units: ml
+            name: Gin
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Lime juice
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Simple syrup
+            optional: false
+        -
+            amount: 1
+            units: splash
+            name: Club soda
+            optional: true
+-
+    name: 'Sangria'
+    description: |-
+        A punch, sangria traditionally consists of red wine and chopped fruit, often with other ingredients or spirits.
+
+        Sangria is very popular among foreign tourists in Spain even if locals do not consume the beverage that much. It is commonly served in bars, restaurants, and chiringuitos and at festivities throughout Portugal and Spain.
+    instructions: |-
+        1. Chop the orange (leaving the peel on) and apple into bite-sized chunks, then add them to the bottom of a pitcher. Sprinkle them with sugar and stir. Let them stand for 20 minutes at room temperature.
+        2. After 20 minutes, pour in the red wine, brandy, orange liqueur, and lemon rounds. Stir and refrigerate 1 to 4 hours. (Don’t go beyond 4 hours or the fruit texture starts to degrade.)
+        3. Pour the sangria into ice filled glasses and top with a splash of sparkling water (if desired). Add fruit to each glass, preferably on long skewers for easy snacking.
+    garnish: 'Drop fruit chunks into a glass'
+    source: 'https://www.acouplecooks.com/gin-gimlet-cocktail/'
+    image_copyright: 'A Couple Cooks'
+    glass: 'Wine'
+    tags:
+        - Wine
+    ingredients:
+        -
+            amount: 1
+            units: bottle
+            name: Red Wine
+            optional: false
+        -
+            amount: 1
+            units: whole
+            name: Orange
+            optional: false
+        -
+            amount: 1
+            units: whole
+            name: Apple
+            optional: false
+        -
+            amount: 3
+            units: tablespoons
+            name: Sugar
+            optional: false
+        -
+            amount: 10
+            units: ml
+            name: Brandy
+            optional: false
+        -
+            amount: 10
+            units: ml
+            name: Cointreau
+            optional: false
+        -
+            amount: 1
+            units: whole
+            name: Lemon
+            optional: false
+-
+    name: '20th Century'
+    description: |-
+        The 20th Century is a cocktail created in 1937 by a British bartender named C.A. Tuck, and named in honor of the celebrated 20th Century Limited train which ran between New York City and Chicago from 1902 until 1967.
+    instructions: |-
+        1. Combine all ingredients with ice and shake
+        2. Strain into a coupe, serve up
+    garnish: 'Lemon twist'
+    source: 'https://en.wikipedia.org/wiki/20th_Century_(cocktail)'
+    image_copyright: 'Imbibe Magazine'
+    glass: 'Nick and Nora'
+    tags:
+        - Gin
+    ingredients:
+        -
+            amount: 45
+            units: ml
+            name: Gin
+            optional: false
+        -
+            amount: 22.5
+            units: ml
+            name: White Crème de Cacao
+            optional: false
+        -
+            amount: 22.5
+            units: ml
+            name: Lillet Blanc
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Lemon juice
+            optional: false
+-
+    name: 'Alaska'
+    description: |-
+        One of the great Chartreuse cocktails and a fundamental three-ingredient recipe
+    instructions: |-
+        1. Combine all ingredients with ice in a mixing glass and stir at length, until the sides of the glass are frosty
+        2. Strain into a cocktail glass and serve up
+    garnish: null
+    source: 'https://tuxedono2.com/alaska-cocktail-recipe'
+    image_copyright: Punch
+    glass: 'Nick and Nora'
+    tags:
+        - Gin
+    ingredients:
+        -
+            amount: 45
+            units: ml
+            name: Gin
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Yellow Chartreuse
+            optional: false
+        -
+            amount: 1
+            units: dash
+            name: Orange bitters
+            optional: false
+-
+    name: 'Airmail'
+    description: |-
+        An endlessly drinkable sparkler of debated origin
+    instructions: |-
+        1. Combine all ingredients except for the champagne in a mixer and shake for ten seconds
+        2. Strain into a flute and top with champagne
+    garnish: null
+    source: 'https://en.wikipedia.org/wiki/Airmail_(cocktail)'
+    image_copyright: 'Imbibe Magazine'
+    glass: 'Cocktail'
+    tags:
+        - Rum
+    ingredients:
+        -
+            amount: 30
+            units: ml
+            name: White Rum
+            optional: false
+        -
+            amount: 30
+            units: ml
+            name: Champagne
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Lime juice
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: Honey syrup
+            optional: false
+            substitutes: ['Simple syrup']
