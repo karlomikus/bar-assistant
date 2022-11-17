@@ -162,7 +162,9 @@ class CocktailService
             $cocktail->description = $description;
             $cocktail->garnish = $garnish;
             $cocktail->source = $cocktailSource;
-            $cocktail->user_id = $userId;
+            if ($cocktail->user_id !== 1) {
+                $cocktail->user_id = $userId;
+            }
             $cocktail->glass_id = $glassId;
             $cocktail->save();
 
