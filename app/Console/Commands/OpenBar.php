@@ -254,13 +254,14 @@ class OpenBar extends Command
         Ingredient::create(['name' => 'Ginger syrup', 'ingredient_category_id' => $syrups->id, 'description' => 'Syrup made from ginger root.', 'color' => '#c6972c', 'user_id' => 1]);
 
         // Wines
-        Ingredient::create(['name' => 'Sweet Vermouth', 'ingredient_category_id' => $wines->id, 'strength' => 18.0, 'description' => 'Aromatized fortified wine.', 'color' => '#8e4201', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Dry Vermouth', 'ingredient_category_id' => $wines->id, 'strength' => 18.0, 'description' => 'Aromatized fortified wine.', 'color' => '#ffffff', 'user_id' => 1]);
-        Ingredient::create(['name' => 'White wine', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Wine is an alcoholic drink typically made from fermented grapes.', 'color' => '#f6e1b0', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Red wine', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Red wine is a type of wine made from dark-colored grape varieties.', 'color' => '#801212', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Prosecco', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Sparkling wine made from Prosecco grapes.', 'color' => '#a57600', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Champagne', 'ingredient_category_id' => $wines->id, 'strength' => 12.0, 'description' => 'Sparkling wine.', 'color' => '#f6e1b0', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Lillet Blanc', 'ingredient_category_id' => $wines->id, 'strength' => 17.0, 'description' => 'Aromatized sweet wine.', 'color' => '#f7ec77', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Sweet Vermouth', 'ingredient_category_id' => $wines->id, 'strength' => 18.0, 'description' => 'Aromatized fortified wine.', 'color' => '#8e4201', 'user_id' => 1, 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Dry Vermouth', 'ingredient_category_id' => $wines->id, 'strength' => 18.0, 'description' => 'Aromatized fortified wine.', 'color' => '#ffffff', 'user_id' => 1, 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'White wine', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Wine is an alcoholic drink typically made from fermented grapes.', 'color' => '#f6e1b0', 'user_id' => 1, 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Red wine', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Red wine is a type of wine made from dark-colored grape varieties.', 'color' => '#801212', 'user_id' => 1, 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Prosecco', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Sparkling wine made from Prosecco grapes.', 'color' => '#a57600', 'user_id' => 1, 'origin' => 'Italy']);
+        Ingredient::create(['name' => 'Champagne', 'ingredient_category_id' => $wines->id, 'strength' => 12.0, 'description' => 'Sparkling wine.', 'color' => '#f6e1b0', 'user_id' => 1, 'origin' => 'France']);
+        Ingredient::create(['name' => 'Lillet Blanc', 'ingredient_category_id' => $wines->id, 'strength' => 17.0, 'description' => 'Aromatized sweet wine.', 'color' => '#f7ec77', 'user_id' => 1, 'origin' => 'France']);
+        Ingredient::create(['name' => 'Dry Sherry', 'ingredient_category_id' => $wines->id, 'strength' => 17.0, 'description' => 'Fortified wine made from white grapes that are grown near the city of Jerez de la Frontera in Andalusia, Spain.', 'color' => '#8c4122', 'user_id' => 1, 'origin' => 'Spain']);
 
         $this->info('Attaching images to ingredients...');
 
@@ -284,7 +285,7 @@ class OpenBar extends Command
         $this->info('Finding some cocktail recipes...');
 
         $this->importCocktailsFromJson(resource_path('/data/iba_cocktails_v0.1.0.yml'));
-        $this->importCocktailsFromJson(resource_path('/data/popular_cocktails_v0.3.0.yml'));
+        $this->importCocktailsFromJson(resource_path('/data/popular_cocktails.yml'));
 
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);

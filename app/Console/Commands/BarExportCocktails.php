@@ -30,7 +30,7 @@ class BarExportCocktails extends Command
     public function handle()
     {
         $dump = [];
-        Cocktail::with('tags', 'ingredients.ingredient')->orderBy('name')->chunk(200, function ($cocktails) use (&$dump) {
+        Cocktail::with('tags', 'ingredients.ingredient')->orderBy('created_at')->chunk(200, function ($cocktails) use (&$dump) {
             foreach ($cocktails as $cocktail) {
                 $dump[] = [
                     'name' => $cocktail->name,
@@ -40,6 +40,7 @@ class BarExportCocktails extends Command
                     'source' => $cocktail->source,
                     'image_copyright' => $cocktail->images->first()->copyright ?? null,
                     'tags' => $cocktail->tags->pluck('name')->toArray(),
+                    'glass' => $cocktail->glass->name,
                     'ingredients' => $cocktail->ingredients->map(function ($cIng) {
                         return [
                             'amount' => $cIng->amount,
