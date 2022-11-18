@@ -1,3 +1,10 @@
+# v0.4.0
+- Refactor image uploading and handling
+- Updates for some base ingredients
+- Add more popular cocktails
+- Finish cocktail ingredient substitutes endpoints
+- Finish glass type endpoints
+
 # v0.3.0
 - Move "Uncategorized" ingredient category to id: 1
 - Cocktail save/update methods now save glass type

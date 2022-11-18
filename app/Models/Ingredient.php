@@ -18,7 +18,6 @@ class Ingredient extends Model
     use HasFactory, Searchable, HasImages, HasSlug;
 
     private $appImagesDir = 'ingredients/';
-    private $missingImageFileName = 'no-image.png'; // TODO: WEBP
 
     protected $fillable = [
         'name',
@@ -74,6 +73,16 @@ class Ingredient extends Model
         return $this->belongsTo(Ingredient::class, 'parent_ingredient_id', 'id');
     }
 
+    public function cocktailsAsSubstituteIngredient()
+    {
+        return $this->cocktailIngredientSubstitutes->pluck('cocktailIngredient.cocktail');
+    }
+
+    public function cocktailIngredientSubstitutes(): HasMany
+    {
+        return $this->hasMany(CocktailIngredientSubstitute::class);
+    }
+
     public function getAllRelatedIngredients()
     {
         // This creates "Related" group of the ingredients "on-the-fly"
@@ -102,7 +111,7 @@ class Ingredient extends Model
             'id' => $this->id,
             'slug' => $this->slug,
             'name' => $this->name,
-            'image_url' => $this->getImageUrl(),
+            'image_url' => $this->getMainImageUrl(),
             'type' => 'ingredient',
         ];
     }
@@ -113,7 +122,7 @@ class Ingredient extends Model
             'id' => $this->id,
             'slug' => $this->slug,
             'name' => $this->name,
-            'image_url' => $this->getImageUrl(),
+            'image_url' => $this->getMainImageUrl(),
             'description' => $this->description,
             'category' => $this->category->name,
         ];

@@ -5,6 +5,7 @@ namespace Kami\Cocktail\Services;
 
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Image;
+use Illuminate\Http\UploadedFile;
 use Kami\Cocktail\Exceptions\ImageUploadException;
 
 class ImageService
@@ -42,5 +43,18 @@ class ImageService
         }
 
         return $images;
+    }
+
+    public function updateImage(int $imageId, ?UploadedFile $file = null, ?string $copyright = null): Image
+    {
+        $image = Image::findOrFail($imageId);
+
+        if ($copyright) {
+            $image->copyright = $copyright;
+        }
+
+        $image->save();
+
+        return $image;
     }
 }

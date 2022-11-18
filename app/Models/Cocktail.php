@@ -18,7 +18,6 @@ class Cocktail extends Model
     use HasFactory, Searchable, HasImages, HasSlug;
 
     private $appImagesDir = 'cocktails/';
-    private $missingImageFileName = 'no-image.jpg'; // TODO: WEBP
 
     protected static function booted()
     {
@@ -72,7 +71,7 @@ class Cocktail extends Model
             'id' => $this->id,
             'slug' => $this->slug,
             'name' => $this->name,
-            'image_url' => $this->getImageUrl(),
+            'image_url' => $this->getMainImageUrl(),
             'type' => 'cocktail',
         ];
     }
@@ -87,7 +86,7 @@ class Cocktail extends Model
             'description' => $this->description,
             'source' => $this->source,
             'garnish' => $this->garnish,
-            'image_url' => $this->getImageUrl(),
+            'image_url' => $this->getMainImageUrl(),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'user_id' => $this->user_id,
             'tags' => $this->tags->pluck('name'),

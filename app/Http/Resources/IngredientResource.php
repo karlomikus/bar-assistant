@@ -25,7 +25,8 @@ class IngredientResource extends JsonResource
             'strength' => $this->strength,
             'description' => $this->description,
             'origin' => $this->origin,
-            'image_url' => $this->getImageUrl(),
+            'main_image_id' => $this->images->first()->id ?? null,
+            'images' => ImageResource::collection($this->images),
             'ingredient_category_id' => $this->ingredient_category_id,
             'color' => $this->color,
             'category' => new IngredientCategoryResource($this->category),
@@ -39,8 +40,8 @@ class IngredientResource extends JsonResource
                     ];
                 })->toArray();
             }),
-            'cocktails' => $this->whenLoaded('cocktails', function () {
-                return $this->cocktails->map(function ($c) {
+            'cocktails' => $this->when($this->relationLoaded('cocktails') || $this->relationLoaded('cocktailIngredientSubstitutes'), function () {
+                return $this->cocktails->merge($this->cocktailsAsSubstituteIngredient())->map(function ($c) {
                     return [
                         'id' => $c->id,
                         'slug' => $c->slug,

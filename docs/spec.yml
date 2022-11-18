@@ -1,0 +1,595 @@
+openapi: '3.0.2'
+info:
+  title: 'Bar Assistant API'
+  version: '1.0.0'
+  description: |-
+    Bar assistant is a self hosted application for managing your home bar. It allows you to add ingredients and create custom cocktail recipes.
+servers:
+  - url: https://127.0.0.1:8000/api
+tags:
+  - name: ingredients
+    description: Operations related to ingredients
+  - name: cocktails
+    description: Operations related to cocktails
+  - name: glasses
+    description: Operations related to glasses
+  - name: health
+    description: Operations related to server
+security:
+  - user_token: []
+paths:
+  /version:
+    get:
+      tags:
+        - health
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+  /cocktails:
+    parameters:
+      - in: query
+        name: user_id
+        required: false
+        schema:
+          type: integer
+          example: 1
+        description: 'Show only cocktails made by a specifc user'
+    get:
+      tags:
+        - cocktails
+      summary: 'Show a paginated list of cocktails'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cocktail'
+    post:
+      tags:
+        - cocktails
+      summary: 'Create a new cocktail'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cocktail'
+  /cocktails/{id}:
+    parameters:
+    - name: id
+      in: path
+      required: true
+      description: Database id of the cocktail
+      schema:
+        type: integer
+    get:
+      tags:
+        - cocktails
+      summary: 'Details of a specific cocktail'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    data:
+                      $ref: '#/components/schemas/Cocktail'
+    put:
+      tags:
+        - cocktails
+      summary: 'Update a specific cocktail'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    data:
+                      $ref: '#/components/schemas/Cocktail'
+    delete:
+      tags:
+        - cocktails
+      summary: 'Delete a specific cocktail'
+      responses:
+        '200':
+          description: OK
+  /cocktails/random:
+    get:
+      tags:
+        - cocktails
+      summary: 'Get a random cocktail'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    data:
+                      $ref: '#/components/schemas/Cocktail'
+  /cocktails/user-shelf:
+    get:
+      tags:
+        - cocktails
+      summary: 'Get a list of cocktails that currently authorized user can make'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cocktail'
+  /ingredients:
+    get:
+      tags:
+        - ingredients
+      summary: 'Get a list of ingredients'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Ingredient'
+    post:
+      tags:
+        - ingredients
+      summary: 'Create a new ingredient'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngredientRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Ingredient'
+  /ingredients/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Database id of the ingredient
+        schema:
+          type: integer
+    get:
+      tags:
+        - ingredients
+      summary: 'Details of a specific ingredient'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    data:
+                      $ref: '#/components/schemas/Ingredient'
+    put:
+      tags:
+        - ingredients
+      summary: 'Update an existing ingredient'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngredientRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Ingredient'
+    delete:
+      tags:
+        - ingredients
+      summary: 'Delete a specific ingredient'
+      responses:
+        '200':
+          description: OK
+  /glasses:
+    get:
+      tags:
+        - glasses
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Glass'
+  /glasses/{id}:
+    get:
+      tags:
+        - glasses
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Glass'
+components:
+  securitySchemes:
+    user_token:
+      type: http
+      scheme: bearer
+  schemas:
+    Glass:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          readOnly: true
+        name:
+          type: string
+          example: 'Cocktail glass'
+        description:
+          type: string
+          nullable: true
+          example: 'Description of glass'
+    IngredientRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Jack Daniels'
+        strength:
+          type: number
+          format: float
+          example: 40.0
+        description:
+          type: string
+          example: 'A type of whiskey'
+          nullable: true
+        origin:
+          type: string
+          example: 'North America'
+          nullable: true
+        images:
+          type: array
+          example: [1, 2, 3]
+          items:
+            type: integer
+        ingredient_category_id:
+          type: integer
+          example: 1
+        color:
+          type: string
+          format: hex
+          example: '#ffffff'
+          nullable: true
+        parent_ingredient_id:
+          type: integer
+          example: 1
+          nullable: true
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          readOnly: true
+        slug:
+          type: string
+          example: 'jack-daniels'
+          readOnly: true
+        name:
+          type: string
+          example: 'Jack Daniels'
+        strength:
+          type: number
+          format: float
+          example: 40.0
+        description:
+          type: string
+          example: 'A type of whiskey'
+        origin:
+          type: string
+          example: 'North America'
+        main_image_id:
+          type: integer
+          example: 1
+          nullable: true
+        images:
+          type: array
+          example: [1, 2, 3]
+          items:
+            type: integer
+        ingredient_category_id:
+          type: integer
+          example: 1
+        color:
+          type: string
+          format: hex
+          example: '#ffffff'
+          nullable: true
+        category:
+          $ref: '#/components/schemas/IngredientCategory'
+        cocktails_count:
+          type: integer
+          example: 12
+        varieties:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: 'ingredient-1'
+              name:
+                type: string
+                example: 'Ingredient 1'
+        cocktails:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: 'cocktail-1'
+              name:
+                type: string
+                example: 'Cocktail 1'
+    IngredientCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          readOnly: true
+        name:
+          type: string
+          example: Spirits
+        description:
+          type: string
+          nullable: true
+          example: 'A category of base spirits'
+    Version:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Bar Assistant'
+        version:
+          type: string
+          example: 'v1.0.0'
+        meilisearch_host:
+          type: string
+          format: hostname
+          example: 'https://my-meilisearch-server.com'
+        meilisearch_version:
+          type: string
+          example: '0.29.0'
+    Image:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        file_path:
+          type: string
+          example: 'ingredients/ingredient-image.png'
+        url:
+          type: string
+          example: 'http://localhost.com/app_images/ingredients/ingredient-image.png'
+        copyright:
+          type: string
+          example: 'Somewhere from the web'
+        last_modified:
+          type: string
+          example: '2022-11-17T09:52:48.000000Z'
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Bar Tender'
+        email:
+          type: string
+          example: 'bar@tender.com'
+        search_host:
+          type: string
+          example: 'http://meilisearch-server.com'
+        search_api_key:
+          type: string
+          example: MEILI_API_KEY
+        favorite_cocktails:
+          type: array
+          example: [1, 2]
+          items:
+            type: integer
+        shelf_ingredients:
+          type: array
+          example: [1, 2]
+          items:
+            type: integer
+        shopping_lists:
+          type: array
+          example: [1, 2]
+          items:
+            type: integer
+    CocktailIngredientSubstitute:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        slug:
+          type: string
+          example: 'ingredient-1'
+        name:
+          type: string
+          example: 'Ingredient 1'
+    CocktailIngredient:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        sort:
+          type: integer
+          example: 0
+        amount:
+          type: number
+          format: float
+          example: 30.0
+        units:
+          type: string
+          example: ml
+        optional:
+          type: boolean
+          example: false
+        ingredient_id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Ingredient name'
+        ingredient_slug:
+          type: string
+          example: 'ingredient-name'
+        substitutes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CocktailIngredientSubstitute'
+    Cocktail:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          readOnly: true
+        slug:
+          type: string
+          example: 'cocktail-name'
+          readOnly: true
+        name:
+          type: string
+          example: 'Cocktail name'
+        instructions:
+          type: string
+          nullable: true
+          example: |-
+            1. Step
+            2. Step
+        garnish:
+          type: string
+          nullable: true
+          example: Lemon wheel
+        description:
+          type: string
+          nullable: true
+          example: 'A short cocktail description'
+        source:
+          type: string
+          nullable: true
+          example: http://wikipedia.org
+        main_image_id:
+          type: integer
+          example: 1
+          nullable: true
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+        tags:
+          type: array
+          example: ['Gin', 'IBA Official']
+          items:
+            type: string
+        user_id:
+          type: integer
+          example: 1
+        glass:
+          $ref: '#/components/schemas/Glass'
+        short_ingredients:
+          type: array
+          example: ['Gin', 'Tonic', 'Lemon Juice']
+          items:
+            type: string
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/CocktailIngredient'
+    ErrorResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          example: 'api_error'
+        message:
+          type: string
+          example: 'This is an detailed error message'
+    SuccessActionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true

@@ -162,8 +162,6 @@ class OpenBar extends Command
         Ingredient::create(['name' => 'Triple Sec', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'Triple sec is usually made from orange peels steeped in a spirit derived from sugar beet due to its neutral flavor. Oranges are then harvested when their skin is still green and they have not fully ripened, so the essential oils remain in the skin and not the flesh of the fruit. This spirit is then redistilled and mixed with more neutral spirit, water, and powdered beet sugar resulting in the final liqueur. This process creates a spirit that has a very strong and distinct orange flavor.', 'color' => '#ffffff', 'origin' => 'France', 'user_id' => 1]);
         Ingredient::create(['name' => 'Maraschino', 'ingredient_category_id' => $liqueurs->id, 'strength' => 32.0, 'description' => 'Liqueur obtained from the distillation of Marasca cherries. The small, slightly sour fruit of the Tapiwa cherry tree, which grows wild along parts of the Dalmatian coast in Croatia, lends the liqueur its unique aroma.', 'color' => '#ffffff', 'origin' => 'Croatia', 'user_id' => 1]);
         Ingredient::create(['name' => 'Galliano', 'ingredient_category_id' => $liqueurs->id, 'strength' => 42.3, 'description' => 'Galliano is sweet with vanilla-anise flavour and subtle citrus and woodsy herbal undernotes.', 'color' => '#caa701', 'origin' => 'Italy', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Orange Curaçao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 20.0, 'description' => 'Liqueur flavored with the dried peel of the bitter orange laraha, a citrus fruit grown on the Dutch island of Curaçao.', 'color' => '#edaa53', 'origin' => 'Netherlands', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Blue Curaçao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 20.0, 'description' => 'Liqueur flavored with the dried peel of the bitter orange laraha, a citrus fruit grown on the Dutch island of Curaçao.', 'color' => '#0192fe', 'origin' => 'Netherlands', 'user_id' => 1]);
         Ingredient::create(['name' => 'Chambord', 'ingredient_category_id' => $liqueurs->id, 'strength' => 16.5, 'description' => 'Raspberry liqueur modelled after a liqueur produced in the Loire Valley of France during the late 17th century.', 'color' => '#6f1123', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Falernum', 'ingredient_category_id' => $liqueurs->id, 'strength' => 11.0, 'description' => 'Liqueur with flavors of ginger, lime, and almond, and frequently cloves or allspice. It may be thought of as a spicier version of orgeat syrup.', 'color' => '#f4f2e5', 'origin' => 'Caribbean', 'user_id' => 1]);
         Ingredient::create(['name' => 'Green Chartreuse', 'ingredient_category_id' => $liqueurs->id, 'strength' => 55.0, 'description' => 'Green Chartreuse is a naturally green liqueur made from 130 herbs and other plants macerated in alcohol and steeped for about eight hours.', 'color' => '#85993a', 'origin' => 'France', 'user_id' => 1]);
@@ -176,6 +174,11 @@ class OpenBar extends Command
         Ingredient::create(['name' => 'Ouzo', 'ingredient_category_id' => $liqueurs->id, 'strength' => 35.0, 'description' => 'Dry anise-flavored aperitif that is widely consumed in Greece.', 'color' => '#ffffff', 'origin' => 'Greece', 'user_id' => 1]);
         Ingredient::create(['name' => 'Passoã', 'ingredient_category_id' => $liqueurs->id, 'strength' => 17.0, 'description' => 'Liqueur with passion fruit being the main ingredient.', 'color' => '#ea5f4c', 'origin' => 'France', 'user_id' => 1]);
         Ingredient::create(['name' => 'Fernet Branca', 'ingredient_category_id' => $liqueurs->id, 'strength' => 39.0, 'description' => 'Fernet Branca is a bittersweet, herbal liqueur made with a number of different herbs and spices, including myrrh, rhubarb, chamomile, cardamom, aloe, and gentian root.', 'origin' => 'Italy', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Baileys Irish Cream', 'ingredient_category_id' => $liqueurs->id, 'strength' => 17.0, 'description' => 'Baileys Irish Cream is an Irish cream liqueur, an alcoholic drink flavoured with cream, cocoa and Irish whiskey. It is made by Diageo at Nangor Road, in Dublin, Ireland and in Mallusk, Northern Ireland. It is the original Irish cream, invented by a team headed by Tom Jago in 1971 for Gilbeys of Ireland.', 'origin' => 'Ireland', 'user_id' => 1]);
+
+        $curacao = Ingredient::create(['name' => 'Orange Curaçao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 20.0, 'description' => 'Liqueur flavored with the dried peel of the bitter orange laraha, a citrus fruit grown on the Dutch island of Curaçao. Curaçao is used by liqueur makers the world over as a generic name for orange-flavoured liqueurs.', 'color' => '#edaa53', 'origin' => 'Netherlands', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Dry Curaçao', 'parent_ingredient_id' => $curacao->id, 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'Cognac Ferrand\'s innovative owner Alexandre Gabriel, followed an old recipe and modified it to create this curaçao. While Curaçao and sweet oranges are the main ingredients, vanilla, prunes and lemon peel are amongst the other botanicals called for in the old recipe.', 'origin' => 'Italy', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Blue Curaçao', 'parent_ingredient_id' => $curacao->id, 'ingredient_category_id' => $liqueurs->id, 'strength' => 20.0, 'description' => 'Liqueur flavored with the dried peel of the bitter orange laraha, a citrus fruit grown on the Dutch island of Curaçao.', 'color' => '#0192fe', 'origin' => 'Netherlands', 'user_id' => 1]);
 
         // Juices
         Ingredient::create(['name' => 'Lemon juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed lemon juice.', 'color' => '#f3efda', 'user_id' => 1]);
@@ -251,19 +254,23 @@ class OpenBar extends Command
         Ingredient::create(['name' => 'Ginger syrup', 'ingredient_category_id' => $syrups->id, 'description' => 'Syrup made from ginger root.', 'color' => '#c6972c', 'user_id' => 1]);
 
         // Wines
-        Ingredient::create(['name' => 'Sweet Vermouth', 'ingredient_category_id' => $wines->id, 'strength' => 18.0, 'description' => 'Aromatized fortified wine.', 'color' => '#8e4201', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Dry Vermouth', 'ingredient_category_id' => $wines->id, 'strength' => 18.0, 'description' => 'Aromatized fortified wine.', 'color' => '#ffffff', 'user_id' => 1]);
-        Ingredient::create(['name' => 'White wine', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Wine is an alcoholic drink typically made from fermented grapes.', 'color' => '#f6e1b0', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Red wine', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Red wine is a type of wine made from dark-colored grape varieties.', 'color' => '#801212', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Prosecco', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Sparkling wine made from Prosecco grapes.', 'color' => '#a57600', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Champagne', 'ingredient_category_id' => $wines->id, 'strength' => 12.0, 'description' => 'Sparkling wine.', 'color' => '#f6e1b0', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Lillet Blanc', 'ingredient_category_id' => $wines->id, 'strength' => 17.0, 'description' => 'Aromatized sweet wine.', 'color' => '#f7ec77', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Sweet Vermouth', 'ingredient_category_id' => $wines->id, 'strength' => 18.0, 'description' => 'Aromatized fortified wine.', 'color' => '#8e4201', 'user_id' => 1, 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Dry Vermouth', 'ingredient_category_id' => $wines->id, 'strength' => 18.0, 'description' => 'Aromatized fortified wine.', 'color' => '#ffffff', 'user_id' => 1, 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'White wine', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Wine is an alcoholic drink typically made from fermented grapes.', 'color' => '#f6e1b0', 'user_id' => 1, 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Red wine', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Red wine is a type of wine made from dark-colored grape varieties.', 'color' => '#801212', 'user_id' => 1, 'origin' => 'Worldwide']);
+        Ingredient::create(['name' => 'Prosecco', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Sparkling wine made from Prosecco grapes.', 'color' => '#a57600', 'user_id' => 1, 'origin' => 'Italy']);
+        Ingredient::create(['name' => 'Champagne', 'ingredient_category_id' => $wines->id, 'strength' => 12.0, 'description' => 'Sparkling wine.', 'color' => '#f6e1b0', 'user_id' => 1, 'origin' => 'France']);
+        Ingredient::create(['name' => 'Lillet Blanc', 'ingredient_category_id' => $wines->id, 'strength' => 17.0, 'description' => 'Aromatized sweet wine.', 'color' => '#f7ec77', 'user_id' => 1, 'origin' => 'France']);
+        Ingredient::create(['name' => 'Dry Sherry', 'ingredient_category_id' => $wines->id, 'strength' => 17.0, 'description' => 'Fortified wine made from white grapes that are grown near the city of Jerez de la Frontera in Andalusia, Spain.', 'color' => '#8c4122', 'user_id' => 1, 'origin' => 'Spain']);
 
         $this->info('Attaching images to ingredients...');
 
         // Create image for every ingredient
         $ingredients = Ingredient::all();
         foreach ($ingredients as $ing) {
+            if (!file_exists(storage_path('uploads/ingredients/' . Str::slug($ing->name) . '.png'))) {
+                continue;
+            }
             $image = new Image();
             $image->file_path = 'ingredients/' . Str::slug($ing->name) . '.png';
             $image->file_extension = 'png';
@@ -278,7 +285,7 @@ class OpenBar extends Command
         $this->info('Finding some cocktail recipes...');
 
         $this->importCocktailsFromJson(resource_path('/data/iba_cocktails_v0.1.0.yml'));
-        $this->importCocktailsFromJson(resource_path('/data/popular_cocktails_v0.3.0.yml'));
+        $this->importCocktailsFromJson(resource_path('/data/popular_cocktails.yml'));
 
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);
@@ -361,13 +368,18 @@ class OpenBar extends Command
                     $cocktailIng->optional = $sIngredient['optional'];
                     $cocktailIng->save();
 
-                    // if (isset($sIngredient['substitutes'])) {
-                    //     foreach ($sIngredient['substitutes'] ?? [] as $subName) {
-                    //         $substitute = new CocktailIngredientSubstitute();
-                    //         $substitute->ingredient_id = $dbIngredients->filter(fn ($item) => $item->name == strtolower($subName))->first()->id ?? null;
-                    //         $cocktailIng->substitutes()->save($substitute);
-                    //     }
-                    // }
+                    if (isset($sIngredient['substitutes'])) {
+                        foreach ($sIngredient['substitutes'] ?? [] as $subName) {
+                            $foundIng = $dbIngredients->filter(fn ($item) => $item->name == strtolower($subName))->first()->id ?? null;
+                            if (!$foundIng) {
+                                continue;
+                            }
+
+                            $substitute = new CocktailIngredientSubstitute();
+                            $substitute->ingredient_id = $foundIng;
+                            $cocktailIng->substitutes()->save($substitute);
+                        }
+                    }
                 }
 
                 $cocktail->refresh();
