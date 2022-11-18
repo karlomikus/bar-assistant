@@ -484,3 +484,127 @@
             name: Honey syrup
             optional: false
             substitutes: ['Simple syrup']
+-
+    name: 'Comte de Sureau'
+    description: null
+    instructions: 'Stir with ice and strain into a chilled rocks glass over ice.'
+    garnish: 'Garnish with orange and lemon twists.'
+    source: 'https://www.diffordsguide.com/cocktails/recipe/7257/comte-de-sureau'
+    image_copyright: "Eric's Cocktail Guide"
+    tags:
+        - Gin
+    glass: Lowball
+    ingredients:
+        -
+            amount: 45
+            units: ml
+            name: Gin
+            optional: false
+        -
+            amount: 25
+            units: ml
+            name: 'Elderflower Cordial'
+            optional: false
+        -
+            amount: 7.5
+            units: ml
+            name: Campari
+            optional: false
+-
+    name: Adonis
+    description: 'The cocktail was created in honor of the 1884 musical Adonis after the show reached the milestone of more than 500 shows on Broadway.'
+    instructions: 'Stir all ingredients with ice and strain into chilled glass.'
+    garnish: 'Orange zest and peel'
+    source: 'https://en.wikipedia.org/wiki/Adonis_(cocktail)'
+    image_copyright: 'Liquor.com / Tim Nusog'
+    tags:
+        - Wine
+    glass: Coupe
+    ingredients:
+        -
+            amount: 45
+            units: ml
+            name: 'Dry Sherry'
+            optional: false
+        -
+            amount: 45
+            units: ml
+            name: 'Sweet Vermouth'
+            optional: false
+        -
+            amount: 2
+            units: dashes
+            name: 'Orange bitters'
+            optional: false
+-
+    name: 'La Louisiane'
+    description: 'The La Louisiane cocktail is an improvement on the Sazerac! Absinthe, rye whiskey and vermouth make this spirit-forward cocktail a stunner.'
+    instructions: 'Add all ingredients to a cocktail mixing glass (or any other type of glass). Fill the mixing glass with 1 handful ice and stir continuously for 30 seconds until very cold.'
+    garnish: 'Garnish with a Luxardo cherry.'
+    source: 'https://www.acouplecooks.com/la-louisiane-cocktail/'
+    image_copyright: 'A couple cooks'
+    tags:
+        - Whiskey
+    glass: Cocktail
+    ingredients:
+        -
+            amount: 60
+            units: ml
+            name: 'Rye whiskey'
+            optional: false
+        -
+            amount: 30
+            units: ml
+            name: 'Sweet Vermouth'
+            optional: false
+        -
+            amount: 30
+            units: ml
+            name: Bénédictine
+            optional: false
+        -
+            amount: 5
+            units: ml
+            name: Absinthe
+            optional: false
+        -
+            amount: 3
+            units: dashes
+            name: 'Peychauds Bitters'
+            optional: false
+-
+    name: "Queen's Park Hotel Super Cocktail"
+    description: null
+    instructions: 'Shake all ingredients with ice and strain into chilled glass.'
+    garnish: 'Lime zest'
+    source: 'https://www.cocktailexplorer.co/cocktails/queens-park-hotel-super-cocktail/anders-erickson/'
+    image_copyright: null
+    tags:
+        - Rum
+    glass: Coupe
+    ingredients:
+        -
+            amount: 45
+            units: ml
+            name: 'White Rum'
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: 'Sweet Vermouth'
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: 'Grenadine Syrup'
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: 'Lime juice'
+            optional: false
+        -
+            amount: 2
+            units: dashes
+            name: 'Angostura aromatic bitters'
+            optional: false
