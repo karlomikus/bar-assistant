@@ -367,13 +367,18 @@ class OpenBar extends Command
                     $cocktailIng->optional = $sIngredient['optional'];
                     $cocktailIng->save();
 
-                    // if (isset($sIngredient['substitutes'])) {
-                    //     foreach ($sIngredient['substitutes'] ?? [] as $subName) {
-                    //         $substitute = new CocktailIngredientSubstitute();
-                    //         $substitute->ingredient_id = $dbIngredients->filter(fn ($item) => $item->name == strtolower($subName))->first()->id ?? null;
-                    //         $cocktailIng->substitutes()->save($substitute);
-                    //     }
-                    // }
+                    if (isset($sIngredient['substitutes'])) {
+                        foreach ($sIngredient['substitutes'] ?? [] as $subName) {
+                            $foundIng = $dbIngredients->filter(fn ($item) => $item->name == strtolower($subName))->first()->id ?? null;
+                            if (!$foundIng) {
+                                continue;
+                            }
+
+                            $substitute = new CocktailIngredientSubstitute();
+                            $substitute->ingredient_id = $foundIng;
+                            $cocktailIng->substitutes()->save($substitute);
+                        }
+                    }
                 }
 
                 $cocktail->refresh();
