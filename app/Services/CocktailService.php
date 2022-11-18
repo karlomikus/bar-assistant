@@ -8,6 +8,7 @@ use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Image;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
 use Kami\Cocktail\Models\CocktailFavorite;
@@ -240,47 +241,13 @@ class CocktailService
      */
     public function getCocktailsByUserIngredients(int $userId)
     {
-        // Cocktails with possible ingredients
-        // SELECT c.id, c.name, count(*) as total FROM cocktails AS c
-        // INNER JOIN cocktail_ingredients AS ci ON ci.cocktail_id = c.id
-        // INNER JOIN ingredients AS i ON i.id = ci.ingredient_id
-        // WHERE ci.ingredient_id IN (SELECT ingredient_id FROM user_ingredients WHERE user_id = 2)
-        // GROUP BY c.id, c.name
-        // HAVING total <= (SELECT COUNT(*) FROM user_ingredients WHERE user_id = 2)
-        // ORDER BY total DESC
-        // LIMIT 10;
-
-        // $cocktailIds = $this->db->table('cocktails AS c')
-        //     ->select(['c.id'])
-        //     ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id')
-        //     ->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
-        //     ->whereIn('ci.ingredient_id', function ($query) use ($userId) {
-        //         $query->select('ingredient_id')
-        //             ->from('user_ingredients')
-        //             ->where('user_id', $userId);
-        //     })
-        //     ->groupBy('c.id', 'c.name')
-        //     ->havingRaw('COUNT(*) <= 1')
-        //     ->pluck('id');
-        //     return Cocktail::find($cocktailIds);
-
-        // Cocktails strictly available
         // https://stackoverflow.com/questions/19930070/mysql-query-to-select-all-except-something
-        // SELECT c.*
-        // FROM cocktails c
-        // JOIN cocktail_ingredients ci ON ci.cocktail_id = c.id
-        // JOIN ingredients i ON i.id = ci.ingredient_id
-        // GROUP
-        //     BY c.id
-        // HAVING SUM(CASE WHEN i.id IN (SELECT ingredient_id FROM user_ingredients WHERE user_id = 2) THEN 1 ELSE 0 END) = COUNT(*);
-
         $cocktailIds = $this->db->table('cocktails AS c')
             ->select('c.id')
             ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id')
-            ->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
             ->where('ci.optional', false)
             ->groupBy('c.id')
-            ->havingRaw('SUM(CASE WHEN i.id IN (SELECT ingredient_id FROM user_ingredients WHERE user_id = ?) THEN 1 ELSE 0 END) = COUNT(*)', [$userId])
+            ->havingRaw('SUM(CASE WHEN ci.ingredient_id IN (SELECT ingredient_id FROM user_ingredients WHERE user_id = ?) THEN 1 ELSE 0 END) = COUNT(*)', [$userId])
             ->pluck('id');
 
         return Cocktail::find($cocktailIds);

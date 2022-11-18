@@ -19,6 +19,7 @@ class CocktailController extends Controller
      * - Paginated by 15 items
      * Optional query strings:
      * - user_id -> Filter by user id
+     * - favorites -> Filter by user favorites
      */
     public function index(Request $request)
     {
@@ -26,6 +27,12 @@ class CocktailController extends Controller
 
         if ($request->has('user_id')) {
             $cocktails->where('user_id', $request->get('user_id'));
+        }
+
+        if ($request->has('favorites')) {
+            $cocktails->whereIn('id', function ($query) use ($request) {
+                $query->select('cocktail_id')->from('cocktail_favorites')->where('user_id', $request->user()->id);
+            });
         }
 
         return CocktailResource::collection($cocktails->paginate(15));
@@ -142,7 +149,7 @@ class CocktailController extends Controller
     /**
      * Favorite a cocktail by id
      */
-    public function favorite(CocktailService $cocktailService, Request $request, int $id)
+    public function toggleFavorite(CocktailService $cocktailService, Request $request, int $id)
     {
         $isFavorite = $cocktailService->toggleFavorite($request->user(), $id);
 

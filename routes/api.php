@@ -63,7 +63,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/user-shelf', [CocktailController::class, 'userShelf'])->name('cocktails.user-shelf');
         Route::get('/user-favorites', [CocktailController::class, 'userFavorites'])->name('cocktails.user-favorites');
         Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show');
-        Route::post('/{id}/favorite', [CocktailController::class, 'favorite'])->name('cocktails.favorite');
+        Route::post('/{id}/toggle-favorite', [CocktailController::class, 'toggleFavorite'])->name('cocktails.favorite');
         Route::post('/', [CocktailController::class, 'store'])->name('cocktails.store');
         Route::delete('/{id}', [CocktailController::class, 'delete'])->name('cocktails.delete');
         Route::put('/{id}', [CocktailController::class, 'update'])->name('cocktails.update');
