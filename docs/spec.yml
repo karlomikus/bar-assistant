@@ -1,7 +1,9 @@
 openapi: '3.0.2'
 info:
-  title: API Title
-  version: '1.0'
+  title: 'Bar Assistant API'
+  version: '1.0.0'
+  description: |-
+    Bar assistant is a self hosted application for managing your home bar. It allows you to add ingredients and create custom cocktail recipes.
 servers:
   - url: https://127.0.0.1:8000/api
 tags:
@@ -13,6 +15,8 @@ tags:
     description: Operations related to glasses
   - name: health
     description: Operations related to server
+security:
+  - user_token: []
 paths:
   /version:
     get:
@@ -25,6 +29,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Version'
+  /cocktails:
+    parameters:
+      - in: query
+        name: user_id
+        required: false
+        schema:
+          type: integer
+          example: 1
+        description: 'Show only cocktails made by a specifc user'
+    get:
+      tags:
+        - cocktails
+      summary: 'Show a paginated list of cocktails'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cocktail'
+    post:
+      tags:
+        - cocktails
+      summary: 'Create a new cocktail'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cocktail'
   /cocktails/{id}:
     parameters:
     - name: id
@@ -36,6 +81,7 @@ paths:
     get:
       tags:
         - cocktails
+      summary: 'Details of a specific cocktail'
       responses:
         '200':
           description: OK
@@ -46,11 +92,64 @@ paths:
                 properties:
                     data:
                       $ref: '#/components/schemas/Cocktail'
+    put:
+      tags:
+        - cocktails
+      summary: 'Update a specific cocktail'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    data:
+                      $ref: '#/components/schemas/Cocktail'
+    delete:
+      tags:
+        - cocktails
+      summary: 'Delete a specific cocktail'
+      responses:
+        '200':
+          description: OK
+  /cocktails/random:
+    get:
+      tags:
+        - cocktails
+      summary: 'Get a random cocktail'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    data:
+                      $ref: '#/components/schemas/Cocktail'
+  /cocktails/user-shelf:
+    get:
+      tags:
+        - cocktails
+      summary: 'Get a list of cocktails that currently authorized user can make'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cocktail'
   /ingredients:
     get:
       tags:
         - ingredients
-      description: 'Get a list of ingredients'
+      summary: 'Get a list of ingredients'
       responses:
         '200':
           description: OK
@@ -66,6 +165,7 @@ paths:
     post:
       tags:
         - ingredients
+      summary: 'Create a new ingredient'
       requestBody:
         content:
           application/json:
@@ -80,7 +180,6 @@ paths:
                 type: object
                 properties:
                   data:
-                    type: object
                     $ref: '#/components/schemas/Ingredient'
   /ingredients/{id}:
     parameters:
@@ -93,6 +192,7 @@ paths:
     get:
       tags:
         - ingredients
+      summary: 'Details of a specific ingredient'
       responses:
         '200':
           description: OK
@@ -102,11 +202,11 @@ paths:
                 type: object
                 properties:
                     data:
-                      type: object
                       $ref: '#/components/schemas/Ingredient'
     put:
       tags:
         - ingredients
+      summary: 'Update an existing ingredient'
       requestBody:
         content:
           application/json:
@@ -121,11 +221,11 @@ paths:
                 type: object
                 properties:
                   data:
-                    type: object
                     $ref: '#/components/schemas/Ingredient'
     delete:
       tags:
         - ingredients
+      summary: 'Delete a specific ingredient'
       responses:
         '200':
           description: OK
@@ -166,6 +266,10 @@ paths:
                   data:
                     $ref: '#/components/schemas/Glass'
 components:
+  securitySchemes:
+    user_token:
+      type: http
+      scheme: bearer
   schemas:
     Glass:
       type: object
@@ -431,17 +535,21 @@ components:
           example: 'Cocktail name'
         instructions:
           type: string
+          nullable: true
           example: |-
             1. Step
             2. Step
         garnish:
           type: string
+          nullable: true
           example: Lemon wheel
         description:
           type: string
+          nullable: true
           example: 'A short cocktail description'
         source:
           type: string
+          nullable: true
           example: http://wikipedia.org
         main_image_id:
           type: integer
@@ -479,3 +587,9 @@ components:
         message:
           type: string
           example: 'This is an detailed error message'
+    SuccessActionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
