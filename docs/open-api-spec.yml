@@ -42,6 +42,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Version'
+  /server/openapi:
+    get:
+      tags:
+        - Server
+      security: []
+      responses:
+        '200':
+          description: OpenAPI schema in yaml format
   /login:
     post:
       tags:
@@ -126,6 +134,37 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Cocktail'
+  /register:
+    post:
+      tags:
+        - Auth
+      security: []
+      summary: "Register a new user"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "newuser@domain.com"
+                name:
+                  type: string
+                  example: "New User"
+                password:
+                  type: string
+                  example: "P4SSW0RD"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
   /cocktails/{id}:
     parameters:
     - name: id
@@ -529,7 +568,7 @@ paths:
     post:
       tags:
         - "User shelf"
-      summary: "Add ingredients to user shelf"
+      summary: "Add multiple ingredients to user shelf"
       requestBody:
         content:
           application/json:
@@ -561,10 +600,85 @@ paths:
         schema:
           type: integer
         required: true
+    post:
+      tags:
+        - "User shelf"
+      summary: "Add a single ingredient to user shelf"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/UserIngredient'
     delete:
       tags:
         - "User shelf"
       summary: Delete a single ingredient from user shelf
+      responses:
+        '200':
+          description: OK
+  /user:
+    get:
+      tags:
+        - "Users"
+      summary: "Get info about currently authenticated user"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+  /shopping-lists/batch:
+    post:
+      tags:
+        - "Shopping list"
+      summary: "Add ingredients to a shopping list"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ingredient_ids:
+                  type: array
+                  example: [1, 2, 3]
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserShoppingList'
+    delete:
+      tags:
+        - "Shopping list"
+      summary: "Delete ingredients from a shopping list"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ingredient_ids:
+                  type: array
+                  example: [1, 2, 3]
+                  items:
+                    type: integer
       responses:
         '200':
           description: OK
@@ -967,6 +1081,18 @@ components:
               copyright:
                 type: string
     UserIngredient:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        ingredient_id:
+          type: integer
+          example: 1
+    UserShoppingList:
       type: object
       properties:
         id:

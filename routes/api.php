@@ -23,6 +23,8 @@ use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
 |
 */
 
+Route::get('/', [ServerController::class, 'index']);
+
 Route::post('login', [AuthController::class, 'authenticate']);
 Route::post('register', [AuthController::class, 'register']);
 

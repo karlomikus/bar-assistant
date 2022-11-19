@@ -7,6 +7,13 @@ use Laravel\Scout\EngineManager;
 
 class ServerController extends Controller
 {
+    public function index()
+    {
+        return response()->json([
+            'status' => 'available'
+        ]);
+    }
+
     public function version(EngineManager $engine)
     {
         /** @var \MeiliSearch\Client */
