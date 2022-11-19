@@ -1,3 +1,7 @@
+# v0.4.1
+- Enable opcache in docker image
+- Cache route and config in docker image
+
 # v0.4.0
 - Refactor image uploading and handling
 - Updates for some base ingredients

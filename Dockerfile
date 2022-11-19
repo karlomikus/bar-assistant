@@ -10,6 +10,8 @@ RUN apt update \
     && apt-get autoremove -y \
     && apt-get clean
 
+RUN docker-php-ext-install opcache
+
 # Setup default apache stuff
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 COPY ./resources/apache.conf /etc/apache2/sites-available/000-default.conf

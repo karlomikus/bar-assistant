@@ -23,6 +23,9 @@ system_start_checkup() {
             php artisan migrate --force
         fi
 
+        php artisan config:cache
+        php artisan route:cache
+
         echo "Setting permissions..."
 
         chown -R www-data:www-data /var/www/cocktails
