@@ -115,8 +115,8 @@ class OpenBar extends Command
         $this->info('Filling your bar with ingredients...');
 
         // Fruits
-        Ingredient::create(['name' => 'Lime', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Lime fruit', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Lemon', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Lemon fruit', 'user_id' => 1]);
+        $limeFruit = Ingredient::create(['name' => 'Lime', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Lime fruit', 'user_id' => 1]);
+        $lemonFruit = Ingredient::create(['name' => 'Lemon', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Lemon fruit', 'user_id' => 1]);
         Ingredient::create(['name' => 'Orange', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Orange fruit', 'user_id' => 1]);
         Ingredient::create(['name' => 'Pineapple', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Pineapple fruit', 'user_id' => 1]);
         Ingredient::create(['name' => 'Apple', 'ingredient_category_id' => $fruits->id, 'strength' => 0.0, 'description' => 'Apple fruit', 'user_id' => 1]);
@@ -128,13 +128,13 @@ class OpenBar extends Command
         // Misc
         Ingredient::create(['name' => 'White Peach Puree', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'A purée (or mash) is cooked food, usually vegetables, fruits or legumes, that has been ground, pressed, blended or sieved to the consistency of a creamy paste or liquid.', 'user_id' => 1]);
         Ingredient::create(['name' => 'Cream', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Cream is a dairy product composed of the higher-fat layer skimmed from the top of milk before homogenization.', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Salt', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Salt', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Pepper', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Black pepper', 'user_id' => 1]);
+        $salt = Ingredient::create(['name' => 'Salt', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Salt', 'user_id' => 1]);
+        $pepper = Ingredient::create(['name' => 'Pepper', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Black pepper', 'user_id' => 1]);
         Ingredient::create(['name' => 'Tabasco', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Hot sauce made from vinegar, tabasco peppers, and salt.', 'user_id' => 1]);
         Ingredient::create(['name' => 'Worcestershire Sauce', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Fermented liquid condiment created in the city of Worcester', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Sugar', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'White sugar', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Egg White', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Chicken egg without yolk.', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Egg Yolk', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Yolk from chicken egg', 'user_id' => 1]);
+        $sugar = Ingredient::create(['name' => 'Sugar', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'White sugar', 'user_id' => 1]);
+        $eggWhite = Ingredient::create(['name' => 'Egg White', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Chicken egg without yolk.', 'user_id' => 1]);
+        $eggYolk = Ingredient::create(['name' => 'Egg Yolk', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Yolk from chicken egg', 'user_id' => 1]);
         Ingredient::create(['name' => 'Coconut Cream', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Opaque, milky-white liquid extracted from the grated pulp of mature coconuts.', 'user_id' => 1]);
         Ingredient::create(['name' => 'Vanilla Extract', 'ingredient_category_id' => $uncategorized->id, 'strength' => 0.0, 'description' => 'Solution made by macerating and percolating vanilla pods in a solution of ethanol and water.', 'user_id' => 1]);
 
@@ -181,8 +181,8 @@ class OpenBar extends Command
         Ingredient::create(['name' => 'Blue Curaçao', 'parent_ingredient_id' => $curacao->id, 'ingredient_category_id' => $liqueurs->id, 'strength' => 20.0, 'description' => 'Liqueur flavored with the dried peel of the bitter orange laraha, a citrus fruit grown on the Dutch island of Curaçao.', 'color' => '#0192fe', 'origin' => 'Netherlands', 'user_id' => 1]);
 
         // Juices
-        Ingredient::create(['name' => 'Lemon juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed lemon juice.', 'color' => '#f3efda', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Lime juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed lime juice.', 'color' => '#e9f1d7', 'user_id' => 1]);
+        $lemonJuice = Ingredient::create(['name' => 'Lemon juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed lemon juice.', 'color' => '#f3efda', 'user_id' => 1]);
+        $limeJuice = Ingredient::create(['name' => 'Lime juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed lime juice.', 'color' => '#e9f1d7', 'user_id' => 1]);
         Ingredient::create(['name' => 'Orange juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed orange juice.', 'color' => '#ff9518', 'user_id' => 1]);
         Ingredient::create(['name' => 'Grapefruit juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Freshly squeezed grapefruit juice.', 'color' => '#ed7500', 'user_id' => 1]);
         Ingredient::create(['name' => 'Cranberry juice', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Juice made from cranberries.', 'color' => '#9c0024', 'user_id' => 1]);
@@ -192,13 +192,13 @@ class OpenBar extends Command
         Ingredient::create(['name' => 'Chamomile cordial', 'ingredient_category_id' => $juices->id, 'strength' => 0.0, 'description' => 'Herbal juice made from chamomile.', 'color' => '#e2dccc', 'user_id' => 1]);
 
         // Beverages
-        Ingredient::create(['name' => 'Water', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'It\'s water.', 'origin' => 'Worldwide', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Club soda', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'Club soda is a manufactured form of carbonated water, commonly used as a drink mixer.', 'origin' => 'Worldwide', 'user_id' => 1]);
+        $water = Ingredient::create(['name' => 'Water', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'It\'s water.', 'origin' => 'Worldwide', 'user_id' => 1]);
+        $clubSoda = Ingredient::create(['name' => 'Club soda', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'Club soda is a manufactured form of carbonated water, commonly used as a drink mixer.', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Tonic', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'Tonic water (or Indian tonic water) is a carbonated soft drink in which quinine is dissolved.', 'origin' => 'Worldwide', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Cola', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#411919', 'description' => 'Cola is a carbonated soft drink flavored with vanilla, cinnamon, citrus oils and other flavorings.', 'origin' => 'Worldwide', 'user_id' => 1]);
+        $cola = Ingredient::create(['name' => 'Cola', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#411919', 'description' => 'Cola is a carbonated soft drink flavored with vanilla, cinnamon, citrus oils and other flavorings.', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Ginger beer', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'Ginger beer is a sweetened and carbonated, usually non-alcoholic beverage.', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Espresso', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'Espresso is generally thicker than coffee brewed by other methods, with a viscosity similar to that of warm honey.', 'origin' => 'Italy', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Coffee', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'Coffee is a drink prepared from roasted coffee beans.', 'origin' => 'Africa', 'user_id' => 1]);
+        $coffee = Ingredient::create(['name' => 'Coffee', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'Coffee is a drink prepared from roasted coffee beans.', 'origin' => 'Africa', 'user_id' => 1]);
         Ingredient::create(['name' => 'Orange Flower Water', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'Clear aromatic by-product of the distillation of fresh bitter-orange blossoms for their essential oil.', 'origin' => 'Mediterranean', 'user_id' => 1]);
 
         // Spirits
@@ -242,7 +242,7 @@ class OpenBar extends Command
         Ingredient::create(['name' => 'Absinthe', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#b7ca8e', 'description' => 'Anise-flavoured spirit derived from several plants, including wormwood.', 'origin' => 'France', 'user_id' => 1]);
 
         // Syrups
-        Ingredient::create(['name' => 'Simple Syrup', 'ingredient_category_id' => $syrups->id, 'description' => 'Syrup made with sugar and water. Usually in 1:1 or 2:1 ratio.', 'color' => '#e6dfcc', 'user_id' => 1]);
+        $simpleSyrup = Ingredient::create(['name' => 'Simple Syrup', 'ingredient_category_id' => $syrups->id, 'description' => 'Syrup made with sugar and water. Usually in 1:1 or 2:1 ratio.', 'color' => '#e6dfcc', 'user_id' => 1]);
         Ingredient::create(['name' => 'Gomme Syrup', 'ingredient_category_id' => $syrups->id, 'description' => 'A thicker simple syrup mixed with arabica gum powder.', 'color' => '#e6dfcc', 'user_id' => 1]);
         Ingredient::create(['name' => 'Orgeat Syrup', 'ingredient_category_id' => $syrups->id, 'description' => 'Sweet syrup made from almonds, sugar, and rose water or orange flower water.', 'color' => '#d9ca9f', 'user_id' => 1]);
         Ingredient::create(['name' => 'Honey Syrup', 'ingredient_category_id' => $syrups->id, 'description' => 'Syrup made from dissolving honey in water.', 'color' => '#f2a900', 'user_id' => 1]);
@@ -282,13 +282,40 @@ class OpenBar extends Command
             $ing->save();
         }
 
-        $this->info('Finding some cocktail recipes...');
+        $this->info('Importing cocktail recipes...');
 
         $this->importCocktailsFromJson(resource_path('/data/iba_cocktails_v0.1.0.yml'));
         $this->importCocktailsFromJson(resource_path('/data/popular_cocktails.yml'));
 
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);
+
+        $this->info('Selecting standard ingredients...');
+        $defaultUser = \Kami\Cocktail\Models\User::find(2);
+        $defaultUserIngredients = [
+            $limeFruit,
+            $lemonFruit,
+            $salt,
+            $pepper,
+            $sugar,
+            $eggWhite,
+            $eggYolk,
+            $lemonJuice,
+            $limeJuice,
+            $water,
+            $clubSoda,
+            $cola,
+            $coffee,
+            $simpleSyrup,
+        ];
+
+        foreach ($defaultUserIngredients as $dui) {
+            $defaultUser->shelfIngredients()->save(
+                new \Kami\Cocktail\Models\UserIngredient([
+                    'ingredient_id' => $dui->id
+                ])
+            );
+        }
 
         Model::reguard();
 
