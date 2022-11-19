@@ -503,8 +503,9 @@
         -
             amount: 25
             units: ml
-            name: 'Elderflower Cordial'
+            name: 'St-Germain'
             optional: false
+            substitutes: ['Elderflower Cordial']
         -
             amount: 7.5
             units: ml
