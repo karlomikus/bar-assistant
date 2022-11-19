@@ -5,7 +5,7 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Laravel\Scout\EngineManager;
 
-class HealthController extends Controller
+class ServerController extends Controller
 {
     public function version(EngineManager $engine)
     {
@@ -20,5 +20,14 @@ class HealthController extends Controller
                 'meilisearch_version' => $meilisearch->version()['pkgVersion'],
             ]
         ]);
+    }
+
+    public function openApi()
+    {
+        return response(
+            file_get_contents(base_path('docs/open-api-spec.yml')),
+            200,
+            ['Content-Type' => 'application/x-yaml']
+        );
     }
 }

@@ -7,7 +7,7 @@ info:
 servers:
   - url: https://127.0.0.1:8000/api
 tags:
-  - name: Health
+  - name: Server
     description: Operations related to server
   - name: Auth
     description: Operations related to user authentication
@@ -30,10 +30,10 @@ tags:
 security:
   - user_token: []
 paths:
-  /version:
+  /server/version:
     get:
       tags:
-        - Health
+        - Server
       security: []
       responses:
         '200':
@@ -509,6 +509,65 @@ paths:
       responses:
         '200':
           description: OK
+  /shelf:
+    get:
+      tags:
+        - "User shelf"
+      summary: "Get all ingredients in user shelf"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserIngredient'
+    post:
+      tags:
+        - "User shelf"
+      summary: "Add ingredients to user shelf"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ingredient_ids:
+                  type: array
+                  example: [1]
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserIngredient'
+  /shelf/{ingredient_id}:
+    parameters:
+      - in: path
+        name: ingredient_id
+        description: 'Database id of the ingredient'
+        schema:
+          type: integer
+        required: true
+    delete:
+      tags:
+        - "User shelf"
+      summary: Delete a single ingredient from user shelf
+      responses:
+        '200':
+          description: OK
 components:
   securitySchemes:
     user_token:
@@ -907,6 +966,18 @@ components:
                 format: binary
               copyright:
                 type: string
+    UserIngredient:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        ingredient_id:
+          type: integer
+          example: 1
     ErrorResponse:
       type: object
       properties:

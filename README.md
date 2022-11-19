@@ -26,6 +26,7 @@ Note: This application is still in development and there will be breaking change
 - Ability to upload and assign images
 - Shopping list for missing ingredients
 - Automatic indexing of data in Meilisearch
+- Ingredient substitutes
 
 ## Planned features
 
@@ -34,8 +35,7 @@ Note: This application is still in development and there will be breaking change
 - Cocktail ratings
 - Add user notes to cocktail
 - Add cocktail flavor profiles
-- Ingredient and cocktail aliasing
-- Ingredient substitutes
+- Cocktail recipe scraping
 
 ## Installation
 
@@ -46,6 +46,7 @@ This application is made with Laravel, so you should [follow installation instru
 - PHP >=8.1
 - Sqlite 3
 - Working [Meilisearch server](https://github.com/meilisearch)
+- (Optional) Redis server
 
 ### Meilisearch
 
