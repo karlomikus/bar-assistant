@@ -7,21 +7,34 @@ info:
 servers:
   - url: https://127.0.0.1:8000/api
 tags:
-  - name: ingredients
-    description: Operations related to ingredients
-  - name: cocktails
-    description: Operations related to cocktails
-  - name: glasses
-    description: Operations related to glasses
-  - name: health
+  - name: Health
     description: Operations related to server
+  - name: Auth
+    description: Operations related to user authentication
+  - name: Ingredients
+    description: Operations related to ingredients
+  - name: Cocktails
+    description: Operations related to cocktails
+  - name: Glasses
+    description: Operations related to glasses
+  - name: Images
+    description: Operations related to images
+  - name: "Ingredient categories"
+    description: Operations related to ingredient categories
+  - name: "User shelf"
+    description: Operations related to user shelf
+  - name: Users
+    description: Operations related to users
+  - name: "Shopping list"
+    description: Operations related to user shopping list
 security:
   - user_token: []
 paths:
   /version:
     get:
       tags:
-        - health
+        - Health
+      security: []
       responses:
         '200':
           description: OK
@@ -29,6 +42,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Version'
+  /login:
+    post:
+      tags:
+        - Auth
+      summary: Authenticate and get a token
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: admin@example.com
+                password:
+                  type: string
+                  example: password
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII
+  /logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout currently authenticated user
+      security: []
+      responses:
+        '200':
+          description: OK
   /cocktails:
     parameters:
       - in: query
@@ -40,7 +91,7 @@ paths:
         description: 'Show only cocktails made by a specifc user'
     get:
       tags:
-        - cocktails
+        - "Cocktails"
       summary: 'Show a paginated list of cocktails'
       responses:
         '200':
@@ -56,8 +107,13 @@ paths:
                       $ref: '#/components/schemas/Cocktail'
     post:
       tags:
-        - cocktails
+        - "Cocktails"
       summary: 'Create a new cocktail'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CocktailRequest'
       responses:
         '200':
           description: OK
@@ -80,7 +136,7 @@ paths:
         type: integer
     get:
       tags:
-        - cocktails
+        - "Cocktails"
       summary: 'Details of a specific cocktail'
       responses:
         '200':
@@ -94,8 +150,13 @@ paths:
                       $ref: '#/components/schemas/Cocktail'
     put:
       tags:
-        - cocktails
+        - "Cocktails"
       summary: 'Update a specific cocktail'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CocktailRequest'
       responses:
         '200':
           description: OK
@@ -108,15 +169,30 @@ paths:
                       $ref: '#/components/schemas/Cocktail'
     delete:
       tags:
-        - cocktails
+        - "Cocktails"
       summary: 'Delete a specific cocktail'
+      responses:
+        '200':
+          description: OK
+  /cocktails/{id}/toggle-favorite:
+    parameters:
+    - name: id
+      in: path
+      required: true
+      description: Database id of the cocktail
+      schema:
+        type: integer
+    post:
+      tags:
+        - "Cocktails"
+      summary: 'Toggle adding cocktail to favorites'
       responses:
         '200':
           description: OK
   /cocktails/random:
     get:
       tags:
-        - cocktails
+        - "Cocktails"
       summary: 'Get a random cocktail'
       responses:
         '200':
@@ -131,8 +207,25 @@ paths:
   /cocktails/user-shelf:
     get:
       tags:
-        - cocktails
+        - "Cocktails"
       summary: 'Get a list of cocktails that currently authorized user can make'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cocktail'
+  /cocktails/user-favorites:
+    get:
+      tags:
+        - "Cocktails"
+      summary: 'Get a list of cocktails that currently authorized user added to his favorites'
       responses:
         '200':
           description: OK
@@ -148,7 +241,7 @@ paths:
   /ingredients:
     get:
       tags:
-        - ingredients
+        - Ingredients
       summary: 'Get a list of ingredients'
       responses:
         '200':
@@ -164,7 +257,7 @@ paths:
                       $ref: '#/components/schemas/Ingredient'
     post:
       tags:
-        - ingredients
+        - Ingredients
       summary: 'Create a new ingredient'
       requestBody:
         content:
@@ -191,7 +284,7 @@ paths:
           type: integer
     get:
       tags:
-        - ingredients
+        - Ingredients
       summary: 'Details of a specific ingredient'
       responses:
         '200':
@@ -205,7 +298,7 @@ paths:
                       $ref: '#/components/schemas/Ingredient'
     put:
       tags:
-        - ingredients
+        - Ingredients
       summary: 'Update an existing ingredient'
       requestBody:
         content:
@@ -224,7 +317,7 @@ paths:
                     $ref: '#/components/schemas/Ingredient'
     delete:
       tags:
-        - ingredients
+        - Ingredients
       summary: 'Delete a specific ingredient'
       responses:
         '200':
@@ -232,7 +325,7 @@ paths:
   /glasses:
     get:
       tags:
-        - glasses
+        - Glasses
       responses:
         '200':
           description: OK
@@ -248,7 +341,7 @@ paths:
   /glasses/{id}:
     get:
       tags:
-        - glasses
+        - Glasses
       parameters:
         - in: path
           name: id
@@ -265,6 +358,157 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Glass'
+  /images:
+    post:
+      tags:
+        - Images
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImageRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Image'
+  /images/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of the image'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - Images
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Image'
+    put:
+      tags:
+        - Images
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                copyright:
+                  type: string
+                  example: 'Copyright of the image'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Image'
+    delete:
+      tags:
+        - Images
+      responses:
+        '200':
+          description: OK
+  /ingredient-categories:
+    get:
+      tags:
+        - "Ingredient categories"
+      summary: 'Show a list of ingredient categories'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IngredientCategory'
+    post:
+      tags:
+        - "Ingredient categories"
+      summary: 'Create a new ingredient category'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngredientCategoryRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/IngredientCategory'
+  /ingredient-categories/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of the ingredient category'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - "Ingredient categories"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/IngredientCategory'
+    put:
+      tags:
+        - "Ingredient categories"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngredientCategoryRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/IngredientCategory'
+    delete:
+      tags:
+        - "Ingredient categories"
+      responses:
+        '200':
+          description: OK
 components:
   securitySchemes:
     user_token:
@@ -408,6 +652,16 @@ components:
           type: string
           nullable: true
           example: 'A category of base spirits'
+    IngredientCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Spirits
+        description:
+          type: string
+          nullable: true
+          example: 'A category of base spirits'
     Version:
       type: object
       properties:
@@ -535,7 +789,6 @@ components:
           example: 'Cocktail name'
         instructions:
           type: string
-          nullable: true
           example: |-
             1. Step
             2. Step
@@ -578,6 +831,82 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CocktailIngredient'
+    CocktailRequest:
+      type: object
+      required:
+        - name
+        - instructions
+      properties:
+        name:
+          type: string
+          example: 'Cocktail name'
+        instructions:
+          type: string
+          example: |-
+            1. Step
+            2. Step
+        garnish:
+          type: string
+          nullable: true
+          example: Lemon wheel
+        description:
+          type: string
+          nullable: true
+          example: 'A short cocktail description'
+        source:
+          type: string
+          nullable: true
+          example: http://wikipedia.org
+        images:
+          type: array
+          example: [1, 2]
+          items:
+            type: integer
+            description: Image resource id
+            example: 1
+        tags:
+          type: array
+          example: ['Gin', 'IBA Official']
+          items:
+            type: string
+        glass_id:
+          type: integer
+          example: 1
+          nullable: true
+        ingredients:
+          type: array
+          items:
+            type: object
+            properties:
+              ingredient_id:
+                type: integer
+                example: 1
+              amount:
+                type: number
+                format: float
+                example: 30
+              units:
+                type: string
+                example: ml
+              optional:
+                type: boolean
+                example: false
+              sort:
+                type: integer
+                example: 0
+    ImageRequest:
+      type: object
+      properties:
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              image:
+                type: string
+                format: binary
+              copyright:
+                type: string
     ErrorResponse:
       type: object
       properties:
