@@ -14,5 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return 'This is your Bar Assistant instance';
+    return 'This is your Bar Assistant instance. Checkout /docs to see documentation.';
+});
+
+Route::get('/docs', function () {
+    return view('swagger');
 });

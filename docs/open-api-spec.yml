@@ -5,7 +5,7 @@ info:
   description: |-
     Bar assistant is a self hosted application for managing your home bar. It allows you to add ingredients and create custom cocktail recipes.
 servers:
-  - url: https://127.0.0.1:8000/api
+  - url: /api
 tags:
   - name: Server
     description: Operations related to server
