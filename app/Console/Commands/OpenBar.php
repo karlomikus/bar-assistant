@@ -208,6 +208,7 @@ class OpenBar extends Command
 
         $vodka = Ingredient::create(['name' => 'Vodka', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Clear alcoholic beverage distilled from cereal grains and potatos.', 'origin' => 'Russia', 'user_id' => 1]);
         Ingredient::create(['name' => 'Vanilla Vodka', 'parent_ingredient_id' => $vodka->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Vodka with added vanilla essence.', 'origin' => 'Russia', 'user_id' => 1]);
+        Ingredient::create(['name' => 'Vodka Citron', 'parent_ingredient_id' => $vodka->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Vodka with added lemon essence.', 'origin' => 'Sweden', 'user_id' => 1]);
         
         $whiskey = Ingredient::create(['name' => 'Whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Distilled alcoholic beverage made from fermented grain mash.', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Bourbon Whiskey', 'parent_ingredient_id' => $whiskey->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Barrel-aged distilled liquor made primarily from corn.', 'origin' => 'North America', 'user_id' => 1]);
