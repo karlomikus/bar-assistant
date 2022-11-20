@@ -58,7 +58,7 @@ class OpenBar extends Command
         DB::table('users')->insert([
             [
                 'name' => 'BAR ASSISTANT BOT',
-                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+                'password' => '', // password
                 'email' => 'bot@my-bar.localhost',
                 'email_verified_at' => null,
                 'remember_token' => null,
