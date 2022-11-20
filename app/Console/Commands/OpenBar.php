@@ -11,6 +11,7 @@ use Kami\Cocktail\SearchActions;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Database\Eloquent\Model;
@@ -69,7 +70,7 @@ class OpenBar extends Command
                 'email' => $this->argument('email'),
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
-                'search_api_key' => SearchActions::getPublicApiKey() // TODO: Check if already exists in ENV
+                'search_api_key' => App::environment('demo') ? SearchActions::getPublicDemoApiKey() : SearchActions::getPublicApiKey() // TODO: Check if already exists in ENV
             ]
         ]);
 

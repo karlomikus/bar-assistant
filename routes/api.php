@@ -25,7 +25,7 @@ use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
 
 Route::get('/', [ServerController::class, 'index']);
 
-Route::post('login', [AuthController::class, 'authenticate']);
+Route::post('login', [AuthController::class, 'authenticate'])->name('auth.login');
 Route::post('register', [AuthController::class, 'register']);
 
 Route::prefix('server')->group(function() {
@@ -35,7 +35,7 @@ Route::prefix('server')->group(function() {
 
 Route::middleware('auth:sanctum')->group(function() {
 
-    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
 
     Route::get('/user', [UserController::class, 'show']);
 
