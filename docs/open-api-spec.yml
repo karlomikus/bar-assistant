@@ -34,6 +34,7 @@ paths:
     get:
       tags:
         - Server
+      summary: Get server version information
       security: []
       responses:
         '200':
@@ -46,6 +47,7 @@ paths:
     get:
       tags:
         - Server
+      summary: Get open api specification in yaml format
       security: []
       responses:
         '200':
@@ -348,7 +350,7 @@ paths:
                     data:
                       $ref: '#/components/schemas/Ingredient'
         '404':
-          description: Ingredient not found
+          $ref: '#/components/responses/NotFound'
     put:
       tags:
         - Ingredients
@@ -370,6 +372,8 @@ paths:
                     $ref: '#/components/schemas/Ingredient'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+        '404':
+          $ref: '#/components/responses/NotFound'
     delete:
       tags:
         - Ingredients
@@ -377,10 +381,13 @@ paths:
       responses:
         '200':
           description: Successful response
+        '404':
+          $ref: '#/components/responses/NotFound'
   /glasses:
     get:
       tags:
         - Glasses
+      summary: Show a list of glass types
       responses:
         '200':
           description: Successful response
@@ -397,6 +404,7 @@ paths:
     get:
       tags:
         - Glasses
+      summary: Get a specific glass type
       parameters:
         - in: path
           name: id
@@ -413,10 +421,13 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Glass'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /images:
     post:
       tags:
         - Images
+      summary: Save multiple images
       requestBody:
         content:
           multipart/form-data:
@@ -447,6 +458,7 @@ paths:
     get:
       tags:
         - Images
+      summary: Get a specific image
       responses:
         '200':
           description: Successful response
@@ -457,9 +469,12 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Image'
+        '404':
+          $ref: '#/components/responses/NotFound'
     put:
       tags:
         - Images
+      summary: Update image copyright
       requestBody:
         content:
           multipart/form-data:
@@ -481,9 +496,12 @@ paths:
                     $ref: '#/components/schemas/Image'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+        '404':
+          $ref: '#/components/responses/NotFound'
     delete:
       tags:
         - Images
+      summary: Remove a specific image
       responses:
         '200':
           description: Successful response
@@ -536,6 +554,7 @@ paths:
     get:
       tags:
         - "Ingredient categories"
+      summary: Get a specific ingredient category
       responses:
         '200':
           description: Successful response
@@ -549,6 +568,7 @@ paths:
     put:
       tags:
         - "Ingredient categories"
+      summary: Update a specific ingredient category
       requestBody:
         content:
           application/json:
@@ -569,6 +589,7 @@ paths:
     delete:
       tags:
         - "Ingredient categories"
+      summary: Delete specific ingredient category
       responses:
         '200':
           description: Successful response
@@ -724,6 +745,19 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              type:
+                type: string
+                example: api_error
+              message:
+                type: string
+                example: 'Resource record not found.'
   schemas:
     Glass:
       type: object
