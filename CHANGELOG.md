@@ -1,3 +1,14 @@
+# v0.5.0
+- Use redis for session and cache
+- Automatically select some ingredients when running the application for the first time
+- Add OpenAPI specification and `/docs` route
+- Fixed an error response when adding ingredient to the shelf from shopping list
+- Updated some endpoints to be more consistent
+- Include substitute ingredients when showing a list of shelf cocktails
+- Added debugbar
+- Remove the need to run `chown` in docker container
+- Add demo environment support
+
 # v0.4.1
 - Enable opcache in docker image
 - Cache route and config in docker image
