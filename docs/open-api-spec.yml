@@ -37,7 +37,7 @@ paths:
       security: []
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -70,7 +70,7 @@ paths:
                   example: password
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -79,6 +79,8 @@ paths:
                   token:
                     type: string
                     example: 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
   /logout:
     post:
       tags:
@@ -87,7 +89,7 @@ paths:
       security: []
       responses:
         '200':
-          description: OK
+          description: Successful response
   /cocktails:
     parameters:
       - in: query
@@ -103,7 +105,7 @@ paths:
       summary: 'Show a paginated list of cocktails'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -124,7 +126,7 @@ paths:
               $ref: '#/components/schemas/CocktailRequest'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -134,6 +136,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Cocktail'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
   /register:
     post:
       tags:
@@ -157,7 +161,7 @@ paths:
                   example: "P4SSW0RD"
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -165,6 +169,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/User'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
   /cocktails/{id}:
     parameters:
     - name: id
@@ -179,7 +185,7 @@ paths:
       summary: 'Details of a specific cocktail'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -198,7 +204,7 @@ paths:
               $ref: '#/components/schemas/CocktailRequest'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -206,13 +212,15 @@ paths:
                 properties:
                     data:
                       $ref: '#/components/schemas/Cocktail'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
     delete:
       tags:
         - "Cocktails"
       summary: 'Delete a specific cocktail'
       responses:
         '200':
-          description: OK
+          description: Successful response
   /cocktails/{id}/toggle-favorite:
     parameters:
     - name: id
@@ -227,7 +235,7 @@ paths:
       summary: 'Toggle adding cocktail to favorites'
       responses:
         '200':
-          description: OK
+          description: Successful response
   /cocktails/random:
     get:
       tags:
@@ -235,7 +243,7 @@ paths:
       summary: 'Get a random cocktail'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -250,7 +258,7 @@ paths:
       summary: 'Get a list of cocktails that currently authorized user can make'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -267,7 +275,7 @@ paths:
       summary: 'Get a list of cocktails that currently authorized user added to his favorites'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -284,7 +292,7 @@ paths:
       summary: 'Get a list of ingredients'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -305,7 +313,7 @@ paths:
               $ref: '#/components/schemas/IngredientRequest'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -313,6 +321,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Ingredient'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
   /ingredients/{id}:
     parameters:
       - name: id
@@ -327,7 +337,7 @@ paths:
       summary: 'Details of a specific ingredient'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -335,6 +345,8 @@ paths:
                 properties:
                     data:
                       $ref: '#/components/schemas/Ingredient'
+        '404':
+          description: Ingredient not found
     put:
       tags:
         - Ingredients
@@ -346,7 +358,7 @@ paths:
               $ref: '#/components/schemas/IngredientRequest'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -354,20 +366,22 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Ingredient'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
     delete:
       tags:
         - Ingredients
       summary: 'Delete a specific ingredient'
       responses:
         '200':
-          description: OK
+          description: Successful response
   /glasses:
     get:
       tags:
         - Glasses
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -389,7 +403,7 @@ paths:
           required: true
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -408,7 +422,7 @@ paths:
               $ref: '#/components/schemas/ImageRequest'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -418,6 +432,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Image'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
   /images/{id}:
     parameters:
       - in: path
@@ -431,7 +447,7 @@ paths:
         - Images
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -453,7 +469,7 @@ paths:
                   example: 'Copyright of the image'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -461,12 +477,14 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Image'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
     delete:
       tags:
         - Images
       responses:
         '200':
-          description: OK
+          description: Successful response
   /ingredient-categories:
     get:
       tags:
@@ -474,7 +492,7 @@ paths:
       summary: 'Show a list of ingredient categories'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -495,7 +513,7 @@ paths:
               $ref: '#/components/schemas/IngredientCategoryRequest'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -503,6 +521,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/IngredientCategory'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
   /ingredient-categories/{id}:
     parameters:
       - in: path
@@ -516,7 +536,7 @@ paths:
         - "Ingredient categories"
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -534,7 +554,7 @@ paths:
               $ref: '#/components/schemas/IngredientCategoryRequest'
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -542,12 +562,14 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/IngredientCategory'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
     delete:
       tags:
         - "Ingredient categories"
       responses:
         '200':
-          description: OK
+          description: Successful response
   /shelf:
     get:
       tags:
@@ -555,7 +577,7 @@ paths:
       summary: "Get all ingredients in user shelf"
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -582,7 +604,7 @@ paths:
                     type: integer
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -592,6 +614,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/UserIngredient'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
   /shelf/{ingredient_id}:
     parameters:
       - in: path
@@ -606,7 +630,7 @@ paths:
       summary: "Add a single ingredient to user shelf"
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -614,13 +638,15 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/UserIngredient'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
     delete:
       tags:
         - "User shelf"
       summary: Delete a single ingredient from user shelf
       responses:
         '200':
-          description: OK
+          description: Successful response
   /user:
     get:
       tags:
@@ -628,7 +654,7 @@ paths:
       summary: "Get info about currently authenticated user"
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -654,7 +680,7 @@ paths:
                     type: integer
       responses:
         '200':
-          description: OK
+          description: Successful response
           content:
             application/json:
               schema:
@@ -664,6 +690,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/UserShoppingList'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
     delete:
       tags:
         - "Shopping list"
@@ -681,12 +709,19 @@ paths:
                     type: integer
       responses:
         '200':
-          description: OK
+          description: Successful response
 components:
   securitySchemes:
     user_token:
       type: http
       scheme: bearer
+  responses:
+    UnprocessableEntity:
+      description: Request body validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
   schemas:
     Glass:
       type: object
@@ -1104,18 +1139,17 @@ components:
         ingredient_id:
           type: integer
           example: 1
-    ErrorResponse:
+    ValidationErrorResponse:
       type: object
       properties:
-        type:
-          type: string
-          example: 'api_error'
         message:
           type: string
-          example: 'This is an detailed error message'
-    SuccessActionResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
+          example: "The cocktail name must be a string. (and 4 more errors)"
+        errors:
+          type: object
+          properties:
+            property_key:
+              type: array
+              example: ["The property_key field is required."]
+              items:
+                type: string
