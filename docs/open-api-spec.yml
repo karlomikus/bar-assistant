@@ -109,12 +109,14 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Cocktail'
+                allOf:
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Cocktail'
+                  - $ref: '#/components/schemas/PaginationResponse'
     post:
       tags:
         - "Cocktails"
@@ -1153,3 +1155,58 @@ components:
               example: ["The property_key field is required."]
               items:
                 type: string
+    PaginationResponse:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            first:
+              type: string
+              example: http://localhost/api/resource?page=1
+            last:
+              type: string
+              example: http://localhost/api/resource?page=10
+            prev:
+              type: string
+              nullable: true
+              example: null
+            next:
+              type: string
+              nullable: true
+              example: http://localhost/api/resource?page=2
+        meta:
+          type: object
+          properties:
+            current_page:
+              type: integer
+              example: 1
+            from:
+              type: integer
+              example: 1
+            last_page:
+              type: integer
+              example: 10
+            links:
+              type: array
+              items:
+                type: object
+                properties:
+                  url:
+                    type: string
+                  label:
+                    type: string
+                  active:
+                    type: boolean
+            path:
+              type: string
+              example: http://localhost/api/resource
+            per_page:
+              type: integer
+              example: 15
+            to:
+              type: integer
+              example: 15
+            total:
+              type: integer
+              example: 100
