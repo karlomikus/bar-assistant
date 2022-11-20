@@ -29,6 +29,8 @@ RUN chmod +x /usr/local/bin/entrypoint
 # Add composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
+USER www-data:www-data
+
 WORKDIR /var/www/cocktails
 
 RUN git clone https://github.com/karlomikus/bar-assistant.git .
