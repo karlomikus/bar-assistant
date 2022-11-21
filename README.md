@@ -49,7 +49,7 @@ The basic requirements are:
 
 ## Docker setup
 
-Docker setup is the easiest way to get started. This will run only the server but you can [checkout how to setup the whole Bar Assistant stack here.](https://github.com/karlomikus/vue-salt-rim#docker-compose)
+Docker setup is the easiest way to get started. This will run only the server but you can [checkout how to setup the whole Bar Assistant stack here.](https://github.com/bar-assistant/docker)
 
 ``` bash
 $ docker volume create bass-volume
