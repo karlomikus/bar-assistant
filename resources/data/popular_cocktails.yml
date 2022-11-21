@@ -579,7 +579,7 @@
     instructions: 'Shake all ingredients with ice and strain into chilled glass.'
     garnish: 'Lime zest'
     source: 'https://www.cocktailexplorer.co/cocktails/queens-park-hotel-super-cocktail/anders-erickson/'
-    image_copyright: null
+    image_copyright: Anders Erickson
     tags:
         - Rum
     glass: Coupe
@@ -608,4 +608,77 @@
             amount: 2
             units: dashes
             name: 'Angostura aromatic bitters'
+            optional: false
+-
+    name: Seelbach
+    description: "The Seelbach Cocktail may not be a julep, but it doesn't have to be: it's respectable, powerful, and delicious right down to the bottom of the glass."
+    instructions: |-
+        1. Add the bourbon, Cointreau, Angostura bitters and Peychaud’s bitters into a mixing glass with ice and stir until well-chilled.
+        2. Strain into a chilled flute.
+        3. Top with cold Champagne or other sparkling wine.
+        3. Garnish with an orange twist.
+    garnish: 'Orange twist'
+    source: 'https://www.seriouseats.com/seelbach-cocktail-recipe'
+    image_copyright: The Educated Barfly
+    tags:
+        - Whiskey
+    glass: Champagne
+    ingredients:
+        -
+            amount: 30
+            units: ml
+            name: 'Bourbon Whiskey'
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: 'Cointreau'
+            optional: false
+        -
+            amount: 5
+            units: dashes
+            name: 'Angostura aromatic bitters'
+            optional: false
+        -
+            amount: 5
+            units: dashes
+            name: 'Peychauds Bitters'
+            optional: false
+        -
+            amount: 90
+            units: ml
+            name: Champagne
+            optional: false
+-
+    name: El Presidente
+    description: The El Presidente earned its acclaim in Havana during the 1920s through the 1940s during the American Prohibition. It quickly became the preferred drink of the Cuban upper class.
+    instructions: |-
+        Add all ingredients to a mixing glass with ice and stir until well-chilled. 
+    garnish: null
+    source: 'https://www.liquor.com/recipes/el-presidente/'
+    image_copyright: A Couple Cooks
+    tags:
+        - Rum
+    glass: Cocktail
+    ingredients:
+        -
+            amount: 45
+            units: ml
+            name: 'White rum'
+            optional: false
+        -
+            amount: 22.5
+            units: ml
+            name: 'Dry Vermouth'
+            optional: false
+            substitutes: ['Lillet Blanc']
+        -
+            amount: 7.5
+            units: ml
+            name: 'Orange Curaçao'
+            optional: false
+        -
+            amount: 1
+            units: teaspoon
+            name: 'Grenadine Syrup'
             optional: false
