@@ -23,14 +23,19 @@ class ShelfController extends Controller
 
     public function save(Request $request, int $ingredientId)
     {
-        $userIngredient = new UserIngredient();
-        $userIngredient->ingredient_id = $ingredientId;
-
+        // Remove ingredient from the shopping list if it exists
         UserShoppingList::where('ingredient_id', $ingredientId)->delete();
 
-        $si = $request->user()->shelfIngredients()->save($userIngredient);
+        // Check if ingredient is already in the shelf, and add it if it's not
+        if (!$request->user()->shelfIngredients->contains('ingredient_id', $ingredientId)) {
+            $userIngredient = new UserIngredient();
+            $userIngredient->ingredient_id = $ingredientId;
+            $shelfIngredient = $request->user()->shelfIngredients()->save($userIngredient);
+        } else {
+            $shelfIngredient = $request->user()->shelfIngredients->where('ingredient_id', $ingredientId)->first();
+        }
 
-        return new UserIngredientResource($si);
+        return new UserIngredientResource($shelfIngredient);
     }
 
     public function batch(UserIngredientBatchRequest $request)

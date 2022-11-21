@@ -171,6 +171,48 @@
 			]
 		},
 		{
+			"name": "Glasses",
+			"item": [
+				{
+					"name": "All glasses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/glasses",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"glasses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show ingredient",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/glasses/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"glasses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Ingredient Categories",
 			"item": [
 				{
@@ -648,14 +690,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base}}/api/shelf/batch",
+							"raw": "{{base}}/api/shelf",
 							"host": [
 								"{{base}}"
 							],
 							"path": [
 								"api",
-								"shelf",
-								"batch"
+								"shelf"
 							]
 						}
 					},
@@ -691,14 +732,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base}}/api/images/150",
+							"raw": "{{base}}/api/images/217",
 							"host": [
 								"{{base}}"
 							],
 							"path": [
 								"api",
 								"images",
-								"150"
+								"217"
 							]
 						}
 					},
@@ -748,6 +789,41 @@
 							"path": [
 								"api",
 								"images"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partial image update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "copyright",
+									"value": "Copyright image 1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base}}/api/images/218",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"images",
+								"218"
 							]
 						}
 					},
@@ -890,117 +966,122 @@
 			]
 		},
 		{
-			"name": "Login",
-			"event": [
+			"name": "Auth",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var resp = pm.response.json();\r",
-							"\r",
-							"pm.collectionVariables.set(\"token\", resp.token);"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"admin@example.com\",\r\n    \"password\": \"password\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var resp = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set(\"token\", resp.token);"
+								],
+								"type": "text/javascript"
+							}
 						}
-					}
-				},
-				"url": {
-					"raw": "{{base}}/api/login",
-					"host": [
-						"{{base}}"
 					],
-					"path": [
-						"api",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Logout",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "{{base}}/api/logout",
-					"host": [
-						"{{base}}"
-					],
-					"path": [
-						"api",
-						"logout"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Register a new user",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"contact@karlomikus.com\",\r\n    \"name\": \"Postman\",\r\n    \"password\": \"12345\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@example.com\",\r\n    \"password\": \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/login",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{base}}/api/register",
-					"host": [
-						"{{base}}"
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"path": [
-						"api",
-						"register"
-					]
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/logout",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register a new user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"contact@karlomikus.com\",\r\n    \"name\": \"Postman\",\r\n    \"password\": \"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/register",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"register"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "Version",
@@ -1014,13 +1095,39 @@
 					}
 				],
 				"url": {
-					"raw": "{{base}}/api/version",
+					"raw": "{{base}}/api/server/version",
 					"host": [
 						"{{base}}"
 					],
 					"path": [
 						"api",
+						"server",
 						"version"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Open Api Spec",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base}}/api/server/openapi",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"api",
+						"server",
+						"openapi"
 					]
 				}
 			},

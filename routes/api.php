@@ -6,7 +6,7 @@ use Kami\Cocktail\Http\Controllers\UserController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
-use Kami\Cocktail\Http\Controllers\HealthController;
+use Kami\Cocktail\Http\Controllers\ServerController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
@@ -23,14 +23,19 @@ use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
 |
 */
 
-Route::post('login', [AuthController::class, 'authenticate']);
+Route::get('/', [ServerController::class, 'index']);
+
+Route::post('login', [AuthController::class, 'authenticate'])->name('auth.login');
 Route::post('register', [AuthController::class, 'register']);
 
-Route::get('/version', [HealthController::class, 'version']);
+Route::prefix('server')->group(function() {
+    Route::get('/version', [ServerController::class, 'version']);
+    Route::get('/openapi', [ServerController::class, 'openApi']);
+});
 
 Route::middleware('auth:sanctum')->group(function() {
 
-    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
 
     Route::get('/user', [UserController::class, 'show']);
 

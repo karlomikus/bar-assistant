@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Cocktail extends Model
+class Cocktail extends Model implements SiteSearchable
 {
     use HasFactory, Searchable, HasImages, HasSlug;
 
@@ -22,11 +22,11 @@ class Cocktail extends Model
     protected static function booted()
     {
         static::saved(function($cocktail) {
-            SearchActions::update($cocktail);
+            SearchActions::updateSearchIndex($cocktail);
         });
 
         static::deleted(function($cocktail) {
-            SearchActions::delete($cocktail);
+            SearchActions::deleteSearchIndex($cocktail);
         });
     }
 
@@ -64,7 +64,7 @@ class Cocktail extends Model
         return parent::delete();
     }
 
-    public function toSiteSearchArray()
+    public function toSiteSearchArray(): array
     {
         return [
             'key' => 'co_' . (string) $this->id,

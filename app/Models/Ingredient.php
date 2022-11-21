@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Ingredient extends Model
+class Ingredient extends Model implements SiteSearchable
 {
     use HasFactory, Searchable, HasImages, HasSlug;
 
@@ -33,11 +33,11 @@ class Ingredient extends Model
     protected static function booted()
     {
         static::saved(function($ing) {
-            SearchActions::update($ing);
+            SearchActions::updateSearchIndex($ing);
         });
 
         static::deleted(function($ing) {
-            SearchActions::delete($ing);
+            SearchActions::deleteSearchIndex($ing);
         });
     }
 
@@ -104,7 +104,7 @@ class Ingredient extends Model
         return parent::delete();
     }
 
-    public function toSiteSearchArray()
+    public function toSiteSearchArray(): array
     {
         return [
             'key' => 'in_' . (string) $this->id,

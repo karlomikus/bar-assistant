@@ -26,9 +26,9 @@ system_start_checkup() {
         php artisan config:cache
         php artisan route:cache
 
-        echo "Setting permissions..."
+        # echo "Setting permissions..."
 
-        chown -R www-data:www-data /var/www/cocktails
+        # chown -R www-data:www-data /var/www/cocktails
 
         echo "Application ready!"
     fi

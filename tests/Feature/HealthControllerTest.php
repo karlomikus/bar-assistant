@@ -9,7 +9,7 @@ class HealthControllerTest extends TestCase
 {
     public function test_version_response()
     {
-        $response = $this->getJson('/api/version');
+        $response = $this->getJson('/api/server/version');
 
         $response->assertStatus(200);
 

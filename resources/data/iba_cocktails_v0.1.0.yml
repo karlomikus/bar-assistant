@@ -402,8 +402,9 @@
         -
             amount: 45
             units: ml
-            name: Whiskey
+            name: 'Bourbon Whiskey'
             optional: false
+            substitutes: ['Rye Whiskey']
         -
             amount: 30
             units: ml
@@ -585,6 +586,7 @@
             units: ml
             name: Gin
             optional: false
+            substitutes: ['Old Tom Gin']
         -
             amount: 10
             units: ml
@@ -632,7 +634,7 @@
             amount: 1
             units: drops
             name: 'Grand Marnier'
-            optional: false
+            optional: true
         -
             amount: 1
             units: cube
@@ -736,6 +738,7 @@
             units: ml
             name: Vodka
             optional: false
+            substitutes: ['Vodka Citron']
         -
             amount: 15
             units: ml
@@ -1403,6 +1406,7 @@
             units: ml
             name: Vodka
             optional: false
+            substitutes: ['Vodka Citron']
         -
             amount: 20
             units: ml

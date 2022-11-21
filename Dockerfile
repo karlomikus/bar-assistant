@@ -10,7 +10,9 @@ RUN apt update \
     && apt-get autoremove -y \
     && apt-get clean
 
-RUN docker-php-ext-install opcache
+RUN docker-php-ext-install opcache \
+    && pecl install redis \
+    && docker-php-ext-enable redis
 
 # Setup default apache stuff
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
@@ -26,6 +28,8 @@ RUN chmod +x /usr/local/bin/entrypoint
 
 # Add composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+USER www-data:www-data
 
 WORKDIR /var/www/cocktails
 
