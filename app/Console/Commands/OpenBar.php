@@ -45,6 +45,8 @@ class OpenBar extends Command
     {
         Model::unguard();
 
+        $this->info('Opening the bar in ' . App::environment() . ' environment...');
+
         $this->info('Checking connection to your search server [' . config('scout.meilisearch.host') . ']...');
 
         try {

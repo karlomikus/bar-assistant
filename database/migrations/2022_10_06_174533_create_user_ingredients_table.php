@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('user_ingredients', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('ingredient_id')->constrained();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('ingredient_id')->constrained()->onDelete('cascade');
 
             $table->unique(['user_id', 'ingredient_id']);
         });

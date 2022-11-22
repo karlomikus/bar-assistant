@@ -20,7 +20,7 @@ return new class extends Migration
 
         Schema::create('cocktail_tag', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tag_id')->constrained();
+            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
             $table->foreignId('cocktail_id')->constrained()->onDelete('cascade');
         });
     }
