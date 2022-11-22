@@ -8,7 +8,7 @@ use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Image;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
 use Kami\Cocktail\Models\CocktailFavorite;
@@ -239,7 +239,7 @@ class CocktailService
      * @param int $userId
      * @return \Illuminate\Database\Eloquent\Collection<\Kami\Cocktail\Models\Cocktail>
      */
-    public function getCocktailsByUserIngredients(int $userId)
+    public function getCocktailsByUserIngredients(int $userId): Collection
     {
         // https://stackoverflow.com/questions/19930070/mysql-query-to-select-all-except-something
         $cocktailIds = $this->db->table('cocktails AS c')
