@@ -14,6 +14,14 @@ Bar assistant is a self hosted application for managing your home bar. It allows
 
 This repository only contains the API server, if you are looking for easy to use web client, take a look at [Salt Rim](https://github.com/karlomikus/vue-salt-rim).
 
+<p align="center">
+    <a href="https://bar-api.karlomikus.com" target="_blank">Click here to view API demo.</a>
+    <br>
+    <a href="https://bar.karlomikus.com" target="_blank">Click here to view frontend demo.</a>
+    <br>
+    <strong>Email:</strong> admin@example.com &middot; <strong>Password:</strong> password
+</p>
+
 ## Features
 - Includes all current IBA cocktails
 - Over 100 ingredients
