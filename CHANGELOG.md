@@ -1,3 +1,10 @@
+# v0.5.2
+- Add response caching, disabled by default
+- Cache docker image steps in GH actions
+
+# v0.5.1
+- Add cascading deletes for some foreign keys
+
 # v0.5.0
 - Use redis for session and cache
 - Automatically select some ingredients when running the application for the first time
