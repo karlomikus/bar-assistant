@@ -49,7 +49,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::prefix('ingredients')->group(function() {
         Route::get('/', [IngredientController::class, 'index']);
         Route::post('/', [IngredientController::class, 'store']);
-        Route::get('/{id}', [IngredientController::class, 'show']);
+        Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show');
         Route::put('/{id}', [IngredientController::class, 'update']);
         Route::delete('/{id}', [IngredientController::class, 'delete']);
     });
