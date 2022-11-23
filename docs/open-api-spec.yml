@@ -106,12 +106,12 @@ paths:
         - "Cocktails"
       summary: 'Show a paginated list of cocktails'
       responses:
-        '200':
+        '201':
           description: Successful response
           content:
             application/json:
               schema:
-                allOf:
+                anyOf:
                   - type: object
                     properties:
                       data:
@@ -129,7 +129,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CocktailRequest'
       responses:
-        '200':
+        '201':
           description: Successful response
           content:
             application/json:
@@ -137,9 +137,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Cocktail'
+                    $ref: '#/components/schemas/Cocktail'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /register:
@@ -207,7 +205,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CocktailRequest'
       responses:
-        '200':
+        '201':
           description: Successful response
           content:
             application/json:
@@ -316,7 +314,7 @@ paths:
             schema:
               $ref: '#/components/schemas/IngredientRequest'
       responses:
-        '200':
+        '201':
           description: Successful response
           content:
             application/json:
@@ -361,7 +359,7 @@ paths:
             schema:
               $ref: '#/components/schemas/IngredientRequest'
       responses:
-        '200':
+        '201':
           description: Successful response
           content:
             application/json:
@@ -761,6 +759,7 @@ components:
   schemas:
     Glass:
       type: object
+      nullable: true
       properties:
         id:
           type: integer
@@ -828,9 +827,11 @@ components:
           example: 40.0
         description:
           type: string
+          nullable: true
           example: 'A type of whiskey'
         origin:
           type: string
+          nullable: true
           example: 'North America'
         main_image_id:
           type: integer
@@ -937,6 +938,7 @@ components:
         copyright:
           type: string
           example: 'Somewhere from the web'
+          nullable: true
         last_modified:
           type: string
           example: '2022-11-17T09:52:48.000000Z'
@@ -1151,6 +1153,7 @@ components:
                 format: binary
               copyright:
                 type: string
+                nullable: true
     UserIngredient:
       type: object
       properties:
@@ -1197,9 +1200,11 @@ components:
           properties:
             first:
               type: string
+              nullable: true
               example: http://localhost/api/resource?page=1
             last:
               type: string
+              nullable: true
               example: http://localhost/api/resource?page=10
             prev:
               type: string
