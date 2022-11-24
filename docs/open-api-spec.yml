@@ -63,6 +63,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - email
+                - password
               properties:
                 email:
                   type: string
@@ -162,7 +165,7 @@ paths:
                   type: string
                   example: "P4SSW0RD"
       responses:
-        '200':
+        '201':
           description: Successful response
           content:
             application/json:
@@ -530,8 +533,14 @@ paths:
             schema:
               $ref: '#/components/schemas/IngredientCategoryRequest'
       responses:
-        '200':
+        '201':
           description: Successful response
+          headers:
+            Location:
+              description: Absolute URL to new resource
+              schema:
+                type: string
+                example: 'http://localhost/api/ingredient-categories/1'
           content:
             application/json:
               schema:
@@ -563,6 +572,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/IngredientCategory'
+        '404':
+          $ref: '#/components/responses/NotFound'
     put:
       tags:
         - "Ingredient categories"
@@ -582,6 +593,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/IngredientCategory'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
     delete:
@@ -589,8 +602,10 @@ paths:
         - "Ingredient categories"
       summary: Delete specific ingredient category
       responses:
-        '200':
+        '204':
           description: Successful response
+        '404':
+          $ref: '#/components/responses/NotFound'
   /shelf:
     get:
       tags:
@@ -774,6 +789,10 @@ components:
           example: 'Description of glass'
     IngredientRequest:
       type: object
+      required:
+        - name
+        - strength
+        - ingredient_category_id
       properties:
         name:
           type: string
@@ -899,6 +918,8 @@ components:
           example: 'A category of base spirits'
     IngredientCategoryRequest:
       type: object
+      required:
+        - name
       properties:
         name:
           type: string
@@ -1142,6 +1163,8 @@ components:
                 example: 0
     ImageRequest:
       type: object
+      required:
+        - images
       properties:
         images:
           type: array
