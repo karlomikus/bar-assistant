@@ -90,7 +90,8 @@ class Cocktail extends Model implements SiteSearchable
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'user_id' => $this->user_id,
             'tags' => $this->tags->pluck('name'),
-            'date' => $this->updated_at->format('Y-m-d H:i:s')
+            'date' => $this->updated_at->format('Y-m-d H:i:s'),
+            'glass' => $this->glass->name ?? null
         ];
     }
 }
