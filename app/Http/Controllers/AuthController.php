@@ -52,6 +52,6 @@ class AuthController extends Controller
 
         return (new UserResource(
             $user->load('favorites', 'shelfIngredients', 'shoppingLists')
-        ))->response()->setStatusCode(201);
+        ))->response()->setStatusCode(200);
     }
 }

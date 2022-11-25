@@ -58,7 +58,7 @@ class AuthControllerTest extends TestCase
             'name' => 'Test Guy',
         ]);
 
-        $response->assertCreated();
+        $response->assertSuccessful();
         $response->assertValidRequest();
         $response->assertValidResponse();
     }

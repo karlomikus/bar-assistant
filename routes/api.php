@@ -81,14 +81,18 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::delete('/{id}', [ImageController::class, 'delete']);
     });
 
-    Route::prefix('shopping-lists')->group(function() {
-        Route::post('/batch', [ShoppingListController::class, 'batchStore']);
-        Route::delete('/batch', [ShoppingListController::class, 'batchDelete']);
+    Route::prefix('shopping-list')->group(function() {
+        Route::get('/', [ShoppingListController::class, 'index']);
+        Route::post('/batch-store', [ShoppingListController::class, 'batchStore']);
+        Route::post('/batch-delete', [ShoppingListController::class, 'batchDelete']);
     });
 
     Route::prefix('glasses')->group(function() {
         Route::get('/', [GlassController::class, 'index']);
-        Route::get('/{id}', [GlassController::class, 'show']);
+        Route::post('/', [GlassController::class, 'store']);
+        Route::get('/{id}', [GlassController::class, 'show'])->name('glasses.show');
+        Route::put('/{id}', [GlassController::class, 'update']);
+        Route::delete('/{id}', [GlassController::class, 'delete']);
     });
 
 });

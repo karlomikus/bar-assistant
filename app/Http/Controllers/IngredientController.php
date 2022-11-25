@@ -76,16 +76,13 @@ class IngredientController extends Controller
             $request->post('images', [])
         );
 
-        return (new IngredientResource($ingredient))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('ingredients.show', $ingredient->id));
+        return new IngredientResource($ingredient);
     }
 
     public function delete(int $id)
     {
         Ingredient::findOrFail($id)->delete();
 
-        return new SuccessActionResource((object) ['id' => $id]);
+        return response(null, 204);
     }
 }

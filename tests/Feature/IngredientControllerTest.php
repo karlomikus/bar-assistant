@@ -142,7 +142,7 @@ class IngredientControllerTest extends TestCase
             'parent_ingredient_id' => null
         ]);
 
-        $response->assertStatus(201);
+        $response->assertSuccessful();
         $response->assertJson(fn (AssertableJson $json) =>
             $json
                 ->has('data.id')
@@ -153,7 +153,7 @@ class IngredientControllerTest extends TestCase
         );
 
         $response->assertValidRequest();
-        $response->assertValidResponse(201);
+        $response->assertValidResponse(200);
     }
 
     public function test_ingredient_update_fails_validation_response()
@@ -194,7 +194,7 @@ class IngredientControllerTest extends TestCase
 
         $response = $this->deleteJson('/api/ingredients/' . $ing->id);
 
-        $response->assertStatus(200);
+        $response->assertNoContent();
         $this->assertDatabaseMissing('ingredients', ['id' => $ing->id]);
     }
 }

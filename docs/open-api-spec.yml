@@ -134,6 +134,12 @@ paths:
       responses:
         '201':
           description: Successful response
+          headers:
+            Location:
+              description: Absolute URL to new resource
+              schema:
+                type: string
+                example: 'http://localhost/api/cocktails/1'
           content:
             application/json:
               schema:
@@ -165,7 +171,7 @@ paths:
                   type: string
                   example: "P4SSW0RD"
       responses:
-        '201':
+        '200':
           description: Successful response
           content:
             application/json:
@@ -198,6 +204,8 @@ paths:
                 properties:
                     data:
                       $ref: '#/components/schemas/Cocktail'
+        '404':
+          $ref: '#/components/responses/NotFound'
     put:
       tags:
         - "Cocktails"
@@ -208,7 +216,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CocktailRequest'
       responses:
-        '201':
+        '200':
           description: Successful response
           content:
             application/json:
@@ -217,6 +225,8 @@ paths:
                 properties:
                     data:
                       $ref: '#/components/schemas/Cocktail'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
     delete:
@@ -224,8 +234,10 @@ paths:
         - "Cocktails"
       summary: 'Delete a specific cocktail'
       responses:
-        '200':
-          description: Successful response
+        '204':
+          description: Successfully deleted cocktail response
+        '404':
+          $ref: '#/components/responses/NotFound'
   /cocktails/{id}/toggle-favorite:
     parameters:
     - name: id
@@ -241,6 +253,24 @@ paths:
       responses:
         '200':
           description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: 'Cocktail favorite ID'
+                        example: 1
+                      is_favorited:
+                        type: boolean
+                        description: 'Is cocktail favorited'
+                        example: true
+        '404':
+          $ref: '#/components/responses/NotFound'
   /cocktails/random:
     get:
       tags:
@@ -319,6 +349,12 @@ paths:
       responses:
         '201':
           description: Successful response
+          headers:
+            Location:
+              description: Absolute URL to new resource
+              schema:
+                type: string
+                example: 'http://localhost/api/ingredients/1'
           content:
             application/json:
               schema:
@@ -362,7 +398,7 @@ paths:
             schema:
               $ref: '#/components/schemas/IngredientRequest'
       responses:
-        '201':
+        '200':
           description: Successful response
           content:
             application/json:
@@ -380,8 +416,8 @@ paths:
         - Ingredients
       summary: 'Delete a specific ingredient'
       responses:
-        '200':
-          description: Successful response
+        '204':
+          description: Successfully deleted ingredient
         '404':
           $ref: '#/components/responses/NotFound'
   /glasses:
@@ -401,6 +437,33 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Glass'
+    post:
+      tags:
+        - Glasses
+      summary: Create a new glass type
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GlassRequest'
+      responses:
+        '201':
+          description: Successful response
+          headers:
+            Location:
+              description: Absolute URL to new resource
+              schema:
+                type: string
+                example: 'http://localhost/api/glasses/1'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Glass'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
   /glasses/{id}:
     get:
       tags:
@@ -422,6 +485,38 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Glass'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - Glasses
+      summary: Update a specific glass type
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GlassRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Glass'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      tags:
+        - Glasses
+      summary: Delete specific glass type
+      responses:
+        '204':
+          description: Successful response
         '404':
           $ref: '#/components/responses/NotFound'
   /images:
@@ -504,8 +599,10 @@ paths:
         - Images
       summary: Remove a specific image
       responses:
-        '200':
+        '204':
           description: Successful response
+        '404':
+          $ref: '#/components/responses/NotFound'
   /ingredient-categories:
     get:
       tags:
@@ -674,6 +771,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/UserIngredient'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
     delete:
@@ -681,8 +780,10 @@ paths:
         - "User shelf"
       summary: Delete a single ingredient from user shelf
       responses:
-        '200':
-          description: Successful response
+        '204':
+          description: Successfully deleted ingredient
+        '404':
+          $ref: '#/components/responses/NotFound'
   /user:
     get:
       tags:
@@ -698,11 +799,28 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/User'
-  /shopping-lists/batch:
+  /shopping-list:
+    get:
+      tags:
+        - "Shopping list"
+      summary: "Show ingredients on your shopping list"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserShoppingList'
+  /shopping-list/batch-store:
     post:
       tags:
         - "Shopping list"
-      summary: "Add ingredients to a shopping list"
+      summary: "Add multiple ingredients to a shopping list"
       requestBody:
         content:
           application/json:
@@ -726,12 +844,11 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/UserShoppingList'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-    delete:
+  /shopping-list/batch-delete:
+    post:
       tags:
         - "Shopping list"
-      summary: "Delete ingredients from a shopping list"
+      summary: "Delete multiple ingredients from a shopping list"
       requestBody:
         content:
           application/json:
@@ -745,7 +862,23 @@ paths:
                     type: integer
       responses:
         '200':
-          description: Successful response
+          description: Successful response with deleted ingredient ids
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      success:
+                        type: boolean
+                        example: true
+                      ingredient_ids:
+                        type: array
+                        example: [1, 2, 3]
+                        items:
+                          type: integer
 components:
   securitySchemes:
     user_token:
@@ -928,6 +1061,18 @@ components:
           type: string
           nullable: true
           example: 'A category of base spirits'
+    GlassRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Cocktail glass
+        description:
+          type: string
+          nullable: true
+          example: 'A stemmed glass'
     Version:
       type: object
       properties:
@@ -1198,15 +1343,24 @@ components:
         user_id:
           type: integer
           example: 1
-        ingredient_id:
-          type: integer
-          example: 1
+        ingredient:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            slug:
+              type: string
+              example: 'ingredient-1'
+            name:
+              type: string
+              example: 'Ingredient 1'
     ValidationErrorResponse:
       type: object
       properties:
         message:
           type: string
-          example: "The cocktail name must be a string. (and 4 more errors)"
+          example: "The resource name must be a string. (and 4 more errors)"
         errors:
           type: object
           properties:

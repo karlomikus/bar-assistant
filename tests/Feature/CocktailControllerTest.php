@@ -145,11 +145,10 @@ class CocktailControllerTest extends TestCase
             ]
         ]);
 
-        $response->assertStatus(201);
-        $this->assertNotNull($response->headers->get('Location', null));
+        $response->assertSuccessful();
 
         $response->assertValidRequest();
-        $response->assertValidResponse(201);
+        $response->assertValidResponse(200);
     }
 
     public function test_cocktail_delete_response()
@@ -158,9 +157,9 @@ class CocktailControllerTest extends TestCase
 
         $response = $this->deleteJson('/api/cocktails/' . $cocktail->id);
 
-        $response->assertStatus(200);
+        $response->assertNoContent();
 
-        $response->assertValidResponse(200);
+        $response->assertValidResponse(204);
     }
 
     public function test_user_shelf_cocktails_response()

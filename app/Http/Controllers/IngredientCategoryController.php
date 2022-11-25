@@ -44,9 +44,7 @@ class IngredientCategoryController extends Controller
         $category->description = $request->post('description');
         $category->save();
 
-        return (new IngredientCategoryResource($category))
-            ->response()
-            ->setStatusCode(200);
+        return new IngredientCategoryResource($category);
     }
 
     public function delete(int $id)
