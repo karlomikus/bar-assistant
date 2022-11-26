@@ -1,3 +1,9 @@
+# v0.5.3
+- Update OpenApi spec and endpoints
+- Delete responses now return 204
+- Add contract testing
+- Update related ingredients
+
 # v0.5.2
 - Add response caching, disabled by default
 - Cache docker image steps in GH actions
