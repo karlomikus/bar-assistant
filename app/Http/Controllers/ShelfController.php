@@ -7,8 +7,6 @@ use Throwable;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\UserShoppingList;
-use Kami\Cocktail\Http\Resources\ErrorResource;
-use Kami\Cocktail\Http\Resources\SuccessActionResource;
 use Kami\Cocktail\Http\Resources\UserIngredientResource;
 use Kami\Cocktail\Http\Requests\UserIngredientBatchRequest;
 
@@ -64,9 +62,9 @@ class ShelfController extends Controller
                 ->where('ingredient_id', $ingredientId)
                 ->delete();
         } catch (Throwable $e) {
-            return new ErrorResource($e);
+            abort(500, $e->getMessage());
         }
 
-        return new SuccessActionResource((object) ['id' => $ingredientId]);
+        return response(null, 204);
     }
 }

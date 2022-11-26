@@ -49,7 +49,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::prefix('ingredients')->group(function() {
         Route::get('/', [IngredientController::class, 'index']);
         Route::post('/', [IngredientController::class, 'store']);
-        Route::get('/{id}', [IngredientController::class, 'show']);
+        Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show');
         Route::put('/{id}', [IngredientController::class, 'update']);
         Route::delete('/{id}', [IngredientController::class, 'delete']);
     });
@@ -57,7 +57,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::prefix('ingredient-categories')->group(function() {
         Route::get('/', [IngredientCategoryController::class, 'index']);
         Route::post('/', [IngredientCategoryController::class, 'store']);
-        Route::get('/{id}', [IngredientCategoryController::class, 'show']);
+        Route::get('/{id}', [IngredientCategoryController::class, 'show'])->name('ingredient-categories.show');
         Route::put('/{id}', [IngredientCategoryController::class, 'update']);
         Route::delete('/{id}', [IngredientCategoryController::class, 'delete']);
     });
@@ -81,14 +81,18 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::delete('/{id}', [ImageController::class, 'delete']);
     });
 
-    Route::prefix('shopping-lists')->group(function() {
-        Route::post('/batch', [ShoppingListController::class, 'batchStore']);
-        Route::delete('/batch', [ShoppingListController::class, 'batchDelete']);
+    Route::prefix('shopping-list')->group(function() {
+        Route::get('/', [ShoppingListController::class, 'index']);
+        Route::post('/batch-store', [ShoppingListController::class, 'batchStore']);
+        Route::post('/batch-delete', [ShoppingListController::class, 'batchDelete']);
     });
 
     Route::prefix('glasses')->group(function() {
         Route::get('/', [GlassController::class, 'index']);
-        Route::get('/{id}', [GlassController::class, 'show']);
+        Route::post('/', [GlassController::class, 'store']);
+        Route::get('/{id}', [GlassController::class, 'show'])->name('glasses.show');
+        Route::put('/{id}', [GlassController::class, 'update']);
+        Route::delete('/{id}', [GlassController::class, 'delete']);
     });
 
 });

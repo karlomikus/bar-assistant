@@ -50,8 +50,8 @@ class AuthController extends Controller
         $user->search_api_key = SearchActions::getPublicApiKey();
         $user->save();
 
-        return new UserResource(
+        return (new UserResource(
             $user->load('favorites', 'shelfIngredients', 'shoppingLists')
-        );
+        ))->response()->setStatusCode(200);
     }
 }

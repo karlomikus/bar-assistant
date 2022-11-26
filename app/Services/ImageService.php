@@ -13,7 +13,7 @@ class ImageService
     /**
      * Uploads and saves an image with filepath
      *
-     * @param array $requestImages
+     * @param array<mixed> $requestImages
      * @return array<\Kami\Cocktail\Models\Image>
      * @throws ImageUploadException
      */

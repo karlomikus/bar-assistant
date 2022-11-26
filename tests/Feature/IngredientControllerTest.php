@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\IngredientCategory;
@@ -17,6 +19,8 @@ class IngredientControllerTest extends TestCase
     {
         parent::setUp();
 
+        Spectator::using('open-api-spec.yml');
+
         $this->actingAs(
             User::factory()->create()
         );
@@ -30,6 +34,8 @@ class IngredientControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonCount(5, 'data');
+
+        $response->assertValidResponse();
     }
 
     public function test_ingredient_show_response()
@@ -50,6 +56,22 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonPath('data.name', 'Test ingredient');
         $response->assertJsonPath('data.strength', 45.5);
         $response->assertJsonPath('data.description', 'Test');
+
+        $response->assertValidResponse();
+    }
+
+    public function test_ingredient_show_not_found_response()
+    {
+        $response = $this->getJson('/api/ingredients/404');
+
+        $response->assertStatus(404);
+        $response->assertJson(fn (AssertableJson $json) =>
+            $json
+                ->has('message')
+                ->etc()
+        );
+
+        $response->assertValidResponse(404);
     }
 
     public function test_ingredient_store_response()
@@ -78,6 +100,26 @@ class IngredientControllerTest extends TestCase
                 ->where('data.ingredient_category_id', $ingCat->id)
                 ->etc()
         );
+
+        $response->assertValidRequest();
+        $response->assertValidResponse(201);
+    }
+
+    public function test_ingredient_store_fails_validation_response()
+    {
+        $response = $this->postJson('/api/ingredients', [
+            'strength' => 12.2,
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJson(fn (AssertableJson $json) =>
+            $json
+                ->has('message')
+                ->has('errors')
+                ->etc()
+        );
+
+        $response->assertValidResponse(422);
     }
 
     public function test_ingredient_update_response()
@@ -100,7 +142,7 @@ class IngredientControllerTest extends TestCase
             'parent_ingredient_id' => null
         ]);
 
-        $response->assertStatus(200);
+        $response->assertSuccessful();
         $response->assertJson(fn (AssertableJson $json) =>
             $json
                 ->has('data.id')
@@ -109,6 +151,35 @@ class IngredientControllerTest extends TestCase
                 ->where('data.description', 'Description text')
                 ->etc()
         );
+
+        $response->assertValidRequest();
+        $response->assertValidResponse(200);
+    }
+
+    public function test_ingredient_update_fails_validation_response()
+    {
+
+        $ing = Ingredient::factory()
+            ->state([
+                'name' => 'Test ingredient',
+                'strength' => 45.5,
+                'description' => 'Test'
+            ])
+            ->create();
+
+        $response = $this->putJson('/api/ingredients/' . $ing->id, [
+            'strength' => 12.2,
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJson(fn (AssertableJson $json) =>
+            $json
+                ->has('message')
+                ->has('errors')
+                ->etc()
+        );
+
+        $response->assertValidResponse(422);
     }
 
     public function test_ingredient_delete_response()
@@ -123,7 +194,7 @@ class IngredientControllerTest extends TestCase
 
         $response = $this->deleteJson('/api/ingredients/' . $ing->id);
 
-        $response->assertStatus(200);
+        $response->assertNoContent();
         $this->assertDatabaseMissing('ingredients', ['id' => $ing->id]);
     }
 }

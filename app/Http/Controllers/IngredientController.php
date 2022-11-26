@@ -55,7 +55,10 @@ class IngredientController extends Controller
             $request->post('images', [])
         );
 
-        return new IngredientResource($ingredient);
+        return (new IngredientResource($ingredient))
+            ->response()
+            ->setStatusCode(201)
+            ->header('Location', route('ingredients.show', $ingredient->id));
     }
 
     public function update(IngredientService $ingredientService, IngredientRequest $request, int $id)
@@ -80,6 +83,6 @@ class IngredientController extends Controller
     {
         Ingredient::findOrFail($id)->delete();
 
-        return new SuccessActionResource((object) ['id' => $id]);
+        return response(null, 204);
     }
 }

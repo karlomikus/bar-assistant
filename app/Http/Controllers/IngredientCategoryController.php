@@ -33,7 +33,8 @@ class IngredientCategoryController extends Controller
 
         return (new IngredientCategoryResource($category))
             ->response()
-            ->setStatusCode(201);
+            ->setStatusCode(201)
+            ->header('Location', route('ingredient-categories.show', $category->id));
     }
 
     public function update(IngredientCategoryRequest $request, int $id)
@@ -43,15 +44,13 @@ class IngredientCategoryController extends Controller
         $category->description = $request->post('description');
         $category->save();
 
-        return (new IngredientCategoryResource($category))
-            ->response()
-            ->setStatusCode(201);
+        return new IngredientCategoryResource($category);
     }
 
     public function delete(int $id)
     {
         IngredientCategory::findOrFail($id)->delete();
-        
-        return new SuccessActionResource((object) ['id' => $id]);
+
+        return response(null, 204);
     }
 }

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
@@ -16,6 +17,8 @@ class CocktailControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Spectator::using('open-api-spec.yml');
 
         $this->actingAs(
             User::factory()->create()
@@ -37,6 +40,9 @@ class CocktailControllerTest extends TestCase
                 ->where('data.name', 'Test 1')
                 ->etc()
         );
+
+        $response->assertValidRequest();
+        $response->assertValidResponse();
     }
 
     public function test_cocktail_show_using_slug_response()
@@ -46,6 +52,9 @@ class CocktailControllerTest extends TestCase
         $response = $this->getJson('/api/cocktails/' . $cocktail->slug);
 
         $response->assertStatus(200);
+
+        $response->assertValidRequest();
+        $response->assertValidResponse();
     }
 
     public function test_cocktail_create_response()
@@ -101,6 +110,9 @@ class CocktailControllerTest extends TestCase
                 })
                 ->etc()
         );
+
+        $response->assertValidRequest();
+        $response->assertValidResponse(201);
     }
 
     public function test_cocktail_update_response()
@@ -133,8 +145,10 @@ class CocktailControllerTest extends TestCase
             ]
         ]);
 
-        $response->assertStatus(201);
-        $this->assertNotNull($response->headers->get('Location', null));
+        $response->assertSuccessful();
+
+        $response->assertValidRequest();
+        $response->assertValidResponse(200);
     }
 
     public function test_cocktail_delete_response()
@@ -143,7 +157,9 @@ class CocktailControllerTest extends TestCase
 
         $response = $this->deleteJson('/api/cocktails/' . $cocktail->id);
 
-        $response->assertStatus(200);
+        $response->assertNoContent();
+
+        $response->assertValidResponse(204);
     }
 
     public function test_user_shelf_cocktails_response()
@@ -151,6 +167,8 @@ class CocktailControllerTest extends TestCase
         $response = $this->getJson('/api/cocktails/user-shelf');
 
         $response->assertStatus(200);
+
+        $response->assertValidResponse(200);
     }
 
     public function test_user_favorites_cocktails_response()
@@ -158,5 +176,7 @@ class CocktailControllerTest extends TestCase
         $response = $this->getJson('/api/cocktails/user-favorites');
 
         $response->assertStatus(200);
+
+        $response->assertValidResponse(200);
     }
 }

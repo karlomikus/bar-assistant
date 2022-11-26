@@ -96,7 +96,7 @@ class CocktailController extends Controller
     /**
      * Update a single cocktail by id
      */
-    public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): JsonResponse
+    public function update(CocktailService $cocktailService, CocktailRequest $request, int $id)
     {
         try {
             $cocktail = $cocktailService->updateCocktail(
@@ -118,10 +118,7 @@ class CocktailController extends Controller
 
         $cocktail->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes');
 
-        return (new CocktailResource($cocktail))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('cocktails.show', $cocktail->id));
+        return new CocktailResource($cocktail);
     }
 
     /**
@@ -131,7 +128,7 @@ class CocktailController extends Controller
     {
         Cocktail::findOrFail($id)->delete();
 
-        return new SuccessActionResource((object) ['id' => $id]);
+        return response(null, 204);
     }
 
     /**

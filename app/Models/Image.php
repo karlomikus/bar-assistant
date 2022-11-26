@@ -12,7 +12,7 @@ class Image extends Model
 {
     use HasFactory;
 
-    public function delete()
+    public function delete(): ?bool
     {
         $disk = Storage::disk('app_images');
 
@@ -20,7 +20,7 @@ class Image extends Model
             $disk->delete($this->file_path);
         }
 
-        parent::delete();
+        return parent::delete();
     }
 
     public function getImageUrl(): ?string

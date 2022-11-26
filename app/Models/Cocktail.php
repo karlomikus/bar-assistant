@@ -19,7 +19,7 @@ class Cocktail extends Model implements SiteSearchable
 
     private $appImagesDir = 'cocktails/';
 
-    protected static function booted()
+    protected static function booted(): void
     {
         static::saved(function($cocktail) {
             SearchActions::updateSearchIndex($cocktail);
@@ -57,7 +57,7 @@ class Cocktail extends Model implements SiteSearchable
         return $this->belongsToMany(Tag::class);
     }
 
-    public function delete()
+    public function delete(): ?bool
     {
         $this->deleteImages();
 
@@ -90,7 +90,8 @@ class Cocktail extends Model implements SiteSearchable
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'user_id' => $this->user_id,
             'tags' => $this->tags->pluck('name'),
-            'date' => $this->updated_at->format('Y-m-d H:i:s')
+            'date' => $this->updated_at->format('Y-m-d H:i:s'),
+            'glass' => $this->glass->name ?? null
         ];
     }
 }

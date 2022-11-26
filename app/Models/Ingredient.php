@@ -7,6 +7,7 @@ use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Kami\Cocktail\SearchActions;
 use Spatie\Sluggable\SlugOptions;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,7 +31,7 @@ class Ingredient extends Model implements SiteSearchable
         'parent_ingredient_id',
     ];
 
-    protected static function booted()
+    protected static function booted(): void
     {
         static::saved(function($ing) {
             SearchActions::updateSearchIndex($ing);
@@ -73,7 +74,7 @@ class Ingredient extends Model implements SiteSearchable
         return $this->belongsTo(Ingredient::class, 'parent_ingredient_id', 'id');
     }
 
-    public function cocktailsAsSubstituteIngredient()
+    public function cocktailsAsSubstituteIngredient(): Collection
     {
         return $this->cocktailIngredientSubstitutes->pluck('cocktailIngredient.cocktail');
     }
@@ -83,7 +84,7 @@ class Ingredient extends Model implements SiteSearchable
         return $this->hasMany(CocktailIngredientSubstitute::class);
     }
 
-    public function getAllRelatedIngredients()
+    public function getAllRelatedIngredients(): Collection
     {
         // This creates "Related" group of the ingredients "on-the-fly"
         if ($this->parent_ingredient_id !== null) {
@@ -97,7 +98,7 @@ class Ingredient extends Model implements SiteSearchable
         return $this->varieties;
     }
 
-    public function delete()
+    public function delete(): ?bool
     {
         $this->deleteImages();
 

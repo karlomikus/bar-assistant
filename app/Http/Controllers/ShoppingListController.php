@@ -6,12 +6,20 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\UserShoppingList;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
 use Kami\Cocktail\Http\Resources\UserShoppingListResource;
 
 class ShoppingListController extends Controller
 {
-    public function batchStore(Request $request)
+    public function index(Request $request): JsonResource
+    {
+        return UserShoppingListResource::collection(
+            $request->user()->shoppingLists->load('ingredient')
+        );
+    }
+
+    public function batchStore(Request $request): JsonResource
     {
         $ingredientIds = $request->post('ingredient_ids');
 
@@ -28,7 +36,7 @@ class ShoppingListController extends Controller
         return UserShoppingListResource::collection($models);
     }
 
-    public function batchDelete(Request $request)
+    public function batchDelete(Request $request): JsonResource
     {
         $ingredientIds = $request->post('ingredient_ids');
 

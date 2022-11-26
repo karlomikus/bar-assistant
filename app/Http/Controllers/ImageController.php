@@ -37,6 +37,6 @@ class ImageController extends Controller
     {
         Image::findOrFail($id)->delete();
 
-        return new SuccessActionResource((object) ['id' => $id]);
+        return response(null, 204);
     }
 }
