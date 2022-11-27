@@ -33,7 +33,7 @@ class ShelfController extends Controller
             $shelfIngredient = $request->user()->shelfIngredients->where('ingredient_id', $ingredientId)->first();
         }
 
-        return new UserIngredientResource($shelfIngredient);
+        return (new UserIngredientResource($shelfIngredient))->response()->setStatusCode(200);
     }
 
     public function batch(UserIngredientBatchRequest $request)

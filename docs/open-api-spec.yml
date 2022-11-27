@@ -749,10 +749,10 @@ paths:
                       $ref: '#/components/schemas/UserIngredient'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
-  /shelf/{ingredient_id}:
+  /shelf/{ingredientId}:
     parameters:
       - in: path
-        name: ingredient_id
+        name: ingredientId
         description: 'Database id of the ingredient'
         schema:
           type: integer

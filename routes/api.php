@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::prefix('shelf')->group(function() {
         Route::get('/', [ShelfController::class, 'index']);
-        Route::post('/batch', [ShelfController::class, 'batch']);
+        Route::post('/', [ShelfController::class, 'batch']);
         Route::post('/{ingredientId}', [ShelfController::class, 'save']);
         Route::delete('/{ingredientId}', [ShelfController::class, 'delete']);
     });
