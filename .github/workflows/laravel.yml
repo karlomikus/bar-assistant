@@ -30,6 +30,9 @@ jobs:
     - name: Generate key
       run: php artisan key:generate
 
+    - name: Check coding style
+      run: vendor/bin/ecs check
+
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       run: vendor/bin/phpunit tests/
 

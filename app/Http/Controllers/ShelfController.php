@@ -1,14 +1,15 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Throwable;
 use Illuminate\Http\Request;
+use Kami\Cocktail\Http\Requests\UserIngredientBatchRequest;
+use Kami\Cocktail\Http\Resources\UserIngredientResource;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\UserShoppingList;
-use Kami\Cocktail\Http\Resources\UserIngredientResource;
-use Kami\Cocktail\Http\Requests\UserIngredientBatchRequest;
+use Throwable;
 
 class ShelfController extends Controller
 {
@@ -33,7 +34,7 @@ class ShelfController extends Controller
             $shelfIngredient = $request->user()->shelfIngredients->where('ingredient_id', $ingredientId)->first();
         }
 
-        return new UserIngredientResource($shelfIngredient);
+        return (new UserIngredientResource($shelfIngredient))->response()->setStatusCode(200);
     }
 
     public function batch(UserIngredientBatchRequest $request)

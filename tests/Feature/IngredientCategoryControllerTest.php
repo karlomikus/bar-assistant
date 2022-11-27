@@ -1,14 +1,15 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Spectator\Spectator;
-use Kami\Cocktail\Models\User;
-use Kami\Cocktail\Models\IngredientCategory;
-use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\Fluent\AssertableJson;
+use Kami\Cocktail\Models\IngredientCategory;
+use Kami\Cocktail\Models\User;
+use Spectator\Spectator;
+use Tests\TestCase;
 
 class IngredientCategoryControllerTest extends TestCase
 {
@@ -32,7 +33,8 @@ class IngredientCategoryControllerTest extends TestCase
         $response = $this->getJson('/api/ingredient-categories');
 
         $response->assertStatus(200);
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('data', 10)
                 ->etc()
@@ -51,7 +53,8 @@ class IngredientCategoryControllerTest extends TestCase
         $response = $this->getJson('/api/ingredient-categories/' . $cat->id);
 
         $response->assertStatus(200);
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('data')
                 ->has('data.id')
@@ -72,7 +75,8 @@ class IngredientCategoryControllerTest extends TestCase
 
         $response->assertCreated();
         $this->assertNotEmpty($response->headers->get('Location'));
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('data')
                 ->has('data.id')
@@ -98,7 +102,8 @@ class IngredientCategoryControllerTest extends TestCase
         ]);
 
         $response->assertSuccessful();
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('data')
                 ->where('data.id', $cat->id)

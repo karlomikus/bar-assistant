@@ -1,13 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
-use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\BrowserKit\HttpBrowser;
-use Symfony\Component\HttpKernel\HttpCache\Store;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\CachingHttpClient;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpKernel\HttpCache\Store;
 
 class Scraper
 {
@@ -15,8 +16,7 @@ class Scraper
 
     public function __construct(
         private readonly string $url,
-    )
-    {
+    ) {
         $store = new Store(storage_path('http_cache/'));
         $client = HttpClient::create();
         $client = new CachingHttpClient($client, $store);
@@ -82,7 +82,7 @@ class Scraper
             }
 
             $unit = $node->filter('.amount .unit')->text();
-            $amount = iconv('','US//TRANSLIT', str_replace($unit, '', $node->filter('.amount')->text()));
+            $amount = iconv('', 'US//TRANSLIT', str_replace($unit, '', $node->filter('.amount')->text()));
 
             if ($unit === 'oz') {
                 $numbers = explode('/', $amount);

@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Spectator\Spectator;
-use Kami\Cocktail\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
-use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Models\User;
+use Spectator\Spectator;
+use Tests\TestCase;
 
 class CocktailControllerTest extends TestCase
 {
@@ -34,7 +34,8 @@ class CocktailControllerTest extends TestCase
         $response = $this->getJson('/api/cocktails/' . $cocktail->id);
 
         $response->assertStatus(200);
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('data.id')
                 ->where('data.name', 'Test 1')
@@ -97,7 +98,8 @@ class CocktailControllerTest extends TestCase
 
         $response->assertStatus(201);
         $this->assertNotNull($response->headers->get('Location', null));
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('data.id')
                 ->where('data.name', 'Cocktail name')

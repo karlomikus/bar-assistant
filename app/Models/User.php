@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
@@ -6,6 +7,7 @@ namespace Kami\Cocktail\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -47,6 +49,16 @@ class User extends Authenticatable
     public function shelfIngredients(): HasMany
     {
         return $this->hasMany(UserIngredient::class);
+    }
+
+    public function ingredients(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Ingredient::class,
+            UserIngredient::class,
+            'user_id',
+            'id',
+        );
     }
 
     public function favorites(): HasMany

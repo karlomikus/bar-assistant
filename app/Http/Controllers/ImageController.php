@@ -1,14 +1,15 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Kami\Cocktail\Models\Image;
-use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Http\Requests\ImageRequest;
 use Kami\Cocktail\Http\Resources\ImageResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
+use Kami\Cocktail\Models\Image;
+use Kami\Cocktail\Services\ImageService;
 
 class ImageController extends Controller
 {

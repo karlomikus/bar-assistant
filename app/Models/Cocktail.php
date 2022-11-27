@@ -1,17 +1,18 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Kami\Cocktail\SearchActions;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
-use Kami\Cocktail\SearchActions;
 use Spatie\Sluggable\SlugOptions;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Cocktail extends Model implements SiteSearchable
 {
@@ -21,16 +22,16 @@ class Cocktail extends Model implements SiteSearchable
 
     protected static function booted(): void
     {
-        static::saved(function($cocktail) {
+        static::saved(function ($cocktail) {
             SearchActions::updateSearchIndex($cocktail);
         });
 
-        static::deleted(function($cocktail) {
+        static::deleted(function ($cocktail) {
             SearchActions::deleteSearchIndex($cocktail);
         });
     }
 
-    public function getSlugOptions() : SlugOptions
+    public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('name')

@@ -1,16 +1,17 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Throwable;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Kami\Cocktail\Models\Cocktail;
-use Kami\Cocktail\Services\CocktailService;
+use Illuminate\Http\Request;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
+use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\Services\CocktailService;
+use Throwable;
 
 class CocktailController extends Controller
 {

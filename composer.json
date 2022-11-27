@@ -31,7 +31,8 @@
         "phpunit/phpunit": "^9.5.10",
         "spatie/laravel-ignition": "^1.0",
         "symfony/browser-kit": "^6.1",
-        "symfony/http-client": "^6.1"
+        "symfony/http-client": "^6.1",
+        "symplify/easy-coding-standard": "^11.1"
     },
     "autoload": {
         "psr-4": {
@@ -59,7 +60,8 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ],
-        "static": "vendor/bin/phpstan analyse"
+        "static": "vendor/bin/phpstan analyse",
+        "fix-style": "vendor/bin/ecs check --fix"
     },
     "extra": {
         "laravel": {

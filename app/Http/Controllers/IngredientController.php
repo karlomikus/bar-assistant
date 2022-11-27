@@ -1,14 +1,15 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Http\Requests\IngredientRequest;
 use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
+use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Services\IngredientService;
 
 class IngredientController extends Controller
 {

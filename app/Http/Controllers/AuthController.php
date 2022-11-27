@@ -1,15 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Kami\Cocktail\Models\User;
-use Kami\Cocktail\SearchActions;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Kami\Cocktail\Http\Resources\UserResource;
 use Kami\Cocktail\Http\Requests\RegisterRequest;
+use Kami\Cocktail\Http\Resources\UserResource;
+use Kami\Cocktail\Models\User;
+use Kami\Cocktail\SearchActions;
 
 class AuthController extends Controller
 {

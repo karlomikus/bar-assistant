@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Kami\Cocktail\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Models\User;
+use Tests\TestCase;
 
 class ImageControllerTest extends TestCase
 {
@@ -34,8 +34,8 @@ class ImageControllerTest extends TestCase
             ],
         ]);
 
-        $response->assertJson(function(AssertableJson $json) {
-            $json->has('data', 1, function($json) {
+        $response->assertJson(function (AssertableJson $json) {
+            $json->has('data', 1, function ($json) {
                 $json->has('id')
                     ->has('file_path')
                     ->where('copyright', 'Made with test')
@@ -68,8 +68,8 @@ class ImageControllerTest extends TestCase
             ],
         ]);
 
-        $response->assertJson(function(AssertableJson $json) {
-            $json->has('data', 3, function($json) {
+        $response->assertJson(function (AssertableJson $json) {
+            $json->has('data', 3, function ($json) {
                 $json->has('id')
                     ->has('file_path')
                     ->has('copyright')
