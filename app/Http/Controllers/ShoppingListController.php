@@ -30,7 +30,7 @@ class ShoppingListController extends Controller
             $usl->ingredient_id = $ingId;
             try {
                 $models[] = $request->user()->shoppingLists()->save($usl);
-            } catch (Throwable $e) {
+            } catch (Throwable) {
             }
         }
 

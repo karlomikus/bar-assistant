@@ -1,15 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Spectator\Spectator;
-use Kami\Cocktail\Models\User;
-use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\Models\UserIngredient;
-use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\Fluent\AssertableJson;
+use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\UserIngredient;
+use Spectator\Spectator;
+use Tests\TestCase;
 
 class ShelfControllerTest extends TestCase
 {
@@ -38,7 +39,8 @@ class ShelfControllerTest extends TestCase
         $response = $this->getJson('/api/shelf');
 
         $response->assertSuccessful();
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('data', 5)
                 ->etc()
@@ -56,7 +58,8 @@ class ShelfControllerTest extends TestCase
         ]);
 
         $response->assertSuccessful();
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('data', 2)
                 ->etc()
@@ -72,7 +75,8 @@ class ShelfControllerTest extends TestCase
         $response = $this->postJson('/api/shelf/' . $newIngredient->id);
 
         $response->assertOk();
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('data.id')
                 ->has('data.user_id')

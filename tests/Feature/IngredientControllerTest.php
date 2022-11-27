@@ -1,15 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Spectator\Spectator;
-use Kami\Cocktail\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\IngredientCategory;
-use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Models\User;
+use Spectator\Spectator;
+use Tests\TestCase;
 
 class IngredientControllerTest extends TestCase
 {
@@ -65,7 +66,8 @@ class IngredientControllerTest extends TestCase
         $response = $this->getJson('/api/ingredients/404');
 
         $response->assertStatus(404);
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('message')
                 ->etc()
@@ -89,7 +91,8 @@ class IngredientControllerTest extends TestCase
         ]);
 
         $response->assertStatus(201);
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('data.id')
                 ->where('data.name', 'Ingredient name')
@@ -112,7 +115,8 @@ class IngredientControllerTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('message')
                 ->has('errors')
@@ -143,7 +147,8 @@ class IngredientControllerTest extends TestCase
         ]);
 
         $response->assertSuccessful();
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('data.id')
                 ->where('data.name', 'Ingredient name')
@@ -158,7 +163,6 @@ class IngredientControllerTest extends TestCase
 
     public function test_ingredient_update_fails_validation_response()
     {
-
         $ing = Ingredient::factory()
             ->state([
                 'name' => 'Test ingredient',
@@ -172,7 +176,8 @@ class IngredientControllerTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('message')
                 ->has('errors')

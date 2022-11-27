@@ -1,13 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Spectator\Spectator;
-use Kami\Cocktail\Models\User;
-use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\Fluent\AssertableJson;
+use Kami\Cocktail\Models\User;
+use Spectator\Spectator;
+use Tests\TestCase;
 
 class UserControllerTest extends TestCase
 {
@@ -28,7 +29,8 @@ class UserControllerTest extends TestCase
         $response = $this->getJson('/api/user');
 
         $response->assertOk();
-        $response->assertJson(fn (AssertableJson $json) =>
+        $response->assertJson(
+            fn (AssertableJson $json) =>
             $json
                 ->has('data')
                 ->where('data.id', $user->id)
