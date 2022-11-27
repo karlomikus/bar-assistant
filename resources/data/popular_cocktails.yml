@@ -682,3 +682,63 @@
             units: teaspoon
             name: 'Grenadine Syrup'
             optional: false
+-
+    name: Štrukani Pelin
+    description: Štrukani pelinkovac (or štrukani pelin) is a somewhat novel Croatian drink that combines pelinkovac (traditional herbal liqueur) with lemon juice. In its basic form, the drink is made with pelinkovac that is poured into an ice-filled glass.
+    instructions: |-
+        1. A lemon slice is then squeezed directly into the glass and mixed.
+
+        The amount of lemon juice can vary, sometimes resulting in a drink with equal amounts of both ingredients. More elaborate versions often add orange juice, citrus zest, or spices.
+    garnish: Lemon wedge
+    source: 'https://www.journal.hr/lifestyle/gastro/antique-pelinkovac-strukani-pelin-jesenski-koktel-cool-pice/'
+    image_copyright: Tasteatlas
+    tags: []
+    glass: Lowball
+    ingredients:
+        -
+            amount: 30
+            units: ml
+            name: Pelinkovac
+            optional: false
+        -
+            amount: 15
+            units: ml
+            name: 'Lemon Juice'
+            optional: false
+        -
+            amount: 50
+            units: ml
+            name: 'Tonic'
+            optional: true
+-
+    name: Antikovac
+    description: null
+    instructions: |-
+        1. Shake all the ingredients
+        2. Strain into a lowball glass
+    garnish: Orange zest
+    source: 'https://www.journal.hr/lifestyle/gastro/antique-pelinkovac-strukani-pelin-jesenski-koktel-cool-pice/'
+    image_copyright: Tasteatlas
+    tags: []
+    glass: Lowball
+    ingredients:
+        -
+            amount: 50
+            units: ml
+            name: Pelinkovac
+            optional: false
+        -
+            amount: 20
+            units: ml
+            name: 'Orgeat syrup'
+            optional: false
+        -
+            amount: 10
+            units: ml
+            name: 'Lemon juice'
+            optional: false
+        -
+            amount: 50
+            units: ml
+            name: 'Orange juice'
+            optional: false
