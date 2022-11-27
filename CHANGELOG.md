@@ -1,3 +1,7 @@
+# v1.0.0
+- Cover all endpoints with tests
+- Add coding style
+
 # v0.5.3
 - Update OpenApi spec and endpoints
 - Delete responses now return 204
