@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
-use Illuminate\Support\Str;
-use Kami\Cocktail\Models\Image;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 use Kami\Cocktail\Exceptions\ImageUploadException;
+use Kami\Cocktail\Models\Image;
 
 class ImageService
 {

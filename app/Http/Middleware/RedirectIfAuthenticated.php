@@ -2,10 +2,10 @@
 
 namespace Kami\Cocktail\Http\Middleware;
 
-use Kami\Cocktail\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Kami\Cocktail\Providers\RouteServiceProvider;
 
 class RedirectIfAuthenticated
 {

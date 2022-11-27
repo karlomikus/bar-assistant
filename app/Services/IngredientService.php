@@ -1,13 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
-use Throwable;
-use Kami\Cocktail\Models\Image;
-use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Exceptions\ImageException;
 use Kami\Cocktail\Exceptions\IngredientException;
+use Kami\Cocktail\Models\Image;
+use Kami\Cocktail\Models\Ingredient;
+use Throwable;
 
 class IngredientService
 {
@@ -35,8 +36,7 @@ class IngredientService
         ?string $color = null,
         ?int $parentIngredientId = null,
         array $images = []
-    ): Ingredient
-    {
+    ): Ingredient {
         try {
             $ingredient = new Ingredient();
             $ingredient->name = $name;
@@ -95,8 +95,7 @@ class IngredientService
         ?string $color = null,
         ?int $parentIngredientId = null,
         array $images = []
-    ): Ingredient
-    {
+    ): Ingredient {
         try {
             $ingredient = Ingredient::findOrFail($id);
             $ingredient->name = $name;

@@ -2,23 +2,23 @@
 
 namespace Kami\Cocktail\Console\Commands;
 
-use Throwable;
-use Illuminate\Support\Str;
-use Kami\Cocktail\Models\Tag;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\Models\CocktailIngredient;
+use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 use Kami\Cocktail\Models\Image;
+use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\IngredientCategory;
+use Kami\Cocktail\Models\Tag;
 use Kami\Cocktail\SearchActions;
 use Symfony\Component\Yaml\Yaml;
-use Illuminate\Support\Facades\DB;
-use Kami\Cocktail\Models\Cocktail;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Hash;
-use Kami\Cocktail\Models\Ingredient;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Artisan;
-use Kami\Cocktail\Models\CocktailIngredient;
-use Kami\Cocktail\Models\IngredientCategory;
-use Kami\Cocktail\Models\CocktailIngredientSubstitute;
+use Throwable;
 
 class OpenBar extends Command
 {
@@ -416,7 +416,7 @@ class OpenBar extends Command
 
                 $cocktail->refresh();
                 $cocktail->save();
-            } catch(Throwable $e) {
+            } catch (Throwable $e) {
                 DB::rollBack();
             }
             DB::commit();

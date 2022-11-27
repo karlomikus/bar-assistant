@@ -1,14 +1,15 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Throwable;
 use Illuminate\Http\Request;
-use Kami\Cocktail\Models\UserShoppingList;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
 use Kami\Cocktail\Http\Resources\UserShoppingListResource;
+use Kami\Cocktail\Models\UserShoppingList;
+use Throwable;
 
 class ShoppingListController extends Controller
 {

@@ -1,20 +1,21 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
-use Throwable;
-use Kami\Cocktail\Models\Tag;
-use Illuminate\Log\LogManager;
-use Kami\Cocktail\Models\User;
-use Kami\Cocktail\Models\Image;
-use Illuminate\Support\Collection;
-use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Log\LogManager;
+use Illuminate\Support\Collection;
+use Kami\Cocktail\Exceptions\CocktailException;
+use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
-use Kami\Cocktail\Exceptions\CocktailException;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
+use Kami\Cocktail\Models\Image;
+use Kami\Cocktail\Models\Tag;
+use Kami\Cocktail\Models\User;
+use Throwable;
 
 class CocktailService
 {
@@ -50,8 +51,7 @@ class CocktailService
         array $images = [],
         array $tags = [],
         ?int $glassId = null
-    ): Cocktail
-    {
+    ): Cocktail {
         $this->db->beginTransaction();
 
         try {
@@ -65,7 +65,7 @@ class CocktailService
             $cocktail->glass_id = $glassId;
             $cocktail->save();
 
-            foreach($ingredients as $ingredient) {
+            foreach ($ingredients as $ingredient) {
                 $cIngredient = new CocktailIngredient();
                 $cIngredient->ingredient_id = $ingredient['ingredient_id'];
                 $cIngredient->amount = $ingredient['amount'];
@@ -84,7 +84,7 @@ class CocktailService
             }
 
             $dbTags = [];
-            foreach($tags as $tagName) {
+            foreach ($tags as $tagName) {
                 $tag = Tag::firstOrNew([
                     'name' => trim($tagName),
                 ]);
@@ -93,7 +93,6 @@ class CocktailService
             }
 
             $cocktail->tags()->attach($dbTags);
-
         } catch (Throwable $e) {
             $this->log->error('[COCKTAIL_SERVICE] ' . $e->getMessage());
             $this->db->rollBack();
@@ -152,8 +151,7 @@ class CocktailService
         array $images = [],
         array $tags = [],
         ?int $glassId = null,
-    ): Cocktail
-    {
+    ): Cocktail {
         $this->db->beginTransaction();
 
         try {
@@ -171,7 +169,7 @@ class CocktailService
 
             // TODO: Implement upsert and delete
             $cocktail->ingredients()->delete();
-            foreach($ingredients as $ingredient) {
+            foreach ($ingredients as $ingredient) {
                 $cIngredient = new CocktailIngredient();
                 $cIngredient->ingredient_id = $ingredient['ingredient_id'];
                 $cIngredient->amount = $ingredient['amount'];
@@ -191,7 +189,7 @@ class CocktailService
             }
 
             $dbTags = [];
-            foreach($tags as $tagName) {
+            foreach ($tags as $tagName) {
                 $tag = Tag::firstOrNew([
                     'name' => trim($tagName),
                 ]);
@@ -200,7 +198,6 @@ class CocktailService
             }
 
             $cocktail->tags()->sync($dbTags);
-
         } catch (Throwable $e) {
             $this->log->error('[COCKTAIL_SERVICE] ' . $e->getMessage());
             $this->db->rollBack();

@@ -1,14 +1,15 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Illuminate\Http\Response;
-use Kami\Cocktail\Models\Glass;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Response;
 use Kami\Cocktail\Http\Requests\GlassRequest;
 use Kami\Cocktail\Http\Resources\GlassResource;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Models\Glass;
 
 class GlassController extends Controller
 {

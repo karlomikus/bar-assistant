@@ -2,14 +2,14 @@
 
 namespace Kami\Cocktail\Console\Commands;
 
-use Throwable;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\BrowserKit\HttpBrowser;
-use Symfony\Component\HttpKernel\HttpCache\Store;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\CachingHttpClient;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpKernel\HttpCache\Store;
+use Throwable;
 
 class ScrapIBACocktails extends Command
 {

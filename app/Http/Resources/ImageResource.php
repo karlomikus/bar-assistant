@@ -1,10 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @mixin \Kami\Cocktail\Models\Image
