@@ -6,7 +6,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Spectator\Spectator;
 
-class HealthControllerTest extends TestCase
+class ServerControllerTest extends TestCase
 {
     public function setUp(): void
     {
