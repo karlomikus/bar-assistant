@@ -19,7 +19,7 @@ class ShelfControllerTest extends TestCase
     {
         parent::setUp();
 
-        // Spectator::using('open-api-spec.yml');
+        Spectator::using('open-api-spec.yml');
 
         $ingredients = Ingredient::factory()->count(5)->create();
         $user = User::factory()->create();
