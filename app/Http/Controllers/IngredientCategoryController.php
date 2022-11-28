@@ -4,28 +4,30 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\Models\IngredientCategory;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\IngredientCategoryRequest;
 use Kami\Cocktail\Http\Resources\IngredientCategoryResource;
-use Kami\Cocktail\Http\Resources\SuccessActionResource;
-use Kami\Cocktail\Models\IngredientCategory;
 
 class IngredientCategoryController extends Controller
 {
-    public function index()
+    public function index(): JsonResource
     {
         $categories = IngredientCategory::all();
 
         return IngredientCategoryResource::collection($categories);
     }
 
-    public function show(int $id)
+    public function show(int $id): JsonResource
     {
         $category = IngredientCategory::findOrFail($id);
 
         return new IngredientCategoryResource($category);
     }
 
-    public function store(IngredientCategoryRequest $request)
+    public function store(IngredientCategoryRequest $request): JsonResponse
     {
         $category = new IngredientCategory();
         $category->name = $request->post('name');
@@ -38,7 +40,7 @@ class IngredientCategoryController extends Controller
             ->header('Location', route('ingredient-categories.show', $category->id));
     }
 
-    public function update(IngredientCategoryRequest $request, int $id)
+    public function update(IngredientCategoryRequest $request, int $id): JsonResource
     {
         $category = IngredientCategory::findOrFail($id);
         $category->name = $request->post('name');
@@ -48,7 +50,7 @@ class IngredientCategoryController extends Controller
         return new IngredientCategoryResource($category);
     }
 
-    public function delete(int $id)
+    public function delete(int $id): Response
     {
         IngredientCategory::findOrFail($id)->delete();
 

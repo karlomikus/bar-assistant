@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
-use Kami\Cocktail\Exceptions\ImageException;
-use Kami\Cocktail\Exceptions\IngredientException;
+use Throwable;
 use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Ingredient;
-use Throwable;
+use Kami\Cocktail\Exceptions\ImageException;
+use Kami\Cocktail\Exceptions\IngredientException;
 
 class IngredientService
 {

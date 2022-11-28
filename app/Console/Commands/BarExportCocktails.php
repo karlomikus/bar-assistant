@@ -3,8 +3,8 @@
 namespace Kami\Cocktail\Console\Commands;
 
 use Illuminate\Console\Command;
-use Kami\Cocktail\Models\Cocktail;
 use Symfony\Component\Yaml\Yaml;
+use Kami\Cocktail\Models\Cocktail;
 
 class BarExportCocktails extends Command
 {

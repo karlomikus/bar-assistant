@@ -4,23 +4,26 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Throwable;
 use Illuminate\Http\Request;
-use Kami\Cocktail\Http\Requests\UserIngredientBatchRequest;
-use Kami\Cocktail\Http\Resources\UserIngredientResource;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\UserShoppingList;
-use Throwable;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Http\Resources\UserIngredientResource;
+use Kami\Cocktail\Http\Requests\UserIngredientBatchRequest;
 
 class ShelfController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResource
     {
         $userIngredients = $request->user()->shelfIngredients;
 
         return UserIngredientResource::collection($userIngredients);
     }
 
-    public function save(Request $request, int $ingredientId)
+    public function save(Request $request, int $ingredientId): JsonResponse
     {
         // Remove ingredient from the shopping list if it exists
         UserShoppingList::where('ingredient_id', $ingredientId)->delete();
@@ -37,7 +40,7 @@ class ShelfController extends Controller
         return (new UserIngredientResource($shelfIngredient))->response()->setStatusCode(200);
     }
 
-    public function batch(UserIngredientBatchRequest $request)
+    public function batch(UserIngredientBatchRequest $request): JsonResource
     {
         $ingredientIds = $request->post('ingredient_ids');
 
@@ -56,7 +59,7 @@ class ShelfController extends Controller
         return UserIngredientResource::collection($si);
     }
 
-    public function delete(Request $request, int $ingredientId)
+    public function delete(Request $request, int $ingredientId): Response
     {
         try {
             UserIngredient::where('user_id', $request->user()->id)

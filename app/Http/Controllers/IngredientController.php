@@ -5,15 +5,17 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Kami\Cocktail\Http\Requests\IngredientRequest;
-use Kami\Cocktail\Http\Resources\IngredientResource;
-use Kami\Cocktail\Http\Resources\SuccessActionResource;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Services\IngredientService;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Http\Requests\IngredientRequest;
+use Kami\Cocktail\Http\Resources\IngredientResource;
 
 class IngredientController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResource
     {
         $ingredients = Ingredient::with('category', 'images')
             ->orderBy('name')
@@ -32,7 +34,7 @@ class IngredientController extends Controller
         return IngredientResource::collection($ingredients->get());
     }
 
-    public function show(int|string $id)
+    public function show(int|string $id): JsonResource
     {
         $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient')
             ->where('id', $id)
@@ -42,7 +44,7 @@ class IngredientController extends Controller
         return new IngredientResource($ingredient);
     }
 
-    public function store(IngredientService $ingredientService, IngredientRequest $request)
+    public function store(IngredientService $ingredientService, IngredientRequest $request): JsonResponse
     {
         $ingredient = $ingredientService->createIngredient(
             $request->post('name'),
@@ -62,7 +64,7 @@ class IngredientController extends Controller
             ->header('Location', route('ingredients.show', $ingredient->id));
     }
 
-    public function update(IngredientService $ingredientService, IngredientRequest $request, int $id)
+    public function update(IngredientService $ingredientService, IngredientRequest $request, int $id): JsonResource
     {
         $ingredient = $ingredientService->updateIngredient(
             $id,
@@ -80,7 +82,7 @@ class IngredientController extends Controller
         return new IngredientResource($ingredient);
     }
 
-    public function delete(int $id)
+    public function delete(int $id): Response
     {
         Ingredient::findOrFail($id)->delete();
 

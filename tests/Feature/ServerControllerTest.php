@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 // use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spectator\Spectator;
 use Tests\TestCase;
+use Spectator\Spectator;
 
 class ServerControllerTest extends TestCase
 {

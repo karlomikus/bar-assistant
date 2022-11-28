@@ -3,8 +3,8 @@
 namespace Kami\Cocktail\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use Kami\Cocktail\SearchActions;
+use Illuminate\Support\Facades\Artisan;
 
 class BarSearchRefresh extends Command
 {

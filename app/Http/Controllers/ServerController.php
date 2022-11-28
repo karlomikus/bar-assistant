@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Illuminate\Http\Response;
 use Laravel\Scout\EngineManager;
+use Illuminate\Http\JsonResponse;
 
 class ServerController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
         return response()->json([
             'status' => 'available'
         ]);
     }
 
-    public function version(EngineManager $engine)
+    public function version(EngineManager $engine): JsonResponse
     {
         /** @var \MeiliSearch\Client */
         $meilisearch = $engine->engine();
@@ -30,7 +32,7 @@ class ServerController extends Controller
         ]);
     }
 
-    public function openApi()
+    public function openApi(): Response
     {
         return response(
             file_get_contents(base_path('docs/open-api-spec.yml')),

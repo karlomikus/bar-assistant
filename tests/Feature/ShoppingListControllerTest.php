@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Testing\Fluent\AssertableJson;
-use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\Models\User;
-use Kami\Cocktail\Models\UserShoppingList;
-use Spectator\Spectator;
 use Tests\TestCase;
+use Spectator\Spectator;
+use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\UserShoppingList;
+use Illuminate\Testing\Fluent\AssertableJson;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ShoppingListControllerTest extends TestCase
 {

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
-use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\HttpClient\CachingHttpClient;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\HttpKernel\HttpCache\Store;
+use Symfony\Component\HttpClient\CachingHttpClient;
 
 class Scraper
 {

@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
-use Kami\Cocktail\Models\User;
-use Spectator\Spectator;
 use Tests\TestCase;
+use Spectator\Spectator;
+use Kami\Cocktail\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthControllerTest extends TestCase
 {
