@@ -2,7 +2,7 @@
 
 set -e
 
-system_start_checkup() {
+first_time_check() {
     if [ ! -f /var/www/cocktails/.env ]; then
         echo "Application .env file not found, creating a new .env file..."
 
@@ -22,20 +22,18 @@ system_start_checkup() {
             echo "Database already exists, running migrations..."
             php artisan migrate --force
         fi
-
-        php artisan config:cache
-        php artisan route:cache
-
-        # echo "Setting permissions..."
-
-        # chown -R www-data:www-data /var/www/cocktails
-
-        echo "Application ready!"
     fi
 }
 
 start_system() {
-    system_start_checkup
+    first_time_check
+
+    echo "Adding routes and config to cache..."
+
+    php artisan config:cache
+    php artisan route:cache
+
+    echo "Application ready!"
 }
 
 start_system
