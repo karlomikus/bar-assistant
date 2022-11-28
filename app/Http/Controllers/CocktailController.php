@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
+use Throwable;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\Services\CocktailService;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
-use Kami\Cocktail\Models\Cocktail;
-use Kami\Cocktail\Services\CocktailService;
-use Throwable;
 
 class CocktailController extends Controller
 {
@@ -22,7 +24,7 @@ class CocktailController extends Controller
      * - user_id -> Filter by user id
      * - favorites -> Filter by user favorites
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResource
     {
         $cocktails = Cocktail::with('ingredients.ingredient', 'images', 'tags');
 
@@ -42,7 +44,7 @@ class CocktailController extends Controller
     /**
      * Return a single random cocktail
      */
-    public function random()
+    public function random(): JsonResource
     {
         $cocktail = Cocktail::inRandomOrder()
             ->firstOrFail()
@@ -54,7 +56,7 @@ class CocktailController extends Controller
     /**
      * Show a single cocktail by it's id or URL slug
      */
-    public function show(int|string $idOrSlug)
+    public function show(int|string $idOrSlug): JsonResource
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
@@ -97,7 +99,7 @@ class CocktailController extends Controller
     /**
      * Update a single cocktail by id
      */
-    public function update(CocktailService $cocktailService, CocktailRequest $request, int $id)
+    public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): JsonResource
     {
         try {
             $cocktail = $cocktailService->updateCocktail(
@@ -125,7 +127,7 @@ class CocktailController extends Controller
     /**
      * Delete a single cocktail by id
      */
-    public function delete(int $id)
+    public function delete(int $id): Response
     {
         Cocktail::findOrFail($id)->delete();
 
@@ -136,7 +138,7 @@ class CocktailController extends Controller
      * Show all cocktails that current user can make with
      * the ingredients he added to his shelf
      */
-    public function userShelf(CocktailService $cocktailService, Request $request)
+    public function userShelf(CocktailService $cocktailService, Request $request): JsonResource
     {
         $cocktails = $cocktailService->getCocktailsByUserIngredients($request->user()->id)
             ->load('ingredients.ingredient', 'images', 'tags');
@@ -147,7 +149,7 @@ class CocktailController extends Controller
     /**
      * Favorite a cocktail by id
      */
-    public function toggleFavorite(CocktailService $cocktailService, Request $request, int $id)
+    public function toggleFavorite(CocktailService $cocktailService, Request $request, int $id): JsonResource
     {
         $isFavorite = $cocktailService->toggleFavorite($request->user(), $id);
 
@@ -157,7 +159,7 @@ class CocktailController extends Controller
     /**
      * Show all cocktails that current user added to his favorites
      */
-    public function userFavorites(Request $request)
+    public function userFavorites(Request $request): JsonResource
     {
         $cocktails = $request->user()->favorites->pluck('cocktail');
 

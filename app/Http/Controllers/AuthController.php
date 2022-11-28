@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Kami\Cocktail\Http\Requests\RegisterRequest;
-use Kami\Cocktail\Http\Resources\UserResource;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\SearchActions;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Kami\Cocktail\Http\Resources\UserResource;
+use Kami\Cocktail\Http\Requests\RegisterRequest;
 
 class AuthController extends Controller
 {
-    public function authenticate(Request $request)
+    public function authenticate(Request $request): JsonResponse
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -30,14 +31,14 @@ class AuthController extends Controller
         abort(404, 'User not found. Check your username and password and try again.');
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
         $request->user()->tokens()->delete();
 
         return response()->json(['data' => ['success' => true]]);
     }
 
-    public function register(RegisterRequest $req)
+    public function register(RegisterRequest $req): JsonResponse
     {
         if (config('bar-assistant.allow_registration') == false) {
             abort(404, 'Registrations are closed.');

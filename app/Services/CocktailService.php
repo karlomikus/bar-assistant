@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
-use Illuminate\Database\DatabaseManager;
+use Throwable;
+use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
+use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Collection;
-use Kami\Cocktail\Exceptions\CocktailException;
 use Kami\Cocktail\Models\Cocktail;
+use Illuminate\Database\DatabaseManager;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
+use Kami\Cocktail\Exceptions\CocktailException;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
-use Kami\Cocktail\Models\Image;
-use Kami\Cocktail\Models\Tag;
-use Kami\Cocktail\Models\User;
-use Throwable;
 
 class CocktailService
 {
@@ -30,7 +30,7 @@ class CocktailService
      *
      * @param string $name
      * @param string $instructions
-     * @param array $ingredients
+     * @param array<mixed> $ingredients
      * @param int $userId
      * @param string|null $description
      * @param string|null $garnish
@@ -129,7 +129,7 @@ class CocktailService
      * @param int $id
      * @param string $name
      * @param string $instructions
-     * @param array $ingredients
+     * @param array<mixed> $ingredients
      * @param int $userId
      * @param string|null $description
      * @param string|null $garnish
@@ -234,7 +234,7 @@ class CocktailService
      * ingredients in his shelf
      *
      * @param int $userId
-     * @return \Illuminate\Database\Eloquent\Collection<\Kami\Cocktail\Models\Cocktail>
+     * @return \Illuminate\Database\Eloquent\Collection<int, \Kami\Cocktail\Models\Cocktail>
      */
     public function getCocktailsByUserIngredients(int $userId): Collection
     {
