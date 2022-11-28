@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Collection;
-use Kami\Cocktail\SearchActions;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
+use Kami\Cocktail\SearchActions;
 use Spatie\Sluggable\SlugOptions;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ingredient extends Model implements SiteSearchable
 {

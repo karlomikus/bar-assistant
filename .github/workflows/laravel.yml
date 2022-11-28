@@ -31,7 +31,7 @@ jobs:
       run: php artisan key:generate
 
     - name: Check coding style
-      run: vendor/bin/ecs check
+      run: vendor/bin/ecs --clear-cache && vendor/bin/ecs check
 
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       run: vendor/bin/phpunit tests/

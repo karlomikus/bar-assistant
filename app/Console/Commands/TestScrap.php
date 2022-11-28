@@ -3,11 +3,11 @@
 namespace Kami\Cocktail\Console\Commands;
 
 use Illuminate\Console\Command;
-use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\HttpClient\CachingHttpClient;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\HttpKernel\HttpCache\Store;
+use Symfony\Component\HttpClient\CachingHttpClient;
 
 class TestScrap extends Command
 {

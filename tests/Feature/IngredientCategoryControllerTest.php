@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Testing\Fluent\AssertableJson;
-use Kami\Cocktail\Models\IngredientCategory;
-use Kami\Cocktail\Models\User;
-use Spectator\Spectator;
 use Tests\TestCase;
+use Spectator\Spectator;
+use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\IngredientCategory;
+use Illuminate\Testing\Fluent\AssertableJson;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class IngredientCategoryControllerTest extends TestCase
 {
