@@ -67,18 +67,29 @@ class TuxedoNo2 extends AbstractSiteExtractor
         $result = [];
 
         $this->crawler->filter('.recipe__recipe ul')->first()->filter('li')->each(function ($node) use (&$result) {
-            $isGarnish = $node->filter('.amount .unit')->count() === 0;
+            $isGarnish = str_contains($node->filter('.ingredient')->text(), 'garnish');
 
             if ($isGarnish) {
                 return;
             }
 
-            $parsedIngredientAmount = Utils::parseIngredientAmount($node->filter('.amount')->text());
+            $onlyUnits = 'part';
+            if ($node->filter('.amount .unit')->count() > 0) {
+                $onlyUnits = $node->filter('.amount .unit')->text();
+            }
+
+            $amountAndUnits = $node->filter('.amount')->text();
+
+            $parsedIngredientAmount = Utils::parseIngredientAmount(
+                str_replace($onlyUnits, '', $amountAndUnits) . ' ' . $onlyUnits
+            );
+
+            $ingredientName = $this->hintCommonIngredients($node->filter('.ingredient a')->first()->text());
 
             $result[] = [
                 'amount' => $parsedIngredientAmount['amount'],
                 'units' => $parsedIngredientAmount['units'],
-                'name' => $node->filter('.ingredient a')->first()->text(),
+                'name' => $ingredientName,
                 'optional' => false,
             ];
         });
@@ -92,7 +103,7 @@ class TuxedoNo2 extends AbstractSiteExtractor
 
         $this->crawler->filter('.recipe__recipe ul')->first()->filter('li')->each(function ($node) use (&$garnish) {
             if ($node->filter('.amount .unit')->count() === 0) {
-                $garnish .= $node->filter('.ingredient')->text() . "\n";
+                $garnish .= $node->filter('.ingredient')->text() . "\n\n";
             }
         });
 
@@ -101,7 +112,7 @@ class TuxedoNo2 extends AbstractSiteExtractor
 
     public function image(): ?array
     {
-        $srcSet = $this->crawler->filter('.recipe__primary-image')->first()->attr('srcset');
+        $srcSet = $this->crawler->filter('.recipe__primary-image.recipe__primary-image--1')->first()->attr('srcset');
         $sources = explode(' ', $srcSet);
 
         if (!$sources[2]) {
@@ -112,5 +123,26 @@ class TuxedoNo2 extends AbstractSiteExtractor
             'url' => $sources[2],
             'copyright' => 'TuxedoNo2',
         ];
+    }
+
+    private function hintCommonIngredients(string $ingredientName): string
+    {
+        return match ($ingredientName) {
+            'grenadine' => 'Grenadine syrup',
+            'rye' => 'Rye whiskey',
+            'bourbon' => 'Bourbon whiskey',
+            'scotch' => 'Scotch whiskey',
+            'angostura bitters' => 'Angostura aromatic bitters',
+            'orange liqueur' => 'Triple Sec',
+            'heavy cream' => 'Cream',
+            'soda water' => 'Club soda',
+            'coffee liqueur' => 'Kahlua coffee liqueur',
+            'creme de cacao' => 'Dark Crème de Cacao',
+            'fernet' => 'Fernet Branca',
+            'benedictine' => 'Bénédictine',
+            'herbsaint' => 'Absinthe',
+            'peychaud\'s bitters' => 'Peychauds Bitters',
+            default => $ingredientName
+        };
     }
 }
