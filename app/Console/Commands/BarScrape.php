@@ -3,20 +3,17 @@
 namespace Kami\Cocktail\Console\Commands;
 
 use Illuminate\Console\Command;
-use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\BrowserKit\HttpBrowser;
-use Symfony\Component\HttpKernel\HttpCache\Store;
-use Symfony\Component\HttpClient\CachingHttpClient;
+use Kami\Cocktail\Scraper\Manager;
+use Illuminate\Database\Eloquent\Model;
 
-class TestScrap extends Command
+class BarScrape extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'bar:test';
+    protected $signature = 'bar:scrape {url}';
 
     /**
      * The console command description.
@@ -32,9 +29,11 @@ class TestScrap extends Command
      */
     public function handle()
     {
-        // $scraper = new \Kami\Cocktail\Scraper\Scraper('https://tuxedono2.com/vieux-carre-cocktail-recipe');
+        Model::unguard();
 
-        // dd($scraper->toArray());
+        $scraper = Manager::scrape($this->argument('url'));
+
+        dump($scraper->toArray());
 
         return Command::SUCCESS;
     }
