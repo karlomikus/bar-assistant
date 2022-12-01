@@ -18,7 +18,11 @@ class ShelfController extends Controller
 {
     public function index(Request $request): JsonResource
     {
-        $userIngredients = $request->user()->shelfIngredients;
+        $userIngredients = $request->user()
+            ->shelfIngredients()
+            ->orderBy('ingredient.name')
+            ->get()
+            ->load('shelfIngredients.ingredient');
 
         return UserIngredientResource::collection($userIngredients);
     }
