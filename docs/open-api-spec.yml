@@ -322,6 +322,17 @@ paths:
                       $ref: '#/components/schemas/Cocktail'
   /ingredients:
     get:
+      parameters:
+        - name: category_id
+          in: query
+          description: Show only ingredients in specific category
+          schema:
+            type: integer
+        - name: on_shopping_list
+          in: query
+          description: Show only ingredients on shopping list of current user
+          schema:
+            type: boolean
       tags:
         - Ingredients
       summary: 'Get a list of ingredients'
