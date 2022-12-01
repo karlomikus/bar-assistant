@@ -272,7 +272,7 @@ class CocktailService
             }
         }
 
-        return Cocktail::find(array_merge($cocktailIds->toArray(), $subCocktails));
+        return Cocktail::orderBy('name')->find(array_merge($cocktailIds->toArray(), $subCocktails));
     }
 
     /**
