@@ -56,7 +56,7 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ],
-        "static": "vendor/bin/phpstan analyse",
+        "static": "vendor/bin/phpstan analyse --xdebug",
         "fix-style": "vendor/bin/ecs check --fix --clear-cache"
     },
     "extra": {
