@@ -117,6 +117,9 @@ $ php artisan migrate --force
 
 # To fill the database with data
 $ php artisan bar:open
+
+# Or with specific email and password
+$ php artisan bar:open --email=my@email.com --pass=12345
 ```
 
 ## Usage
