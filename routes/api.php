@@ -38,6 +38,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
 
     Route::get('/user', [UserController::class, 'show']);
+    Route::post('/user', [UserController::class, 'update']);
 
     Route::prefix('shelf')->group(function() {
         Route::get('/', [ShelfController::class, 'index']);
