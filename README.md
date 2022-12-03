@@ -52,7 +52,7 @@ The basic requirements are:
 
 - PHP >= 8.1
 - Sqlite 3
-- Working [Meilisearch server](https://github.com/meilisearch) instance
+- Working [Meilisearch server](https://github.com/meilisearch) instance (v0.29)
 - (Optional) Redis server instance
 
 ## Docker setup

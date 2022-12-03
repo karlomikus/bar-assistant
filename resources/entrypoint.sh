@@ -28,6 +28,8 @@ first_time_check() {
 start_system() {
     first_time_check
 
+    php artisan bar:refresh-search
+
     echo "Adding routes and config to cache..."
 
     php artisan config:cache

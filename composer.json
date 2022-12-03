@@ -1,8 +1,4 @@
 {
-    "name": "laravel/laravel",
-    "type": "project",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
@@ -60,8 +56,8 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ],
-        "static": "vendor/bin/phpstan analyse",
-        "fix-style": "vendor/bin/ecs check --fix"
+        "static": "vendor/bin/phpstan analyse --xdebug",
+        "fix-style": "vendor/bin/ecs check --fix --clear-cache"
     },
     "extra": {
         "laravel": {

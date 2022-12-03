@@ -1,3 +1,14 @@
+# v1.0.1
+## New
+- Make cocktail `id` attribute filterable in cocktails index
+- Add `per_page` query parameter to cocktails endpoint (defaults to 15)
+- Add profile update endpoint
+- Search index settings are updated on docker restart
+
+## Fixes
+- Sort shelf cocktails by name
+- Document missing query parameters in OA specification
+
 # v1.0.0
 - Cover all endpoints with tests
 - Add coding style

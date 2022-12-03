@@ -31,17 +31,17 @@ class BarSearchRefresh extends Command
     {
         // Clear indexes
         // SearchActions::flushSearchIndex(); // TODO: Create method to import site_index
-        $this->info('Removing cocktails and ingredients index...');
-        Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Cocktail"]);
-        Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
+        // $this->info('Removing cocktails and ingredients index...');
+        // Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Cocktail"]);
+        // Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
 
         // Update settings
-        $this->info('Updating index settings...');
+        $this->info('Updating search index settings...');
         SearchActions::updateIndexSettings();
         
-        $this->info('Importing cocktails and ingredients...');
-        Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
-        Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);
+        // $this->info('Importing cocktails and ingredients...');
+        // Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
+        // Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);
 
         return Command::SUCCESS;
     }

@@ -322,6 +322,17 @@ paths:
                       $ref: '#/components/schemas/Cocktail'
   /ingredients:
     get:
+      parameters:
+        - name: category_id
+          in: query
+          description: Show only ingredients in specific category
+          schema:
+            type: integer
+        - name: on_shopping_list
+          in: query
+          description: Show only ingredients on shopping list of current user
+          schema:
+            type: boolean
       tags:
         - Ingredients
       summary: 'Get a list of ingredients'
@@ -799,6 +810,43 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/User'
+    post:
+      tags:
+        - "Users"
+      summary: "Update currently authenticated user"
+      description: "Updates currently authenticated user with new information. If password field is present also changes the password."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: new@email.com
+                name:
+                  type: string
+                  example: New name
+                password:
+                  type: string
+                  nullable: true
+                  example: "new-password"
+                password_confirmation:
+                  type: string
+                  nullable: true
+                  example: "new-password"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
   /shopping-list:
     get:
       tags:

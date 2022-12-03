@@ -19,14 +19,16 @@ class CocktailController extends Controller
 {
     /**
      * List all cocktails
-     * - Paginated by 15 items
+     * - Paginated by X items
      * Optional query strings:
      * - user_id -> Filter by user id
      * - favorites -> Filter by user favorites
      */
     public function index(Request $request): JsonResource
     {
-        $cocktails = Cocktail::with('ingredients.ingredient', 'images', 'tags');
+        $cocktails = Cocktail::with('ingredients.ingredient', 'images', 'tags')->orderBy('name');
+
+        $perPage = $request->get('per_page', 15);
 
         if ($request->has('user_id')) {
             $cocktails->where('user_id', $request->get('user_id'));
@@ -38,7 +40,7 @@ class CocktailController extends Controller
             });
         }
 
-        return CocktailResource::collection($cocktails->paginate(15));
+        return CocktailResource::collection($cocktails->paginate($perPage));
     }
 
     /**
