@@ -12,6 +12,8 @@
         "meilisearch/meilisearch-php": "^0.25.0",
         "spatie/laravel-responsecache": "^7.4",
         "spatie/laravel-sluggable": "^3.4",
+        "symfony/browser-kit": "^6.2",
+        "symfony/http-client": "^6.2",
         "symfony/yaml": "^6.1"
     },
     "require-dev": {
@@ -26,8 +28,6 @@
         "phpstan/phpstan": "^1.8",
         "phpunit/phpunit": "^9.5.10",
         "spatie/laravel-ignition": "^1.0",
-        "symfony/browser-kit": "^6.1",
-        "symfony/http-client": "^6.1",
         "symplify/easy-coding-standard": "^11.1"
     },
     "autoload": {
