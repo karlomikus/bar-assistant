@@ -2,6 +2,8 @@
 ## New
 - Make cocktail `id` attribute filterable in cocktails index
 - Add `per_page` query parameter to cocktails endpoint (defaults to 15)
+- Add profile update endpoint
+- Search index settings are updated on docker restart
 
 ## Fixes
 - Sort shelf cocktails by name
