@@ -88,6 +88,7 @@ class Cocktail extends Model implements SiteSearchable
             'source' => $this->source,
             'garnish' => $this->garnish,
             'image_url' => $this->getMainImageUrl(),
+            'main_image_id' => $this->images?->first()?->id ?? null,
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'user_id' => $this->user_id,
             'tags' => $this->tags->pluck('name'),
