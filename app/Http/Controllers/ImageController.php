@@ -45,21 +45,24 @@ class ImageController extends Controller
         return response(null, 204);
     }
 
-    public function thumb(int $id): Response
+    public function thumb(int $id)
     {
         [$content, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id) {
             $dbImage = Image::findOrFail($id);
             $disk = Storage::disk('app_images');
-            $responseContent = (string) ImageManagerStatic::make($disk->get($dbImage->file_path))->fit(200, 200)->encode();
+            $responseContent = (string) ImageManagerStatic::make($disk->get($dbImage->file_path))->fit(200, 200);
             $etag = md5($dbImage->id . '-' . $dbImage->updated_at->format('Y-m-d H:i:s'));
 
             return [$responseContent, $etag];
         });
 
+        $mime = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $content);
         $notModified = isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag;
         $statusCode = $notModified ? 304 : 200;
 
         return new Response($content, $statusCode, [
+            'Content-Type' => $mime,
+            'Content-Length' => strlen($content),
             'Etag' => $etag
         ]);
     }
