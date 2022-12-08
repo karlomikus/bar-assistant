@@ -48,7 +48,7 @@ class IngredientResource extends JsonResource
                         'slug' => $c->slug,
                         'name' => $c->name,
                     ];
-                });
+                })->sortBy('name')->toArray();
             })
         ];
     }
