@@ -157,6 +157,16 @@ Default login information is:
 - email: `admin@example.com`
 - password: `password`
 
+## Meilisearch update
+
+To update your meilisearch instance, you first need to create a dump of your database. Bar Assistant has a command that will create a dump task.
+
+``` bash
+$ docker compose exec -it bar-assistant php artisan bar:dump-search
+```
+
+Then follow the rest of the [steps described in meilisearch docs](https://docs.meilisearch.com/learn/cookbooks/docker.html#generating-dumps-and-updating-meilisearch).
+
 ## FAQ
 
 ### I'm missing images of cocktails and ingredients.
@@ -175,7 +185,9 @@ $ docker compose exec -it bar-assistant php artisan scout:import "Kami\\Cocktail
 
 ## Contributing
 
-TODO, Fork and create a pull request...
+Bar Assistant is a basic Laravel application. Once you have setup your PHP dev environment and followed manual installation steps you can start working on the code.
+
+Feel free to create a pull request or open a issue with bugs/feature ideas.
 
 ## License
 
