@@ -10,9 +10,9 @@ RUN apt update \
     && apt-get autoremove -y \
     && apt-get clean
 
-RUN docker-php-ext-install opcache \
-    && pecl install redis \
-    && docker-php-ext-enable redis
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN chmod +x /usr/local/bin/install-php-extensions && \
+    install-php-extensions gd opcache redis
 
 # Setup default apache stuff
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
