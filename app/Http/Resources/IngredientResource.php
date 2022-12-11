@@ -24,7 +24,7 @@ class IngredientResource extends JsonResource
             'slug' => $this->slug,
             'name' => $this->name,
             'strength' => $this->strength,
-            'description' => $this->description,
+            'description' => e($this->description),
             'origin' => $this->origin,
             'main_image_id' => $this->images->first()->id ?? null,
             'images' => ImageResource::collection($this->images),
