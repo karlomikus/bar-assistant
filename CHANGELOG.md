@@ -1,3 +1,8 @@
+# v1.0.3
+## Fixes
+- Sync cocktails and ingredients with meilisearch after docker restart
+- Bump version in openapi spec
+
 # v1.0.2
 ## New
 - Add `php artisan bar:scrap` command to scrape recipes from the supported websites
@@ -9,6 +14,7 @@
 ## Fixes
 - Sort ingredient categories by name
 - Sort related cocktails in ingredient resource by name
+- Escape ingredient description
 
 ## Changes
 - Use `docker-php-extension-installer` for docker image

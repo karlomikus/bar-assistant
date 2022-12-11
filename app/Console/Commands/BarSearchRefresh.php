@@ -39,9 +39,9 @@ class BarSearchRefresh extends Command
         $this->info('Updating search index settings...');
         SearchActions::updateIndexSettings();
         
-        // $this->info('Importing cocktails and ingredients...');
-        // Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
-        // Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);
+        $this->info('Syncing cocktails and ingredients to meilisearch...');
+        Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
+        Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);
 
         return Command::SUCCESS;
     }
