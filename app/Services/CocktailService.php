@@ -238,41 +238,23 @@ class CocktailService
      */
     public function getCocktailsByUserIngredients(int $userId): Collection
     {
-        // https://stackoverflow.com/questions/19930070/mysql-query-to-select-all-except-something
         $cocktailIds = $this->db->table('cocktails AS c')
             ->select('c.id')
             ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id')
-            ->where('ci.optional', false)
+            ->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
+            ->leftJoin('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')
+            ->where('optional', false)
+            ->whereIn('i.id', function ($query) use ($userId) {
+                $query->select('ingredient_id')->from('user_ingredients')->where('user_id', $userId);
+            })
+            ->orWhereIn('cis.ingredient_id', function ($query) use ($userId) {
+                $query->select('ingredient_id')->from('user_ingredients')->where('user_id', $userId);
+            })
             ->groupBy('c.id')
-            ->havingRaw('SUM(CASE WHEN ci.ingredient_id IN (SELECT ingredient_id FROM user_ingredients WHERE user_id = ?) THEN 1 ELSE 0 END) = COUNT(*)', [$userId])
+            ->havingRaw('COUNT(*) >= (SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_id = c.id AND optional = false)')
             ->pluck('id');
-        
-        // Programatically find cocktails that match your ingredients with possible substituted ingredients.
-        // This is currently probably not really performant
-        $userIngredients = $this->db->table('user_ingredients')->select('ingredient_id')->where('user_id', $userId)->pluck('ingredient_id'); // TODO: extract, and reuse
-        $possibleCocktailsWithSubstitutes = Cocktail::select('cocktails.*')
-            ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')
-            ->join('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')
-            ->join('user_ingredients AS ui', 'ui.ingredient_id', '=', 'cis.ingredient_id')
-            ->where('ui.user_id', $userId)
-            ->get();
 
-        $subCocktails = [];
-        foreach ($possibleCocktailsWithSubstitutes as $cocktail) {
-            $ingredientsCount = 0;
-            foreach ($cocktail->ingredients as $cocktailIngredient) {
-                if ($userIngredients->contains($cocktailIngredient->ingredient_id)) { // User has original ingredient
-                    $ingredientsCount++;
-                } elseif ($userIngredients->intersect($cocktailIngredient->substitutes->pluck('ingredient_id'))->count() > 0) { // User has one of the substitiute ingredients
-                    $ingredientsCount++;
-                }
-            }
-            if ($ingredientsCount === $cocktail->ingredients->count()) { // User can make this cocktail
-                $subCocktails[] = $cocktail->id;
-            }
-        }
-
-        return Cocktail::orderBy('name')->find(array_merge($cocktailIds->toArray(), $subCocktails));
+        return Cocktail::orderBy('name')->find($cocktailIds);
     }
 
     /**

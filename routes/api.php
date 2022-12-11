@@ -33,6 +33,10 @@ Route::prefix('server')->group(function() {
     Route::get('/openapi', [ServerController::class, 'openApi']);
 });
 
+Route::prefix('images')->group(function() {
+    Route::get('/{id}/thumb', [ImageController::class, 'thumb']);
+});
+
 Route::middleware('auth:sanctum')->group(function() {
 
     Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
@@ -77,6 +81,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::prefix('images')->group(function() {
         Route::get('/{id}', [ImageController::class, 'show']);
+        // Route::get('/{id}/thumb', [ImageController::class, 'thumb']);
         Route::post('/', [ImageController::class, 'store']);
         Route::post('/{id}', [ImageController::class, 'update']);
         Route::delete('/{id}', [ImageController::class, 'delete']);

@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Http\UploadedFile;
 use Kami\Cocktail\Exceptions\ImageUploadException;
+use Intervention\Image\ImageManagerStatic as InterventionImage;
 
 class ImageService
 {
@@ -54,6 +55,22 @@ class ImageService
             $image->copyright = $copyright;
         }
 
+        $image->save();
+
+        return $image;
+    }
+
+    public function uploadImage(string $imageSource, ?string $copyright = null): Image
+    {
+        $tempImage = InterventionImage::make($imageSource);
+
+        $filepath = 'temp/' . Str::random(40) . '.jpg';
+        $tempImage->save(storage_path('uploads/' . $filepath));
+
+        $image = new Image();
+        $image->copyright = $copyright;
+        $image->file_path = $filepath;
+        $image->file_extension = 'jpg';
         $image->save();
 
         return $image;

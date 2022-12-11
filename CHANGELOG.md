@@ -1,3 +1,18 @@
+# v1.0.2
+## New
+- Add `php artisan bar:scrap` command to scrape recipes from the supported websites
+    - Support for TuxedoNo2
+    - Support for A Couple Cooks
+- Add cocktails thumbnail generation endpoint
+- Enabled GD extension in docker
+
+## Fixes
+- Sort ingredient categories by name
+- Sort related cocktails in ingredient resource by name
+
+## Changes
+- Use `docker-php-extension-installer` for docker image
+
 # v1.0.1
 ## New
 - Make cocktail `id` attribute filterable in cocktails index

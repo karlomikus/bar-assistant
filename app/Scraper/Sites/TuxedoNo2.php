@@ -132,7 +132,7 @@ class TuxedoNo2 extends AbstractSiteExtractor
             'rye' => 'Rye whiskey',
             'bourbon' => 'Bourbon whiskey',
             'scotch' => 'Scotch whiskey',
-            'angostura bitters' => 'Angostura aromatic bitters',
+            'angostura bitters', 'aromatic bitters' => 'Angostura aromatic bitters',
             'orange liqueur' => 'Triple Sec',
             'heavy cream' => 'Cream',
             'soda water' => 'Club soda',
@@ -141,6 +141,7 @@ class TuxedoNo2 extends AbstractSiteExtractor
             'fernet' => 'Fernet Branca',
             'benedictine' => 'Bénédictine',
             'herbsaint' => 'Absinthe',
+            'blanco tequila' => 'Tequila',
             'peychaud\'s bitters' => 'Peychauds Bitters',
             default => $ingredientName
         };

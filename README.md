@@ -51,6 +51,7 @@ This application is made with Laravel, so you should check out [deployment requi
 The basic requirements are:
 
 - PHP >= 8.1
+    - GD Extension
 - Sqlite 3
 - Working [Meilisearch server](https://github.com/meilisearch) instance (v0.29)
 - (Optional) Redis server instance
@@ -78,6 +79,33 @@ Docker image exposes the `/var/www/cocktails/storage` volume, and there is curre
 ### Meilisearch
 
 Bar Assistant is using Meilisearch as a primary [Scout driver](https://laravel.com/docs/9.x/scout). It's main purpose is to index cocktails and ingredients and power filtering and searching on the frontend. Checkout [this guide here](https://docs.meilisearch.com/learn/cookbooks/docker.html) on how to setup Meilisearch docker instance.
+
+### Database file backup
+
+You can copy the whole .sqlite file database with the following:
+
+``` bash
+# Via docker
+$ docker cp bar-assistant:/var/www/cocktails/storage/database.sqlite /path/on/host
+
+# Via docker compose
+$ docker compose cp bar-assistant:/var/www/cocktails/storage/database.sqlite /path/on/host
+```
+
+### Database dump SQL
+
+You can dump your database to .sql file using the following:
+
+``` bash
+# Via cli
+$ sqlite3 /var/www/cocktails/storage/database.sqlite .dump > mydump.sql
+
+# Via docker
+$ docker exec bar-assistant sqlite3 /var/www/cocktails/storage/database.sqlite .dump > mydump.sql
+
+# Via docker compose
+$ docker compose exec bar-assistant sqlite3 /var/www/cocktails/storage/database.sqlite .dump > mydump.sql
+```
 
 ## Manual setup
 
@@ -117,6 +145,9 @@ $ php artisan migrate --force
 
 # To fill the database with data
 $ php artisan bar:open
+
+# Or with specific email and password
+$ php artisan bar:open --email=my@email.com --pass=12345
 ```
 
 ## Usage

@@ -614,6 +614,28 @@ paths:
           description: Successful response
         '404':
           $ref: '#/components/responses/NotFound'
+  /images/{id}/thumb:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of the image'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - Images
+      summary: Get a thumbnail of a response
+      responses:
+        '200':
+          description: Successful response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        '404':
+          $ref: '#/components/responses/NotFound'
   /ingredient-categories:
     get:
       tags:
