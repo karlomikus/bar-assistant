@@ -33,6 +33,7 @@ This repository only contains the API server, if you are looking for easy to use
 - Automatic indexing of data in Meilisearch
 - Cocktail ingredient substitutes
 - Assign glass types to cocktails
+- Cocktail recipe scraping
 
 ## Planned features
 - Cocktail recipe sharing
@@ -41,8 +42,6 @@ This repository only contains the API server, if you are looking for easy to use
 - Cocktail ratings
 - Add user notes to cocktail
 - Add cocktail flavor profiles
-- Cocktail recipe scraping
-- Importing and exporting cocktails
 
 ## Installation
 
@@ -157,6 +156,22 @@ Checkout `/docs` route to see endpoints documentation.
 Default login information is:
 - email: `admin@example.com`
 - password: `password`
+
+## FAQ
+
+### I'm missing images of cocktails and ingredients.
+
+Check that you have correctly configured your docker volumes.
+
+It can also mean that there are missing attributes in your indexes. You can run the following command to sync cocktails and ingredients to their indexes:
+
+``` bash
+# Docker compose commands:
+# Sync cocktails
+$ docker compose exec -it bar-assistant php artisan scout:import "Kami\\Cocktail\\Models\\Cocktail"
+# Sync ingredients
+$ docker compose exec -it bar-assistant php artisan scout:import "Kami\\Cocktail\\Models\\Ingredient"
+```
 
 ## Contributing
 
