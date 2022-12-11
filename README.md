@@ -157,6 +157,34 @@ Default login information is:
 - email: `admin@example.com`
 - password: `password`
 
+### Recipe scraping
+
+With Bar Assistant you can scrape cocktail recipes directly from the given webpage. Every website has it's scraper class located in `Kami\Cocktail\Scraper\Sites` namespace.
+
+To import a recipe, check the following command:
+
+``` bash
+$ php artisan bar:scrape --help
+```
+
+**Please note that this feature is error prone, mainly when it comes to ingredient parsing.**
+
+Example with [TuxedoNo2 website](https://tuxedono2.com/):
+
+``` bash
+# Run full scraping
+$ php artisan bar:scrape https://tuxedono2.com/coco-no-coco-cocktail-recipe
+
+# Don't import the ingredients
+$ php artisan bar:scrape -i https://tuxedono2.com/coco-no-coco-cocktail-recipe
+
+# Overwrite name and add custom tags
+$ php artisan bar:scrape --tags=custom,tags,lorem --name="My imported recipe" https://tuxedono2.com/coco-no-coco-cocktail-recipe
+
+# Also you can run it from docker
+$ docker compose exec -it bar-assistant php artisan bar:scrape https://tuxedono2.com/coco-no-coco-cocktail-recipe
+```
+
 ## Meilisearch update
 
 To update your meilisearch instance, you first need to create a dump of your database. Bar Assistant has a command that will create a dump task.
