@@ -11,7 +11,7 @@ final class Manager
     private $supportedSites = [
         \Kami\Cocktail\Scraper\Sites\ACoupleCooks::class,
         \Kami\Cocktail\Scraper\Sites\TuxedoNo2::class,
-        \Kami\Cocktail\Scraper\Sites\Imbibe::class,
+        // \Kami\Cocktail\Scraper\Sites\Imbibe::class,
     ];
 
     public function __construct(private readonly string $url)
