@@ -42,7 +42,7 @@ class BarScrape extends Command
         if ($this->option('tags')) {
             $scrapedData['tags'] = explode(',', $this->option('tags'));
         }
-        dd($scrapedData);
+
         resolve(ImportService::class)->import($scrapedData);
 
         return Command::SUCCESS;
