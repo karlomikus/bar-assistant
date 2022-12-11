@@ -4,7 +4,9 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\Image;
 use Illuminate\Http\UploadedFile;
+use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -80,5 +82,20 @@ class ImageControllerTest extends TestCase
         Storage::disk('app_images')->assertExists($response->json('data.0.file_path'));
         Storage::disk('app_images')->assertExists($response->json('data.1.file_path'));
         Storage::disk('app_images')->assertExists($response->json('data.2.file_path'));
+    }
+
+    public function test_image_thumb()
+    {
+        Storage::fake('app_images');
+        $imageFile = UploadedFile::fake()->image('image1.jpg');
+
+        $cocktailImage = Image::factory()->for(Cocktail::factory(), 'imageable')->create([
+            'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'app_images'),
+            'file_extension' => $imageFile->extension()
+        ]);
+
+        $response = $this->get('/api/images/' . $cocktailImage->id . '/thumb');
+
+        $response->assertOk();
     }
 }
