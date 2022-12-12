@@ -65,6 +65,36 @@ class Cocktail extends Model implements SiteSearchable
         return parent::delete();
     }
 
+    public function getABV(float $dilutionPercentage = 0.23): float
+    {
+        // https://jeffreymorgenthaler.com/
+        // TODO: Update $dilutionPercentage based on method
+        // Stirring: 20%
+        // Shake: 25%
+        // Building: 10%
+        // TODO: Include dashes
+        $alchoholicIngredients = $this->ingredients()
+            ->select('amount', 'units', 'strength')
+            ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
+            ->where('ingredients.strength', '>', 0)
+            ->where('cocktail_ingredients.units', 'ml')
+            ->get()
+            ->map(function ($item) {
+                $item->amount = $item->amount / 30;
+
+                return $item;
+            });
+
+        $amountUsed = $alchoholicIngredients->sum('amount');
+        $alcoholVolume = floatval($alchoholicIngredients->reduce(function ($carry, $item) {
+            return (($item->amount * $item->strength) / 100) + $carry;
+        }));
+
+        $afterDilution = ($amountUsed * $dilutionPercentage) + $amountUsed;
+
+        return round(($alcoholVolume / $afterDilution) * 100, 2);
+    }
+
     public function toSiteSearchArray(): array
     {
         return [
