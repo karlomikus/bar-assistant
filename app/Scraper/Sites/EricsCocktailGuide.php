@@ -59,7 +59,7 @@ class EricsCocktailGuide extends AbstractSiteExtractor
 
             $result[] = [
                 'amount' => $amount,
-                'units' => $units ?? '',
+                'units' => $units,
                 'name' => ucfirst($name),
                 'optional' => false,
             ];
@@ -76,7 +76,7 @@ class EricsCocktailGuide extends AbstractSiteExtractor
     public function image(): ?array
     {
         $style = $this->crawler->filterXPath("//div[contains(@class, 'recipe_recipeImage__')]")->attr('style');
-        preg_match_all('~\bbackground(-image)?\s*:(.*?)\(\s*(\'|")?(?<image>.*?)\3?\s*\)~i',$style,$matches);
+        preg_match_all('~\bbackground(-image)?\s*:(.*?)\(\s*(\'|")?(?<image>.*?)\3?\s*\)~i', $style, $matches);
 
         return [
             'url' => $this->getSupportedUrls()[0] . $matches['image'][0],

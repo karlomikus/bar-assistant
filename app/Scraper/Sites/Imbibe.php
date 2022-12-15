@@ -94,7 +94,7 @@ class Imbibe extends AbstractSiteExtractor implements ScraperInfoContract
 
             $result[] = [
                 'amount' => $amount,
-                'units' => $units ?? '',
+                'units' => $units,
                 'name' => $name,
                 'optional' => false,
             ];
