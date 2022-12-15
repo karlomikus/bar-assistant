@@ -27,26 +27,82 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
         $this->crawler = new Crawler($browser->getResponse()->getContent());
     }
 
+    /**
+     * Array with a list of support sites. All sites must be defined
+     * with protocol (ex: https://) and end without slash
+     *
+     * @return array<string>
+     */
     abstract public static function getSupportedUrls(): array;
 
+    /**
+     * Cocktail name
+     *
+     * @return string
+     */
     abstract public function name(): string;
 
+    /**
+     * Cocktail description, can support markdown
+     *
+     * @return null|string
+     */
     abstract public function description(): ?string;
 
+    /**
+     * Cocktail source URL
+     *
+     * @return null|string
+     */
     abstract public function source(): ?string;
 
+    /**
+     * Cocktail preparation instructions, can support markdown
+     *
+     * @return null|string
+     */
     abstract public function instructions(): ?string;
 
+    /**
+     * Cocktail tags
+     *
+     * @return array<string>
+     */
     abstract public function tags(): array;
 
+    /**
+     * Cocktail serving glass
+     *
+     * @return null|string
+     */
     abstract public function glass(): ?string;
 
+    /**
+     * Array containing cocktail ingredients
+     *
+     * @return array<int, array{"amount": float|int, "units": string, "name": string, "optional": boolean}>
+     */
     abstract public function ingredients(): array;
 
+    /**
+     * Cocktail garnish, can support markdown
+     *
+     * @return null|string
+     */
     abstract public function garnish(): ?string;
 
+    /**
+     * Array containing image information
+     *
+     * @return null|array{"url": string, "copyright": string}
+     */
     abstract public function image(): ?array;
 
+    /**
+     * Cocktail information as array
+     *
+     * @return array
+     */
     public function toArray(): array
     {
         return [
