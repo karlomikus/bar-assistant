@@ -17,7 +17,7 @@ class BarScrape extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:scrape {url : URL of the recipe} {--i|skip-ingredients : Do not add ingredients} {--tags= : Overwrite tags, seperated by comma} {--name= : Overwrite cocktail name}';
+    protected $signature = 'bar:scrape {url : URL of the recipe} {--i|skip-ingredients : Do not add ingredients} {--tags= : Overwrite tags, seperated by comma} {--name= : Overwrite cocktail name} {--d|dump : Do not import data, just dump it}';
 
     /**
      * The console command description.
@@ -57,6 +57,12 @@ class BarScrape extends Command
 
         if ($this->option('name')) {
             $scrapedData['name'] = $this->option('name');
+        }
+
+        if ($this->option('dump')) {
+            dump($scrapedData);
+
+            return Command::SUCCESS;
         }
 
         try {
