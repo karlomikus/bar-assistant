@@ -12,6 +12,7 @@ final class Manager
         \Kami\Cocktail\Scraper\Sites\ACoupleCooks::class,
         \Kami\Cocktail\Scraper\Sites\TuxedoNo2::class,
         \Kami\Cocktail\Scraper\Sites\Imbibe::class,
+        \Kami\Cocktail\Scraper\Sites\EricsCocktailGuide::class,
     ];
 
     public function __construct(private readonly string $url)
