@@ -27,6 +27,8 @@ tags:
     description: Operations related to users
   - name: "Shopping list"
     description: Operations related to user shopping list
+  - name: "Tags"
+    description: Operations related to tags
 security:
   - user_token: []
 paths:
@@ -949,6 +951,106 @@ paths:
                         example: [1, 2, 3]
                         items:
                           type: integer
+  /tags:
+    get:
+      tags:
+        - "Tags"
+      summary: 'Show a list of all tags'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tag'
+    post:
+      tags:
+        - "Tags"
+      summary: 'Create a new tag'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+      responses:
+        '201':
+          description: Successful response
+          headers:
+            Location:
+              description: Absolute URL to new resource
+              schema:
+                type: string
+                example: 'http://localhost/api/tags/1'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Tag'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /tags/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a tag'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - "Tags"
+      summary: Get a specific tag
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Tag'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - "Tags"
+      summary: Update a specific tag
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Tag'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      tags:
+        - "Tags"
+      summary: Delete specific tag
+      responses:
+        '204':
+          description: Successful response
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -1404,6 +1506,23 @@ components:
         ingredient_id:
           type: integer
           example: 1
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Tag name"
+    TagRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: A new tag
     UserShoppingList:
       type: object
       properties:
