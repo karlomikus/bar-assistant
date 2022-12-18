@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Console\Commands;
 
+use Throwable;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Scraper\Manager;
 use Kami\Cocktail\Services\ImportService;
+use Kami\Cocktail\Scraper\ScraperInfoContract;
 
 class BarScrape extends Command
 {
@@ -15,7 +17,7 @@ class BarScrape extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:scrape {url : URL of the recipe} {--i|skip-ingredients : Do not add ingredients} {--tags= : Overwrite tags, seperated by comma}';
+    protected $signature = 'bar:scrape {url : URL of the recipe} {--i|skip-ingredients : Do not add ingredients} {--tags= : Overwrite tags, seperated by comma} {--name= : Overwrite cocktail name} {--d|dump : Do not import data, just dump it}';
 
     /**
      * The console command description.
@@ -31,7 +33,17 @@ class BarScrape extends Command
      */
     public function handle(): int
     {
-        $scraper = Manager::scrape($this->argument('url'));
+        try {
+            $scraper = Manager::scrape($this->argument('url'));
+        } catch (Throwable $e) {
+            $this->error($e->getMessage());
+
+            return Command::FAILURE;
+        }
+
+        if ($scraper instanceof ScraperInfoContract) {
+            $this->info($scraper->getInfoMessage());
+        }
 
         $scrapedData = $scraper->toArray();
 
@@ -43,7 +55,25 @@ class BarScrape extends Command
             $scrapedData['tags'] = explode(',', $this->option('tags'));
         }
 
-        resolve(ImportService::class)->import($scrapedData);
+        if ($this->option('name')) {
+            $scrapedData['name'] = $this->option('name');
+        }
+
+        if ($this->option('dump')) {
+            dump($scrapedData);
+
+            return Command::SUCCESS;
+        }
+
+        try {
+            resolve(ImportService::class)->import($scrapedData);
+
+            $this->info('Cocktail imported successfully, do not forget to check the imported data for errors.');
+        } catch (Throwable $e) {
+            $this->error($e->getMessage());
+
+            return Command::FAILURE;
+        }
 
         return Command::SUCCESS;
     }

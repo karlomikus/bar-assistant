@@ -27,6 +27,8 @@ class UserController extends Controller
 
         if ($request->has('password')) {
             $currentUser->password = Hash::make($request->post('password'));
+
+            $currentUser->tokens()->delete();
         }
 
         $currentUser->save();

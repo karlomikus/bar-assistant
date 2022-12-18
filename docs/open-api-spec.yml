@@ -1,7 +1,7 @@
 openapi: '3.0.2'
 info:
   title: 'Bar Assistant API'
-  version: '1.0.2'
+  version: '1.0.4'
   description: |-
     Bar assistant is a self hosted application for managing your home bar. It allows you to add ingredients and create custom cocktail recipes.
 servers:
@@ -290,7 +290,7 @@ paths:
     get:
       tags:
         - "Cocktails"
-      summary: 'Get a list of cocktails that currently authorized user can make'
+      summary: 'Get a list of cocktails that authorized user can make'
       responses:
         '200':
           description: Successful response
@@ -307,7 +307,7 @@ paths:
     get:
       tags:
         - "Cocktails"
-      summary: 'Get a list of cocktails that currently authorized user added to his favorites'
+      summary: 'Get a list of cocktails that authorized user added to his favorites'
       responses:
         '200':
           description: Successful response

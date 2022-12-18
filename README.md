@@ -5,7 +5,7 @@
 <p align="center">
     <a href="https://hub.docker.com/r/kmikus12/bar-assistant-server"><img src="https://img.shields.io/docker/v/kmikus12/bar-assistant-server?style=for-the-badge" alt="Docker image"></a>
     <img src="https://img.shields.io/github/license/karlomikus/bar-assistant?style=for-the-badge" alt="Docker image">
-    <img src="https://img.shields.io/github/workflow/status/karlomikus/bar-assistant/Test%20application?style=for-the-badge" alt="Docker image">
+    <img src="https://img.shields.io/github/actions/workflow/status/karlomikus/bar-assistant/build-image.yml?branch=master&style=for-the-badge" alt="Docker image">
 </p>
 
 ## 🍸 Bar assistant
@@ -157,7 +157,53 @@ Default login information is:
 - email: `admin@example.com`
 - password: `password`
 
+### Recipe scraping
+
+With Bar Assistant you can scrape cocktail recipes directly from the given webpage. Every website has it's scraper class located in `Kami\Cocktail\Scraper\Sites` namespace.
+
+To import a recipe, check the following command:
+
+``` bash
+$ php artisan bar:scrape --help
+```
+
+**Please note that this feature is error prone, mainly when it comes to ingredient parsing.**
+
+Example with [TuxedoNo2 website](https://tuxedono2.com/):
+
+``` bash
+# Run full scraping
+$ php artisan bar:scrape https://tuxedono2.com/coco-no-coco-cocktail-recipe
+
+# Don't import the ingredients
+$ php artisan bar:scrape -i https://tuxedono2.com/coco-no-coco-cocktail-recipe
+
+# Overwrite name and add custom tags
+$ php artisan bar:scrape --tags=custom,tags,lorem --name="My imported recipe" https://tuxedono2.com/coco-no-coco-cocktail-recipe
+
+# Also you can run it from docker
+$ docker compose exec -it bar-assistant php artisan bar:scrape https://tuxedono2.com/coco-no-coco-cocktail-recipe
+```
+
+## Meilisearch update
+
+To update your meilisearch instance, you first need to create a dump of your database. Bar Assistant has a command that will create a dump task.
+
+``` bash
+$ docker compose exec -it bar-assistant php artisan bar:dump-search
+```
+
+Then follow the rest of the [steps described in meilisearch docs](https://docs.meilisearch.com/learn/cookbooks/docker.html#generating-dumps-and-updating-meilisearch).
+
 ## FAQ
+
+### How do I disable new user registrations?
+
+You can disable `/register` endpoint with environment variable.
+
+``` env
+ALLOW_REGISTRATION=false
+```
 
 ### I'm missing images of cocktails and ingredients.
 
@@ -175,7 +221,9 @@ $ docker compose exec -it bar-assistant php artisan scout:import "Kami\\Cocktail
 
 ## Contributing
 
-TODO, Fork and create a pull request...
+Bar Assistant is a basic Laravel application. Once you have setup your PHP dev environment and followed manual installation steps you can start working on the code.
+
+Feel free to create a pull request or open a issue with bugs/feature ideas.
 
 ## License
 

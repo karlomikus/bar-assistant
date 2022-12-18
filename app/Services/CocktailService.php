@@ -254,7 +254,7 @@ class CocktailService
             ->havingRaw('COUNT(*) >= (SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_id = c.id AND optional = false)')
             ->pluck('id');
 
-        return Cocktail::orderBy('name')->find($cocktailIds);
+        return $cocktailIds;
     }
 
     /**
