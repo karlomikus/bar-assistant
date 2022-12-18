@@ -5,7 +5,7 @@
 <p align="center">
     <a href="https://hub.docker.com/r/kmikus12/bar-assistant-server"><img src="https://img.shields.io/docker/v/kmikus12/bar-assistant-server?style=for-the-badge" alt="Docker image"></a>
     <img src="https://img.shields.io/github/license/karlomikus/bar-assistant?style=for-the-badge" alt="Docker image">
-    <img src="https://img.shields.io/github/workflow/status/karlomikus/bar-assistant/Test%20application?style=for-the-badge" alt="Docker image">
+    <img src="https://img.shields.io/github/actions/workflow/status/karlomikus/bar-assistant/build-image.yml?branch=master&style=for-the-badge" alt="Docker image">
 </p>
 
 ## 🍸 Bar assistant
@@ -196,6 +196,14 @@ $ docker compose exec -it bar-assistant php artisan bar:dump-search
 Then follow the rest of the [steps described in meilisearch docs](https://docs.meilisearch.com/learn/cookbooks/docker.html#generating-dumps-and-updating-meilisearch).
 
 ## FAQ
+
+### How do I disable new user registrations?
+
+You can disable `/register` endpoint with environment variable.
+
+``` env
+ALLOW_REGISTRATION=false
+```
 
 ### I'm missing images of cocktails and ingredients.
 

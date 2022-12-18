@@ -1,3 +1,16 @@
+# v1.0.4
+## New
+- Recipe scraping
+    - Support for Imbibe Magazine
+    - Support for Eric's Cocktail Guide
+    - Add `-d` option to dump data without importing
+- Add Meilisearch dump index command
+    - This will help with future Meilisearch updates
+
+## Fixes
+- Fix cocktail image overwriting when cocktails have the same name
+- Delete user API tokens when changing the password
+
 # v1.0.3
 ## Fixes
 - Sync cocktails and ingredients with meilisearch after docker restart
