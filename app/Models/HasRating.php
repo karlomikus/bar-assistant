@@ -24,6 +24,16 @@ trait HasRating
         return $rating;
     }
 
+    public function getAverageRating(): int
+    {
+        return (int) round($this->ratings()->avg('rating') ?? 0);
+    }
+
+    public function totalRatedCount(): int
+    {
+        return $this->ratings()->count();
+    }
+
     public function getUserRating(int $userId): ?Rating
     {
         return $this->ratings()->where('user_id', $userId)->first();

@@ -123,7 +123,8 @@ class Cocktail extends Model implements SiteSearchable
             'user_id' => $this->user_id,
             'tags' => $this->tags->pluck('name'),
             'date' => $this->updated_at->format('Y-m-d H:i:s'),
-            'glass' => $this->glass->name ?? null
+            'glass' => $this->glass->name ?? null,
+            'average_rating' => $this->getAverageRating()
         ];
     }
 }
