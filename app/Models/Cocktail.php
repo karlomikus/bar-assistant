@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Cocktail extends Model implements SiteSearchable
 {
-    use HasFactory, Searchable, HasImages, HasSlug;
+    use HasFactory, Searchable, HasImages, HasSlug, HasRating;
 
     private $appImagesDir = 'cocktails/';
 

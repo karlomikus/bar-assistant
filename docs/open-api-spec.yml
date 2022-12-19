@@ -27,6 +27,8 @@ tags:
     description: Operations related to users
   - name: "Shopping list"
     description: Operations related to user shopping list
+  - name: "Ratings"
+    description: Operations related to resource ratings
 security:
   - user_token: []
 paths:
@@ -949,6 +951,43 @@ paths:
                         example: [1, 2, 3]
                         items:
                           type: integer
+  /ratings/cocktails/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a cocktail'
+        schema:
+          type: integer
+        required: true
+    post:
+      tags:
+        - "Ratings"
+      summary: "Rate cocktail"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: integer
+                  example: 3
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Rating'
+        '400':
+          description: Resource already rated by user
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
 components:
   securitySchemes:
     user_token:
@@ -1496,3 +1535,18 @@ components:
             total:
               type: integer
               example: 100
+    Rating:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        rateable_id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        rating:
+          type: integer
+          example: 3

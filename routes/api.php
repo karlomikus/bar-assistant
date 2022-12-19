@@ -6,6 +6,7 @@ use Kami\Cocktail\Http\Controllers\UserController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
+use Kami\Cocktail\Http\Controllers\RatingController;
 use Kami\Cocktail\Http\Controllers\ServerController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
@@ -99,6 +100,10 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/{id}', [GlassController::class, 'show'])->name('glasses.show');
         Route::put('/{id}', [GlassController::class, 'update']);
         Route::delete('/{id}', [GlassController::class, 'delete']);
+    });
+
+    Route::prefix('ratings')->group(function() {
+        Route::post('/cocktails/{id}', [RatingController::class, 'rateCocktail']);
     });
 
 });
