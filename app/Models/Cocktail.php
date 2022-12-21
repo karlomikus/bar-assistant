@@ -61,6 +61,7 @@ class Cocktail extends Model implements SiteSearchable
     public function delete(): ?bool
     {
         $this->deleteImages();
+        $this->deleteRatings();
 
         return parent::delete();
     }

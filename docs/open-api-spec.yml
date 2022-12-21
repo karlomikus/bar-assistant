@@ -973,6 +973,15 @@ paths:
                   type: integer
                   example: 3
       responses:
+        '200':
+          description: Successful rating update response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Rating'
         '201':
           description: Successful response
           content:
@@ -988,6 +997,15 @@ paths:
           $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      tags:
+        - "Ratings"
+      summary: Delete current user's cocktail rating
+      responses:
+        '204':
+          description: Successfully deleted rating
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:

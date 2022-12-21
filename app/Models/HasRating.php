@@ -15,7 +15,12 @@ trait HasRating
 
     public function rate(int $ratingValue, int $userId): Rating
     {
-        $rating = new Rating();
+        $rating = $this->ratings()->where('user_id', $userId)->first();
+
+        if (!$rating) {
+            $rating = new Rating();
+        }
+
         $rating->rating = $ratingValue;
         $rating->user_id = $userId;
 
@@ -37,5 +42,15 @@ trait HasRating
     public function getUserRating(int $userId): ?Rating
     {
         return $this->ratings()->where('user_id', $userId)->first();
+    }
+
+    public function deleteUserRating(int $userId): void
+    {
+        $this->ratings()->where('user_id', $userId)->delete();
+    }
+
+    public function deleteRatings(): void
+    {
+        $this->ratings()->delete();
     }
 }

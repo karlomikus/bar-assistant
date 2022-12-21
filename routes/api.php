@@ -104,6 +104,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::prefix('ratings')->group(function() {
         Route::post('/cocktails/{id}', [RatingController::class, 'rateCocktail']);
+        Route::delete('/cocktails/{id}', [RatingController::class, 'deleteCocktailRating']);
     });
 
 });
