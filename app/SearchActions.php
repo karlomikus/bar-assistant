@@ -57,7 +57,7 @@ class SearchActions
 
         $engine->index('cocktails')->updateSettings([
             'filterableAttributes' => ['id', 'tags', 'user_id', 'glass', 'average_rating'],
-            'sortableAttributes' => ['name', 'date'],
+            'sortableAttributes' => ['name', 'date', 'average_rating'],
             'searchableAttributes' => [
                 'name',
                 'tags',
