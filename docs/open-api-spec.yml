@@ -480,16 +480,17 @@ paths:
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /glasses/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Database id of the glass
+        schema:
+          type: integer
     get:
       tags:
         - Glasses
       summary: Get a specific glass type
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
       responses:
         '200':
           description: Successful response
