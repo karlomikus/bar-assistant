@@ -1,3 +1,10 @@
+# v1.0.5
+## New
+- Added `/tags` endpoint to manage tags
+- Added cocktail ratings
+    - Added `/ratings` endpoint to manage ratings
+    - Added average rating attribute to cocktails index
+
 # v1.0.4
 ## New
 - Recipe scraping

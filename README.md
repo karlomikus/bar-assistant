@@ -185,16 +185,6 @@ $ php artisan bar:scrape --tags=custom,tags,lorem --name="My imported recipe" ht
 $ docker compose exec -it bar-assistant php artisan bar:scrape https://tuxedono2.com/coco-no-coco-cocktail-recipe
 ```
 
-## Meilisearch update
-
-To update your meilisearch instance, you first need to create a dump of your database. Bar Assistant has a command that will create a dump task.
-
-``` bash
-$ docker compose exec -it bar-assistant php artisan bar:dump-search
-```
-
-Then follow the rest of the [steps described in meilisearch docs](https://docs.meilisearch.com/learn/cookbooks/docker.html#generating-dumps-and-updating-meilisearch).
-
 ## FAQ
 
 ### How do I disable new user registrations?
@@ -218,6 +208,16 @@ $ docker compose exec -it bar-assistant php artisan scout:import "Kami\\Cocktail
 # Sync ingredients
 $ docker compose exec -it bar-assistant php artisan scout:import "Kami\\Cocktail\\Models\\Ingredient"
 ```
+
+### How do I update Meilisearch?
+
+To update your meilisearch instance, you first need to create a dump of your database. Bar Assistant has a command that will create a dump task.
+
+``` bash
+$ docker compose exec -it bar-assistant php artisan bar:dump-search
+```
+
+Then follow the rest of the [steps described in meilisearch docs](https://docs.meilisearch.com/learn/cookbooks/docker.html#generating-dumps-and-updating-meilisearch).
 
 ## Contributing
 
