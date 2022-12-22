@@ -56,8 +56,8 @@ class SearchActions
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         $engine->index('cocktails')->updateSettings([
-            'filterableAttributes' => ['id', 'tags', 'user_id', 'glass'],
-            'sortableAttributes' => ['name', 'date'],
+            'filterableAttributes' => ['id', 'tags', 'user_id', 'glass', 'average_rating'],
+            'sortableAttributes' => ['name', 'date', 'average_rating'],
             'searchableAttributes' => [
                 'name',
                 'tags',
