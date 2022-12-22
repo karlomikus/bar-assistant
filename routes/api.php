@@ -1,11 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Kami\Cocktail\Http\Controllers\TagController;
 use Kami\Cocktail\Http\Controllers\AuthController;
 use Kami\Cocktail\Http\Controllers\UserController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
+use Kami\Cocktail\Http\Controllers\RatingController;
 use Kami\Cocktail\Http\Controllers\ServerController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
@@ -101,6 +103,18 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::delete('/{id}', [GlassController::class, 'delete']);
     });
 
+    Route::prefix('tags')->group(function() {
+        Route::get('/', [TagController::class, 'index']);
+        Route::post('/', [TagController::class, 'store']);
+        Route::get('/{id}', [TagController::class, 'show'])->name('tags.show');
+        Route::put('/{id}', [TagController::class, 'update']);
+        Route::delete('/{id}', [TagController::class, 'delete']);
+    });
+
+    Route::prefix('ratings')->group(function() {
+        Route::post('/cocktails/{id}', [RatingController::class, 'rateCocktail']);
+        Route::delete('/cocktails/{id}', [RatingController::class, 'deleteCocktailRating']);
+    });
 });
 
 Route::fallback(function() {

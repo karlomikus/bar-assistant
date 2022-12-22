@@ -1,7 +1,7 @@
 openapi: '3.0.2'
 info:
   title: 'Bar Assistant API'
-  version: '1.0.4'
+  version: '1.0.5'
   description: |-
     Bar assistant is a self hosted application for managing your home bar. It allows you to add ingredients and create custom cocktail recipes.
 servers:
@@ -27,6 +27,10 @@ tags:
     description: Operations related to users
   - name: "Shopping list"
     description: Operations related to user shopping list
+  - name: "Tags"
+    description: Operations related to tags
+  - name: "Ratings"
+    description: Operations related to resource ratings
 security:
   - user_token: []
 paths:
@@ -476,16 +480,17 @@ paths:
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /glasses/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Database id of the glass
+        schema:
+          type: integer
     get:
       tags:
         - Glasses
       summary: Get a specific glass type
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
       responses:
         '200':
           description: Successful response
@@ -949,6 +954,161 @@ paths:
                         example: [1, 2, 3]
                         items:
                           type: integer
+  /tags:
+    get:
+      tags:
+        - "Tags"
+      summary: 'Show a list of all tags'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tag'
+    post:
+      tags:
+        - "Tags"
+      summary: 'Create a new tag'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+      responses:
+        '201':
+          description: Successful response
+          headers:
+            Location:
+              description: Absolute URL to new resource
+              schema:
+                type: string
+                example: 'http://localhost/api/tags/1'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Tag'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /tags/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a tag'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - "Tags"
+      summary: Get a specific tag
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Tag'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - "Tags"
+      summary: Update a specific tag
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Tag'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      tags:
+        - "Tags"
+      summary: Delete specific tag
+      responses:
+        '204':
+          description: Successful response
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /ratings/cocktails/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a cocktail'
+        schema:
+          type: integer
+        required: true
+    post:
+      tags:
+        - "Ratings"
+      summary: "Rate cocktail"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: integer
+                  example: 3
+      responses:
+        '200':
+          description: Successful rating update response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Rating'
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Rating'
+        '400':
+          description: Resource already rated by user
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      tags:
+        - "Ratings"
+      summary: Delete current user's cocktail rating
+      responses:
+        '204':
+          description: Successfully deleted rating
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -1404,6 +1564,23 @@ components:
         ingredient_id:
           type: integer
           example: 1
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Tag name"
+    TagRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: A new tag
     UserShoppingList:
       type: object
       properties:
@@ -1496,3 +1673,18 @@ components:
             total:
               type: integer
               example: 100
+    Rating:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        rateable_id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        rating:
+          type: integer
+          example: 3
