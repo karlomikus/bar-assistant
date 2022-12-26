@@ -34,12 +34,10 @@ This repository only contains the API server, if you are looking for easy to use
 - Cocktail ingredient substitutes
 - Assign glass types to cocktails
 - Cocktail recipe scraping
+- Cocktail ratings
 
 ## Planned features
-- Cocktail recipe sharing
-- Cocktail and shopping list printing
 - User defined cocktail collections
-- Cocktail ratings
 - Add user notes to cocktail
 - Add cocktail flavor profiles
 

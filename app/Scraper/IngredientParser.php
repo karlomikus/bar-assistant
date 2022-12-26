@@ -46,7 +46,7 @@ class IngredientParser
 
         return [
             'amount' => $amount,
-            'units' => $units === '' ? null : $units,
+            'units' => $units,
             'name' => ucfirst(trim($name)),
         ];
     }
