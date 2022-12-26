@@ -10,7 +10,7 @@ class IngredientParser
         'oz' => ['oz.', 'ounce', 'fl-oz', 'oz', 'ounces'],
         'ml' => ['ml', 'ml.', 'milliliter', 'milliliters'],
         'cl' => ['cl', 'cl.', 'centiliter', 'centiliters'],
-        'dash' => ['dash', 'dashes'],
+        'dash' => ['dashes', 'dash'],
         'sprigs' => ['sprig', 'sprigs'],
         'leaves' => ['leaves', 'leaf'],
         'whole' => ['whole'],
@@ -97,8 +97,8 @@ class IngredientParser
         foreach($this->units as $unit => $alts) {
             foreach ($alts as $matchUnit) {
                 // Match the whole word
-                if (preg_match('/\b'. $matchUnit .'\b/', strtolower($ingredientString)) === 1) {
-                    return [$unit, trim(preg_replace('/\b'. $matchUnit .'\b/', '', $ingredientString), " \n\r\t\v\x00\.")];
+                if (preg_match('/\b'. $matchUnit .'\b/i', $ingredientString) === 1) {
+                    return [$unit, trim(preg_replace('/\b'. $matchUnit .'\b/i', '', $ingredientString), " \n\r\t\v\x00\.")];
                 }
             }
         }

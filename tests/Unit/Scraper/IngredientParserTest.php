@@ -70,5 +70,11 @@ class IngredientParserTest extends TestCase
             'units' => 'leaves',
             'name' => 'Large basil',
         ], (new IngredientParser('2-3 large basil leaves'))->parse());
+
+        $this->assertSame([
+            'amount' => '2',
+            'units' => 'dash',
+            'name' => 'Angostura Bitters',
+        ], (new IngredientParser('2 Dashes Angostura Bitters'))->parse());
     }
 }
