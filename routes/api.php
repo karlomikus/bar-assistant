@@ -7,6 +7,7 @@ use Kami\Cocktail\Http\Controllers\UserController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
+use Kami\Cocktail\Http\Controllers\UsersController;
 use Kami\Cocktail\Http\Controllers\RatingController;
 use Kami\Cocktail\Http\Controllers\ServerController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
@@ -114,6 +115,14 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::prefix('ratings')->group(function() {
         Route::post('/cocktails/{id}', [RatingController::class, 'rateCocktail']);
         Route::delete('/cocktails/{id}', [RatingController::class, 'deleteCocktailRating']);
+    });
+
+    Route::prefix('users')->group(function() {
+        Route::get('/', [UsersController::class, 'index']);
+        Route::post('/', [UsersController::class, 'store']);
+        Route::get('/{id}', [UsersController::class, 'show'])->name('users.show');
+        Route::put('/{id}', [UsersController::class, 'update']);
+        Route::delete('/{id}', [UsersController::class, 'delete']);
     });
 });
 

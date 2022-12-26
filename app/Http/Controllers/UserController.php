@@ -6,15 +6,16 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Kami\Cocktail\Http\Resources\UserResource;
+use Kami\Cocktail\Http\Resources\ProfileResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\UpdateUserRequest;
 
+// TODO: Rename to profile or smthing
 class UserController extends Controller
 {
     public function show(Request $request): JsonResource
     {
-        return new UserResource(
+        return new ProfileResource(
             $request->user()->load('favorites', 'shelfIngredients', 'shoppingLists')
         );
     }
@@ -33,7 +34,7 @@ class UserController extends Controller
 
         $currentUser->save();
 
-        return new UserResource(
+        return new ProfileResource(
             $request->user()->load('favorites', 'shelfIngredients', 'shoppingLists')
         );
     }

@@ -9,7 +9,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * @mixin \Kami\Cocktail\Models\User
  */
-class UserResource extends JsonResource
+class ProfileResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -23,8 +23,11 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'is_admin' => (bool) $this->is_admin,
+            'search_host' => config('scout.meilisearch.host'),
             'search_api_key' => $this->search_api_key,
+            'favorite_cocktails' => $this->favorites->pluck('cocktail_id'),
+            'shelf_ingredients' => $this->shelfIngredients->pluck('ingredient_id'),
+            'shopping_lists' => $this->shoppingLists->pluck('ingredient_id'),
         ];
     }
 }
