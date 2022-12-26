@@ -64,6 +64,7 @@ class OpenBar extends Command
                 'email' => 'bot@my-bar.localhost',
                 'email_verified_at' => null,
                 'remember_token' => null,
+                'is_admin' => false,
                 'search_api_key' => null,
             ],
             [
@@ -72,6 +73,7 @@ class OpenBar extends Command
                 'email' => $this->argument('email'),
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
+                'is_admin' => true,
                 'search_api_key' => App::environment('demo') ? SearchActions::getPublicDemoApiKey() : SearchActions::getPublicApiKey() // TODO: Check if already exists in ENV
             ]
         ]);
@@ -367,6 +369,7 @@ class OpenBar extends Command
                 $image = new Image();
                 $image->file_path = 'cocktails/' . Str::slug($sCocktail['name']) . '.jpg';
                 $image->file_extension = 'jpg';
+                $image->user_id = 1;
                 $image->copyright = $sCocktail['image_copyright'] ?? null;
                 $cocktail->images()->save($image);
 

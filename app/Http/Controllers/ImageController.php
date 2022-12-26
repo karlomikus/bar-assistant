@@ -26,7 +26,7 @@ class ImageController extends Controller
 
     public function store(ImageService $imageservice, ImageRequest $request): JsonResource
     {
-        $images = $imageservice->uploadAndSaveImages($request->images);
+        $images = $imageservice->uploadAndSaveImages($request->images, $request->user()->id);
 
         return ImageResource::collection($images);
     }
