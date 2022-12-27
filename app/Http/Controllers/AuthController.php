@@ -10,8 +10,8 @@ use Kami\Cocktail\SearchActions;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Kami\Cocktail\Http\Resources\ProfileResource;
 use Kami\Cocktail\Http\Requests\RegisterRequest;
+use Kami\Cocktail\Http\Resources\ProfileResource;
 
 class AuthController extends Controller
 {

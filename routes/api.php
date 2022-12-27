@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Kami\Cocktail\Http\Controllers\TagController;
 use Kami\Cocktail\Http\Controllers\AuthController;
-use Kami\Cocktail\Http\Controllers\UserController;
+use Kami\Cocktail\Http\Controllers\ProfileController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
@@ -44,8 +44,8 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
 
-    Route::get('/user', [UserController::class, 'show']);
-    Route::post('/user', [UserController::class, 'update']);
+    Route::get('/user', [ProfileController::class, 'show']);
+    Route::post('/user', [ProfileController::class, 'update']);
 
     Route::prefix('shelf')->group(function() {
         Route::get('/', [ShelfController::class, 'index']);

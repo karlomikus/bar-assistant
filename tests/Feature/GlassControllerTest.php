@@ -83,6 +83,17 @@ class GlassControllerTest extends TestCase
         $response->assertValidResponse();
     }
 
+    public function test_save_glass_forbidden_response()
+    {
+        $this->actingAs(User::factory()->create(['is_admin' => false]));
+
+        $response = $this->postJson('/api/glasses/', [
+            'name' => 'Glass 1'
+        ]);
+
+        $response->assertForbidden();
+    }
+
     public function test_update_glass_response()
     {
         $glass = Glass::factory()->create([

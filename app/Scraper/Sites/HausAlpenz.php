@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\Cocktail\Utils;
-use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 use Kami\Cocktail\Scraper\IngredientParser;
+use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class HausAlpenz extends AbstractSiteExtractor
 {
@@ -112,7 +112,7 @@ class HausAlpenz extends AbstractSiteExtractor
         $img = null;
         if ($this->crawler->filter(".recipePhoto img")->count() > 0) {
             $img = $this->crawler->filter(".recipePhoto img")->attr('src');
-        } else if ($this->crawler->filter(".recipePhotoNarrow img")->count() > 0) {
+        } elseif ($this->crawler->filter(".recipePhotoNarrow img")->count() > 0) {
             $img = $this->crawler->filter(".recipePhotoNarrow img")->attr('src');
         }
 

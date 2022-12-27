@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
+use Illuminate\Support\Facades\App;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -37,7 +38,10 @@ return new class extends Migration
 
         // Handle unassigned images
         $result = DB::table('users')->orderBy('id', 'asc')->first('id');
-        DB::table('images')->whereNull('user_id')->update(['user_id' => $result->id]);
+
+        if ($result) {
+            DB::table('images')->whereNull('user_id')->update(['user_id' => $result->id]);
+        }
 
         // Make user not nullable
         Schema::table('images', function (Blueprint $table) {

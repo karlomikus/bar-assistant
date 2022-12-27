@@ -3,8 +3,7 @@
 namespace Kami\Cocktail\Exceptions;
 
 use Throwable;
-use Illuminate\Database\RecordsNotFoundException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -49,6 +48,15 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (HttpException $e, $request) {
+            if ($e->getStatusCode() === 403) {
+                return response()->json([
+                    'type' => 'api_error',
+                    'message' => 'You are not authorized for this action.',
+                ], 403);
+            }
         });
 
         $this->renderable(function (NotFoundHttpException $e, $request) {

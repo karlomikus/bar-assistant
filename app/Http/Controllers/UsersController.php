@@ -48,11 +48,7 @@ class UsersController extends Controller
         $user->name = $request->post('name');
         $user->email = $request->post('email');
         $user->email_verified_at = now();
-
-        if ($request->has('password')) {
-            $user->password = Hash::make($request->post('password'));
-        }
-
+        $user->password = Hash::make($request->post('password'));
         $user->is_admin = (bool) $request->post('is_admin');
         $user->search_api_key = SearchActions::getPublicApiKey();
         $user->save();

@@ -66,6 +66,12 @@ class IngredientController extends Controller
 
     public function update(IngredientService $ingredientService, IngredientRequest $request, int $id): JsonResource
     {
+        $ingredient = Ingredient::findOrFail($id);
+
+        if ($request->user()->cannot('edit', $ingredient)) {
+            abort(403);
+        }
+
         $ingredient = $ingredientService->updateIngredient(
             $id,
             $request->post('name'),
@@ -82,9 +88,15 @@ class IngredientController extends Controller
         return new IngredientResource($ingredient);
     }
 
-    public function delete(int $id): Response
+    public function delete(Request $request, int $id): Response
     {
-        Ingredient::findOrFail($id)->delete();
+        $ingredient = Ingredient::findOrFail($id);
+
+        if ($request->user()->cannot('delete', $ingredient)) {
+            abort(403);
+        }
+
+        $ingredient->delete();
 
         return response(null, 204);
     }

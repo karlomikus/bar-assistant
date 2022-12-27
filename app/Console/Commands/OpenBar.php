@@ -282,6 +282,7 @@ class OpenBar extends Command
             $image->file_path = 'ingredients/' . Str::slug($ing->name) . '.png';
             $image->file_extension = 'png';
             $image->copyright = null;
+            $image->user_id = 1;
             $ing->images()->save($image);
 
             // Update site search index

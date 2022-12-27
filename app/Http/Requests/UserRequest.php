@@ -29,9 +29,8 @@ class UserRequest extends FormRequest
     {
         $user = User::where('email', $this->post('email'))->first();
 
-        return [
+        $rules = [
             'name' => 'required',
-            'email' => 'required|email|unique:users,email',
             'email' => [
                 'required',
                 'email',
@@ -39,5 +38,11 @@ class UserRequest extends FormRequest
             ],
             'is_admin' => 'required|boolean',
         ];
+
+        if ($this->isMethod('POST')) {
+            $rules['password'] = 'required';
+        }
+
+        return $rules;
     }
 }
