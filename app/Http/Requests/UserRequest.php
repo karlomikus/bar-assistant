@@ -34,13 +34,17 @@ class UserRequest extends FormRequest
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users', 'email')->ignore($user),
             ],
             'is_admin' => 'required|boolean',
         ];
 
         if ($this->isMethod('POST')) {
             $rules['password'] = 'required';
+            $rules['email'][] = Rule::unique('users', 'email');
+        }
+
+        if ($this->isMethod('PUT')) {
+            $rules['email'][] = Rule::unique('users', 'email')->ignore($user);
         }
 
         return $rules;

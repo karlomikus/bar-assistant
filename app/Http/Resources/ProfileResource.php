@@ -23,6 +23,7 @@ class ProfileResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'is_admin' => $this->isAdmin(),
             'search_host' => config('scout.meilisearch.host'),
             'search_api_key' => $this->search_api_key,
             'favorite_cocktails' => $this->favorites->pluck('cocktail_id'),

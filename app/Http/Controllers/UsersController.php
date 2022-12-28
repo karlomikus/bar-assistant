@@ -61,7 +61,7 @@ class UsersController extends Controller
 
     public function update(int $id, UserRequest $request): JsonResource
     {
-        if (!$request->user()->isAdmin()) {
+        if (!$request->user()->isAdmin() || $id === 1) {
             abort(403);
         }
 
@@ -70,7 +70,7 @@ class UsersController extends Controller
         $user->email = $request->post('email');
         $user->email_verified_at = now();
         $user->is_admin = (bool) $request->post('is_admin');
-        $user->search_api_key = SearchActions::getPublicApiKey();
+        // $user->search_api_key = SearchActions::getPublicApiKey();
 
         if ($request->has('password')) {
             $user->password = Hash::make($request->post('password'));
@@ -83,7 +83,7 @@ class UsersController extends Controller
 
     public function delete(Request $request, int $id): Response
     {
-        if (!$request->user()->isAdmin()) {
+        if (!$request->user()->isAdmin() || $id === 1) {
             abort(403);
         }
 
