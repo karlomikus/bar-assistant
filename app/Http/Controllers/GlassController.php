@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Glass;
 use Illuminate\Http\JsonResponse;
@@ -29,6 +30,10 @@ class GlassController extends Controller
 
     public function store(GlassRequest $request): JsonResponse
     {
+        if (!$request->user()->isAdmin()) {
+            abort(403);
+        }
+
         $glass = new Glass();
         $glass->name = $request->post('name');
         $glass->description = $request->post('description');
@@ -42,6 +47,10 @@ class GlassController extends Controller
 
     public function update(int $id, GlassRequest $request): JsonResource
     {
+        if (!$request->user()->isAdmin()) {
+            abort(403);
+        }
+
         $glass = Glass::findOrFail($id);
         $glass->name = $request->post('name');
         $glass->description = $request->post('description');
@@ -50,8 +59,12 @@ class GlassController extends Controller
         return new GlassResource($glass);
     }
 
-    public function delete(int $id): Response
+    public function delete(Request $request, int $id): Response
     {
+        if (!$request->user()->isAdmin()) {
+            abort(403);
+        }
+
         Glass::findOrFail($id)->delete();
 
         return response(null, 204);

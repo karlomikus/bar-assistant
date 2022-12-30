@@ -217,6 +217,14 @@ $ docker compose exec -it bar-assistant php artisan bar:dump-search
 
 Then follow the rest of the [steps described in meilisearch docs](https://docs.meilisearch.com/learn/cookbooks/docker.html#generating-dumps-and-updating-meilisearch).
 
+### How do I make a specific user an administrator?
+
+To give admin rights to a specific user you can use the following command.
+
+``` bash
+$ php artisan bar:make-admin "user@email.com"
+```
+
 ## Contributing
 
 Bar Assistant is a basic Laravel application. Once you have setup your PHP dev environment and followed manual installation steps you can start working on the code.

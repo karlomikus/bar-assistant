@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Tag;
 use Illuminate\Http\JsonResponse;
@@ -29,6 +30,10 @@ class TagController extends Controller
 
     public function store(TagRequest $request): JsonResponse
     {
+        if (!$request->user()->isAdmin()) {
+            abort(403);
+        }
+
         $tag = new Tag();
         $tag->name = $request->post('name');
         $tag->save();
@@ -41,6 +46,10 @@ class TagController extends Controller
 
     public function update(TagRequest $request, int $id): JsonResource
     {
+        if (!$request->user()->isAdmin()) {
+            abort(403);
+        }
+
         $tag = Tag::findOrFail($id);
         $tag->name = $request->post('name');
         $tag->save();
@@ -48,8 +57,12 @@ class TagController extends Controller
         return new TagResource($tag);
     }
 
-    public function delete(int $id): Response
+    public function delete(Request $request, int $id): Response
     {
+        if (!$request->user()->isAdmin()) {
+            abort(403);
+        }
+
         Tag::findOrFail($id)->delete();
 
         return response(null, 204);

@@ -103,6 +103,12 @@ class CocktailController extends Controller
      */
     public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): JsonResource
     {
+        $cocktail = Cocktail::findOrFail($id);
+
+        if ($request->user()->cannot('edit', $cocktail)) {
+            abort(403);
+        }
+
         try {
             $cocktail = $cocktailService->updateCocktail(
                 $id,
@@ -129,9 +135,15 @@ class CocktailController extends Controller
     /**
      * Delete a single cocktail by id
      */
-    public function delete(int $id): Response
+    public function delete(Request $request, int $id): Response
     {
-        Cocktail::findOrFail($id)->delete();
+        $cocktail = Cocktail::findOrFail($id);
+
+        if ($request->user()->cannot('delete', $cocktail)) {
+            abort(403);
+        }
+
+        $cocktail->delete();
 
         return response(null, 204);
     }

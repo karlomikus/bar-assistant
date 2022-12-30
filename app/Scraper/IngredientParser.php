@@ -94,11 +94,11 @@ class IngredientParser
 
     private function parseUnit(string $ingredientString): array
     {
-        foreach($this->units as $unit => $alts) {
+        foreach ($this->units as $unit => $alts) {
             foreach ($alts as $matchUnit) {
                 // Match the whole word
-                if (preg_match('/\b'. $matchUnit .'\b/i', $ingredientString) === 1) {
-                    return [$unit, trim(preg_replace('/\b'. $matchUnit .'\b/i', '', $ingredientString), " \n\r\t\v\x00\.")];
+                if (preg_match('/\b' . $matchUnit . '\b/i', $ingredientString) === 1) {
+                    return [$unit, trim(preg_replace('/\b' . $matchUnit . '\b/i', '', $ingredientString), " \n\r\t\v\x00\.")];
                 }
             }
         }

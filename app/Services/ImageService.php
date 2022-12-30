@@ -16,10 +16,11 @@ class ImageService
      * Uploads and saves an image with filepath
      *
      * @param array<mixed> $requestImages
+     * @param int $userId
      * @return array<\Kami\Cocktail\Models\Image>
      * @throws ImageUploadException
      */
-    public function uploadAndSaveImages(array $requestImages): array
+    public function uploadAndSaveImages(array $requestImages, int $userId): array
     {
         $images = [];
         foreach ($requestImages as $imageWithMeta) {
@@ -39,6 +40,7 @@ class ImageService
             $image->copyright = $imageWithMeta['copyright'];
             $image->file_path = $filepath;
             $image->file_extension = $fileExtension;
+            $image->user_id = $userId;
             $image->save();
 
             $images[] = $image;
@@ -60,7 +62,7 @@ class ImageService
         return $image;
     }
 
-    public function uploadImage(string $imageSource, ?string $copyright = null): Image
+    public function uploadImage(string $imageSource, int $userId, ?string $copyright = null): Image
     {
         $tempImage = InterventionImage::make($imageSource);
 
@@ -71,6 +73,7 @@ class ImageService
         $image->copyright = $copyright;
         $image->file_path = $filepath;
         $image->file_extension = 'jpg';
+        $image->user_id = $userId;
         $image->save();
 
         return $image;

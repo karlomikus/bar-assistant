@@ -26,21 +26,33 @@ class ImageController extends Controller
 
     public function store(ImageService $imageservice, ImageRequest $request): JsonResource
     {
-        $images = $imageservice->uploadAndSaveImages($request->images);
+        $images = $imageservice->uploadAndSaveImages($request->images, $request->user()->id);
 
         return ImageResource::collection($images);
     }
 
     public function update(int $id, ImageService $imageservice, Request $request): JsonResource
     {
+        $image = Image::findOrFail($id);
+
+        if ($request->user()->cannot('edit', $image)) {
+            abort(403);
+        }
+
         $image = $imageservice->updateImage($id, null, $request->input('copyright'));
 
         return new ImageResource($image);
     }
 
-    public function delete(int $id): Response
+    public function delete(Request $request, int $id): Response
     {
-        Image::findOrFail($id)->delete();
+        $image = Image::findOrFail($id);
+
+        if ($request->user()->cannot('delete', $image)) {
+            abort(403);
+        }
+
+        $image->delete();
 
         return response(null, 204);
     }

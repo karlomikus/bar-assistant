@@ -10,7 +10,7 @@ use Kami\Cocktail\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class UserControllerTest extends TestCase
+class ProfileControllerTest extends TestCase
 {
     use RefreshDatabase;
 
