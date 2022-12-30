@@ -4,6 +4,8 @@ namespace Kami\Cocktail\Console\Commands;
 
 use Illuminate\Console\Command;
 use Kami\Cocktail\SearchActions;
+use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Artisan;
 
 class BarSearchRefresh extends Command
@@ -38,10 +40,27 @@ class BarSearchRefresh extends Command
         // Update settings
         $this->info('Updating search index settings...');
         SearchActions::updateIndexSettings();
-        
+
         $this->info('Syncing cocktails and ingredients to meilisearch...');
-        Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
-        Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Ingredient"]);
+        Artisan::call('scout:import', ['model' => Cocktail::class]);
+        Artisan::call('scout:import', ['model' => Ingredient::class]);
+
+        // Site search model imports
+        $engine = app(\Laravel\Scout\EngineManager::class)->engine();
+        Ingredient::cursor()->chunk(500)->each(function ($chunk) use ($engine) {
+            $chunk->each(function ($model) use ($engine) {
+                $engine->index('site_search_index')->addDocuments([
+                    $model->toSiteSearchArray()
+                ], 'key');
+            });
+        });
+        Cocktail::cursor()->chunk(500)->each(function ($chunk) use ($engine) {
+            $chunk->each(function ($model) use ($engine) {
+                $engine->index('site_search_index')->addDocuments([
+                    $model->toSiteSearchArray()
+                ], 'key');
+            });
+        });
 
         return Command::SUCCESS;
     }
