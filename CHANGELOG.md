@@ -1,3 +1,33 @@
+# v1.1.0
+This update includes changes to authorization. Users can now be admins and have elevated privilages. Since this is a new change you will not have any admins in your instance if you are not starting from a fresh install. To make yourself admin you need to run the following command with the email you are using to login:
+
+``` bash
+$ php artisan bar:make-admin your@email.com
+```
+Or in docker/compose:
+
+``` bash
+$ docker compose exec -it bar-assistant php artisan bar:make-admin your@email.com
+```
+
+## New
+- Added `users` endpoint to manage users
+- User can now have admin role
+    - Added command to convert a single user to admin
+- Implemented authorization
+    - Management of users is allowed only to admins
+    - Update and delete of glass type allowed only to admins
+    - Update and delete of ingredient categories allowed only to admins
+    - All cocktails and ingredients created by the system can only be updated and delete by admin
+- Added ingredient parser
+    - Allows easier extraction of scraped data
+- Recipe scraping
+    - Support for Haus Alpenz
+- Sync site search index on docker start
+
+## Changes
+- Added `user_id` to `images` table
+
 # v1.0.5
 ## New
 - Added `/tags` endpoint to manage tags
