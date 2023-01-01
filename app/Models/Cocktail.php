@@ -96,6 +96,11 @@ class Cocktail extends Model implements SiteSearchable
         return round(($alcoholVolume / $afterDilution) * 100, 2);
     }
 
+    public function getMainIngredient(): ?CocktailIngredient
+    {
+        return $this->ingredients->first();
+    }
+
     public function toSiteSearchArray(): array
     {
         return [
@@ -125,7 +130,8 @@ class Cocktail extends Model implements SiteSearchable
             'tags' => $this->tags->pluck('name'),
             'date' => $this->updated_at->format('Y-m-d H:i:s'),
             'glass' => $this->glass->name ?? null,
-            'average_rating' => $this->getAverageRating()
+            'average_rating' => $this->getAverageRating(),
+            'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null
         ];
     }
 }
