@@ -15,7 +15,7 @@ class BarSearchRefresh extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:refresh-search';
+    protected $signature = 'bar:refresh-search {--c|clear : Clear indexes first}';
 
     /**
      * The console command description.
@@ -32,10 +32,12 @@ class BarSearchRefresh extends Command
     public function handle()
     {
         // Clear indexes
-        // SearchActions::flushSearchIndex(); // TODO: Create method to import site_index
-        // $this->info('Removing cocktails and ingredients index...');
-        // Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Cocktail"]);
-        // Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
+        if ($this->option('clear')) {
+            $this->info('Flushing site search, cocktails and ingredients index...');
+            SearchActions::flushSearchIndex();
+            Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Cocktail"]);
+            Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
+        }
 
         // Update settings
         $this->info('Updating search index settings...');
