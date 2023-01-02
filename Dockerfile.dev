@@ -1,0 +1,33 @@
+FROM php:8.1-fpm
+
+ARG user
+ARG uid
+
+# Add dependencies
+RUN apt update \
+    && apt-get install -y \
+    git \
+    unzip \
+    sqlite3 \
+    bash \
+    && apt-get autoremove -y \
+    && apt-get clean
+
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN chmod +x /usr/local/bin/install-php-extensions && \
+    install-php-extensions gd opcache redis
+
+# Add composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+RUN useradd -G www-data,root -u $uid -d /home/$user $user
+RUN mkdir -p /home/$user/.composer && \
+    chown -R $user:$user /home/$user
+
+USER $user
+
+WORKDIR /var/www/cocktails
+
+EXPOSE 9000
+
+CMD ["php-fpm"]

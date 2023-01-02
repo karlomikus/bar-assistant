@@ -24,9 +24,13 @@ $ docker compose exec -it bar-assistant php artisan bar:make-admin your@email.co
 - Recipe scraping
     - Support for Haus Alpenz
 - Sync site search index on docker start
+- Added `main_ingredient_name` to cocktail response schema
+    - Ingredients that are first added to cocktail are considered as main ingredient
+- Added development docker compose file
 
 ## Changes
 - Added `user_id` to `images` table
+- Add flush index option to `bar:refresh-search` command
 
 # v1.0.5
 ## New
