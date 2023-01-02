@@ -27,10 +27,12 @@ $ docker compose exec -it bar-assistant php artisan bar:make-admin your@email.co
 - Added `main_ingredient_name` to cocktail response schema
     - Ingredients that are first added to cocktail are considered as main ingredient
 - Added development docker compose file
+- Added `limit` query attribute to cocktail favorites endpoint
 
 ## Changes
 - Added `user_id` to `images` table
 - Add flush index option to `bar:refresh-search` command
+- Optimized cocktail favorites query
 
 # v1.0.5
 ## New

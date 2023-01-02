@@ -182,7 +182,13 @@ class CocktailController extends Controller
      */
     public function userFavorites(Request $request): JsonResource
     {
-        $cocktails = $request->user()->favorites->pluck('cocktail');
+        $cocktails = $request->user()
+            ->favorites()
+            ->with('cocktail.ingredients.ingredient', 'cocktail.images', 'cocktail.tags')
+            ->orderBy('updated_at', 'desc')
+            ->limit($request->get('limit', 100))
+            ->get()
+            ->pluck('cocktail');
 
         return CocktailResource::collection($cocktails);
     }

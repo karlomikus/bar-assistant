@@ -315,6 +315,13 @@ paths:
                       $ref: '#/components/schemas/Cocktail'
   /cocktails/user-favorites:
     get:
+      parameters:
+        - name: limit
+          in: query
+          description: Limit the total number of fetched cocktails
+          schema:
+            type: integer
+            default: 100
       tags:
         - "Cocktails"
       summary: 'Get a list of cocktails that authorized user added to his favorites'
