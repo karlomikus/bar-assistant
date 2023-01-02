@@ -1614,6 +1614,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CocktailIngredient'
+        user_rating:
+          type: integer
+          example: 3
+        average_rating:
+          type: integer
+          example: 3
+        main_ingredient_name:
+          type: string
+          example: Gin
     CocktailRequest:
       type: object
       required:
