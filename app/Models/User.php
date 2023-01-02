@@ -70,4 +70,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserShoppingList::class);
     }
+
+    public function isAdmin(): bool
+    {
+        return (bool) $this->is_admin;
+    }
+
+    public function isUser(): bool
+    {
+        return !$this->isAdmin();
+    }
 }

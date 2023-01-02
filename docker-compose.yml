@@ -1,0 +1,44 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: developer
+        uid: 1000
+      context: .
+      dockerfile: Dockerfile.dev
+    image: kmikus12/bar-assistant-server-dev
+    container_name: app
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/cocktails
+      - ./resources/php.dev.ini:/usr/local/etc/php/conf.d/local.ini
+
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www/cocktails
+      - ./resources/nginx.dev.conf:/etc/nginx/conf.d/default.conf
+
+  redis:
+    image: redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    restart: unless-stopped
+
+  meilisearch:
+    image: getmeili/meilisearch:v0.29
+    environment:
+      - MEILI_MASTER_KEY=masterKey
+    restart: unless-stopped
+    ports:
+      - 7700:7700
+    volumes:
+      - meilidata:/meili_data
+
+volumes:
+  meilidata:

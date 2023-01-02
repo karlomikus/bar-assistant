@@ -1,7 +1,7 @@
 openapi: '3.0.2'
 info:
   title: 'Bar Assistant API'
-  version: '1.0.5'
+  version: '1.1.0'
   description: |-
     Bar assistant is a self hosted application for managing your home bar. It allows you to add ingredients and create custom cocktail recipes.
 servers:
@@ -23,6 +23,8 @@ tags:
     description: Operations related to ingredient categories
   - name: "User shelf"
     description: Operations related to user shelf
+  - name: User
+    description: Operations related to current user
   - name: Users
     description: Operations related to users
   - name: "Shopping list"
@@ -229,6 +231,8 @@ paths:
                 properties:
                     data:
                       $ref: '#/components/schemas/Cocktail'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
         '422':
@@ -240,6 +244,8 @@ paths:
       responses:
         '204':
           description: Successfully deleted cocktail response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
   /cocktails/{id}/toggle-favorite:
@@ -309,6 +315,13 @@ paths:
                       $ref: '#/components/schemas/Cocktail'
   /cocktails/user-favorites:
     get:
+      parameters:
+        - name: limit
+          in: query
+          description: Limit the total number of fetched cocktails
+          schema:
+            type: integer
+            default: 100
       tags:
         - "Cocktails"
       summary: 'Get a list of cocktails that authorized user added to his favorites'
@@ -422,6 +435,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Ingredient'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
         '404':
@@ -433,6 +448,8 @@ paths:
       responses:
         '204':
           description: Successfully deleted ingredient
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
   /glasses:
@@ -522,6 +539,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Glass'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
         '422':
@@ -533,6 +552,8 @@ paths:
       responses:
         '204':
           description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
   /images:
@@ -728,6 +749,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/IngredientCategory'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
         '422':
@@ -739,6 +762,8 @@ paths:
       responses:
         '204':
           description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
   /shelf:
@@ -825,7 +850,7 @@ paths:
   /user:
     get:
       tags:
-        - "Users"
+        - "User"
       summary: "Get info about currently authenticated user"
       responses:
         '200':
@@ -839,7 +864,7 @@ paths:
                     $ref: '#/components/schemas/User'
     post:
       tags:
-        - "Users"
+        - "User"
       summary: "Update currently authenticated user"
       description: "Updates currently authenticated user with new information. If password field is present also changes the password."
       requestBody:
@@ -1109,6 +1134,116 @@ paths:
           description: Successfully deleted rating
         '404':
           $ref: '#/components/responses/NotFound'
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Show a list of users
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+    post:
+      tags:
+        - Users
+      summary: Create a new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '201':
+          description: Successful response
+          headers:
+            Location:
+              description: Absolute URL to new resource
+              schema:
+                type: string
+                example: 'http://localhost/api/users/1'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/UserResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /users/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Database id of the user
+        schema:
+          type: integer
+    get:
+      tags:
+        - Users
+      summary: Get a specific user
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/UserResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - Users
+      summary: Update a specific user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/UserResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      tags:
+        - Users
+      summary: Delete a specific user
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -1134,6 +1269,19 @@ components:
               message:
                 type: string
                 example: 'Resource record not found.'
+    NotAuthorized:
+      description: Not authorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              type:
+                type: string
+                example: api_error
+              message:
+                type: string
+                example: 'You are not authorized for this action.'
   schemas:
     Glass:
       type: object
@@ -1473,6 +1621,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CocktailIngredient'
+        user_rating:
+          type: integer
+          nullable: true
+          example: 3
+        average_rating:
+          type: integer
+          nullable: true
+          example: 3
+        main_ingredient_name:
+          type: string
+          nullable: true
+          example: Gin
     CocktailRequest:
       type: object
       required:
@@ -1688,3 +1848,36 @@ components:
         rating:
           type: integer
           example: 3
+    UserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: User Name
+        email:
+          type: string
+          example: admin@example.com
+        password:
+          type: string
+          example: password
+        is_admin:
+          type: boolean
+          example: false
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: User Name
+        email:
+          type: string
+          example: admin@example.com
+        is_admin:
+          type: boolean
+          example: false
+        search_api_key:
+          type: string
+          example: 3aab83bbed9bb5e38d00c0c10a006676ed8703a26ffc8c644e2f588a5a574584

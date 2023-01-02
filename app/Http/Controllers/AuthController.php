@@ -10,8 +10,8 @@ use Kami\Cocktail\SearchActions;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Kami\Cocktail\Http\Resources\UserResource;
 use Kami\Cocktail\Http\Requests\RegisterRequest;
+use Kami\Cocktail\Http\Resources\ProfileResource;
 
 class AuthController extends Controller
 {
@@ -52,7 +52,7 @@ class AuthController extends Controller
         $user->search_api_key = SearchActions::getPublicApiKey();
         $user->save();
 
-        return (new UserResource(
+        return (new ProfileResource(
             $user->load('favorites', 'shelfIngredients', 'shoppingLists')
         ))->response()->setStatusCode(200);
     }

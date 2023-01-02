@@ -30,6 +30,7 @@ class ImportService
         if ($sourceData['image']['url']) {
             $cocktailImages[] = $this->imageService->uploadImage(
                 $sourceData['image']['url'],
+                1,
                 $sourceData['image']['copyright'] ?? null
             )->id;
         }

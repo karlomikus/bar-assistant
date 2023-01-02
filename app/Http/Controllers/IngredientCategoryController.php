@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\IngredientCategory;
@@ -29,6 +30,10 @@ class IngredientCategoryController extends Controller
 
     public function store(IngredientCategoryRequest $request): JsonResponse
     {
+        if (!$request->user()->isAdmin()) {
+            abort(403);
+        }
+
         $category = new IngredientCategory();
         $category->name = $request->post('name');
         $category->description = $request->post('description');
@@ -42,6 +47,10 @@ class IngredientCategoryController extends Controller
 
     public function update(IngredientCategoryRequest $request, int $id): JsonResource
     {
+        if (!$request->user()->isAdmin()) {
+            abort(403);
+        }
+
         $category = IngredientCategory::findOrFail($id);
         $category->name = $request->post('name');
         $category->description = $request->post('description');
@@ -50,8 +59,12 @@ class IngredientCategoryController extends Controller
         return new IngredientCategoryResource($category);
     }
 
-    public function delete(int $id): Response
+    public function delete(Request $request, int $id): Response
     {
+        if (!$request->user()->isAdmin()) {
+            abort(403);
+        }
+
         IngredientCategory::findOrFail($id)->delete();
 
         return response(null, 204);

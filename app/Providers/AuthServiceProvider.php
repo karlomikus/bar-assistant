@@ -13,7 +13,9 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // 'Kami\Cocktail\Models\Model' => 'Kami\Cocktail\Policies\ModelPolicy',
+        \Kami\Cocktail\Models\Cocktail::class => \Kami\Cocktail\Policies\CocktailPolicy::class,
+        \Kami\Cocktail\Models\Ingredient::class => \Kami\Cocktail\Policies\IngredientPolicy::class,
+        \Kami\Cocktail\Models\Image::class => \Kami\Cocktail\Policies\ImagePolicy::class,
     ];
 
     /**

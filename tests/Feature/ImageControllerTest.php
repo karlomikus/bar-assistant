@@ -91,7 +91,8 @@ class ImageControllerTest extends TestCase
 
         $cocktailImage = Image::factory()->for(Cocktail::factory(), 'imageable')->create([
             'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'app_images'),
-            'file_extension' => $imageFile->extension()
+            'file_extension' => $imageFile->extension(),
+            'user_id' => auth()->user()->id
         ]);
 
         $response = $this->get('/api/images/' . $cocktailImage->id . '/thumb');

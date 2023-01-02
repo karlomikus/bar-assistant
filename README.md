@@ -34,12 +34,10 @@ This repository only contains the API server, if you are looking for easy to use
 - Cocktail ingredient substitutes
 - Assign glass types to cocktails
 - Cocktail recipe scraping
+- Cocktail ratings
 
 ## Planned features
-- Cocktail recipe sharing
-- Cocktail and shopping list printing
 - User defined cocktail collections
-- Cocktail ratings
 - Add user notes to cocktail
 - Add cocktail flavor profiles
 
@@ -133,6 +131,9 @@ SESSION_DRIVER=redis
 
 2. Run the commands
 ``` bash
+# Install dependecies
+$ composer install
+
 # Generate a key
 $ php artisan key:generate
 
@@ -219,11 +220,38 @@ $ docker compose exec -it bar-assistant php artisan bar:dump-search
 
 Then follow the rest of the [steps described in meilisearch docs](https://docs.meilisearch.com/learn/cookbooks/docker.html#generating-dumps-and-updating-meilisearch).
 
+### How do I make a specific user an administrator?
+
+To give admin rights to a specific user you can use the following command.
+
+``` bash
+$ php artisan bar:make-admin "user@email.com"
+```
+
 ## Contributing
 
-Bar Assistant is a basic Laravel application. Once you have setup your PHP dev environment and followed manual installation steps you can start working on the code.
-
 Feel free to create a pull request or open a issue with bugs/feature ideas.
+
+### Docker development
+
+You can use docker to quick start with the development.
+
+1. Clone the repository
+2. Copy `.env.dev` as `.env`, or setup your own env file
+3. Run `docker compose up -d`
+4. Then run the following commands:
+
+``` bash
+$ docker compose exec app composer install
+$ docker compose exec app php artisan key:generate
+$ docker compose exec app php artisan storage:link
+$ docker compose exec app php artisan migrate
+$ docker compose exec app php artisan bar:open
+```
+
+### Manual
+
+Bar Assistant is a basic Laravel application. Once you have setup your PHP dev environment and followed manual installation steps you can start working on the code.
 
 ## License
 
