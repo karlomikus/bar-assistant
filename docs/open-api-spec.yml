@@ -1616,12 +1616,15 @@ components:
             $ref: '#/components/schemas/CocktailIngredient'
         user_rating:
           type: integer
+          nullable: true
           example: 3
         average_rating:
           type: integer
+          nullable: true
           example: 3
         main_ingredient_name:
           type: string
+          nullable: true
           example: Gin
     CocktailRequest:
       type: object
