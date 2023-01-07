@@ -1,3 +1,18 @@
+# v1.2.0
+
+## New
+- Added `/stats` endpoint
+- Added `order_by` query parameter to `/cocktails` endpoint
+- Added `limit` query parameter to `/cocktails/user-shelf` endpoint
+- Added `limit` query parameter to `/ingredients` endpoint
+- Added `created_at` attribute to cocktail response schema
+
+## Fixes
+- Updating tags now reflects changes in cocktail index
+
+## Changes
+- Increased cocktail thumbnail size to 400x400
+
 # v1.1.0
 This update includes changes to authorization. Users can now be admins and have elevated privilages. Since this is a new change you will not have any admins in your instance if you are not starting from a fresh install. To make yourself admin you need to run the following command with the email you are using to login:
 
