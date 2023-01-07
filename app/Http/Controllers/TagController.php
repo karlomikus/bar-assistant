@@ -57,7 +57,7 @@ class TagController extends Controller
         $tag->save();
 
         $cocktailIds = DB::table('cocktail_tag')->select('cocktail_id')->where('tag_id', $tag->id)->pluck('cocktail_id');
-        Cocktail::find($cocktailIds)->searchable();
+        Cocktail::find($cocktailIds)->each(fn ($cocktail) => $cocktail->searchable());
 
         return new TagResource($tag);
     }
@@ -70,7 +70,7 @@ class TagController extends Controller
 
         $cocktailIds = DB::table('cocktail_tag')->select('cocktail_id')->where('tag_id', $id)->pluck('cocktail_id');
         Tag::findOrFail($id)->delete();
-        Cocktail::find($cocktailIds)->searchable();
+        Cocktail::find($cocktailIds)->each(fn ($cocktail) => $cocktail->searchable());
 
         return response(null, 204);
     }
