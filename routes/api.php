@@ -3,13 +3,14 @@
 use Illuminate\Support\Facades\Route;
 use Kami\Cocktail\Http\Controllers\TagController;
 use Kami\Cocktail\Http\Controllers\AuthController;
-use Kami\Cocktail\Http\Controllers\ProfileController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
+use Kami\Cocktail\Http\Controllers\StatsController;
 use Kami\Cocktail\Http\Controllers\UsersController;
 use Kami\Cocktail\Http\Controllers\RatingController;
 use Kami\Cocktail\Http\Controllers\ServerController;
+use Kami\Cocktail\Http\Controllers\ProfileController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
@@ -123,6 +124,10 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/{id}', [UsersController::class, 'show'])->name('users.show');
         Route::put('/{id}', [UsersController::class, 'update']);
         Route::delete('/{id}', [UsersController::class, 'delete']);
+    });
+
+    Route::prefix('stats')->group(function() {
+        Route::get('/', [StatsController::class, 'index']);
     });
 });
 
