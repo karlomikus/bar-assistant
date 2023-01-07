@@ -236,9 +236,9 @@ class CocktailService
      * @param int $userId
      * @return \Illuminate\Database\Eloquent\Collection<int, \Kami\Cocktail\Models\Cocktail>
      */
-    public function getCocktailsByUserIngredients(int $userId): Collection
+    public function getCocktailsByUserIngredients(int $userId, ?int $limit = null): Collection
     {
-        $cocktailIds = $this->db->table('cocktails AS c')
+        $query = $this->db->table('cocktails AS c')
             ->select('c.id')
             ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id')
             ->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
@@ -251,10 +251,13 @@ class CocktailService
                 $query->select('ingredient_id')->from('user_ingredients')->where('user_id', $userId);
             })
             ->groupBy('c.id')
-            ->havingRaw('COUNT(*) >= (SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_id = c.id AND optional = false)')
-            ->pluck('id');
+            ->havingRaw('COUNT(*) >= (SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_id = c.id AND optional = false)');
+        
+        if ($limit) {
+            $query->limit($limit);
+        }
 
-        return $cocktailIds;
+        return $query->pluck('id');
     }
 
     /**

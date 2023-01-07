@@ -20,7 +20,8 @@ class IngredientController extends Controller
         $ingredients = Ingredient::with('category', 'images')
             ->orderBy('name')
             ->orderBy('ingredient_category_id')
-            ->withCount('cocktails');
+            ->withCount('cocktails')
+            ->limit($request->get('limit', null));
 
         if ($request->has('category_id')) {
             $ingredients->where('ingredient_category_id', $request->get('category_id'));

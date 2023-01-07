@@ -26,7 +26,7 @@ class CocktailController extends Controller
      */
     public function index(Request $request): JsonResource
     {
-        $cocktails = Cocktail::with('ingredients.ingredient', 'images', 'tags')->orderBy('name');
+        $cocktails = Cocktail::with('ingredients.ingredient', 'images', 'tags');
 
         $perPage = $request->get('per_page', 15);
 
@@ -38,6 +38,15 @@ class CocktailController extends Controller
             $cocktails->whereIn('id', function ($query) use ($request) {
                 $query->select('cocktail_id')->from('cocktail_favorites')->where('user_id', $request->user()->id);
             });
+        }
+
+        if ($request->has('order_by')) {
+            [$col, $order] = explode(':', $request->get('order_by', ''));
+            if (in_array($col, ['created_at', 'name'])) {
+                $cocktails->orderBy($col, $order);
+            }
+        } else {
+            $cocktails->orderBy('name');
         }
 
         return CocktailResource::collection($cocktails->paginate($perPage));
@@ -154,7 +163,9 @@ class CocktailController extends Controller
      */
     public function userShelf(CocktailService $cocktailService, Request $request): JsonResource|JsonResponse
     {
-        $cocktailIds = $cocktailService->getCocktailsByUserIngredients($request->user()->id);
+        $limit = $request->has('limit') ? (int) $request->get('limit') : null;
+
+        $cocktailIds = $cocktailService->getCocktailsByUserIngredients($request->user()->id, $limit);
 
         if ($request->has('format')) {
             return response()->json([

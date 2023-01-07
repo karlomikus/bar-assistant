@@ -62,7 +62,7 @@ class ImageController extends Controller
         [$content, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id) {
             $dbImage = Image::findOrFail($id);
             $disk = Storage::disk('app_images');
-            $responseContent = (string) ImageManagerStatic::make($disk->get($dbImage->file_path))->fit(200, 200)->encode();
+            $responseContent = (string) ImageManagerStatic::make($disk->get($dbImage->file_path))->fit(400, 400)->encode();
             $etag = md5($dbImage->id . '-' . $dbImage->updated_at->format('Y-m-d H:i:s'));
 
             return [$responseContent, $etag];
