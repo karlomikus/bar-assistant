@@ -1,7 +1,7 @@
 openapi: '3.0.2'
 info:
   title: 'Bar Assistant API'
-  version: '1.1.0'
+  version: '1.2.0'
   description: |-
     Bar assistant is a self hosted application for managing your home bar. It allows you to add ingredients and create custom cocktail recipes.
 servers:
@@ -33,6 +33,8 @@ tags:
     description: Operations related to tags
   - name: "Ratings"
     description: Operations related to resource ratings
+  - name: "Stats"
+    description: Operations related to app statistics
 security:
   - user_token: []
 paths:
@@ -102,7 +104,8 @@ paths:
         '200':
           description: Successful response
   /cocktails:
-    parameters:
+    get:
+      parameters:
       - in: query
         name: user_id
         required: false
@@ -110,7 +113,13 @@ paths:
           type: integer
           example: 1
         description: 'Show only cocktails made by a specifc user'
-    get:
+      - in: query
+        name: order_by
+        required: false
+        schema:
+          type: string
+          example: created_at:desc
+        description: 'Sort cocktails'
       tags:
         - "Cocktails"
       summary: 'Show a paginated list of cocktails'
@@ -298,6 +307,14 @@ paths:
                       $ref: '#/components/schemas/Cocktail'
   /cocktails/user-shelf:
     get:
+      parameters:
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            example: 20
+          description: 'Limit number of shown cocktails'
       tags:
         - "Cocktails"
       summary: 'Get a list of cocktails that authorized user can make'
@@ -350,6 +367,12 @@ paths:
           description: Show only ingredients on shopping list of current user
           schema:
             type: boolean
+        - name: limit
+          in: query
+          description: Limit a number of shown ingredients
+          schema:
+            type: integer
+            example: 20
       tags:
         - Ingredients
       summary: 'Get a list of ingredients'
@@ -1244,6 +1267,21 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /stats:
+    get:
+      tags:
+        - Stats
+      summary: Application stats
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/StatsResponse'
 components:
   securitySchemes:
     user_token:
@@ -1633,6 +1671,9 @@ components:
           type: string
           nullable: true
           example: Gin
+        created_at:
+          type: string
+          example: 2023-01-01 12:00:00
     CocktailRequest:
       type: object
       required:
@@ -1881,3 +1922,40 @@ components:
         search_api_key:
           type: string
           example: 3aab83bbed9bb5e38d00c0c10a006676ed8703a26ffc8c644e2f588a5a574584
+    StatsResponse:
+      type: object
+      properties:
+        total_cocktails:
+          type: integer
+          example: 120
+        total_ingredients:
+          type: integer
+          example: 234
+        total_shelf_cocktails:
+          type: integer
+          example: 43
+        most_popular_ingredients:
+          type: array
+          items:
+            type: object
+            properties:
+              ingredient_id:
+                type: integer
+                example: 1
+              cocktails_count:
+                type: integer
+                example: 23
+        top_rated_cocktails:
+          type: array
+          items:
+            type: object
+            properties:
+              cocktail_id:
+                type: integer
+                example: 1
+              avg_rating:
+                type: integer
+                example: 4
+              votes:
+                type: integer
+                example: 12

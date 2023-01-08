@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Tag;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Http\Requests\TagRequest;
 use Kami\Cocktail\Http\Resources\TagResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -54,6 +56,9 @@ class TagController extends Controller
         $tag->name = $request->post('name');
         $tag->save();
 
+        $cocktailIds = DB::table('cocktail_tag')->select('cocktail_id')->where('tag_id', $tag->id)->pluck('cocktail_id');
+        Cocktail::find($cocktailIds)->each(fn ($cocktail) => $cocktail->searchable());
+
         return new TagResource($tag);
     }
 
@@ -63,7 +68,9 @@ class TagController extends Controller
             abort(403);
         }
 
+        $cocktailIds = DB::table('cocktail_tag')->select('cocktail_id')->where('tag_id', $id)->pluck('cocktail_id');
         Tag::findOrFail($id)->delete();
+        Cocktail::find($cocktailIds)->each(fn ($cocktail) => $cocktail->searchable());
 
         return response(null, 204);
     }

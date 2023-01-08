@@ -382,6 +382,7 @@ class OpenBar extends Command
                     $cocktail->tags()->attach($tag->id);
                 }
 
+                $sort = 1;
                 foreach ($sCocktail['ingredients'] as $sIngredient) {
                     if (!$dbIngredients->contains('name', strtolower($sIngredient['name']))) {
                         $this->warn('Ingredient not found: [' . $sCocktail['name'] . '] ' . $sIngredient['name']);
@@ -402,7 +403,9 @@ class OpenBar extends Command
                     $cocktailIng->amount = floatval($sIngredient['amount']);
                     $cocktailIng->units = strtolower($sIngredient['units']);
                     $cocktailIng->optional = $sIngredient['optional'];
+                    $cocktailIng->sort = $sort;
                     $cocktailIng->save();
+                    $sort++;
 
                     if (isset($sIngredient['substitutes'])) {
                         foreach ($sIngredient['substitutes'] ?? [] as $subName) {
