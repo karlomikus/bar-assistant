@@ -104,7 +104,7 @@ class ACoupleCooks extends AbstractSiteExtractor
 
     private function getTypeFromSchema(string $type): ?array
     {
-        $schema = $this->parseSchema();
+        $schema = $this->getSchema();
         foreach ($schema['@graph'] as $node) {
             if ($node['@type'] === $type) {
                 return $node;
