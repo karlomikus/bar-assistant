@@ -44,6 +44,7 @@ class Imbibe extends AbstractSiteExtractor implements ScraperInfoContract
         $i = 1;
         foreach ($recipeSchema['recipeInstructions'] as $step) {
             $result .= $i . '. ' . $step['text'] . "\n\n";
+            $i++;
         }
 
         return $result;
