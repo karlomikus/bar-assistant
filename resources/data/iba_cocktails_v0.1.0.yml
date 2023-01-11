@@ -1666,12 +1666,12 @@
         -
             amount: 75
             units: ml
-            name: 'Orange juice'
+            name: Prosecco
             optional: false
         -
             amount: 75
             units: ml
-            name: Prosecco
+            name: 'Orange juice'
             optional: false
 -
     name: 'Mint Julep'
@@ -1919,14 +1919,14 @@
         - Rum
     ingredients:
         -
-            amount: 6
-            units: sprigs
-            name: Mint
-            optional: false
-        -
             amount: 45
             units: ml
             name: 'Dark Rum'
+            optional: false
+        -
+            amount: 6
+            units: sprigs
+            name: Mint
             optional: false
         -
             amount: 22.5
