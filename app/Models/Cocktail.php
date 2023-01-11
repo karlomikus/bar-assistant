@@ -58,6 +58,11 @@ class Cocktail extends Model implements SiteSearchable
         return $this->belongsToMany(Tag::class);
     }
 
+    public function method(): BelongsTo
+    {
+        return $this->belongsTo(CocktailMethod::class, 'cocktail_method_id');
+    }
+
     public function delete(): ?bool
     {
         $this->deleteImages();
@@ -66,22 +71,36 @@ class Cocktail extends Model implements SiteSearchable
         return parent::delete();
     }
 
-    public function getABV(float $dilutionPercentage = 0.23): float
+    /**
+     * Calculate cocktail ABV
+     * Source: Formula from https://jeffreymorgenthaler.com/
+     *
+     * @return null|float 
+     */
+    public function getABV(): ?float
     {
-        // https://jeffreymorgenthaler.com/
-        // TODO: Update $dilutionPercentage based on method
-        // Stirring: 20%
-        // Shake: 25%
-        // Building: 10%
-        // TODO: Include dashes
+        if ($this->cocktail_method_id === null) {
+            return null;
+        }
+
+        $dilutionPercentage = $this->method->dilution_percentage / 100;
+
         $alchoholicIngredients = $this->ingredients()
             ->select('amount', 'units', 'strength')
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
             ->where('ingredients.strength', '>', 0)
-            ->where('cocktail_ingredients.units', 'ml')
+            ->where('cocktail_ingredients.cocktail_id', $this->id)
+            ->where(function ($q) {
+                $q->where('cocktail_ingredients.units', 'ml')
+                    ->orWhere('cocktail_ingredients.units', 'LIKE', 'dash%');
+            })
             ->get()
             ->map(function ($item) {
-                $item->amount = $item->amount / 30;
+                if (str_starts_with($item->units, 'dash')) {
+                    $item->amount = $item->amount * 0.02;
+                } else {
+                    $item->amount = $item->amount / 30;
+                }
 
                 return $item;
             });
@@ -131,7 +150,8 @@ class Cocktail extends Model implements SiteSearchable
             'date' => $this->updated_at->format('Y-m-d H:i:s'),
             'glass' => $this->glass->name ?? null,
             'average_rating' => $this->getAverageRating(),
-            'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null
+            'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
+            'calculated_abv' => $this->getABV(),
         ];
     }
 }

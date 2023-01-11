@@ -94,6 +94,7 @@ class CocktailController extends Controller
                 $request->post('images', []),
                 $request->post('tags', []),
                 $request->post('glass_id') ? (int) $request->post('glass_id') : null,
+                $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
             );
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
@@ -131,6 +132,7 @@ class CocktailController extends Controller
                 $request->post('images', []),
                 $request->post('tags', []),
                 $request->post('glass_id') ? (int) $request->post('glass_id') : null,
+                $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
             );
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
