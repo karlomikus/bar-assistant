@@ -17,6 +17,7 @@ return new class extends Migration
         Schema::create('cocktail_methods', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->text('description')->nullable();
             $table->tinyInteger('dilution_percentage');
         });
 

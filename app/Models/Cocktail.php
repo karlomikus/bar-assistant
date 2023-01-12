@@ -112,6 +112,10 @@ class Cocktail extends Model implements SiteSearchable
 
         $afterDilution = ($amountUsed * $dilutionPercentage) + $amountUsed;
 
+        if ($afterDilution <= 0) {
+            return null;
+        }
+
         return round(($alcoholVolume / $afterDilution) * 100, 2);
     }
 
@@ -140,7 +144,6 @@ class Cocktail extends Model implements SiteSearchable
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
-            'source' => $this->source,
             'garnish' => $this->garnish,
             'image_url' => $this->getMainImageUrl(),
             'main_image_id' => $this->images->first()?->id ?? null,
@@ -152,6 +155,7 @@ class Cocktail extends Model implements SiteSearchable
             'average_rating' => $this->getAverageRating(),
             'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
             'calculated_abv' => $this->getABV(),
+            'method' => $this->method->name ?? null,
         ];
     }
 }

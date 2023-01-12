@@ -346,6 +346,8 @@ class OpenBar extends Command
             return $ing;
         });
 
+        $dbMethods = DB::table('cocktail_methods')->select(['name', 'id'])->get();
+
         $source = Yaml::parseFile($sourcePath);
 
         foreach ($source as $sCocktail) {
@@ -364,6 +366,12 @@ class OpenBar extends Command
                     $this->warn('Glass not found: [' . $sCocktail['name'] . '] ' . $sCocktail['glass']);
                 }
                 $cocktail->glass_id = $dbGlasses->filter(fn ($item) => $item->name == strtolower($sCocktail['glass']))->first()->id ?? null;
+
+                // Method
+                if (!$dbMethods->contains('name', $sCocktail['method'])) {
+                    $this->warn('Method found: [' . $sCocktail['name'] . '] ' . $sCocktail['method']);
+                }
+                $cocktail->cocktail_method_id = $dbMethods->filter(fn ($item) => $item->name == $sCocktail['method'])->first()->id ?? null;
 
                 $cocktail->save();
 
@@ -424,6 +432,7 @@ class OpenBar extends Command
                 $cocktail->refresh();
                 $cocktail->save();
             } catch (Throwable $e) {
+                $this->info($e->getMessage());
                 DB::rollBack();
             }
             DB::commit();
