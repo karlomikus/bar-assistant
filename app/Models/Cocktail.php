@@ -85,10 +85,9 @@ class Cocktail extends Model implements SiteSearchable
 
         $dilutionPercentage = $this->method->dilution_percentage / 100;
 
-        $alchoholicIngredients = $this->ingredients()
+        $ingredients = $this->ingredients()
             ->select('amount', 'units', 'strength')
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
-            ->where('ingredients.strength', '>', 0)
             ->where('cocktail_ingredients.cocktail_id', $this->id)
             ->where(function ($q) {
                 $q->where('cocktail_ingredients.units', 'ml')
@@ -105,8 +104,8 @@ class Cocktail extends Model implements SiteSearchable
                 return $item;
             });
 
-        $amountUsed = $alchoholicIngredients->sum('amount');
-        $alcoholVolume = floatval($alchoholicIngredients->reduce(function ($carry, $item) {
+        $amountUsed = $ingredients->sum('amount');
+        $alcoholVolume = floatval($ingredients->reduce(function ($carry, $item) {
             return (($item->amount * $item->strength) / 100) + $carry;
         }));
 

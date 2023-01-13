@@ -26,7 +26,7 @@ class CocktailController extends Controller
      */
     public function index(Request $request): JsonResource
     {
-        $cocktails = Cocktail::with('ingredients.ingredient', 'images', 'tags');
+        $cocktails = Cocktail::with('ingredients.ingredient', 'images', 'tags', 'method');
 
         $perPage = $request->get('per_page', 15);
 
