@@ -35,6 +35,8 @@ tags:
     description: Operations related to resource ratings
   - name: "Stats"
     description: Operations related to app statistics
+  - name: "Cocktail methods"
+    description: Operations related to cocktail methods
 security:
   - user_token: []
 paths:
@@ -1282,6 +1284,106 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/StatsResponse'
+  /cocktail-methods:
+    get:
+      tags:
+        - "Cocktail methods"
+      summary: 'Show a list of all methods'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CocktailMethodResponse'
+    post:
+      tags:
+        - "Cocktail methods"
+      summary: 'Create a new method'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CocktailMethodRequest'
+      responses:
+        '201':
+          description: Successful response
+          headers:
+            Location:
+              description: Absolute URL to new resource
+              schema:
+                type: string
+                example: 'http://localhost/api/cocktail-methods/1'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CocktailMethodResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /cocktail-methods/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a method'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - "Cocktail methods"
+      summary: Get a specific method
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CocktailMethodResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - "Cocktail methods"
+      summary: Update a specific method
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CocktailMethodRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CocktailMethodResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      tags:
+        - "Cocktail methods"
+      summary: Delete specific method
+      responses:
+        '204':
+          description: Successful response
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -1674,6 +1776,13 @@ components:
         created_at:
           type: string
           example: 2023-01-01 12:00:00
+        method:
+          $ref: '#/components/schemas/CocktailMethodResponse'
+        abv:
+          type: number
+          format: float
+          nullable: true
+          example: 18.12
     CocktailRequest:
       type: object
       required:
@@ -1959,3 +2068,24 @@ components:
               votes:
                 type: integer
                 example: 12
+    CocktailMethodResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Method name"
+        dilution_percentage:
+          type: integer
+          example: 23
+    CocktailMethodRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Method name"
+        dilution_percentage:
+          type: integer
+          example: 23

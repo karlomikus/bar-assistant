@@ -125,6 +125,7 @@ class IngredientService
         $ingredient->refresh();
         // Upsert scout index
         $ingredient->save();
+        $ingredient->cocktails()->searchable();
 
         return $ingredient;
     }

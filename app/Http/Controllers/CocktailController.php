@@ -59,7 +59,7 @@ class CocktailController extends Controller
     {
         $cocktail = Cocktail::inRandomOrder()
             ->firstOrFail()
-            ->load('ingredients.ingredient', 'images', 'tags');
+            ->load('ingredients.ingredient', 'images', 'tags', 'method');
 
         return new CocktailResource($cocktail);
     }
@@ -72,7 +72,7 @@ class CocktailController extends Controller
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
             ->firstOrFail()
-            ->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes');
+            ->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method');
 
         return new CocktailResource($cocktail);
     }

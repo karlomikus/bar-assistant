@@ -14,6 +14,7 @@ use Kami\Cocktail\Http\Controllers\ProfileController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
+use Kami\Cocktail\Http\Controllers\CocktailMethodController;
 use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
 
 /*
@@ -128,6 +129,14 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::prefix('stats')->group(function() {
         Route::get('/', [StatsController::class, 'index']);
+    });
+
+    Route::prefix('cocktail-methods')->group(function() {
+        Route::get('/', [CocktailMethodController::class, 'index']);
+        Route::post('/', [CocktailMethodController::class, 'store']);
+        Route::get('/{id}', [CocktailMethodController::class, 'show'])->name('cocktail-methods.show');
+        Route::put('/{id}', [CocktailMethodController::class, 'update']);
+        Route::delete('/{id}', [CocktailMethodController::class, 'delete']);
     });
 });
 
