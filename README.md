@@ -8,7 +8,7 @@
     <img src="https://img.shields.io/github/actions/workflow/status/karlomikus/bar-assistant/build-image.yml?branch=master&style=for-the-badge" alt="Docker image">
 </p>
 
-## 🍸 Bar assistant
+## 🍸 Bar Assistant
 
 Bar assistant is a self hosted application for managing your home bar. It allows you to add your ingredients, search for cocktails and create custom cocktail recipes.
 
