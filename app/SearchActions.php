@@ -68,7 +68,13 @@ class SearchActions
 
         $engine->index('ingredients')->updateSettings([
             'filterableAttributes' => ['category', 'strength_abv', 'origin', 'color'],
-            'sortableAttributes' => ['name', 'strength_abv']
+            'sortableAttributes' => ['name', 'strength_abv'],
+            'searchableAttributes' => [
+                'name',
+                'description',
+                'category',
+                'origin',
+            ]
         ]);
     }
 
