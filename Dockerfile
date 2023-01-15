@@ -33,7 +33,8 @@ USER www-data:www-data
 
 WORKDIR /var/www/cocktails
 
-RUN git clone https://github.com/karlomikus/bar-assistant.git .
+# RUN git clone https://github.com/karlomikus/bar-assistant.git .
+COPY . .
 
 RUN composer install --optimize-autoloader --no-dev
 
