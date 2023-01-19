@@ -10,6 +10,7 @@ use Kami\Cocktail\Http\Controllers\StatsController;
 use Kami\Cocktail\Http\Controllers\UsersController;
 use Kami\Cocktail\Http\Controllers\RatingController;
 use Kami\Cocktail\Http\Controllers\ServerController;
+use Kami\Cocktail\Http\Controllers\ExploreController;
 use Kami\Cocktail\Http\Controllers\ProfileController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
@@ -40,6 +41,10 @@ Route::prefix('server')->group(function() {
 
 Route::prefix('images')->group(function() {
     Route::get('/{id}/thumb', [ImageController::class, 'thumb']);
+});
+
+Route::prefix('explore')->group(function() {
+    Route::get('/cocktails/{ulid}', [ExploreController::class, 'cocktail']);
 });
 
 Route::middleware('auth:sanctum')->group(function() {
@@ -82,6 +87,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('/', [CocktailController::class, 'store'])->name('cocktails.store');
         Route::delete('/{id}', [CocktailController::class, 'delete'])->name('cocktails.delete');
         Route::put('/{id}', [CocktailController::class, 'update'])->name('cocktails.update');
+        Route::post('/{id}/make-public', [CocktailController::class, 'makePublic'])->name('cocktails.make-public');
     });
 
     Route::prefix('images')->group(function() {

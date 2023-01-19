@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\Uid\Ulid;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Services\CocktailService;
@@ -14,6 +15,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
+use Kami\Cocktail\Http\Resources\CocktailPublicResource;
 
 class CocktailController extends Controller
 {
@@ -204,5 +206,24 @@ class CocktailController extends Controller
             ->pluck('cocktail');
 
         return CocktailResource::collection($cocktails);
+    }
+
+    public function makePublic(int|string $idOrSlug): JsonResource
+    {
+        $publicUlid = new Ulid();
+        $cocktail = Cocktail::where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
+            ->firstOrFail();
+
+        if ($cocktail->public_id) {
+            return new CocktailPublicResource($cocktail);
+        }
+
+        $cocktail->public_id = $publicUlid;
+        $cocktail->public_at = now();
+        $cocktail->public_expires_at = null;
+        $cocktail->save();
+
+        return new CocktailPublicResource($cocktail);
     }
 }

@@ -50,7 +50,7 @@ class Cocktail extends Model implements SiteSearchable
 
     public function ingredients(): HasMany
     {
-        return $this->hasMany(CocktailIngredient::class);
+        return $this->hasMany(CocktailIngredient::class)->orderBy('sort');
     }
 
     public function tags(): BelongsToMany
