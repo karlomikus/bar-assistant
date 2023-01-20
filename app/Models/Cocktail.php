@@ -75,7 +75,7 @@ class Cocktail extends Model implements SiteSearchable
      * Calculate cocktail ABV
      * Source: Formula from https://jeffreymorgenthaler.com/
      *
-     * @return null|float 
+     * @return null|float
      */
     public function getABV(): ?float
     {

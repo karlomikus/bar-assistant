@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\CocktailMethod;
-use Kami\Cocktail\Http\Requests\CocktailMethodRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Http\Requests\CocktailMethodRequest;
 use Kami\Cocktail\Http\Resources\CocktailMethodResource;
 
 class CocktailMethodController extends Controller
