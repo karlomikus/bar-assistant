@@ -8,16 +8,20 @@ use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Kami\Cocktail\SearchActions;
 use Spatie\Sluggable\SlugOptions;
+use Kami\Cocktail\Services\Calculator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Kami\Cocktail\Services\Calculator;
 
 class Cocktail extends Model implements SiteSearchable
 {
     use HasFactory, Searchable, HasImages, HasSlug, HasRating;
+
+    protected $casts = [
+        'public_at' => 'datetime',
+    ];
 
     private $appImagesDir = 'cocktails/';
 

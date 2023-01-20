@@ -10,7 +10,7 @@ class Calculator
      * Calculate approximate cocktail ABV
      * Formula based on https://jeffreymorgenthaler.com/
      *
-     * @param array<array{amount:int, strength: float|int}> $ingredients
+     * @param array<array{amount:float|int, strength: float|int}> $ingredients
      * @param int $dilutionPercentage
      * @return float
      */

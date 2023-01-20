@@ -36,7 +36,7 @@ class CocktailMethodController extends Controller
 
         $method = new CocktailMethod();
         $method->name = $request->post('name');
-        $method->dilution_percentage = $request->post('dilution_percentage');
+        $method->dilution_percentage = (int) $request->post('dilution_percentage');
         $method->save();
 
         return (new CocktailMethodResource($method))
@@ -53,7 +53,7 @@ class CocktailMethodController extends Controller
 
         $method = CocktailMethod::findOrFail($id);
         $method->name = $request->post('name');
-        $method->dilution_percentage = $request->post('dilution_percentage');
+        $method->dilution_percentage = (int) $request->post('dilution_percentage');
         $method->save();
 
         // TODO: Update index abv
