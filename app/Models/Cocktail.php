@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Kami\Cocktail\Services\Calculator;
 
 class Cocktail extends Model implements SiteSearchable
 {
@@ -83,8 +84,6 @@ class Cocktail extends Model implements SiteSearchable
             return null;
         }
 
-        $dilutionPercentage = $this->method->dilution_percentage / 100;
-
         $ingredients = $this->ingredients()
             ->select('amount', 'units', 'strength')
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
@@ -104,18 +103,7 @@ class Cocktail extends Model implements SiteSearchable
                 return $item;
             });
 
-        $amountUsed = $ingredients->sum('amount');
-        $alcoholVolume = floatval($ingredients->reduce(function ($carry, $item) {
-            return (($item->amount * $item->strength) / 100) + $carry;
-        }));
-
-        $afterDilution = ($amountUsed * $dilutionPercentage) + $amountUsed;
-
-        if ($afterDilution <= 0) {
-            return null;
-        }
-
-        return round(($alcoholVolume / $afterDilution) * 100, 2);
+        return Calculator::calculateAbv($ingredients->toArray(), $this->method->dilution_percentage);
     }
 
     public function getMainIngredient(): ?CocktailIngredient
