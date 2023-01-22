@@ -27,7 +27,7 @@ class OpenBar extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:open {email=admin@example.com} {pass=password}';
+    protected $signature = 'bar:open {email=admin@example.com} {pass=password} {--c|clean : Clean installation, no default data}';
 
     /**
      * The console command description.
@@ -86,6 +86,14 @@ class OpenBar extends Command
         Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
 
         SearchActions::updateIndexSettings();
+
+        if ($this->option('clean')) {
+            Model::reguard();
+
+            $this->info('You are ready to serve, no data has been imported!');
+
+            return Command::SUCCESS;
+        }
 
         DB::table('glasses')->insert([
             ['name' => 'Cocktail', 'description' => 'A cocktail glass is a stemmed glass with an inverted cone bowl, mainly used to serve straight-up cocktails. The term cocktail glass is often used interchangeably with martini glass, despite their differing slightly. A standard cocktail glass contains 90 to 300 millilitres.'],
