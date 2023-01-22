@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
+use Kami\Cocktail\Utils;
+
 class IngredientParser
 {
     private array $units = [
@@ -24,8 +26,10 @@ class IngredientParser
         'topup' => ['topup'],
     ];
 
-    public function __construct(private readonly string $ingredientString)
-    {
+    public function __construct(
+        private readonly string $ingredientString,
+        private readonly bool $convertToBaselineUnit = true,
+    ) {
     }
 
     public function parse(): array
@@ -42,6 +46,10 @@ class IngredientParser
         // If we have a unit and no amount, guess it's 1 of unit
         if ($units !== null && $amount === 0) {
             $amount = 1;
+        }
+
+        if ($this->convertToBaselineUnit) {
+            ['amount' => $amount, 'units' => $units] = Utils::parseIngredientAmount($amount . ' ' . $units);
         }
 
         return [

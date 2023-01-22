@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
+use Throwable;
 use Kami\Cocktail\Exceptions\ScrapeException;
+use Kami\Cocktail\Scraper\Sites\SchemaScraper;
 
 final class Manager
 {
@@ -31,7 +33,13 @@ final class Manager
             }
         }
 
-        throw new ScrapeException('Scraper not supported for given site.');
+        // Fallback to schema scraper
+        try {
+            return resolve(SchemaScraper::class, ['url' => $this->url]);
+        } catch (Throwable $e) {
+        }
+
+        throw new ScrapeException('Scraper could not find any relevant data for the given site.');
     }
 
     public static function scrape(string $url): AbstractSiteExtractor
