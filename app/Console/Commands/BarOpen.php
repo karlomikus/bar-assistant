@@ -20,7 +20,7 @@ use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\IngredientCategory;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 
-class OpenBar extends Command
+class BarOpen extends Command
 {
     /**
      * The name and signature of the console command.
