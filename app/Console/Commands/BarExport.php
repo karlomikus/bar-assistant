@@ -37,17 +37,13 @@ class BarExport extends Command
         $tablesToExport = [
             'ingredients',
             'cocktails',
-            'cocktail_favorites',
             'cocktail_ingredients',
             'cocktail_ingredient_substitutes',
             'cocktail_methods',
             'cocktail_tag',
             'glasses',
             'ingredient_categories',
-            'ratings',
             'tags',
-            'user_ingredients',
-            'user_shopping_lists',
             'images',
         ];
 

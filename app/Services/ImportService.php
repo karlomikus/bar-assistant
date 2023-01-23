@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
+use Throwable;
+use ZipArchive;
 use Kami\Cocktail\Models\Glass;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
@@ -20,7 +22,7 @@ class ImportService
     ) {
     }
 
-    public function import(array $sourceData): Cocktail
+    public function importFromScraper(array $sourceData): Cocktail
     {
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
@@ -77,5 +79,43 @@ class ImportService
             $sourceData['tags'],
             $glassId
         );
+    }
+
+    public function importFromZipFile(string $zipFilePath): bool
+    {
+        $tempFolder = storage_path('uploads/temp/export_temp/');
+
+        $zip = new ZipArchive();
+        if ($zip->open($zipFilePath) !== true) {
+            return false;
+        }
+        $zip->extractTo($tempFolder);
+        $zip->close();
+
+        $importOrder = [
+            'ingredient_categories',
+            'glasses',
+            'tags',
+            'ingredients',
+            'cocktails',
+            'cocktail_ingredients',
+            'cocktail_ingredient_substitutes',
+            'cocktail_tag',
+            'images',
+        ];
+
+        foreach ($importOrder as $tableName) {
+            $data = json_decode(file_get_contents($tempFolder . $tableName . '.json'), true);
+
+            foreach ($data as $row) {
+                try {
+                    DB::table($tableName)->insert($row);
+                } catch (Throwable $e) {
+                    dump(sprintf('Unable to import row with id "%s" to table "%s"', $row['id'], $tableName));
+                }
+            }
+        }
+
+        return true;
     }
 }
