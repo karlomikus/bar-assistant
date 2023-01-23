@@ -1,3 +1,30 @@
+# v1.3.0
+
+## New
+- Added cocktail ABV, calculated from cocktail ingredients
+- Added cocktail methods
+- Added command to refresh meilisearch user API keys
+- Recipe scraping
+    - Added `/scrape/cocktail` endpoint
+    - BA will now try to parse JSON+LD schema and microdata if no specific site parser exists
+    - Support for TheDrinkBlog
+- Added automatic dev docker images building
+
+## Fixes
+- Fix some scraper issues
+- Fix Imbibe scraper issue with instructions counter
+
+## Changes
+- Updated order of some base cocktail ingredients
+- Added zip extension to dockerfile
+
+## WIP
+Some of this features are available but still need documenting and testing
+
+- Added experimental features like exporting and import recipes between BA instances
+- Added `/cocktails/{id}/make-public` method
+    - This will create a publicly accessible cocktail data at `/explore/cocktails/{ulid}`
+
 # v1.2.0
 
 ## New
