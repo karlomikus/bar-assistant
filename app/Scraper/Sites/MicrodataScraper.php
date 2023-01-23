@@ -4,36 +4,18 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
-use Illuminate\Support\Arr;
 use Kami\Cocktail\Scraper\IngredientParser;
 use Kami\Cocktail\Exceptions\ScrapeException;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
-class SchemaScraper extends AbstractSiteExtractor
+class MicrodataScraper extends AbstractSiteExtractor
 {
-    private array $schema;
-
     public function __construct(string $url)
     {
         parent::__construct($url);
 
-        $schemaPath = $this->crawler->filterXPath('//script[@type="application/ld+json"]');
-
-        if ($schemaPath->count() === 0) {
-            throw new ScrapeException('JSON+LD schema not found on this site.');
-        }
-
-        $parsedSchema = json_decode($schemaPath->first()->text(), true);
-
-        if (count($parsedSchema) === 1) {
-            $this->schema = $parsedSchema[0];
-        } else {
-            $this->schema = $parsedSchema;
-        }
-
-        // Parse YOAST style schema
-        if (array_key_exists('@graph', $this->schema)) {
-            $this->schema = $this->schema['@graph']['Recipe'];
+        if ($this->crawler->filter('[itemtype="http://schema.org/Recipe"]')->count() === 0) {
+            throw new ScrapeException('Microdata schema not found on this site.');
         }
     }
 
@@ -44,28 +26,28 @@ class SchemaScraper extends AbstractSiteExtractor
 
     public function name(): string
     {
-        return Arr::get($this->schema, 'name');
+        return $this->crawler->filter('[itemtype="http://schema.org/Recipe"] :not([itemscope]) [itemprop="name"]')->text();
     }
 
     public function description(): ?string
     {
-        return Arr::get($this->schema, 'description');
+        return $this->crawler->filterXPath("//*[@itemtype='http://schema.org/Recipe']/*[@itemprop='description']")->attr('content');
     }
 
     public function source(): ?string
     {
-        return null;
+        return $this->url;
     }
 
     public function instructions(): ?string
     {
         $result = '';
-        $instructions = Arr::get($this->schema, 'recipeInstructions');
-        $i = 1;
-        foreach ($instructions as $step) {
-            $result .= $i . ". " . $step['text'] . "\n\n";
-            $i++;
-        }
+
+        $this->crawler->filter('[itemtype="http://schema.org/Recipe"] :not([itemscope]) [itemprop="recipeInstructions"]')->each(function ($node, $i) use (&$result) {
+            $step = $node->text();
+
+            $result .= ($i + 1) . ". " . $step . "\n\n";
+        });
 
         return $result;
     }
@@ -84,11 +66,13 @@ class SchemaScraper extends AbstractSiteExtractor
     {
         $result = [];
 
-        foreach (Arr::get($this->schema, 'recipeIngredient') as $ingredient) {
+        $this->crawler->filter('[itemtype="http://schema.org/Recipe"] :not([itemscope]) [itemprop="recipeIngredient"]')->each(function ($node) use (&$result) {
+            $ingredient = $node->text();
+
             ['amount' => $amount, 'units' => $units, 'name' => $name] = (new IngredientParser($ingredient))->parse();
 
             if (empty($amount) || empty($name) || empty($units)) {
-                continue;
+                return;
             }
 
             $result[] = [
@@ -97,7 +81,7 @@ class SchemaScraper extends AbstractSiteExtractor
                 'name' => $name,
                 'optional' => false,
             ];
-        }
+        });
 
         return $result;
     }
@@ -109,8 +93,8 @@ class SchemaScraper extends AbstractSiteExtractor
 
     public function image(): ?array
     {
-        $image = Arr::get($this->schema, 'image.url');
-        $copyright = Arr::get($this->schema, 'publisher.name');
+        $image = $this->crawler->filter('[itemtype="http://schema.org/Recipe"] :not([itemscope]) [itemprop="image"]')->attr('src');
+        $copyright = $this->crawler->filter('[itemtype="http://schema.org/Person"] [itemprop="name"]')->attr('content');
 
         return [
             'url' => $image,

@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Scraper;
 use Throwable;
 use Kami\Cocktail\Exceptions\ScrapeException;
 use Kami\Cocktail\Scraper\Sites\SchemaScraper;
+use Kami\Cocktail\Scraper\Sites\MicrodataScraper;
 
 final class Manager
 {
@@ -31,6 +32,12 @@ final class Manager
                     return resolve($siteClass, ['url' => $this->url]);
                 }
             }
+        }
+
+        // Fallback to microdata
+        try {
+            return resolve(MicrodataScraper::class, ['url' => $this->url]);
+        } catch (Throwable $e) {
         }
 
         // Fallback to schema scraper
