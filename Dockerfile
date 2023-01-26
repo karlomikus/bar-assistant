@@ -34,7 +34,7 @@ USER www-data:www-data
 WORKDIR /var/www/cocktails
 
 # RUN git clone https://github.com/karlomikus/bar-assistant.git .
-COPY . .
+COPY --chown=www-data:www-data . .
 
 RUN composer install --optimize-autoloader --no-dev
 
