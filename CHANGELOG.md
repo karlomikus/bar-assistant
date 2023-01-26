@@ -1,5 +1,8 @@
-# v1.3.0
+# v1.3.1
+## Fixes
+- Fix permission bug introduced by copying app files in docker
 
+# v1.3.0
 ## New
 - Added cocktail ABV, calculated from cocktail ingredients
 - Added cocktail methods
