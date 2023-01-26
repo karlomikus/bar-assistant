@@ -20,14 +20,14 @@ use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\IngredientCategory;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 
-class OpenBar extends Command
+class BarOpen extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'bar:open {email=admin@example.com} {pass=password}';
+    protected $signature = 'bar:open {email=admin@example.com} {pass=password} {--c|clean : Clean installation, no default data}';
 
     /**
      * The console command description.
@@ -86,6 +86,14 @@ class OpenBar extends Command
         Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
 
         SearchActions::updateIndexSettings();
+
+        if ($this->option('clean')) {
+            Model::reguard();
+
+            $this->info('You are ready to serve, no data has been imported!');
+
+            return Command::SUCCESS;
+        }
 
         DB::table('glasses')->insert([
             ['name' => 'Cocktail', 'description' => 'A cocktail glass is a stemmed glass with an inverted cone bowl, mainly used to serve straight-up cocktails. The term cocktail glass is often used interchangeably with martini glass, despite their differing slightly. A standard cocktail glass contains 90 to 300 millilitres.'],
@@ -346,6 +354,8 @@ class OpenBar extends Command
             return $ing;
         });
 
+        $dbMethods = DB::table('cocktail_methods')->select(['name', 'id'])->get();
+
         $source = Yaml::parseFile($sourcePath);
 
         foreach ($source as $sCocktail) {
@@ -364,6 +374,12 @@ class OpenBar extends Command
                     $this->warn('Glass not found: [' . $sCocktail['name'] . '] ' . $sCocktail['glass']);
                 }
                 $cocktail->glass_id = $dbGlasses->filter(fn ($item) => $item->name == strtolower($sCocktail['glass']))->first()->id ?? null;
+
+                // Method
+                if (!$dbMethods->contains('name', $sCocktail['method'])) {
+                    $this->warn('Method found: [' . $sCocktail['name'] . '] ' . $sCocktail['method']);
+                }
+                $cocktail->cocktail_method_id = $dbMethods->filter(fn ($item) => $item->name == $sCocktail['method'])->first()->id ?? null;
 
                 $cocktail->save();
 
@@ -424,6 +440,7 @@ class OpenBar extends Command
                 $cocktail->refresh();
                 $cocktail->save();
             } catch (Throwable $e) {
+                $this->info($e->getMessage());
                 DB::rollBack();
             }
             DB::commit();

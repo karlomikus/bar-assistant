@@ -84,6 +84,10 @@ class TuxedoNo2 extends AbstractSiteExtractor
                 str_replace($onlyUnits, '', $amountAndUnits) . ' ' . $onlyUnits
             );
 
+            if ($node->filter('.ingredient a')->count() === 0) {
+                return;
+            }
+
             $ingredientName = $this->hintCommonIngredients($node->filter('.ingredient a')->first()->text());
 
             $result[] = [

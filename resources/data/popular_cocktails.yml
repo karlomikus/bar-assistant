@@ -9,6 +9,7 @@
     source: null
     image_copyright: 'The Drink Blog'
     glass: Coupe
+    method: Stir
     tags:
         - Brandy
     ingredients:
@@ -41,6 +42,7 @@
     source: 'Douglas Ankrah, The Townhouse | London'
     image_copyright: 'Punch / Jamie Lau'
     glass: Coupe
+    method: Shake
     tags:
         - Vodka
     ingredients:
@@ -83,6 +85,7 @@
     source: '1974'
     image_copyright: 'The Spruce Eats'
     glass: Lowball
+    method: Shake
     tags:
         - Sour
     ingredients:
@@ -118,6 +121,7 @@
     source: 'Mexico'
     image_copyright: 'A Couple Cooks'
     glass: Highball
+    method: Build
     tags:
         - Tequila
     ingredients:
@@ -162,6 +166,7 @@
     source: 'https://tuxedono2.com/white-negroni-cocktail-recipe'
     image_copyright: 'A Couple Cooks'
     glass: Lowball
+    method: Stir
     tags:
         - Gin
     ingredients:
@@ -191,6 +196,7 @@
     source: 'https://en.wikipedia.org/wiki/B-52_(cocktail)'
     image_copyright: Alchetron
     glass: Shot
+    method: Layer
     tags:
         - Shot
     ingredients:
@@ -220,6 +226,7 @@
     source: 'https://en.wikipedia.org/wiki/Bacardi_cocktail'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Coupe
+    method: Shake
     tags:
         - Rum
     ingredients:
@@ -253,6 +260,7 @@
     source: 'https://en.wikipedia.org/wiki/Bijou_(cocktail)'
     image_copyright: 'A Couple Cooks'
     glass: 'Nick and Nora'
+    method: Stir
     tags:
         - Gin
     ingredients:
@@ -287,6 +295,7 @@
     source: 'https://www.acouplecooks.com/best-gin-and-tonic/'
     image_copyright: 'A Couple Cooks'
     glass: 'Wine'
+    method: Build
     tags:
         - Gin
     ingredients:
@@ -311,6 +320,7 @@
     source: 'https://www.acouplecooks.com/gin-gimlet-cocktail/'
     image_copyright: 'A Couple Cooks'
     glass: 'Coupe'
+    method: Shake
     tags:
         - Gin
     ingredients:
@@ -348,12 +358,13 @@
     source: 'https://www.acouplecooks.com/gin-gimlet-cocktail/'
     image_copyright: 'A Couple Cooks'
     glass: 'Wine'
+    method: Build
     tags:
         - Wine
     ingredients:
         -
-            amount: 1
-            units: bottle
+            amount: 1000
+            units: ml
             name: Red Wine
             optional: false
         -
@@ -397,6 +408,7 @@
     source: 'https://en.wikipedia.org/wiki/20th_Century_(cocktail)'
     image_copyright: 'Imbibe Magazine'
     glass: 'Nick and Nora'
+    method: Shake
     tags:
         - Gin
     ingredients:
@@ -431,6 +443,7 @@
     source: 'https://tuxedono2.com/alaska-cocktail-recipe'
     image_copyright: Punch
     glass: 'Nick and Nora'
+    method: Stir
     tags:
         - Gin
     ingredients:
@@ -460,6 +473,7 @@
     source: 'https://en.wikipedia.org/wiki/Airmail_(cocktail)'
     image_copyright: 'Imbibe Magazine'
     glass: 'Cocktail'
+    method: Shake
     tags:
         - Rum
     ingredients:
@@ -494,6 +508,7 @@
     tags:
         - Gin
     glass: Lowball
+    method: Stir
     ingredients:
         -
             amount: 45
@@ -521,6 +536,7 @@
     tags:
         - Wine
     glass: Coupe
+    method: Stir
     ingredients:
         -
             amount: 45
@@ -547,6 +563,7 @@
     tags:
         - Whiskey
     glass: Cocktail
+    method: Stir
     ingredients:
         -
             amount: 60
@@ -583,6 +600,7 @@
     tags:
         - Rum
     glass: Coupe
+    method: Shake
     ingredients:
         -
             amount: 45
@@ -623,6 +641,7 @@
     tags:
         - Whiskey
     glass: Champagne
+    method: Stir
     ingredients:
         -
             amount: 30
@@ -660,6 +679,7 @@
     tags:
         - Rum
     glass: Cocktail
+    method: Stir
     ingredients:
         -
             amount: 45
@@ -694,6 +714,7 @@
     image_copyright: Tasteatlas
     tags: []
     glass: Lowball
+    method: Build
     ingredients:
         -
             amount: 30
@@ -721,6 +742,7 @@
     image_copyright: Tasteatlas
     tags: []
     glass: Lowball
+    method: Shake
     ingredients:
         -
             amount: 50

@@ -11,4 +11,12 @@
 .env
 
 Dockerfile
+Dockerfile.dev
 .dockerignore
+
+CHANGELOG.md
+docker-compose.yml
+phpunit.xml
+phpstan.neon
+README.md
+ecs.php

@@ -19,6 +19,7 @@
     source: 'https://iba-world.com/alexander/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Coupe
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -55,6 +56,7 @@
     source: 'https://iba-world.com/americano/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Lowball
+    method: Stir
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -87,6 +89,7 @@
     source: 'https://iba-world.com/angel-face/'
     image_copyright: 'Wine Enthusiast / Tyler Zieliniski'
     glass: 'Nick and Nora'
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -127,6 +130,7 @@
     source: 'https://iba-world.com/692/'
     image_copyright: 'The Spruce Eats / Cara Cormack'
     glass: Cocktail
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -164,6 +168,7 @@
     source: 'https://iba-world.com/barracuda/'
     image_copyright: 'Ape Time'
     glass: Highball
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -217,6 +222,7 @@
     source: 'https://iba-world.com/bees-knees/'
     image_copyright: 'Kitchen Swagger'
     glass: Coupe
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -262,6 +268,7 @@
     source: 'https://iba-world.com/bellini/'
     image_copyright: 'Olive & Mango'
     glass: Champagne
+    method: Stir
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -287,6 +294,7 @@
     source: 'https://iba-world.com/between-the-sheets/'
     image_copyright: 'A Couple Cooks'
     glass: Fizzio
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -323,6 +331,7 @@
     source: 'https://iba-world.com/black-russian/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Lowball
+    method: Stir
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -346,6 +355,7 @@
     source: 'https://iba-world.com/bloody-mary/'
     image_copyright: Ocado
     glass: Highball
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -394,6 +404,7 @@
     source: 'https://iba-world.com/boulevardier/'
     image_copyright: 'BBC Good Food'
     glass: Lowball
+    method: Stir
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -429,6 +440,7 @@
     source: 'https://iba-world.com/bramble/'
     image_copyright: 'The Spruce / Julia Hartbeck'
     glass: Lowball
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -465,6 +477,7 @@
     source: 'https://iba-world.com/brandy-crusta/'
     image_copyright: Mangosalsa
     glass: 'Nick and Nora'
+    method: Stir
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -516,6 +529,7 @@
     source: 'https://iba-world.com/caipirinha/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Lowball
+    method: Muddle
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -543,6 +557,7 @@
     source: 'https://iba-world.com/cachanchara/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Lowball
+    method: Build
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -576,6 +591,7 @@
     source: 'https://iba-world.com/casino/'
     image_copyright: 'Cocktail Society'
     glass: Lowball
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -610,6 +626,7 @@
     source: 'https://iba-world.com/champagne-cocktail/'
     image_copyright: 'A Couple Cooks'
     glass: Champagne
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -653,6 +670,7 @@
     source: 'https://iba-world.com/clover-club/'
     image_copyright: 'A Couple Cooks'
     glass: Coupe
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -686,6 +704,7 @@
     source: 'https://iba-world.com/corpse-reviver-2/'
     image_copyright: 'Punch Drink'
     glass: Fizzio
+    method: Shake
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -728,6 +747,7 @@
     source: 'https://iba-world.com/cosmopolitan/'
     image_copyright: "Amanda's Cookin'"
     glass: Cocktail
+    method: Shake
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -765,6 +785,7 @@
     source: 'https://iba-world.com/cuba-libre/'
     image_copyright: 'Jamie Oliver'
     glass: Highball
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -793,6 +814,7 @@
     source: 'https://iba-world.com/daiquiri/'
     image_copyright: 'A Couple Cooks'
     glass: Coupe
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -824,6 +846,7 @@
     source: 'https://iba-world.com/dark-n-stormy/'
     image_copyright: 'The Spruce / Madhumita Sathishkumar'
     glass: Highball
+    method: Build
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -847,6 +870,7 @@
     source: 'https://iba-world.com/dry-martini/'
     image_copyright: 'Getty Images/iStockphoto'
     glass: Cocktail
+    method: Stir
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -870,6 +894,7 @@
     source: 'https://iba-world.com/espresso-martini/'
     image_copyright: "It's Liv B."
     glass: Cocktail
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -906,6 +931,7 @@
     source: 'https://iba-world.com/fernandito/'
     image_copyright: 'The daily meal'
     glass: Highball
+    method: Build
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -928,6 +954,7 @@
     source: 'https://iba-world.com/french-75/'
     image_copyright: 'Sip and Feast'
     glass: Champagne
+    method: Shake
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -961,6 +988,7 @@
     source: 'https://iba-world.com/french-connection/'
     image_copyright: 'Punch Drink'
     glass: Lowball
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -987,6 +1015,7 @@
     source: 'https://iba-world.com/french-martini/'
     image_copyright: 'Supergolden Bakes'
     glass: Fizzio
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -1019,6 +1048,7 @@
     source: 'https://iba-world.com/gin-fizz/'
     image_copyright: 'A Couple Cooks'
     glass: Highball
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1055,6 +1085,7 @@
     source: 'https://iba-world.com/golden-dream/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Coupe
+    method: Shake
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1089,6 +1120,7 @@
     source: 'https://iba-world.com/grasshopper/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Fizzio
+    method: Shake
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1119,6 +1151,7 @@
     source: 'https://iba-world.com/hanky-panky/'
     image_copyright: 'Punch / Daniel Krieger'
     glass: 'Nick and Nora'
+    method: Stir
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1147,6 +1180,7 @@
     source: 'https://iba-world.com/hemingway-special/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Coupe
+    method: Shake
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1183,6 +1217,7 @@
     source: 'https://iba-world.com/horses-neck/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Highball
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1211,6 +1246,7 @@
     source: 'https://iba-world.com/illegal/'
     image_copyright: 'The Shaken Cocktail'
     glass: Fizzio
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -1264,6 +1300,7 @@
     source: 'https://iba-world.com/irish-coffee/'
     image_copyright: VinePair
     glass: Glass mug
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1302,6 +1339,7 @@
     source: 'https://iba-world.com/john-collins/'
     image_copyright: 'A Couple Cooks'
     glass: Highball
+    method: Build
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1340,6 +1378,7 @@
     source: 'https://iba-world.com/kir/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Champagne
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1363,6 +1402,7 @@
     source: 'https://iba-world.com/last-word/'
     image_copyright: 'A Serious Eats / Vicky Wasik'
     glass: Nick and Nora
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1396,6 +1436,7 @@
     source: 'https://iba-world.com/lemon-drop-martini/'
     image_copyright: 'Basil & Bubbly'
     glass: Cocktail
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -1427,6 +1468,7 @@
     source: 'https://iba-world.com/long-island-ice-tea/'
     image_copyright: 'Kitchen Stories'
     glass: Highball
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1483,6 +1525,7 @@
     source: 'https://iba-world.com/mai-tai/'
     image_copyright: 'A Couple Cooks'
     glass: Lowball
+    method: Shake
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1527,6 +1570,7 @@
     source: 'https://iba-world.com/manhattan/'
     image_copyright: "Sainsbury's Magazine / Toby Scott"
     glass: Cocktail
+    method: Stir
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1557,6 +1601,7 @@
     source: 'https://iba-world.com/margarita/'
     image_copyright: 'Jamie Oliver'
     glass: Margarita
+    method: Shake
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1588,6 +1633,7 @@
     source: 'https://iba-world.com/martinez/'
     image_copyright: Wikipedia
     glass: Cocktail
+    method: Stir
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1621,6 +1667,7 @@
     source: 'https://iba-world.com/mary-pickford/'
     image_copyright: Drinkoteket
     glass: Fizzio
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1658,6 +1705,7 @@
     source: 'https://iba-world.com/mimosa/'
     image_copyright: 'Inspired Taste'
     glass: Champagne
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1666,12 +1714,12 @@
         -
             amount: 75
             units: ml
-            name: 'Orange juice'
+            name: Prosecco
             optional: false
         -
             amount: 75
             units: ml
-            name: Prosecco
+            name: 'Orange juice'
             optional: false
 -
     name: 'Mint Julep'
@@ -1681,6 +1729,7 @@
     source: 'https://iba-world.com/mint-julep/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Julep
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1714,6 +1763,7 @@
     source: 'https://iba-world.com/mojito/'
     image_copyright: 'Bon Apetite'
     glass: Highball
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1752,6 +1802,7 @@
     source: 'https://iba-world.com/monkey-gland/'
     image_copyright: 'The Spruce'
     glass: Cocktail
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1785,6 +1836,7 @@
     source: 'https://iba-world.com/moscow-mule/'
     image_copyright: 'Bake It With Love'
     glass: 'Copper mug'
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1813,6 +1865,7 @@
     source: 'https://iba-world.com/naked-and-famous/'
     image_copyright: Epicurious
     glass: 'Nick and Nora'
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -1846,6 +1899,7 @@
     source: 'https://iba-world.com/negroni/'
     image_copyright: 'Kitchen Swagger'
     glass: Lowball
+    method: Build
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1874,6 +1928,7 @@
     source: 'https://iba-world.com/new-york-sour/'
     image_copyright: 'Kitchen Swagger'
     glass: Lowball
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -1913,20 +1968,21 @@
     source: 'https://iba-world.com/old-cuban/'
     image_copyright: 'NYT Cooking'
     glass: Coupe
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
         - Rum
     ingredients:
         -
-            amount: 6
-            units: sprigs
-            name: Mint
-            optional: false
-        -
             amount: 45
             units: ml
             name: 'Dark Rum'
+            optional: false
+        -
+            amount: 6
+            units: sprigs
+            name: Mint
             optional: false
         -
             amount: 22.5
@@ -1956,6 +2012,7 @@
     source: 'https://iba-world.com/old-fashioned/'
     image_copyright: Epicurious
     glass: Lowball
+    method: Build
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1989,6 +2046,7 @@
     source: 'https://iba-world.com/paloma/'
     image_copyright: 'Love and Lemons'
     glass: Lowball
+    method: Build
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2022,6 +2080,7 @@
     source: 'https://iba-world.com/paper-plane/'
     image_copyright: 'Bon Apetite'
     glass: Coupe
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2055,6 +2114,7 @@
     source: 'https://iba-world.com/paradise/'
     image_copyright: Wikipedia
     glass: Cocktail
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2088,6 +2148,7 @@
     source: 'https://iba-world.com/penicillin/'
     image_copyright: Unknown
     glass: Lowball
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2130,6 +2191,7 @@
     source: 'https://iba-world.com/pina-colada/'
     image_copyright: 'A Couple Cooks'
     glass: Hurricane
+    method: Blend
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2165,6 +2227,7 @@
     source: 'https://iba-world.com/pisco-sour/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: 'Nick and Nora'
+    method: Shake
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2201,6 +2264,7 @@
     source: 'https://iba-world.com/planters-punch/'
     image_copyright: Wikipedia
     glass: Hurricane
+    method: Build
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2230,6 +2294,7 @@
     source: 'https://iba-world.com/porto-flip/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Coupe
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2264,6 +2329,7 @@
     source: 'https://iba-world.com/ramos-fizz/'
     image_copyright: 'Punch Drink'
     glass: Highball
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2322,6 +2388,7 @@
     source: 'https://iba-world.com/russian-spring-punch/'
     image_copyright: 'Liquido Spirits'
     glass: Highball
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2368,6 +2435,7 @@
     source: 'https://iba-world.com/rusty-nail/'
     image_copyright: 'Serious Eats'
     glass: Lowball
+    method: Build
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2399,6 +2467,7 @@
     source: 'https://iba-world.com/sazerac/'
     image_copyright: 'The Spruce Eats'
     glass: Lowball
+    method: Stir
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2432,6 +2501,7 @@
     source: 'https://iba-world.com/sea-breeze/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Highball
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2466,6 +2536,7 @@
     source: 'https://iba-world.com/sex-on-the-beach/'
     image_copyright: 'Copy Kat Recipes'
     glass: Highball
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2502,6 +2573,7 @@
     source: 'https://iba-world.com/sidecar/'
     image_copyright: 'A Couple Cooks'
     glass: Cocktail
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2530,6 +2602,7 @@
     source: 'https://iba-world.com/singapore-sling/'
     image_copyright: 'The Spruce Eats'
     glass: Hurricane
+    method: Shake
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2587,6 +2660,7 @@
     source: 'https://iba-world.com/southside/'
     image_copyright: 'Limoncello Kitchen'
     glass: 'Nick and Nora'
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2620,6 +2694,7 @@
     source: 'https://iba-world.com/spicy-fifty/'
     image_copyright: MixolopediA
     glass: Cocktail
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2661,6 +2736,7 @@
     source: 'https://iba-world.com/spritz/'
     image_copyright: 'Kitchen Swagger'
     glass: Wine
+    method: Build
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2689,6 +2765,7 @@
     source: 'https://iba-world.com/stinger/'
     image_copyright: 'A Couple Cooks'
     glass: Cocktail
+    method: Stir
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2712,6 +2789,7 @@
     source: 'https://iba-world.com/suffering-bastard/'
     image_copyright: 'Keg Works'
     glass: Tiki
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2752,6 +2830,7 @@
     source: 'https://iba-world.com/tequila-sunrise/'
     image_copyright: 'Homemade Hooplah'
     glass: Highball
+    method: Build
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2780,6 +2859,7 @@
     source: 'https://iba-world.com/tipperary/'
     image_copyright: MixolopediA
     glass: Cocktail
+    method: Stir
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2813,6 +2893,7 @@
     source: 'https://iba-world.com/tommys-margarita/'
     image_copyright: 'Moody Mixologist'
     glass: Lowball
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2844,6 +2925,7 @@
     source: 'https://iba-world.com/trinidad-sour/'
     image_copyright: 'A Couple Cooks'
     glass: Cocktail
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2877,6 +2959,7 @@
     source: 'https://iba-world.com/tuxedo/'
     image_copyright: Punch
     glass: Cocktail
+    method: Stir
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2921,6 +3004,7 @@
     source: 'https://iba-world.com/ve-n-to/'
     image_copyright: 'IBA World'
     glass: Lowball
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2953,6 +3037,7 @@
     source: 'https://iba-world.com/vesper/'
     image_copyright: 'A Couple Cooks'
     glass: Cocktail
+    method: Shake
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2981,6 +3066,7 @@
     source: 'https://iba-world.com/vieux-carre/'
     image_copyright: 'Liquor.com / Tim Nusog'
     glass: Cocktail
+    method: Stir
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -3027,6 +3113,7 @@
     source: 'https://iba-world.com/whiskey-sour/'
     image_copyright: VinePair
     glass: Lowball
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -3061,6 +3148,7 @@
     source: 'https://iba-world.com/white-lady/'
     image_copyright: 'BBC Good Food'
     glass: Coupe
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -3089,6 +3177,7 @@
     source: 'https://iba-world.com/yellow-bird/'
     image_copyright: 'Cooking to Entertain'
     glass: Coupe
+    method: Shake
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -3127,6 +3216,7 @@
     source: 'https://iba-world.com/zombie/'
     image_copyright: 'Punch Drink'
     glass: Highball
+    method: Blend
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'

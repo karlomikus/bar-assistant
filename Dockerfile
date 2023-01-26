@@ -12,7 +12,7 @@ RUN apt update \
 
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions && \
-    install-php-extensions gd opcache redis
+    install-php-extensions gd opcache redis zip
 
 # Setup default apache stuff
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
@@ -33,7 +33,8 @@ USER www-data:www-data
 
 WORKDIR /var/www/cocktails
 
-RUN git clone https://github.com/karlomikus/bar-assistant.git .
+# RUN git clone https://github.com/karlomikus/bar-assistant.git .
+COPY . .
 
 RUN composer install --optimize-autoloader --no-dev
 

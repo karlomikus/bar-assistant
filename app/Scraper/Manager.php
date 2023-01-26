@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
+use Throwable;
 use Kami\Cocktail\Exceptions\ScrapeException;
+use Kami\Cocktail\Scraper\Sites\SchemaScraper;
+use Kami\Cocktail\Scraper\Sites\MicrodataScraper;
 
 final class Manager
 {
@@ -14,6 +17,7 @@ final class Manager
         \Kami\Cocktail\Scraper\Sites\Imbibe::class,
         \Kami\Cocktail\Scraper\Sites\EricsCocktailGuide::class,
         \Kami\Cocktail\Scraper\Sites\HausAlpenz::class,
+        \Kami\Cocktail\Scraper\Sites\TheDrinkBlog::class,
     ];
 
     public function __construct(private readonly string $url)
@@ -30,7 +34,19 @@ final class Manager
             }
         }
 
-        throw new ScrapeException('Scraper not supported for given site.');
+        // Fallback to microdata
+        try {
+            return resolve(MicrodataScraper::class, ['url' => $this->url]);
+        } catch (Throwable $e) {
+        }
+
+        // Fallback to schema scraper
+        try {
+            return resolve(SchemaScraper::class, ['url' => $this->url]);
+        } catch (Throwable $e) {
+        }
+
+        throw new ScrapeException('Scraper could not find any relevant data for the given site.');
     }
 
     public static function scrape(string $url): AbstractSiteExtractor

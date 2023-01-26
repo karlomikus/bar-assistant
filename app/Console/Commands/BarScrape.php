@@ -66,7 +66,7 @@ class BarScrape extends Command
         }
 
         try {
-            resolve(ImportService::class)->import($scrapedData);
+            resolve(ImportService::class)->importFromScraper($scrapedData);
 
             $this->info('Cocktail imported successfully, do not forget to check the imported data for errors.');
         } catch (Throwable $e) {

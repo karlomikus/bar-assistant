@@ -37,7 +37,9 @@ class CocktailResource extends JsonResource
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'ingredients' => CocktailIngredientResource::collection($this->ingredients),
             'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
-            'created_at' => $this->created_at->toDateTimeString()
+            'created_at' => $this->created_at->toDateTimeString(),
+            'method' => new CocktailMethodResource($this->whenLoaded('method')),
+            'abv' => $this->getABV(),
         ];
     }
 }

@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\Uid\Ulid;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Services\CocktailService;
@@ -14,6 +15,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
+use Kami\Cocktail\Http\Resources\CocktailPublicResource;
 
 class CocktailController extends Controller
 {
@@ -26,7 +28,7 @@ class CocktailController extends Controller
      */
     public function index(Request $request): JsonResource
     {
-        $cocktails = Cocktail::with('ingredients.ingredient', 'images', 'tags');
+        $cocktails = Cocktail::with('ingredients.ingredient', 'images', 'tags', 'method');
 
         $perPage = $request->get('per_page', 15);
 
@@ -59,7 +61,7 @@ class CocktailController extends Controller
     {
         $cocktail = Cocktail::inRandomOrder()
             ->firstOrFail()
-            ->load('ingredients.ingredient', 'images', 'tags');
+            ->load('ingredients.ingredient', 'images', 'tags', 'method');
 
         return new CocktailResource($cocktail);
     }
@@ -72,7 +74,7 @@ class CocktailController extends Controller
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
             ->firstOrFail()
-            ->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes');
+            ->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method');
 
         return new CocktailResource($cocktail);
     }
@@ -94,6 +96,7 @@ class CocktailController extends Controller
                 $request->post('images', []),
                 $request->post('tags', []),
                 $request->post('glass_id') ? (int) $request->post('glass_id') : null,
+                $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
             );
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
@@ -131,6 +134,7 @@ class CocktailController extends Controller
                 $request->post('images', []),
                 $request->post('tags', []),
                 $request->post('glass_id') ? (int) $request->post('glass_id') : null,
+                $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
             );
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
@@ -202,5 +206,24 @@ class CocktailController extends Controller
             ->pluck('cocktail');
 
         return CocktailResource::collection($cocktails);
+    }
+
+    public function makePublic(int|string $idOrSlug): JsonResource
+    {
+        $publicUlid = new Ulid();
+        $cocktail = Cocktail::where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
+            ->firstOrFail();
+
+        if ($cocktail->public_id) {
+            return new CocktailPublicResource($cocktail);
+        }
+
+        $cocktail->public_id = $publicUlid;
+        $cocktail->public_at = now();
+        $cocktail->public_expires_at = null;
+        $cocktail->save();
+
+        return new CocktailPublicResource($cocktail);
     }
 }

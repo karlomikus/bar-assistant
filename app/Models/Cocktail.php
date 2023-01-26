@@ -8,6 +8,7 @@ use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Kami\Cocktail\SearchActions;
 use Spatie\Sluggable\SlugOptions;
+use Kami\Cocktail\Services\Calculator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +18,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Cocktail extends Model implements SiteSearchable
 {
     use HasFactory, Searchable, HasImages, HasSlug, HasRating;
+
+    protected $casts = [
+        'public_at' => 'datetime',
+    ];
 
     private $appImagesDir = 'cocktails/';
 
@@ -50,12 +55,17 @@ class Cocktail extends Model implements SiteSearchable
 
     public function ingredients(): HasMany
     {
-        return $this->hasMany(CocktailIngredient::class);
+        return $this->hasMany(CocktailIngredient::class)->orderBy('sort');
     }
 
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function method(): BelongsTo
+    {
+        return $this->belongsTo(CocktailMethod::class, 'cocktail_method_id');
     }
 
     public function delete(): ?bool
@@ -66,34 +76,38 @@ class Cocktail extends Model implements SiteSearchable
         return parent::delete();
     }
 
-    public function getABV(float $dilutionPercentage = 0.23): float
+    /**
+     * Calculate cocktail ABV
+     * Source: Formula from https://jeffreymorgenthaler.com/
+     *
+     * @return null|float
+     */
+    public function getABV(): ?float
     {
-        // https://jeffreymorgenthaler.com/
-        // TODO: Update $dilutionPercentage based on method
-        // Stirring: 20%
-        // Shake: 25%
-        // Building: 10%
-        // TODO: Include dashes
-        $alchoholicIngredients = $this->ingredients()
+        if ($this->cocktail_method_id === null) {
+            return null;
+        }
+
+        $ingredients = $this->ingredients()
             ->select('amount', 'units', 'strength')
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
-            ->where('ingredients.strength', '>', 0)
-            ->where('cocktail_ingredients.units', 'ml')
+            ->where('cocktail_ingredients.cocktail_id', $this->id)
+            ->where(function ($q) {
+                $q->where('cocktail_ingredients.units', 'ml')
+                    ->orWhere('cocktail_ingredients.units', 'LIKE', 'dash%');
+            })
             ->get()
             ->map(function ($item) {
-                $item->amount = $item->amount / 30;
+                if (str_starts_with($item->units, 'dash')) {
+                    $item->amount = $item->amount * 0.02;
+                } else {
+                    $item->amount = $item->amount / 30;
+                }
 
                 return $item;
             });
 
-        $amountUsed = $alchoholicIngredients->sum('amount');
-        $alcoholVolume = floatval($alchoholicIngredients->reduce(function ($carry, $item) {
-            return (($item->amount * $item->strength) / 100) + $carry;
-        }));
-
-        $afterDilution = ($amountUsed * $dilutionPercentage) + $amountUsed;
-
-        return round(($alcoholVolume / $afterDilution) * 100, 2);
+        return Calculator::calculateAbv($ingredients->toArray(), $this->method->dilution_percentage);
     }
 
     public function getMainIngredient(): ?CocktailIngredient
@@ -121,7 +135,6 @@ class Cocktail extends Model implements SiteSearchable
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
-            'source' => $this->source,
             'garnish' => $this->garnish,
             'image_url' => $this->getMainImageUrl(),
             'main_image_id' => $this->images->first()?->id ?? null,
@@ -131,7 +144,9 @@ class Cocktail extends Model implements SiteSearchable
             'date' => $this->updated_at->format('Y-m-d H:i:s'),
             'glass' => $this->glass->name ?? null,
             'average_rating' => $this->getAverageRating(),
-            'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null
+            'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
+            'calculated_abv' => $this->getABV(),
+            'method' => $this->method->name ?? null,
         ];
     }
 }

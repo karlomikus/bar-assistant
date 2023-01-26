@@ -9,11 +9,14 @@ use Kami\Cocktail\Http\Controllers\ShelfController;
 use Kami\Cocktail\Http\Controllers\StatsController;
 use Kami\Cocktail\Http\Controllers\UsersController;
 use Kami\Cocktail\Http\Controllers\RatingController;
+use Kami\Cocktail\Http\Controllers\ScrapeController;
 use Kami\Cocktail\Http\Controllers\ServerController;
+use Kami\Cocktail\Http\Controllers\ExploreController;
 use Kami\Cocktail\Http\Controllers\ProfileController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
+use Kami\Cocktail\Http\Controllers\CocktailMethodController;
 use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
 
 /*
@@ -39,6 +42,10 @@ Route::prefix('server')->group(function() {
 
 Route::prefix('images')->group(function() {
     Route::get('/{id}/thumb', [ImageController::class, 'thumb']);
+});
+
+Route::prefix('explore')->group(function() {
+    Route::get('/cocktails/{ulid}', [ExploreController::class, 'cocktail']);
 });
 
 Route::middleware('auth:sanctum')->group(function() {
@@ -81,6 +88,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('/', [CocktailController::class, 'store'])->name('cocktails.store');
         Route::delete('/{id}', [CocktailController::class, 'delete'])->name('cocktails.delete');
         Route::put('/{id}', [CocktailController::class, 'update'])->name('cocktails.update');
+        Route::post('/{id}/make-public', [CocktailController::class, 'makePublic'])->name('cocktails.make-public');
     });
 
     Route::prefix('images')->group(function() {
@@ -128,6 +136,18 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::prefix('stats')->group(function() {
         Route::get('/', [StatsController::class, 'index']);
+    });
+
+    Route::prefix('cocktail-methods')->group(function() {
+        Route::get('/', [CocktailMethodController::class, 'index']);
+        Route::post('/', [CocktailMethodController::class, 'store']);
+        Route::get('/{id}', [CocktailMethodController::class, 'show'])->name('cocktail-methods.show');
+        Route::put('/{id}', [CocktailMethodController::class, 'update']);
+        Route::delete('/{id}', [CocktailMethodController::class, 'delete']);
+    });
+
+    Route::prefix('scrape')->group(function() {
+        Route::post('/cocktail', [ScrapeController::class, 'cocktail']);
     });
 });
 

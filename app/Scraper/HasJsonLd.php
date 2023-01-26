@@ -6,7 +6,7 @@ namespace Kami\Cocktail\Scraper;
 
 trait HasJsonLd
 {
-    public function parseSchema(): ?array
+    public function getSchema(): ?array
     {
         $jsonLdSchema = $this->crawler->filterXPath('//script[@type="application/ld+json"]')->first()->text();
 

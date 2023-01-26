@@ -26,6 +26,7 @@ class ServerController extends Controller
             'data' => [
                 'name' => config('app.name'),
                 'version' => config('bar-assistant.version'),
+                'type' => config('app.env'),
                 'meilisearch_host' => config('scout.meilisearch.host'),
                 'meilisearch_version' => $meilisearch->version()['pkgVersion'],
             ]
