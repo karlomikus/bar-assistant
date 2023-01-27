@@ -1,3 +1,8 @@
+# v1.3.2
+## New
+- Set method for existing cocktails without method
+    - This syncs stock cocktail data with existing data
+
 # v1.3.1
 ## Fixes
 - Fix permission bug introduced by copying app files in docker
