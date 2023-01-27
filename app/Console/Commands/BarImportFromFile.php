@@ -30,7 +30,7 @@ class BarImportFromFile extends Command
     {
         $service = resolve(ImportService::class);
 
-        $service->importFromZipFile(storage_path('ba_export_2023-01-23-04-49-41.zip'));
+        $service->importFromZipFile(storage_path($this->argument('filename')));
 
         return Command::SUCCESS;
     }

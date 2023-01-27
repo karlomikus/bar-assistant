@@ -9,6 +9,7 @@ use ZipArchive;
 use Kami\Cocktail\Models\Glass;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
+use Illuminate\Support\Facades\Artisan;
 use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
@@ -85,6 +86,10 @@ class ImportService
     {
         $tempFolder = storage_path('uploads/temp/export_temp/');
 
+        if (!file_exists($zipFilePath)) {
+            throw new \Exception('no file: ' . $zipFilePath);
+        }
+
         $zip = new ZipArchive();
         if ($zip->open($zipFilePath) !== true) {
             return false;
@@ -115,6 +120,16 @@ class ImportService
                 }
             }
         }
+
+        foreach (glob($tempFolder . 'uploads/cocktails/*') as $pathFrom) {
+            copy($pathFrom, storage_path('/uploads/cocktails/' . basename($pathFrom)));
+        }
+
+        foreach (glob($tempFolder . 'uploads/ingredients/*') as $pathFrom) {
+            copy($pathFrom, storage_path('/uploads/ingredients/' . basename($pathFrom)));
+        }
+
+        Artisan::call('bar:refresh-search');
 
         return true;
     }
