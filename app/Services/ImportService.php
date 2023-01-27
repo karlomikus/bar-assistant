@@ -85,6 +85,10 @@ class ImportService
     {
         $tempFolder = storage_path('uploads/temp/export_temp/');
 
+        if (!file_exists($zipFilePath)) {
+            throw new \Exception('no file: ' . $zipFilePath);
+        }
+
         $zip = new ZipArchive();
         if ($zip->open($zipFilePath) !== true) {
             return false;
@@ -114,6 +118,14 @@ class ImportService
                     dump(sprintf('Unable to import row with id "%s" to table "%s"', $row['id'], $tableName));
                 }
             }
+        }
+
+        foreach (glob($tempFolder . 'uploads/cocktails/*') as $pathFrom) {
+            copy($pathFrom, storage_path('/uploads/cocktails/' . basename($pathFrom)));
+        }
+
+        foreach (glob($tempFolder . 'uploads/ingredients/*') as $pathFrom) {
+            copy($pathFrom, storage_path('/uploads/ingredients/' . basename($pathFrom)));
         }
 
         return true;
