@@ -3,6 +3,7 @@
 namespace Kami\Cocktail\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Kami\Cocktail\Services\ImportService;
 
 class BarImportFromFile extends Command
@@ -31,6 +32,8 @@ class BarImportFromFile extends Command
         $service = resolve(ImportService::class);
 
         $service->importFromZipFile(storage_path($this->argument('filename')));
+
+        Artisan::call('bar:refresh-search');
 
         return Command::SUCCESS;
     }
