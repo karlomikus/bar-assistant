@@ -14,14 +14,14 @@ class BarExport extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:export';
+    protected $signature = 'bar:export-zip';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '[EXPERIMENTAL] Export data to be used in a new Bar Assistant instance.';
+    protected $description = 'Export data to be used in a another Bar Assistant instance.';
 
     /**
      * Execute the console command.

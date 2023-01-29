@@ -2,9 +2,13 @@
 
 namespace Kami\Cocktail\Console\Commands;
 
+use Throwable;
+use ZipArchive;
+use Illuminate\Support\Str;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
-use Kami\Cocktail\Services\ImportService;
+use Illuminate\Support\Facades\Storage;
 
 class BarImportFromFile extends Command
 {
@@ -20,7 +24,7 @@ class BarImportFromFile extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Import data exported from another Bar Assistant instance';
 
     /**
      * Execute the console command.
@@ -29,11 +33,79 @@ class BarImportFromFile extends Command
      */
     public function handle()
     {
-        $service = resolve(ImportService::class);
+        $zipFilePath = storage_path($this->argument('filename'));
 
-        $service->importFromZipFile(storage_path($this->argument('filename')));
+        if (!file_exists($zipFilePath)) {
+            $this->info('File not found! Make sure the file is located in storage/ directory.');
+
+            return Command::FAILURE;
+        }
+
+        if (!$this->confirm('This action will overwrite any data you currently have. Are you sure you want to continue?')) {
+            return Command::SUCCESS;
+        }
+
+        // Setup temporary extract folder
+        $unzipPath = storage_path('uploads/temp/export/import_' . Str::random(8));
+        $disk = Storage::build([
+            'driver' => 'local',
+            'root' => $unzipPath,
+        ]);
+
+        // Extract the archive
+        $zip = new ZipArchive();
+        if ($zip->open($zipFilePath) !== true) {
+            $this->info('Unable to open the zip file!');
+
+            return Command::FAILURE;
+        }
+        $zip->extractTo($unzipPath);
+        $zip->close();
+
+        $importOrder = [
+            'ingredient_categories',
+            'glasses',
+            'tags',
+            'ingredients',
+            'cocktails',
+            'cocktail_ingredients',
+            'cocktail_ingredient_substitutes',
+            'cocktail_tag',
+            'images',
+        ];
+
+        $this->info('Importing table data...');
+        foreach ($importOrder as $tableName) {
+            $data = json_decode(file_get_contents($disk->path($tableName . '.json')), true);
+
+            foreach ($data as $row) {
+                try {
+                    DB::table($tableName)->insert($row);
+                } catch (Throwable $e) {
+                    // $this->info(sprintf('Unable to import row with id "%s" to table "%s"', $row['id'], $tableName));
+                }
+            }
+        }
+
+        $this->info('Importing images...');
+
+        foreach (glob($disk->path('uploads/cocktails/*')) as $pathFrom) {
+            copy($pathFrom, storage_path('/uploads/cocktails/' . basename($pathFrom)));
+        }
+
+        foreach (glob($disk->path('uploads/ingredients/*')) as $pathFrom) {
+            copy($pathFrom, storage_path('/uploads/ingredients/' . basename($pathFrom)));
+        }
+
+        $this->info('Removing temp folder...');
+
+        $disk->deleteDirectory('/');
+
+        $this->info('Refreshing search indexes...');
 
         Artisan::call('bar:refresh-search');
+
+        $this->info('Importing is finished!');
 
         return Command::SUCCESS;
     }
