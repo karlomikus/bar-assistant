@@ -46,7 +46,7 @@ return [
 
         'bar-assistant' => [
             'driver' => 'local',
-            'root' => storage_path('uploads'),
+            'root' => storage_path('bar-assistant/uploads'),
             'url' => env('APP_URL').'/uploads',
             'visibility' => 'public',
             'throw' => false,

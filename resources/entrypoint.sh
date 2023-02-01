@@ -13,9 +13,9 @@ first_time_check() {
         php artisan key:generate
         php artisan storage:link
 
-        if [ ! -f /var/www/cocktails/storage/database.sqlite ]; then
+        if [ ! -f /var/www/cocktails/storage/bar-assistant/database.sqlite ]; then
             echo "Database not found, creating a new database..."
-            touch /var/www/cocktails/storage/database.sqlite
+            touch /var/www/cocktails/storage/bar-assistant/database.sqlite
             php artisan migrate --force
             php artisan bar:open
         else
