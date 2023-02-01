@@ -46,7 +46,7 @@ class BarImportFromFile extends Command
         }
 
         // Setup temporary extract folder
-        $unzipPath = storage_path('uploads/temp/export/import_' . Str::random(8));
+        $unzipPath = storage_path('temp/export/import_' . Str::random(8));
         $disk = Storage::build([
             'driver' => 'local',
             'root' => $unzipPath,
@@ -89,12 +89,14 @@ class BarImportFromFile extends Command
 
         $this->info('Importing images...');
 
+        $baDisk = Storage::disk('bar-assistant');
+
         foreach (glob($disk->path('uploads/cocktails/*')) as $pathFrom) {
-            copy($pathFrom, storage_path('/uploads/cocktails/' . basename($pathFrom)));
+            copy($pathFrom, $baDisk->path('cocktails/' . basename($pathFrom)));
         }
 
         foreach (glob($disk->path('uploads/ingredients/*')) as $pathFrom) {
-            copy($pathFrom, storage_path('/uploads/ingredients/' . basename($pathFrom)));
+            copy($pathFrom, $baDisk->path('ingredients/' . basename($pathFrom)));
         }
 
         $this->info('Removing temp folder...');

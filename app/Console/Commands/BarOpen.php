@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\IngredientCategory;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
@@ -283,11 +284,13 @@ class BarOpen extends Command
         // Create image for every ingredient
         $ingredients = Ingredient::all();
         foreach ($ingredients as $ing) {
-            if (!file_exists(storage_path('uploads/ingredients/' . Str::slug($ing->name) . '.png'))) {
+            $filepath = 'ingredients/' . Str::slug($ing->name) . '.png';
+
+            if (Storage::disk('bar-assistant')->missing($filepath)) {
                 continue;
             }
             $image = new Image();
-            $image->file_path = 'ingredients/' . Str::slug($ing->name) . '.png';
+            $image->file_path = $filepath;
             $image->file_extension = 'png';
             $image->copyright = null;
             $image->user_id = 1;
