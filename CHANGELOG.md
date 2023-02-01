@@ -1,3 +1,10 @@
+# v1.3.3
+## Fixes
+- Updated packages, including security fix for `symfony/http-kernel`
+
+## Changes
+- Updated import and export commands
+
 # v1.3.2
 ## New
 - Set method for existing cocktails without method
