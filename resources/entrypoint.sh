@@ -57,4 +57,4 @@ start_system() {
 
 start_system
 
-exec apache2-foreground
+exec php-fpm

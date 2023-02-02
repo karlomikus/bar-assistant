@@ -1,4 +1,4 @@
-FROM php:8.1-apache
+FROM php:8.1-fpm
 
 # Add dependencies
 RUN apt update \
@@ -14,11 +14,6 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 RUN chmod +x /usr/local/bin/install-php-extensions && \
     install-php-extensions gd opcache redis zip
 
-# Setup default apache stuff
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-COPY ./resources/apache.conf /etc/apache2/sites-available/000-default.conf
-RUN a2enmod rewrite
-
 # Setup custom php config
 COPY ./resources/php.ini $PHP_INI_DIR/conf.d/99-bar-assistant.ini
 
@@ -29,18 +24,19 @@ RUN chmod +x /usr/local/bin/entrypoint
 # Add composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-USER www-data:www-data
+# RUN adduser --system --no-create-home --group www
+# USER www:www
 
 WORKDIR /var/www/cocktails
 
-# RUN git clone https://github.com/karlomikus/bar-assistant.git .
-COPY --chown=www-data:www-data . .
+COPY . .
 
 RUN composer install --optimize-autoloader --no-dev
 
-EXPOSE 80
+RUN mkdir -p /var/www/cocktails/storage/bar-assistant
 
-VOLUME ["/var/www/cocktails/storage"]
+EXPOSE 9000
+
 VOLUME ["/var/www/cocktails/storage/bar-assistant"]
 
 ENTRYPOINT ["entrypoint"]
