@@ -15,10 +15,10 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
     install-php-extensions gd opcache redis zip
 
 # Setup custom php config
-COPY ./resources/php.ini $PHP_INI_DIR/conf.d/99-bar-assistant.ini
+COPY ./resources/docker/php.ini $PHP_INI_DIR/conf.d/99-bar-assistant.ini
 
 # Add container entrypoint script
-COPY ./resources/entrypoint.sh /usr/local/bin/entrypoint
+COPY ./resources/docker/entrypoint.sh /usr/local/bin/entrypoint
 RUN chmod +x /usr/local/bin/entrypoint
 
 # Add composer
