@@ -2,10 +2,25 @@
 
 set -e
 
+migrate_existing_folder() {
+    # TODO: Backup existing data
+
+    if [ -d "/var/www/cocktails/storage/uploads" ]; then
+        echo "Found existing uploads folder, moving to new location..."
+        mkdir -p /var/www/cocktails/storage/bar-assistant/uploads/cocktails
+        mkdir -p /var/www/cocktails/storage/bar-assistant/uploads/ingredients
+
+        mv /var/www/cocktails/storage/uploads /var/www/cocktails/storage/bar-assistant/uploads
+    fi
+
+    if [ -f /var/www/cocktails/storage/database.sqlite ]; then
+        echo "Found database, moving to new location..."
+        mv /var/www/cocktails/storage/database.sqlite /var/www/cocktails/storage/bar-assistant/database.sqlite
+    fi
+}
+
 first_time_check() {
     if [ ! -f /var/www/cocktails/.env ]; then
-        echo "Application .env file not found, creating a new .env file..."
-
         cd /var/www/cocktails
 
         cp .env.dist .env
@@ -26,6 +41,8 @@ first_time_check() {
 }
 
 start_system() {
+    migrate_existing_folder
+
     first_time_check
 
     php artisan bar:refresh-search
