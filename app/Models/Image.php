@@ -15,7 +15,7 @@ class Image extends Model
 
     public function delete(): ?bool
     {
-        $disk = Storage::disk('app_images');
+        $disk = Storage::disk('bar-assistant');
 
         if ($disk->exists($this->file_path)) {
             $disk->delete($this->file_path);
@@ -30,7 +30,7 @@ class Image extends Model
             return null;
         }
 
-        return Storage::disk('app_images')->url($this->file_path);
+        return Storage::disk('bar-assistant')->url($this->file_path);
     }
 
     public function imageable(): MorphTo

@@ -30,7 +30,7 @@ trait HasImages
 
     public function attachImages(Collection $images): void
     {
-        $disk = Storage::disk('app_images');
+        $disk = Storage::disk('bar-assistant');
 
         foreach ($images as $image) {
             if ($image->imageable_id !== null) {

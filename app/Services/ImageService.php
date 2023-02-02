@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Services;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Exceptions\ImageUploadException;
 use Intervention\Image\ImageManagerStatic as InterventionImage;
 
@@ -30,7 +31,7 @@ class ImageService
             $filename = Str::random(40);
             $fileExtension = $file->extension();
             $fullFilename = $filename . '.' . $fileExtension;
-            $filepath = $file->storeAs('temp', $fullFilename, 'app_images');
+            $filepath = $file->storeAs('temp', $fullFilename, 'bar-assistant');
 
             if (!$filepath) {
                 throw new ImageUploadException('Unable to store an image file.');
@@ -65,9 +66,9 @@ class ImageService
     public function uploadImage(string $imageSource, int $userId, ?string $copyright = null): Image
     {
         $tempImage = InterventionImage::make($imageSource);
-
         $filepath = 'temp/' . Str::random(40) . '.jpg';
-        $tempImage->save(storage_path('uploads/' . $filepath));
+        $saveFilePath = Storage::disk('bar-assistant')->path($filepath);
+        $tempImage->save($saveFilePath);
 
         $image = new Image();
         $image->copyright = $copyright;

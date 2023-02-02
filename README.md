@@ -10,7 +10,7 @@
 
 ## 🍸 Bar Assistant
 
-Bar assistant is a self hosted application for managing your home bar. It allows you to add your ingredients, search for cocktails and create custom cocktail recipes.
+Bar Assistant is a self hosted application for managing your home bar. It allows you to search and filter cocktails, add ingredients and create custom cocktail recipes.
 
 This repository only contains the API server, if you are looking for easy to use web client, take a look at [Salt Rim](https://github.com/karlomikus/vue-salt-rim).
 
@@ -45,13 +45,16 @@ This repository only contains the API server, if you are looking for easy to use
 
 This application is made with Laravel, so you should check out [deployment requirements](https://laravel.com/docs/9.x/deployment) for a standard Laravel project.
 
-The basic requirements are:
+Specific requirements for Bar Assistant are:
 
 - PHP >= 8.1
     - GD Extension
+    - OpCache Extension
+    - Redis Extension
+    - Zip Extension
 - Sqlite 3
+- Redis server instance
 - Working [Meilisearch server](https://github.com/meilisearch) instance (v0.29)
-- (Optional) Redis server instance
 
 ## Docker setup
 
