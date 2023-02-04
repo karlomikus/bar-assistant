@@ -57,4 +57,4 @@ start_system() {
 
 start_system
 
-exec php-fpm
+exec php-fpm & nginx -g "daemon off;"

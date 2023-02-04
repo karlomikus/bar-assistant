@@ -7,6 +7,7 @@ RUN apt update \
     unzip \
     sqlite3 \
     bash \
+    nginx \
     && apt-get autoremove -y \
     && apt-get clean
 
@@ -15,7 +16,10 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
     install-php-extensions gd opcache redis zip
 
 # Setup custom php config
-COPY ./resources/docker/php.ini $PHP_INI_DIR/conf.d/99-bar-assistant.ini
+COPY ./resources/docker/php.ini $PHP_INI_DIR/php.ini
+
+# Setup nginx
+COPY ./resources/docker/nginx.conf /etc/nginx/sites-enabled/default
 
 # Add container entrypoint script
 COPY ./resources/docker/entrypoint.sh /usr/local/bin/entrypoint
@@ -35,7 +39,7 @@ RUN composer install --optimize-autoloader --no-dev
 
 RUN mkdir -p /var/www/cocktails/storage/bar-assistant
 
-EXPOSE 9000
+EXPOSE 3000
 
 VOLUME ["/var/www/cocktails/storage/bar-assistant"]
 
