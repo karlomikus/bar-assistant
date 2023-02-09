@@ -96,6 +96,10 @@ class IngredientService
         ?int $parentIngredientId = null,
         array $images = []
     ): Ingredient {
+        if ($parentIngredientId === $id) {
+            throw new IngredientException('Parent ingredient is the same as the current ingredient!');
+        }
+
         try {
             $ingredient = Ingredient::findOrFail($id);
             $ingredient->name = $name;
