@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Services;
 
 use Illuminate\Support\Str;
+use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -13,6 +14,11 @@ use Intervention\Image\ImageManagerStatic as InterventionImage;
 
 class ImageService
 {
+    public function __construct(
+        private readonly LogManager $log,
+    ) {
+    }
+
     /**
      * Uploads and saves an image with filepath
      *
@@ -25,13 +31,20 @@ class ImageService
     {
         $images = [];
         foreach ($requestImages as $imageWithMeta) {
-            /** @var \Illuminate\Http\UploadedFile */
-            $file = $imageWithMeta['image'];
-
             $filename = Str::random(40);
-            $fileExtension = $file->extension();
-            $fullFilename = $filename . '.' . $fileExtension;
-            $filepath = $file->storeAs('temp', $fullFilename, 'bar-assistant');
+
+            $file = $imageWithMeta['image'];
+            if (!($file instanceof UploadedFile)) {
+                $tempImage = InterventionImage::make($file);
+                $fileExtension = 'jpg';
+                $filepath = 'temp/' . $filename . '.' . $fileExtension;
+                $saveFilePath = Storage::disk('bar-assistant')->path($filepath);
+                $tempImage->save($saveFilePath);
+            } else {
+                $fileExtension = $file->extension();
+                $fullFilename = $filename . '.' . $fileExtension;
+                $filepath = $file->storeAs('temp', $fullFilename, 'bar-assistant');
+            }
 
             if (!$filepath) {
                 throw new ImageUploadException('Unable to store an image file.');
@@ -43,6 +56,8 @@ class ImageService
             $image->file_extension = $fileExtension;
             $image->user_id = $userId;
             $image->save();
+
+            $this->log->info('Image created with id: ' . $image->id);
 
             $images[] = $image;
         }
@@ -60,6 +75,8 @@ class ImageService
 
         $image->save();
 
+        $this->log->info('Image updated with id: ' . $image->id);
+
         return $image;
     }
 
@@ -76,6 +93,8 @@ class ImageService
         $image->file_extension = 'jpg';
         $image->user_id = $userId;
         $image->save();
+
+        $this->log->info('Image created with id: ' . $image->id);
 
         return $image;
     }
