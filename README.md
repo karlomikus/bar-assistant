@@ -231,6 +231,16 @@ To give admin rights to a specific user you can use the following command.
 $ php artisan bar:make-admin "user@email.com"
 ```
 
+### How do I migrate data to another BA instance?
+
+You can use the following command:
+
+``` bash
+$ docker compose exec -it bar-assistant php artisan bar:export-zip
+```
+
+This will create a zip file with the recipe and ingredient data that can be imported into an another instance. Please note that this will only export data related to the cocktails and ingredients. Users and other data related to users (like favorites and shelf) will not be included. For that you should do a manual backup.
+
 ## Contributing
 
 Feel free to create a pull request or open a issue with bugs/feature ideas.

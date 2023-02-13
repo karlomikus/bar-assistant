@@ -1,3 +1,9 @@
+# v1.4.0
+## New
+- Added `/find` endpoint to search resource by name
+    - Added to cocktails and ingredients endpoint
+- Added `parent_ingredient_id` to ingredient response
+
 # v1.3.3
 ## Fixes
 - Updated packages, including security fix for `symfony/http-kernel`

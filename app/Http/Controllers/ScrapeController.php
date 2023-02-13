@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Throwable;
-use Illuminate\Http\Request;
 use Kami\Cocktail\Scraper\Manager;
+use Kami\Cocktail\Http\Requests\CocktailScrapeRequest;
 
 class ScrapeController extends Controller
 {
-    public function cocktail(Request $request)
+    public function cocktail(CocktailScrapeRequest $request)
     {
         $url = $request->post('url');
 
