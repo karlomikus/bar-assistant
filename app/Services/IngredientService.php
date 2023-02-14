@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Services;
 
 use Throwable;
+use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Exceptions\ImageException;
@@ -12,6 +13,11 @@ use Kami\Cocktail\Exceptions\IngredientException;
 
 class IngredientService
 {
+    public function __construct(
+        private readonly LogManager $log,
+    ) {
+    }
+
     /**
      * Create a new ingredient
      *
@@ -61,6 +67,8 @@ class IngredientService
             }
         }
 
+        $this->log->info('[INGREDIENT_SERVICE] Ingredient created with id:' . $ingredient->id);
+
         // Refresh model for response
         $ingredient->refresh();
         // Upsert scout index
@@ -96,6 +104,10 @@ class IngredientService
         ?int $parentIngredientId = null,
         array $images = []
     ): Ingredient {
+        if ($parentIngredientId === $id) {
+            throw new IngredientException('Parent ingredient is the same as the current ingredient!');
+        }
+
         try {
             $ingredient = Ingredient::findOrFail($id);
             $ingredient->name = $name;
@@ -120,6 +132,8 @@ class IngredientService
                 throw new ImageException('Error occured while attaching images to ingredient with id "' . $ingredient->id . '"', 0, $e);
             }
         }
+
+        $this->log->info('[INGREDIENT_SERVICE] Ingredient updated with id:' . $ingredient->id);
 
         // Refresh model for response
         $ingredient->refresh();

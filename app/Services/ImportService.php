@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
+use Throwable;
 use Kami\Cocktail\Models\Glass;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
+use Illuminate\Support\Facades\Log;
+use Kami\Cocktail\DataObjects\Image;
 use Kami\Cocktail\Services\ImageService;
+use Kami\Cocktail\DataObjects\Ingredient;
+use Intervention\Image\ImageManagerStatic;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
 
@@ -20,6 +25,12 @@ class ImportService
     ) {
     }
 
+    /**
+     * Create a cocktail from scraper data
+     *
+     * @param array<mixed> $sourceData Scraper data
+     * @return Cocktail Database model of the cocktail
+     */
     public function importFromScraper(array $sourceData): Cocktail
     {
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
@@ -28,11 +39,17 @@ class ImportService
         // Add images
         $cocktailImages = [];
         if ($sourceData['image']['url']) {
-            $cocktailImages[] = $this->imageService->uploadImage(
-                $sourceData['image']['url'],
-                1,
-                $sourceData['image']['copyright'] ?? null
-            )->id;
+            try {
+                $imageDTO = new Image(
+                    null,
+                    ImageManagerStatic::make($sourceData['image']['url']),
+                    $sourceData['image']['copyright'] ?? null
+                );
+
+                $cocktailImages[] = $this->imageService->uploadAndSaveImages([$imageDTO], 1)[0]->id;
+            } catch (Throwable $e) {
+                Log::error($e->getMessage());
+            }
         }
 
         // Match glass
@@ -52,23 +69,34 @@ class ImportService
         }
 
         // Match ingredients
-        foreach ($sourceData['ingredients'] as &$scrapedIngredient) {
+        $ingredients = [];
+        foreach ($sourceData['ingredients'] as $scrapedIngredient) {
             if ($dbIngredients->has(strtolower($scrapedIngredient['name']))) {
-                $scrapedIngredient['ingredient_id'] = $dbIngredients->get(strtolower($scrapedIngredient['name']))->id;
+                $ingredientId = $dbIngredients->get(strtolower($scrapedIngredient['name']))->id;
             } else {
                 $newIngredient = $this->ingredientService->createIngredient(ucfirst($scrapedIngredient['name']), 1, 1, description: 'Created by scraper from ' . $sourceData['source']);
                 $dbIngredients->put(strtolower($scrapedIngredient['name']), $newIngredient->id);
-                $scrapedIngredient['ingredient_id'] = $newIngredient->id;
+                $ingredientId = $newIngredient->id;
             }
-        }
 
-        // TODO: Substitutes
+            $ingredient = new Ingredient(
+                $ingredientId,
+                $scrapedIngredient['name'],
+                $scrapedIngredient['amount'],
+                $scrapedIngredient['units'],
+                $scrapedIngredient['sort'],
+                $scrapedIngredient['optional'] ?? false,
+                $scrapedIngredient['substitutes'] ?? [],
+            );
+
+            $ingredients[] = $ingredient;
+        }
 
         // Add cocktail
         return $this->cocktailService->createCocktail(
             $sourceData['name'],
             $sourceData['instructions'],
-            $sourceData['ingredients'],
+            $ingredients,
             1,
             $sourceData['description'],
             $sourceData['garnish'],

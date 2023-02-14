@@ -63,6 +63,7 @@ Route::middleware('auth:sanctum')->group(function() {
     });
 
     Route::prefix('ingredients')->group(function() {
+        Route::get('/find', [IngredientController::class, 'find']);
         Route::get('/', [IngredientController::class, 'index']);
         Route::post('/', [IngredientController::class, 'store']);
         Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show');
@@ -106,6 +107,7 @@ Route::middleware('auth:sanctum')->group(function() {
     });
 
     Route::prefix('glasses')->group(function() {
+        Route::get('/find', [GlassController::class, 'find']);
         Route::get('/', [GlassController::class, 'index']);
         Route::post('/', [GlassController::class, 'store']);
         Route::get('/{id}', [GlassController::class, 'show'])->name('glasses.show');

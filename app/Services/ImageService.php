@@ -4,19 +4,29 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
+use Throwable;
 use Illuminate\Support\Str;
+use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Filesystem\FilesystemAdapter;
+use Kami\Cocktail\DataObjects\Image as ImageDTO;
 use Kami\Cocktail\Exceptions\ImageUploadException;
-use Intervention\Image\ImageManagerStatic as InterventionImage;
 
 class ImageService
 {
+    protected FilesystemAdapter $disk;
+
+    public function __construct(
+        private readonly LogManager $log,
+    ) {
+        $this->disk = Storage::disk('bar-assistant');
+    }
+
     /**
      * Uploads and saves an image with filepath
      *
-     * @param array<mixed> $requestImages
+     * @param array<\Kami\Cocktail\DataObjects\Image> $requestImages
      * @param int $userId
      * @return array<\Kami\Cocktail\Models\Image>
      * @throws ImageUploadException
@@ -24,25 +34,31 @@ class ImageService
     public function uploadAndSaveImages(array $requestImages, int $userId): array
     {
         $images = [];
-        foreach ($requestImages as $imageWithMeta) {
-            /** @var \Illuminate\Http\UploadedFile */
-            $file = $imageWithMeta['image'];
+        foreach ($requestImages as $dtoImage) {
+            if (!($dtoImage instanceof ImageDTO) || $dtoImage->file === null) {
+                continue;
+            }
 
             $filename = Str::random(40);
-            $fileExtension = $file->extension();
-            $fullFilename = $filename . '.' . $fileExtension;
-            $filepath = $file->storeAs('temp', $fullFilename, 'bar-assistant');
+            /** @phpstan-ignore-next-line */
+            $fileExtension = $dtoImage->file->extension ?? 'jpg';
+            $filepath = 'temp/' . $filename . '.' . $fileExtension;
 
-            if (!$filepath) {
-                throw new ImageUploadException('Unable to store an image file.');
+            try {
+                $dtoImage->file->save($this->disk->path($filepath));
+            } catch (Throwable $e) {
+                $this->log->info('[IMAGE_SERVICE] ' . $e->getMessage());
+                continue;
             }
 
             $image = new Image();
-            $image->copyright = $imageWithMeta['copyright'];
+            $image->copyright = $dtoImage->copyright;
             $image->file_path = $filepath;
             $image->file_extension = $fileExtension;
             $image->user_id = $userId;
             $image->save();
+
+            $this->log->info('[IMAGE_SERVICE] Image created with id: ' . $image->id);
 
             $images[] = $image;
         }
@@ -50,32 +66,23 @@ class ImageService
         return $images;
     }
 
-    public function updateImage(int $imageId, ?UploadedFile $file = null, ?string $copyright = null): Image
+    /**
+     * Update image by id
+     *
+     * @param \Kami\Cocktail\DataObjects\Image $imageDTO Image object
+     * @return \Kami\Cocktail\Models\Image Database image model
+     */
+    public function updateImage(ImageDTO $imageDTO): Image
     {
-        $image = Image::findOrFail($imageId);
+        $image = Image::findOrFail($imageDTO->id);
 
-        if ($copyright) {
-            $image->copyright = $copyright;
+        if ($imageDTO->copyright) {
+            $image->copyright = $imageDTO->copyright;
         }
 
         $image->save();
 
-        return $image;
-    }
-
-    public function uploadImage(string $imageSource, int $userId, ?string $copyright = null): Image
-    {
-        $tempImage = InterventionImage::make($imageSource);
-        $filepath = 'temp/' . Str::random(40) . '.jpg';
-        $saveFilePath = Storage::disk('bar-assistant')->path($filepath);
-        $tempImage->save($saveFilePath);
-
-        $image = new Image();
-        $image->copyright = $copyright;
-        $image->file_path = $filepath;
-        $image->file_extension = 'jpg';
-        $image->user_id = $userId;
-        $image->save();
+        $this->log->info('[IMAGE_SERVICE] Image updated with id: ' . $image->id);
 
         return $image;
     }
