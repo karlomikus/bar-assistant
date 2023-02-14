@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Symfony\Component\Uid\Ulid;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\DataObjects\Ingredient;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
@@ -84,11 +85,25 @@ class CocktailController extends Controller
      */
     public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
+        $ingredients = [];
+        foreach ($request->post('ingredients') as $formIngredient) {
+            $ingredient = new Ingredient(
+                $formIngredient['ingredient_id'],
+                '',
+                $formIngredient['amount'],
+                $formIngredient['units'],
+                $formIngredient['sort'],
+                $formIngredient['optional'] ?? false,
+                $formIngredient['substitutes'] ?? [],
+            );
+            $ingredients[] = $ingredient;
+        }
+
         try {
             $cocktail = $cocktailService->createCocktail(
                 $request->post('name'),
                 $request->post('instructions'),
-                $request->post('ingredients'),
+                $ingredients,
                 $request->user()->id,
                 $request->post('description'),
                 $request->post('garnish'),
@@ -121,12 +136,26 @@ class CocktailController extends Controller
             abort(403);
         }
 
+        $ingredients = [];
+        foreach ($request->post('ingredients') as $formIngredient) {
+            $ingredient = new Ingredient(
+                $formIngredient['ingredient_id'],
+                '',
+                $formIngredient['amount'],
+                $formIngredient['units'],
+                $formIngredient['sort'],
+                $formIngredient['optional'] ?? false,
+                $formIngredient['substitutes'] ?? [],
+            );
+            $ingredients[] = $ingredient;
+        }
+
         try {
             $cocktail = $cocktailService->updateCocktail(
                 $id,
                 $request->post('name'),
                 $request->post('instructions'),
-                $request->post('ingredients'),
+                $ingredients,
                 $request->user()->id,
                 $request->post('description'),
                 $request->post('garnish'),
