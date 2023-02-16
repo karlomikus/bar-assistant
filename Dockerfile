@@ -8,6 +8,7 @@ RUN apt update \
     sqlite3 \
     bash \
     nginx \
+    gosu \
     && apt-get autoremove -y \
     && apt-get clean
 
@@ -28,16 +29,13 @@ RUN chmod +x /usr/local/bin/entrypoint
 # Add composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-# RUN adduser --system --no-create-home --group www
-# USER www:www
-
 WORKDIR /var/www/cocktails
 
-COPY . .
+COPY --chown=www-data:www-data . .
 
 RUN composer install --optimize-autoloader --no-dev
 
-RUN mkdir -p /var/www/cocktails/storage/bar-assistant
+RUN mkdir -p /var/www/cocktails/storage/bar-assistant/temp
 
 EXPOSE 3000
 
