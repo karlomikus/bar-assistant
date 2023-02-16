@@ -21,6 +21,7 @@ COPY ./resources/docker/php.ini $PHP_INI_DIR/php.ini
 
 # Setup nginx
 COPY ./resources/docker/nginx.conf /etc/nginx/sites-enabled/default
+RUN echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf
 
 # Add container entrypoint script
 COPY ./resources/docker/entrypoint.sh /usr/local/bin/entrypoint
