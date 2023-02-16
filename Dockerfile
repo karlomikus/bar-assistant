@@ -30,16 +30,23 @@ RUN chmod +x /usr/local/bin/entrypoint
 # Add composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
+USER www-data:www-data
+
 WORKDIR /var/www/cocktails
 
 COPY --chown=www-data:www-data . .
 
+RUN chmod +x /var/www/cocktails/resources/docker/run.sh
+
 RUN composer install --optimize-autoloader --no-dev
 
-RUN mkdir -p /var/www/cocktails/storage/bar-assistant/temp
+RUN mkdir -p /var/www/cocktails/storage/bar-assistant/
 
 EXPOSE 3000
 
 VOLUME ["/var/www/cocktails/storage/bar-assistant"]
 
+USER root:root
+
 ENTRYPOINT ["entrypoint"]
+CMD ["/bin/bash", "-c", "php-fpm & nginx -g 'daemon off;'"]
