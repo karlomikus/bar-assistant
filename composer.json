@@ -1,15 +1,15 @@
 {
     "license": "MIT",
     "require": {
-        "php": "^8.0.2",
+        "php": "^8.1.0",
         "doctrine/dbal": "^3.5",
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
         "intervention/image": "^2.7",
-        "laravel/framework": "^9.19",
-        "laravel/sanctum": "^3.0",
+        "laravel/framework": "^10.0",
+        "laravel/sanctum": "^3.2",
         "laravel/scout": "^9.4",
-        "laravel/tinker": "^2.7",
+        "laravel/tinker": "^2.8",
         "meilisearch/meilisearch-php": "^0.25.0",
         "spatie/laravel-responsecache": "^7.4",
         "spatie/laravel-sluggable": "^3.4",
@@ -29,7 +29,7 @@
         "nunomaduro/larastan": "^2.0",
         "phpstan/phpstan": "^1.8",
         "phpunit/phpunit": "^9.5.10",
-        "spatie/laravel-ignition": "^1.0",
+        "spatie/laravel-ignition": "^2.0",
         "symplify/easy-coding-standard": "^11.1"
     },
     "autoload": {
@@ -74,6 +74,6 @@
             "pestphp/pest-plugin": true
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
