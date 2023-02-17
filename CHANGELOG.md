@@ -1,3 +1,7 @@
+# v1.4.1
+## Fixes
+- Fix max total hits limit for search indexes
+
 # v1.4.0
 ## New
 - Added `/find` endpoint to search resource by name

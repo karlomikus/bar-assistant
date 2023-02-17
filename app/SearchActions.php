@@ -66,6 +66,8 @@ class SearchActions
             ]
         ]);
 
+        $engine->index('cocktails')->updatePagination(['maxTotalHits' => 2000]);
+
         $engine->index('ingredients')->updateSettings([
             'filterableAttributes' => ['category', 'strength_abv', 'origin', 'color'],
             'sortableAttributes' => ['name', 'strength_abv'],
@@ -76,6 +78,8 @@ class SearchActions
                 'origin',
             ]
         ]);
+
+        $engine->index('ingredients')->updatePagination(['maxTotalHits' => 2000]);
     }
 
     public static function updateSearchIndex(SiteSearchable $model): void
