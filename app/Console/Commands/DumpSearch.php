@@ -29,7 +29,7 @@ class DumpSearch extends Command
      */
     public function handle()
     {
-        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\MeiliSearch\Client */
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\Meilisearch\Client */
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         $engine->createDump();
