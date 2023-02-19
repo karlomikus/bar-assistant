@@ -71,4 +71,17 @@ class UtilsTest extends TestCase
             'units' => 'ml',
         ], Utils::parseIngredientAmount('3 cl'));
     }
+
+    public function testCalculateAbv()
+    {
+        $ingredients = [
+            ['amount' => 2, 'strength' => 45.0],
+            ['amount' => 0, 'strength' => 0],
+            ['amount' => 0.04, 'strength' => 44.7],
+        ];
+
+        $result = Utils::calculateAbv($ingredients, 20);
+
+        $this->assertSame(37.5, $result);
+    }
 }
