@@ -284,6 +284,7 @@ class BarOpen extends Command
         $baDisk = Storage::disk('bar-assistant');
         $baDisk->makeDirectory('cocktails');
         $baDisk->makeDirectory('ingredients');
+        $baDisk->makeDirectory('temp');
 
         foreach (glob(resource_path('data/cocktails/*')) as $pathFrom) {
             copy($pathFrom, $baDisk->path('cocktails/' . basename($pathFrom)));
