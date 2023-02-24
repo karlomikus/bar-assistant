@@ -1,4 +1,4 @@
-name: Build DEV docker image
+name: Build legacy docker image
 
 on:
   push:
