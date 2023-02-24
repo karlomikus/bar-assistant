@@ -7,7 +7,6 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -107,7 +106,7 @@ class IngredientController extends Controller
     {
         $name = $request->get('name');
 
-        $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient')->where(DB::raw('lower(name)'), strtolower($name))->firstOrFail();
+        $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient')->whereRaw('lower(name) = ?', [strtolower($name)])->firstOrFail();
 
         return new IngredientResource($ingredient);
     }
