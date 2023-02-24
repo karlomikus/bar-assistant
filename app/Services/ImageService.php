@@ -45,7 +45,7 @@ class ImageService
             $filepath = 'temp/' . $filename . '.' . $fileExtension;
 
             try {
-                $dtoImage->file->save($this->disk->path($filepath));
+                $this->disk->put($filepath, $dtoImage->file->encode());
             } catch (Throwable $e) {
                 $this->log->info('[IMAGE_SERVICE] ' . $e->getMessage());
                 continue;
