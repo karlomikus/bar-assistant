@@ -237,9 +237,8 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails);
     }
 
-    public function makePublic(int|string $idOrSlug): JsonResource
+    public function makePublic(CocktailService $cocktailService, int|string $idOrSlug): JsonResource
     {
-        $publicUlid = new Ulid();
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
             ->firstOrFail();
@@ -248,10 +247,7 @@ class CocktailController extends Controller
             return new CocktailPublicResource($cocktail);
         }
 
-        $cocktail->public_id = $publicUlid;
-        $cocktail->public_at = now();
-        $cocktail->public_expires_at = null;
-        $cocktail->save();
+        $cocktail = $cocktailService->makeRecipePublic($cocktail);
 
         return new CocktailPublicResource($cocktail);
     }
