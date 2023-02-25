@@ -1,3 +1,21 @@
+# v1.5.0
+
+🔴 Important Notes 🔴
+
+This update includes a big change to docker image configuration:
+
+- Now using PHP-fpm and Nginx
+- New volume mapping: `/var/www/cocktails/storage/bar-assistant`
+- Improved error logging
+- Updated Meilisearch to stable version (1.0)
+
+As such you should follow the migration [guide available here](https://bar-assistant.github.io/docs/setup/updating/).
+
+## Changes
+- Updated framework to Laravel 10
+- Updated docker image configuration
+- Added support for Meilisearch 1.0
+
 # v1.4.1
 ## Fixes
 - Fix max total hits limit for search indexes

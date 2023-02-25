@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Image;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Services\ImageService;
@@ -14,6 +16,7 @@ use Intervention\Image\ImageManagerStatic;
 use Kami\Cocktail\Http\Requests\ImageRequest;
 use Kami\Cocktail\Http\Resources\ImageResource;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\DataObjects\Image as ImageDTO;
 
 class ImageController extends Controller
 {
@@ -26,7 +29,22 @@ class ImageController extends Controller
 
     public function store(ImageService $imageservice, ImageRequest $request): JsonResource
     {
-        $images = $imageservice->uploadAndSaveImages($request->images, $request->user()->id);
+        $images = [];
+        foreach ($request->images as $formImage) {
+            try {
+                $image = new ImageDTO(
+                    null,
+                    ImageManagerStatic::make($formImage['image']),
+                    $formImage['copyright']
+                );
+            } catch (Throwable $e) {
+                Log::error($e->getMessage());
+                abort(500, 'Unable to create an image file!');
+            }
+            $images[] = $image;
+        }
+
+        $images = $imageservice->uploadAndSaveImages($images, $request->user()->id);
 
         return ImageResource::collection($images);
     }
@@ -39,7 +57,13 @@ class ImageController extends Controller
             abort(403);
         }
 
-        $image = $imageservice->updateImage($id, null, $request->input('copyright'));
+        $imageDTO = new ImageDTO(
+            $image->id,
+            null,
+            $request->input('copyright')
+        );
+
+        $image = $imageservice->updateImage($imageDTO);
 
         return new ImageResource($image);
     }

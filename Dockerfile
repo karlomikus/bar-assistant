@@ -1,4 +1,4 @@
-FROM php:8.1-apache
+FROM php:8.1-fpm
 
 # Add dependencies
 RUN apt update \
@@ -7,6 +7,8 @@ RUN apt update \
     unzip \
     sqlite3 \
     bash \
+    nginx \
+    gosu \
     && apt-get autoremove -y \
     && apt-get clean
 
@@ -14,16 +16,15 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 RUN chmod +x /usr/local/bin/install-php-extensions && \
     install-php-extensions gd opcache redis zip
 
-# Setup default apache stuff
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-COPY ./resources/apache.conf /etc/apache2/sites-available/000-default.conf
-RUN a2enmod rewrite
-
 # Setup custom php config
-COPY ./resources/php.ini $PHP_INI_DIR/conf.d/99-bar-assistant.ini
+COPY ./resources/docker/php.ini $PHP_INI_DIR/php.ini
+
+# Setup nginx
+COPY ./resources/docker/nginx.conf /etc/nginx/sites-enabled/default
+RUN echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf
 
 # Add container entrypoint script
-COPY ./resources/entrypoint.sh /usr/local/bin/entrypoint
+COPY ./resources/docker/entrypoint.sh /usr/local/bin/entrypoint
 RUN chmod +x /usr/local/bin/entrypoint
 
 # Add composer
@@ -33,13 +34,19 @@ USER www-data:www-data
 
 WORKDIR /var/www/cocktails
 
-# RUN git clone https://github.com/karlomikus/bar-assistant.git .
 COPY --chown=www-data:www-data . .
+
+RUN chmod +x /var/www/cocktails/resources/docker/run.sh
 
 RUN composer install --optimize-autoloader --no-dev
 
-EXPOSE 80
+RUN mkdir -p /var/www/cocktails/storage/bar-assistant/
 
-VOLUME ["/var/www/cocktails/storage"]
+EXPOSE 3000
+
+VOLUME ["/var/www/cocktails/storage/bar-assistant"]
+
+USER root:root
 
 ENTRYPOINT ["entrypoint"]
+CMD ["/bin/bash", "-c", "php-fpm & nginx -g 'daemon off;'"]

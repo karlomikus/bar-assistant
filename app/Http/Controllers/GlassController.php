@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Glass;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Http\Requests\GlassRequest;
 use Kami\Cocktail\Http\Resources\GlassResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -75,7 +74,7 @@ class GlassController extends Controller
     {
         $name = $request->get('name');
 
-        $glass = Glass::where(DB::raw('lower(name)'), strtolower($name))->firstOrFail();
+        $glass = Glass::whereRaw('lower(name) = ?', [strtolower($name)])->firstOrFail();
 
         return new GlassResource($glass);
     }

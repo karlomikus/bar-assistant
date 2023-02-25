@@ -279,6 +279,21 @@ class BarOpen extends Command
         Ingredient::create(['name' => 'Lillet Blanc', 'ingredient_category_id' => $wines->id, 'strength' => 17.0, 'description' => 'Aromatized sweet wine.', 'color' => '#f7ec77', 'user_id' => 1, 'origin' => 'France']);
         Ingredient::create(['name' => 'Dry Sherry', 'ingredient_category_id' => $wines->id, 'strength' => 17.0, 'description' => 'Fortified wine made from white grapes that are grown near the city of Jerez de la Frontera in Andalusia, Spain.', 'color' => '#8c4122', 'user_id' => 1, 'origin' => 'Spain']);
 
+        $this->info('Copying images...');
+
+        $baDisk = Storage::disk('bar-assistant');
+        $baDisk->makeDirectory('cocktails');
+        $baDisk->makeDirectory('ingredients');
+        $baDisk->makeDirectory('temp');
+
+        foreach (glob(resource_path('data/cocktails/*')) as $pathFrom) {
+            copy($pathFrom, $baDisk->path('cocktails/' . basename($pathFrom)));
+        }
+
+        foreach (glob(resource_path('data/ingredients/*')) as $pathFrom) {
+            copy($pathFrom, $baDisk->path('ingredients/' . basename($pathFrom)));
+        }
+
         $this->info('Attaching images to ingredients...');
 
         // Create image for every ingredient
@@ -289,6 +304,7 @@ class BarOpen extends Command
             if (Storage::disk('bar-assistant')->missing($filepath)) {
                 continue;
             }
+
             $image = new Image();
             $image->file_path = $filepath;
             $image->file_extension = 'png';

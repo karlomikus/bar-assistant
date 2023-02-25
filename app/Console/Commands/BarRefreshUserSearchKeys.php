@@ -36,6 +36,8 @@ class BarRefreshUserSearchKeys extends Command
             DB::table('users')->where('id', '<>', 1)->update(['search_api_key' => $key]);
         });
 
+        $this->info('Updated API keys!');
+
         return Command::SUCCESS;
     }
 }

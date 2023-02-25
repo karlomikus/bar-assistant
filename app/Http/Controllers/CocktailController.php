@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Symfony\Component\Uid\Ulid;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\DataObjects\Ingredient;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
@@ -84,11 +85,25 @@ class CocktailController extends Controller
      */
     public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
+        $ingredients = [];
+        foreach ($request->post('ingredients') as $formIngredient) {
+            $ingredient = new Ingredient(
+                $formIngredient['ingredient_id'],
+                '',
+                $formIngredient['amount'],
+                $formIngredient['units'],
+                $formIngredient['sort'],
+                $formIngredient['optional'] ?? false,
+                $formIngredient['substitutes'] ?? [],
+            );
+            $ingredients[] = $ingredient;
+        }
+
         try {
             $cocktail = $cocktailService->createCocktail(
                 $request->post('name'),
                 $request->post('instructions'),
-                $request->post('ingredients'),
+                $ingredients,
                 $request->user()->id,
                 $request->post('description'),
                 $request->post('garnish'),
@@ -121,12 +136,26 @@ class CocktailController extends Controller
             abort(403);
         }
 
+        $ingredients = [];
+        foreach ($request->post('ingredients') as $formIngredient) {
+            $ingredient = new Ingredient(
+                $formIngredient['ingredient_id'],
+                '',
+                $formIngredient['amount'],
+                $formIngredient['units'],
+                $formIngredient['sort'],
+                $formIngredient['optional'] ?? false,
+                $formIngredient['substitutes'] ?? [],
+            );
+            $ingredients[] = $ingredient;
+        }
+
         try {
             $cocktail = $cocktailService->updateCocktail(
                 $id,
                 $request->post('name'),
                 $request->post('instructions'),
-                $request->post('ingredients'),
+                $ingredients,
                 $request->user()->id,
                 $request->post('description'),
                 $request->post('garnish'),
@@ -208,9 +237,8 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails);
     }
 
-    public function makePublic(int|string $idOrSlug): JsonResource
+    public function makePublic(CocktailService $cocktailService, int|string $idOrSlug): JsonResource
     {
-        $publicUlid = new Ulid();
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
             ->firstOrFail();
@@ -219,10 +247,7 @@ class CocktailController extends Controller
             return new CocktailPublicResource($cocktail);
         }
 
-        $cocktail->public_id = $publicUlid;
-        $cocktail->public_at = now();
-        $cocktail->public_expires_at = null;
-        $cocktail->save();
+        $cocktail = $cocktailService->makeRecipePublic($cocktail);
 
         return new CocktailPublicResource($cocktail);
     }

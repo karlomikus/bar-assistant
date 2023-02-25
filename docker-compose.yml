@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
 
   meilisearch:
-    image: getmeili/meilisearch:v0.29
+    image: getmeili/meilisearch:latest
     environment:
       - MEILI_MASTER_KEY=masterKey
     restart: unless-stopped

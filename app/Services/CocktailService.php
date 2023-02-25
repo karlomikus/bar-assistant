@@ -9,9 +9,11 @@ use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Image;
+use Symfony\Component\Uid\Ulid;
 use Illuminate\Support\Collection;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
+use Kami\Cocktail\DataObjects\Ingredient;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Exceptions\CocktailException;
@@ -30,7 +32,7 @@ class CocktailService
      *
      * @param string $name
      * @param string $instructions
-     * @param array<mixed> $ingredients
+     * @param array<\Kami\Cocktail\DataObjects\Ingredient> $ingredients
      * @param int $userId
      * @param string|null $description
      * @param string|null $garnish
@@ -69,17 +71,22 @@ class CocktailService
             $cocktail->save();
 
             foreach ($ingredients as $ingredient) {
+                if (!($ingredient instanceof Ingredient)) {
+                    $this->log->warning('[COCKTAIL_SERVICE] Ingredient in ingredients array is of wrong type!');
+                    continue;
+                }
+
                 $cIngredient = new CocktailIngredient();
-                $cIngredient->ingredient_id = $ingredient['ingredient_id'];
-                $cIngredient->amount = $ingredient['amount'];
-                $cIngredient->units = $ingredient['units'];
-                $cIngredient->optional = $ingredient['optional'] ?? false;
-                $cIngredient->sort = $ingredient['sort'] ?? 0;
+                $cIngredient->ingredient_id = $ingredient->id;
+                $cIngredient->amount = $ingredient->amount;
+                $cIngredient->units = $ingredient->units;
+                $cIngredient->optional = $ingredient->optional;
+                $cIngredient->sort = $ingredient->sort;
 
                 $cocktail->ingredients()->save($cIngredient);
 
                 // Substitutes
-                foreach ($ingredient['substitutes'] ?? [] as $subId) {
+                foreach ($ingredient->substitutes as $subId) {
                     $substitute = new CocktailIngredientSubstitute();
                     $substitute->ingredient_id = $subId;
                     $cIngredient->substitutes()->save($substitute);
@@ -132,7 +139,7 @@ class CocktailService
      * @param int $id
      * @param string $name
      * @param string $instructions
-     * @param array<mixed> $ingredients
+     * @param array<\Kami\Cocktail\DataObjects\Ingredient> $ingredients
      * @param int $userId
      * @param string|null $description
      * @param string|null $garnish
@@ -176,18 +183,23 @@ class CocktailService
             // TODO: Implement upsert and delete
             $cocktail->ingredients()->delete();
             foreach ($ingredients as $ingredient) {
+                if (!($ingredient instanceof Ingredient)) {
+                    $this->log->warning('[COCKTAIL_SERVICE] Ingredient in ingredients array is of wrong type!');
+                    continue;
+                }
+
                 $cIngredient = new CocktailIngredient();
-                $cIngredient->ingredient_id = $ingredient['ingredient_id'];
-                $cIngredient->amount = $ingredient['amount'];
-                $cIngredient->units = $ingredient['units'];
-                $cIngredient->optional = $ingredient['optional'] ?? false;
-                $cIngredient->sort = $ingredient['sort'] ?? 0;
+                $cIngredient->ingredient_id = $ingredient->id;
+                $cIngredient->amount = $ingredient->amount;
+                $cIngredient->units = $ingredient->units;
+                $cIngredient->optional = $ingredient->optional;
+                $cIngredient->sort = $ingredient->sort;
 
                 $cocktail->ingredients()->save($cIngredient);
 
                 // Substitutes
                 $cIngredient->substitutes()->delete();
-                foreach ($ingredient['substitutes'] ?? [] as $subId) {
+                foreach ($ingredient->substitutes as $subId) {
                     $substitute = new CocktailIngredientSubstitute();
                     $substitute->ingredient_id = $subId;
                     $cIngredient->substitutes()->save($substitute);
@@ -240,7 +252,7 @@ class CocktailService
      * ingredients in his shelf
      *
      * @param int $userId
-     * @return \Illuminate\Database\Eloquent\Collection<int, \Kami\Cocktail\Models\Cocktail>
+     * @return \Illuminate\Support\Collection<string, mixed>
      */
     public function getCocktailsByUserIngredients(int $userId, ?int $limit = null): Collection
     {
@@ -277,6 +289,10 @@ class CocktailService
     {
         $cocktail = Cocktail::find($cocktailId);
 
+        if (!$cocktail) {
+            return false;
+        }
+
         $existing = CocktailFavorite::where('cocktail_id', $cocktailId)->where('user_id', $user->id)->first();
         if ($existing) {
             $existing->delete();
@@ -290,5 +306,17 @@ class CocktailService
         $user->favorites()->save($cocktailFavorite);
 
         return true;
+    }
+
+    public function makeRecipePublic(Cocktail $cocktail): Cocktail
+    {
+        $publicUlid = new Ulid();
+
+        $cocktail->public_id = $publicUlid;
+        $cocktail->public_at = now();
+        $cocktail->public_expires_at = null;
+        $cocktail->save();
+
+        return $cocktail;
     }
 }

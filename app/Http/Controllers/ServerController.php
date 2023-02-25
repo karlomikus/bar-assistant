@@ -19,7 +19,7 @@ class ServerController extends Controller
 
     public function version(EngineManager $engine): JsonResponse
     {
-        /** @var \MeiliSearch\Client */
+        /** @var \Meilisearch\Client */
         $meilisearch = $engine->engine();
 
         return response()->json([

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Kami\Cocktail\Utils;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Kami\Cocktail\SearchActions;
 use Spatie\Sluggable\SlugOptions;
-use Kami\Cocktail\Services\Calculator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -78,7 +78,6 @@ class Cocktail extends Model implements SiteSearchable
 
     /**
      * Calculate cocktail ABV
-     * Source: Formula from https://jeffreymorgenthaler.com/
      *
      * @return null|float
      */
@@ -107,7 +106,7 @@ class Cocktail extends Model implements SiteSearchable
                 return $item;
             });
 
-        return Calculator::calculateAbv($ingredients->toArray(), $this->method->dilution_percentage);
+        return Utils::calculateAbv($ingredients->toArray(), $this->method->dilution_percentage);
     }
 
     public function getMainIngredient(): ?CocktailIngredient

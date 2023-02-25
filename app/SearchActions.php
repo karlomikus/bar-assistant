@@ -10,7 +10,7 @@ class SearchActions
 {
     public static function getPublicApiKey(): ?string
     {
-        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\MeiliSearch\Client */
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\Meilisearch\Client */
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         $key = $engine->createKey([
@@ -26,7 +26,7 @@ class SearchActions
 
     public static function getPublicDemoApiKey(): ?string
     {
-        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\MeiliSearch\Client */
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\Meilisearch\Client */
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         $key = $engine->createKey([
@@ -44,7 +44,7 @@ class SearchActions
 
     public static function checkHealth(): ?array
     {
-        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\MeiliSearch\Client */
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\Meilisearch\Client */
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         return $engine->health();
@@ -52,7 +52,7 @@ class SearchActions
 
     public static function updateIndexSettings(): void
     {
-        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\MeiliSearch\Client */
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\Meilisearch\Client */
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         $engine->index('cocktails')->updateSettings([
@@ -84,7 +84,7 @@ class SearchActions
 
     public static function updateSearchIndex(SiteSearchable $model): void
     {
-        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\MeiliSearch\Client */
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\Meilisearch\Client */
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         $engine->index('site_search_index')->addDocuments([
@@ -94,7 +94,7 @@ class SearchActions
 
     public static function deleteSearchIndex(SiteSearchable $model): void
     {
-        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\MeiliSearch\Client */
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\Meilisearch\Client */
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         $engine->index('site_search_index')->deleteDocument($model->toSiteSearchArray()['key']);
@@ -102,7 +102,7 @@ class SearchActions
 
     public static function flushSearchIndex(): void
     {
-        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\MeiliSearch\Client */
+        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\Meilisearch\Client */
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         $engine->index('site_search_index')->delete();
