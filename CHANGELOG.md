@@ -1,6 +1,6 @@
 # v1.5.0
 
-🔴 Important Notes 🔴
+## 🔴 Important Notes 🔴
 
 This update includes a big change to docker image configuration:
 
