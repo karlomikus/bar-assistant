@@ -1,3 +1,7 @@
+# v1.5.1
+## Fixes
+- Fix type cast issue when adding ingredients to cocktail #77
+
 # v1.5.0
 
 ## 🔴 Important Notes 🔴
