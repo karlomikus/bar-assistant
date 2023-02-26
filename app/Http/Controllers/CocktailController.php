@@ -7,7 +7,6 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Symfony\Component\Uid\Ulid;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\DataObjects\Ingredient;
@@ -88,11 +87,11 @@ class CocktailController extends Controller
         $ingredients = [];
         foreach ($request->post('ingredients') as $formIngredient) {
             $ingredient = new Ingredient(
-                $formIngredient['ingredient_id'],
+                (int) $formIngredient['ingredient_id'],
                 '',
-                $formIngredient['amount'],
+                (float) $formIngredient['amount'],
                 $formIngredient['units'],
-                $formIngredient['sort'],
+                (int) $formIngredient['sort'],
                 $formIngredient['optional'] ?? false,
                 $formIngredient['substitutes'] ?? [],
             );
@@ -139,11 +138,11 @@ class CocktailController extends Controller
         $ingredients = [];
         foreach ($request->post('ingredients') as $formIngredient) {
             $ingredient = new Ingredient(
-                $formIngredient['ingredient_id'],
+                (int) $formIngredient['ingredient_id'],
                 '',
-                $formIngredient['amount'],
+                (float) $formIngredient['amount'],
                 $formIngredient['units'],
-                $formIngredient['sort'],
+                (int) $formIngredient['sort'],
                 $formIngredient['optional'] ?? false,
                 $formIngredient['substitutes'] ?? [],
             );
