@@ -27,7 +27,7 @@ class CocktailResource extends JsonResource
             'garnish' => e($this->garnish),
             'description' => e($this->description),
             'source' => $this->source,
-            'main_image_id' => $this->images->first()->id ?? null,
+            'main_image_id' => $this->images->sortBy('sort')->first()->id ?? null,
             'images' => ImageResource::collection($this->images),
             'tags' => $this->tags->pluck('name'),
             'user_id' => $this->user_id,

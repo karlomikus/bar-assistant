@@ -226,7 +226,7 @@ class CocktailService
         $this->db->commit();
 
         if (count($images) > 0) {
-            $cocktail->deleteImages();
+            // $cocktail->deleteImages();
             try {
                 $imageModels = Image::findOrFail($images);
                 $cocktail->attachImages($imageModels);

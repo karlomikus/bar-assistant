@@ -56,6 +56,7 @@ class ImageService
             $image->file_path = $filepath;
             $image->file_extension = $fileExtension;
             $image->user_id = $userId;
+            $image->sort = $dtoImage->sort;
             $image->save();
 
             $this->log->info('[IMAGE_SERVICE] Image created with id: ' . $image->id);
@@ -78,6 +79,10 @@ class ImageService
 
         if ($imageDTO->copyright) {
             $image->copyright = $imageDTO->copyright;
+        }
+
+        if ($imageDTO->sort) {
+            $image->sort = $imageDTO->sort;
         }
 
         $image->save();

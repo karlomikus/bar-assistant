@@ -18,7 +18,12 @@ trait HasImages
 
     public function getMainImageUrl(): ?string
     {
-        return $this->images->first()?->getImageUrl();
+        return $this->getMainImage()?->getImageUrl();
+    }
+
+    public function getMainImage(): ?Image
+    {
+        return $this->images->sortBy('sort')->first() ?? null;
     }
 
     public function deleteImages(): void
@@ -38,7 +43,7 @@ trait HasImages
             }
 
             $oldFilePath = $image->file_path;
-            $newFilePath = $this->appImagesDir . $this->slug . '.' . $image->file_extension;
+            $newFilePath = $this->appImagesDir . $this->slug . '_' . Str::random(6) . '.' . $image->file_extension;
 
             if ($disk->exists($oldFilePath)) {
                 $disk->move($oldFilePath, $newFilePath);

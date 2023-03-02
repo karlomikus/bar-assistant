@@ -26,6 +26,7 @@ class ImageResource extends JsonResource
             'url' => $this->getImageUrl(),
             'copyright' => $this->copyright,
             'last_modified' => $this->updated_at,
+            'sort' => $this->sort,
         ];
     }
 }
