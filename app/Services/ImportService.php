@@ -70,6 +70,7 @@ class ImportService
 
         // Match ingredients
         $ingredients = [];
+        $sort = 1;
         foreach ($sourceData['ingredients'] as $scrapedIngredient) {
             if ($dbIngredients->has(strtolower($scrapedIngredient['name']))) {
                 $ingredientId = $dbIngredients->get(strtolower($scrapedIngredient['name']))->id;
@@ -84,12 +85,13 @@ class ImportService
                 $scrapedIngredient['name'],
                 $scrapedIngredient['amount'],
                 $scrapedIngredient['units'],
-                $scrapedIngredient['sort'],
+                $sort,
                 $scrapedIngredient['optional'] ?? false,
                 $scrapedIngredient['substitutes'] ?? [],
             );
 
             $ingredients[] = $ingredient;
+            $sort++;
         }
 
         // Add cocktail
