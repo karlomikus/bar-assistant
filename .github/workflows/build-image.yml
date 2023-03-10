@@ -32,5 +32,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: barassistant/server:latest, barassistant/server:${{github.ref_name}}
+          build-args: BAR_ASSISTANT_VERSION=${{github.ref_name}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
