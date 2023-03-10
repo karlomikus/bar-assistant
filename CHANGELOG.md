@@ -1,3 +1,16 @@
+# v1.6.0
+
+## New
+- Added `sort` attribute to image resource
+
+## Changes
+- When editing cocktail with new images, Bar Assistant will now add new images instead of overwriting the existing ones
+- Increased web server upload file size in docker development environment
+- Application version now automatically tagged with github ref
+
+## Fixes
+- Fix importing cocktails from the CLI #83
+
 # v1.5.0
 
 ## 🔴 Important Notes 🔴
