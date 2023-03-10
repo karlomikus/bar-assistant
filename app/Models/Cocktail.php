@@ -23,7 +23,7 @@ class Cocktail extends Model implements SiteSearchable
         'public_at' => 'datetime',
     ];
 
-    private $appImagesDir = 'cocktails/';
+    private string $appImagesDir = 'cocktails/';
 
     protected static function booted(): void
     {
