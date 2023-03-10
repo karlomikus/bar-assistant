@@ -1,8 +1,4 @@
-# v1.5.0-rc.2
-## Fixes
-- Fix type cast issue when adding ingredients to cocktail #77
-
-# v1.5.0-rc.1
+# v1.5.0
 
 ## 🔴 Important Notes 🔴
 
@@ -14,6 +10,9 @@ This update includes a big change to docker image configuration:
 - Updated Meilisearch to stable version (1.0)
 
 As such you should follow the migration [guide available here](https://bar-assistant.github.io/docs/setup/updating/).
+
+## Fixes
+- Fix type cast issue when adding ingredients to cocktail #77
 
 ## Changes
 - Updated framework to Laravel 10
