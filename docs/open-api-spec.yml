@@ -1512,6 +1512,10 @@ components:
           example: [1, 2, 3]
           items:
             type: integer
+        parent_ingredient_id:
+          type: integer
+          example: 1
+          nullable: true
         ingredient_category_id:
           type: integer
           example: 1
@@ -1623,6 +1627,9 @@ components:
           type: string
           example: 'Somewhere from the web'
           nullable: true
+        sort:
+          type: integer
+          example: 1
         last_modified:
           type: string
           example: '2022-11-17T09:52:48.000000Z'
