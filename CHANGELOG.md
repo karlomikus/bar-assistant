@@ -1,3 +1,8 @@
+# v1.6.1
+
+## Fixes
+- Increase production upload body size
+
 # v1.6.0
 
 ## New
