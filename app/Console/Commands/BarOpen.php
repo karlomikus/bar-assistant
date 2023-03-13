@@ -154,15 +154,15 @@ class BarOpen extends Command
 
         // Bitters
         Ingredient::create(['name' => 'Orange bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 28.0, 'color' => '#ed8300', 'description' => 'Orange bitters is a form of bitters, a cocktail flavoring made from such ingredients as the peels of Seville oranges, cardamom, caraway seed, coriander, anise, and burnt sugar in an alcohol base.', 'origin' => 'Worldwide', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Angostura aromatic bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 44.7, 'color' => '#e95310', 'description' => 'Angostura bitters is a concentrated bitters (herbal alcoholic preparation) based on gentian, herbs, and spices, by House of Angostura in Trinidad and Tobago.', 'origin' => 'Trinidad & Tobago', 'user_id' => 1]);
+        $ango = Ingredient::create(['name' => 'Angostura aromatic bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 44.7, 'color' => '#e95310', 'description' => 'Angostura bitters is a concentrated bitters (herbal alcoholic preparation) based on gentian, herbs, and spices, by House of Angostura in Trinidad and Tobago.', 'origin' => 'Trinidad & Tobago', 'user_id' => 1]);
         Ingredient::create(['name' => 'Peach bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 35.0, 'color' => '#ca7c00', 'description' => 'Peach bitters flavored with peaches and herbs.', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Angostura cocoa bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 38.0, 'color' => '#894c36', 'description' => 'Top notes of rich bitter, floral, nutty cocoa with a bold infusion of aromatic botanicals provide endless possibilities to remix classic cocktails.', 'origin' => 'Trinidad & Tobago', 'user_id' => 1]);
         Ingredient::create(['name' => 'Peychauds Bitters', 'ingredient_category_id' => $bitters->id, 'strength' => 35.0, 'color' => '#622426', 'description' => 'It is a gentian-based bitters, comparable to Angostura bitters, but with a predominant anise aroma combined with a background of mint.', 'origin' => 'North America', 'user_id' => 1]);
 
         // Liqueurs
-        Ingredient::create(['name' => 'Campari', 'ingredient_category_id' => $liqueurs->id, 'strength' => 25.0, 'description' => 'Italian alcoholic liqueur obtained from the infusion of herbs and fruit.', 'color' => '#ca101e', 'origin' => 'Italy', 'user_id' => 1]);
+        $campari = Ingredient::create(['name' => 'Campari', 'ingredient_category_id' => $liqueurs->id, 'strength' => 25.0, 'description' => 'Italian alcoholic liqueur obtained from the infusion of herbs and fruit.', 'color' => '#ca101e', 'origin' => 'Italy', 'user_id' => 1]);
         Ingredient::create(['name' => 'Aperol', 'ingredient_category_id' => $liqueurs->id, 'strength' => 11.0, 'description' => 'Italian bitter apéritif made of gentian, rhubarb and cinchona, among other ingredients.', 'color' => '#fa4321', 'origin' => 'Italy', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Kahlua coffee liqueur', 'ingredient_category_id' => $liqueurs->id, 'strength' => 20.0, 'description' => 'Coffee liqueur made with rum, sugar and arabica coffee.', 'color' => '#1a0d0a', 'origin' => 'Mexico', 'user_id' => 1]);
+        $kahlua = Ingredient::create(['name' => 'Kahlua coffee liqueur', 'ingredient_category_id' => $liqueurs->id, 'strength' => 20.0, 'description' => 'Coffee liqueur made with rum, sugar and arabica coffee.', 'color' => '#1a0d0a', 'origin' => 'Mexico', 'user_id' => 1]);
         Ingredient::create(['name' => 'Amaretto', 'ingredient_category_id' => $liqueurs->id, 'strength' => 24.0, 'description' => 'Sweet almond-flavored liqueur', 'color' => '#d62b0e', 'origin' => 'Italy', 'user_id' => 1]);
         Ingredient::create(['name' => 'Dark Crème de Cacao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 25.0, 'description' => 'Dark brown creamy chocolate-flavored liqueur made from cacao seed.', 'color' => '#0b0504', 'origin' => 'France', 'user_id' => 1]);
         Ingredient::create(['name' => 'White Crème de Cacao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 25.0, 'description' => 'Milk chocolate flavored liqueur with a hint of vanilla.', 'color' => '#ffffff', 'origin' => 'France', 'user_id' => 1]);
@@ -176,7 +176,7 @@ class BarOpen extends Command
         Ingredient::create(['name' => 'Galliano', 'ingredient_category_id' => $liqueurs->id, 'strength' => 42.3, 'description' => 'Galliano is sweet with vanilla-anise flavour and subtle citrus and woodsy herbal undernotes.', 'color' => '#caa701', 'origin' => 'Italy', 'user_id' => 1]);
         Ingredient::create(['name' => 'Chambord', 'ingredient_category_id' => $liqueurs->id, 'strength' => 16.5, 'description' => 'Raspberry liqueur modelled after a liqueur produced in the Loire Valley of France during the late 17th century.', 'color' => '#6f1123', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Falernum', 'ingredient_category_id' => $liqueurs->id, 'strength' => 11.0, 'description' => 'Liqueur with flavors of ginger, lime, and almond, and frequently cloves or allspice. It may be thought of as a spicier version of orgeat syrup.', 'color' => '#f4f2e5', 'origin' => 'Caribbean', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Green Chartreuse', 'ingredient_category_id' => $liqueurs->id, 'strength' => 55.0, 'description' => 'Green Chartreuse is a naturally green liqueur made from 130 herbs and other plants macerated in alcohol and steeped for about eight hours.', 'color' => '#85993a', 'origin' => 'France', 'user_id' => 1]);
+        $gChar = Ingredient::create(['name' => 'Green Chartreuse', 'ingredient_category_id' => $liqueurs->id, 'strength' => 55.0, 'description' => 'Green Chartreuse is a naturally green liqueur made from 130 herbs and other plants macerated in alcohol and steeped for about eight hours.', 'color' => '#85993a', 'origin' => 'France', 'user_id' => 1]);
         Ingredient::create(['name' => 'Yellow Chartreuse', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'Yellow Chartreuse has a milder and sweeter flavor and aroma than Green Chartreuse, and is lower in alcohol content.', 'color' => '#fbfb4b', 'origin' => 'France', 'user_id' => 1]);
         Ingredient::create(['name' => 'Amaro Nonino', 'ingredient_category_id' => $liqueurs->id, 'strength' => 35.0, 'description' => 'Sweet amaro', 'color' => '#c16e4b', 'origin' => 'Italy', 'user_id' => 1]);
         Ingredient::create(['name' => 'Drambuie', 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'Liqueur made from Scotch whisky, heather honey, herbs and spices.', 'color' => '#ea7e00', 'origin' => 'Scotland', 'user_id' => 1]);
@@ -192,7 +192,7 @@ class BarOpen extends Command
         $curacao = Ingredient::create(['name' => 'Orange Curaçao', 'ingredient_category_id' => $liqueurs->id, 'strength' => 20.0, 'description' => 'Liqueur flavored with the dried peel of the bitter orange laraha, a citrus fruit grown on the Dutch island of Curaçao. Curaçao is used by liqueur makers overt the world as a generic name for orange-flavoured liqueurs.', 'color' => '#edaa53', 'origin' => 'Netherlands', 'user_id' => 1]);
         Ingredient::create(['name' => 'Dry Curaçao', 'parent_ingredient_id' => $curacao->id, 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'color' => '#ffc613', 'description' => 'While Curaçao and sweet oranges are the main ingredients, vanilla, prunes and lemon peel are amongst the other botanicals called for in the old recipe.', 'origin' => 'Italy', 'user_id' => 1]);
         Ingredient::create(['name' => 'Blue Curaçao', 'parent_ingredient_id' => $curacao->id, 'ingredient_category_id' => $liqueurs->id, 'strength' => 20.0, 'description' => 'Curaçao with added blue dye.', 'color' => '#0192fe', 'origin' => 'Netherlands', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Cointreau', 'parent_ingredient_id' => $curacao->id, 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'Orange-flavoured triple sec liqueur, it was originally called Curaçao Blanco Triple Sec. Usually more dry tasting than Orange Curaçao.', 'color' => '#ffffff', 'origin' => 'France', 'user_id' => 1]);
+        $cointreau = Ingredient::create(['name' => 'Cointreau', 'parent_ingredient_id' => $curacao->id, 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'Orange-flavoured triple sec liqueur, it was originally called Curaçao Blanco Triple Sec. Usually more dry tasting than Orange Curaçao.', 'color' => '#ffffff', 'origin' => 'France', 'user_id' => 1]);
         Ingredient::create(['name' => 'Triple Sec', 'parent_ingredient_id' => $curacao->id, 'ingredient_category_id' => $liqueurs->id, 'strength' => 40.0, 'description' => 'Triple sec is usually made from orange peels steeped in a spirit derived from sugar beet due to its neutral flavor.', 'color' => '#ffffff', 'origin' => 'France', 'user_id' => 1]);
 
         // Juices
@@ -209,7 +209,7 @@ class BarOpen extends Command
         // Beverages
         $water = Ingredient::create(['name' => 'Water', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'It\'s water.', 'origin' => 'Worldwide', 'user_id' => 1]);
         $clubSoda = Ingredient::create(['name' => 'Club soda', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'Club soda is a manufactured form of carbonated water, commonly used as a drink mixer.', 'origin' => 'Worldwide', 'user_id' => 1]);
-        Ingredient::create(['name' => 'Tonic', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'Tonic water (or Indian tonic water) is a carbonated soft drink in which quinine is dissolved.', 'origin' => 'Worldwide', 'user_id' => 1]);
+        $tonic = Ingredient::create(['name' => 'Tonic', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'Tonic water (or Indian tonic water) is a carbonated soft drink in which quinine is dissolved.', 'origin' => 'Worldwide', 'user_id' => 1]);
         $cola = Ingredient::create(['name' => 'Cola', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#411919', 'description' => 'Cola is a carbonated soft drink flavored with vanilla, cinnamon, citrus oils and other flavorings.', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Ginger beer', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'Ginger beer is a sweetened and carbonated, usually non-alcoholic beverage.', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Espresso', 'ingredient_category_id' => $beverages->id, 'strength' => 0.0, 'color' => '#fff', 'description' => 'Espresso is generally thicker than coffee brewed by other methods, with a viscosity similar to that of warm honey.', 'origin' => 'Italy', 'user_id' => 1]);
@@ -224,7 +224,7 @@ class BarOpen extends Command
         $vodka = Ingredient::create(['name' => 'Vodka', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Clear alcoholic beverage distilled from cereal grains and potatos.', 'origin' => 'Russia', 'user_id' => 1]);
         Ingredient::create(['name' => 'Vanilla Vodka', 'parent_ingredient_id' => $vodka->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Vodka with added vanilla essence.', 'origin' => 'Russia', 'user_id' => 1]);
         Ingredient::create(['name' => 'Vodka Citron', 'parent_ingredient_id' => $vodka->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#ffffff', 'description' => 'Vodka with added lemon essence.', 'origin' => 'Sweden', 'user_id' => 1]);
-        
+
         $whiskey = Ingredient::create(['name' => 'Whiskey', 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Distilled alcoholic beverage made from fermented grain mash.', 'origin' => 'Worldwide', 'user_id' => 1]);
         Ingredient::create(['name' => 'Bourbon Whiskey', 'parent_ingredient_id' => $whiskey->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Barrel-aged distilled liquor made primarily from corn.', 'origin' => 'North America', 'user_id' => 1]);
         Ingredient::create(['name' => 'Rye whiskey', 'parent_ingredient_id' => $whiskey->id, 'ingredient_category_id' => $spirits->id, 'strength' => 40.0, 'color' => '#d54a06', 'description' => 'Whiskey made with at least 51 percent rye grain.', 'origin' => 'North America', 'user_id' => 1]);
@@ -270,11 +270,11 @@ class BarOpen extends Command
         Ingredient::create(['name' => 'Ginger syrup', 'ingredient_category_id' => $syrups->id, 'description' => 'Syrup made from ginger root.', 'color' => '#c6972c', 'user_id' => 1]);
 
         // Wines
-        Ingredient::create(['name' => 'Sweet Vermouth', 'ingredient_category_id' => $wines->id, 'strength' => 18.0, 'description' => 'Aromatized fortified wine.', 'color' => '#8e4201', 'user_id' => 1, 'origin' => 'Worldwide']);
-        Ingredient::create(['name' => 'Dry Vermouth', 'ingredient_category_id' => $wines->id, 'strength' => 18.0, 'description' => 'Aromatized fortified wine.', 'color' => '#ffffff', 'user_id' => 1, 'origin' => 'Worldwide']);
-        Ingredient::create(['name' => 'White wine', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Wine is an alcoholic drink typically made from fermented grapes.', 'color' => '#f6e1b0', 'user_id' => 1, 'origin' => 'Worldwide']);
-        Ingredient::create(['name' => 'Red wine', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Red wine is a type of wine made from dark-colored grape varieties.', 'color' => '#801212', 'user_id' => 1, 'origin' => 'Worldwide']);
-        Ingredient::create(['name' => 'Prosecco', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Sparkling wine made from Prosecco grapes.', 'color' => '#a57600', 'user_id' => 1, 'origin' => 'Italy']);
+        $sweetVer = Ingredient::create(['name' => 'Sweet Vermouth', 'ingredient_category_id' => $wines->id, 'strength' => 18.0, 'description' => 'Aromatized fortified wine.', 'color' => '#8e4201', 'user_id' => 1, 'origin' => 'Worldwide']);
+        $dryVer = Ingredient::create(['name' => 'Dry Vermouth', 'ingredient_category_id' => $wines->id, 'strength' => 18.0, 'description' => 'Aromatized fortified wine.', 'color' => '#ffffff', 'user_id' => 1, 'origin' => 'Worldwide']);
+        $wWine = Ingredient::create(['name' => 'White wine', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Wine is an alcoholic drink typically made from fermented grapes.', 'color' => '#f6e1b0', 'user_id' => 1, 'origin' => 'Worldwide']);
+        $rWine = Ingredient::create(['name' => 'Red wine', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Red wine is a type of wine made from dark-colored grape varieties.', 'color' => '#801212', 'user_id' => 1, 'origin' => 'Worldwide']);
+        $prosecco = Ingredient::create(['name' => 'Prosecco', 'ingredient_category_id' => $wines->id, 'strength' => 11.0, 'description' => 'Sparkling wine made from Prosecco grapes.', 'color' => '#a57600', 'user_id' => 1, 'origin' => 'Italy']);
         Ingredient::create(['name' => 'Champagne', 'ingredient_category_id' => $wines->id, 'strength' => 12.0, 'description' => 'Sparkling wine.', 'color' => '#f6e1b0', 'user_id' => 1, 'origin' => 'France']);
         Ingredient::create(['name' => 'Lillet Blanc', 'ingredient_category_id' => $wines->id, 'strength' => 17.0, 'description' => 'Aromatized sweet wine.', 'color' => '#f7ec77', 'user_id' => 1, 'origin' => 'France']);
         Ingredient::create(['name' => 'Dry Sherry', 'ingredient_category_id' => $wines->id, 'strength' => 17.0, 'description' => 'Fortified wine made from white grapes that are grown near the city of Jerez de la Frontera in Andalusia, Spain.', 'color' => '#8c4122', 'user_id' => 1, 'origin' => 'Spain']);
@@ -350,6 +350,49 @@ class BarOpen extends Command
                     'ingredient_id' => $dui->id
                 ])
             );
+        }
+
+        if (App::environment('demo')) {
+            $this->info('Adding demo data...');
+            $defaultUser->favorites()->saveMany([
+                new \Kami\Cocktail\Models\CocktailFavorite(['cocktail_id' => 32]),
+                new \Kami\Cocktail\Models\CocktailFavorite(['cocktail_id' => 18]),
+                new \Kami\Cocktail\Models\CocktailFavorite(['cocktail_id' => 5]),
+                new \Kami\Cocktail\Models\CocktailFavorite(['cocktail_id' => 73]),
+                new \Kami\Cocktail\Models\CocktailFavorite(['cocktail_id' => 11]),
+                new \Kami\Cocktail\Models\CocktailFavorite(['cocktail_id' => 22]),
+                new \Kami\Cocktail\Models\CocktailFavorite(['cocktail_id' => 25]),
+            ]);
+            $defaultUser->shoppingLists()->saveMany([
+                new \Kami\Cocktail\Models\UserShoppingList(['ingredient_id' => $ango->id]),
+                new \Kami\Cocktail\Models\UserShoppingList(['ingredient_id' => $campari->id]),
+                new \Kami\Cocktail\Models\UserShoppingList(['ingredient_id' => $kahlua->id]),
+                new \Kami\Cocktail\Models\UserShoppingList(['ingredient_id' => $gChar->id]),
+                new \Kami\Cocktail\Models\UserShoppingList(['ingredient_id' => $cointreau->id]),
+                new \Kami\Cocktail\Models\UserShoppingList(['ingredient_id' => $gin->id]),
+                new \Kami\Cocktail\Models\UserShoppingList(['ingredient_id' => $vodka->id]),
+                new \Kami\Cocktail\Models\UserShoppingList(['ingredient_id' => $whiskey->id]),
+                new \Kami\Cocktail\Models\UserShoppingList(['ingredient_id' => $brandy->id]),
+            ]);
+            $defaultUser->shelfIngredients()->saveMany([
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $ango->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $campari->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $kahlua->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $gChar->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $cointreau->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $gin->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $vodka->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $whiskey->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $brandy->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $tequila->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $rum->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $sweetVer->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $dryVer->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $wWine->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $rWine->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $prosecco->id]),
+                new \Kami\Cocktail\Models\UserIngredient(['ingredient_id' => $tonic->id]),
+            ]);
         }
 
         Model::reguard();
