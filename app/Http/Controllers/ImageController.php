@@ -35,7 +35,8 @@ class ImageController extends Controller
                 $image = new ImageDTO(
                     null,
                     ImageManagerStatic::make($formImage['image']),
-                    $formImage['copyright']
+                    $formImage['copyright'],
+                    (int) $formImage['sort'],
                 );
             } catch (Throwable $e) {
                 Log::error($e->getMessage());
@@ -60,7 +61,8 @@ class ImageController extends Controller
         $imageDTO = new ImageDTO(
             $image->id,
             null,
-            $request->input('copyright')
+            $request->input('copyright'),
+            (int) $request->input('sort', 1)
         );
 
         $image = $imageservice->updateImage($imageDTO);

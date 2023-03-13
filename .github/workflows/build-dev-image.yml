@@ -32,5 +32,6 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: barassistant/server:dev
+          build-args: BAR_ASSISTANT_VERSION=develop
           cache-from: type=gha
           cache-to: type=gha,mode=max

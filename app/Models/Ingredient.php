@@ -19,7 +19,7 @@ class Ingredient extends Model implements SiteSearchable
 {
     use HasFactory, Searchable, HasImages, HasSlug;
 
-    private $appImagesDir = 'ingredients/';
+    private string $appImagesDir = 'ingredients/';
 
     protected $fillable = [
         'name',

@@ -15,7 +15,7 @@ Bar Assistant is a self hosted application for managing your home bar. It allows
 This repository only contains the API server, if you are looking for easy to use web client, take a look at [Salt Rim](https://github.com/karlomikus/vue-salt-rim).
 
 <p align="center">
-    <a href="https://bar-api.karlomikus.com" target="_blank">Click here to view API demo.</a>
+    <a href="https://bar.karlomikus.com/bar/docs" target="_blank">Click here to view API demo.</a>
     <br>
     <a href="https://bar.karlomikus.com" target="_blank">Click here to view frontend demo.</a>
     <br>

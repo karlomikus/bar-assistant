@@ -32,6 +32,7 @@ class ImageControllerTest extends TestCase
                 [
                     'image' => UploadedFile::fake()->image('image.jpg'),
                     'copyright' => 'Made with test',
+                    'sort' => 1,
                 ]
             ],
         ]);
@@ -58,14 +59,17 @@ class ImageControllerTest extends TestCase
                 [
                     'image' => UploadedFile::fake()->image('image1.jpg'),
                     'copyright' => 'BA 1',
+                    'sort' => 1,
                 ],
                 [
                     'image' => UploadedFile::fake()->image('image2.jpg'),
                     'copyright' => 'BA 2',
+                    'sort' => 1,
                 ],
                 [
                     'image' => UploadedFile::fake()->image('image3.jpg'),
                     'copyright' => 'BA 3',
+                    'sort' => 1,
                 ]
             ],
         ]);

@@ -1,5 +1,8 @@
 FROM php:8.1-fpm
 
+ARG BAR_ASSISTANT_VERSION
+ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-v0-dev}
+
 # Add dependencies
 RUN apt update \
     && apt-get install -y \
@@ -35,6 +38,8 @@ USER www-data:www-data
 WORKDIR /var/www/cocktails
 
 COPY --chown=www-data:www-data . .
+
+RUN sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/open-api-spec.yml
 
 RUN chmod +x /var/www/cocktails/resources/docker/run.sh
 

@@ -12,6 +12,7 @@ class Image
         public readonly ?int $id,
         public readonly ?InterventionImage $file,
         public readonly ?string $copyright = null,
+        public readonly int $sort = 0,
     ) {
     }
 }
