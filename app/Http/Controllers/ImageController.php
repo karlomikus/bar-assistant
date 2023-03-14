@@ -83,7 +83,7 @@ class ImageController extends Controller
         return response(null, 204);
     }
 
-    public function thumb(int $id)
+    public function thumb(int $id): Response
     {
         [$content, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id) {
             $dbImage = Image::findOrFail($id);

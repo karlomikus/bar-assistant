@@ -11,7 +11,7 @@ use Kami\Cocktail\Scraper\Sites\MicrodataScraper;
 
 final class Manager
 {
-    private $supportedSites = [
+    private array $supportedSites = [
         \Kami\Cocktail\Scraper\Sites\ACoupleCooks::class,
         \Kami\Cocktail\Scraper\Sites\TuxedoNo2::class,
         \Kami\Cocktail\Scraper\Sites\Imbibe::class,

@@ -7,10 +7,15 @@ namespace Kami\Cocktail\Models;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\InvalidCastException;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use LogicException;
 
 trait HasImages
 {
+    /**
+     * @return MorphMany<Image>
+     */
     public function images(): MorphMany
     {
         return $this->morphMany(Image::class, 'imageable');
@@ -33,6 +38,9 @@ trait HasImages
         }
     }
 
+    /**
+     * @param Collection<int, Image> $images
+     */
     public function attachImages(Collection $images): void
     {
         $disk = Storage::disk('bar-assistant');

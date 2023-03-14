@@ -15,16 +15,25 @@ class CocktailIngredient extends Model
 
     public $timestamps = false;
 
+    /**
+     * @return BelongsTo<Ingredient, CocktailIngredient>
+     */
     public function ingredient(): BelongsTo
     {
         return $this->belongsTo(Ingredient::class);
     }
 
+    /**
+     * @return BelongsTo<Cocktail, CocktailIngredient>
+     */
     public function cocktail(): BelongsTo
     {
         return $this->belongsTo(Cocktail::class);
     }
 
+    /**
+     * @return HasMany<CocktailIngredientSubstitute>
+     */
     public function substitutes(): HasMany
     {
         return $this->hasMany(CocktailIngredientSubstitute::class);

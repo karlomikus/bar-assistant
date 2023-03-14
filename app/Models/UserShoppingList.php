@@ -12,6 +12,9 @@ class UserShoppingList extends Model
 {
     use HasFactory;
 
+    /**
+     * @return BelongsTo<Ingredient, UserShoppingList>
+     */
     public function ingredient(): BelongsTo
     {
         return $this->belongsTo(Ingredient::class);

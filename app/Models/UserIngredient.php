@@ -14,6 +14,9 @@ class UserIngredient extends Model
 
     public $timestamps = false;
 
+    /**
+     * @return BelongsTo<Ingredient, UserIngredient>
+     */
     public function ingredient(): BelongsTo
     {
         return $this->belongsTo(Ingredient::class);
