@@ -252,4 +252,15 @@ class CocktailController extends Controller
 
         return new CocktailPublicResource($cocktail);
     }
+
+    public function makePrivate(CocktailService $cocktailService, int|string $idOrSlug): Response
+    {
+        $cocktail = Cocktail::where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
+            ->firstOrFail();
+
+        $cocktailService->makeRecipePrivate($cocktail);
+
+        return response(null, 204);
+    }
 }

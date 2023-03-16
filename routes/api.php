@@ -89,7 +89,8 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('/', [CocktailController::class, 'store'])->name('cocktails.store');
         Route::delete('/{id}', [CocktailController::class, 'delete'])->name('cocktails.delete');
         Route::put('/{id}', [CocktailController::class, 'update'])->name('cocktails.update');
-        Route::post('/{id}/make-public', [CocktailController::class, 'makePublic'])->name('cocktails.make-public');
+        Route::post('/{id}/public-link', [CocktailController::class, 'makePublic'])->name('cocktails.make-public');
+        Route::delete('/{id}/public-link', [CocktailController::class, 'makePrivate'])->name('cocktails.make-private');
     });
 
     Route::prefix('images')->group(function() {

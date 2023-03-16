@@ -161,6 +161,7 @@ class Cocktail extends Model implements SiteSearchable
             'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
             'calculated_abv' => $this->getABV(),
             'method' => $this->method->name ?? null,
+            'has_public_link' => $this->public_id !== null,
         ];
     }
 }

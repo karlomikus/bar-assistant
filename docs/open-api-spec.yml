@@ -292,6 +292,55 @@ paths:
                         example: true
         '404':
           $ref: '#/components/responses/NotFound'
+  /cocktails/{id}/public-link:
+    parameters:
+    - name: id
+      in: path
+      required: true
+      description: Database id of the cocktail
+      schema:
+        type: integer
+    post:
+      tags:
+        - "Cocktails"
+      summary: 'Create a public ID for cocktail'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      public_id:
+                        type: string
+                        description: 'Public cocktail ULID'
+                        example: "01ARZ3NDEKTSV4RRFFQ69G5FAV"
+                      public_at:
+                        type: string
+                        description: 'ULID created at datetime'
+                        example: "2023-03-14T20:20:20.000000Z"
+                      public_expires_at:
+                        type: string
+                        description: 'ULID expiration datetime'
+                        example: "2023-05-14T21:23:40.000000Z"
+                        nullable: true
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - "Cocktails"
+      summary: 'Delete cocktail public link'
+      responses:
+        '204':
+          description: Successfully deleted public link
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /cocktails/random:
     get:
       tags:
@@ -1790,6 +1839,9 @@ components:
           format: float
           nullable: true
           example: 18.12
+        has_public_link:
+          type: boolean
+          example: false
     CocktailRequest:
       type: object
       required:
