@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use LogicException;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\InvalidCastException;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use LogicException;
+use Illuminate\Database\Eloquent\InvalidCastException;
 
 trait HasImages
 {
