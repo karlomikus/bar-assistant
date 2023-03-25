@@ -69,7 +69,7 @@ class SearchActions
         $engine->index('cocktails')->updatePagination(['maxTotalHits' => 2000]);
 
         $engine->index('ingredients')->updateSettings([
-            'filterableAttributes' => ['category', 'strength_abv', 'origin', 'color'],
+            'filterableAttributes' => ['category', 'strength_abv', 'origin', 'color', 'id'],
             'sortableAttributes' => ['name', 'strength_abv'],
             'searchableAttributes' => [
                 'name',
