@@ -46,11 +46,17 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * @return HasMany<UserIngredient>
+     */
     public function shelfIngredients(): HasMany
     {
         return $this->hasMany(UserIngredient::class);
     }
 
+    /**
+     * @return HasManyThrough<Ingredient>
+     */
     public function ingredients(): HasManyThrough
     {
         return $this->hasManyThrough(
@@ -61,11 +67,17 @@ class User extends Authenticatable
         );
     }
 
+    /**
+     * @return HasMany<CocktailFavorite>
+     */
     public function favorites(): HasMany
     {
         return $this->hasMany(CocktailFavorite::class);
     }
 
+    /**
+     * @return HasMany<UserShoppingList>
+     */
     public function shoppingLists(): HasMany
     {
         return $this->hasMany(UserShoppingList::class);

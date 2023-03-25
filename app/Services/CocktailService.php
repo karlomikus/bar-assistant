@@ -319,4 +319,14 @@ class CocktailService
 
         return $cocktail;
     }
+
+    public function makeRecipePrivate(Cocktail $cocktail): Cocktail
+    {
+        $cocktail->public_id = null;
+        $cocktail->public_at = null;
+        $cocktail->public_expires_at = null;
+        $cocktail->save();
+
+        return $cocktail;
+    }
 }

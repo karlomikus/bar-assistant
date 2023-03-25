@@ -28,6 +28,8 @@ class ExploreCocktailResource extends JsonResource
             'tags' => $this->tags->pluck('name'),
             'glass' => $this->glass->name ?? null,
             'method' => $this->method->name ?? null,
+            'main_image_id' => $this->images->sortBy('sort')->first()->id ?? null,
+            'images' => ImageResource::collection($this->images),
             'abv' => $this->getABV(),
             'ingredients' => $this->ingredients->map(function ($cocktailIngredient) {
                 return [

@@ -12,6 +12,9 @@ class CocktailFavorite extends Model
 {
     use HasFactory;
 
+    /**
+     * @return BelongsTo<Cocktail, CocktailFavorite>
+     */
     public function cocktail(): BelongsTo
     {
         return $this->belongsTo(Cocktail::class);

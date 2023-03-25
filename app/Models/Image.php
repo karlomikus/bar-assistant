@@ -33,6 +33,9 @@ class Image extends Model
         return Storage::disk('bar-assistant')->url($this->file_path);
     }
 
+    /**
+     * @return MorphTo<Ingredient|Cocktail|Model, Image>
+     */
     public function imageable(): MorphTo
     {
         return $this->morphTo();

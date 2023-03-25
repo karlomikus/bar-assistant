@@ -56,7 +56,7 @@ class SearchActions
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
 
         $engine->index('cocktails')->updateSettings([
-            'filterableAttributes' => ['id', 'tags', 'user_id', 'glass', 'average_rating', 'main_ingredient_name', 'method', 'calculated_abv'],
+            'filterableAttributes' => ['id', 'tags', 'user_id', 'glass', 'average_rating', 'main_ingredient_name', 'method', 'calculated_abv', 'has_public_link'],
             'sortableAttributes' => ['name', 'date', 'average_rating'],
             'searchableAttributes' => [
                 'name',
@@ -69,7 +69,7 @@ class SearchActions
         $engine->index('cocktails')->updatePagination(['maxTotalHits' => 2000]);
 
         $engine->index('ingredients')->updateSettings([
-            'filterableAttributes' => ['category', 'strength_abv', 'origin', 'color'],
+            'filterableAttributes' => ['category', 'strength_abv', 'origin', 'color', 'id'],
             'sortableAttributes' => ['name', 'strength_abv'],
             'searchableAttributes' => [
                 'name',

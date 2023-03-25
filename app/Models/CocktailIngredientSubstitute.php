@@ -12,11 +12,17 @@ class CocktailIngredientSubstitute extends Model
 {
     use HasFactory;
 
+    /**
+     * @return BelongsTo<CocktailIngredient, CocktailIngredientSubstitute>
+     */
     public function cocktailIngredient(): BelongsTo
     {
         return $this->belongsTo(CocktailIngredient::class);
     }
 
+    /**
+     * @return BelongsTo<Ingredient, CocktailIngredientSubstitute>
+     */
     public function ingredient(): BelongsTo
     {
         return $this->belongsTo(Ingredient::class);

@@ -12,11 +12,13 @@ class CocktailPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, $ability)
+    public function before(User $user, string $ability): bool|null
     {
         if ($user->isAdmin()) {
             return true;
         }
+
+        return null;
     }
 
     public function edit(User $user, Cocktail $cocktail): bool

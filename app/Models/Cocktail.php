@@ -43,26 +43,41 @@ class Cocktail extends Model implements SiteSearchable
             ->saveSlugsTo('slug');
     }
 
+    /**
+     * @return BelongsTo<User, Cocktail>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return BelongsTo<Glass, Cocktail>
+     */
     public function glass(): BelongsTo
     {
         return $this->belongsTo(Glass::class);
     }
 
+    /**
+     * @return HasMany<CocktailIngredient>
+     */
     public function ingredients(): HasMany
     {
         return $this->hasMany(CocktailIngredient::class)->orderBy('sort');
     }
 
+    /**
+     * @return BelongsToMany<Tag>
+     */
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
     }
 
+    /**
+     * @return BelongsTo<CocktailMethod, Cocktail>
+     */
     public function method(): BelongsTo
     {
         return $this->belongsTo(CocktailMethod::class, 'cocktail_method_id');
@@ -146,6 +161,7 @@ class Cocktail extends Model implements SiteSearchable
             'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
             'calculated_abv' => $this->getABV(),
             'method' => $this->method->name ?? null,
+            'has_public_link' => $this->public_id !== null,
         ];
     }
 }

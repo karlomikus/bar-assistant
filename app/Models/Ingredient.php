@@ -50,41 +50,65 @@ class Ingredient extends Model implements SiteSearchable
             ->saveSlugsTo('slug');
     }
 
+    /**
+     * @return BelongsTo<IngredientCategory, Ingredient>
+     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(IngredientCategory::class, 'ingredient_category_id', 'id');
     }
 
+    /**
+     * @return BelongsToMany<Cocktail>
+     */
     public function cocktails(): BelongsToMany
     {
         return $this->belongsToMany(Cocktail::class, CocktailIngredient::class);
     }
 
+    /**
+     * @return BelongsTo<User, Ingredient>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return HasMany<Ingredient>
+     */
     public function varieties(): HasMany
     {
         return $this->hasMany(Ingredient::class, 'parent_ingredient_id', 'id');
     }
 
+    /**
+     * @return BelongsTo<Ingredient, Ingredient>
+     */
     public function parentIngredient(): BelongsTo
     {
         return $this->belongsTo(Ingredient::class, 'parent_ingredient_id', 'id');
     }
 
-    public function cocktailsAsSubstituteIngredient(): Collection
-    {
-        return $this->cocktailIngredientSubstitutes->pluck('cocktailIngredient.cocktail');
-    }
-
+    /**
+     * @return HasMany<CocktailIngredientSubstitute>
+     */
     public function cocktailIngredientSubstitutes(): HasMany
     {
         return $this->hasMany(CocktailIngredientSubstitute::class);
     }
 
+    /**
+     * @return Collection<int, Cocktail>
+     */
+    public function cocktailsAsSubstituteIngredient(): Collection
+    {
+        return $this->cocktailIngredientSubstitutes->pluck('cocktailIngredient.cocktail');
+    }
+
+    /**
+     * @return Collection<int, Ingredient>
+     */
     public function getAllRelatedIngredients(): Collection
     {
         // This creates "Related" group of the ingredients "on-the-fly"

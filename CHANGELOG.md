@@ -1,3 +1,12 @@
+# v1.7.0
+
+## New
+- Added `public_id` to cocktail schema response
+- Added endpoint for removing public link
+
+## Fixes
+- Ignore null passwords when updating profile
+
 # v1.6.1
 
 ## Fixes

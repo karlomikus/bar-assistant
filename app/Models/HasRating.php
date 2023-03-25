@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasRating
 {
+    /**
+     * @return MorphMany<Rating>
+     */
     public function ratings(): MorphMany
     {
         return $this->morphMany(Rating::class, 'rateable');

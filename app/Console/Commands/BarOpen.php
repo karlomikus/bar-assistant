@@ -402,7 +402,7 @@ class BarOpen extends Command
         return Command::SUCCESS;
     }
 
-    private function importCocktailsFromJson(string $sourcePath)
+    private function importCocktailsFromJson(string $sourcePath): void
     {
         $dbIngredients = DB::table('ingredients')->select(['name', 'id'])->get()->map(function ($ing) {
             $ing->name = strtolower($ing->name);
