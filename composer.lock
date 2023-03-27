@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "924177067393b81cfc91196275fcd557",
+    "content-hash": "483f3a5639d4facf81bcf07db8703cde",
     "packages": [
         {
             "name": "brick/math",
@@ -4347,6 +4347,54 @@
                 }
             ],
             "time": "2023-01-23T14:29:54+00:00"
+        },
+        {
+            "name": "srwiez/thumbhash",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SRWieZ/thumbhash.git",
+                "reference": "eae467fa06c6aeb96c6910dc1ccb71af21cc1dca"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SRWieZ/thumbhash/zipball/eae467fa06c6aeb96c6910dc1ccb71af21cc1dca",
+                "reference": "eae467fa06c6aeb96c6910dc1ccb71af21cc1dca",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3 || ^8.0"
+            },
+            "require-dev": {
+                "ext-gd": "*",
+                "ext-imagick": "*",
+                "pestphp/pest": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Thumbhash\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eser DENIZ",
+                    "email": "srwiez@gmail.com"
+                }
+            ],
+            "description": "A brief description of your package",
+            "support": {
+                "issues": "https://github.com/SRWieZ/thumbhash/issues",
+                "source": "https://github.com/SRWieZ/thumbhash/tree/1.1.0"
+            },
+            "time": "2023-03-24T16:07:54+00:00"
         },
         {
             "name": "symfony/browser-kit",

@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Services;
 
 use Throwable;
+use Thumbhash\Thumbhash;
 use Illuminate\Support\Str;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Kami\Cocktail\DataObjects\Image as ImageDTO;
+use Intervention\Image\Image as InterventionImage;
 use Kami\Cocktail\Exceptions\ImageUploadException;
+
+use function Thumbhash\extract_size_and_pixels_with_gd;
 
 class ImageService
 {
@@ -44,6 +48,14 @@ class ImageService
             $fileExtension = $dtoImage->file->extension ?? 'jpg';
             $filepath = 'temp/' . $filename . '.' . $fileExtension;
 
+            $thumbHash = null;
+            try {
+                $thumbHash = $this->generateThumbHash($dtoImage->file);
+            } catch (Throwable $e) {
+                $this->log->info('[IMAGE_SERVICE] ThumbHash Error | ' . $e->getMessage());
+                continue;
+            }
+
             try {
                 $this->disk->put($filepath, (string) $dtoImage->file->encode());
             } catch (Throwable $e) {
@@ -57,6 +69,7 @@ class ImageService
             $image->file_extension = $fileExtension;
             $image->user_id = $userId;
             $image->sort = $dtoImage->sort;
+            $image->placeholder_hash = $thumbHash;
             $image->save();
 
             $this->log->info('[IMAGE_SERVICE] Image created with id: ' . $image->id);
@@ -90,5 +103,25 @@ class ImageService
         $this->log->info('[IMAGE_SERVICE] Image updated with id: ' . $image->id);
 
         return $image;
+    }
+
+    /**
+     * Generates ThumbHash key
+     * @see https://evanw.github.io/thumbhash/
+     *
+     * @param InterventionImage $image
+     * @return string
+     */
+    public function generateThumbHash(InterventionImage $image): string
+    {
+        $image->backup();
+        $content = $image->fit(100)->encode();
+        $image->reset();
+
+        [$width, $height, $pixels] = extract_size_and_pixels_with_gd($content);
+        $hash = Thumbhash::RGBAToHash($width, $height, $pixels);
+        $key = Thumbhash::convertHashToString($hash);
+
+        return $key;
     }
 }

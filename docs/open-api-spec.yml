@@ -1682,6 +1682,11 @@ components:
         last_modified:
           type: string
           example: '2022-11-17T09:52:48.000000Z'
+        placeholder_hash:
+          type: string
+          nullable: true
+          description: ThumbHash implementation for placeholder image
+          example: '1QcSHQRnh493V4dIh4eXh1h4kJUI'
     User:
       type: object
       properties:
