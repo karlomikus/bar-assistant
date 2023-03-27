@@ -48,7 +48,7 @@ class BarSearchRefresh extends Command
         Artisan::call('scout:import', ['model' => Ingredient::class]);
 
         // Site search model imports
-        /** @var \Laravel\Scout\Engines\MeiliSearchEngine|\Meilisearch\Client */
+        /** @var \Meilisearch\Client */
         $engine = app(\Laravel\Scout\EngineManager::class)->engine();
         Ingredient::cursor()->chunk(500)->each(function ($chunk) use ($engine) {
             $chunk->each(function ($model) use ($engine) {

@@ -58,10 +58,14 @@ class BarExport extends Command
         $zip->addGlob(storage_path('bar-assistant/uploads/*/*'), options: ['remove_path' => storage_path('bar-assistant')]);
 
         foreach ($tablesToExport as $tableName) {
-            $zip->addFromString($tableName . '.json', json_encode(DB::table($tableName)->get()->toArray()));
+            if ($content = json_encode(DB::table($tableName)->get()->toArray())) {
+                $zip->addFromString($tableName . '.json', $content);
+            }
         }
 
-        $zip->addFromString('_meta.json', json_encode($meta));
+        if ($metaContent = json_encode($meta)) {
+            $zip->addFromString('_meta.json', $metaContent);
+        }
 
         $zip->close();
 
