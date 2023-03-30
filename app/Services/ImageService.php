@@ -110,13 +110,19 @@ class ImageService
      * @see https://evanw.github.io/thumbhash/
      *
      * @param InterventionImage $image
+     * @param bool $destroyInstance Used for memory management
      * @return string
      */
-    public function generateThumbHash(InterventionImage $image): string
+    public function generateThumbHash(InterventionImage $image, bool $destroyInstance = false): string
     {
-        $image->backup();
-        $content = $image->fit(100)->encode();
-        $image->reset();
+        if ($destroyInstance) {
+            $content = $image->fit(100)->encode(null, 20);
+            $image->destroy();
+        } else {
+            $image->backup();
+            $content = $image->fit(100)->encode(null, 20);
+            $image->reset();
+        }
 
         [$width, $height, $pixels] = extract_size_and_pixels_with_gd($content);
         $hash = Thumbhash::RGBAToHash($width, $height, $pixels);
