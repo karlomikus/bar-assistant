@@ -11,11 +11,11 @@ use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Filesystem\FilesystemAdapter;
-use Kami\Cocktail\DataObjects\Image as ImageDTO;
 use Intervention\Image\Image as InterventionImage;
 use Kami\Cocktail\Exceptions\ImageUploadException;
-
 use function Thumbhash\extract_size_and_pixels_with_gd;
+
+use Kami\Cocktail\DataObjects\Cocktail\Image as ImageDTO;
 
 class ImageService
 {

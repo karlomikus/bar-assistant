@@ -9,12 +9,12 @@ use Kami\Cocktail\Models\Glass;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
-use Kami\Cocktail\DataObjects\Image;
 use Kami\Cocktail\Services\ImageService;
-use Kami\Cocktail\DataObjects\Ingredient;
 use Intervention\Image\ImageManagerStatic;
 use Kami\Cocktail\Services\CocktailService;
+use Kami\Cocktail\DataObjects\Cocktail\Image;
 use Kami\Cocktail\Services\IngredientService;
+use Kami\Cocktail\DataObjects\Cocktail\Ingredient;
 
 class ImportService
 {

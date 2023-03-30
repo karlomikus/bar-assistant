@@ -13,10 +13,10 @@ use Symfony\Component\Uid\Ulid;
 use Illuminate\Support\Collection;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
-use Kami\Cocktail\DataObjects\Ingredient;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Exceptions\CocktailException;
+use Kami\Cocktail\DataObjects\Cocktail\Ingredient;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 
 class CocktailService
