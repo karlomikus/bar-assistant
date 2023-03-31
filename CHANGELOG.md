@@ -1,3 +1,11 @@
+# v1.x.0
+
+## New
+- Added image placeholder hash with ThumbHash algorithm
+
+## Changes
+- Moved default zip export path to `storage/bar-assistant/`
+
 # v1.7.0
 
 ## New

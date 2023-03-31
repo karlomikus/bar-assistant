@@ -17,7 +17,7 @@ class BarImportFromFile extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:import-zip {filename}';
+    protected $signature = 'bar:import-zip {filename?}';
 
     /**
      * The console command description.
@@ -33,7 +33,28 @@ class BarImportFromFile extends Command
      */
     public function handle()
     {
-        $zipFilePath = storage_path($this->argument('filename'));
+        $disk = Storage::build([
+            'driver' => 'local',
+            'root' => storage_path('bar-assistant'),
+        ]);
+
+        $selectedFilename = $this->argument('filename');
+        if ($selectedFilename) {
+            $zipFilePath = $disk->path($this->argument('filename'));
+        } else {
+            $existingZipFiles = collect($disk->files())->filter(function ($filepath) {
+                return str_ends_with($filepath, 'zip');
+            })->toArray();
+
+            $zipFilePath = $this->choice(
+                'What is the filename that you want to import?',
+                $existingZipFiles,
+            );
+
+            $zipFilePath = $disk->path($zipFilePath);
+        }
+
+        $this->info(sprintf('Checking for "%s" file...', $zipFilePath));
 
         if (!file_exists($zipFilePath)) {
             $this->info('File not found! Make sure the file is located in storage/ directory.');

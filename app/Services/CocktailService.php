@@ -32,7 +32,7 @@ class CocktailService
      *
      * @param string $name
      * @param string $instructions
-     * @param array<\Kami\Cocktail\DataObjects\Ingredient> $ingredients
+     * @param array<Ingredient> $ingredients
      * @param int $userId
      * @param string|null $description
      * @param string|null $garnish
@@ -139,7 +139,7 @@ class CocktailService
      * @param int $id
      * @param string $name
      * @param string $instructions
-     * @param array<\Kami\Cocktail\DataObjects\Ingredient> $ingredients
+     * @param array<Ingredient> $ingredients
      * @param int $userId
      * @param string|null $description
      * @param string|null $garnish
