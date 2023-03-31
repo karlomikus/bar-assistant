@@ -114,6 +114,10 @@ class ImageService
      */
     public function generateThumbHash(InterventionImage $image, bool $destroyInstance = false): string
     {
+        // Temporary increase memory limit to handle large images
+        // TODO: Move to imagick?
+        ini_set('memory_limit', '512M');
+
         if ($destroyInstance) {
             $content = $image->fit(100)->encode(null, 20);
             $image->destroy();
