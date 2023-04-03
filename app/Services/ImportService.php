@@ -5,16 +5,20 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Services;
 
 use Throwable;
+use ZipArchive;
+use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Glass;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
-use Kami\Cocktail\DataObjects\Image;
+use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Services\ImageService;
-use Kami\Cocktail\DataObjects\Ingredient;
 use Intervention\Image\ImageManagerStatic;
 use Kami\Cocktail\Services\CocktailService;
+use Kami\Cocktail\DataObjects\Cocktail\Image;
+use Kami\Cocktail\Exceptions\ImportException;
 use Kami\Cocktail\Services\IngredientService;
+use Kami\Cocktail\DataObjects\Cocktail\Ingredient;
 
 class ImportService
 {
@@ -107,5 +111,87 @@ class ImportService
             $sourceData['tags'],
             $glassId
         );
+    }
+
+    /**
+     * Import zipped data from another BA instance
+     *
+     * @param string $zipFilePath
+     * @return void
+     */
+    public function importFromZipFile(string $zipFilePath): void
+    {
+        Log::info(sprintf('[IMPORT_SERVICE] Started importing data from "%s"', $zipFilePath));
+        $importTimeStart = microtime(true);
+
+        $unzipPath = storage_path('temp/export/import_' . Str::random(8));
+        /** @var \Illuminate\Support\Facades\Storage */
+        $disk = Storage::build([
+            'driver' => 'local',
+            'root' => $unzipPath,
+        ]);
+
+        // Extract the archive
+        $zip = new ZipArchive();
+        if ($zip->open($zipFilePath) !== true) {
+            $message = sprintf('[IMPORT_SERVICE] Error opening zip archive with filepath "%s"', $zipFilePath);
+            Log::error($message);
+
+            throw new ImportException($message);
+        }
+        $zip->extractTo($unzipPath);
+        $zip->close();
+
+        $importOrder = [
+            'ingredient_categories',
+            'glasses',
+            'tags',
+            'ingredients',
+            'cocktails',
+            'cocktail_ingredients',
+            'cocktail_ingredient_substitutes',
+            'cocktail_tag',
+            'images',
+        ];
+
+        foreach (array_reverse($importOrder) as $tableName) {
+            try {
+                DB::table($tableName)->truncate();
+            } catch (Throwable) {
+                Log::error(sprintf('[IMPORT_SERVICE] Unable to truncate table "%s"', $tableName));
+            }
+        }
+
+        foreach ($importOrder as $tableName) {
+            $data = json_decode(file_get_contents($disk->path($tableName . '.json')), true);
+
+            foreach ($data as $row) {
+                try {
+                    DB::table($tableName)->insert($row);
+                } catch (Throwable) {
+                    Log::error(sprintf('[IMPORT_SERVICE] Unable to import row with id "%s" to table "%s"', $row['id'], $tableName));
+                }
+            }
+        }
+
+        /** @var \Illuminate\Support\Facades\Storage */
+        $baDisk = Storage::disk('bar-assistant');
+
+        foreach (glob($disk->path('uploads/cocktails/*')) as $pathFrom) {
+            if (!copy($pathFrom, $baDisk->path('cocktails/' . basename($pathFrom)))) {
+                Log::error(sprintf('[IMPORT_SERVICE] Unable to copy cocktail image from path "%s"', $pathFrom));
+            }
+        }
+
+        foreach (glob($disk->path('uploads/ingredients/*')) as $pathFrom) {
+            if (!copy($pathFrom, $baDisk->path('ingredients/' . basename($pathFrom)))) {
+                Log::error(sprintf('[IMPORT_SERVICE] Unable to copy ingredient image from path "%s"', $pathFrom));
+            }
+        }
+
+        $importTimeEnd = microtime(true);
+        Log::info(sprintf('[IMPORT_SERVICE] Finished importing data in %s seconds', $importTimeEnd - $importTimeStart));
+
+        $disk->deleteDirectory('/');
     }
 }

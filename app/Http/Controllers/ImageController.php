@@ -16,7 +16,7 @@ use Intervention\Image\ImageManagerStatic;
 use Kami\Cocktail\Http\Requests\ImageRequest;
 use Kami\Cocktail\Http\Resources\ImageResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\DataObjects\Image as ImageDTO;
+use Kami\Cocktail\DataObjects\Cocktail\Image as ImageDTO;
 
 class ImageController extends Controller
 {

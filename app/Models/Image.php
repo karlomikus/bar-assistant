@@ -6,6 +6,8 @@ namespace Kami\Cocktail\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic;
+use Intervention\Image\Image as InterventionImage;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -39,5 +41,12 @@ class Image extends Model
     public function imageable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function asInterventionImage(): InterventionImage
+    {
+        $disk = Storage::disk('bar-assistant');
+
+        return ImageManagerStatic::make($disk->path($this->file_path));
     }
 }

@@ -420,6 +420,8 @@ class BarOpen extends Command
 
         $source = Yaml::parseFile($sourcePath);
 
+        $imageService = app(\Kami\Cocktail\Services\ImageService::class);
+
         foreach ($source as $sCocktail) {
             DB::beginTransaction();
             try {
@@ -450,6 +452,9 @@ class BarOpen extends Command
                 $image->file_extension = 'jpg';
                 $image->user_id = 1;
                 $image->copyright = $sCocktail['image_copyright'] ?? null;
+                $image->placeholder_hash = $imageService->generateThumbHash(\Intervention\Image\ImageManagerStatic::make(
+                    Storage::disk('bar-assistant')->path('cocktails/' . Str::slug($sCocktail['name']) . '.jpg')
+                ));
                 $cocktail->images()->save($image);
 
                 foreach ($sCocktail['tags'] as $sCat) {

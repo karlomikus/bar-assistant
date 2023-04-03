@@ -94,7 +94,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
     /**
      * Array containing image information
      *
-     * @return null|array{"url": string, "copyright": string}
+     * @return null|array{"url": string|null, "copyright": string|null}
      */
     abstract public function image(): ?array;
 

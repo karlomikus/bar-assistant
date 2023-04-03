@@ -2,10 +2,9 @@
 
 namespace Kami\Cocktail\Console\Commands;
 
-use ZipArchive;
-use Carbon\Carbon;
+use Throwable;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Services\ExportService;
 
 class BarExport extends Command
 {
@@ -23,6 +22,11 @@ class BarExport extends Command
      */
     protected $description = 'Export data to be used in a another Bar Assistant instance.';
 
+    public function __construct(private readonly ExportService $exportService)
+    {
+        parent::__construct();
+    }
+
     /**
      * Execute the console command.
      *
@@ -30,42 +34,15 @@ class BarExport extends Command
      */
     public function handle()
     {
-        $meta = [
-            'version_exported_from' => config('bar-assistant.version'),
-        ];
-
-        $tablesToExport = [
-            'ingredient_categories',
-            'glasses',
-            'tags',
-            'ingredients',
-            'cocktails',
-            'cocktail_ingredients',
-            'cocktail_ingredient_substitutes',
-            'cocktail_tag',
-            'images',
-        ];
-
-        $zip = new ZipArchive();
-        $filename = storage_path(sprintf('%s_%s.zip', 'ba_export', Carbon::now()->format('Y-m-d-h-i-s')));
-
-        if ($zip->open($filename, ZipArchive::CREATE) !== true) {
-            $this->error('Unable to create a ZIP archive.');
+        try {
+            $filepath = $this->exportService->instanceShareExport();
+        } catch (Throwable $e) {
+            $this->error($e->getMessage());
 
             return Command::FAILURE;
         }
 
-        $zip->addGlob(storage_path('bar-assistant/uploads/*/*'), options: ['remove_path' => storage_path('bar-assistant')]);
-
-        foreach ($tablesToExport as $tableName) {
-            $zip->addFromString($tableName . '.json', json_encode(DB::table($tableName)->get()->toArray()));
-        }
-
-        $zip->addFromString('_meta.json', json_encode($meta));
-
-        $zip->close();
-
-        $this->info('Export created successfully at "' . $filename . '". Please note this will only create a zip file that will help you import data into a new BA instance. For a complete backup you should manually backup your uploads folder and database!');
+        $this->info('Export created successfully at "' . $filepath . '". Please note this will only create a zip file that will help you import data into a new BA instance. For a complete backup you should manually backup your uploads folder and database!');
 
         return Command::SUCCESS;
     }

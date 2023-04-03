@@ -13,6 +13,7 @@
         "meilisearch/meilisearch-php": "^1.0",
         "spatie/laravel-responsecache": "^7.4",
         "spatie/laravel-sluggable": "^3.4",
+        "srwiez/thumbhash": "^1.1",
         "symfony/browser-kit": "^6.2",
         "symfony/http-client": "^6.2",
         "symfony/uid": "^6.2",
