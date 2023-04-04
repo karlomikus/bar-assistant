@@ -181,4 +181,35 @@ class CocktailControllerTest extends TestCase
 
         $response->assertValidResponse(200);
     }
+
+    public function test_make_cocktail_public_link_response()
+    {
+        $cocktail = Cocktail::factory()->create();
+
+        $response = $this->postJson('/api/cocktails/' . $cocktail->id . '/public-link');
+
+        $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data.public_id')
+                ->has('data.public_at')
+                ->has('data.public_expires_at')
+        );
+
+        $cocktail = Cocktail::find($cocktail->id);
+        $this->assertNotNull($cocktail->public_id);
+    }
+
+    public function test_delete_cocktail_public_link_response()
+    {
+        $cocktail = Cocktail::factory()->create();
+
+        $response = $this->deleteJson('/api/cocktails/' . $cocktail->id . '/public-link');
+
+        $response->assertNoContent();
+
+        $cocktail = Cocktail::find($cocktail->id);
+        $this->assertNull($cocktail->public_id);
+    }
 }
