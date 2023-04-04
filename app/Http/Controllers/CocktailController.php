@@ -248,7 +248,7 @@ class CocktailController extends Controller
             return new CocktailPublicResource($cocktail);
         }
 
-        $cocktail = $cocktail->makePublic(now()->format('Y-m-d H:i:s'));
+        $cocktail = $cocktail->makePublic(now());
 
         return new CocktailPublicResource($cocktail);
     }

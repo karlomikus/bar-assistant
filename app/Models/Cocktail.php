@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Carbon\Carbon;
 use Kami\Cocktail\Utils;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
@@ -130,7 +131,7 @@ class Cocktail extends Model implements SiteSearchable
         return $this->ingredients->first();
     }
 
-    public function makePublic(string $dateTime): self
+    public function makePublic(Carbon $dateTime): self
     {
         $publicUlid = new Ulid();
 
