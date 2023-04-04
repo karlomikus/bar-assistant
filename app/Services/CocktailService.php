@@ -9,7 +9,6 @@ use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Image;
-use Symfony\Component\Uid\Ulid;
 use Illuminate\Support\Collection;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
@@ -306,27 +305,5 @@ class CocktailService
         $user->favorites()->save($cocktailFavorite);
 
         return true;
-    }
-
-    public function makeRecipePublic(Cocktail $cocktail): Cocktail
-    {
-        $publicUlid = new Ulid();
-
-        $cocktail->public_id = $publicUlid;
-        $cocktail->public_at = now();
-        $cocktail->public_expires_at = null;
-        $cocktail->save();
-
-        return $cocktail;
-    }
-
-    public function makeRecipePrivate(Cocktail $cocktail): Cocktail
-    {
-        $cocktail->public_id = null;
-        $cocktail->public_at = null;
-        $cocktail->public_expires_at = null;
-        $cocktail->save();
-
-        return $cocktail;
     }
 }

@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Models;
 use Kami\Cocktail\Utils;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
+use Symfony\Component\Uid\Ulid;
 use Kami\Cocktail\SearchActions;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
@@ -127,6 +128,28 @@ class Cocktail extends Model implements SiteSearchable
     public function getMainIngredient(): ?CocktailIngredient
     {
         return $this->ingredients->first();
+    }
+
+    public function makePublic(string $dateTime): self
+    {
+        $publicUlid = new Ulid();
+
+        $this->public_id = $publicUlid;
+        $this->public_at = $dateTime;
+        $this->public_expires_at = null;
+        $this->save();
+
+        return $this;
+    }
+
+    public function makePrivate(): self
+    {
+        $this->public_id = null;
+        $this->public_at = null;
+        $this->public_expires_at = null;
+        $this->save();
+
+        return $this;
     }
 
     public function toSiteSearchArray(): array
