@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Tests\Unit\Scraper;
 
 use Tests\TestCase;
 use Kami\Cocktail\Scraper\IngredientParser;
