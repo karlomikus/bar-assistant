@@ -1,4 +1,9 @@
-# v1.x.0
+# v1.9.0
+## New
+- Now running on PHP 8.2
+- Added support for Meilisearch v1.1
+
+# v1.8.0
 
 ## New
 - Added image placeholder hash with ThumbHash algorithm
