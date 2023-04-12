@@ -32,6 +32,10 @@ class IngredientController extends Controller
             $ingredients->whereIn('id', $usersList);
         }
 
+        if ($request->has('on_shelf')) {
+          $ingredients->join('user_ingredients', 'user_ingredients.ingredient_id', '=', 'ingredients.id')->where('user_ingredients.user_id', $request->user()->id);
+        }
+
         return IngredientResource::collection($ingredients->get());
     }
 
