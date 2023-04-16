@@ -2112,6 +2112,9 @@ components:
         total_shelf_cocktails:
           type: integer
           example: 43
+        total_shelf_ingredients:
+          type: integer
+          example: 12
         most_popular_ingredients:
           type: array
           items:

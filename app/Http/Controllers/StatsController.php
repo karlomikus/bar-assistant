@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Services\CocktailService;
 
 class StatsController extends Controller
@@ -36,6 +37,7 @@ class StatsController extends Controller
         $stats['total_cocktails'] = Cocktail::count();
         $stats['total_ingredients'] = Ingredient::count();
         $stats['total_shelf_cocktails'] = $cocktailService->getCocktailsByUserIngredients($request->user()->id)->count();
+        $stats['total_shelf_ingredients'] = UserIngredient::where('user_id', $request->user()->id)->count();
         $stats['most_popular_ingredients'] = $popularIngredientIds;
         $stats['top_rated_cocktails'] = $topRatedCocktailIds;
 
