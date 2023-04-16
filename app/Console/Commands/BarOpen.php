@@ -12,6 +12,7 @@ use Symfony\Component\Yaml\Yaml;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Database\Eloquent\Model;
