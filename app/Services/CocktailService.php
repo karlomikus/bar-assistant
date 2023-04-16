@@ -260,23 +260,23 @@ class CocktailService
         $query = $this->db->table('cocktails AS c')
             ->select('c.id')
             ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id');
-            if ($check_child_ingredients === true) {
-              $query->join('ingredients AS i', function($join) {
-                $join->on('i.id','=','ci.ingredient_id')->orOn('i.parent_ingredient_id','=','ci.ingredient_id');
-              });
-            } else {
-              $query->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id');
-            }
-            $query->leftJoin('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')
-            ->where('optional', false)
-            ->whereIn('i.id', function ($query) use ($userId) {
-                $query->select('ingredient_id')->from('user_ingredients')->where('user_id', $userId);
-            })
-            ->orWhereIn('cis.ingredient_id', function ($query) use ($userId) {
-                $query->select('ingredient_id')->from('user_ingredients')->where('user_id', $userId);
-            })
-            ->groupBy('c.id')
-            ->havingRaw('COUNT(*) >= (SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_id = c.id AND optional = false)');
+        if ($check_child_ingredients === true) {
+            $query->join('ingredients AS i', function ($join) {
+                $join->on('i.id', '=', 'ci.ingredient_id')->orOn('i.parent_ingredient_id', '=', 'ci.ingredient_id');
+            });
+        } else {
+            $query->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id');
+        }
+        $query->leftJoin('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')
+        ->where('optional', false)
+        ->whereIn('i.id', function ($query) use ($userId) {
+            $query->select('ingredient_id')->from('user_ingredients')->where('user_id', $userId);
+        })
+        ->orWhereIn('cis.ingredient_id', function ($query) use ($userId) {
+            $query->select('ingredient_id')->from('user_ingredients')->where('user_id', $userId);
+        })
+        ->groupBy('c.id')
+        ->havingRaw('COUNT(*) >= (SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_id = c.id AND optional = false)');
 
         if ($limit) {
             $query->limit($limit);
