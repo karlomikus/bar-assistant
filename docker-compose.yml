@@ -7,7 +7,6 @@ services:
         uid: 1000
       context: .
       dockerfile: Dockerfile.dev
-    image: kmikus12/bar-assistant-server-dev
     container_name: app
     restart: unless-stopped
     volumes:

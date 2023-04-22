@@ -39,6 +39,46 @@ class IngredientControllerTest extends TestCase
         $response->assertValidResponse();
     }
 
+    public function test_list_ingredients_response_filter_by_category()
+    {
+        Ingredient::factory()->count(5)->create();
+        $ingCat = IngredientCategory::factory()->create();
+        Ingredient::factory()->count(2)->create([
+            'ingredient_category_id' => $ingCat->id,
+        ]);
+
+        $response = $this->getJson('/api/ingredients?category_id=' . $ingCat->id);
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(2, 'data');
+
+        $response->assertValidResponse();
+    }
+
+    public function test_list_ingredients_response_filter_by_shopping_list()
+    {
+        Ingredient::factory()->count(5)->create();
+
+        $response = $this->getJson('/api/ingredients?on_shopping_list=1');
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(0, 'data');
+
+        $response->assertValidResponse();
+    }
+
+    public function test_list_ingredients_response_filter_by_shelf()
+    {
+        Ingredient::factory()->count(5)->create();
+
+        $response = $this->getJson('/api/ingredients?on_shelf=1');
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(0, 'data');
+
+        $response->assertValidResponse();
+    }
+
     public function test_ingredient_show_response()
     {
         Ingredient::factory()

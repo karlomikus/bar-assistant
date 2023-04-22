@@ -37,7 +37,7 @@ Route::post('register', [AuthController::class, 'register']);
 
 Route::prefix('server')->group(function() {
     Route::get('/version', [ServerController::class, 'version']);
-    Route::get('/openapi', [ServerController::class, 'openApi']);
+    Route::get('/openapi', [ServerController::class, 'openApi'])->name('openapi-spec');
 });
 
 Route::prefix('images')->group(function() {

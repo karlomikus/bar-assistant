@@ -238,7 +238,7 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails);
     }
 
-    public function makePublic(CocktailService $cocktailService, int|string $idOrSlug): JsonResource
+    public function makePublic(int|string $idOrSlug): JsonResource
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
@@ -248,18 +248,18 @@ class CocktailController extends Controller
             return new CocktailPublicResource($cocktail);
         }
 
-        $cocktail = $cocktailService->makeRecipePublic($cocktail);
+        $cocktail = $cocktail->makePublic(now());
 
         return new CocktailPublicResource($cocktail);
     }
 
-    public function makePrivate(CocktailService $cocktailService, int|string $idOrSlug): Response
+    public function makePrivate(int|string $idOrSlug): Response
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
             ->firstOrFail();
 
-        $cocktailService->makeRecipePrivate($cocktail);
+        $cocktail = $cocktail->makePrivate();
 
         return response(null, 204);
     }

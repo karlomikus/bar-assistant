@@ -1,7 +1,7 @@
 {
     "license": "MIT",
     "require": {
-        "php": "^8.1.0",
+        "php": "^8.2.0",
         "doctrine/dbal": "^3.5",
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",

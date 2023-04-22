@@ -1,5 +1,10 @@
-# v1.x.0
+# v1.9.0
+## New
+- Now running on PHP 8.2
+- Added support for Meilisearch v1.1
+- Added `on_shelf` filter to ingredients list
 
+# v1.8.0
 ## New
 - Added image placeholder hash with ThumbHash algorithm
 
@@ -7,7 +12,6 @@
 - Moved default zip export path to `storage/bar-assistant/`
 
 # v1.7.0
-
 ## New
 - Added `public_id` to cocktail schema response
 - Added endpoint for removing public link
@@ -21,7 +25,6 @@
 - Increase production upload body size
 
 # v1.6.0
-
 ## New
 - Added `sort` attribute to image resource
 
@@ -34,7 +37,6 @@
 - Fix importing cocktails from the CLI #83
 
 # v1.5.0
-
 ## 🔴 Important Notes 🔴
 
 This update includes a big change to docker image configuration:
