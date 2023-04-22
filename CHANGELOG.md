@@ -3,8 +3,6 @@
 - Now running on PHP 8.2
 - Added support for Meilisearch v1.1
 - Added `on_shelf` filter to ingredients list
-- Added new environment variable: `PARENT_INGREDIENT_SUBSTITUTE` #95
-    - Enabling this option will use parent ingredient of a specific ingredient as a substitute in a cocktail recipe
 
 # v1.8.0
 ## New
