@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Kami\Cocktail\Http\Controllers\TagController;
 use Kami\Cocktail\Http\Controllers\AuthController;
+use Kami\Cocktail\Http\Controllers\NoteController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
@@ -151,6 +152,12 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::prefix('scrape')->group(function() {
         Route::post('/cocktail', [ScrapeController::class, 'cocktail']);
+    });
+
+    Route::prefix('notes')->group(function() {
+        Route::post('/', [NoteController::class, 'store']);
+        Route::get('/{id}', [NoteController::class, 'show'])->name('notes.show');
+        Route::delete('/{id}', [NoteController::class, 'delete']);
     });
 });
 
