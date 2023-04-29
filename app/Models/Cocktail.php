@@ -19,7 +19,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Cocktail extends Model implements SiteSearchable
 {
-    use HasFactory, Searchable, HasImages, HasSlug, HasRating;
+    use HasFactory,
+        Searchable,
+        HasImages,
+        HasSlug,
+        HasRating,
+        HasNotes;
 
     protected $casts = [
         'public_at' => 'datetime',

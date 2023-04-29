@@ -76,7 +76,7 @@ class CocktailController extends Controller
             ->firstOrFail()
             ->load(['ingredients.ingredient', 'images' => function ($query) {
                 $query->orderBy('sort');
-            }, 'tags', 'glass', 'ingredients.substitutes', 'method']);
+            }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'notes']);
 
         return new CocktailResource($cocktail);
     }

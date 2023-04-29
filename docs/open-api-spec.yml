@@ -37,6 +37,8 @@ tags:
     description: Operations related to app statistics
   - name: "Cocktail methods"
     description: Operations related to cocktail methods
+  - name: "Notes"
+    description: Operations related to notes
 security:
   - user_token: []
 paths:
@@ -1438,6 +1440,69 @@ paths:
           description: Successful response
         '404':
           $ref: '#/components/responses/NotFound'
+  /notes:
+    post:
+      tags:
+        - "Notes"
+      summary: Create a new note
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteRequest'
+      responses:
+        '201':
+          description: Successful response
+          headers:
+            Location:
+              description: Absolute URL to new resource
+              schema:
+                type: string
+                example: 'http://localhost/api/notes/1'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/NoteResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /notes/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a note'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - "Notes"
+      summary: Show a single note
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/NoteResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - "Notes"
+      summary: Delete specific note
+      responses:
+        '204':
+          description: Successful response
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -1852,6 +1917,10 @@ components:
         has_public_link:
           type: boolean
           example: false
+        notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/NoteResponse'
     CocktailRequest:
       type: object
       required:
@@ -2162,3 +2231,36 @@ components:
         dilution_percentage:
           type: integer
           example: 23
+    NoteRequest:
+      type: object
+      required:
+        - note
+        - resource_id
+        - resource
+      properties:
+        note:
+          type: string
+          example: "My new note body"
+        resource_id:
+          type: integer
+          example: 1
+        resource:
+          type: string
+          enum:
+            - cocktail
+          example: "cocktail"
+    NoteResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        note:
+          type: string
+          example: "My new note"
+        user_id:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          example: "2023-01-01 12:00:00"
