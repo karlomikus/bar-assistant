@@ -208,7 +208,7 @@ class CocktailController extends Controller
         }
 
         return CocktailResource::collection(
-            Cocktail::orderBy('name')->find($cocktailIds)->load('ingredients.ingredient', 'images', 'tags')
+            Cocktail::orderBy('name')->find($cocktailIds)->load('ingredients.ingredient', 'images', 'tags', 'method')
         );
     }
 

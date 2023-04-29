@@ -259,29 +259,65 @@ class CocktailService
             ->select('c.id')
             ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id')
             ->leftJoin('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')
-            ->where('optional', false)
-            ->whereIn('i.id', function ($query) use ($userId) {
-                $query->select('ingredient_id')->from('user_ingredients')->where('user_id', $userId);
-            })
-            ->orWhereIn('cis.ingredient_id', function ($query) use ($userId) {
-                $query->select('ingredient_id')->from('user_ingredients')->where('user_id', $userId);
-            })
-            ->groupBy('c.id')
-            ->havingRaw('COUNT(*) >= (SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_id = c.id AND optional = false)');
+            ->where('optional', false);
 
         if (config('bar-assistant.parent_ingredient_as_substitute')) {
             $query->join('ingredients AS i', function ($join) {
-                $join->on('i.id', '=', 'ci.ingredient_id')->orOn('i.parent_ingredient_id', '=', 'ci.ingredient_id');
+                $join->on('i.id', '=', 'ci.ingredient_id')->orOn('i.id', '=', 'i.parent_ingredient_id');
+            })
+            ->where(function ($query) use ($userId) {
+                $query->whereNull('i.parent_ingredient_id')
+                    ->whereIn('i.id', function ($query) use ($userId) {
+                        $query->select('ingredient_id')->from('user_ingredients')->where('user_id', $userId);
+                    });
+            })
+            ->orWhere(function ($query) use ($userId) {
+                $query->whereNotNull('i.parent_ingredient_id')
+                    ->where(function ($sub) use ($userId) {
+                        $sub->whereIn('i.id', function ($query) use ($userId) {
+                            $query->select('ingredient_id')->from('user_ingredients')->where('user_id', $userId);
+                        })->orWhereIn('i.parent_ingredient_id', function ($query) use ($userId) {
+                            $query->select('ingredient_id')->from('user_ingredients')->where('user_id', $userId);
+                        });
+                    });
             });
         } else {
-            $query->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id');
+            $query->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
+            ->whereIn('i.id', function ($query) use ($userId) {
+                $query->select('ingredient_id')->from('user_ingredients')->where('user_id', $userId);
+            });
         }
+
+        $query->orWhereIn('cis.ingredient_id', function ($query) use ($userId) {
+            $query->select('ingredient_id')->from('user_ingredients')->where('user_id', $userId);
+        })
+        ->groupBy('c.id')
+        ->havingRaw('COUNT(*) >= (SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_id = c.id AND optional = false)');
 
         if ($limit) {
             $query->limit($limit);
         }
 
         return $query->pluck('id');
+    }
+
+    /**
+     * Match cocktails ingredients to users shelf ingredients
+     * Does not include substitutes
+     *
+     * @param int $cocktailId
+     * @param int $userId
+     * @return array<int>
+     */
+    public function matchAvailableShelfIngredients(int $cocktailId, int $userId): array
+    {
+        return $this->db->table('ingredients AS i')
+            ->select('i.id')
+            ->leftJoin('user_ingredients AS ui', 'ui.ingredient_id', '=', 'i.id')
+            ->where('ui.user_id', $userId)
+            ->whereRaw('i.id IN (SELECT ingredient_id FROM cocktail_ingredients ci WHERE ci.cocktail_id = ?)', [$cocktailId])
+            ->pluck('id')
+            ->toArray();
     }
 
     /**
