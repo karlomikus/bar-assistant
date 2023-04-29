@@ -1470,6 +1470,39 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+  /notes/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a note'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - "Notes"
+      summary: Show a single note
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/NoteResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - "Notes"
+      summary: Delete specific note
+      responses:
+        '204':
+          description: Successful response
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -1884,6 +1917,10 @@ components:
         has_public_link:
           type: boolean
           example: false
+        notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/NoteResponse'
     CocktailRequest:
       type: object
       required:

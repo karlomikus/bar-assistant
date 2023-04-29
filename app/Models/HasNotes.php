@@ -35,7 +35,7 @@ trait HasNotes
      */
     public function getUserNotes(int $userId): Collection
     {
-        return $this->ratings()->where('user_id', $userId)->get();
+        return $this->notes()->where('user_id', $userId)->get();
     }
 
     public function deleteUserNote(int $userId): void

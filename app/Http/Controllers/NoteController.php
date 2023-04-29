@@ -31,7 +31,7 @@ class NoteController extends Controller
         $resourceId = $request->post('resource_id');
         $resourceType = $request->post('resource');
 
-        $resourceModel = match($resourceType) {
+        $resourceModel = match ($resourceType) {
             'cocktail' => Cocktail::findOrFail($resourceId),
             default => abort(404)
         };
