@@ -138,23 +138,22 @@ class Cocktail extends Model implements SiteSearchable
             return null;
         }
 
-        $ingredients = $this->ingredients()
-            ->select('amount', 'units', 'strength')
-            ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
-            ->where('cocktail_ingredients.cocktail_id', $this->id)
-            ->where(function ($q) {
-                $q->where('cocktail_ingredients.units', 'ml')
-                    ->orWhere('cocktail_ingredients.units', 'LIKE', 'dash%');
+        $ingredients = $this->ingredients
+            ->filter(function ($cocktailIngredient) {
+                return strtolower($cocktailIngredient->units) === 'ml' || str_starts_with(strtolower($cocktailIngredient->units), 'dash');
             })
-            ->get()
             ->map(function ($item) {
-                if (str_starts_with($item->units, 'dash')) {
+                if (str_starts_with(strtolower($item->units), 'dash')) {
                     $item->amount = $item->amount * 0.02;
                 } else {
                     $item->amount = $item->amount / 30;
                 }
 
-                return $item;
+                return [
+                    'amount' => $item->amount,
+                    'units' => $item->units,
+                    'strength' => $item->ingredient->strength,
+                ];
             });
 
         return Utils::calculateAbv($ingredients->toArray(), $this->method->dilution_percentage);
