@@ -1,3 +1,13 @@
+# v1.10.0
+# New
+- Added notes endpoint
+    - Currently only supported for `cocktails` resource
+- Added new ENV variable: `PARENT_INGREDIENT_SUBSTITUTE`
+    - This will take in account parent ingredients when querying what cocktails you can make #95
+
+# Changes
+- Optimized some SQL queries
+
 # v1.9.0
 ## New
 - Now running on PHP 8.2

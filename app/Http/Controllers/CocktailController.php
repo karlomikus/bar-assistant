@@ -207,9 +207,20 @@ class CocktailController extends Controller
             ]);
         }
 
-        return CocktailResource::collection(
-            Cocktail::orderBy('name')->find($cocktailIds)->load('ingredients.ingredient', 'images', 'tags', 'method')
-        );
+        $averageRatings = $cocktailService->getCocktailAvgRatings();
+        $userRatings = $cocktailService->getCocktailUserRatings($request->user()->id);
+
+        $cocktails = Cocktail::orderBy('name')->find($cocktailIds)
+            ->load('ingredients.ingredient', 'images', 'tags', 'method')
+            ->map(function ($cocktail) use($averageRatings, $userRatings) {
+                $cocktail
+                    ->setAverageRating($averageRatings[$cocktail->id] ?? 0.0)
+                    ->setUserRating($userRatings[$cocktail->id] ?? null);
+
+                return $cocktail;
+            });
+
+        return CocktailResource::collection($cocktails);
     }
 
     /**

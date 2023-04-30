@@ -319,21 +319,28 @@ class CocktailService
      *
      * @return array<int, float>
      */
-    public function getCocktailAvgRatings(?int $userId = null): array
+    public function getCocktailAvgRatings(): array
     {
-        $query = $this->db->table('ratings')
+        return $this->db->table('ratings')
             ->select('rateable_id AS cocktail_id', DB::raw('AVG(rating) AS avg_rating'))
-            ->where('rateable_type', Cocktail::class);
-
-        if ($userId) {
-            $query->where('user_id', $userId);
-        }
-
-        return $query
+            ->where('rateable_type', Cocktail::class)
             ->groupBy('rateable_id')
             ->get()
             ->keyBy('cocktail_id')
             ->map(fn ($r) => $r->avg_rating)
+            ->toArray();
+    }
+
+    public function getCocktailUserRatings(int $userId): array
+    {
+        return $this->db->table('ratings')
+            ->select('rateable_id AS cocktail_id', 'rating')
+            ->where('rateable_type', Cocktail::class)
+            ->where('user_id', $userId)
+            ->groupBy('rateable_id')
+            ->get()
+            ->keyBy('cocktail_id')
+            ->map(fn ($r) => $r->rating)
             ->toArray();
     }
 

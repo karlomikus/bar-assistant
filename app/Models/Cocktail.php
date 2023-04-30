@@ -32,6 +32,21 @@ class Cocktail extends Model implements SiteSearchable
 
     private string $appImagesDir = 'cocktails/';
 
+    /**
+     * Set average rating manually to skip unnecessary SQL queres
+     * @var null|float
+     */
+    private ?float $averageRating = null;
+
+    /**
+     * Set user rating manually to skip unnecessary SQL queres
+     * -1: (defualt) Value not set, will run SQL query
+     * null: No user rating
+     * 0: User rated with lowest rating
+     * @var null|int
+     */
+    private ?int $userRating = -1;
+
     protected static function booted(): void
     {
         static::saved(function ($cocktail) {
@@ -48,6 +63,20 @@ class Cocktail extends Model implements SiteSearchable
         return SlugOptions::create()
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
+    }
+
+    public function setAverageRating(?float $rating): self
+    {
+        $this->averageRating = $rating;
+
+        return $this;
+    }
+
+    public function setUserRating(?int $rating): self
+    {
+        $this->userRating = $rating;
+
+        return $this;
     }
 
     /**
