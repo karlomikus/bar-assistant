@@ -165,7 +165,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/', [CollectionController::class, 'index']);
         Route::post('/', [CollectionController::class, 'store']);
         Route::get('/{id}', [CollectionController::class, 'show'])->name('collection.show');
-        Route::post('/{id}', [CollectionController::class, 'update']);
+        Route::put('/{id}', [CollectionController::class, 'update']);
         Route::delete('/{id}', [CollectionController::class, 'delete']);
         Route::put('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'cocktail']);
     });

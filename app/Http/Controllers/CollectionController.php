@@ -72,11 +72,11 @@ class CollectionController extends Controller
 
         $cocktail = Cocktail::findOrFail($cocktailId);
 
-        try {
+        // try {
             $cocktail->addToCollection($collection);
-        } catch (Throwable $e) {
-            abort(500, 'Unable to add cocktail to collection!');
-        }
+        // } catch (Throwable $e) {
+        //     abort(500, 'Unable to add cocktail to collection!');
+        // }
 
         return new CollectionResource($collection);
     }
