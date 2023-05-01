@@ -35,6 +35,8 @@ This repository only contains the API server, if you are looking for easy to use
 - Assign glass types to cocktails
 - Cocktail recipe scraping
 - Cocktail ratings
+- User cocktail collections
+- Cocktail notes
 
 ## Documentation
 

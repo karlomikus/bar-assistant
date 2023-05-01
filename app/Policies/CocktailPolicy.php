@@ -21,6 +21,11 @@ class CocktailPolicy
         return null;
     }
 
+    public function addNote(User $user, Cocktail $cocktail): bool
+    {
+        return $user->id === $cocktail->user_id;
+    }
+
     public function edit(User $user, Cocktail $cocktail): bool
     {
         return $user->id === $cocktail->user_id;

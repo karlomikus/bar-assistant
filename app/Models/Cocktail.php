@@ -16,16 +16,37 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class Cocktail extends Model implements SiteSearchable
 {
-    use HasFactory, Searchable, HasImages, HasSlug, HasRating;
+    use HasFactory,
+        Searchable,
+        HasImages,
+        HasSlug,
+        HasRating,
+        HasNotes;
 
     protected $casts = [
         'public_at' => 'datetime',
     ];
 
     private string $appImagesDir = 'cocktails/';
+
+    /**
+     * Set average rating manually to skip unnecessary SQL queres
+     * @var null|float
+     */
+    private ?float $averageRating = null;
+
+    /**
+     * Set user rating manually to skip unnecessary SQL queres
+     * -1: (defualt) Value not set, will run SQL query
+     * null: No user rating
+     * 0: User rated with lowest rating
+     * @var null|int
+     */
+    private ?int $userRating = -1;
 
     protected static function booted(): void
     {
@@ -43,6 +64,20 @@ class Cocktail extends Model implements SiteSearchable
         return SlugOptions::create()
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
+    }
+
+    public function setAverageRating(?float $rating): self
+    {
+        $this->averageRating = $rating;
+
+        return $this;
+    }
+
+    public function setUserRating(?int $rating): self
+    {
+        $this->userRating = $rating;
+
+        return $this;
     }
 
     /**
@@ -104,23 +139,22 @@ class Cocktail extends Model implements SiteSearchable
             return null;
         }
 
-        $ingredients = $this->ingredients()
-            ->select('amount', 'units', 'strength')
-            ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
-            ->where('cocktail_ingredients.cocktail_id', $this->id)
-            ->where(function ($q) {
-                $q->where('cocktail_ingredients.units', 'ml')
-                    ->orWhere('cocktail_ingredients.units', 'LIKE', 'dash%');
+        $ingredients = $this->ingredients
+            ->filter(function ($cocktailIngredient) {
+                return strtolower($cocktailIngredient->units) === 'ml' || str_starts_with(strtolower($cocktailIngredient->units), 'dash');
             })
-            ->get()
             ->map(function ($item) {
-                if (str_starts_with($item->units, 'dash')) {
+                if (str_starts_with(strtolower($item->units), 'dash')) {
                     $item->amount = $item->amount * 0.02;
                 } else {
                     $item->amount = $item->amount / 30;
                 }
 
-                return $item;
+                return [
+                    'amount' => $item->amount,
+                    'units' => $item->units,
+                    'strength' => $item->ingredient->strength,
+                ];
             });
 
         return Utils::calculateAbv($ingredients->toArray(), $this->method->dilution_percentage);
@@ -151,6 +185,11 @@ class Cocktail extends Model implements SiteSearchable
         $this->save();
 
         return $this;
+    }
+
+    public function addToCollection(CocktailCollection $collection): void
+    {
+        $collection->cocktails()->save($this);
     }
 
     public function toSiteSearchArray(): array

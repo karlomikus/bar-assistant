@@ -76,7 +76,7 @@ class CocktailController extends Controller
             ->firstOrFail()
             ->load(['ingredients.ingredient', 'images' => function ($query) {
                 $query->orderBy('sort');
-            }, 'tags', 'glass', 'ingredients.substitutes', 'method']);
+            }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'notes']);
 
         return new CocktailResource($cocktail);
     }
@@ -207,9 +207,20 @@ class CocktailController extends Controller
             ]);
         }
 
-        return CocktailResource::collection(
-            Cocktail::orderBy('name')->find($cocktailIds)->load('ingredients.ingredient', 'images', 'tags')
-        );
+        $averageRatings = $cocktailService->getCocktailAvgRatings();
+        $userRatings = $cocktailService->getCocktailUserRatings($request->user()->id);
+
+        $cocktails = Cocktail::orderBy('name')->find($cocktailIds)
+            ->load('ingredients.ingredient', 'images', 'tags', 'method')
+            ->map(function ($cocktail) use ($averageRatings, $userRatings) {
+                $cocktail
+                    ->setAverageRating($averageRatings[$cocktail->id] ?? 0.0)
+                    ->setUserRating($userRatings[$cocktail->id] ?? null);
+
+                return $cocktail;
+            });
+
+        return CocktailResource::collection($cocktails);
     }
 
     /**
