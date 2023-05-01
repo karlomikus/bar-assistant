@@ -15,6 +15,7 @@ use Kami\Cocktail\Http\Controllers\ServerController;
 use Kami\Cocktail\Http\Controllers\ExploreController;
 use Kami\Cocktail\Http\Controllers\ProfileController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
+use Kami\Cocktail\Http\Controllers\CollectionController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
@@ -158,6 +159,16 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('/', [NoteController::class, 'store']);
         Route::get('/{id}', [NoteController::class, 'show'])->name('notes.show');
         Route::delete('/{id}', [NoteController::class, 'delete']);
+    });
+
+    Route::prefix('collections')->group(function() {
+        Route::get('/', [CollectionController::class, 'index']);
+        Route::post('/', [CollectionController::class, 'store']);
+        Route::get('/{id}', [CollectionController::class, 'show'])->name('collection.show');
+        Route::put('/{id}', [CollectionController::class, 'update']);
+        Route::delete('/{id}', [CollectionController::class, 'delete']);
+        Route::put('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'cocktail']);
+        Route::delete('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'deleteResourceFromCollection']);
     });
 });
 

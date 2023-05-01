@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class Cocktail extends Model implements SiteSearchable
 {
@@ -184,6 +185,11 @@ class Cocktail extends Model implements SiteSearchable
         $this->save();
 
         return $this;
+    }
+
+    public function addToCollection(CocktailCollection $collection): void
+    {
+        $collection->cocktails()->save($this);
     }
 
     public function toSiteSearchArray(): array

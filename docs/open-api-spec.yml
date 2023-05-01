@@ -39,6 +39,8 @@ tags:
     description: Operations related to cocktail methods
   - name: "Notes"
     description: Operations related to notes
+  - name: "Collections"
+    description: Operations related to user collections
 security:
   - user_token: []
 paths:
@@ -1503,6 +1505,164 @@ paths:
           description: Successful response
         '404':
           $ref: '#/components/responses/NotFound'
+  /collections:
+    get:
+      tags:
+        - "Collections"
+      summary: List user collections
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CollectionResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+        - "Collections"
+      summary: Create a new collection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionRequest'
+      responses:
+        '201':
+          description: Successful response
+          headers:
+            Location:
+              description: Absolute URL to new resource
+              schema:
+                type: string
+                example: 'http://localhost/api/collections/1'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CollectionResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /collections/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a collection'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - "Collections"
+      summary: Show a single collection
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CollectionResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - "Collections"
+      summary: Update a specific collection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CollectionResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      tags:
+        - "Collections"
+      summary: Delete specific collection
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /collections/{id}/cocktails/{cocktailId}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a collection'
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: cocktailId
+        description: 'Database id of a cocktail'
+        schema:
+          type: integer
+        required: true
+    put:
+      tags:
+        - "Collections"
+      summary: Add cocktail to collection
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CollectionResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - "Collections"
+      summary: Remove cocktail from collection
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -2264,3 +2424,34 @@ components:
         created_at:
           type: string
           example: "2023-01-01 12:00:00"
+    CollectionRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "Collection name"
+        description:
+          type: string
+          example: "Collection description"
+    CollectionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Collection name"
+        description:
+          type: string
+          example: "Collection description"
+        created_at:
+          type: string
+          example: "2023-01-01 12:00:00"
+        cocktails:
+          type: array
+          example: [1, 2, 3, 4, 5]
+          items:
+            type: integer
