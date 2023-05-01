@@ -2,6 +2,7 @@
 # New
 - Added notes endpoint
     - Currently only supported for `cocktails` resource
+- Added cocktail collections endpoint
 - Added new ENV variable: `PARENT_INGREDIENT_SUBSTITUTE`
     - This will take in account parent ingredients when querying what cocktails you can make #95
 - Added `total_shelf_ingredients` to stats endpoint
