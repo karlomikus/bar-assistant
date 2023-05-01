@@ -62,7 +62,7 @@ class CollectionController extends Controller
         return new CollectionResource($collection);
     }
 
-    public function cocktail(Request $request, int $id, int $cocktailId)
+    public function cocktail(Request $request, int $id, int $cocktailId): JsonResource
     {
         $collection = CocktailCollection::findOrFail($id);
 
@@ -72,11 +72,11 @@ class CollectionController extends Controller
 
         $cocktail = Cocktail::findOrFail($cocktailId);
 
-        // try {
+        try {
             $cocktail->addToCollection($collection);
-        // } catch (Throwable $e) {
-        //     abort(500, 'Unable to add cocktail to collection!');
-        // }
+        } catch (Throwable $e) {
+            abort(500, 'Unable to add cocktail to collection!');
+        }
 
         return new CollectionResource($collection);
     }
@@ -90,6 +90,23 @@ class CollectionController extends Controller
         }
 
         $collection->delete();
+
+        return response(null, 204);
+    }
+
+    public function deleteResourceFromCollection(Request $request, int $id, int $cocktailId): Response
+    {
+        $collection = CocktailCollection::findOrFail($id);
+
+        if ($request->user()->cannot('edit', $collection)) {
+            abort(403);
+        }
+
+        try {
+            $collection->cocktails()->detach($cocktailId);
+        } catch (Throwable $e) {
+            abort(500, 'Unable to remove cocktail from collection!');
+        }
 
         return response(null, 204);
     }

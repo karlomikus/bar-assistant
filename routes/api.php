@@ -168,6 +168,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::put('/{id}', [CollectionController::class, 'update']);
         Route::delete('/{id}', [CollectionController::class, 'delete']);
         Route::put('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'cocktail']);
+        Route::delete('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'deleteResourceFromCollection']);
     });
 });
 

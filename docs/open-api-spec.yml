@@ -1652,6 +1652,17 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - "Collections"
+      summary: Remove cocktail from collection
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:

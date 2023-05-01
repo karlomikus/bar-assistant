@@ -167,6 +167,31 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Find ingredient",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/ingredients/find?name=gin",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ingredients",
+								"find"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "gin"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -192,7 +217,7 @@
 					"response": []
 				},
 				{
-					"name": "Show ingredient",
+					"name": "Show glass",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -205,6 +230,105 @@
 								"api",
 								"glasses",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a new glass",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"A new glass type\",\r\n    \"description\": \"A description of glass\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/glasses",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"glasses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update an existing glass",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"A new glass type\",\r\n    \"description\": \"A description of glass\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/glasses/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"glasses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update an existing glass Copy",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/glasses/18",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"glasses",
+								"18"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find glass",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/glasses/find?name=lowball",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"glasses",
+								"find"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "lowball"
+								}
 							]
 						}
 					},
@@ -321,6 +445,238 @@
 								"api",
 								"ingredient-categories",
 								"10"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tags",
+			"item": [
+				{
+					"name": "All tags",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/tags",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show tag",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/tags/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"tags",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New tag",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"A new tag\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/tags",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update tag",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Tag updated\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/tags/15",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"tags",
+								"15"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete tag",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/tags/15",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"tags",
+								"15"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cocktail Methods",
+			"item": [
+				{
+					"name": "All methods",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/cocktail-methods",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktail-methods"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show method",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/cocktail-methods/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktail-methods",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New method",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"A new method\",\r\n    \"dilution_percentage\": \"30\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/cocktail-methods",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktail-methods"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Method tag",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Method updated\",\r\n    \"dilution_percentage\": \"40\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/cocktail-methods/7",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktail-methods",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete method",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/cocktail-methods/7",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktail-methods",
+								"7"
 							]
 						}
 					},
@@ -632,6 +988,26 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Make cocktail public",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/cocktails/cosmopolitan/make-public",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"cocktails",
+								"cosmopolitan",
+								"make-public"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -746,6 +1122,26 @@
 					"response": []
 				},
 				{
+					"name": "Get image Thumb",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/images/217/thumb",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"images",
+								"217",
+								"thumb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Save images",
 					"request": {
 						"method": "POST",
@@ -761,8 +1157,8 @@
 							"formdata": [
 								{
 									"key": "images[0][image]",
-									"type": "file",
-									"src": "/E:/OneDrive/Slike/1380991112711.jpg"
+									"value": "https://assets-prd.punchdrink.com/wp-content/uploads/2022/09/05173607/Article-Fizz-Italiano-Cocktail-Recipe-Disco-Aperitivo.jpg",
+									"type": "text"
 								},
 								{
 									"key": "images[0][copyright]",
@@ -772,7 +1168,7 @@
 								{
 									"key": "images[1][image]",
 									"type": "file",
-									"src": "/E:/OneDrive/Slike/12684_1_full.jpg"
+									"src": "/C:/Users/Karlo/Pictures/Screenshots/Snimka zaslona_20230207_134810.png"
 								},
 								{
 									"key": "images[1][copyright]",
@@ -879,6 +1275,36 @@
 			"name": "User Shopping List",
 			"item": [
 				{
+					"name": "Show ingredients on list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ingredient_ids\": [40, 41, 56, 32, 12]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/shopping-list",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"shopping-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Batch add ingredients",
 					"request": {
 						"method": "POST",
@@ -893,14 +1319,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{base}}/api/shopping-lists/batch",
+							"raw": "{{base}}/api/shopping-list/batch-store",
 							"host": [
 								"{{base}}"
 							],
 							"path": [
 								"api",
-								"shopping-lists",
-								"batch"
+								"shopping-list",
+								"batch-store"
 							]
 						}
 					},
@@ -909,7 +1335,7 @@
 				{
 					"name": "Batch delete ingredients",
 					"request": {
-						"method": "DELETE",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -921,14 +1347,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{base}}/api/shopping-lists/batch",
+							"raw": "{{base}}/api/shopping-list/batch-delete",
 							"host": [
 								"{{base}}"
 							],
 							"path": [
 								"api",
-								"shopping-lists",
-								"batch"
+								"shopping-list",
+								"batch-delete"
 							]
 						}
 					},
@@ -937,7 +1363,7 @@
 			]
 		},
 		{
-			"name": "Users",
+			"name": "Profile",
 			"item": [
 				{
 					"name": "Get current user info",
@@ -950,6 +1376,39 @@
 								"type": "text"
 							}
 						],
+						"url": {
+							"raw": "{{base}}/api/user",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update current user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@example.com\",\r\n    \"name\": \"Karlo\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{base}}/api/user",
 							"host": [
@@ -1084,6 +1543,469 @@
 			]
 		},
 		{
+			"name": "Ratings",
+			"item": [
+				{
+					"name": "Rate cocktail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rating\": \"3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/ratings/cocktails/103",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ratings",
+								"cocktails",
+								"103"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete users cocktail rating",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rating\": \"3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/ratings/cocktails/103",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"ratings",
+								"cocktails",
+								"103"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "All users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/users",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show a user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/users/2",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a new user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Postman Tender\",\r\n    \"email\": \"post@man.com\",\r\n    \"is_admin\": false,\r\n    \"password\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/users",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Postman Tender2\",\r\n    \"email\": \"post@man.com\",\r\n    \"is_admin\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/users/3",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete an user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/users/4",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Stats",
+			"item": [
+				{
+					"name": "Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/stats",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Scrape",
+			"item": [
+				{
+					"name": "Scrape cocktail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"url\": \"https://www.liquor.com/across-the-pacific-cocktail-recipe-5083941\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/scrape/cocktail",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"scrape",
+								"cocktail"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notes",
+			"item": [
+				{
+					"name": "Show note",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/notes/2",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add note to cocktail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"note\": \"My new note\",\r\n    \"resource_id\": \"1\",\r\n    \"resource\": \"cocktail\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/notes",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"notes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete note",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/notes/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Collections",
+			"item": [
+				{
+					"name": "All user collections",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/collections",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show user collection",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/collections/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"collections",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new collection",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"My new collection\",\r\n    \"description\": \"Lorem ipsum dolor sit amet\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/collections",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update collection",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"My new collection 2\",\r\n    \"description\": \"Lorem ipsum dolor sit amet 2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/collections/2",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"collections",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete collection",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/collections/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"collections",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add cocktail to collection",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/collections/1/cocktails/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"collections",
+								"1",
+								"cocktails",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove cocktail from collection",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/collections/1/cocktails/3",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"collections",
+								"1",
+								"cocktails",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Version",
 			"request": {
 				"method": "GET",
@@ -1128,6 +2050,26 @@
 						"api",
 						"server",
 						"openapi"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get public cocktail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base}}/api/explore/cocktails/01GPVKPMVRTKR4X21ZRE1P8KJ7",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"api",
+						"explore",
+						"cocktails",
+						"01GPVKPMVRTKR4X21ZRE1P8KJ7"
 					]
 				}
 			},
