@@ -4,9 +4,13 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Spectator\Spectator;
+use Kami\Cocktail\Models\Tag;
 use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\CocktailMethod;
+use Kami\Cocktail\Models\CocktailIngredient;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -27,9 +31,28 @@ class CocktailControllerTest extends TestCase
 
     public function test_cocktail_show_response()
     {
-        $cocktail = Cocktail::factory()->create([
-            'name' => 'Test 1'
-        ]);
+        $glass = Glass::factory()->create();
+        $method = CocktailMethod::factory()->create();
+        $cocktail = Cocktail::factory()
+            ->has(CocktailIngredient::factory()->count(3), 'ingredients')
+            ->hasRatings(1, [
+                'rating' => 4,
+                'user_id' => auth()->user()->id
+            ])
+            ->hasRatings(1, [
+                'rating' => 1,
+            ])
+            ->for($glass)
+            ->for($method, 'method')
+            ->hasTags(5)
+            ->create([
+                'name' => 'A cocktail name',
+                'instructions' => "1. Step 1\n2. Step two",
+                'garnish' => '# Lemon twist',
+                'description' => 'A short description',
+                'source' => 'http://test.com',
+                'user_id' => auth()->user()->id,
+            ]);
 
         $response = $this->getJson('/api/cocktails/' . $cocktail->id);
 
@@ -38,7 +61,33 @@ class CocktailControllerTest extends TestCase
             fn (AssertableJson $json) =>
             $json
                 ->has('data.id')
-                ->where('data.name', 'Test 1')
+                ->where('data.name', 'A cocktail name')
+                ->where('data.slug', 'a-cocktail-name')
+                ->where('data.instructions', "1. Step 1\n2. Step two")
+                ->where('data.garnish', '# Lemon twist')
+                ->where('data.description', 'A short description')
+                ->where('data.source', 'http://test.com')
+                ->where('data.has_public_link', false)
+                ->where('data.public_id', null)
+                ->where('data.main_image_id', null)
+                ->where('data.images', [])
+                ->has('data.tags', 5)
+                ->where('data.user_id', auth()->user()->id)
+                ->where('data.user_rating', 4)
+                ->where('data.average_rating', 3)
+                ->where('data.glass.id', $glass->id)
+                ->where('data.method.id', $method->id)
+                ->has('data.abv')
+                ->has('data.main_ingredient_name')
+                ->has('data.short_ingredients', 3)
+                ->has('data.ingredients', 3, function (AssertableJson $jsonIng) {
+                    $jsonIng
+                        ->has('id')
+                        ->where('amount', 60)
+                        ->where('units', 'ml')
+                        ->where('optional', false)
+                        ->etc();
+                })
                 ->etc()
         );
 

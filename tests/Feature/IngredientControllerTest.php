@@ -7,7 +7,9 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\IngredientCategory;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -81,13 +83,31 @@ class IngredientControllerTest extends TestCase
 
     public function test_ingredient_show_response()
     {
-        Ingredient::factory()
+        $ingredient = Ingredient::factory()
             ->state([
                 'name' => 'Test ingredient',
                 'strength' => 45.5,
-                'description' => 'Test'
+                'description' => 'Test',
+                'origin' => 'Croatia',
+                'color' => '#fff',
             ])
             ->create();
+
+        Ingredient::factory()
+            ->state([
+                'name' => 'Child ingredient',
+                'strength' => 45.5,
+                'parent_ingredient_id' => $ingredient->id
+            ])
+            ->create();
+
+        Cocktail::factory()
+            ->has(CocktailIngredient::factory()->state([
+                'ingredient_id' => $ingredient->id,
+            ]), 'ingredients')
+            ->create([
+                'name' => 'A cocktail name',
+            ]);
 
         $response = $this->getJson('/api/ingredients/1');
 
@@ -97,6 +117,14 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonPath('data.name', 'Test ingredient');
         $response->assertJsonPath('data.strength', 45.5);
         $response->assertJsonPath('data.description', 'Test');
+        $response->assertJsonPath('data.origin', 'Croatia');
+        $response->assertJsonPath('data.main_image_id', null);
+        $response->assertJsonPath('data.images', []);
+        $response->assertJsonPath('data.ingredient_category_id', 1);
+        $response->assertJsonPath('data.parent_ingredient_id', null);
+        $response->assertJsonPath('data.color', '#fff');
+        $response->assertJsonCount(1, 'data.cocktails');
+        $response->assertJsonCount(1, 'data.varieties');
 
         $response->assertValidResponse();
     }

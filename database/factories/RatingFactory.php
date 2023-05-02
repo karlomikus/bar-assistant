@@ -17,7 +17,8 @@ class RatingFactory extends Factory
     public function definition()
     {
         return [
-            'rating' => fake()->numberBetween(1, 5)
+            'rating' => fake()->numberBetween(1, 5),
+            'user_id' => \Kami\Cocktail\Models\User::factory(),
         ];
     }
 }

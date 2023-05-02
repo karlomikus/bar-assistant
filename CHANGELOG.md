@@ -1,3 +1,7 @@
+# v1.10.2
+## Fixes
+- Fix missing array key error on public pages
+
 # v1.10.1
 ## Fixes
 - Fix cocktail ingredient units and amount display
