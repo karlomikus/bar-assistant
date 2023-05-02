@@ -1,3 +1,7 @@
+# v1.10.1
+## Fixes
+- Fix cocktail ingredient units and amount display
+
 # v1.10.0
 # New
 - Added notes endpoint
