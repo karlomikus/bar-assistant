@@ -154,7 +154,7 @@ class Cocktail extends Model implements SiteSearchable
             return [
                 'amount' => $item['amount'],
                 'units' => $item['units'],
-                'strength' => $item['ingredient']['strength'],
+                'strength' => $item['ingredient']['strength'] ?? 0,
             ];
         }, $ingredients);
 

@@ -12,7 +12,7 @@ class ExploreController extends Controller
 {
     public function cocktail(string $publicId): JsonResource
     {
-        $cocktail = Cocktail::where('public_id', $publicId)->firstOrFail();
+        $cocktail = Cocktail::where('public_id', $publicId)->firstOrFail()->load('ingredients.ingredient');
 
         return new ExploreCocktailResource($cocktail);
     }
