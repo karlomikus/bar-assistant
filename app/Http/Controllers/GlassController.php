@@ -56,6 +56,8 @@ class GlassController extends Controller
         $glass->description = $request->post('description');
         $glass->save();
 
+        $glass->cocktails->each(fn ($cocktail) => $cocktail->searchable());
+
         return new GlassResource($glass);
     }
 

@@ -190,7 +190,26 @@ class Cocktail extends Model implements SiteSearchable
 
     public function addToCollection(CocktailCollection $collection): void
     {
-        $collection->cocktails()->save($this);
+        $collection->cocktails()->attach($this);
+    }
+
+    public function getUserRating(?int $userId = null): ?int
+    {
+        if ($userId && $this->userRating === -1) {
+            return $this->ratings()->where('user_id', $userId)->first()?->rating ?? null;
+        }
+
+        return $this->userRating ?? null;
+    }
+
+    public function getAverageRating(): int
+    {
+        // Query optimization step
+        if (isset($this->averageRating)) {
+            return (int) round($this->averageRating ?? 0);
+        }
+
+        return (int) round($this->ratings()->avg('rating') ?? 0);
     }
 
     public function toSiteSearchArray(): array
