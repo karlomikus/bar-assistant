@@ -9,13 +9,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
-use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\AllowedFilter;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\DataObjects\Cocktail\Ingredient;
 use Kami\Cocktail\Http\Resources\CocktailResource;
+use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
 use Kami\Cocktail\Http\Resources\CocktailPublicResource;
@@ -28,23 +27,7 @@ class CocktailController extends Controller
     public function index(Request $request): JsonResource
     {
         try {
-            $cocktails = QueryBuilder::for(Cocktail::class)
-                ->with('ingredients.ingredient', 'images', 'tags', 'method')
-                ->allowedFilters([
-                    AllowedFilter::partial('name'),
-                    AllowedFilter::partial('ingredient_name', 'ingredients.ingredient.name'),
-                    AllowedFilter::exact('ingredient_id', 'ingredients.ingredient.id'),
-                    AllowedFilter::exact('tag_id', 'tags.id'),
-                    AllowedFilter::exact('user_id'),
-                    AllowedFilter::exact('glass_id'),
-                    AllowedFilter::exact('cocktail_method_id'),
-                    AllowedFilter::callback('favorites', function ($query) use ($request) {
-                        $query->userFavorites($request->user()->id);
-                    }),
-                ])
-                ->defaultSort('name')
-                ->allowedSorts('name', 'created_at')
-                ->paginate($request->get('per_page', 15));
+            $cocktails = (new CocktailQueryFilter())->paginate($request->get('per_page', 15));
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }

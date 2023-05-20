@@ -213,6 +213,13 @@ class Cocktail extends Model implements SiteSearchable
         return (int) round($this->ratings()->avg('rating') ?? 0);
     }
 
+    /**
+     * Only user favorites
+     *
+     * @param Builder<Cocktail> $baseQuery
+     * @param int $userId
+     * @return Builder<Cocktail>
+     */
     public function scopeUserFavorites(Builder $baseQuery, int $userId): Builder
     {
         return $baseQuery->whereIn('id', function ($query) use ($userId) {

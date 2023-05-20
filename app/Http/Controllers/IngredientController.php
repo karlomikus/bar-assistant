@@ -8,12 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Ingredient;
-use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\AllowedFilter;
 use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\IngredientRequest;
 use Kami\Cocktail\Http\Resources\IngredientResource;
+use Kami\Cocktail\Http\Filters\IngredientQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 
 class IngredientController extends Controller
@@ -21,24 +20,7 @@ class IngredientController extends Controller
     public function index(Request $request): JsonResource
     {
         try {
-            $ingredients = QueryBuilder::for(Ingredient::class)
-                ->with('category', 'images')
-                ->withCount('cocktails')
-                ->allowedFilters([
-                    AllowedFilter::partial('name'),
-                    AllowedFilter::exact('category_id', 'ingredient_category_id'),
-                    AllowedFilter::exact('origin'),
-                    AllowedFilter::callback('on_shopping_list', function ($query) use ($request) {
-                        $usersList = $request->user()->shoppingLists->pluck('ingredient_id');
-                        $query->whereIn('id', $usersList);
-                    }),
-                    AllowedFilter::callback('on_shelf', function ($query) use ($request) {
-                        $query->join('user_ingredients', 'user_ingredients.ingredient_id', '=', 'ingredients.id')->where('user_ingredients.user_id', $request->user()->id);
-                    }),
-                ])
-                ->defaultSort('name')
-                ->allowedSorts('name', 'created_at')
-                ->paginate($request->get('per_page', 50));
+            $ingredients = (new IngredientQueryFilter())->paginate($request->get('per_page', 50));
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }
