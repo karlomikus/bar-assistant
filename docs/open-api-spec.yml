@@ -113,19 +113,44 @@ paths:
     get:
       parameters:
       - in: query
-        name: user_id
+        name: filter
         required: false
+        description: Filter by specific parameters
+        explode: true
+        style: deepObject
         schema:
-          type: integer
-          example: 1
-        description: 'Show only cocktails made by a specifc user'
+          type: object
+          properties:
+            name:
+             type: string
+             example: "old"
+            ingredient_name:
+             type: string
+             example: "campari"
+            ingredient_id:
+             type: integer
+             example: 3
+            tag_id:
+             type: integer
+             example: 4
+            user_id:
+             type: integer
+             example: 3
+            glass_id:
+             type: integer
+             example: 1
+            cocktail_method_id:
+             type: integer
+             example: 1
+            favorites:
+             type: boolean
       - in: query
-        name: order_by
+        name: sort
         required: false
         schema:
           type: string
-          example: created_at:desc
-        description: 'Sort cocktails'
+          example: name,-created_at
+        description: Sort by specific parameters
       tags:
         - "Cocktails"
       summary: 'Show a paginated list of cocktails'

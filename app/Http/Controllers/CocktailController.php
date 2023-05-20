@@ -9,11 +9,14 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\DataObjects\Cocktail\Ingredient;
 use Kami\Cocktail\Http\Resources\CocktailResource;
+use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
 use Kami\Cocktail\Http\Resources\CocktailPublicResource;
 
@@ -21,37 +24,32 @@ class CocktailController extends Controller
 {
     /**
      * List all cocktails
-     * - Paginated by X items
-     * Optional query strings:
-     * - user_id -> Filter by user id
-     * - favorites -> Filter by user favorites
      */
     public function index(Request $request): JsonResource
     {
-        $cocktails = Cocktail::with('ingredients.ingredient', 'images', 'tags', 'method');
-
-        $perPage = $request->get('per_page', 15);
-
-        if ($request->has('user_id')) {
-            $cocktails->where('user_id', $request->get('user_id'));
+        try {
+            $cocktails = QueryBuilder::for(Cocktail::class)
+                ->with('ingredients.ingredient', 'images', 'tags', 'method')
+                ->allowedFilters([
+                    AllowedFilter::partial('name'),
+                    AllowedFilter::partial('ingredient_name', 'ingredients.ingredient.name'),
+                    AllowedFilter::exact('ingredient_id', 'ingredients.ingredient.id'),
+                    AllowedFilter::exact('tag_id', 'tags.id'),
+                    AllowedFilter::exact('user_id'),
+                    AllowedFilter::exact('glass_id'),
+                    AllowedFilter::exact('cocktail_method_id'),
+                    AllowedFilter::callback('favorites', function ($query) use ($request) {
+                        $query->userFavorites($request->user()->id);
+                    }),
+                ])
+                ->defaultSort('name')
+                ->allowedSorts('name', 'created_at')
+                ->paginate($request->get('per_page', 15));
+        } catch (InvalidFilterQuery $e) {
+            abort(400, $e->getMessage());
         }
 
-        if ($request->has('favorites')) {
-            $cocktails->whereIn('id', function ($query) use ($request) {
-                $query->select('cocktail_id')->from('cocktail_favorites')->where('user_id', $request->user()->id);
-            });
-        }
-
-        if ($request->has('order_by')) {
-            [$col, $order] = explode(':', $request->get('order_by', ''));
-            if (in_array($col, ['created_at', 'name'])) {
-                $cocktails->orderBy($col, $order);
-            }
-        } else {
-            $cocktails->orderBy('name');
-        }
-
-        return CocktailResource::collection($cocktails->paginate($perPage));
+        return CocktailResource::collection($cocktails);
     }
 
     /**

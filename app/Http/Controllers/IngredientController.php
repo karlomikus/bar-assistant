@@ -8,35 +8,42 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Ingredient;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
 use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\IngredientRequest;
 use Kami\Cocktail\Http\Resources\IngredientResource;
+use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 
 class IngredientController extends Controller
 {
     public function index(Request $request): JsonResource
     {
-        $ingredients = Ingredient::with('category', 'images')
-            ->orderBy('name')
-            ->orderBy('ingredient_category_id')
-            ->withCount('cocktails')
-            ->limit($request->get('limit', null));
-
-        if ($request->has('category_id')) {
-            $ingredients->where('ingredient_category_id', $request->get('category_id'));
+        try {
+            $ingredients = QueryBuilder::for(Ingredient::class)
+                ->with('category', 'images')
+                ->withCount('cocktails')
+                ->allowedFilters([
+                    AllowedFilter::partial('name'),
+                    AllowedFilter::exact('category_id', 'ingredient_category_id'),
+                    AllowedFilter::exact('origin'),
+                    AllowedFilter::callback('on_shopping_list', function ($query) use ($request) {
+                        $usersList = $request->user()->shoppingLists->pluck('ingredient_id');
+                        $query->whereIn('id', $usersList);
+                    }),
+                    AllowedFilter::callback('on_shelf', function ($query) use ($request) {
+                        $query->join('user_ingredients', 'user_ingredients.ingredient_id', '=', 'ingredients.id')->where('user_ingredients.user_id', $request->user()->id);
+                    }),
+                ])
+                ->defaultSort('name')
+                ->allowedSorts('name', 'created_at')
+                ->paginate($request->get('per_page', 50));
+        } catch (InvalidFilterQuery $e) {
+            abort(400, $e->getMessage());
         }
 
-        if ($request->has('on_shopping_list')) {
-            $usersList = $request->user()->shoppingLists->pluck('ingredient_id');
-            $ingredients->whereIn('id', $usersList);
-        }
-
-        if ($request->has('on_shelf')) {
-            $ingredients->join('user_ingredients', 'user_ingredients.ingredient_id', '=', 'ingredients.id')->where('user_ingredients.user_id', $request->user()->id);
-        }
-
-        return IngredientResource::collection($ingredients->get());
+        return IngredientResource::collection($ingredients);
     }
 
     public function show(int|string $id): JsonResource

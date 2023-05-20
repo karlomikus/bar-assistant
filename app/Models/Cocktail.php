@@ -12,6 +12,7 @@ use Symfony\Component\Uid\Ulid;
 use Kami\Cocktail\SearchActions;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -210,6 +211,13 @@ class Cocktail extends Model implements SiteSearchable
         }
 
         return (int) round($this->ratings()->avg('rating') ?? 0);
+    }
+
+    public function scopeUserFavorites(Builder $baseQuery, int $userId): Builder
+    {
+        return $baseQuery->whereIn('id', function ($query) use ($userId) {
+            $query->select('cocktail_id')->from('cocktail_favorites')->where('user_id', $userId);
+        });
     }
 
     public function toSiteSearchArray(): array

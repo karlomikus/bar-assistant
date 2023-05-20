@@ -11,6 +11,7 @@
         "laravel/scout": "^9.4",
         "laravel/tinker": "^2.7",
         "meilisearch/meilisearch-php": "^1.0",
+        "spatie/laravel-query-builder": "^5.2",
         "spatie/laravel-responsecache": "^7.4",
         "spatie/laravel-sluggable": "^3.4",
         "srwiez/thumbhash": "^1.1",
