@@ -9,7 +9,6 @@ use Kami\Cocktail\Utils;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Symfony\Component\Uid\Ulid;
-use Kami\Cocktail\SearchActions;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,7 +17,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
-class Cocktail extends Model implements SiteSearchable
+class Cocktail extends Model
 {
     use HasFactory,
         Searchable,
@@ -47,17 +46,6 @@ class Cocktail extends Model implements SiteSearchable
      * @var null|int
      */
     private ?int $userRating = -1;
-
-    protected static function booted(): void
-    {
-        static::saved(function ($cocktail) {
-            SearchActions::updateSearchIndex($cocktail);
-        });
-
-        static::deleted(function ($cocktail) {
-            SearchActions::deleteSearchIndex($cocktail);
-        });
-    }
 
     public function getSlugOptions(): SlugOptions
     {
@@ -212,21 +200,8 @@ class Cocktail extends Model implements SiteSearchable
         return (int) round($this->ratings()->avg('rating') ?? 0);
     }
 
-    public function toSiteSearchArray(): array
-    {
-        return [
-            'key' => 'co_' . (string) $this->id,
-            'id' => $this->id,
-            'slug' => $this->slug,
-            'name' => $this->name,
-            'image_url' => $this->getMainImageUrl(),
-            'type' => 'cocktail',
-        ];
-    }
-
     public function toSearchableArray(): array
     {
-        // Some attributes are not searchable as per SearchActions settings
         return [
             'id' => $this->id,
             'name' => $this->name,

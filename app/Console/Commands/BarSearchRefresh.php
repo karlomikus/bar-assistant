@@ -3,9 +3,9 @@
 namespace Kami\Cocktail\Console\Commands;
 
 use Illuminate\Console\Command;
-use Kami\Cocktail\SearchActions;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Search\SearchActionsAdapter;
 use Illuminate\Support\Facades\Artisan;
 
 class BarSearchRefresh extends Command
@@ -24,6 +24,11 @@ class BarSearchRefresh extends Command
      */
     protected $description = 'Refresh search index';
 
+    public function __construct(private readonly SearchActionsAdapter $searchActions)
+    {
+        parent::__construct();
+    }
+
     /**
      * Execute the console command.
      *
@@ -31,39 +36,22 @@ class BarSearchRefresh extends Command
      */
     public function handle()
     {
+        $searchActions = $this->searchActions->getActions();
+
         // Clear indexes
         if ($this->option('clear')) {
             $this->info('Flushing site search, cocktails and ingredients index...');
-            SearchActions::flushSearchIndex();
             Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Cocktail"]);
             Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
         }
 
         // Update settings
         $this->info('Updating search index settings...');
-        SearchActions::updateIndexSettings();
+        $searchActions->updateIndexSettings();
 
         $this->info('Syncing cocktails and ingredients to meilisearch...');
         Artisan::call('scout:import', ['model' => Cocktail::class]);
         Artisan::call('scout:import', ['model' => Ingredient::class]);
-
-        // Site search model imports
-        /** @var \Meilisearch\Client */
-        $engine = app(\Laravel\Scout\EngineManager::class)->engine();
-        Ingredient::cursor()->chunk(500)->each(function ($chunk) use ($engine) {
-            $chunk->each(function ($model) use ($engine) {
-                $engine->index('site_search_index')->addDocuments([
-                    $model->toSiteSearchArray()
-                ], 'key');
-            });
-        });
-        Cocktail::cursor()->chunk(500)->each(function ($chunk) use ($engine) {
-            $chunk->each(function ($model) use ($engine) {
-                $engine->index('site_search_index')->addDocuments([
-                    $model->toSiteSearchArray()
-                ], 'key');
-            });
-        });
 
         return Command::SUCCESS;
     }

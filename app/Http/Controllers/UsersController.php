@@ -7,8 +7,8 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\User;
-use Kami\Cocktail\SearchActions;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\Search\MeilisearchActions;
 use Illuminate\Support\Facades\Hash;
 use Kami\Cocktail\Http\Requests\UserRequest;
 use Kami\Cocktail\Http\Resources\UserResource;
@@ -38,7 +38,7 @@ class UsersController extends Controller
         return new UserResource($user);
     }
 
-    public function store(UserRequest $request): JsonResponse
+    public function store(MeilisearchActions $search, UserRequest $request): JsonResponse
     {
         if (!$request->user()->isAdmin()) {
             abort(403);
@@ -50,7 +50,7 @@ class UsersController extends Controller
         $user->email_verified_at = now();
         $user->password = Hash::make($request->post('password'));
         $user->is_admin = (bool) $request->post('is_admin');
-        $user->search_api_key = SearchActions::getPublicApiKey();
+        $user->search_api_key = $search->getPublicApiKey();
         $user->save();
 
         return (new UserResource($user))
@@ -70,7 +70,6 @@ class UsersController extends Controller
         $user->email = $request->post('email');
         $user->email_verified_at = now();
         $user->is_admin = (bool) $request->post('is_admin');
-        // $user->search_api_key = SearchActions::getPublicApiKey();
 
         if ($request->has('password')) {
             $user->password = Hash::make($request->post('password'));

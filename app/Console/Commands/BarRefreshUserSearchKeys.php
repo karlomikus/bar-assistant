@@ -3,9 +3,10 @@
 namespace Kami\Cocktail\Console\Commands;
 
 use Illuminate\Console\Command;
-use Kami\Cocktail\SearchActions;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
+use Kami\Cocktail\Search\SearchActionsAdapter;
+use Kami\Cocktail\Search\SearchActionsContract;
 
 class BarRefreshUserSearchKeys extends Command
 {
@@ -30,7 +31,10 @@ class BarRefreshUserSearchKeys extends Command
      */
     public function handle()
     {
-        $key = App::environment('demo') ? SearchActions::getPublicDemoApiKey() : SearchActions::getPublicApiKey();
+        /** @var SearchActionsContract */
+        $searchActions = app(SearchActionsAdapter::class)->getActions();
+
+        $key = $searchActions->getPublicApiKey(App::environment('demo'));
 
         DB::transaction(function () use ($key) {
             DB::table('users')->where('id', '<>', 1)->update(['search_api_key' => $key]);

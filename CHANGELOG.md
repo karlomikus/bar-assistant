@@ -1,3 +1,15 @@
+# v2.0.0 - WIP
+## Breaking changes
+- Updated query parameters for `/cocktails` endpoint
+- Updated query parameters for `/ingredients` endpoint
+- Removed `site_search_index` indexing
+- Redis is now mandatory dependecy
+
+## New
+- Meilisearch is no longer mandatory dependecy for API to work
+- You can now use Algolia as your search engine
+- You can now use database as your search engine
+
 # v1.10.2
 ## Fixes
 - Fix missing array key error on public pages

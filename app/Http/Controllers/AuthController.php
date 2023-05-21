@@ -6,8 +6,8 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\User;
-use Kami\Cocktail\SearchActions;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\Search\MeilisearchActions;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Kami\Cocktail\Http\Requests\RegisterRequest;
@@ -38,7 +38,7 @@ class AuthController extends Controller
         return response()->json(['data' => ['success' => true]]);
     }
 
-    public function register(RegisterRequest $req): JsonResponse
+    public function register(MeilisearchActions $search, RegisterRequest $req): JsonResponse
     {
         if (config('bar-assistant.allow_registration') == false) {
             abort(404, 'Registrations are closed.');
@@ -49,7 +49,7 @@ class AuthController extends Controller
         $user->password = Hash::make($req->post('password'));
         $user->email = $req->post('email');
         $user->email_verified_at = now();
-        $user->search_api_key = SearchActions::getPublicApiKey();
+        $user->search_api_key = $search->getPublicApiKey();
         $user->save();
 
         return (new ProfileResource(

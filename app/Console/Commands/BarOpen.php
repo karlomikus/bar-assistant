@@ -7,14 +7,14 @@ use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Tag;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Models\Image;
-use Kami\Cocktail\SearchActions;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Search\SearchActionsAdapter;
+use Kami\Cocktail\Search\SearchActionsContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -51,12 +51,13 @@ class BarOpen extends Command
 
         $this->info('Checking connection to your search server [' . config('scout.meilisearch.host') . ']...');
 
-        try {
-            $this->info('Search server: ' . SearchActions::checkHealth()['status']);
-        } catch (Throwable $e) {
+        /** @var SearchActionsContract */
+        $searchActions = app(SearchActionsAdapter::class)->getActions();
+
+        if (!$searchActions->isAvailable()) {
             $this->error('Unable to connect to search server!');
 
-            throw $e;
+            return Command::FAILURE;
         }
 
         DB::table('users')->insert([
@@ -76,18 +77,15 @@ class BarOpen extends Command
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
                 'is_admin' => true,
-                'search_api_key' => App::environment('demo') ? SearchActions::getPublicDemoApiKey() : SearchActions::getPublicApiKey() // TODO: Check if already exists in ENV
+                'search_api_key' => $searchActions->getPublicApiKey(App::environment('demo'))
             ]
         ]);
-
-        // Flush site search index in case anything is already there
-        SearchActions::flushSearchIndex();
 
         // Also flush model indexes
         Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Cocktail"]);
         Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
 
-        SearchActions::updateIndexSettings();
+        $searchActions->updateIndexSettings();
 
         if ($this->option('clean')) {
             Model::reguard();
