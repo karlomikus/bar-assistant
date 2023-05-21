@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Search;
 
 use Throwable;
-use Laravel\Scout\Engines\MeiliSearchEngine;
+use Meilisearch\Client;
 
 class MeilisearchActions implements SearchActionsContract
 {
-    public function __construct(private MeiliSearchEngine $meilisearchClient)
+    public function __construct(private readonly Client $meilisearchClient)
     {
     }
 
