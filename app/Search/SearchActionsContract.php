@@ -12,5 +12,7 @@ interface SearchActionsContract
 
     public function getVersion(): ?string;
 
+    public function getHost(): ?string;
+
     public function updateIndexSettings(): void;
 }

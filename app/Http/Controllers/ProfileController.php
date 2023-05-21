@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Kami\Cocktail\Search\SearchActionsAdapter;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\ProfileResource;
 use Kami\Cocktail\Http\Requests\UpdateUserRequest;
@@ -15,7 +16,8 @@ class ProfileController extends Controller
     public function show(Request $request): JsonResource
     {
         return new ProfileResource(
-            $request->user()->load('favorites', 'shelfIngredients', 'shoppingLists')
+            $request->user()->load('favorites', 'shelfIngredients', 'shoppingLists'),
+            app(SearchActionsAdapter::class),
         );
     }
 
@@ -34,7 +36,8 @@ class ProfileController extends Controller
         $currentUser->save();
 
         return new ProfileResource(
-            $request->user()->load('favorites', 'shelfIngredients', 'shoppingLists')
+            $request->user()->load('favorites', 'shelfIngredients', 'shoppingLists'),
+            app(SearchActionsAdapter::class),
         );
     }
 }

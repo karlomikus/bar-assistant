@@ -34,6 +34,11 @@ class AlgoliaActions implements SearchActionsContract
         return null;
     }
 
+    public function getHost(): ?string
+    {
+        return null;
+    }
+
     public function updateIndexSettings(): void
     {
     }

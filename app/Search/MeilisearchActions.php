@@ -44,6 +44,11 @@ class MeilisearchActions implements SearchActionsContract
         }
     }
 
+    public function getHost(): ?string
+    {
+        return config('scout.meilisearch.host');
+    }
+
     public function updateIndexSettings(): void
     {
         $this->meilisearchClient->index('cocktails')->updateSettings([

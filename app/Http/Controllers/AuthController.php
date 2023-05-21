@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Kami\Cocktail\Search\MeilisearchActions;
+use Kami\Cocktail\Search\SearchActionsAdapter;
 use Kami\Cocktail\Http\Requests\RegisterRequest;
 use Kami\Cocktail\Http\Resources\ProfileResource;
 
@@ -53,7 +54,8 @@ class AuthController extends Controller
         $user->save();
 
         return (new ProfileResource(
-            $user->load('favorites', 'shelfIngredients', 'shoppingLists')
+            $user->load('favorites', 'shelfIngredients', 'shoppingLists'),
+            app(SearchActionsAdapter::class),
         ))->response()->setStatusCode(200);
     }
 }

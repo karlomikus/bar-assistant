@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
+use Kami\Cocktail\Search\SearchActionsAdapter;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -11,6 +12,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class ProfileResource extends JsonResource
 {
+    public function __construct($resource, private SearchActionsAdapter $adapter)
+    {
+        parent::__construct($resource);
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -24,7 +30,7 @@ class ProfileResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'is_admin' => $this->isAdmin(),
-            'search_host' => config('scout.meilisearch.host'),
+            'search_host' => $this->adapter->getActions()->getHost(),
             'search_api_key' => $this->search_api_key,
             'favorite_cocktails' => $this->favorites->pluck('cocktail_id'),
             'shelf_ingredients' => $this->shelfIngredients->pluck('ingredient_id'),
