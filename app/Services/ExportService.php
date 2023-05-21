@@ -53,7 +53,7 @@ class ExportService
         foreach ($tablesToExport as $tableName) {
             $tableData = DB::table($tableName)->get()->map(function ($row) {
                 // Reset user_id since we can't have the same ids in new instance
-                if(property_exists($row, 'user_id')) {
+                if (property_exists($row, 'user_id')) {
                     $row->user_id = 1;
                 }
 

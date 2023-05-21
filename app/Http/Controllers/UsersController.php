@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\User;
 use Illuminate\Http\JsonResponse;
-use Kami\Cocktail\Search\MeilisearchActions;
 use Illuminate\Support\Facades\Hash;
 use Kami\Cocktail\Http\Requests\UserRequest;
+use Kami\Cocktail\Search\MeilisearchActions;
 use Kami\Cocktail\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 

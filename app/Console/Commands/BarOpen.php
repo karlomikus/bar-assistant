@@ -13,13 +13,13 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\Search\SearchActionsAdapter;
-use Kami\Cocktail\Search\SearchActionsContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\IngredientCategory;
+use Kami\Cocktail\Search\SearchActionsAdapter;
+use Kami\Cocktail\Search\SearchActionsContract;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 
 class BarOpen extends Command
@@ -49,15 +49,13 @@ class BarOpen extends Command
 
         $this->info('Opening the bar in ' . App::environment() . ' environment...');
 
-        $this->info('Checking connection to your search server [' . config('scout.meilisearch.host') . ']...');
+        $this->info('Testing your search driver connection [' . config('scout.driver') . ']...');
 
         /** @var SearchActionsContract */
         $searchActions = app(SearchActionsAdapter::class)->getActions();
 
         if (!$searchActions->isAvailable()) {
-            $this->error('Unable to connect to search server!');
-
-            return Command::FAILURE;
+            $this->error('Unable to connect to search server with driver [' . config('scout.driver') . ']!');
         }
 
         DB::table('users')->insert([
@@ -77,7 +75,7 @@ class BarOpen extends Command
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
                 'is_admin' => true,
-                'search_api_key' => $searchActions->getPublicApiKey(App::environment('demo'))
+                'search_api_key' => $searchActions->getPublicApiKey()
             ]
         ]);
 

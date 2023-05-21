@@ -5,8 +5,8 @@ namespace Kami\Cocktail\Console\Commands;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\Search\SearchActionsAdapter;
 use Illuminate\Support\Facades\Artisan;
+use Kami\Cocktail\Search\SearchActionsAdapter;
 
 class BarSearchRefresh extends Command
 {

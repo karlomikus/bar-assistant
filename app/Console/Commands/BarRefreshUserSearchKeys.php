@@ -34,7 +34,7 @@ class BarRefreshUserSearchKeys extends Command
         /** @var SearchActionsContract */
         $searchActions = app(SearchActionsAdapter::class)->getActions();
 
-        $key = $searchActions->getPublicApiKey(App::environment('demo'));
+        $key = $searchActions->getPublicApiKey();
 
         DB::transaction(function () use ($key) {
             DB::table('users')->where('id', '<>', 1)->update(['search_api_key' => $key]);

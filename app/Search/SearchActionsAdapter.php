@@ -18,12 +18,21 @@ class SearchActionsAdapter
             return $this->getMeilisearchActions();
         }
 
+        if (config('scout.driver') === 'algolia') {
+            return $this->getAlgoliaActions();
+        }
+
         return $this->getNullActions();
     }
 
-    private function getMeilisearchActions()
+    private function getMeilisearchActions(): MeilisearchActions
     {
         return new MeilisearchActions($this->engineManager->engine());
+    }
+
+    private function getAlgoliaActions(): AlgoliaActions
+    {
+        return new AlgoliaActions($this->engineManager->engine());
     }
 
     private function getNullActions()

@@ -6,7 +6,7 @@ namespace Kami\Cocktail\Search;
 
 class NullActions implements SearchActionsContract
 {
-    public function getPublicApiKey(bool $isDemo = false): ?string
+    public function getPublicApiKey(): ?string
     {
         return null;
     }
