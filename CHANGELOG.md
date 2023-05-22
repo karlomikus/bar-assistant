@@ -1,8 +1,8 @@
 # v2.0.0 - WIP
 ## Breaking changes
 - Minimum supported Meilisearch version is 1.1
-- Updated query parameters for `/cocktails` endpoint
-- Updated query parameters for `/ingredients` endpoint
+- Changed query parameters for `/cocktails` endpoint
+- Changed query parameters for `/ingredients` endpoint
 - Removed `site_search_index` indexing
 - Redis is now mandatory dependency
 

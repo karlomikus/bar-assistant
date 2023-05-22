@@ -60,6 +60,7 @@ class BarOpen extends Command
 
         DB::table('users')->insert([
             [
+                'id' => 1,
                 'name' => 'BAR ASSISTANT BOT',
                 'password' => '', // password
                 'email' => 'bot@my-bar.localhost',
@@ -69,6 +70,7 @@ class BarOpen extends Command
                 'search_api_key' => null,
             ],
             [
+                'id' => 2,
                 'name' => 'Bartender',
                 'password' => Hash::make($this->argument('pass')),
                 'email' => $this->argument('email'),
