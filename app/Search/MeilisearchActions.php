@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Search;
 
 use Throwable;
-use Meilisearch\Client;
+use Laravel\Scout\Engines\MeiliSearchEngine;
 
 class MeilisearchActions implements SearchActionsContract
 {
-    public function __construct(private readonly Client $meilisearchClient)
+    public function __construct(private readonly MeiliSearchEngine $client)
     {
     }
 
     public function getPublicApiKey(): ?string
     {
-        $key = $this->meilisearchClient->createKey([
+        $key = $this->client->createKey([
             'actions' => ['search'],
             'indexes' => ['cocktails', 'ingredients'],
             'expiresAt' => null,
@@ -29,7 +29,7 @@ class MeilisearchActions implements SearchActionsContract
     public function isAvailable(): bool
     {
         try {
-            return $this->meilisearchClient->isHealthy();
+            return $this->client->isHealthy();
         } catch (Throwable) {
             return false;
         }
@@ -38,7 +38,7 @@ class MeilisearchActions implements SearchActionsContract
     public function getVersion(): ?string
     {
         try {
-            return $this->meilisearchClient->version()['pkgVersion'];
+            return $this->client->version()['pkgVersion'];
         } catch (Throwable) {
             return null;
         }
@@ -51,7 +51,7 @@ class MeilisearchActions implements SearchActionsContract
 
     public function updateIndexSettings(): void
     {
-        $this->meilisearchClient->index('cocktails')->updateSettings([
+        $this->client->index('cocktails')->updateSettings([
             'filterableAttributes' => ['id', 'tags', 'user_id', 'glass', 'average_rating', 'main_ingredient_name', 'method', 'calculated_abv', 'has_public_link'],
             'sortableAttributes' => ['name', 'date', 'average_rating'],
             'searchableAttributes' => [
@@ -62,9 +62,9 @@ class MeilisearchActions implements SearchActionsContract
             ]
         ]);
 
-        $this->meilisearchClient->index('cocktails')->updatePagination(['maxTotalHits' => 2000]);
+        $this->client->index('cocktails')->updatePagination(['maxTotalHits' => 2000]);
 
-        $this->meilisearchClient->index('ingredients')->updateSettings([
+        $this->client->index('ingredients')->updateSettings([
             'filterableAttributes' => ['category', 'strength_abv', 'origin', 'color', 'id'],
             'sortableAttributes' => ['name', 'strength_abv'],
             'searchableAttributes' => [
@@ -75,6 +75,6 @@ class MeilisearchActions implements SearchActionsContract
             ]
         ]);
 
-        $this->meilisearchClient->index('ingredients')->updatePagination(['maxTotalHits' => 2000]);
+        $this->client->index('ingredients')->updatePagination(['maxTotalHits' => 2000]);
     }
 }

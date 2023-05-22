@@ -12,7 +12,7 @@ parameters:
 #    ignoreErrors:
 #        - '#PHPDoc tag @var#'
 #
-#    excludePaths:
-#        - ./*/*/FileToBeExcluded.php
-#
+    excludePaths:
+        - ./app/Search # 2much2laravel
+
     checkMissingIterableValueType: false

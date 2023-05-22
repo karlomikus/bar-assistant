@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Search;
 
 use Throwable;
-use Algolia\AlgoliaSearch\SearchClient;
+use Laravel\Scout\Engines\AlgoliaEngine;
 
 class AlgoliaActions implements SearchActionsContract
 {
-    public function __construct(private readonly SearchClient $client)
+    public function __construct(private readonly AlgoliaEngine $client)
     {
     }
 

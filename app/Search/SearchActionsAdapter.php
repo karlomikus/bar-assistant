@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Search;
 
-use Exception;
 use Laravel\Scout\EngineManager;
 
 class SearchActionsAdapter
@@ -28,24 +27,12 @@ class SearchActionsAdapter
 
     private function getMeilisearchActions(): MeilisearchActions
     {
-        $engine = $this->engineManager->engine();
-
-        if ($engine instanceof \Meilisearch\Client) {
-            return new MeilisearchActions($engine);
-        }
-
-        throw new Exception('Unknown search engine!');
+        return new MeilisearchActions($this->engineManager->engine());
     }
 
     private function getAlgoliaActions(): AlgoliaActions
     {
-        $engine = $this->engineManager->engine();
-
-        if ($engine instanceof \Algolia\AlgoliaSearch\SearchClient) {
-            return new AlgoliaActions($engine);
-        }
-
-        throw new Exception('Unknown search engine!');
+        return new AlgoliaActions($this->engineManager->engine());
     }
 
     private function getNullActions(): NullActions
