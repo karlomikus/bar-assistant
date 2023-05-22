@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Response;
-use Laravel\Scout\EngineManager;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\Search\SearchActionsAdapter;
 
 class ServerController extends Controller
 {
@@ -17,18 +17,17 @@ class ServerController extends Controller
         ]);
     }
 
-    public function version(EngineManager $engine): JsonResponse
+    public function version(SearchActionsAdapter $searchAdapter): JsonResponse
     {
-        /** @var \Meilisearch\Client */
-        $meilisearch = $engine->engine();
+        $search = $searchAdapter->getActions();
 
         return response()->json([
             'data' => [
                 'name' => config('app.name'),
                 'version' => config('bar-assistant.version'),
                 'type' => config('app.env'),
-                'meilisearch_host' => config('scout.meilisearch.host'),
-                'meilisearch_version' => $meilisearch->version()['pkgVersion'],
+                'search_host' => config('scout.meilisearch.host'),
+                'search_version' => $search->getVersion(),
             ]
         ]);
     }

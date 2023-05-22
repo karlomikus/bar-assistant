@@ -1,3 +1,22 @@
+# v2.0.0 - WIP
+## Breaking changes
+- Minimum supported Meilisearch version is 1.1
+- Changed query parameters for `/cocktails` endpoint
+- Changed query parameters for `/ingredients` endpoint
+- Removed `site_search_index` indexing
+- Redis is now mandatory dependency
+
+## New
+- Meilisearch is no longer mandatory dependency for API to work
+- Added support for all default Laravel Scout drivers, meaning:
+    - You can now use Algolia as your search engine
+    - You can now use database as your search engine
+
+## Upgrade guide
+- Add Redis configuration
+- Bump Meilisearch server to version 1.1
+- If you are using `site_search_index`, you should migrate to federated/multi-index search
+
 # v1.10.2
 ## Fixes
 - Fix missing array key error on public pages

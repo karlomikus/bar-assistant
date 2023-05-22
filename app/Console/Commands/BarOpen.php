@@ -7,12 +7,10 @@ use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Tag;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Models\Image;
-use Kami\Cocktail\SearchActions;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +18,8 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\IngredientCategory;
+use Kami\Cocktail\Search\SearchActionsAdapter;
+use Kami\Cocktail\Search\SearchActionsContract;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 
 class BarOpen extends Command
@@ -49,18 +49,18 @@ class BarOpen extends Command
 
         $this->info('Opening the bar in ' . App::environment() . ' environment...');
 
-        $this->info('Checking connection to your search server [' . config('scout.meilisearch.host') . ']...');
+        $this->info('Testing your search driver connection [' . config('scout.driver') . ']...');
 
-        try {
-            $this->info('Search server: ' . SearchActions::checkHealth()['status']);
-        } catch (Throwable $e) {
-            $this->error('Unable to connect to search server!');
+        /** @var SearchActionsContract */
+        $searchActions = app(SearchActionsAdapter::class)->getActions();
 
-            throw $e;
+        if (!$searchActions->isAvailable()) {
+            $this->error('Unable to connect to search server with driver [' . config('scout.driver') . ']!');
         }
 
         DB::table('users')->insert([
             [
+                'id' => 1,
                 'name' => 'BAR ASSISTANT BOT',
                 'password' => '', // password
                 'email' => 'bot@my-bar.localhost',
@@ -70,24 +70,22 @@ class BarOpen extends Command
                 'search_api_key' => null,
             ],
             [
+                'id' => 2,
                 'name' => 'Bartender',
                 'password' => Hash::make($this->argument('pass')),
                 'email' => $this->argument('email'),
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
                 'is_admin' => true,
-                'search_api_key' => App::environment('demo') ? SearchActions::getPublicDemoApiKey() : SearchActions::getPublicApiKey() // TODO: Check if already exists in ENV
+                'search_api_key' => $searchActions->getPublicApiKey()
             ]
         ]);
-
-        // Flush site search index in case anything is already there
-        SearchActions::flushSearchIndex();
 
         // Also flush model indexes
         Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Cocktail"]);
         Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
 
-        SearchActions::updateIndexSettings();
+        $searchActions->updateIndexSettings();
 
         if ($this->option('clean')) {
             Model::reguard();
