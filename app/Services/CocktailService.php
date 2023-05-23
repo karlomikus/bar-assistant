@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Services;
 
 use Throwable;
-use InvalidArgumentException;
 use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\User;
@@ -19,7 +18,7 @@ use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Exceptions\CocktailException;
 use Kami\Cocktail\DataObjects\Cocktail\Ingredient;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
-use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailValueObject;
+use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
 
 class CocktailService
 {
@@ -135,7 +134,7 @@ class CocktailService
         return $cocktail;
     }
 
-    public function createCocktailFromObject(CocktailValueObject $cocktailValueObject): Cocktail
+    public function createCocktailFromObject(CocktailDTO $cocktailValueObject): Cocktail
     {
         return $this->createCocktail(
             $cocktailValueObject->name,

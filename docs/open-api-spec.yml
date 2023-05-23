@@ -1948,11 +1948,11 @@ components:
         version:
           type: string
           example: 'v1.0.0'
-        meilisearch_host:
+        search_host:
           type: string
           format: hostname
           example: 'https://my-meilisearch-server.com'
-        meilisearch_version:
+        search_version:
           type: string
           example: '0.29.0'
     Image:

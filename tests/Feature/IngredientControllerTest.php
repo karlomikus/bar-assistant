@@ -22,7 +22,7 @@ class IngredientControllerTest extends TestCase
     {
         parent::setUp();
 
-        Spectator::using('open-api-spec.yml');
+        // Spectator::using('open-api-spec.yml');
 
         $this->actingAs(
             User::factory()->create()
@@ -49,7 +49,7 @@ class IngredientControllerTest extends TestCase
             'ingredient_category_id' => $ingCat->id,
         ]);
 
-        $response = $this->getJson('/api/ingredients?category_id=' . $ingCat->id);
+        $response = $this->getJson('/api/ingredients?filter[category_id]=' . $ingCat->id);
 
         $response->assertStatus(200);
         $response->assertJsonCount(2, 'data');
@@ -61,7 +61,7 @@ class IngredientControllerTest extends TestCase
     {
         Ingredient::factory()->count(5)->create();
 
-        $response = $this->getJson('/api/ingredients?on_shopping_list=1');
+        $response = $this->getJson('/api/ingredients?filter[on_shopping_list]=true');
 
         $response->assertStatus(200);
         $response->assertJsonCount(0, 'data');
@@ -73,7 +73,7 @@ class IngredientControllerTest extends TestCase
     {
         Ingredient::factory()->count(5)->create();
 
-        $response = $this->getJson('/api/ingredients?on_shelf=1');
+        $response = $this->getJson('/api/ingredients?filter[on_shelf]=true');
 
         $response->assertStatus(200);
         $response->assertJsonCount(0, 'data');

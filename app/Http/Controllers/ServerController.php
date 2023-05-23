@@ -26,7 +26,7 @@ class ServerController extends Controller
                 'name' => config('app.name'),
                 'version' => config('bar-assistant.version'),
                 'type' => config('app.env'),
-                'search_host' => config('scout.meilisearch.host'),
+                'search_host' => $search->getHost(),
                 'search_version' => $search->getVersion(),
             ]
         ]);

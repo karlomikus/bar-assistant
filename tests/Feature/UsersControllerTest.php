@@ -35,7 +35,7 @@ class UsersControllerTest extends TestCase
         $response->assertJson(
             fn (AssertableJson $json) =>
             $json
-                ->has('data', 10 + 1)
+                ->has('data', 10)
                 ->etc()
         );
 

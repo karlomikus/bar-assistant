@@ -23,8 +23,8 @@ class ServerControllerTest extends TestCase
 
         $this->assertSame('Bar Assistant', $response['data']['name']);
         $this->assertNotNull($response['data']['version']);
-        $this->assertNotNull($response['data']['meilisearch_host']);
-        $this->assertNotNull($response['data']['meilisearch_version']);
+        $this->assertNotNull($response['data']['search_host']);
+        $this->assertNotNull($response['data']['search_version']);
 
         $response->assertValidResponse();
     }
