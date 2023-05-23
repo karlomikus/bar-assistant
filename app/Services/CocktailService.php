@@ -19,6 +19,7 @@ use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Exceptions\CocktailException;
 use Kami\Cocktail\DataObjects\Cocktail\Ingredient;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
+use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailValueObject;
 
 class CocktailService
 {
@@ -132,6 +133,23 @@ class CocktailService
         $cocktail->save();
 
         return $cocktail;
+    }
+
+    public function createCocktailFromObject(CocktailValueObject $cocktailValueObject): Cocktail
+    {
+        return $this->createCocktail(
+            $cocktailValueObject->name,
+            $cocktailValueObject->instructions,
+            $cocktailValueObject->ingredients,
+            $cocktailValueObject->userId,
+            $cocktailValueObject->description,
+            $cocktailValueObject->garnish,
+            $cocktailValueObject->source,
+            $cocktailValueObject->images,
+            $cocktailValueObject->tags,
+            $cocktailValueObject->glassId,
+            $cocktailValueObject->methodId
+        );
     }
 
     /**

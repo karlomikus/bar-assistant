@@ -151,6 +151,20 @@ paths:
           type: string
           example: name,-created_at
         description: Sort by specific parameters
+      - in: query
+        name: per_page
+        required: false
+        schema:
+          type: integer
+          example: 15
+        description: Total results per page
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          example: 1
+        description: Page number
       tags:
         - "Cocktails"
       summary: 'Show a paginated list of cocktails'
@@ -160,7 +174,7 @@ paths:
           content:
             application/json:
               schema:
-                anyOf:
+                allOf:
                   - type: object
                     properties:
                       data:
@@ -437,27 +451,51 @@ paths:
   /ingredients:
     get:
       parameters:
-        - name: category_id
-          in: query
-          description: Show only ingredients in specific category
-          schema:
-            type: integer
-        - name: on_shopping_list
-          in: query
-          description: Show only ingredients on shopping list of current user
-          schema:
-            type: boolean
-        - name: on_shelf
-          in: query
-          description: Show only ingredients on shelf
-          schema:
-            type: boolean
-        - name: limit
-          in: query
-          description: Limit a number of shown ingredients
-          schema:
-            type: integer
-            example: 20
+      - in: query
+        name: filter
+        required: false
+        description: Filter by specific parameters
+        explode: true
+        style: deepObject
+        schema:
+          type: object
+          properties:
+            name:
+             type: string
+             example: "whiskey"
+            category_id:
+             type: integer
+             example: 1
+            origin:
+             type: string
+             example: "France"
+            on_shopping_list:
+             type: boolean
+             example: true
+            on_shelf:
+             type: boolean
+             example: true
+      - in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+          example: name,-created_at
+        description: Sort by specific parameters
+      - in: query
+        name: per_page
+        required: false
+        schema:
+          type: integer
+          example: 15
+        description: Total results per page
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          example: 1
+        description: Page number
       tags:
         - Ingredients
       summary: 'Get a list of ingredients'
@@ -467,12 +505,14 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Ingredient'
+                allOf:
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Ingredient'
+                  - $ref: '#/components/schemas/PaginationResponse'
     post:
       tags:
         - Ingredients

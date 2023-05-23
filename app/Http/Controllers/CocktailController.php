@@ -12,12 +12,12 @@ use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
-use Kami\Cocktail\DataObjects\Cocktail\Ingredient;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
 use Kami\Cocktail\Http\Resources\CocktailPublicResource;
+use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDataObject;
 
 class CocktailController extends Controller
 {
@@ -69,7 +69,7 @@ class CocktailController extends Controller
     {
         $ingredients = [];
         foreach ($request->post('ingredients') as $formIngredient) {
-            $ingredient = new Ingredient(
+            $ingredient = new IngredientDataObject(
                 (int) $formIngredient['ingredient_id'],
                 '',
                 (float) $formIngredient['amount'],
@@ -120,7 +120,7 @@ class CocktailController extends Controller
 
         $ingredients = [];
         foreach ($request->post('ingredients') as $formIngredient) {
-            $ingredient = new Ingredient(
+            $ingredient = new IngredientDataObject(
                 (int) $formIngredient['ingredient_id'],
                 '',
                 (float) $formIngredient['amount'],

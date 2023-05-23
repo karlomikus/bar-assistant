@@ -180,7 +180,6 @@
             units: ml
             name: Suze
             optional: false
-            substitutes: [Salers]
         -
             amount: 30
             units: ml
