@@ -1,11 +1,17 @@
-# v2.0.0 - WIP
+# v2.0.0
 ## Breaking changes
 - Minimum supported Meilisearch version is 1.1
+    - **Upgrade guide**: If you are using docker bump meilisearch version to 1.1. You can safely delete Meilisearch container and it's volume, Bar Assistant will sync data when you restart the Bar Assistant container
 - Changed query parameters for `/cocktails` endpoint
+    - **Upgrade guide**: Refer to API spec to see new parameters
 - Changed query parameters for `/ingredients` endpoint
+    - **Upgrade guide**: Refer to API spec to see new parameters
 - Removed `site_search_index` indexing
+    - **Upgrade guide**: If possible migrate to federated/multi-index search
 - Redis is now mandatory dependency
+    - **Upgrade guide**: Setup redis with `REDIS_HOST`, `REDIS_PASSWORD`, `REDIS_PORT` env variables
 - Removed `bar:dump-search` command
+    - **Upgrade guide**: Follow migration/upgrade guide for your selected search driver
 
 ## New
 - Meilisearch is no longer mandatory dependency for API to work
@@ -14,11 +20,6 @@
     - You can now use database as your search engine
 - Added `DISABLE_LOGIN` environment variable
     - This will remove the need to authenticate with token to access the api
-
-## Upgrade guide
-- Add Redis configuration
-- Bump Meilisearch server to version 1.1
-- If you are using `site_search_index`, you should migrate to federated/multi-index search
 
 # v1.10.2
 ## Fixes
