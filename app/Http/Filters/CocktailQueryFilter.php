@@ -15,6 +15,7 @@ final class CocktailQueryFilter extends QueryBuilder
         parent::__construct(Cocktail::query());
 
         $this->with('ingredients.ingredient', 'images', 'tags', 'method')
+            ->withRatings($this->request->user()->id)
             ->allowedFilters([
                 AllowedFilter::partial('name'),
                 AllowedFilter::partial('ingredient_name', 'ingredients.ingredient.name'),

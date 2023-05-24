@@ -33,40 +33,11 @@ class Cocktail extends Model
 
     private string $appImagesDir = 'cocktails/';
 
-    /**
-     * Set average rating manually to skip unnecessary SQL queres
-     * @var null|float
-     */
-    private ?float $averageRating = null;
-
-    /**
-     * Set user rating manually to skip unnecessary SQL queres
-     * -1: (defualt) Value not set, will run SQL query
-     * null: No user rating
-     * 0: User rated with lowest rating
-     * @var null|int
-     */
-    private ?int $userRating = -1;
-
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
-    }
-
-    public function setAverageRating(?float $rating): self
-    {
-        $this->averageRating = $rating;
-
-        return $this;
-    }
-
-    public function setUserRating(?int $rating): self
-    {
-        $this->userRating = $rating;
-
-        return $this;
     }
 
     /**
@@ -182,25 +153,6 @@ class Cocktail extends Model
         $collection->cocktails()->attach($this);
     }
 
-    public function getUserRating(?int $userId = null): ?int
-    {
-        if ($userId && $this->userRating === -1) {
-            return $this->ratings()->where('user_id', $userId)->first()?->rating ?? null;
-        }
-
-        return $this->userRating ?? null;
-    }
-
-    public function getAverageRating(): int
-    {
-        // Query optimization step
-        if (isset($this->averageRating)) {
-            return (int) round($this->averageRating ?? 0);
-        }
-
-        return (int) round($this->ratings()->avg('rating') ?? 0);
-    }
-
     /**
      * Only user favorites
      *
@@ -213,6 +165,26 @@ class Cocktail extends Model
         return $baseQuery->whereIn('id', function ($query) use ($userId) {
             $query->select('cocktail_id')->from('cocktail_favorites')->where('user_id', $userId);
         });
+    }
+
+    /**
+     * Include ratings information
+     *
+     * @param Builder $query
+     * @param int $userId
+     * @return Builder
+     */
+    public function scopeWithRatings(Builder $query, int $userId): Builder
+    {
+        return $query->addSelect([
+            'average_rating' => Rating::selectRaw('AVG(rating)')
+                ->whereColumn('rateable_id', 'cocktails.id')
+                ->whereColumn('rateable_type', Cocktail::class),
+            'user_rating' => Rating::select('rating')
+                ->whereColumn('rateable_id', 'cocktails.id')
+                ->whereColumn('rateable_type', Cocktail::class)
+                ->where('user_id', $userId),
+        ]);
     }
 
     public function toSearchableArray(): array
@@ -231,7 +203,7 @@ class Cocktail extends Model
             'tags' => $this->tags->pluck('name'),
             'date' => $this->updated_at->format('Y-m-d H:i:s'),
             'glass' => $this->glass->name ?? null,
-            'average_rating' => $this->getAverageRating(),
+            'average_rating' => (int) round($this->ratings()->avg('rating') ?? 0),
             'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
             'calculated_abv' => $this->getABV(),
             'method' => $this->method->name ?? null,

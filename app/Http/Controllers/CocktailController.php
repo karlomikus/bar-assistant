@@ -24,7 +24,7 @@ class CocktailController extends Controller
     /**
      * List all cocktails
      */
-    public function index(CocktailService $cocktailService, Request $request): JsonResource
+    public function index(Request $request): JsonResource
     {
         try {
             $cocktails = new CocktailQueryFilter();
@@ -33,17 +33,6 @@ class CocktailController extends Controller
         }
 
         $cocktails = $cocktails->paginate($request->get('per_page', 15));
-
-        // Append ratings
-        $averageRatings = $cocktailService->getCocktailAvgRatings();
-        $userRatings = $cocktailService->getCocktailUserRatings($request->user()->id);
-        $cocktails->getCollection()->map(function (Cocktail $cocktail) use ($averageRatings, $userRatings) {
-            $cocktail
-                ->setAverageRating($averageRatings[$cocktail->id] ?? 0.0)
-                ->setUserRating($userRatings[$cocktail->id] ?? null);
-
-            return $cocktail;
-        });
 
         return CocktailResource::collection($cocktails);
     }
@@ -201,18 +190,7 @@ class CocktailController extends Controller
             ]);
         }
 
-        $averageRatings = $cocktailService->getCocktailAvgRatings();
-        $userRatings = $cocktailService->getCocktailUserRatings($request->user()->id);
-
-        $cocktails = Cocktail::orderBy('name')->find($cocktailIds)
-            ->load('ingredients.ingredient', 'images', 'tags', 'method')
-            ->map(function ($cocktail) use ($averageRatings, $userRatings) {
-                $cocktail
-                    ->setAverageRating($averageRatings[$cocktail->id] ?? 0.0)
-                    ->setUserRating($userRatings[$cocktail->id] ?? null);
-
-                return $cocktail;
-            });
+        $cocktails = Cocktail::orderBy('name')->find($cocktailIds)->load('ingredients.ingredient', 'images', 'tags', 'method');
 
         return CocktailResource::collection($cocktails);
     }
