@@ -144,6 +144,10 @@ paths:
              example: 1
             favorites:
              type: boolean
+             example: true
+            on_shelf:
+             type: boolean
+             example: true
       - in: query
         name: sort
         required: false

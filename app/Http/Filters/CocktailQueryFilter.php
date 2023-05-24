@@ -7,10 +7,11 @@ namespace Kami\Cocktail\Http\Filters;
 use Kami\Cocktail\Models\Cocktail;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
+use Kami\Cocktail\Services\CocktailService;
 
 final class CocktailQueryFilter extends QueryBuilder
 {
-    public function __construct()
+    public function __construct(CocktailService $cocktailService)
     {
         parent::__construct(Cocktail::query());
 
@@ -26,6 +27,9 @@ final class CocktailQueryFilter extends QueryBuilder
                 AllowedFilter::exact('cocktail_method_id'),
                 AllowedFilter::callback('favorites', function ($query) {
                     $query->userFavorites($this->request->user()->id);
+                }),
+                AllowedFilter::callback('on_shelf', function ($query) use ($cocktailService) {
+                    $query->whereIn('id', $cocktailService->getCocktailsByUserIngredients($this->request->user()->id));
                 }),
             ])
             ->defaultSort('name')

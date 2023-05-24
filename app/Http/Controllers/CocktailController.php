@@ -24,10 +24,10 @@ class CocktailController extends Controller
     /**
      * List all cocktails
      */
-    public function index(Request $request): JsonResource
+    public function index(CocktailService $cocktailService, Request $request): JsonResource
     {
         try {
-            $cocktails = new CocktailQueryFilter();
+            $cocktails = new CocktailQueryFilter($cocktailService);
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }
