@@ -3,6 +3,9 @@
 namespace Kami\Cocktail\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\Request;
+use Kami\Cocktail\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -25,6 +28,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Auth::viaRequest('no-auth', function (Request $request) {
+            return User::first();
+        });
     }
 }

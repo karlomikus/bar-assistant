@@ -40,6 +40,9 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'force-login' => [
+            'driver' => 'no-auth'
+        ]
     ],
 
     /*

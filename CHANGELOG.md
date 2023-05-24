@@ -11,6 +11,8 @@
 - Added support for all default Laravel Scout drivers, meaning:
     - You can now use Algolia as your search engine
     - You can now use database as your search engine
+- Added `DISABLE_LOGIN` environment variable
+    - This will remove the need to authenticate with token to access the api
 
 ## Upgrade guide
 - Add Redis configuration
