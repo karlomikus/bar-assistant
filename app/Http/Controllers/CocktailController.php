@@ -178,21 +178,15 @@ class CocktailController extends Controller
      * Show all cocktails that current user can make with
      * the ingredients he added to his shelf
      */
-    public function userShelf(CocktailService $cocktailService, Request $request): JsonResource|JsonResponse
+    public function userShelf(CocktailService $cocktailService, Request $request): JsonResponse
     {
         $limit = $request->has('limit') ? (int) $request->get('limit') : null;
 
         $cocktailIds = $cocktailService->getCocktailsByUserIngredients($request->user()->id, $limit);
 
-        if ($request->has('format')) {
-            return response()->json([
-                'data' => $cocktailIds
-            ]);
-        }
-
-        $cocktails = Cocktail::orderBy('name')->find($cocktailIds)->load('ingredients.ingredient', 'images', 'tags', 'method');
-
-        return CocktailResource::collection($cocktails);
+        return response()->json([
+            'data' => $cocktailIds
+        ]);
     }
 
     /**
