@@ -24,13 +24,26 @@ class CocktailController extends Controller
     /**
      * List all cocktails
      */
-    public function index(Request $request): JsonResource
+    public function index(CocktailService $cocktailService, Request $request): JsonResource
     {
         try {
-            $cocktails = (new CocktailQueryFilter())->paginate($request->get('per_page', 15));
+            $cocktails = new CocktailQueryFilter();
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }
+
+        $cocktails = $cocktails->paginate($request->get('per_page', 15));
+
+        // Append ratings
+        $averageRatings = $cocktailService->getCocktailAvgRatings();
+        $userRatings = $cocktailService->getCocktailUserRatings($request->user()->id);
+        $cocktails->getCollection()->map(function (Cocktail $cocktail) use ($averageRatings, $userRatings) {
+            $cocktail
+                ->setAverageRating($averageRatings[$cocktail->id] ?? 0.0)
+                ->setUserRating($userRatings[$cocktail->id] ?? null);
+
+            return $cocktail;
+        });
 
         return CocktailResource::collection($cocktails);
     }

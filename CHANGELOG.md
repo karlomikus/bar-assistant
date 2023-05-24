@@ -14,6 +14,8 @@
     - **Upgrade guide**: Setup redis with `REDIS_HOST`, `REDIS_PASSWORD`, `REDIS_PORT` env variables
 - Removed `bar:dump-search` command
     - **Upgrade guide**: Follow migration/upgrade guide for your selected search driver
+- Removed `id` from `CocktailIngredient` schema
+    - **Upgrade guide**: n/a
 
 ## New
 - Meilisearch is no longer mandatory dependency for API to work
