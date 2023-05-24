@@ -162,8 +162,10 @@ class Cocktail extends Model
      */
     public function scopeUserFavorites(Builder $baseQuery, int $userId): Builder
     {
-        return $baseQuery->whereIn('id', function ($query) use ($userId) {
-            $query->select('cocktail_id')->from('cocktail_favorites')->where('user_id', $userId);
+        return $baseQuery->whereIn('cocktails.id', function ($query) use ($userId) {
+            $query->select('cocktail_id')
+                ->from('cocktail_favorites')
+                ->where('user_id', $userId);
         });
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Filters;
 
 use Kami\Cocktail\Models\Cocktail;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Kami\Cocktail\Services\CocktailService;
@@ -29,13 +30,22 @@ final class CocktailQueryFilter extends QueryBuilder
                     $query->userFavorites($this->request->user()->id);
                 }),
                 AllowedFilter::callback('on_shelf', function ($query) use ($cocktailService) {
-                    $query->whereIn('id', $cocktailService->getCocktailsByUserIngredients($this->request->user()->id));
+                    $query->whereIn('cocktails.id', $cocktailService->getCocktailsByUserIngredients($this->request->user()->id));
                 }),
                 AllowedFilter::callback('is_public', function ($query) {
                     $query->whereNotNull('public_id');
                 }),
             ])
             ->defaultSort('name')
-            ->allowedSorts('name', 'created_at');
+            ->allowedSorts([
+                'name',
+                'created_at',
+                AllowedSort::callback('favorited_at', function($query, bool $descending) {
+                    $direction = $descending ? 'DESC' : 'ASC';
+
+                    $query->leftJoin('cocktail_favorites AS cf', 'cf.cocktail_id', '=', 'cocktails.id')
+                        ->orderBy('cf.updated_at', $direction);
+                })
+            ]);
     }
 }

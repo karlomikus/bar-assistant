@@ -156,8 +156,8 @@ paths:
         required: false
         schema:
           type: string
-          example: name,-created_at
-        description: Sort by specific parameters
+          example: name,-created_at,favorited_at
+        description: Sort by specific parameters, toggle order by adding "-"
       - in: query
         name: per_page
         required: false
