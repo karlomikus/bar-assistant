@@ -6,6 +6,8 @@
     - **Upgrade guide**: Refer to API spec to see new parameters
 - Changed query parameters for `/ingredients` endpoint
     - **Upgrade guide**: Refer to API spec to see new parameters
+- Removed `/cocktails/user-favorites` endpoint
+    - **Upgrade guide**: Available via `/cocktails?filter[favorites]=true`
 - Removed `site_search_index` indexing
     - **Upgrade guide**: If possible migrate to federated/multi-index search
 - Redis is now mandatory dependency

@@ -90,7 +90,6 @@ Route::middleware($authMiddleware)->group(function() {
         Route::get('/', [CocktailController::class, 'index'])->name('cocktails.index');
         Route::get('/random', [CocktailController::class, 'random'])->name('cocktails.random');
         Route::get('/user-shelf', [CocktailController::class, 'userShelf'])->name('cocktails.user-shelf');
-        Route::get('/user-favorites', [CocktailController::class, 'userFavorites'])->name('cocktails.user-favorites');
         Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show');
         Route::post('/{id}/toggle-favorite', [CocktailController::class, 'toggleFavorite'])->name('cocktails.favorite');
         Route::post('/', [CocktailController::class, 'store'])->name('cocktails.store');

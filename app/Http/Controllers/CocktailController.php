@@ -214,22 +214,6 @@ class CocktailController extends Controller
         return new SuccessActionResource((object) ['id' => $id, 'is_favorited' => $isFavorite]);
     }
 
-    /**
-     * Show all cocktails that current user added to his favorites
-     */
-    public function userFavorites(Request $request): JsonResource
-    {
-        $cocktails = $request->user()
-            ->favorites()
-            ->with('cocktail.ingredients.ingredient', 'cocktail.images', 'cocktail.tags')
-            ->orderBy('updated_at', 'desc')
-            ->limit($request->get('limit', 100))
-            ->get()
-            ->pluck('cocktail');
-
-        return CocktailResource::collection($cocktails);
-    }
-
     public function makePublic(int|string $idOrSlug): JsonResource
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
