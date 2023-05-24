@@ -433,7 +433,7 @@ class BarOpen extends Command
                     ImageManagerStatic::make(
                         Storage::disk('bar-assistant')->path('cocktails/' . Str::slug($sCocktail['name']) . '.jpg')
                     ),
-                    $sCocktail['image_copyright'] ?? null,
+                    $sCocktail['images'][0]['copyright'] ?? null,
                 );
                 $image = $this->imageService->uploadAndSaveImages([$imageDTO], 1)[0];
 

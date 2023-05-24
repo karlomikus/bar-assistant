@@ -17,7 +17,8 @@
         2. Shake and strain into a chilled cocktail glass.
     garnish: 'Sprinkle ground nutmeg on top.'
     source: 'https://iba-world.com/alexander/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Coupe
     method: Shake
     tags:
@@ -54,7 +55,8 @@
         3. Stir gently.
     garnish: 'Garnish with half orange slice and a lemon zest.'
     source: 'https://iba-world.com/americano/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Lowball
     method: Stir
     tags:
@@ -87,7 +89,8 @@
         2. Shake and strain into a chilled cocktail glass.
     garnish: N/A
     source: 'https://iba-world.com/angel-face/'
-    image_copyright: 'Wine Enthusiast / Tyler Zieliniski'
+    images:
+        - copyright: 'Wine Enthusiast / Tyler Zieliniski'
     glass: 'Nick and Nora'
     method: Shake
     tags:
@@ -128,7 +131,8 @@
         2. Shake with cracked ice and strain into a chilled cocktail glass.
     garnish: 'Optional Maraschino Cherry.'
     source: 'https://iba-world.com/692/'
-    image_copyright: 'The Spruce Eats / Cara Cormack'
+    images:
+        - copyright: 'The Spruce Eats / Cara Cormack'
     glass: Cocktail
     method: Shake
     tags:
@@ -166,7 +170,8 @@
         4. Top up with Prosecco
     garnish: 'Pineapple and Cherry, optional mint sprig for additional aroma.'
     source: 'https://iba-world.com/barracuda/'
-    image_copyright: 'Ape Time'
+    images:
+        - copyright: 'Ape Time'
     glass: Highball
     method: Shake
     tags:
@@ -220,7 +225,8 @@
         - Add 2 dashes of absinthe and 2 dashes of orange bitters to make a variation called "Oldest Living Confederate Widow"
     garnish: 'Optionally garnish with a lemon or orange zest.'
     source: 'https://iba-world.com/bees-knees/'
-    image_copyright: 'Kitchen Swagger'
+    images:
+        - copyright: 'Kitchen Swagger'
     glass: Coupe
     method: Shake
     tags:
@@ -266,7 +272,8 @@
         3. Stir gently and pour in a chilled flute glass.
     garnish: N/A
     source: 'https://iba-world.com/bellini/'
-    image_copyright: 'Olive & Mango'
+    images:
+        - copyright: 'Olive & Mango'
     glass: Champagne
     method: Stir
     tags:
@@ -292,7 +299,8 @@
         2. Shake with ice and strain into a chilled cocktail glass
     garnish: N/A
     source: 'https://iba-world.com/between-the-sheets/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: Fizzio
     method: Shake
     tags:
@@ -329,7 +337,8 @@
     instructions: 'Pour the ingredients into the old fashioned glass filled with ice cubes. Stir gently.'
     garnish: N/A
     source: 'https://iba-world.com/black-russian/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Lowball
     method: Stir
     tags:
@@ -353,7 +362,8 @@
     instructions: 'Stir gently all the ingredients in a mixing glass with ice, pour into rocks glass.'
     garnish: 'Celery, Lemon Wedge (Optional)'
     source: 'https://iba-world.com/bloody-mary/'
-    image_copyright: Ocado
+    images:
+        - copyright: Ocado
     glass: Highball
     method: Build
     tags:
@@ -402,7 +412,8 @@
     instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into a chilled cocktail glass.'
     garnish: 'Garnish with orange zest, optionally a lemon zest.'
     source: 'https://iba-world.com/boulevardier/'
-    image_copyright: 'Reddit'
+    images:
+        - copyright: 'Reddit'
     glass: Lowball
     method: Stir
     tags:
@@ -438,7 +449,8 @@
         4. Pour the blackberry liqueur (Crème de Mûre) over the top of the drink, in a circular motion.
     garnish: 'Garnish optionally with a lemon slice and blackberries.'
     source: 'https://iba-world.com/bramble/'
-    image_copyright: 'Anders'
+    images:
+        - copyright: 'Anders'
     glass: Lowball
     method: Shake
     tags:
@@ -475,7 +487,8 @@
     instructions: 'Mix together all ingredients with ice cubes in a mixing glass and strain into prepared slim cocktail glass.'
     garnish: 'Rub a slice of orange (or lemon) around the rim of the glass and dip it in pulverized white sugar, so that the sugar will adhere to the edge of the glass. Carefully curling place the orange/lemon peel around the inside of the glass.'
     source: 'https://iba-world.com/brandy-crusta/'
-    image_copyright: Mangosalsa
+    images:
+        - copyright: Mangosalsa
     glass: 'Nick and Nora'
     method: Stir
     tags:
@@ -527,7 +540,8 @@
         3. Stir gently to involve ingredients.
     garnish: N/A
     source: 'https://iba-world.com/caipirinha/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Lowball
     method: Muddle
     tags:
@@ -555,7 +569,8 @@
     instructions: 'Mix honey with water and lime juice and spread the mixture on the bottom and sides of the glass. Add cracked ice, and then the rum. End by energetically stirring from bottom to top.'
     garnish: 'Lime wedge.'
     source: 'https://iba-world.com/cachanchara/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Lowball
     method: Build
     tags:
@@ -589,7 +604,8 @@
     instructions: 'Pour all ingredients into cocktails shaker, shake well with ice, strain into chilled rocks glass with ice.'
     garnish: 'Garnish with lemon zest and a maraschino cherry.'
     source: 'https://iba-world.com/casino/'
-    image_copyright: 'Cocktail Society'
+    images:
+        - copyright: 'Cocktail Society'
     glass: Lowball
     method: Shake
     tags:
@@ -624,7 +640,8 @@
     instructions: 'Place the sugar cube with 2 dashes of bitters in a large Champagne glass, add the cognac. Pour gently chilled Champagne.'
     garnish: 'Garnish with orange zest and maraschino cherry.'
     source: 'https://iba-world.com/champagne-cocktail/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: Champagne
     method: Build
     tags:
@@ -668,7 +685,8 @@
         The egg white is not added for the purpose of giving the drink flavor, but rather acts as an emulsifier. Thus when the drink is shaken a characteristic foamy head is formed. 
     garnish: 'Fresh raspberries'
     source: 'https://iba-world.com/clover-club/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: Coupe
     method: Shake
     tags:
@@ -702,7 +720,8 @@
     instructions: 'Pour all ingredients into shaker with ice. Shake well and strain in chilled cocktail glass.'
     garnish: 'Garnish with orange zest'
     source: 'https://iba-world.com/corpse-reviver-2/'
-    image_copyright: 'Punch Drink'
+    images:
+        - copyright: 'Punch Drink'
     glass: Fizzio
     method: Shake
     tags:
@@ -745,7 +764,8 @@
     instructions: 'Add all ingredients into a cocktail shaker filled with ice. Shake well and strain into a large cocktail glass.'
     garnish: 'Garnish with a lemon twist.'
     source: 'https://iba-world.com/cosmopolitan/'
-    image_copyright: "Amanda's Cookin'"
+    images:
+        - copyright: "Amanda's Cookin'"
     glass: Cocktail
     method: Shake
     tags:
@@ -783,7 +803,8 @@
     instructions: 'Build all ingredients in a highball glass filled with ice.'
     garnish: 'Garnish with lime wedge.'
     source: 'https://iba-world.com/cuba-libre/'
-    image_copyright: 'Jamie Oliver'
+    images:
+        - copyright: 'Jamie Oliver'
     glass: Highball
     method: Build
     tags:
@@ -812,7 +833,8 @@
     instructions: 'In a cocktail shaker add all ingredients. Stir well to dissolve the sugar. Add ice and shake. Strain into chilled cocktail glass.'
     garnish: N/A
     source: 'https://iba-world.com/daiquiri/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: Coupe
     method: Shake
     tags:
@@ -844,7 +866,8 @@
     instructions: 'In a highball glass filled with ice pour the ginger beer and top floating with the Rum.'
     garnish: 'Garnish with a lime wedge or slice.'
     source: 'https://iba-world.com/dark-n-stormy/'
-    image_copyright: 'The Spruce / Madhumita Sathishkumar'
+    images:
+        - copyright: 'The Spruce / Madhumita Sathishkumar'
     glass: Highball
     method: Build
     tags:
@@ -868,7 +891,8 @@
     instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into chilled martini cocktail glass.'
     garnish: 'Squeeze oil from lemon peel onto the drink, or garnish with green olives if requested.'
     source: 'https://iba-world.com/dry-martini/'
-    image_copyright: 'Getty Images/iStockphoto'
+    images:
+        - copyright: 'Getty Images/iStockphoto'
     glass: Cocktail
     method: Stir
     tags:
@@ -892,7 +916,8 @@
     instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
     garnish: N/A
     source: 'https://iba-world.com/espresso-martini/'
-    image_copyright: "It's Liv B."
+    images:
+        - copyright: "It's Liv B."
     glass: Cocktail
     method: Shake
     tags:
@@ -929,7 +954,8 @@
     instructions: 'Pour the Fernet Branca into a double old fashioned glass with ice, fill the glass up with Cola. Gently stir.'
     garnish: N/A
     source: 'https://iba-world.com/fernandito/'
-    image_copyright: 'The daily meal'
+    images:
+        - copyright: 'The daily meal'
     glass: Highball
     method: Build
     tags:
@@ -952,7 +978,8 @@
     instructions: 'Pour all the ingredients, except Champagne, into a shaker. Shake well and strain into a Champagne flute. Top up with Champagne. Stir gently.'
     garnish: N/A
     source: 'https://iba-world.com/french-75/'
-    image_copyright: 'Sip and Feast'
+    images:
+        - copyright: 'Sip and Feast'
     glass: Champagne
     method: Shake
     tags:
@@ -986,7 +1013,8 @@
     instructions: 'Pour all ingredients directly into an old fashioned glass filled with ice cubes. Stir gently.'
     garnish: N/A
     source: 'https://iba-world.com/french-connection/'
-    image_copyright: 'Punch Drink'
+    images:
+        - copyright: 'Punch Drink'
     glass: Lowball
     method: Build
     tags:
@@ -1013,7 +1041,8 @@
     instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
     garnish: 'Squeeze oil from lemon peel onto the drink.'
     source: 'https://iba-world.com/french-martini/'
-    image_copyright: 'Supergolden Bakes'
+    images:
+        - copyright: 'Supergolden Bakes'
     glass: Fizzio
     method: Shake
     tags:
@@ -1046,7 +1075,8 @@
         4. Serve without ice
     garnish: 'Garnish with a lemon slice, optional lemon zest.'
     source: 'https://iba-world.com/gin-fizz/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: Highball
     method: Shake
     tags:
@@ -1083,7 +1113,8 @@
     instructions: 'Pour all ingredients into shaker filled with ice. Shake briskly for few seconds. Strain into chilled cocktail glass.'
     garnish: N/A
     source: 'https://iba-world.com/golden-dream/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Coupe
     method: Shake
     tags:
@@ -1118,7 +1149,8 @@
         Shake briskly for few seconds. Strain into chilled cocktail glass.
     garnish: 'N/A, optional mint leaf'
     source: 'https://iba-world.com/grasshopper/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Fizzio
     method: Shake
     tags:
@@ -1149,7 +1181,8 @@
     instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into chilled cocktail glass.'
     garnish: 'Orange zest.'
     source: 'https://iba-world.com/hanky-panky/'
-    image_copyright: 'Punch / Daniel Krieger'
+    images:
+        - copyright: 'Punch / Daniel Krieger'
     glass: 'Nick and Nora'
     method: Stir
     tags:
@@ -1178,7 +1211,8 @@
     instructions: 'Pour all ingredients into a shaker with ice. Shake well and strain into a large cocktail glass.'
     garnish: N/A
     source: 'https://iba-world.com/hemingway-special/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Coupe
     method: Shake
     tags:
@@ -1215,7 +1249,8 @@
         3. If preferred, add dashes of Angostura Bitter.
     garnish: 'Garnish with a rind of one lemon spiral.'
     source: 'https://iba-world.com/horses-neck/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Highball
     method: Build
     tags:
@@ -1244,7 +1279,8 @@
     instructions: "Pour all ingredients into the shaker. Shake vigorously with ice.\_ Strain into a chilled cocktail glass, or “on the rocks” in a traditional clay or terracotta mug."
     garnish: N/A
     source: 'https://iba-world.com/illegal/'
-    image_copyright: 'The Shaken Cocktail'
+    images:
+        - copyright: 'The Shaken Cocktail'
     glass: Fizzio
     method: Shake
     tags:
@@ -1298,7 +1334,8 @@
         5. Plain sugar can be replaced with sugar syrup
     garnish: N/A
     source: 'https://iba-world.com/irish-coffee/'
-    image_copyright: VinePair
+    images:
+        - copyright: VinePair
     glass: Glass mug
     method: Build
     tags:
@@ -1337,7 +1374,8 @@
         Use ‘Old Tom’ Gin for Tom Collins.
     garnish: 'Garnish with a lemon slice and maraschino cherry.'
     source: 'https://iba-world.com/john-collins/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: Highball
     method: Build
     tags:
@@ -1376,7 +1414,8 @@
         KIR ROYAL – Use Champagne instead of white wine
     garnish: N/A
     source: 'https://iba-world.com/kir/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Champagne
     method: Build
     tags:
@@ -1400,7 +1439,8 @@
     instructions: 'Add all ingredients into a cocktail shaker. Shake with ice and strain into a chilled cocktail glass.'
     garnish: N/A
     source: 'https://iba-world.com/last-word/'
-    image_copyright: 'A Serious Eats / Vicky Wasik'
+    images:
+        - copyright: 'A Serious Eats / Vicky Wasik'
     glass: Nick and Nora
     method: Shake
     tags:
@@ -1434,7 +1474,8 @@
     instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
     garnish: 'Garnish with sugar rim around the glass.'
     source: 'https://iba-world.com/lemon-drop-martini/'
-    image_copyright: 'Basil & Bubbly'
+    images:
+        - copyright: 'Basil & Bubbly'
     glass: Cocktail
     method: Shake
     tags:
@@ -1466,7 +1507,8 @@
         Stir gently.
     garnish: 'Lemon Slice (Optional)'
     source: 'https://iba-world.com/long-island-ice-tea/'
-    image_copyright: 'Kitchen Stories'
+    images:
+        - copyright: 'Kitchen Stories'
     glass: Highball
     method: Build
     tags:
@@ -1523,7 +1565,8 @@
         *The Martinique molasses rum used by Trader Vic was not an Agricole rum but a type of “rummy” from molasses.*
     garnish: 'Garnish with pineapple spear, mint leaves, and lime peel.'
     source: 'https://iba-world.com/mai-tai/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: Lowball
     method: Shake
     tags:
@@ -1568,7 +1611,8 @@
     instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into a chilled cocktail glass.'
     garnish: 'Garnish with a cocktail cherry.'
     source: 'https://iba-world.com/manhattan/'
-    image_copyright: "Sainsbury's Magazine / Toby Scott"
+    images:
+        - copyright: "Sainsbury's Magazine / Toby Scott"
     glass: Cocktail
     method: Stir
     tags:
@@ -1599,7 +1643,8 @@
         Shake and strain into a chilled cocktail glass
     garnish: 'Half salt rim (Optional)'
     source: 'https://iba-world.com/margarita/'
-    image_copyright: 'Jamie Oliver'
+    images:
+        - copyright: 'Jamie Oliver'
     glass: Margarita
     method: Shake
     tags:
@@ -1631,7 +1676,8 @@
     instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into a chilled cocktail glass.'
     garnish: 'Lemon zest.'
     source: 'https://iba-world.com/martinez/'
-    image_copyright: Wikipedia
+    images:
+        - copyright: Wikipedia
     glass: Cocktail
     method: Stir
     tags:
@@ -1665,7 +1711,8 @@
     instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled cocktail glass.'
     garnish: N/A
     source: 'https://iba-world.com/mary-pickford/'
-    image_copyright: Drinkoteket
+    images:
+        - copyright: Drinkoteket
     glass: Fizzio
     method: Shake
     tags:
@@ -1703,7 +1750,8 @@
         Also known as Buck’s Fizz.
     garnish: 'Garnish with an orange twist (optional).'
     source: 'https://iba-world.com/mimosa/'
-    image_copyright: 'Inspired Taste'
+    images:
+        - copyright: 'Inspired Taste'
     glass: Champagne
     method: Build
     tags:
@@ -1727,7 +1775,8 @@
     instructions: 'In Julep Stainless Steel Cup gently muddle the mint with sugar and water. Fill the glass with cracked ice, add the Bourbon and stir well until the cup frosts.'
     garnish: 'Garnish with a mint sprig.'
     source: 'https://iba-world.com/mint-julep/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Julep
     method: Build
     tags:
@@ -1761,7 +1810,8 @@
     instructions: 'Mix mint springs with sugar and lime juice. Add splash of soda water and fill the glass with ice. Pour the rum and top with soda water. Light stir to involve all ingredients.'
     garnish: 'Garnish with sprigs of mint and slice of lime.'
     source: 'https://iba-world.com/mojito/'
-    image_copyright: 'Bon Apetite'
+    images:
+        - copyright: 'Bon Apetite'
     glass: Highball
     method: Build
     tags:
@@ -1800,7 +1850,8 @@
     instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled cocktail glass.'
     garnish: N/A
     source: 'https://iba-world.com/monkey-gland/'
-    image_copyright: 'The Spruce'
+    images:
+        - copyright: 'The Spruce'
     glass: Cocktail
     method: Shake
     tags:
@@ -1834,7 +1885,8 @@
     instructions: 'In a Mule Cup or rocks glass, combine the vodka and ginger beer. Add lime juice and gently stir to involve all ingredients.'
     garnish: 'Garnish with a lime slice'
     source: 'https://iba-world.com/moscow-mule/'
-    image_copyright: 'Bake It With Love'
+    images:
+        - copyright: 'Bake It With Love'
     glass: 'Copper mug'
     method: Build
     tags:
@@ -1863,7 +1915,8 @@
     instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
     garnish: N/A
     source: 'https://iba-world.com/naked-and-famous/'
-    image_copyright: Epicurious
+    images:
+        - copyright: Epicurious
     glass: 'Nick and Nora'
     method: Shake
     tags:
@@ -1897,7 +1950,8 @@
     instructions: 'Pour all ingredients directly into a chilled old fashioned glass filled with ice, Stir gently.'
     garnish: 'Garnish with a half orange slice.'
     source: 'https://iba-world.com/negroni/'
-    image_copyright: 'Kitchen Swagger'
+    images:
+        - copyright: 'Kitchen Swagger'
     glass: Lowball
     method: Build
     tags:
@@ -1926,7 +1980,8 @@
     instructions: "Pour all ingredients into the shaker. Shake vigorously with ice.\_ Strain into a chilled rocks glass filled with ice. Float the wine on top."
     garnish: 'Garnish with lemon or orange zest with cherry.'
     source: 'https://iba-world.com/new-york-sour/'
-    image_copyright: 'Kitchen Swagger'
+    images:
+        - copyright: 'Kitchen Swagger'
     glass: Lowball
     method: Shake
     tags:
@@ -1966,7 +2021,8 @@
     instructions: 'Pour all ingredients into cocktail shaker except the wine, shake well with ice, strain into chilled elegant cocktail glass. Top up with the sparkling wine.'
     garnish: 'Garnish with mint springs.'
     source: 'https://iba-world.com/old-cuban/'
-    image_copyright: 'NYT Cooking'
+    images:
+        - copyright: 'NYT Cooking'
     glass: Coupe
     method: Shake
     tags:
@@ -2010,7 +2066,8 @@
     instructions: 'Place sugar cube in old fashioned glass and saturate with bitter, add few dashes of plain water. Muddle until dissolved. Fill the glass with ice cubes and add whiskey. Stir gently.'
     garnish: 'Garnish with an orange slice or zest, and a cocktail cherry.'
     source: 'https://iba-world.com/old-fashioned/'
-    image_copyright: Epicurious
+    images:
+        - copyright: Epicurious
     glass: Lowball
     method: Build
     tags:
@@ -2044,7 +2101,8 @@
     instructions: 'Poor the tequila into a highball glass, squeeze the lime juice. Add ice and salt, fill up pink grapefruit soda. Stir gently.'
     garnish: 'Garnish with a slice of lime.'
     source: 'https://iba-world.com/paloma/'
-    image_copyright: 'Love and Lemons'
+    images:
+        - copyright: 'Love and Lemons'
     glass: Lowball
     method: Build
     tags:
@@ -2078,7 +2136,8 @@
     instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
     garnish: N/A
     source: 'https://iba-world.com/paper-plane/'
-    image_copyright: 'Bon Apetite'
+    images:
+        - copyright: 'Bon Apetite'
     glass: Coupe
     method: Shake
     tags:
@@ -2112,7 +2171,8 @@
     instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
     garnish: N/A
     source: 'https://iba-world.com/paradise/'
-    image_copyright: Wikipedia
+    images:
+        - copyright: Wikipedia
     glass: Cocktail
     method: Shake
     tags:
@@ -2146,7 +2206,8 @@
         5. Float the single malt whiskey on top.
     garnish: 'Garnish with candied ginger.'
     source: 'https://iba-world.com/penicillin/'
-    image_copyright: Unknown
+    images:
+        - copyright: Unknown
     glass: Lowball
     method: Shake
     tags:
@@ -2189,7 +2250,8 @@
         Historically a few drops of fresh lime juice were added to taste. 4 slices of fresh pineapple can be used instead of juice
     garnish: 'Garnish with a slice of pineapple with a cocktail cherry.'
     source: 'https://iba-world.com/pina-colada/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: Hurricane
     method: Blend
     tags:
@@ -2225,7 +2287,8 @@
         Shake and strain into a chilled goblet glass.
     garnish: 'Few dashes of Amargo or Angostura bitters on top as an aromatic garnish.'
     source: 'https://iba-world.com/pisco-sour/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: 'Nick and Nora'
     method: Shake
     tags:
@@ -2262,7 +2325,8 @@
         Add dilution up to taste, it can be given by water, ice or juices.
     garnish: 'Garnish with orange zest.'
     source: 'https://iba-world.com/planters-punch/'
-    image_copyright: Wikipedia
+    images:
+        - copyright: Wikipedia
     glass: Hurricane
     method: Build
     tags:
@@ -2292,7 +2356,8 @@
     instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled cocktail glass.'
     garnish: 'Sprinkle with ground nutmeg.'
     source: 'https://iba-world.com/porto-flip/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Coupe
     method: Shake
     tags:
@@ -2327,7 +2392,8 @@
         5. Strain into a highball glass, top up with soda.
     garnish: N/A
     source: 'https://iba-world.com/ramos-fizz/'
-    image_copyright: 'Punch Drink'
+    images:
+        - copyright: 'Punch Drink'
     glass: Highball
     method: Shake
     tags:
@@ -2386,7 +2452,8 @@
     instructions: 'Pour all ingredients into a cocktail shaker except the sparkling wine, shake well with ice, strain into a chilled tall tumbler glass filled with ice, and top up with sparkling wine.'
     garnish: 'Garnish with blackberries and optionally a lemon slice as well.'
     source: 'https://iba-world.com/russian-spring-punch/'
-    image_copyright: 'Liquido Spirits'
+    images:
+        - copyright: 'Liquido Spirits'
     glass: Highball
     method: Shake
     tags:
@@ -2433,7 +2500,8 @@
     instructions: 'Pour all ingredients directly into an old fashioned glass filled with ice. Stir gently.'
     garnish: 'Garnish with lemon zest.'
     source: 'https://iba-world.com/rusty-nail/'
-    image_copyright: 'Serious Eats'
+    images:
+        - copyright: 'Serious Eats'
     glass: Lowball
     method: Build
     tags:
@@ -2465,7 +2533,8 @@
         5. Strain the mixed drink into the glass.
     garnish: 'Garnish with lemon zest.'
     source: 'https://iba-world.com/sazerac/'
-    image_copyright: 'The Spruce Eats'
+    images:
+        - copyright: 'The Spruce Eats'
     glass: Lowball
     method: Stir
     tags:
@@ -2499,7 +2568,8 @@
     instructions: 'Build all ingredients in a highball glass filled with ice.'
     garnish: 'Garnish with orange zest and cherry'
     source: 'https://iba-world.com/sea-breeze/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Highball
     method: Build
     tags:
@@ -2534,7 +2604,8 @@
     instructions: 'Build all ingredients in a highball glass filled with ice.'
     garnish: 'Garnish with a half orange slice.'
     source: 'https://iba-world.com/sex-on-the-beach/'
-    image_copyright: 'Copy Kat Recipes'
+    images:
+        - copyright: 'Copy Kat Recipes'
     glass: Highball
     method: Build
     tags:
@@ -2571,7 +2642,8 @@
     instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled cocktail glass.'
     garnish: N/A
     source: 'https://iba-world.com/sidecar/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: Cocktail
     method: Shake
     tags:
@@ -2600,7 +2672,8 @@
     instructions: 'Pour all ingredients into a cocktail shaker filled with ice cubes. Shake well. Strain into Hurricane glass.'
     garnish: 'Garnish with pineapple and maraschino cherry'
     source: 'https://iba-world.com/singapore-sling/'
-    image_copyright: 'The Spruce Eats'
+    images:
+        - copyright: 'The Spruce Eats'
     glass: Hurricane
     method: Shake
     tags:
@@ -2658,7 +2731,8 @@
         If egg white is used shake vigorously.
     garnish: 'Garnish with mint springs.'
     source: 'https://iba-world.com/southside/'
-    image_copyright: 'Limoncello Kitchen'
+    images:
+        - copyright: 'Limoncello Kitchen'
     glass: 'Nick and Nora'
     method: Shake
     tags:
@@ -2692,7 +2766,8 @@
     instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, double-strain into chilled cocktail glass.'
     garnish: 'Garnish with a red chilli pepper'
     source: 'https://iba-world.com/spicy-fifty/'
-    image_copyright: MixolopediA
+    images:
+        - copyright: MixolopediA
     glass: Cocktail
     method: Shake
     tags:
@@ -2734,7 +2809,8 @@
         There are other versions of the Spritz that use Campari, Cynar or Select instead of Aperol.
     garnish: 'Garnish with a slice of orange.'
     source: 'https://iba-world.com/spritz/'
-    image_copyright: 'Kitchen Swagger'
+    images:
+        - copyright: 'Kitchen Swagger'
     glass: Wine
     method: Build
     tags:
@@ -2763,7 +2839,8 @@
     instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into chilled martini cocktail glass.'
     garnish: 'Optional mint leave.'
     source: 'https://iba-world.com/stinger/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: Cocktail
     method: Stir
     tags:
@@ -2787,7 +2864,8 @@
     instructions: 'Pour all ingredients into a cocktail shaker except the ginger beer, shake well with ice, Pour unstrained into a Collins glass or in the original S. Bastard mug and top up with ginger beer.'
     garnish: 'Garnish with mint springs and optionally an orange slice as well.'
     source: 'https://iba-world.com/suffering-bastard/'
-    image_copyright: 'Keg Works'
+    images:
+        - copyright: 'Keg Works'
     glass: Tiki
     method: Shake
     tags:
@@ -2828,7 +2906,8 @@
     instructions: 'Pour tequila and orange juice directly into highball glass filled with ice cubes. Add the grenadine syrup to create chromatic effect (sunrise), do not stir.'
     garnish: 'Garnish with half orange slice or an orange zest'
     source: 'https://iba-world.com/tequila-sunrise/'
-    image_copyright: 'Homemade Hooplah'
+    images:
+        - copyright: 'Homemade Hooplah'
     glass: Highball
     method: Build
     tags:
@@ -2857,7 +2936,8 @@
     instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into chilled martini cocktail glass.'
     garnish: 'Garnish with a slice of orange.'
     source: 'https://iba-world.com/tipperary/'
-    image_copyright: MixolopediA
+    images:
+        - copyright: MixolopediA
     glass: Cocktail
     method: Stir
     tags:
@@ -2891,7 +2971,8 @@
     instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled rocks glass filled with ice.'
     garnish: 'Garnish with a lime slice.'
     source: 'https://iba-world.com/tommys-margarita/'
-    image_copyright: 'Moody Mixologist'
+    images:
+        - copyright: 'Moody Mixologist'
     glass: Lowball
     method: Shake
     tags:
@@ -2923,7 +3004,8 @@
         3. Strain into a chilled cocktail glass.
     garnish: N/A
     source: 'https://iba-world.com/trinidad-sour/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: Cocktail
     method: Shake
     tags:
@@ -2957,7 +3039,8 @@
     instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into chilled martini cocktail glass.'
     garnish: 'Garnish with cherry and lemon zest'
     source: 'https://iba-world.com/tuxedo/'
-    image_copyright: Punch
+    images:
+        - copyright: Punch
     glass: Cocktail
     method: Stir
     tags:
@@ -3002,7 +3085,8 @@
         If desired water can be replaced by chamomile infusion in the honey mix.
     garnish: 'Garnish with lemon zest and white grapes.'
     source: 'https://iba-world.com/ve-n-to/'
-    image_copyright: 'IBA World'
+    images:
+        - copyright: 'IBA World'
     glass: Lowball
     method: Shake
     tags:
@@ -3035,7 +3119,8 @@
     instructions: 'Pour all ingredients into a cocktail shaker filled with ice cubes. Shake and strain into a chilled cocktail glass.'
     garnish: 'Lemon zest'
     source: 'https://iba-world.com/vesper/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: Cocktail
     method: Shake
     tags:
@@ -3064,7 +3149,8 @@
     instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into a chilled cocktail glass.'
     garnish: 'Garnish with orange zest and maraschino cherry.'
     source: 'https://iba-world.com/vieux-carre/'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Cocktail
     method: Stir
     tags:
@@ -3111,7 +3197,8 @@
         If egg white is used shake little harder to release and incorporate the foam from the egg white.
     garnish: 'Garnish with a half orange slice and maraschino cherry, optionally use orange zest.'
     source: 'https://iba-world.com/whiskey-sour/'
-    image_copyright: VinePair
+    images:
+        - copyright: VinePair
     glass: Lowball
     method: Shake
     tags:
@@ -3146,7 +3233,8 @@
     instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled cocktail glass.'
     garnish: N/A
     source: 'https://iba-world.com/white-lady/'
-    image_copyright: 'BBC Good Food'
+    images:
+        - copyright: 'BBC Good Food'
     glass: Coupe
     method: Shake
     tags:
@@ -3175,7 +3263,8 @@
     instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
     garnish: N/A
     source: 'https://iba-world.com/yellow-bird/'
-    image_copyright: 'Cooking to Entertain'
+    images:
+        - copyright: 'Cooking to Entertain'
     glass: Coupe
     method: Shake
     tags:
@@ -3214,7 +3303,8 @@
         Donn’s Mix: 2 parts of fresh yellow grapefruit and 1 part of cinnamon syrup
     garnish: 'Garnish with mint leaves.'
     source: 'https://iba-world.com/zombie/'
-    image_copyright: 'Punch Drink'
+    images:
+        - copyright: 'Punch Drink'
     glass: Highball
     method: Blend
     tags:
