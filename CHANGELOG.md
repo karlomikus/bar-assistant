@@ -5,6 +5,7 @@
 - Changed query parameters for `/ingredients` endpoint
 - Removed `site_search_index` indexing
 - Redis is now mandatory dependency
+- Removed `bar:dump-search` command
 
 ## New
 - Meilisearch is no longer mandatory dependency for API to work
