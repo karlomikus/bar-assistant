@@ -479,6 +479,12 @@ paths:
             on_shelf:
              type: boolean
              example: true
+            strength_min:
+             type: integer
+             example: 20
+            strength_max:
+             type: integer
+             example: 50
       - in: query
         name: sort
         required: false

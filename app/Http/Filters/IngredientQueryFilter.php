@@ -27,8 +27,14 @@ final class IngredientQueryFilter extends QueryBuilder
                 AllowedFilter::callback('on_shelf', function ($query) {
                     $query->join('user_ingredients', 'user_ingredients.ingredient_id', '=', 'ingredients.id')->where('user_ingredients.user_id', $this->request->user()->id);
                 }),
+                AllowedFilter::callback('strength_min', function ($query, $value) {
+                    $query->where('strength', '>=', $value);
+                }),
+                AllowedFilter::callback('strength_max', function ($query, $value) {
+                    $query->where('strength', '<=', $value);
+                }),
             ])
             ->defaultSort('name')
-            ->allowedSorts('name', 'created_at');
+            ->allowedSorts('name', 'created_at', 'strength');
     }
 }
