@@ -122,32 +122,35 @@ paths:
           type: object
           properties:
             name:
-             type: string
-             example: "old"
+              type: string
+              example: "old"
             ingredient_name:
-             type: string
-             example: "campari"
+              type: string
+              example: "campari"
             ingredient_id:
-             type: integer
-             example: 3
+              type: integer
+              example: 3
             tag_id:
-             type: integer
-             example: 4
+              type: integer
+              example: 4
             user_id:
-             type: integer
-             example: 3
+              type: integer
+              example: 3
             glass_id:
-             type: integer
-             example: 1
+              type: integer
+              example: 1
             cocktail_method_id:
-             type: integer
-             example: 1
+              type: integer
+              example: 1
             favorites:
-             type: boolean
-             example: true
+              type: boolean
+              example: true
             on_shelf:
-             type: boolean
-             example: true
+              type: boolean
+              example: true
+            is_public:
+              type: boolean
+              example: true
       - in: query
         name: sort
         required: false

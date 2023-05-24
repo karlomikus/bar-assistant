@@ -31,6 +31,9 @@ final class CocktailQueryFilter extends QueryBuilder
                 AllowedFilter::callback('on_shelf', function ($query) use ($cocktailService) {
                     $query->whereIn('id', $cocktailService->getCocktailsByUserIngredients($this->request->user()->id));
                 }),
+                AllowedFilter::callback('is_public', function ($query) {
+                    $query->whereNotNull('public_id');
+                }),
             ])
             ->defaultSort('name')
             ->allowedSorts('name', 'created_at');
