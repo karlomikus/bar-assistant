@@ -10,6 +10,8 @@
     - **Upgrade guide**: Available via `/cocktails?filter[favorites]=true`
 - Endpoint `/cocktails/user-shelf` now returns only cocktail ids
     - **Upgrade guide**: Available via `/cocktails?filter[on_shelf]=true`
+- Removed `/ingredients/find` endpoint
+    - **Upgrade guide**: Available via `/ingredients?filter[name]=whiskey`
 - Removed `site_search_index` indexing
     - **Upgrade guide**: If possible migrate to federated/multi-index search
 - Redis is now mandatory dependency

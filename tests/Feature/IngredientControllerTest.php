@@ -31,14 +31,57 @@ class IngredientControllerTest extends TestCase
 
     public function test_list_ingredients_response()
     {
-        Ingredient::factory()->count(5)->create();
+        Ingredient::factory()->count(55)->create();
 
         $response = $this->getJson('/api/ingredients');
 
         $response->assertStatus(200);
-        $response->assertJsonCount(5, 'data');
+        $response->assertJsonCount(50, 'data');
+        $response->assertJsonPath('meta.current_page', 1);
+        $response->assertJsonPath('meta.last_page', 2);
+        $response->assertJsonPath('meta.per_page', 50);
+        $response->assertJsonPath('meta.total', 55);
 
-        $response->assertValidResponse();
+        $response = $this->getJson('/api/ingredients?page=2');
+        $response->assertJsonPath('meta.current_page', 2);
+
+        $response = $this->getJson('/api/ingredients?per_page=5');
+        $response->assertJsonPath('meta.last_page', 11);
+    }
+
+    public function test_list_ingredients_response_filters()
+    {
+        $user = User::factory()->create();
+        $ingCat = IngredientCategory::factory()->create();
+        Ingredient::factory()->createMany([
+            ['name' => 'Whiskey', 'origin' => 'America', 'strength' => 35.5],
+            ['name' => 'XXXX', 'strength' => 0],
+            ['name' => 'Test', 'user_id' => $user->id, 'strength' => 40],
+            ['name' => 'Test 2', 'ingredient_category_id' => $ingCat->id, 'strength' => 0],
+        ]);
+
+        $response = $this->getJson('/api/ingredients');
+
+        $response = $this->getJson('/api/ingredients?filter[name]=whi');
+        $response->assertJsonCount(1, 'data');
+        $response = $this->getJson('/api/ingredients?filter[name]=whi,xx');
+        $response->assertJsonCount(2, 'data');
+        $response = $this->getJson('/api/ingredients?filter[user_id]=' . $user->id);
+        $response->assertJsonCount(1, 'data');
+        $response = $this->getJson('/api/ingredients?filter[category_id]=' . $ingCat->id);
+        $response->assertJsonCount(1, 'data');
+        $response = $this->getJson('/api/ingredients?filter[category_id]=' . $ingCat->id);
+        $response->assertJsonCount(1, 'data');
+        $response = $this->getJson('/api/ingredients?filter[origin]=america');
+        $response->assertJsonCount(1, 'data');
+        $response = $this->getJson('/api/ingredients?filter[strength_min]=30');
+        $response->assertJsonCount(2, 'data');
+        $response = $this->getJson('/api/ingredients?filter[strength_max]=39');
+        $response->assertJsonCount(3, 'data');
+        $response = $this->getJson('/api/ingredients?filter[on_shelf]=true');
+        $response->assertJsonCount(0, 'data');
+        $response = $this->getJson('/api/ingredients?filter[on_shopping_list]=true');
+        $response->assertJsonCount(0, 'data');
     }
 
     public function test_list_ingredients_response_filter_by_category()

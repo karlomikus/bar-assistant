@@ -19,7 +19,8 @@ final class IngredientQueryFilter extends QueryBuilder
             ->allowedFilters([
                 AllowedFilter::partial('name'),
                 AllowedFilter::exact('category_id', 'ingredient_category_id'),
-                AllowedFilter::exact('origin'),
+                AllowedFilter::partial('origin'),
+                AllowedFilter::exact('user_id'),
                 AllowedFilter::callback('on_shopping_list', function ($query) {
                     $usersList = $this->request->user()->shoppingLists->pluck('ingredient_id');
                     $query->whereIn('id', $usersList);

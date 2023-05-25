@@ -48,7 +48,7 @@ Route::prefix('server')->group(function() {
 });
 
 Route::prefix('images')->group(function() {
-    Route::get('/{id}/thumb', [ImageController::class, 'thumb']);
+    Route::get('/{id}/thumb', [ImageController::class, 'thumb']); // TODO: Move this to auth middleware
 });
 
 Route::prefix('explore')->group(function() {
@@ -70,7 +70,6 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('ingredients')->group(function() {
-        Route::get('/find', [IngredientController::class, 'find']);
         Route::get('/', [IngredientController::class, 'index']);
         Route::post('/', [IngredientController::class, 'store']);
         Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show');

@@ -52,10 +52,11 @@ class CocktailController extends Controller
     /**
      * Show a single cocktail by it's id or URL slug
      */
-    public function show(int|string $idOrSlug): JsonResource
+    public function show(int|string $idOrSlug, Request $request): JsonResource
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
+            ->withRatings($request->user()->id)
             ->firstOrFail()
             ->load(['ingredients.ingredient', 'images' => function ($query) {
                 $query->orderBy('sort');
