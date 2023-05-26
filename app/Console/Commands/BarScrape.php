@@ -26,6 +26,11 @@ class BarScrape extends Command
      */
     protected $description = 'Import cocktail recipe from a given URL';
 
+    public function __construct(private readonly ImportService $importService)
+    {
+        parent::__construct();
+    }
+
     /**
      * Execute the console command.
      *
@@ -66,7 +71,7 @@ class BarScrape extends Command
         }
 
         try {
-            resolve(ImportService::class)->importFromScraper($scrapedData);
+            $this->importService->importFromScraper($scrapedData);
 
             $this->info('Cocktail imported successfully, do not forget to check the imported data for errors.');
         } catch (Throwable $e) {

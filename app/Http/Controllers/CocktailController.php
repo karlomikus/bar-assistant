@@ -17,7 +17,8 @@ use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
 use Kami\Cocktail\Http\Resources\CocktailPublicResource;
-use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDataObject;
+use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
+use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDTO;
 
 class CocktailController extends Controller
 {
@@ -35,18 +36,6 @@ class CocktailController extends Controller
         $cocktails = $cocktails->paginate($request->get('per_page', 15));
 
         return CocktailResource::collection($cocktails);
-    }
-
-    /**
-     * Return a single random cocktail
-     */
-    public function random(): JsonResource
-    {
-        $cocktail = Cocktail::inRandomOrder()
-            ->firstOrFail()
-            ->load('ingredients.ingredient', 'images', 'tags', 'method');
-
-        return new CocktailResource($cocktail);
     }
 
     /**
@@ -72,9 +61,9 @@ class CocktailController extends Controller
     {
         $ingredients = [];
         foreach ($request->post('ingredients') as $formIngredient) {
-            $ingredient = new IngredientDataObject(
+            $ingredient = new IngredientDTO(
                 (int) $formIngredient['ingredient_id'],
-                '',
+                null,
                 (float) $formIngredient['amount'],
                 $formIngredient['units'],
                 (int) $formIngredient['sort'],
@@ -84,20 +73,22 @@ class CocktailController extends Controller
             $ingredients[] = $ingredient;
         }
 
+        $cocktailDTO = new CocktailDTO(
+            $request->post('name'),
+            $request->post('instructions'),
+            $request->user()->id,
+            $request->post('description'),
+            $request->post('source'),
+            $request->post('garnish'),
+            $request->post('glass_id') ? (int) $request->post('glass_id') : null,
+            $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
+            $request->post('tags', []),
+            $ingredients,
+            $request->post('images', []),
+        );
+
         try {
-            $cocktail = $cocktailService->createCocktail(
-                $request->post('name'),
-                $request->post('instructions'),
-                $ingredients,
-                $request->user()->id,
-                $request->post('description'),
-                $request->post('garnish'),
-                $request->post('source'),
-                $request->post('images', []),
-                $request->post('tags', []),
-                $request->post('glass_id') ? (int) $request->post('glass_id') : null,
-                $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
-            );
+            $cocktail = $cocktailService->createCocktail($cocktailDTO);
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
         }
@@ -123,9 +114,9 @@ class CocktailController extends Controller
 
         $ingredients = [];
         foreach ($request->post('ingredients') as $formIngredient) {
-            $ingredient = new IngredientDataObject(
+            $ingredient = new IngredientDTO(
                 (int) $formIngredient['ingredient_id'],
-                '',
+                null,
                 (float) $formIngredient['amount'],
                 $formIngredient['units'],
                 (int) $formIngredient['sort'],

@@ -14,6 +14,7 @@ use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Models\Image;
 
 class CocktailControllerTest extends TestCase
 {
@@ -189,6 +190,9 @@ class CocktailControllerTest extends TestCase
             ->create();
         $ing2 = Ingredient::factory()->create();
         $ing3 = Ingredient::factory()->create();
+        $method = CocktailMethod::factory()->create();
+        $glass = Glass::factory()->create();
+        $image = Image::factory()->create(['user_id' => auth()->user()->id]);
 
         $response = $this->postJson('/api/cocktails', [
             'name' => "Cocktail name",
@@ -196,7 +200,9 @@ class CocktailControllerTest extends TestCase
             'description' => "Cocktail description",
             'garnish' => "Lemon peel",
             'source' => "https://karlomikus.com",
-            'images' => [],
+            'cocktail_method_id' => $method->id,
+            'glass_id' => $glass->id,
+            'images' => [$image->id],
             'tags' => ['Test', 'Gin'],
             'ingredients' => [
                 [
@@ -208,7 +214,7 @@ class CocktailControllerTest extends TestCase
                 ],
                 [
                     'ingredient_id' => $ing2->id,
-                    'amount' => 30,
+                    'amount' => 45,
                     'units' => 'ml',
                     'optional' => false,
                     'sort' => 2,
@@ -223,14 +229,38 @@ class CocktailControllerTest extends TestCase
             fn (AssertableJson $json) =>
             $json
                 ->has('data.id')
+                ->has('data.created_at')
+                ->where('data.slug', 'cocktail-name')
                 ->where('data.name', 'Cocktail name')
                 ->where('data.description', 'Cocktail description')
                 ->where('data.garnish', 'Lemon peel')
-                ->has('data.ingredients', 2, function (AssertableJson $jsonIng) {
-                    $jsonIng
-                        ->has('ingredient_id')
-                        ->etc();
-                })
+                ->where('data.has_public_link', false)
+                ->where('data.public_id', null)
+                ->where('data.main_image_id', $image->id)
+                ->where('data.user_id', auth()->user()->id)
+                ->where('data.user_rating', null)
+                ->where('data.average_rating', 0)
+                ->where('data.source', 'https://karlomikus.com')
+                ->where('data.method.id', $method->id)
+                ->where('data.glass.id', $glass->id)
+
+                ->where('data.ingredients.0.ingredient_id', $gin->id)
+                ->where('data.ingredients.0.amount', 30)
+                ->where('data.ingredients.0.units', 'ml')
+                ->where('data.ingredients.0.optional', false)
+                ->where('data.ingredients.0.sort', 1)
+                ->has('data.ingredients.0.substitutes', 0)
+
+                ->where('data.ingredients.1.ingredient_id', $ing2->id)
+                ->where('data.ingredients.1.amount', 45)
+                ->where('data.ingredients.1.units', 'ml')
+                ->where('data.ingredients.1.optional', false)
+                ->where('data.ingredients.1.sort', 2)
+                ->has('data.ingredients.1.substitutes', 1)
+
+                ->has('data.images', 1)
+                ->has('data.tags', 2)
+                ->has('data.ingredients', 2)
                 ->etc()
         );
 

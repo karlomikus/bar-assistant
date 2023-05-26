@@ -14,10 +14,10 @@ final class IngredientQueryFilter extends QueryBuilder
     {
         parent::__construct(Ingredient::query());
 
-        $this->with('category', 'images')
-            ->withCount('cocktails')
+        $this
             ->allowedFilters([
                 AllowedFilter::partial('name'),
+                AllowedFilter::beginsWithStrict('name_exact', 'name'),
                 AllowedFilter::exact('category_id', 'ingredient_category_id'),
                 AllowedFilter::partial('origin'),
                 AllowedFilter::exact('user_id'),
@@ -36,6 +36,8 @@ final class IngredientQueryFilter extends QueryBuilder
                 }),
             ])
             ->defaultSort('name')
-            ->allowedSorts('name', 'created_at', 'strength');
+            ->allowedSorts('name', 'created_at', 'strength')
+            ->with('category', 'images')
+            ->withCount('cocktails');
     }
 }

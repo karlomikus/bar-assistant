@@ -31,47 +31,26 @@ class CocktailService
     /**
      * Create a new cocktail
      *
-     * @param string $name
-     * @param string $instructions
-     * @param array<Ingredient> $ingredients
-     * @param int $userId
-     * @param string|null $description
-     * @param string|null $garnish
-     * @param string|null $cocktailSource
-     * @param array<int> $images
-     * @param array<string> $tags
-     * @param int|null $glassId
-     * @param int|null $cocktailMethodId
+     * @param CocktailDTO $cocktailDTO
      * @return \Kami\Cocktail\Models\Cocktail
      */
-    public function createCocktail(
-        string $name,
-        string $instructions,
-        array $ingredients,
-        int $userId,
-        ?string $description = null,
-        ?string $garnish = null,
-        ?string $cocktailSource = null,
-        array $images = [],
-        array $tags = [],
-        ?int $glassId = null,
-        ?int $cocktailMethodId = null
-    ): Cocktail {
+    public function createCocktail(CocktailDTO $cocktailDTO): Cocktail
+    {
         $this->db->beginTransaction();
 
         try {
             $cocktail = new Cocktail();
-            $cocktail->name = $name;
-            $cocktail->instructions = $instructions;
-            $cocktail->description = $description;
-            $cocktail->garnish = $garnish;
-            $cocktail->source = $cocktailSource;
-            $cocktail->user_id = $userId;
-            $cocktail->glass_id = $glassId;
-            $cocktail->cocktail_method_id = $cocktailMethodId;
+            $cocktail->name = $cocktailDTO->name;
+            $cocktail->instructions = $cocktailDTO->instructions;
+            $cocktail->description = $cocktailDTO->description;
+            $cocktail->garnish = $cocktailDTO->garnish;
+            $cocktail->source = $cocktailDTO->source;
+            $cocktail->user_id = $cocktailDTO->userId;
+            $cocktail->glass_id = $cocktailDTO->glassId;
+            $cocktail->cocktail_method_id = $cocktailDTO->methodId;
             $cocktail->save();
 
-            foreach ($ingredients as $ingredient) {
+            foreach ($cocktailDTO->ingredients as $ingredient) {
                 if (!($ingredient instanceof Ingredient)) {
                     $this->log->warning('[COCKTAIL_SERVICE] Ingredient in ingredients array is of wrong type!');
                     continue;
@@ -95,7 +74,7 @@ class CocktailService
             }
 
             $dbTags = [];
-            foreach ($tags as $tagName) {
+            foreach ($cocktailDTO->tags as $tagName) {
                 $tag = Tag::firstOrNew([
                     'name' => trim($tagName),
                 ]);
@@ -113,9 +92,9 @@ class CocktailService
 
         $this->db->commit();
 
-        if (count($images) > 0) {
+        if (count($cocktailDTO->images) > 0) {
             try {
-                $imageModels = Image::findOrFail($images);
+                $imageModels = Image::findOrFail($cocktailDTO->images);
                 $cocktail->attachImages($imageModels);
             } catch (Throwable $e) {
                 $this->log->error('[COCKTAIL_SERVICE] Image attach error. ' . $e->getMessage());
@@ -124,7 +103,7 @@ class CocktailService
             }
         }
 
-        $this->log->info('[COCKTAIL_SERVICE] Cocktail "' . $name . '" created with id: ' . $cocktail->id);
+        $this->log->info('[COCKTAIL_SERVICE] Cocktail "' . $cocktailDTO->name . '" created with id: ' . $cocktail->id);
 
         // Refresh model for response
         $cocktail->refresh();
@@ -132,23 +111,6 @@ class CocktailService
         $cocktail->save();
 
         return $cocktail;
-    }
-
-    public function createCocktailFromObject(CocktailDTO $cocktailValueObject): Cocktail
-    {
-        return $this->createCocktail(
-            $cocktailValueObject->name,
-            $cocktailValueObject->instructions,
-            $cocktailValueObject->ingredients,
-            $cocktailValueObject->userId,
-            $cocktailValueObject->description,
-            $cocktailValueObject->garnish,
-            $cocktailValueObject->source,
-            $cocktailValueObject->images,
-            $cocktailValueObject->tags,
-            $cocktailValueObject->glassId,
-            $cocktailValueObject->methodId
-        );
     }
 
     /**

@@ -18,7 +18,8 @@ use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\DataObjects\Cocktail\Image;
 use Kami\Cocktail\Exceptions\ImportException;
 use Kami\Cocktail\Services\IngredientService;
-use Kami\Cocktail\DataObjects\Cocktail\Ingredient;
+use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
+use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDTO;
 
 class ImportService
 {
@@ -84,7 +85,7 @@ class ImportService
                 $ingredientId = $newIngredient->id;
             }
 
-            $ingredient = new Ingredient(
+            $ingredient = new IngredientDTO(
                 $ingredientId,
                 $scrapedIngredient['name'],
                 $scrapedIngredient['amount'],
@@ -98,19 +99,21 @@ class ImportService
             $sort++;
         }
 
-        // Add cocktail
-        return $this->cocktailService->createCocktail(
+        $cocktailDTO = new CocktailDTO(
             $sourceData['name'],
             $sourceData['instructions'],
-            $ingredients,
             1,
             $sourceData['description'],
-            $sourceData['garnish'],
             $sourceData['source'],
-            $cocktailImages,
+            $sourceData['garnish'],
+            $glassId,
+            null,
             $sourceData['tags'],
-            $glassId
+            $ingredients,
+            $cocktailImages,
         );
+
+        return $this->cocktailService->createCocktail($cocktailDTO);
     }
 
     /**

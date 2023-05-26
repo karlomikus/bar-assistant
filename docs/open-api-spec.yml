@@ -469,6 +469,9 @@ paths:
           properties:
             name:
              type: string
+             example: "whi"
+            name_exact:
+             type: string
              example: "whiskey"
             category_id:
              type: integer

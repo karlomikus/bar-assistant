@@ -172,9 +172,9 @@ class Cocktail extends Model
     /**
      * Include ratings information
      *
-     * @param Builder $query
+     * @param Builder<Cocktail> $query
      * @param int $userId
-     * @return Builder
+     * @return Builder<Cocktail>
      */
     public function scopeWithRatings(Builder $query, int $userId): Builder
     {

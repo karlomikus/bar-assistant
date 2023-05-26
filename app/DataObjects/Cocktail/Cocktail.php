@@ -12,7 +12,6 @@ class Cocktail
      * @param array<int> $images
      */
     public function __construct(
-        public readonly ?int $id,
         public readonly string $name,
         public readonly string $instructions,
         public readonly int $userId,

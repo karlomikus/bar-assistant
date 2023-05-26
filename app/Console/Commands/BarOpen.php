@@ -453,7 +453,7 @@ class BarOpen extends Command
                             $substituteIngredientId = $dbIngredients->filter(fn ($item) => $item->name === strtolower($subName))->first()->id ?? null;
                             if (!$substituteIngredientId) {
                                 $this->info('Adding ' . $subName . ' to uncategorized ingredients.');
-                                $substituteIngredientId = $this->ingredientService->createIngredient($subName, 1, 1)?->id ?? null;
+                                $substituteIngredientId = $this->ingredientService->createIngredient($subName, 1, 1)->id;
                             }
 
                             $substituteIngredientIds[] = $substituteIngredientId;
@@ -473,8 +473,7 @@ class BarOpen extends Command
                     $sort++;
                 }
 
-                $this->cocktailService->createCocktailFromObject(new CocktailDTO(
-                    null,
+                $this->cocktailService->createCocktail(new CocktailDTO(
                     $sCocktail['name'],
                     $sCocktail['instructions'],
                     1,

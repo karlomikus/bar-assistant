@@ -10,14 +10,16 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Kami\Cocktail\Services\CocktailService;
 
+/**
+ * @mixin \Kami\Cocktail\Models\Cocktail
+ */
 final class CocktailQueryFilter extends QueryBuilder
 {
     public function __construct(CocktailService $cocktailService)
     {
         parent::__construct(Cocktail::query());
 
-        $this->with('ingredients.ingredient', 'images', 'tags', 'method')
-            ->withRatings($this->request->user()->id)
+        $this
             ->allowedFilters([
                 AllowedFilter::partial('name'),
                 AllowedFilter::partial('ingredient_name', 'ingredients.ingredient.name'),
@@ -40,12 +42,14 @@ final class CocktailQueryFilter extends QueryBuilder
             ->allowedSorts([
                 'name',
                 'created_at',
-                AllowedSort::callback('favorited_at', function($query, bool $descending) {
+                AllowedSort::callback('favorited_at', function ($query, bool $descending) {
                     $direction = $descending ? 'DESC' : 'ASC';
 
                     $query->leftJoin('cocktail_favorites AS cf', 'cf.cocktail_id', '=', 'cocktails.id')
                         ->orderBy('cf.updated_at', $direction);
                 })
-            ]);
+            ])
+            ->with('ingredients.ingredient', 'images', 'tags', 'method')
+            ->withRatings($this->request->user()->id);
     }
 }
