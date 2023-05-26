@@ -429,7 +429,6 @@ class BarOpen extends Command
             DB::beginTransaction();
             try {
                 $imageDTO = new ImageDTO(
-                    null,
                     ImageManagerStatic::make(
                         Storage::disk('bar-assistant')->path('cocktails/' . Str::slug($sCocktail['name']) . '.jpg')
                     ),

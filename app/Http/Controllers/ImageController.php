@@ -33,7 +33,6 @@ class ImageController extends Controller
         foreach ($request->images as $formImage) {
             try {
                 $image = new ImageDTO(
-                    null,
                     ImageManagerStatic::make($formImage['image']),
                     $formImage['copyright'],
                     (int) $formImage['sort'],
@@ -59,13 +58,12 @@ class ImageController extends Controller
         }
 
         $imageDTO = new ImageDTO(
-            $image->id,
             null,
             $request->input('copyright'),
             (int) $request->input('sort', 1)
         );
 
-        $image = $imageservice->updateImage($imageDTO);
+        $image = $imageservice->updateImage($id, $imageDTO);
 
         return new ImageResource($image);
     }

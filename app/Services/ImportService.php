@@ -46,7 +46,6 @@ class ImportService
         if ($sourceData['image']['url']) {
             try {
                 $imageDTO = new Image(
-                    null,
                     ImageManagerStatic::make($sourceData['image']['url']),
                     $sourceData['image']['copyright'] ?? null
                 );

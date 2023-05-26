@@ -82,12 +82,13 @@ class ImageService
     /**
      * Update image by id
      *
+     * @param int $imageId
      * @param \Kami\Cocktail\DataObjects\Cocktail\Image $imageDTO Image object
      * @return \Kami\Cocktail\Models\Image Database image model
      */
-    public function updateImage(ImageDTO $imageDTO): Image
+    public function updateImage(int $imageId, ImageDTO $imageDTO): Image
     {
-        $image = Image::findOrFail($imageDTO->id);
+        $image = Image::findOrFail($imageId);
 
         if ($imageDTO->copyright) {
             $image->copyright = $imageDTO->copyright;
