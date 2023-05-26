@@ -21,7 +21,7 @@ use Kami\Cocktail\Models\IngredientCategory;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Search\SearchActionsAdapter;
 use Kami\Cocktail\Search\SearchActionsContract;
-use Kami\Cocktail\DataObjects\Cocktail\Image as ImageDTO;
+use Kami\Cocktail\DataObjects\Image as ImageDTO;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDTO;
 

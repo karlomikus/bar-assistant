@@ -7,6 +7,7 @@ use Spectator\Spectator;
 use Kami\Cocktail\Models\Tag;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Glass;
+use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\CocktailMethod;
@@ -14,7 +15,6 @@ use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Kami\Cocktail\Models\Image;
 
 class CocktailControllerTest extends TestCase
 {

@@ -11,10 +11,10 @@ use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Kami\Cocktail\DataObjects\Image as ImageDTO;
 use Intervention\Image\Image as InterventionImage;
 use Kami\Cocktail\Exceptions\ImageUploadException;
 use function Thumbhash\extract_size_and_pixels_with_gd;
-use Kami\Cocktail\DataObjects\Cocktail\Image as ImageDTO;
 
 class ImageService
 {
@@ -29,7 +29,7 @@ class ImageService
     /**
      * Uploads and saves an image with filepath
      *
-     * @param array<\Kami\Cocktail\DataObjects\Cocktail\Image> $requestImages
+     * @param array<ImageDTO> $requestImages
      * @param int $userId
      * @return array<\Kami\Cocktail\Models\Image>
      * @throws ImageUploadException
@@ -83,7 +83,7 @@ class ImageService
      * Update image by id
      *
      * @param int $imageId
-     * @param \Kami\Cocktail\DataObjects\Cocktail\Image $imageDTO Image object
+     * @param ImageDTO $imageDTO Image object
      * @return \Kami\Cocktail\Models\Image Database image model
      */
     public function updateImage(int $imageId, ImageDTO $imageDTO): Image

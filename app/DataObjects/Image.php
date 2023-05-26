@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\DataObjects\Cocktail;
+namespace Kami\Cocktail\DataObjects;
 
 use Intervention\Image\Image as InterventionImage;
 
