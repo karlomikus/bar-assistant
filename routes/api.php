@@ -63,10 +63,11 @@ Route::middleware($authMiddleware)->group(function() {
     Route::post('/user', [ProfileController::class, 'update']);
 
     Route::prefix('shelf')->group(function() {
-        Route::get('/', [ShelfController::class, 'index']);
-        Route::post('/', [ShelfController::class, 'batch']);
-        Route::post('/{ingredientId}', [ShelfController::class, 'save']);
-        Route::delete('/{ingredientId}', [ShelfController::class, 'delete']);
+        Route::get('/cocktails', [ShelfController::class, 'cocktails']);
+        Route::get('/ingredients', [ShelfController::class, 'ingredients']);
+        Route::post('/ingredients', [ShelfController::class, 'batch']);
+        Route::post('/ingredients/{ingredientId}', [ShelfController::class, 'save']);
+        Route::delete('/ingredients/{ingredientId}', [ShelfController::class, 'delete']);
     });
 
     Route::prefix('ingredients')->group(function() {
@@ -87,7 +88,6 @@ Route::middleware($authMiddleware)->group(function() {
 
     Route::prefix('cocktails')->group(function() {
         Route::get('/', [CocktailController::class, 'index'])->name('cocktails.index');
-        Route::get('/user-shelf', [CocktailController::class, 'userShelf'])->name('cocktails.user-shelf');
         Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show');
         Route::post('/{id}/toggle-favorite', [CocktailController::class, 'toggleFavorite'])->name('cocktails.favorite');
         Route::post('/', [CocktailController::class, 'store'])->name('cocktails.store');

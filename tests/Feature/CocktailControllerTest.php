@@ -315,15 +315,6 @@ class CocktailControllerTest extends TestCase
         $response->assertValidResponse(204);
     }
 
-    public function test_user_shelf_cocktails_response()
-    {
-        $response = $this->getJson('/api/cocktails/user-shelf');
-
-        $response->assertStatus(200);
-
-        $response->assertValidResponse(200);
-    }
-
     public function test_make_cocktail_public_link_response()
     {
         $cocktail = Cocktail::factory()->create();

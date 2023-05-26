@@ -167,21 +167,6 @@ class CocktailController extends Controller
     }
 
     /**
-     * Show all cocktails that current user can make with
-     * the ingredients he added to his shelf
-     */
-    public function userShelf(CocktailService $cocktailService, Request $request): JsonResponse
-    {
-        $limit = $request->has('limit') ? (int) $request->get('limit') : null;
-
-        $cocktailIds = $cocktailService->getCocktailsByUserIngredients($request->user()->id, $limit);
-
-        return response()->json([
-            'data' => $cocktailIds
-        ]);
-    }
-
-    /**
      * Favorite a cocktail by id
      */
     public function toggleFavorite(CocktailService $cocktailService, Request $request, int $id): JsonResource

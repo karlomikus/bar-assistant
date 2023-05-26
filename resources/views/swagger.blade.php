@@ -14,7 +14,7 @@
 <script src="https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui-bundle.js"></script>
 <script>
     var swaggerUIOptions = {
-      url: "{{ route('openapi-spec') }}",
+      url: "{{ config('app.url') }}/api/server/openapi",
       dom_id: '#ui-wrapper-new', // Determine what element to load swagger ui
       docExpansion: 'list',
       deepLinking: true, // Enables dynamic deep linking for tags and operations

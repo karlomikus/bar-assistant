@@ -391,22 +391,7 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
-  /cocktails/random:
-    get:
-      tags:
-        - "Cocktails"
-      summary: 'Get a random cocktail'
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                    data:
-                      $ref: '#/components/schemas/Cocktail'
-  /cocktails/user-shelf:
+  /shelf/cocktails:
     get:
       parameters:
         - in: query
@@ -417,8 +402,8 @@ paths:
             example: 20
           description: 'Limit number of shown cocktails'
       tags:
-        - "Cocktails"
-      summary: 'Get a list of cocktails that authorized user can make'
+        - "User shelf"
+      summary: 'Get a list of cocktail ids that authorized user can make'
       responses:
         '200':
           description: Successful response
@@ -430,31 +415,8 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Cocktail'
-  /cocktails/user-favorites:
-    get:
-      parameters:
-        - name: limit
-          in: query
-          description: Limit the total number of fetched cocktails
-          schema:
-            type: integer
-            default: 100
-      tags:
-        - "Cocktails"
-      summary: 'Get a list of cocktails that authorized user added to his favorites'
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Cocktail'
+                      type: integer
+                      example: 1
   /ingredients:
     get:
       parameters:
@@ -930,7 +892,7 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
-  /shelf:
+  /shelf/ingredients:
     get:
       tags:
         - "User shelf"
@@ -976,7 +938,7 @@ paths:
                       $ref: '#/components/schemas/UserIngredient'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
-  /shelf/{ingredientId}:
+  /shelf/ingredients/{ingredientId}:
     parameters:
       - in: path
         name: ingredientId
@@ -2247,12 +2209,12 @@ components:
         id:
           type: integer
           example: 1
-        user_id:
-          type: integer
-          example: 1
         ingredient_id:
           type: integer
           example: 1
+        ingredient_slug:
+          type: string
+          example: "coffee"
     Tag:
       type: object
       properties:

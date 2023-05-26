@@ -11,9 +11,14 @@
 - Endpoint `/cocktails/user-shelf` now returns only cocktail ids
     - **Upgrade guide**: Available via `/cocktails?filter[on_shelf]=true`
 - Removed `/ingredients/find` endpoint
-    - **Upgrade guide**: Available via `/ingredients?filter[name]=whiskey`
+    - **Upgrade guide**: Available via `/ingredients?filter[name_exact]=whiskey`
 - Removed `/cocktails/random` endpoint
-    - **Upgrade guide**: n/a
+- Updated `/shelf` endpoints to make more sense
+    - Moved GET `/cocktails/user-shelf` endpoint to GET `/shelf/cocktails`
+    - Moved GET `/shelf` endpoint to GET `/shelf/ingredients`
+    - Moved POST `/shelf` endpoint to POST `/shelf/ingredients`
+    - Moved POST `/ingredients/{ingredientId}` endpoint to POST `/shelf/ingredients/{ingredientId}`
+    - Moved DELETE `/ingredients/{ingredientId}` endpoint to DELETE `/shelf/ingredients/{ingredientId}`
 - Removed `site_search_index` indexing
     - **Upgrade guide**: If possible migrate to federated/multi-index search
 - Redis is now mandatory dependency
@@ -21,7 +26,7 @@
 - Removed `bar:dump-search` command
     - **Upgrade guide**: Follow migration/upgrade guide for your selected search driver
 - Removed `id` from `CocktailIngredient` schema
-    - **Upgrade guide**: n/a
+- Updated `UserIngredient` schema
 
 ## New
 - Meilisearch is no longer mandatory dependency for API to work
