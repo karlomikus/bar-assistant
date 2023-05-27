@@ -39,6 +39,12 @@
 - Added `DISABLE_LOGIN` environment variable
     - This will remove the need to authenticate with token to access the api
 
+## Fixes
+- Fixed openapi swagger docs url
+
+## Changes
+- Enabled xdebug in local development dockerfile
+
 # v1.10.2
 ## Fixes
 - Fix missing array key error on public pages

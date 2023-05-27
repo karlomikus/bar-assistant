@@ -16,6 +16,7 @@ final class IngredientQueryFilter extends QueryBuilder
 
         $this
             ->allowedFilters([
+                AllowedFilter::exact('id'),
                 AllowedFilter::partial('name'),
                 AllowedFilter::beginsWithStrict('name_exact', 'name'),
                 AllowedFilter::exact('category_id', 'ingredient_category_id'),

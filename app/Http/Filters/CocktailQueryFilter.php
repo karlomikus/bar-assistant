@@ -21,6 +21,7 @@ final class CocktailQueryFilter extends QueryBuilder
 
         $this
             ->allowedFilters([
+                AllowedFilter::exact('id'),
                 AllowedFilter::partial('name'),
                 AllowedFilter::partial('ingredient_name', 'ingredients.ingredient.name'),
                 AllowedFilter::exact('ingredient_id', 'ingredients.ingredient.id'),

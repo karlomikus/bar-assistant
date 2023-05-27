@@ -121,6 +121,9 @@ paths:
         schema:
           type: object
           properties:
+            id:
+              type: string
+              example: 3,4,5
             name:
               type: string
               example: "old"
@@ -131,16 +134,16 @@ paths:
               type: integer
               example: 3
             tag_id:
-              type: integer
+              type: string
               example: 4
             user_id:
-              type: integer
+              type: string
               example: 3
             glass_id:
-              type: integer
+              type: string
               example: 1
             cocktail_method_id:
-              type: integer
+              type: string
               example: 1
             favorites:
               type: boolean
@@ -429,6 +432,9 @@ paths:
         schema:
           type: object
           properties:
+            id:
+             type: string
+             example: 1,2
             name:
              type: string
              example: "whi"
@@ -436,7 +442,7 @@ paths:
              type: string
              example: "whiskey"
             category_id:
-             type: integer
+             type: string
              example: 1
             origin:
              type: string
