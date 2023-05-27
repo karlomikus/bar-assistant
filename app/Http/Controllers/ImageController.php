@@ -58,9 +58,9 @@ class ImageController extends Controller
         }
 
         $imageDTO = new ImageDTO(
-            null,
-            $request->input('copyright'),
-            (int) $request->input('sort', 1)
+            $request->hasFile('image') ? ImageManagerStatic::make($request->file('image')) : null,
+            $request->has('copyright') ? $request->input('copyright') : null,
+            $request->has('sort') ? (int) $request->input('sort') : null,
         );
 
         $image = $imageservice->updateImage($id, $imageDTO);

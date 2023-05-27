@@ -42,23 +42,9 @@ class ImageService
                 continue;
             }
 
-            $filename = Str::random(40);
-            /** @phpstan-ignore-next-line */
-            $fileExtension = $dtoImage->file->extension ?? 'jpg';
-            $filepath = 'temp/' . $filename . '.' . $fileExtension;
-
-            $thumbHash = null;
             try {
-                $thumbHash = $this->generateThumbHash($dtoImage->file);
-            } catch (Throwable $e) {
-                $this->log->info('[IMAGE_SERVICE] ThumbHash Error | ' . $e->getMessage());
-                continue;
-            }
-
-            try {
-                $this->disk->put($filepath, (string) $dtoImage->file->encode());
-            } catch (Throwable $e) {
-                $this->log->info('[IMAGE_SERVICE] ' . $e->getMessage());
+                [$thumbHash, $filepath, $fileExtension] = $this->processImageFile($dtoImage->file);
+            } catch (Throwable) {
                 continue;
             }
 
@@ -89,6 +75,25 @@ class ImageService
     public function updateImage(int $imageId, ImageDTO $imageDTO): Image
     {
         $image = Image::findOrFail($imageId);
+
+        if ($imageDTO->file) {
+            $oldFilePath = $image->file_path;
+            try {
+                [$thumbHash, $filepath, $fileExtension] = $this->processImageFile($imageDTO->file);
+
+                $image->file_path = $filepath;
+                $image->placeholder_hash = $thumbHash;
+                $image->file_extension = $fileExtension;
+            } catch (Throwable $e) {
+                $this->log->info('[IMAGE_SERVICE] File upload error | ' . $e->getMessage());
+            }
+
+            try {
+                $this->disk->delete($oldFilePath);
+            } catch (Throwable $e) {
+                $this->log->info('[IMAGE_SERVICE] File delete error | ' . $e->getMessage());
+            }
+        }
 
         if ($imageDTO->copyright) {
             $image->copyright = $imageDTO->copyright;
@@ -133,5 +138,32 @@ class ImageService
         $key = Thumbhash::convertHashToString($hash);
 
         return $key;
+    }
+
+    private function processImageFile(InterventionImage $image, ?string $filename = null): array
+    {
+        $filename = $filename ?? Str::random(40);
+        /** @phpstan-ignore-next-line */
+        $fileExtension = $image->extension ?? 'jpg';
+        $filepath = 'temp/' . $filename . '.' . $fileExtension;
+
+        $thumbHash = null;
+        try {
+            $thumbHash = $this->generateThumbHash($image);
+        } catch (Throwable $e) {
+            $this->log->info('[IMAGE_SERVICE] ThumbHash Error | ' . $e->getMessage());
+
+            throw $e;
+        }
+
+        try {
+            $this->disk->put($filepath, (string) $image->encode());
+        } catch (Throwable $e) {
+            $this->log->info('[IMAGE_SERVICE] ' . $e->getMessage());
+
+            throw $e;
+        }
+
+        return [$thumbHash, $filepath, $fileExtension];
     }
 }

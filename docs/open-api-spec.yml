@@ -730,19 +730,25 @@ paths:
                     $ref: '#/components/schemas/Image'
         '404':
           $ref: '#/components/responses/NotFound'
-    put:
+    post:
       tags:
         - Images
-      summary: Update image copyright
+      summary: Update image information
       requestBody:
         content:
           multipart/form-data:
             schema:
               type: object
               properties:
+                image:
+                  type: string
+                  format: binary
                 copyright:
                   type: string
                   example: 'Copyright of the image'
+                sort:
+                  type: integer
+                  example: 2
       responses:
         '200':
           description: Successful response
@@ -1831,9 +1837,8 @@ components:
           nullable: true
         images:
           type: array
-          example: [1, 2, 3]
           items:
-            type: integer
+            $ref: '#/components/schemas/Image'
         parent_ingredient_id:
           type: integer
           example: 1
@@ -2200,8 +2205,13 @@ components:
               image:
                 type: string
                 format: binary
+              sort:
+                type: integer
+                nullable: true
+                example: 1
               copyright:
                 type: string
+                example: "Wikipedia"
                 nullable: true
     UserIngredient:
       type: object

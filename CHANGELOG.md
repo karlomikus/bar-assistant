@@ -19,6 +19,9 @@
     - Moved POST `/shelf` endpoint to POST `/shelf/ingredients`
     - Moved POST `/ingredients/{ingredientId}` endpoint to POST `/shelf/ingredients/{ingredientId}`
     - Moved DELETE `/ingredients/{ingredientId}` endpoint to DELETE `/shelf/ingredients/{ingredientId}`
+- Moved PUT `/images/{id}` endpoint to POST `/images/{id}`
+    - You can now use this method as a pseudo PATCH operation on image resource
+    - You can now update the image file
 - Removed `site_search_index` indexing
     - **Upgrade guide**: If possible migrate to federated/multi-index search
 - Redis is now mandatory dependency
