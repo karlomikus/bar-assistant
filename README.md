@@ -64,6 +64,20 @@ $ docker compose exec app php artisan migrate
 $ docker compose exec app php artisan bar:open
 ```
 
+Xdebug vscode launch config:
+```json
+{
+    "name": "Listen for Xdebug",
+    "type": "php",
+    "request": "launch",
+    "port": 9003,
+    "hostname": "host.docker.internal",
+    "pathMappings": {
+        "/var/www/cocktails/": "${workspaceFolder}"
+    }
+}
+```
+
 ## License
 
 The Bar Assistant API is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
