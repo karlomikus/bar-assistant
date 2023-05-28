@@ -118,6 +118,60 @@ class ImageControllerTest extends TestCase
         Storage::disk('bar-assistant')->assertExists($response->json('data.2.file_path'));
     }
 
+    public function test_multiple_image_upload_fails()
+    {
+        Storage::fake('bar-assistant');
+        $response = $this->post('/api/images', [
+            'images' => [
+                [
+                    'image' => UploadedFile::fake()->create('image1.doc'),
+                    'copyright' => 'BA 1',
+                    'sort' => 1,
+                ]
+            ],
+        ], ['Accept' => 'application/json']);
+
+        $response->assertUnprocessable();
+    }
+
+    public function test_multiple_image_upload_by_url()
+    {
+        $response = $this->post('/api/images', [
+            'images' => [
+                [
+                    'image_url' => 'https://raw.githubusercontent.com/karlomikus/bar-assistant/master/resources/art/readme-header.png',
+                    'copyright' => 'BA 1',
+                    'sort' => 1,
+                ],
+            ],
+        ]);
+
+        $response->assertJson(function (AssertableJson $json) {
+            $json->has('data', 1, function ($json) {
+                $json->has('id')
+                    ->has('file_path')
+                    ->where('copyright', 'BA 1')
+                    ->where('sort', 1)
+                    ->etc();
+            });
+        });
+    }
+
+    public function test_multiple_image_upload_by_url_fails()
+    {
+        $response = $this->post('/api/images', [
+            'images' => [
+                [
+                    'image_url' => 'test',
+                    'copyright' => 'BA 1',
+                    'sort' => 1,
+                ],
+            ],
+        ], ['Accept' => 'application/json']);
+
+        $response->assertUnprocessable();
+    }
+
     public function test_image_thumb()
     {
         Storage::fake('bar-assistant');
@@ -169,5 +223,33 @@ class ImageControllerTest extends TestCase
         $this->assertNotSame('temp/image1.jpg', $response->json('data.file_path'));
         $response->assertJsonPath('data.copyright', 'New copyright');
         $response->assertJsonPath('data.sort', 1);
+    }
+
+    public function test_image_update_fails()
+    {
+        Storage::fake('bar-assistant');
+        $imageFile = UploadedFile::fake()->image('image1.jpg');
+        $cocktailImage = Image::factory()->for(Cocktail::factory(), 'imageable')->create([
+            'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'bar-assistant'),
+            'file_extension' => $imageFile->extension(),
+            'copyright' => 'initial',
+            'sort' => 7,
+            'user_id' => auth()->user()->id
+        ]);
+
+        $response = $this->post('/api/images/' . $cocktailImage->id, [
+            'image' => UploadedFile::fake()->create('new_image.doc')
+        ], ['Accept' => 'application/json']);
+        $response->assertUnprocessable();
+
+        $response = $this->post('/api/images/' . $cocktailImage->id, [
+            'image_url' => 'not-url'
+        ], ['Accept' => 'application/json']);
+        $response->assertUnprocessable();
+
+        $response = $this->post('/api/images/' . $cocktailImage->id, [
+            'sort' => 'one'
+        ], ['Accept' => 'application/json']);
+        $response->assertUnprocessable();
     }
 }

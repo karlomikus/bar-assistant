@@ -17,10 +17,11 @@ use Kami\Cocktail\Http\Requests\ImageRequest;
 use Kami\Cocktail\Http\Resources\ImageResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\DataObjects\Image as ImageDTO;
+use Kami\Cocktail\Http\Requests\ImageUpdateRequest;
 
 class ImageController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResource
     {
         if (!$request->user()->isAdmin()) {
             abort(403);
@@ -42,9 +43,15 @@ class ImageController extends Controller
     {
         $images = [];
         foreach ($request->images as $formImage) {
+            if (isset($formImage['image'])) {
+                $imageSource = $formImage['image'];
+            } else {
+                $imageSource = $formImage['image_url'];
+            }
+
             try {
                 $image = new ImageDTO(
-                    ImageManagerStatic::make($formImage['image']),
+                    ImageManagerStatic::make($imageSource),
                     $formImage['copyright'],
                     (int) $formImage['sort'],
                 );
@@ -60,7 +67,7 @@ class ImageController extends Controller
         return ImageResource::collection($images);
     }
 
-    public function update(int $id, ImageService $imageservice, Request $request): JsonResource
+    public function update(int $id, ImageService $imageservice, ImageUpdateRequest $request): JsonResource
     {
         $image = Image::findOrFail($id);
 

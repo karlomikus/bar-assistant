@@ -39,6 +39,7 @@
 - Added `DISABLE_LOGIN` environment variable
     - This will remove the need to authenticate with token to access the api
 - Added GET `/images` endpoint
+- `ImageRequest` schema now supports `image_url` parameter to upload image from URL
 
 ## Fixes
 - Fixed openapi swagger docs url
