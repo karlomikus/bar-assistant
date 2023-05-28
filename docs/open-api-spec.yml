@@ -689,6 +689,26 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /images:
+    get:
+      tags:
+        - Images
+      summary: Paginated list of images
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Image'
+                  - $ref: '#/components/schemas/PaginationResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
     post:
       tags:
         - Images
@@ -1937,6 +1957,9 @@ components:
         version:
           type: string
           example: 'v1.0.0'
+        type:
+          type: string
+          example: 'local'
         search_host:
           type: string
           format: hostname
@@ -1963,9 +1986,6 @@ components:
         sort:
           type: integer
           example: 1
-        last_modified:
-          type: string
-          example: '2022-11-17T09:52:48.000000Z'
         placeholder_hash:
           type: string
           nullable: true

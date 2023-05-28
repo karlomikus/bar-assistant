@@ -20,6 +20,17 @@ use Kami\Cocktail\DataObjects\Image as ImageDTO;
 
 class ImageController extends Controller
 {
+    public function index(Request $request)
+    {
+        if (!$request->user()->isAdmin()) {
+            abort(403);
+        }
+
+        $images = Image::orderBy('created_at')->paginate($request->get('per_page', 15));
+
+        return ImageResource::collection($images);
+    }
+
     public function show(int $id): JsonResource
     {
         $image = Image::findOrFail($id);

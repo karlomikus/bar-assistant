@@ -98,6 +98,7 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('images')->group(function() {
+        Route::get('/', [ImageController::class, 'index']);
         Route::get('/{id}', [ImageController::class, 'show']);
         // Route::get('/{id}/thumb', [ImageController::class, 'thumb']);
         Route::post('/', [ImageController::class, 'store']);

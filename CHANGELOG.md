@@ -8,8 +8,8 @@
     - **Upgrade guide**: Refer to API spec to see new parameters
 - Removed `/cocktails/user-favorites` endpoint
     - **Upgrade guide**: Available via `/cocktails?filter[favorites]=true`
-- Endpoint `/cocktails/user-shelf` now returns only cocktail ids
-    - **Upgrade guide**: Available via `/cocktails?filter[on_shelf]=true`
+- Updated `/cocktails/user-shelf` to return only cocktail ids and moved to `/shelf/cocktails`
+    - **Upgrade guide**: Old response schema available via `/cocktails?filter[on_shelf]=true`
 - Removed `/ingredients/find` endpoint
     - **Upgrade guide**: Available via `/ingredients?filter[name_exact]=whiskey`
 - Removed `/cocktails/random` endpoint
@@ -38,6 +38,7 @@
     - You can now use database as your search engine
 - Added `DISABLE_LOGIN` environment variable
     - This will remove the need to authenticate with token to access the api
+- Added GET `/images` endpoint
 
 ## Fixes
 - Fixed openapi swagger docs url
