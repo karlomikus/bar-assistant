@@ -9,16 +9,16 @@ use Kami\Cocktail\Utils;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Symfony\Component\Uid\Ulid;
-use Kami\Cocktail\SearchActions;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
-class Cocktail extends Model implements SiteSearchable
+class Cocktail extends Model
 {
     use HasFactory,
         Searchable,
@@ -33,51 +33,11 @@ class Cocktail extends Model implements SiteSearchable
 
     private string $appImagesDir = 'cocktails/';
 
-    /**
-     * Set average rating manually to skip unnecessary SQL queres
-     * @var null|float
-     */
-    private ?float $averageRating = null;
-
-    /**
-     * Set user rating manually to skip unnecessary SQL queres
-     * -1: (defualt) Value not set, will run SQL query
-     * null: No user rating
-     * 0: User rated with lowest rating
-     * @var null|int
-     */
-    private ?int $userRating = -1;
-
-    protected static function booted(): void
-    {
-        static::saved(function ($cocktail) {
-            SearchActions::updateSearchIndex($cocktail);
-        });
-
-        static::deleted(function ($cocktail) {
-            SearchActions::deleteSearchIndex($cocktail);
-        });
-    }
-
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
-    }
-
-    public function setAverageRating(?float $rating): self
-    {
-        $this->averageRating = $rating;
-
-        return $this;
-    }
-
-    public function setUserRating(?int $rating): self
-    {
-        $this->userRating = $rating;
-
-        return $this;
     }
 
     /**
@@ -193,40 +153,44 @@ class Cocktail extends Model implements SiteSearchable
         $collection->cocktails()->attach($this);
     }
 
-    public function getUserRating(?int $userId = null): ?int
+    /**
+     * Only user favorites
+     *
+     * @param Builder<Cocktail> $baseQuery
+     * @param int $userId
+     * @return Builder<Cocktail>
+     */
+    public function scopeUserFavorites(Builder $baseQuery, int $userId): Builder
     {
-        if ($userId && $this->userRating === -1) {
-            return $this->ratings()->where('user_id', $userId)->first()?->rating ?? null;
-        }
-
-        return $this->userRating ?? null;
+        return $baseQuery->whereIn('cocktails.id', function ($query) use ($userId) {
+            $query->select('cocktail_id')
+                ->from('cocktail_favorites')
+                ->where('user_id', $userId);
+        });
     }
 
-    public function getAverageRating(): int
+    /**
+     * Include ratings information
+     *
+     * @param Builder<Cocktail> $query
+     * @param int $userId
+     * @return Builder<Cocktail>
+     */
+    public function scopeWithRatings(Builder $query, int $userId): Builder
     {
-        // Query optimization step
-        if (isset($this->averageRating)) {
-            return (int) round($this->averageRating ?? 0);
-        }
-
-        return (int) round($this->ratings()->avg('rating') ?? 0);
-    }
-
-    public function toSiteSearchArray(): array
-    {
-        return [
-            'key' => 'co_' . (string) $this->id,
-            'id' => $this->id,
-            'slug' => $this->slug,
-            'name' => $this->name,
-            'image_url' => $this->getMainImageUrl(),
-            'type' => 'cocktail',
-        ];
+        return $query->addSelect([
+            'average_rating' => Rating::selectRaw('AVG(rating)')
+                ->whereColumn('rateable_id', 'cocktails.id')
+                ->whereColumn('rateable_type', Cocktail::class),
+            'user_rating' => Rating::select('rating')
+                ->whereColumn('rateable_id', 'cocktails.id')
+                ->whereColumn('rateable_type', Cocktail::class)
+                ->where('user_id', $userId),
+        ]);
     }
 
     public function toSearchableArray(): array
     {
-        // Some attributes are not searchable as per SearchActions settings
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -241,7 +205,7 @@ class Cocktail extends Model implements SiteSearchable
             'tags' => $this->tags->pluck('name'),
             'date' => $this->updated_at->format('Y-m-d H:i:s'),
             'glass' => $this->glass->name ?? null,
-            'average_rating' => $this->getAverageRating(),
+            'average_rating' => (int) round($this->ratings()->avg('rating') ?? 0),
             'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
             'calculated_abv' => $this->getABV(),
             'method' => $this->method->name ?? null,

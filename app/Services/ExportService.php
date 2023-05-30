@@ -51,7 +51,16 @@ class ExportService
 
         $zip->addGlob(storage_path('bar-assistant/uploads/*/*'), options: ['remove_path' => storage_path('bar-assistant')]);
         foreach ($tablesToExport as $tableName) {
-            if ($content = json_encode(DB::table($tableName)->get()->toArray())) {
+            $tableData = DB::table($tableName)->get()->map(function ($row) {
+                // Reset user_id since we can't have the same ids in new instance
+                if (property_exists($row, 'user_id')) {
+                    $row->user_id = 1;
+                }
+
+                return $row;
+            });
+
+            if ($content = json_encode($tableData->toArray())) {
                 $zip->addFromString($tableName . '.json', $content);
             }
         }

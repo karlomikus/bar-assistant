@@ -32,6 +32,11 @@ use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
 |
 */
 
+$authMiddleware = 'auth:sanctum';
+if (config('bar-assistant.disable_login') === true) {
+    $authMiddleware = 'auth:force-login';
+}
+
 Route::get('/', [ServerController::class, 'index']);
 
 Route::post('login', [AuthController::class, 'authenticate'])->name('auth.login');
@@ -43,14 +48,14 @@ Route::prefix('server')->group(function() {
 });
 
 Route::prefix('images')->group(function() {
-    Route::get('/{id}/thumb', [ImageController::class, 'thumb']);
+    Route::get('/{id}/thumb', [ImageController::class, 'thumb']); // TODO: Move this to auth middleware
 });
 
 Route::prefix('explore')->group(function() {
     Route::get('/cocktails/{ulid}', [ExploreController::class, 'cocktail']);
 });
 
-Route::middleware('auth:sanctum')->group(function() {
+Route::middleware($authMiddleware)->group(function() {
 
     Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
 
@@ -58,14 +63,14 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/user', [ProfileController::class, 'update']);
 
     Route::prefix('shelf')->group(function() {
-        Route::get('/', [ShelfController::class, 'index']);
-        Route::post('/', [ShelfController::class, 'batch']);
-        Route::post('/{ingredientId}', [ShelfController::class, 'save']);
-        Route::delete('/{ingredientId}', [ShelfController::class, 'delete']);
+        Route::get('/cocktails', [ShelfController::class, 'cocktails']);
+        Route::get('/ingredients', [ShelfController::class, 'ingredients']);
+        Route::post('/ingredients', [ShelfController::class, 'batch']);
+        Route::post('/ingredients/{ingredientId}', [ShelfController::class, 'save']);
+        Route::delete('/ingredients/{ingredientId}', [ShelfController::class, 'delete']);
     });
 
     Route::prefix('ingredients')->group(function() {
-        Route::get('/find', [IngredientController::class, 'find']);
         Route::get('/', [IngredientController::class, 'index']);
         Route::post('/', [IngredientController::class, 'store']);
         Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show');
@@ -83,9 +88,6 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::prefix('cocktails')->group(function() {
         Route::get('/', [CocktailController::class, 'index'])->name('cocktails.index');
-        Route::get('/random', [CocktailController::class, 'random'])->name('cocktails.random');
-        Route::get('/user-shelf', [CocktailController::class, 'userShelf'])->name('cocktails.user-shelf');
-        Route::get('/user-favorites', [CocktailController::class, 'userFavorites'])->name('cocktails.user-favorites');
         Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show');
         Route::post('/{id}/toggle-favorite', [CocktailController::class, 'toggleFavorite'])->name('cocktails.favorite');
         Route::post('/', [CocktailController::class, 'store'])->name('cocktails.store');
@@ -96,6 +98,7 @@ Route::middleware('auth:sanctum')->group(function() {
     });
 
     Route::prefix('images')->group(function() {
+        Route::get('/', [ImageController::class, 'index']);
         Route::get('/{id}', [ImageController::class, 'show']);
         // Route::get('/{id}/thumb', [ImageController::class, 'thumb']);
         Route::post('/', [ImageController::class, 'store']);

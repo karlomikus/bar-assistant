@@ -12,14 +12,26 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Services\ImageService;
-use Intervention\Image\ImageManagerStatic;
 use Kami\Cocktail\Http\Requests\ImageRequest;
 use Kami\Cocktail\Http\Resources\ImageResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\DataObjects\Cocktail\Image as ImageDTO;
+use Kami\Cocktail\DataObjects\Image as ImageDTO;
+use Kami\Cocktail\Http\Requests\ImageUpdateRequest;
+use Intervention\Image\Facades\Image as ImageProcessor;
 
 class ImageController extends Controller
 {
+    public function index(Request $request): JsonResource
+    {
+        if (!$request->user()->isAdmin()) {
+            abort(403);
+        }
+
+        $images = Image::orderBy('created_at')->paginate($request->get('per_page', 15));
+
+        return ImageResource::collection($images);
+    }
+
     public function show(int $id): JsonResource
     {
         $image = Image::findOrFail($id);
@@ -31,10 +43,15 @@ class ImageController extends Controller
     {
         $images = [];
         foreach ($request->images as $formImage) {
+            if (isset($formImage['image'])) {
+                $imageSource = $formImage['image'];
+            } else {
+                $imageSource = $formImage['image_url'];
+            }
+
             try {
                 $image = new ImageDTO(
-                    null,
-                    ImageManagerStatic::make($formImage['image']),
+                    ImageProcessor::make($imageSource),
                     $formImage['copyright'],
                     (int) $formImage['sort'],
                 );
@@ -50,7 +67,7 @@ class ImageController extends Controller
         return ImageResource::collection($images);
     }
 
-    public function update(int $id, ImageService $imageservice, Request $request): JsonResource
+    public function update(int $id, ImageService $imageservice, ImageUpdateRequest $request): JsonResource
     {
         $image = Image::findOrFail($id);
 
@@ -59,13 +76,12 @@ class ImageController extends Controller
         }
 
         $imageDTO = new ImageDTO(
-            $image->id,
-            null,
-            $request->input('copyright'),
-            (int) $request->input('sort', 1)
+            $request->hasFile('image') ? ImageProcessor::make($request->file('image')) : null,
+            $request->has('copyright') ? $request->input('copyright') : null,
+            $request->has('sort') ? (int) $request->input('sort') : null,
         );
 
-        $image = $imageservice->updateImage($imageDTO);
+        $image = $imageservice->updateImage($id, $imageDTO);
 
         return new ImageResource($image);
     }
@@ -88,7 +104,7 @@ class ImageController extends Controller
         [$content, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id) {
             $dbImage = Image::findOrFail($id);
             $disk = Storage::disk('bar-assistant');
-            $responseContent = (string) ImageManagerStatic::make($disk->get($dbImage->file_path))->fit(400, 400)->encode();
+            $responseContent = (string) ImageProcessor::make($disk->get($dbImage->file_path))->fit(400, 400)->encode();
             $etag = md5($dbImage->id . '-' . $dbImage->updated_at->format('Y-m-d H:i:s'));
 
             return [$responseContent, $etag];

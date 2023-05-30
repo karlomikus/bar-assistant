@@ -11,10 +11,10 @@ use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Kami\Cocktail\DataObjects\Image as ImageDTO;
 use Intervention\Image\Image as InterventionImage;
 use Kami\Cocktail\Exceptions\ImageUploadException;
-use function Thumbhash\extract_size_and_pixels_with_gd;
-use Kami\Cocktail\DataObjects\Cocktail\Image as ImageDTO;
+use function Thumbhash\extract_size_and_pixels_with_imagick;
 
 class ImageService
 {
@@ -29,7 +29,7 @@ class ImageService
     /**
      * Uploads and saves an image with filepath
      *
-     * @param array<\Kami\Cocktail\DataObjects\Cocktail\Image> $requestImages
+     * @param array<ImageDTO> $requestImages
      * @param int $userId
      * @return array<\Kami\Cocktail\Models\Image>
      * @throws ImageUploadException
@@ -42,23 +42,9 @@ class ImageService
                 continue;
             }
 
-            $filename = Str::random(40);
-            /** @phpstan-ignore-next-line */
-            $fileExtension = $dtoImage->file->extension ?? 'jpg';
-            $filepath = 'temp/' . $filename . '.' . $fileExtension;
-
-            $thumbHash = null;
             try {
-                $thumbHash = $this->generateThumbHash($dtoImage->file);
-            } catch (Throwable $e) {
-                $this->log->info('[IMAGE_SERVICE] ThumbHash Error | ' . $e->getMessage());
-                continue;
-            }
-
-            try {
-                $this->disk->put($filepath, (string) $dtoImage->file->encode());
-            } catch (Throwable $e) {
-                $this->log->info('[IMAGE_SERVICE] ' . $e->getMessage());
+                [$thumbHash, $filepath, $fileExtension] = $this->processImageFile($dtoImage->file);
+            } catch (Throwable) {
                 continue;
             }
 
@@ -82,12 +68,32 @@ class ImageService
     /**
      * Update image by id
      *
-     * @param \Kami\Cocktail\DataObjects\Cocktail\Image $imageDTO Image object
+     * @param int $imageId
+     * @param ImageDTO $imageDTO Image object
      * @return \Kami\Cocktail\Models\Image Database image model
      */
-    public function updateImage(ImageDTO $imageDTO): Image
+    public function updateImage(int $imageId, ImageDTO $imageDTO): Image
     {
-        $image = Image::findOrFail($imageDTO->id);
+        $image = Image::findOrFail($imageId);
+
+        if ($imageDTO->file) {
+            $oldFilePath = $image->file_path;
+            try {
+                [$thumbHash, $filepath, $fileExtension] = $this->processImageFile($imageDTO->file);
+
+                $image->file_path = $filepath;
+                $image->placeholder_hash = $thumbHash;
+                $image->file_extension = $fileExtension;
+            } catch (Throwable $e) {
+                $this->log->info('[IMAGE_SERVICE] File upload error | ' . $e->getMessage());
+            }
+
+            try {
+                $this->disk->delete($oldFilePath);
+            } catch (Throwable $e) {
+                $this->log->info('[IMAGE_SERVICE] File delete error | ' . $e->getMessage());
+            }
+        }
 
         if ($imageDTO->copyright) {
             $image->copyright = $imageDTO->copyright;
@@ -114,10 +120,6 @@ class ImageService
      */
     public function generateThumbHash(InterventionImage $image, bool $destroyInstance = false): string
     {
-        // Temporary increase memory limit to handle large images
-        // TODO: Move to imagick?
-        ini_set('memory_limit', '512M');
-
         if ($destroyInstance) {
             $content = $image->fit(100)->encode(null, 20);
             $image->destroy();
@@ -127,10 +129,37 @@ class ImageService
             $image->reset();
         }
 
-        [$width, $height, $pixels] = extract_size_and_pixels_with_gd($content);
+        [$width, $height, $pixels] = extract_size_and_pixels_with_imagick($content);
         $hash = Thumbhash::RGBAToHash($width, $height, $pixels);
         $key = Thumbhash::convertHashToString($hash);
 
         return $key;
+    }
+
+    private function processImageFile(InterventionImage $image, ?string $filename = null): array
+    {
+        $filename = $filename ?? Str::random(40);
+        /** @phpstan-ignore-next-line */
+        $fileExtension = $image->extension ?? 'jpg';
+        $filepath = 'temp/' . $filename . '.' . $fileExtension;
+
+        $thumbHash = null;
+        try {
+            $thumbHash = $this->generateThumbHash($image);
+        } catch (Throwable $e) {
+            $this->log->info('[IMAGE_SERVICE] ThumbHash Error | ' . $e->getMessage());
+
+            throw $e;
+        }
+
+        try {
+            $this->disk->put($filepath, (string) $image->encode());
+        } catch (Throwable $e) {
+            $this->log->info('[IMAGE_SERVICE] ' . $e->getMessage());
+
+            throw $e;
+        }
+
+        return [$thumbHash, $filepath, $fileExtension];
     }
 }

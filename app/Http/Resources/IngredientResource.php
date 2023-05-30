@@ -29,7 +29,11 @@ class IngredientResource extends JsonResource
             'main_image_id' => $this->images->first()->id ?? null,
             'images' => ImageResource::collection($this->images),
             'ingredient_category_id' => $this->ingredient_category_id,
-            'parent_ingredient_id' => $this->parent_ingredient_id,
+            'parent_ingredient' => $this->parent_ingredient_id !== null ? [
+                'id' => $this->parent_ingredient_id,
+                'slug' => $this->parentIngredient->slug,
+                'name' => $this->parentIngredient->name,
+            ] : null,
             'color' => $this->color,
             'category' => new IngredientCategoryResource($this->category),
             'cocktails_count' => $this->whenCounted('cocktails'),

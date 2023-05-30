@@ -6,10 +6,15 @@ namespace Kami\Cocktail\DataObjects\Cocktail;
 
 class Cocktail
 {
+    /**
+     * @param array<string> $tags
+     * @param array<\Kami\Cocktail\DataObjects\Cocktail\Ingredient> $ingredients
+     * @param array<int> $images
+     */
     public function __construct(
-        public readonly ?int $id,
         public readonly string $name,
         public readonly string $instructions,
+        public readonly int $userId,
         public readonly ?string $description = null,
         public readonly ?string $source = null,
         public readonly ?string $garnish = null,

@@ -30,7 +30,8 @@ This repository only contains the API server, if you are looking for easy to use
 - Detailed cocktail and ingredient information
 - Ability to upload and assign images
 - Shopping list for missing ingredients
-- Automatic indexing of data in Meilisearch
+- Automatic indexing of data with your prefered search engine
+    - Supports all drivers that Laravel Scout supports: Algoila, Meilisearch, Database
 - Cocktail ingredient substitutes
 - Assign glass types to cocktails
 - Cocktail recipe scraping
@@ -61,6 +62,20 @@ $ docker compose exec app php artisan key:generate
 $ docker compose exec app php artisan storage:link
 $ docker compose exec app php artisan migrate
 $ docker compose exec app php artisan bar:open
+```
+
+Xdebug vscode launch config:
+```json
+{
+    "name": "Listen for Xdebug",
+    "type": "php",
+    "request": "launch",
+    "port": 9003,
+    "hostname": "host.docker.internal",
+    "pathMappings": {
+        "/var/www/cocktails/": "${workspaceFolder}"
+    }
+}
 ```
 
 ## License

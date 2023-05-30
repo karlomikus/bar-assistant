@@ -36,7 +36,7 @@ class ShelfControllerTest extends TestCase
 
     public function test_list_all_user_ingredients_response()
     {
-        $response = $this->getJson('/api/shelf');
+        $response = $this->getJson('/api/shelf/ingredients');
 
         $response->assertSuccessful();
         $response->assertJson(
@@ -53,7 +53,7 @@ class ShelfControllerTest extends TestCase
     {
         $newIngredients = Ingredient::factory()->count(2)->create();
 
-        $response = $this->postJson('/api/shelf', [
+        $response = $this->postJson('/api/shelf/ingredients', [
             'ingredient_ids' => $newIngredients->pluck('id')->toArray()
         ]);
 
@@ -72,14 +72,14 @@ class ShelfControllerTest extends TestCase
     {
         $newIngredient = Ingredient::factory()->create();
 
-        $response = $this->postJson('/api/shelf/' . $newIngredient->id);
+        $response = $this->postJson('/api/shelf/ingredients/' . $newIngredient->id);
 
         $response->assertOk();
         $response->assertJson(
             fn (AssertableJson $json) =>
             $json
                 ->has('data.id')
-                ->has('data.user_id')
+                ->has('data.ingredient_slug')
                 ->where('data.ingredient_id', $newIngredient->id)
                 ->etc()
         );
@@ -91,12 +91,21 @@ class ShelfControllerTest extends TestCase
     {
         $newIngredient = Ingredient::factory()->create();
 
-        $response = $this->deleteJson('/api/shelf/' . $newIngredient->id);
+        $response = $this->deleteJson('/api/shelf/ingredients/' . $newIngredient->id);
 
         $response->assertNoContent();
 
         $response->assertValidResponse();
 
         $this->assertDatabaseMissing('user_ingredients', ['ingredient_id' => $newIngredient->id]);
+    }
+
+    public function test_user_shelf_cocktails_response()
+    {
+        $response = $this->getJson('/api/shelf/cocktails');
+
+        $response->assertStatus(200);
+
+        $response->assertValidResponse(200);
     }
 }

@@ -6,7 +6,7 @@ namespace Kami\Cocktail\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ImageRequest extends FormRequest
+class ImageUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,9 +26,9 @@ class ImageRequest extends FormRequest
     public function rules()
     {
         return [
-            'images.*.image' => 'sometimes|required|image',
-            'images.*.image_url' => 'sometimes|required|url',
-            'images.*.sort' => 'integer',
+            'image' => 'sometimes|image',
+            'image_url' => 'sometimes|url',
+            'sort' => 'sometimes|integer',
         ];
     }
 }

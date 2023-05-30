@@ -44,4 +44,18 @@ return [
         false
     ),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Disable login
+    |--------------------------------------------------------------------------
+    |
+    | This option will disable the need to authenticate with token to access the api
+    |
+    */
+
+    'disable_login' => env(
+        'DISABLE_LOGIN',
+        false
+    ),
+
 ];

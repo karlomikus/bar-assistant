@@ -22,6 +22,7 @@ class AuthControllerTest extends TestCase
     public function test_authenticate_response()
     {
         $user = User::factory()->create([
+            'id' => 2,
             'email' => 'test@test.com',
             'password' => Hash::make('my-test-password'),
         ]);

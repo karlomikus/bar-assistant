@@ -4,23 +4,26 @@ namespace Kami\Cocktail\Console\Commands;
 
 use Throwable;
 use Illuminate\Support\Str;
-use Kami\Cocktail\Models\Tag;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Models\Image;
-use Kami\Cocktail\SearchActions;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Support\Facades\DB;
-use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
-use Kami\Cocktail\Models\CocktailIngredient;
+use Kami\Cocktail\Services\ImageService;
+use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Models\IngredientCategory;
-use Kami\Cocktail\Models\CocktailIngredientSubstitute;
+use Kami\Cocktail\Services\IngredientService;
+use Kami\Cocktail\Search\SearchActionsAdapter;
+use Kami\Cocktail\Search\SearchActionsContract;
+use Kami\Cocktail\DataObjects\Image as ImageDTO;
+use Intervention\Image\Facades\Image as ImageProcessor;
+use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
+use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDTO;
 
 class BarOpen extends Command
 {
@@ -38,6 +41,14 @@ class BarOpen extends Command
      */
     protected $description = 'Run this command to initate your BA instance for the first time';
 
+    public function __construct(
+        private readonly ImageService $imageService,
+        private readonly CocktailService $cocktailService,
+        private readonly IngredientService $ingredientService,
+    ) {
+        parent::__construct();
+    }
+
     /**
      * Execute the console command.
      *
@@ -49,18 +60,18 @@ class BarOpen extends Command
 
         $this->info('Opening the bar in ' . App::environment() . ' environment...');
 
-        $this->info('Checking connection to your search server [' . config('scout.meilisearch.host') . ']...');
+        $this->info('Testing your search driver connection [' . config('scout.driver') . ']...');
 
-        try {
-            $this->info('Search server: ' . SearchActions::checkHealth()['status']);
-        } catch (Throwable $e) {
-            $this->error('Unable to connect to search server!');
+        /** @var SearchActionsContract */
+        $searchActions = app(SearchActionsAdapter::class)->getActions();
 
-            throw $e;
+        if (!$searchActions->isAvailable()) {
+            $this->error('Unable to connect to search server with driver [' . config('scout.driver') . ']!');
         }
 
         DB::table('users')->insert([
             [
+                'id' => 1,
                 'name' => 'BAR ASSISTANT BOT',
                 'password' => '', // password
                 'email' => 'bot@my-bar.localhost',
@@ -70,24 +81,22 @@ class BarOpen extends Command
                 'search_api_key' => null,
             ],
             [
+                'id' => 2,
                 'name' => 'Bartender',
                 'password' => Hash::make($this->argument('pass')),
                 'email' => $this->argument('email'),
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
                 'is_admin' => true,
-                'search_api_key' => App::environment('demo') ? SearchActions::getPublicDemoApiKey() : SearchActions::getPublicApiKey() // TODO: Check if already exists in ENV
+                'search_api_key' => $searchActions->getPublicApiKey()
             ]
         ]);
-
-        // Flush site search index in case anything is already there
-        SearchActions::flushSearchIndex();
 
         // Also flush model indexes
         Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Cocktail"]);
         Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
 
-        SearchActions::updateIndexSettings();
+        $searchActions->updateIndexSettings();
 
         if ($this->option('clean')) {
             Model::reguard();
@@ -320,7 +329,7 @@ class BarOpen extends Command
 
         $this->info('Importing cocktail recipes...');
 
-        $this->importCocktailsFromJson(resource_path('/data/iba_cocktails_v0.1.0.yml'));
+        $this->importCocktailsFromJson(resource_path('/data/iba_cocktails.yml'));
         $this->importCocktailsFromJson(resource_path('/data/popular_cocktails.yml'));
 
         Artisan::call('scout:import', ['model' => "Kami\Cocktail\Models\Cocktail"]);
@@ -405,129 +414,86 @@ class BarOpen extends Command
 
     private function importCocktailsFromJson(string $sourcePath): void
     {
-        $dbIngredients = DB::table('ingredients')->select(['name', 'id'])->get()->map(function ($ing) {
-            $ing->name = strtolower($ing->name);
-
-            return $ing;
-        });
-
-        $dbGlasses = DB::table('glasses')->select(['name', 'id'])->get()->map(function ($ing) {
-            $ing->name = strtolower($ing->name);
-
-            return $ing;
-        });
-
-        $dbMethods = DB::table('cocktail_methods')->select(['name', 'id'])->get();
+        $this->line('Importing from: ' . $sourcePath);
 
         $source = Yaml::parseFile($sourcePath);
 
-        $imageService = app(\Kami\Cocktail\Services\ImageService::class);
+        $dbIngredients = DB::table('ingredients')->select(DB::raw('LOWER(name) as name, id'))->get();
+        $dbGlasses = DB::table('glasses')->select(DB::raw('LOWER(name) as name, id'))->get();
+        $dbMethods = DB::table('cocktail_methods')->select(['name', 'id'])->get();
+
+        $cocktailBar = $this->output->createProgressBar(count($source));
+        $cocktailBar->start();
 
         foreach ($source as $sCocktail) {
             DB::beginTransaction();
             try {
-                $cocktail = new Cocktail();
-                $cocktail->name = $sCocktail['name'];
-                $cocktail->description = $sCocktail['description'];
-                $cocktail->instructions = $sCocktail['instructions'];
-                $cocktail->garnish = $sCocktail['garnish'];
-                $cocktail->source = $sCocktail['source'];
-                $cocktail->user_id = 1;
+                $imageDTO = new ImageDTO(
+                    ImageProcessor::make(
+                        Storage::disk('bar-assistant')->path('cocktails/' . Str::slug($sCocktail['name']) . '.jpg')
+                    ),
+                    $sCocktail['images'][0]['copyright'] ?? null,
+                );
+                $image = $this->imageService->uploadAndSaveImages([$imageDTO], 1)[0];
 
-                // Glass
-                if (!$dbGlasses->contains('name', strtolower($sCocktail['glass']))) {
-                    $this->warn('Glass not found: [' . $sCocktail['name'] . '] ' . $sCocktail['glass']);
-                }
-                $cocktail->glass_id = $dbGlasses->filter(fn ($item) => $item->name == strtolower($sCocktail['glass']))->first()->id ?? null;
-
-                // Method
-                if (!$dbMethods->contains('name', $sCocktail['method'])) {
-                    $this->warn('Method found: [' . $sCocktail['name'] . '] ' . $sCocktail['method']);
-                }
-                $cocktail->cocktail_method_id = $dbMethods->filter(fn ($item) => $item->name == $sCocktail['method'])->first()->id ?? null;
-
-                $cocktail->save();
-
-                $image = new Image();
-                $image->file_path = 'cocktails/' . Str::slug($sCocktail['name']) . '.jpg';
-                $image->file_extension = 'jpg';
-                $image->user_id = 1;
-                $image->copyright = $sCocktail['image_copyright'] ?? null;
-                $image->placeholder_hash = $imageService->generateThumbHash(\Intervention\Image\ImageManagerStatic::make(
-                    Storage::disk('bar-assistant')->path('cocktails/' . Str::slug($sCocktail['name']) . '.jpg')
-                ));
-                $cocktail->images()->save($image);
-
-                foreach ($sCocktail['tags'] as $sCat) {
-                    $tag = Tag::firstOrNew([
-                        'name' => $sCat,
-                    ]);
-                    $tag->save();
-                    $cocktail->tags()->attach($tag->id);
-                }
-
+                $ingredients = [];
                 $sort = 1;
                 foreach ($sCocktail['ingredients'] as $sIngredient) {
                     if (!$dbIngredients->contains('name', strtolower($sIngredient['name']))) {
-                        $this->warn('Ingredient not found: [' . $sCocktail['name'] . '] ' . $sIngredient['name']);
                         $this->info('Adding ' . $sIngredient['name'] . ' to uncategorized ingredients.');
-                        $newIng = Ingredient::create([
-                            'name' => $sIngredient['name'],
-                            'ingredient_category_id' => 1,
-                            'user_id' => 1
-                        ]);
-                        $newIng->name = strtolower($newIng->name);
-                        $dbIngredients->push($newIng);
+                        $newIngredient = $this->ingredientService->createIngredient($sIngredient['name'], 1, 1);
+                        $newIngredient->name = strtolower($newIngredient->name);
+                        $dbIngredients->push($newIngredient);
                     }
-                    $dbId = $dbIngredients->filter(fn ($item) => $item->name == strtolower($sIngredient['name']))->first()->id;
 
-                    $cocktailIng = new CocktailIngredient();
-                    $cocktailIng->cocktail_id = $cocktail->id;
-                    $cocktailIng->ingredient_id = $dbId;
-                    $cocktailIng->amount = floatval($sIngredient['amount']);
-                    $cocktailIng->units = strtolower($sIngredient['units']);
-                    $cocktailIng->optional = $sIngredient['optional'];
-                    $cocktailIng->sort = $sort;
-                    $cocktailIng->save();
-                    $sort++;
-
+                    $substituteIngredientIds = [];
                     if (isset($sIngredient['substitutes'])) {
                         foreach ($sIngredient['substitutes'] ?? [] as $subName) {
-                            $foundIng = $dbIngredients->filter(fn ($item) => $item->name == strtolower($subName))->first()->id ?? null;
-                            if (!$foundIng) {
-                                continue;
+                            $substituteIngredientId = $dbIngredients->filter(fn ($item) => $item->name === strtolower($subName))->first()->id ?? null;
+                            if (!$substituteIngredientId) {
+                                $this->info('Adding ' . $subName . ' to uncategorized ingredients.');
+                                $substituteIngredientId = $this->ingredientService->createIngredient($subName, 1, 1)->id;
                             }
 
-                            $substitute = new CocktailIngredientSubstitute();
-                            $substitute->ingredient_id = $foundIng;
-                            $cocktailIng->substitutes()->save($substitute);
+                            $substituteIngredientIds[] = $substituteIngredientId;
                         }
                     }
+
+                    $ingredients[] = new IngredientDTO(
+                        $dbIngredients->filter(fn ($item) => $item->name === strtolower($sIngredient['name']))->first()->id,
+                        $sIngredient['name'],
+                        floatval($sIngredient['amount']),
+                        strtolower($sIngredient['units']),
+                        $sort,
+                        $sIngredient['optional'],
+                        $substituteIngredientIds
+                    );
+
+                    $sort++;
                 }
 
-                $cocktail->refresh();
-                $cocktail->save();
+                $this->cocktailService->createCocktail(new CocktailDTO(
+                    $sCocktail['name'],
+                    $sCocktail['instructions'],
+                    1,
+                    $sCocktail['description'],
+                    $sCocktail['source'],
+                    $sCocktail['garnish'],
+                    $dbGlasses->filter(fn ($item) => $item->name === strtolower($sCocktail['glass']))->first()->id ?? null,
+                    $dbMethods->filter(fn ($item) => $item->name === $sCocktail['method'])->first()->id ?? null,
+                    $sCocktail['tags'],
+                    $ingredients,
+                    [$image->id]
+                ));
+                $cocktailBar->advance();
             } catch (Throwable $e) {
                 $this->info($e->getMessage());
                 DB::rollBack();
             }
             DB::commit();
         }
+
+        $cocktailBar->finish();
+        $this->newLine();
     }
-
-    // private function ingredientFinder($haystack, $needle) {
-    //     if (!$haystack->contains('name', strtolower($needle))) {
-    //         $this->warn('Ingredient not found: ' . $needle . '. Adding it to uncategorized category.');
-    //         $newIng = Ingredient::create([
-    //             'name' => $needle,
-    //             'ingredient_category_id' => 1,
-    //             'user_id' => 1
-    //         ]);
-
-    //         return $newIng;
-    //         $newIng->name = strtolower($newIng->name);
-    //         $haystack->push($newIng);
-    //     }
-    //     $dbId = $dbIngredients->filter(fn ($item) => $item->name == strtolower($needle))->first()->id;
-    // }
 }

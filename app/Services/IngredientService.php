@@ -124,7 +124,7 @@ class IngredientService
         }
 
         if (count($images) > 0) {
-            $ingredient->deleteImages();
+            // $ingredient->deleteImages();
             try {
                 $imageModels = Image::findOrFail($images);
                 $ingredient->attachImages($imageModels);

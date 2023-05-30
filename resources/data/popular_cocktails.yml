@@ -7,7 +7,8 @@
         2. Strain into a coupe, serve up
     garnish: 'Lemon peel'
     source: null
-    image_copyright: 'The Drink Blog'
+    images:
+        - copyright: 'The Drink Blog'
     glass: Coupe
     method: Stir
     tags:
@@ -40,7 +41,8 @@
         5. Serve with shot of chilled Champagne on the side
     garnish: 'Half a passion fruit on top'
     source: 'Douglas Ankrah, The Townhouse | London'
-    image_copyright: 'Punch / Jamie Lau'
+    images:
+        - copyright: 'Punch / Jamie Lau'
     glass: Coupe
     method: Shake
     tags:
@@ -83,7 +85,8 @@
         3. Strain into a coupe, serve up
     garnish: 'Spray aromatic bitters over foaming cocktail from atomiser and then garnish with lemon & cherry sail (lemon slice & Luxardo Maraschino cherry on stick)'
     source: '1974'
-    image_copyright: 'The Spruce Eats'
+    images:
+        - copyright: 'The Spruce Eats'
     glass: Lowball
     method: Shake
     tags:
@@ -119,7 +122,8 @@
         3. Fill the glass with ice and top with grapefruit soda.
     garnish: 'Citrus wedges'
     source: 'Mexico'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: Highball
     method: Build
     tags:
@@ -164,7 +168,8 @@
         2. Strain into a lowball glass
     garnish: 'Lemon peel'
     source: 'https://tuxedono2.com/white-negroni-cocktail-recipe'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: Lowball
     method: Stir
     tags:
@@ -180,7 +185,6 @@
             units: ml
             name: Suze
             optional: false
-            substitutes: [Salers]
         -
             amount: 30
             units: ml
@@ -194,7 +198,8 @@
         Refrigerate ingredients then layer in chilled glass by carefully pouring in the ingredient order.
     garnish: null
     source: 'https://en.wikipedia.org/wiki/B-52_(cocktail)'
-    image_copyright: Alchetron
+    images:
+        - copyright: Alchetron
     glass: Shot
     method: Layer
     tags:
@@ -224,7 +229,8 @@
         Shake together with ice. Strain into glass and serve
     garnish: 'Lime'
     source: 'https://en.wikipedia.org/wiki/Bacardi_cocktail'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     glass: Coupe
     method: Shake
     tags:
@@ -258,7 +264,8 @@
         Stir in mixing glass with ice and strain
     garnish: 'Maraschino cherry'
     source: 'https://en.wikipedia.org/wiki/Bijou_(cocktail)'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: 'Nick and Nora'
     method: Stir
     tags:
@@ -293,7 +300,8 @@
         2. Pour in the gin. Add the garnishes. Pour the tonic water onto a bar spoon into the glass (to increase the bubbles). Stir once and serve.
     garnish: 'Any of the following to spice your cocktail: Lime, lemon, cucumber, mint, orange peel, juniper berries, blood orange slice, rosemary'
     source: 'https://www.acouplecooks.com/best-gin-and-tonic/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: 'Wine'
     method: Build
     tags:
@@ -318,7 +326,8 @@
         2. Strain into glass and top with a splash of soda water, if desired.
     garnish: 'Garnish with a lime wheel'
     source: 'https://www.acouplecooks.com/gin-gimlet-cocktail/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: 'Coupe'
     method: Shake
     tags:
@@ -356,7 +365,8 @@
         3. Pour the sangria into ice filled glasses and top with a splash of sparkling water (if desired). Add fruit to each glass, preferably on long skewers for easy snacking.
     garnish: 'Drop fruit chunks into a glass'
     source: 'https://www.acouplecooks.com/gin-gimlet-cocktail/'
-    image_copyright: 'A Couple Cooks'
+    images:
+        - copyright: 'A Couple Cooks'
     glass: 'Wine'
     method: Build
     tags:
@@ -406,7 +416,8 @@
         2. Strain into a coupe, serve up
     garnish: 'Lemon twist'
     source: 'https://en.wikipedia.org/wiki/20th_Century_(cocktail)'
-    image_copyright: 'Imbibe Magazine'
+    images:
+        - copyright: 'Imbibe Magazine'
     glass: 'Nick and Nora'
     method: Shake
     tags:
@@ -441,7 +452,8 @@
         2. Strain into a cocktail glass and serve up
     garnish: null
     source: 'https://tuxedono2.com/alaska-cocktail-recipe'
-    image_copyright: Punch
+    images:
+        - copyright: Punch
     glass: 'Nick and Nora'
     method: Stir
     tags:
@@ -471,7 +483,8 @@
         2. Strain into a flute and top with champagne
     garnish: null
     source: 'https://en.wikipedia.org/wiki/Airmail_(cocktail)'
-    image_copyright: 'Imbibe Magazine'
+    images:
+        - copyright: 'Imbibe Magazine'
     glass: 'Cocktail'
     method: Shake
     tags:
@@ -504,7 +517,8 @@
     instructions: 'Stir with ice and strain into a chilled rocks glass over ice.'
     garnish: 'Garnish with orange and lemon twists.'
     source: 'https://www.diffordsguide.com/cocktails/recipe/7257/comte-de-sureau'
-    image_copyright: "Eric's Cocktail Guide"
+    images:
+        - copyright: "Eric's Cocktail Guide"
     tags:
         - Gin
     glass: Lowball
@@ -532,7 +546,8 @@
     instructions: 'Stir all ingredients with ice and strain into chilled glass.'
     garnish: 'Orange zest and peel'
     source: 'https://en.wikipedia.org/wiki/Adonis_(cocktail)'
-    image_copyright: 'Liquor.com / Tim Nusog'
+    images:
+        - copyright: 'Liquor.com / Tim Nusog'
     tags:
         - Wine
     glass: Coupe
@@ -559,7 +574,8 @@
     instructions: 'Add all ingredients to a cocktail mixing glass (or any other type of glass). Fill the mixing glass with 1 handful ice and stir continuously for 30 seconds until very cold.'
     garnish: 'Garnish with a Luxardo cherry.'
     source: 'https://www.acouplecooks.com/la-louisiane-cocktail/'
-    image_copyright: 'A couple cooks'
+    images:
+        - copyright: 'A couple cooks'
     tags:
         - Whiskey
     glass: Cocktail
@@ -596,7 +612,8 @@
     instructions: 'Shake all ingredients with ice and strain into chilled glass.'
     garnish: 'Lime zest'
     source: 'https://www.cocktailexplorer.co/cocktails/queens-park-hotel-super-cocktail/anders-erickson/'
-    image_copyright: Anders Erickson
+    images:
+        - copyright: Anders Erickson
     tags:
         - Rum
     glass: Coupe
@@ -637,7 +654,8 @@
         3. Garnish with an orange twist.
     garnish: 'Orange twist'
     source: 'https://www.seriouseats.com/seelbach-cocktail-recipe'
-    image_copyright: The Educated Barfly
+    images:
+        - copyright: The Educated Barfly
     tags:
         - Whiskey
     glass: Champagne
@@ -675,7 +693,8 @@
         Add all ingredients to a mixing glass with ice and stir until well-chilled. 
     garnish: null
     source: 'https://www.liquor.com/recipes/el-presidente/'
-    image_copyright: A Couple Cooks
+    images:
+        - copyright: A Couple Cooks
     tags:
         - Rum
     glass: Cocktail
@@ -711,7 +730,8 @@
         The amount of lemon juice can vary, sometimes resulting in a drink with equal amounts of both ingredients. More elaborate versions often add orange juice, citrus zest, or spices.
     garnish: Lemon wedge
     source: 'https://www.journal.hr/lifestyle/gastro/antique-pelinkovac-strukani-pelin-jesenski-koktel-cool-pice/'
-    image_copyright: Tasteatlas
+    images:
+        - copyright: Tasteatlas
     tags: []
     glass: Lowball
     method: Build
@@ -739,7 +759,8 @@
         2. Strain into a lowball glass
     garnish: Orange zest
     source: 'https://www.journal.hr/lifestyle/gastro/antique-pelinkovac-strukani-pelin-jesenski-koktel-cool-pice/'
-    image_copyright: Tasteatlas
+    images:
+        - copyright: Tasteatlas
     tags: []
     glass: Lowball
     method: Shake

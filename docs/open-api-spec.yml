@@ -113,19 +113,68 @@ paths:
     get:
       parameters:
       - in: query
-        name: user_id
+        name: filter
+        required: false
+        description: Filter by specific parameters
+        explode: true
+        style: deepObject
+        schema:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 3,4,5
+            name:
+              type: string
+              example: "old"
+            ingredient_name:
+              type: string
+              example: "campari"
+            ingredient_id:
+              type: integer
+              example: 3
+            tag_id:
+              type: string
+              example: 4
+            user_id:
+              type: string
+              example: 3
+            glass_id:
+              type: string
+              example: 1
+            cocktail_method_id:
+              type: string
+              example: 1
+            favorites:
+              type: boolean
+              example: true
+            on_shelf:
+              type: boolean
+              example: true
+            is_public:
+              type: boolean
+              example: true
+      - in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+          example: name,-created_at,favorited_at
+        description: Sort by specific parameters, toggle order by adding "-"
+      - in: query
+        name: per_page
+        required: false
+        schema:
+          type: integer
+          example: 15
+        description: Total results per page
+      - in: query
+        name: page
         required: false
         schema:
           type: integer
           example: 1
-        description: 'Show only cocktails made by a specifc user'
-      - in: query
-        name: order_by
-        required: false
-        schema:
-          type: string
-          example: created_at:desc
-        description: 'Sort cocktails'
+        description: Page number
       tags:
         - "Cocktails"
       summary: 'Show a paginated list of cocktails'
@@ -135,7 +184,7 @@ paths:
           content:
             application/json:
               schema:
-                anyOf:
+                allOf:
                   - type: object
                     properties:
                       data:
@@ -345,22 +394,7 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
-  /cocktails/random:
-    get:
-      tags:
-        - "Cocktails"
-      summary: 'Get a random cocktail'
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                    data:
-                      $ref: '#/components/schemas/Cocktail'
-  /cocktails/user-shelf:
+  /shelf/cocktails:
     get:
       parameters:
         - in: query
@@ -371,8 +405,8 @@ paths:
             example: 20
           description: 'Limit number of shown cocktails'
       tags:
-        - "Cocktails"
-      summary: 'Get a list of cocktails that authorized user can make'
+        - "User shelf"
+      summary: 'Get a list of cocktail ids that authorized user can make'
       responses:
         '200':
           description: Successful response
@@ -384,55 +418,68 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Cocktail'
-  /cocktails/user-favorites:
-    get:
-      parameters:
-        - name: limit
-          in: query
-          description: Limit the total number of fetched cocktails
-          schema:
-            type: integer
-            default: 100
-      tags:
-        - "Cocktails"
-      summary: 'Get a list of cocktails that authorized user added to his favorites'
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Cocktail'
+                      type: integer
+                      example: 1
   /ingredients:
     get:
       parameters:
-        - name: category_id
-          in: query
-          description: Show only ingredients in specific category
-          schema:
-            type: integer
-        - name: on_shopping_list
-          in: query
-          description: Show only ingredients on shopping list of current user
-          schema:
-            type: boolean
-        - name: on_shelf
-          in: query
-          description: Show only ingredients on shelf
-          schema:
-            type: boolean
-        - name: limit
-          in: query
-          description: Limit a number of shown ingredients
-          schema:
-            type: integer
-            example: 20
+      - in: query
+        name: filter
+        required: false
+        description: Filter by specific parameters
+        explode: true
+        style: deepObject
+        schema:
+          type: object
+          properties:
+            id:
+             type: string
+             example: 1,2
+            name:
+             type: string
+             example: "whi"
+            name_exact:
+             type: string
+             example: "whiskey"
+            category_id:
+             type: string
+             example: 1
+            origin:
+             type: string
+             example: "France"
+            on_shopping_list:
+             type: boolean
+             example: true
+            on_shelf:
+             type: boolean
+             example: true
+            strength_min:
+             type: integer
+             example: 20
+            strength_max:
+             type: integer
+             example: 50
+      - in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+          example: name,-created_at
+        description: Sort by specific parameters
+      - in: query
+        name: per_page
+        required: false
+        schema:
+          type: integer
+          example: 15
+        description: Total results per page
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          example: 1
+        description: Page number
       tags:
         - Ingredients
       summary: 'Get a list of ingredients'
@@ -442,12 +489,14 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Ingredient'
+                allOf:
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Ingredient'
+                  - $ref: '#/components/schemas/PaginationResponse'
     post:
       tags:
         - Ingredients
@@ -640,6 +689,26 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /images:
+    get:
+      tags:
+        - Images
+      summary: Paginated list of images
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Image'
+                  - $ref: '#/components/schemas/PaginationResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
     post:
       tags:
         - Images
@@ -648,7 +717,12 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ImageRequest'
+              type: object
+              properties:
+                images:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ImageRequest'
       responses:
         '200':
           description: Successful response
@@ -687,19 +761,15 @@ paths:
                     $ref: '#/components/schemas/Image'
         '404':
           $ref: '#/components/responses/NotFound'
-    put:
+    post:
       tags:
         - Images
-      summary: Update image copyright
+      summary: Update image information
       requestBody:
         content:
           multipart/form-data:
             schema:
-              type: object
-              properties:
-                copyright:
-                  type: string
-                  example: 'Copyright of the image'
+              $ref: '#/components/schemas/ImageRequest'
       responses:
         '200':
           description: Successful response
@@ -849,7 +919,7 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
-  /shelf:
+  /shelf/ingredients:
     get:
       tags:
         - "User shelf"
@@ -895,7 +965,7 @@ paths:
                       $ref: '#/components/schemas/UserIngredient'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
-  /shelf/{ingredientId}:
+  /shelf/ingredients/{ingredientId}:
     parameters:
       - in: path
         name: ingredientId
@@ -1788,13 +1858,21 @@ components:
           nullable: true
         images:
           type: array
-          example: [1, 2, 3]
           items:
-            type: integer
-        parent_ingredient_id:
-          type: integer
-          example: 1
+            $ref: '#/components/schemas/Image'
+        parent_ingredient:
+          type: object
           nullable: true
+          properties:
+            id:
+              type: integer
+              example: 1
+            slug:
+              type: string
+              example: "vodka"
+            name:
+              type: string
+              example: "Vodka"
         ingredient_category_id:
           type: integer
           example: 1
@@ -1883,11 +1961,14 @@ components:
         version:
           type: string
           example: 'v1.0.0'
-        meilisearch_host:
+        type:
+          type: string
+          example: 'local'
+        search_host:
           type: string
           format: hostname
           example: 'https://my-meilisearch-server.com'
-        meilisearch_version:
+        search_version:
           type: string
           example: '0.29.0'
     Image:
@@ -1909,9 +1990,6 @@ components:
         sort:
           type: integer
           example: 1
-        last_modified:
-          type: string
-          example: '2022-11-17T09:52:48.000000Z'
         placeholder_hash:
           type: string
           nullable: true
@@ -2149,29 +2227,35 @@ components:
       required:
         - images
       properties:
-        images:
-          type: array
-          items:
-            type: object
-            properties:
-              image:
-                type: string
-                format: binary
-              copyright:
-                type: string
-                nullable: true
+        image:
+          type: string
+          nullable: true
+          format: binary
+        image_url:
+          type: string
+          nullable: true
+          format: URL
+          example: "https://pathtoimage.com/image.jpg"
+        sort:
+          type: integer
+          nullable: true
+          example: 1
+        copyright:
+          type: string
+          example: "Wikipedia"
+          nullable: true
     UserIngredient:
       type: object
       properties:
         id:
           type: integer
           example: 1
-        user_id:
-          type: integer
-          example: 1
         ingredient_id:
           type: integer
           example: 1
+        ingredient_slug:
+          type: string
+          example: "coffee"
     Tag:
       type: object
       properties:

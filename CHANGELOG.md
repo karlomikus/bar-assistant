@@ -1,3 +1,55 @@
+# v2.0.0
+## Breaking changes
+- Minimum supported Meilisearch version is 1.1
+    - **Upgrade guide**: If you are using docker bump meilisearch version to 1.1. You can safely delete Meilisearch container and it's volume, Bar Assistant will sync data when you restart the Bar Assistant container
+- Changed query parameters for `/cocktails` endpoint
+    - **Upgrade guide**: Refer to API spec to see new parameters
+- Changed query parameters for `/ingredients` endpoint
+    - **Upgrade guide**: Refer to API spec to see new parameters
+- Removed `/cocktails/user-favorites` endpoint
+    - **Upgrade guide**: Available via `/cocktails?filter[favorites]=true`
+- Updated `/cocktails/user-shelf` to return only cocktail ids and moved to `/shelf/cocktails`
+    - **Upgrade guide**: Old response schema available via `/cocktails?filter[on_shelf]=true`
+- Removed `/ingredients/find` endpoint
+    - **Upgrade guide**: Available via `/ingredients?filter[name_exact]=whiskey`
+- Removed `/cocktails/random` endpoint
+- Updated `/shelf` endpoints to make more sense
+    - Moved GET `/cocktails/user-shelf` endpoint to GET `/shelf/cocktails`
+    - Moved GET `/shelf` endpoint to GET `/shelf/ingredients`
+    - Moved POST `/shelf` endpoint to POST `/shelf/ingredients`
+    - Moved POST `/ingredients/{ingredientId}` endpoint to POST `/shelf/ingredients/{ingredientId}`
+    - Moved DELETE `/ingredients/{ingredientId}` endpoint to DELETE `/shelf/ingredients/{ingredientId}`
+- Moved PUT `/images/{id}` endpoint to POST `/images/{id}`
+    - You can now use this method as a pseudo PATCH operation on image resource
+    - You can now update the image file
+- Removed `site_search_index` indexing
+    - **Upgrade guide**: If possible migrate to federated/multi-index search
+- Redis is now mandatory dependency
+    - **Upgrade guide**: Setup redis with `REDIS_HOST`, `REDIS_PASSWORD`, `REDIS_PORT` env variables
+- Removed `bar:dump-search` command
+    - **Upgrade guide**: Follow migration/upgrade guide for your selected search driver
+- Removed `id` from `CocktailIngredient` schema
+- Updated `UserIngredient` schema
+- Updated `Ingredient` schema
+    - Moved `parent_ingredient_id` to `parent_ingredient` object, accessible via `parent_ingredient.id`
+
+## New
+- Meilisearch is no longer mandatory dependency for API to work
+- Added support for all default Laravel Scout drivers, meaning:
+    - You can now use Algolia as your search engine
+    - You can now use database as your search engine
+- Added `DISABLE_LOGIN` environment variable
+    - This will remove the need to authenticate with token to access the api
+- Added GET `/images` endpoint
+- `ImageRequest` schema now supports `image_url` parameter to upload image from URL
+
+## Fixes
+- Fixed openapi swagger docs url
+
+## Changes
+- Enabled xdebug in local development dockerfile
+- Replaced default image processor GD with Imagick
+
 # v1.10.2
 ## Fixes
 - Fix missing array key error on public pages

@@ -11,14 +11,15 @@ use Kami\Cocktail\Models\Glass;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
+use Kami\Cocktail\DataObjects\Image;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Services\ImageService;
-use Intervention\Image\ImageManagerStatic;
 use Kami\Cocktail\Services\CocktailService;
-use Kami\Cocktail\DataObjects\Cocktail\Image;
 use Kami\Cocktail\Exceptions\ImportException;
 use Kami\Cocktail\Services\IngredientService;
-use Kami\Cocktail\DataObjects\Cocktail\Ingredient;
+use Intervention\Image\Facades\Image as ImageProcessor;
+use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
+use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDTO;
 
 class ImportService
 {
@@ -45,8 +46,7 @@ class ImportService
         if ($sourceData['image']['url']) {
             try {
                 $imageDTO = new Image(
-                    null,
-                    ImageManagerStatic::make($sourceData['image']['url']),
+                    ImageProcessor::make($sourceData['image']['url']),
                     $sourceData['image']['copyright'] ?? null
                 );
 
@@ -84,7 +84,7 @@ class ImportService
                 $ingredientId = $newIngredient->id;
             }
 
-            $ingredient = new Ingredient(
+            $ingredient = new IngredientDTO(
                 $ingredientId,
                 $scrapedIngredient['name'],
                 $scrapedIngredient['amount'],
@@ -98,19 +98,21 @@ class ImportService
             $sort++;
         }
 
-        // Add cocktail
-        return $this->cocktailService->createCocktail(
+        $cocktailDTO = new CocktailDTO(
             $sourceData['name'],
             $sourceData['instructions'],
-            $ingredients,
             1,
             $sourceData['description'],
-            $sourceData['garnish'],
             $sourceData['source'],
-            $cocktailImages,
+            $sourceData['garnish'],
+            $glassId,
+            null,
             $sourceData['tags'],
-            $glassId
+            $ingredients,
+            $cocktailImages,
         );
+
+        return $this->cocktailService->createCocktail($cocktailDTO);
     }
 
     /**

@@ -21,8 +21,8 @@ class UserIngredientResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
-            'ingredient_id' => $this->ingredient_id
+            'ingredient_id' => $this->ingredient_id,
+            'ingredient_slug' => $this->ingredient->slug,
         ];
     }
 }

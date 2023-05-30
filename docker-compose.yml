@@ -9,6 +9,8 @@ services:
       dockerfile: Dockerfile.dev
     container_name: app
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./:/var/www/cocktails
       - ./resources/php.dev.ini:/usr/local/etc/php/conf.d/local.ini

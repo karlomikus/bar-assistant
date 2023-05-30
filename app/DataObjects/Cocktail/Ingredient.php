@@ -6,9 +6,12 @@ namespace Kami\Cocktail\DataObjects\Cocktail;
 
 class Ingredient
 {
+    /**
+     * @param array<int> $substitutes
+     */
     public function __construct(
         public readonly int $id,
-        public readonly string $name,
+        public readonly ?string $name,
         public readonly float $amount,
         public readonly string $units,
         public readonly int $sort = 0,

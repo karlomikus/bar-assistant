@@ -10,13 +10,14 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\UserShoppingList;
+use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\UserIngredientResource;
 use Kami\Cocktail\Http\Requests\UserIngredientBatchRequest;
 
 class ShelfController extends Controller
 {
-    public function index(Request $request): JsonResource
+    public function ingredients(Request $request): JsonResource
     {
         $userIngredients = $request->user()
             ->shelfIngredients
@@ -24,6 +25,17 @@ class ShelfController extends Controller
             ->load('ingredient');
 
         return UserIngredientResource::collection($userIngredients);
+    }
+
+    public function cocktails(CocktailService $cocktailService, Request $request): JsonResponse
+    {
+        $limit = $request->has('limit') ? (int) $request->get('limit') : null;
+
+        $cocktailIds = $cocktailService->getCocktailsByUserIngredients($request->user()->id, $limit);
+
+        return response()->json([
+            'data' => $cocktailIds
+        ]);
     }
 
     public function save(Request $request, int $ingredientId): JsonResponse

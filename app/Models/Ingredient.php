@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Models;
 
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
-use Kami\Cocktail\SearchActions;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Ingredient extends Model implements SiteSearchable
+class Ingredient extends Model
 {
     use HasFactory, Searchable, HasImages, HasSlug;
 
@@ -31,17 +30,6 @@ class Ingredient extends Model implements SiteSearchable
         'ingredient_category_id',
         'parent_ingredient_id',
     ];
-
-    protected static function booted(): void
-    {
-        static::saved(function ($ing) {
-            SearchActions::updateSearchIndex($ing);
-        });
-
-        static::deleted(function ($ing) {
-            SearchActions::deleteSearchIndex($ing);
-        });
-    }
 
     public function getSlugOptions(): SlugOptions
     {
@@ -128,18 +116,6 @@ class Ingredient extends Model implements SiteSearchable
         $this->deleteImages();
 
         return parent::delete();
-    }
-
-    public function toSiteSearchArray(): array
-    {
-        return [
-            'key' => 'in_' . (string) $this->id,
-            'id' => $this->id,
-            'slug' => $this->slug,
-            'name' => $this->name,
-            'image_url' => $this->getMainImageUrl(),
-            'type' => 'ingredient',
-        ];
     }
 
     public function toSearchableArray(): array
