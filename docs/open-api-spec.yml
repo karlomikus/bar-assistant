@@ -1860,10 +1860,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Image'
-        parent_ingredient_id:
-          type: integer
-          example: 1
+        parent_ingredient:
+          type: object
           nullable: true
+          properties:
+            id:
+              type: integer
+              example: 1
+            slug:
+              type: string
+              example: "vodka"
+            name:
+              type: string
+              example: "Vodka"
         ingredient_category_id:
           type: integer
           example: 1

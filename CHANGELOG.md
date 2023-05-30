@@ -30,6 +30,8 @@
     - **Upgrade guide**: Follow migration/upgrade guide for your selected search driver
 - Removed `id` from `CocktailIngredient` schema
 - Updated `UserIngredient` schema
+- Updated `Ingredient` schema
+    - Moved `parent_ingredient_id` to `parent_ingredient` object, accessible via `parent_ingredient.id`
 
 ## New
 - Meilisearch is no longer mandatory dependency for API to work

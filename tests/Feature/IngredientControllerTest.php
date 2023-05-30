@@ -164,7 +164,7 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonPath('data.main_image_id', null);
         $response->assertJsonPath('data.images', []);
         $response->assertJsonPath('data.ingredient_category_id', 1);
-        $response->assertJsonPath('data.parent_ingredient_id', null);
+        $response->assertJsonPath('data.parent_ingredient.id', null);
         $response->assertJsonPath('data.color', '#fff');
         $response->assertJsonCount(1, 'data.cocktails');
         $response->assertJsonCount(1, 'data.varieties');

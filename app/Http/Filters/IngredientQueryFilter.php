@@ -38,7 +38,7 @@ final class IngredientQueryFilter extends QueryBuilder
             ])
             ->defaultSort('name')
             ->allowedSorts('name', 'created_at', 'strength')
-            ->with('category', 'images')
+            ->with('category', 'images', 'parentIngredient')
             ->withCount('cocktails');
     }
 }
