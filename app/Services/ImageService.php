@@ -14,7 +14,7 @@ use Illuminate\Filesystem\FilesystemAdapter;
 use Kami\Cocktail\DataObjects\Image as ImageDTO;
 use Intervention\Image\Image as InterventionImage;
 use Kami\Cocktail\Exceptions\ImageUploadException;
-use function Thumbhash\extract_size_and_pixels_with_gd;
+use function Thumbhash\extract_size_and_pixels_with_imagick;
 
 class ImageService
 {
@@ -120,10 +120,6 @@ class ImageService
      */
     public function generateThumbHash(InterventionImage $image, bool $destroyInstance = false): string
     {
-        // Temporary increase memory limit to handle large images
-        // TODO: Move to imagick?
-        ini_set('memory_limit', '512M');
-
         if ($destroyInstance) {
             $content = $image->fit(100)->encode(null, 20);
             $image->destroy();
@@ -133,7 +129,7 @@ class ImageService
             $image->reset();
         }
 
-        [$width, $height, $pixels] = extract_size_and_pixels_with_gd($content);
+        [$width, $height, $pixels] = extract_size_and_pixels_with_imagick($content);
         $hash = Thumbhash::RGBAToHash($width, $height, $pixels);
         $key = Thumbhash::convertHashToString($hash);
 

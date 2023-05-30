@@ -15,13 +15,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Services\ImageService;
-use Intervention\Image\ImageManagerStatic;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Models\IngredientCategory;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Search\SearchActionsAdapter;
 use Kami\Cocktail\Search\SearchActionsContract;
 use Kami\Cocktail\DataObjects\Image as ImageDTO;
+use Intervention\Image\Facades\Image as ImageProcessor;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDTO;
 
@@ -429,7 +429,7 @@ class BarOpen extends Command
             DB::beginTransaction();
             try {
                 $imageDTO = new ImageDTO(
-                    ImageManagerStatic::make(
+                    ImageProcessor::make(
                         Storage::disk('bar-assistant')->path('cocktails/' . Str::slug($sCocktail['name']) . '.jpg')
                     ),
                     $sCocktail['images'][0]['copyright'] ?? null,

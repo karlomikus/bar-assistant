@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\DataObjects\Image;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Services\ImageService;
-use Intervention\Image\ImageManagerStatic;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Exceptions\ImportException;
 use Kami\Cocktail\Services\IngredientService;
+use Intervention\Image\Facades\Image as ImageProcessor;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDTO;
 
@@ -46,7 +46,7 @@ class ImportService
         if ($sourceData['image']['url']) {
             try {
                 $imageDTO = new Image(
-                    ImageManagerStatic::make($sourceData['image']['url']),
+                    ImageProcessor::make($sourceData['image']['url']),
                     $sourceData['image']['copyright'] ?? null
                 );
 

@@ -46,6 +46,7 @@
 
 ## Changes
 - Enabled xdebug in local development dockerfile
+- Replaced default image processor GD with Imagick
 
 # v1.10.2
 ## Fixes

@@ -12,12 +12,12 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Services\ImageService;
-use Intervention\Image\ImageManagerStatic;
 use Kami\Cocktail\Http\Requests\ImageRequest;
 use Kami\Cocktail\Http\Resources\ImageResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\DataObjects\Image as ImageDTO;
 use Kami\Cocktail\Http\Requests\ImageUpdateRequest;
+use Intervention\Image\Facades\Image as ImageProcessor;
 
 class ImageController extends Controller
 {
@@ -51,7 +51,7 @@ class ImageController extends Controller
 
             try {
                 $image = new ImageDTO(
-                    ImageManagerStatic::make($imageSource),
+                    ImageProcessor::make($imageSource),
                     $formImage['copyright'],
                     (int) $formImage['sort'],
                 );
@@ -76,7 +76,7 @@ class ImageController extends Controller
         }
 
         $imageDTO = new ImageDTO(
-            $request->hasFile('image') ? ImageManagerStatic::make($request->file('image')) : null,
+            $request->hasFile('image') ? ImageProcessor::make($request->file('image')) : null,
             $request->has('copyright') ? $request->input('copyright') : null,
             $request->has('sort') ? (int) $request->input('sort') : null,
         );
@@ -104,7 +104,7 @@ class ImageController extends Controller
         [$content, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id) {
             $dbImage = Image::findOrFail($id);
             $disk = Storage::disk('bar-assistant');
-            $responseContent = (string) ImageManagerStatic::make($disk->get($dbImage->file_path))->fit(400, 400)->encode();
+            $responseContent = (string) ImageProcessor::make($disk->get($dbImage->file_path))->fit(400, 400)->encode();
             $etag = md5($dbImage->id . '-' . $dbImage->updated_at->format('Y-m-d H:i:s'));
 
             return [$responseContent, $etag];
