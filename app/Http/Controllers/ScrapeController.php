@@ -13,19 +13,31 @@ class ScrapeController extends Controller
 {
     public function cocktail(CocktailScrapeRequest $request): JsonResponse
     {
-        $url = $request->post('url');
+        $dataToImport = [];
 
-        try {
-            $scraper = Manager::scrape($url);
-        } catch (Throwable $e) {
-            abort(404, $e->getMessage());
+        $url = $request->post('url');
+        if ($url) {
+            try {
+                $scraper = Manager::scrape($url);
+            } catch (Throwable $e) {
+                abort(404, $e->getMessage());
+            }
+
+            $dataToImport = $scraper->toArray();
         }
 
-        $scrapedData = $scraper->toArray();
+        $json = $request->post('json');
+        if ($json) {
+            if (!is_array($json)) {
+                $json = json_decode($json);
+            }
+
+            $dataToImport = $json;
+        }
 
         return response()->json([
             'data' => [
-                'result' => $scrapedData,
+                'result' => $dataToImport,
             ]
         ]);
     }

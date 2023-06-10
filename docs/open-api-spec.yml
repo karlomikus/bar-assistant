@@ -394,6 +394,44 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /cocktails/{id}/share:
+    parameters:
+    - name: id
+      in: path
+      required: true
+      description: Database id of the cocktail
+      schema:
+        type: integer
+    - name: type
+      in: query
+      schema:
+        type: string
+        enum:
+          - json
+          - yaml
+          - yml
+          - xml
+    get:
+      tags:
+        - "Cocktails"
+      summary: 'Get a shareable cocktail data'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CocktailShare'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CocktailShare'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/CocktailShare'
+        '400':
+          $ref: '#/components/responses/NotFound'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /shelf/cocktails:
     get:
       parameters:
@@ -2539,3 +2577,89 @@ components:
           example: [1, 2, 3, 4, 5]
           items:
             type: integer
+    CocktailShare:
+      type: object
+      xml:
+        name: cocktail
+      properties:
+        name:
+          type: string
+          example: 'Cocktail name'
+        instructions:
+          type: string
+          example: |-
+            1. Step
+            2. Step
+        garnish:
+          type: string
+          nullable: true
+          example: Lemon wheel
+        description:
+          type: string
+          nullable: true
+          example: 'A short cocktail description'
+        source:
+          type: string
+          nullable: true
+          example: https://wikipedia.org
+        tags:
+          type: array
+          example: ['Gin', 'IBA Official']
+          items:
+            type: string
+        glass:
+          type: string
+          example: Lowball
+          nullable: true
+        method:
+          type: string
+          example: Shake
+          nullable: true
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                example: https://bar-assistant.com/images/image.jpg
+              copyright:
+                type: string
+                nullable: true
+              sort:
+                type: integer
+        ingredients:
+          type: array
+          items:
+            type: object
+            properties:
+              sort:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: Vodka
+              amount:
+                type: integer
+                format: float
+                example: 30
+              units:
+                type: string
+                example: ml
+              optional:
+                type: boolean
+                example: false
+              category:
+                type: string
+                example: Spirits
+              description:
+                type: string
+                example: Spirit made from grain
+              strength:
+                type: integer
+                format: float
+                example: 45
+              origin:
+                type: string
+                nullable: true
+                example: France

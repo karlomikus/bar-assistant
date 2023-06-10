@@ -36,7 +36,7 @@ class ImportService
      * @param array<mixed> $sourceData Scraper data
      * @return Cocktail Database model of the cocktail
      */
-    public function importFromScraper(array $sourceData): Cocktail
+    public function importCocktailFromArray(array $sourceData): Cocktail
     {
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
@@ -79,7 +79,14 @@ class ImportService
             if ($dbIngredients->has(strtolower($scrapedIngredient['name']))) {
                 $ingredientId = $dbIngredients->get(strtolower($scrapedIngredient['name']))->id;
             } else {
-                $newIngredient = $this->ingredientService->createIngredient(ucfirst($scrapedIngredient['name']), 1, 1, description: 'Created by scraper from ' . $sourceData['source']);
+                $newIngredient = $this->ingredientService->createIngredient(
+                    ucfirst($scrapedIngredient['name']),
+                    1,
+                    1,
+                    $scrapedIngredient['strength'] ?? 0.0,
+                    $scrapedIngredient['description'] ?? 'Created by scraper from ' . $sourceData['source'],
+                    $scrapedIngredient['origin'] ?? null
+                );
                 $dbIngredients->put(strtolower($scrapedIngredient['name']), $newIngredient->id);
                 $ingredientId = $newIngredient->id;
             }

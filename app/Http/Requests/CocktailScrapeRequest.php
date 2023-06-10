@@ -26,7 +26,8 @@ class CocktailScrapeRequest extends FormRequest
     public function rules()
     {
         return [
-            'url' => 'required|url',
+            'url' => 'sometimes|required|url',
+            'json' => 'sometimes|required',
         ];
     }
 }
