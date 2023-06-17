@@ -1,3 +1,11 @@
+# v2.1.0
+## New
+- Added `/import/cocktail` endpoint
+- Added `/cocktail/{id}/share` endpoint
+
+## Changes
+- Disabled foreign key checks when importing data from zip file
+
 # v2.0.0
 ## Breaking changes
 - Minimum supported Meilisearch version is 1.1

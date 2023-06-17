@@ -41,6 +41,8 @@ tags:
     description: Operations related to notes
   - name: "Collections"
     description: Operations related to user collections
+  - name: "Import"
+    description: Data import operations
 security:
   - user_token: []
 paths:
@@ -429,7 +431,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/CocktailShare'
         '400':
-          $ref: '#/components/responses/NotFound'
+          description: Requested type not supported
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: api_error
+                  message:
+                    type: string
+                    example: 'Requested type "notype" not supported.'
         '404':
           $ref: '#/components/responses/NotFound'
   /shelf/cocktails:
@@ -1771,6 +1784,40 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /import/cocktail:
+    parameters:
+      - in: query
+        name: type
+        description: Data source type, defaults to URL
+        schema:
+          type: string
+          enum:
+            - json
+            - url
+    post:
+      tags:
+        - "Import"
+      summary: Import cocktail from a data source
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - source
+              properties:
+                source:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
 components:
   securitySchemes:
     user_token:

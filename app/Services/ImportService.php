@@ -43,11 +43,11 @@ class ImportService
 
         // Add images
         $cocktailImages = [];
-        if ($sourceData['image']['url']) {
+        foreach ($sourceData['images'] ?? [] as $image) {
             try {
                 $imageDTO = new Image(
-                    ImageProcessor::make($sourceData['image']['url']),
-                    $sourceData['image']['copyright'] ?? null
+                    ImageProcessor::make($image['url']),
+                    $image['copyright'] ?? null
                 );
 
                 $cocktailImages[] = $this->imageService->uploadAndSaveImages([$imageDTO], 1)[0]->id;
@@ -171,6 +171,7 @@ class ImportService
             }
         }
 
+        DB::statement('PRAGMA foreign_keys = OFF');
         foreach ($importOrder as $tableName) {
             $data = json_decode(file_get_contents($disk->path($tableName . '.json')), true);
 
@@ -182,6 +183,7 @@ class ImportService
                 }
             }
         }
+        DB::statement('PRAGMA foreign_keys = ON');
 
         /** @var \Illuminate\Support\Facades\Storage */
         $baDisk = Storage::disk('bar-assistant');

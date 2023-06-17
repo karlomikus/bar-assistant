@@ -9,6 +9,7 @@ use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
 use Kami\Cocktail\Http\Controllers\StatsController;
 use Kami\Cocktail\Http\Controllers\UsersController;
+use Kami\Cocktail\Http\Controllers\ImportController;
 use Kami\Cocktail\Http\Controllers\RatingController;
 use Kami\Cocktail\Http\Controllers\ScrapeController;
 use Kami\Cocktail\Http\Controllers\ServerController;
@@ -173,6 +174,10 @@ Route::middleware($authMiddleware)->group(function() {
         Route::delete('/{id}', [CollectionController::class, 'delete']);
         Route::put('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'cocktail']);
         Route::delete('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'deleteResourceFromCollection']);
+    });
+
+    Route::prefix('import')->group(function() {
+        Route::post('/cocktail', [ImportController::class, 'cocktail']);
     });
 });
 
