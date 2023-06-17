@@ -1,10 +1,13 @@
 # v2.1.0
 ## New
 - Added `/import/cocktail` endpoint
+    - Supports importing cocktails in YAML and JSON formats
+    - Supports importing cocktails from URLs that are supported by built in scrapers
 - Added `/cocktail/{id}/share` endpoint
+    - Supports sharing cocktails in JSON, YAML and XML format
 
 ## Changes
-- Disabled foreign key checks when importing data from zip file
+- Disabled foreign key checks when importing data from zip file #117
 
 # v2.0.0
 ## Breaking changes

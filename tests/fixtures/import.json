@@ -1,0 +1,71 @@
+{
+    "name": "Old Fashioned",
+    "instructions": "Place sugar cube in old fashioned glass and saturate with bitter, add few dashes of plain water. Muddle until dissolved. Fill the glass with ice cubes and add whiskey. Stir gently.",
+    "garnish": "Garnish with an orange slice or zest, and a cocktail cherry.",
+    "description": "Developed during the 19th century and given its name in the 1880s, it is an IBA Official Cocktail. It is also one of six basic drinks listed in David A. Embury&#039;s The Fine Art of Mixing Drinks. ",
+    "source": "https:\/\/iba-world.com\/old-fashioned\/",
+    "tags": [
+        "IBA Cocktail",
+        "The Unforgettables",
+        "Whiskey"
+    ],
+    "glass": "Lowball",
+    "method": "Build",
+    "images": [
+        {
+            "url": "http:\/\/localhost:8000\/uploads\/cocktails\/old-fashioned_p1lxM7.jpg",
+            "copyright": "Epicurious",
+            "sort": 0
+        }
+    ],
+    "ingredients": [
+        {
+            "sort": 1,
+            "name": "Bourbon Whiskey",
+            "amount": 45,
+            "units": "ml",
+            "optional": false,
+            "category": "Spirits",
+            "description": "Barrel-aged distilled liquor made primarily from corn.",
+            "strength": 40,
+            "origin": "North America",
+            "substitutes": []
+        },
+        {
+            "sort": 2,
+            "name": "Sugar",
+            "amount": 1,
+            "units": "cube",
+            "optional": false,
+            "category": "Uncategorized",
+            "description": "White sugar",
+            "strength": 0,
+            "origin": null,
+            "substitutes": []
+        },
+        {
+            "sort": 3,
+            "name": "Angostura aromatic bitters",
+            "amount": 2,
+            "units": "dashes",
+            "optional": false,
+            "category": "Bitters",
+            "description": "Angostura bitters is a concentrated bitters (herbal alcoholic preparation) based on gentian, herbs, and spices, by House of Angostura in Trinidad and Tobago.",
+            "strength": 44.7,
+            "origin": "Trinidad & Tobago",
+            "substitutes": []
+        },
+        {
+            "sort": 4,
+            "name": "Water",
+            "amount": 2,
+            "units": "dashes",
+            "optional": false,
+            "category": "Beverages",
+            "description": "It's water.",
+            "strength": 0,
+            "origin": "Worldwide",
+            "substitutes": []
+        }
+    ]
+}

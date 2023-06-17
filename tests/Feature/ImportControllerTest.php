@@ -21,7 +21,7 @@ class ImportControllerTest extends TestCase
         );
     }
 
-    public function test_cocktail_scrape_from_valid_url()
+    public function test_cocktail_scrape_from_valid_url(): void
     {
         $response = $this->postJson('/api/import/cocktail', [
             'source' => 'https://punchdrink.com/recipes/whiskey-peach-smash/'
@@ -33,22 +33,56 @@ class ImportControllerTest extends TestCase
         $response->assertJsonCount(5, 'data.ingredients');
     }
 
-    public function test_cocktail_scrape_fails_for_unknown_url()
+    public function test_cocktail_scrape_fails_for_unknown_url(): void
     {
         $response = $this->postJson('/api/import/cocktail', [
             'source' => 'https://google.com'
         ]);
 
-        $response->assertNotFound();
+        $response->assertBadRequest();
     }
 
-    public function test_cocktail_scrape_from_JSON()
+    public function test_cocktail_scrape_from_json(): void
     {
+        $source = file_get_contents(base_path('tests/fixtures/import.json'));
         $response = $this->postJson('/api/import/cocktail?type=json', [
-            'source' => '{"name":"Alexander","instructions":"1. Pour all ingredients into cocktail shaker filled with ice cubes.\n2. Shake and strain into a chilled cocktail glass.","garnish":"Sprinkle ground nutmeg on top.","description":"The Alexander cocktail was born in London in 1922 by Hery Mc Elhone, at Ciro\u2019s Club in honor of a famous bride, at the beginning it was called Panama, Gin was used instead of Cognac and light cocoa cream instead of dark.\n\nThroughout its history, Alexander has given rise to many other variations:\n\n**Grasshopper**: This variant is also part of the Iba list and involves the use of cr\u00e8me de menthe verde instead of cognac.\n\n**Alexandra**: Use the light cocoa cream instead of the dark one and replace the nutmeg with cocoa.\n\n**Alexander\u2019s Sister**: Use cr\u00e8me de menthe instead of cr\u00e8me de cacao\n\n**Alejandro**: Replace cognac with rum","source":"https:\/\/iba-world.com\/alexander\/","tags":["IBA Cocktail","The Unforgettables","Brandy"],"glass":"Coupe","method":"Shake","images":[{"url":"http:\/\/localhost:8000\/uploads\/cocktails\/alexander_ZjD02V.jpg","copyright":"Liquor.com \/ Tim Nusog","sort":0}],"ingredients":[{"sort":1,"name":"Cognac","amount":30,"units":"ml","optional":false,"category":"Spirits","description":"A variety of brandy named after the commune of Cognac, France.","strength":40,"origin":"France","substitutes":[]},{"sort":2,"name":"Dark Cr\u00e8me de Cacao","amount":30,"units":"ml","optional":false,"category":"Liqueurs","description":"Dark brown creamy chocolate-flavored liqueur made from cacao seed.","strength":25,"origin":"France","substitutes":[]},{"sort":3,"name":"Cream","amount":30,"units":"ml","optional":false,"category":"Uncategorized","description":"Cream is a dairy product composed of the higher-fat layer skimmed from the top of milk before homogenization.","strength":0,"origin":null,"substitutes":[]}]}'
+            'source' => $source
         ]);
 
         $response->assertOk();
-        $response->assertJsonPath('data.name', 'Alexander');
+        $response->assertJsonPath('data.name', 'Old Fashioned');
+        $response->assertJsonCount(4, 'data.ingredients');
+        $response->assertJsonCount(1, 'data.images');
+    }
+
+    public function test_cocktail_scrape_from_json_fails_bad_format(): void
+    {
+        $response = $this->postJson('/api/import/cocktail?type=json', [
+            'source' => 'TEST'
+        ]);
+
+        $response->assertBadRequest();
+    }
+
+    public function test_cocktail_scrape_from_yaml(): void
+    {
+        $source = file_get_contents(base_path('tests/fixtures/import.yaml'));
+        $response = $this->postJson('/api/import/cocktail?type=yaml', [
+            'source' => $source
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonPath('data.name', 'Old Fashioned');
+        $response->assertJsonCount(4, 'data.ingredients');
+        $response->assertJsonCount(1, 'data.images');
+    }
+
+    public function test_cocktail_scrape_from_yaml_fails_bad_format(): void
+    {
+        $response = $this->postJson('/api/import/cocktail?type=yaml', [
+            'source' => "{-- Test \n}\n-test"
+        ]);
+
+        $response->assertBadRequest();
     }
 }
