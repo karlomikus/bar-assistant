@@ -218,7 +218,7 @@ class CocktailController extends Controller
         $data = $cocktail->toShareableArray();
 
         if ($type === 'json') {
-            return new Response($data, 200, ['Content-Type' => 'application/json']);
+            return new Response(json_encode($data, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
         }
 
         if ($type === 'yaml' || $type === 'yml') {
@@ -227,6 +227,10 @@ class CocktailController extends Controller
 
         if ($type === 'xml') {
             return new Response(ArrayToXml::convert($data, 'cocktail', xmlEncoding: 'UTF-8'), 200, ['Content-Type' => 'application/xml']);
+        }
+
+        if ($type === 'text') {
+            return new Response($cocktail->toText(), 200, ['Content-Type' => 'plain/text']);
         }
 
         abort(400, 'Requested type "' . $type . '" not supported');

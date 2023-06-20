@@ -247,4 +247,13 @@ class Cocktail extends Model
             })->toArray(),
         ];
     }
+
+    public function toText()
+    {
+        $ingredients = $this->ingredients->map(function (CocktailIngredient $cIngredient) {
+            return trim(sprintf("- \"%s\" %s %s %s", $cIngredient->ingredient->name, $cIngredient->amount, $cIngredient->units, $cIngredient->optional ? '(optional)' : ''));
+        })->join("\n");
+
+        return sprintf("%s\n%s\n\n%s\n\n%s", $this->name, e($this->description), $ingredients, e($this->instructions));
+    }
 }
