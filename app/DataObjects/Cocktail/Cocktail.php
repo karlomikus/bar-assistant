@@ -23,6 +23,7 @@ class Cocktail
         public readonly array $tags = [],
         public readonly array $ingredients = [],
         public readonly array $images = [],
+        public readonly array $ustensils = [],
     ) {
     }
 }

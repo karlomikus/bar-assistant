@@ -36,6 +36,7 @@ class CocktailResource extends JsonResource
             'user_rating' => $this->user_rating ?? null,
             'average_rating' => (int) round($this->average_rating ?? 0),
             'glass' => new GlassResource($this->whenLoaded('glass')),
+            'ustensils' => UstensilResource::collection($this->whenLoaded('ustensils')),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'ingredients' => CocktailIngredientResource::collection($this->ingredients),
             'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,

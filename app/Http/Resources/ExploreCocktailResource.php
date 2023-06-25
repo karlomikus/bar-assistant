@@ -27,6 +27,7 @@ class ExploreCocktailResource extends JsonResource
             'source' => $this->source,
             'tags' => $this->tags->pluck('name'),
             'glass' => $this->glass->name ?? null,
+            'ustensils' => $this->ustensils->pluck('name'),
             'method' => $this->method->name ?? null,
             'main_image_id' => $this->images->sortBy('sort')->first()->id ?? null,
             'images' => ImageResource::collection($this->images),

@@ -7,6 +7,7 @@ use Kami\Cocktail\Http\Controllers\NoteController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
+use Kami\Cocktail\Http\Controllers\UstensilsController;
 use Kami\Cocktail\Http\Controllers\StatsController;
 use Kami\Cocktail\Http\Controllers\UsersController;
 use Kami\Cocktail\Http\Controllers\RatingController;
@@ -119,6 +120,15 @@ Route::middleware($authMiddleware)->group(function() {
         Route::get('/{id}', [GlassController::class, 'show'])->name('glasses.show');
         Route::put('/{id}', [GlassController::class, 'update']);
         Route::delete('/{id}', [GlassController::class, 'delete']);
+    });
+
+    Route::prefix('ustensils')->group(function() {
+        Route::get('/find', [UstensilsController::class, 'find']);
+        Route::get('/', [UstensilsController::class, 'index']);
+        Route::post('/', [UstensilsController::class, 'store']);
+        Route::get('/{id}', [UstensilsController::class, 'show'])->name('ustensils.show');
+        Route::put('/{id}', [UstensilsController::class, 'update']);
+        Route::delete('/{id}', [UstensilsController::class, 'delete']);
     });
 
     Route::prefix('tags')->group(function() {

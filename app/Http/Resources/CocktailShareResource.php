@@ -28,6 +28,7 @@ class CocktailShareResource extends JsonResource
             'tags' => $this->tags->pluck('name'),
             'glass' => $this->glass?->name ?? null,
             'method' => $this->method?->name ?? null,
+            'ustensils' => $this->ustensils->pluck('name'),
             'images' => $this->images->map(function (\Kami\Cocktail\Models\Image $image) {
                 return [
                     'url' => $image->getImageUrl(),

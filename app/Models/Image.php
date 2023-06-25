@@ -36,7 +36,7 @@ class Image extends Model
     }
 
     /**
-     * @return MorphTo<Ingredient|Cocktail|Model, Image>
+     * @return MorphTo<Ingredient|Cocktail|Ustensil|Model, Image>
      */
     public function imageable(): MorphTo
     {
