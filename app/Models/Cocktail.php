@@ -248,7 +248,7 @@ class Cocktail extends Model
         ];
     }
 
-    public function toText()
+    public function toText(): string
     {
         $ingredients = $this->ingredients->map(function (CocktailIngredient $cIngredient) {
             return trim(sprintf("- \"%s\" %s %s %s", $cIngredient->ingredient->name, $cIngredient->amount, $cIngredient->units, $cIngredient->optional ? '(optional)' : ''));

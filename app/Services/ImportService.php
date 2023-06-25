@@ -40,6 +40,7 @@ class ImportService
     {
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
+        $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
 
         // Add images
         $cocktailImages = [];
@@ -69,6 +70,15 @@ class ImportService
                 $newGlass->save();
                 $dbGlasses->put($glassNameLower, $newGlass->id);
                 $glassId = $newGlass->id;
+            }
+        }
+
+        // Match method
+        $methodId = null;
+        if ($sourceData['method']) {
+            $methodNameLower = strtolower($sourceData['method']);
+            if ($dbMethods->has($methodNameLower)) {
+                $methodId = $dbMethods->get($methodNameLower)->id;
             }
         }
 
@@ -113,7 +123,7 @@ class ImportService
             $sourceData['source'],
             $sourceData['garnish'],
             $glassId,
-            null,
+            $methodId,
             $sourceData['tags'],
             $ingredients,
             $cocktailImages,
