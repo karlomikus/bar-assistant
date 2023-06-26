@@ -212,4 +212,48 @@ class Cocktail extends Model
             'has_public_link' => $this->public_id !== null,
         ];
     }
+
+    public function toShareableArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'instructions' => e($this->instructions),
+            'garnish' => e($this->garnish),
+            'description' => e($this->description),
+            'source' => $this->source,
+            'tags' => $this->tags->pluck('name')->toArray(),
+            'glass' => $this->glass?->name ?? null,
+            'method' => $this->method?->name ?? null,
+            'images' => $this->images->map(function (Image $image) {
+                return [
+                    'url' => $image->getImageUrl(),
+                    'copyright' => $image->copyright,
+                    'sort' => $image->sort,
+                ];
+            })->toArray(),
+            'ingredients' => $this->ingredients->map(function (CocktailIngredient $cIngredient) {
+                return [
+                    'sort' => $cIngredient->sort ?? 0,
+                    'name' => $cIngredient->ingredient->name,
+                    'amount' => $cIngredient->amount,
+                    'units' => $cIngredient->units,
+                    'optional' => (bool) $cIngredient->optional,
+                    'category' => $cIngredient->ingredient->category->name,
+                    'description' => $cIngredient->ingredient->description,
+                    'strength' => $cIngredient->ingredient->strength,
+                    'origin' => $cIngredient->ingredient->origin,
+                    'substitutes' => $cIngredient->substitutes->pluck('name')->toArray(),
+                ];
+            })->toArray(),
+        ];
+    }
+
+    public function toText(): string
+    {
+        $ingredients = $this->ingredients->map(function (CocktailIngredient $cIngredient) {
+            return trim(sprintf("- \"%s\" %s %s %s", $cIngredient->ingredient->name, $cIngredient->amount, $cIngredient->units, $cIngredient->optional ? '(optional)' : ''));
+        })->join("\n");
+
+        return sprintf("%s\n%s\n\n%s\n\n%s", $this->name, e($this->description), $ingredients, e($this->instructions));
+    }
 }

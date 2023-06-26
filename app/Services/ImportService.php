@@ -36,18 +36,19 @@ class ImportService
      * @param array<mixed> $sourceData Scraper data
      * @return Cocktail Database model of the cocktail
      */
-    public function importFromScraper(array $sourceData): Cocktail
+    public function importCocktailFromArray(array $sourceData): Cocktail
     {
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
+        $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
 
         // Add images
         $cocktailImages = [];
-        if ($sourceData['image']['url']) {
+        foreach ($sourceData['images'] ?? [] as $image) {
             try {
                 $imageDTO = new Image(
-                    ImageProcessor::make($sourceData['image']['url']),
-                    $sourceData['image']['copyright'] ?? null
+                    ImageProcessor::make($image['url']),
+                    $image['copyright'] ?? null
                 );
 
                 $cocktailImages[] = $this->imageService->uploadAndSaveImages([$imageDTO], 1)[0]->id;
@@ -72,6 +73,15 @@ class ImportService
             }
         }
 
+        // Match method
+        $methodId = null;
+        if ($sourceData['method']) {
+            $methodNameLower = strtolower($sourceData['method']);
+            if ($dbMethods->has($methodNameLower)) {
+                $methodId = $dbMethods->get($methodNameLower)->id;
+            }
+        }
+
         // Match ingredients
         $ingredients = [];
         $sort = 1;
@@ -79,7 +89,14 @@ class ImportService
             if ($dbIngredients->has(strtolower($scrapedIngredient['name']))) {
                 $ingredientId = $dbIngredients->get(strtolower($scrapedIngredient['name']))->id;
             } else {
-                $newIngredient = $this->ingredientService->createIngredient(ucfirst($scrapedIngredient['name']), 1, 1, description: 'Created by scraper from ' . $sourceData['source']);
+                $newIngredient = $this->ingredientService->createIngredient(
+                    ucfirst($scrapedIngredient['name']),
+                    1,
+                    1,
+                    $scrapedIngredient['strength'] ?? 0.0,
+                    $scrapedIngredient['description'] ?? 'Created by scraper from ' . $sourceData['source'],
+                    $scrapedIngredient['origin'] ?? null
+                );
                 $dbIngredients->put(strtolower($scrapedIngredient['name']), $newIngredient->id);
                 $ingredientId = $newIngredient->id;
             }
@@ -106,7 +123,7 @@ class ImportService
             $sourceData['source'],
             $sourceData['garnish'],
             $glassId,
-            null,
+            $methodId,
             $sourceData['tags'],
             $ingredients,
             $cocktailImages,
@@ -164,6 +181,7 @@ class ImportService
             }
         }
 
+        DB::statement('PRAGMA foreign_keys = OFF');
         foreach ($importOrder as $tableName) {
             $data = json_decode(file_get_contents($disk->path($tableName . '.json')), true);
 
@@ -175,6 +193,7 @@ class ImportService
                 }
             }
         }
+        DB::statement('PRAGMA foreign_keys = ON');
 
         /** @var \Illuminate\Support\Facades\Storage */
         $baDisk = Storage::disk('bar-assistant');

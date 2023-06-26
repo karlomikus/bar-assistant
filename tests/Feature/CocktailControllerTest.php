@@ -345,4 +345,22 @@ class CocktailControllerTest extends TestCase
         $cocktail = Cocktail::find($cocktail->id);
         $this->assertNull($cocktail->public_id);
     }
+
+    public function test_cocktail_share_response()
+    {
+        $cocktail = Cocktail::factory()
+            ->has(CocktailIngredient::factory()->count(3), 'ingredients')
+            ->create([
+                'name' => 'A cocktail name',
+                'instructions' => "1. Step 1\n2. Step two",
+                'garnish' => '# Lemon twist',
+                'description' => 'A short description',
+                'source' => 'http://test.com',
+                'user_id' => auth()->user()->id,
+            ]);
+
+        $response = $this->getJson('/api/cocktails/' . $cocktail->id . '/share');
+
+        $response->assertStatus(200);
+    }
 }

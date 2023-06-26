@@ -106,14 +106,16 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
     public function toArray(): array
     {
         return [
-            'name' => $this->name(),
+            'name' => preg_replace("/\s+/u", " ", $this->name()),
             'description' => $this->description(),
             'source' => $this->source(),
             'glass' => $this->glass(),
             'instructions' => $this->instructions(),
             'garnish' => $this->garnish(),
             'tags' => $this->tags(),
-            'image' => $this->image(),
+            'images' => [
+                $this->image()
+            ],
             'ingredients' => $this->ingredients(),
         ];
     }

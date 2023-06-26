@@ -7,7 +7,9 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
+use Spatie\ArrayToXml\ArrayToXml;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -200,5 +202,37 @@ class CocktailController extends Controller
         $cocktail = $cocktail->makePrivate();
 
         return response(null, 204);
+    }
+
+    public function share(Request $request, int|string $idOrSlug): Response
+    {
+        $type = $request->get('type', 'json');
+
+        $cocktail = Cocktail::where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
+            ->firstOrFail()
+            ->load(['ingredients.ingredient', 'images' => function ($query) {
+                $query->orderBy('sort');
+            }, 'ingredients.substitutes']);
+
+        $data = $cocktail->toShareableArray();
+
+        if ($type === 'json') {
+            return new Response(json_encode($data, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
+        }
+
+        if ($type === 'yaml' || $type === 'yml') {
+            return new Response(Yaml::dump($data, 4, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK), 200, ['Content-Type' => 'application/yaml']);
+        }
+
+        if ($type === 'xml') {
+            return new Response(ArrayToXml::convert($data, 'cocktail', xmlEncoding: 'UTF-8'), 200, ['Content-Type' => 'application/xml']);
+        }
+
+        if ($type === 'text') {
+            return new Response($cocktail->toText(), 200, ['Content-Type' => 'plain/text']);
+        }
+
+        abort(400, 'Requested type "' . $type . '" not supported');
     }
 }
