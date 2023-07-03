@@ -235,4 +235,35 @@ class CocktailController extends Controller
 
         abort(400, 'Requested type "' . $type . '" not supported');
     }
+
+    public function similar(Request $request, int|string $idOrSlug)
+    {
+        $limitTotal = $request->get('limit', 5);
+
+        $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->firstOrFail();
+        $ingredients = $cocktail->ingredients->filter(fn ($ci) => $ci->optional === false)->pluck('ingredient_id');
+
+        $relatedCocktails = collect();
+        while ($ingredients->count() > 0) {
+            $ingredients->pop();
+            $possibleRelatedCocktails = Cocktail::where('cocktails.id', '<>', $cocktail->id)
+                ->whereIn('cocktails.id', function ($query) use ($ingredients) {
+                    $query->select('ci.cocktail_id')
+                        ->from('cocktail_ingredients AS ci')
+                        ->whereIn('ci.ingredient_id', $ingredients)
+                        ->where('optional', false)
+                        ->groupBy('ci.cocktail_id')
+                        ->havingRaw('COUNT(DISTINCT ci.ingredient_id) = ?', [$ingredients->count()]);
+                })
+                ->get();
+
+            $relatedCocktails = $relatedCocktails->merge($possibleRelatedCocktails)->unique('id');
+            if ($relatedCocktails->count() > $limitTotal) {
+                $relatedCocktails = $relatedCocktails->take($limitTotal);
+                break;
+            }
+        }
+
+        return CocktailResource::collection($relatedCocktails);
+    }
 }
