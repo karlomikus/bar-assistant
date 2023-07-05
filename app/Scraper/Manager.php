@@ -19,6 +19,7 @@ final class Manager
         \Kami\Cocktail\Scraper\Sites\TheDrinkBlog::class,
         \Kami\Cocktail\Scraper\Sites\DiffordsGuide::class,
         \Kami\Cocktail\Scraper\Sites\TheCocktailDB::class,
+        \Kami\Cocktail\Scraper\Sites\CocktailParty::class,
     ];
 
     public function __construct(private readonly string $url)

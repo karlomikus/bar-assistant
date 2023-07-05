@@ -75,7 +75,10 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
      *
      * @return null|string
      */
-    abstract public function glass(): ?string;
+    public function glass(): ?string
+    {
+        return null;
+    }
 
     /**
      * Array containing cocktail ingredients
