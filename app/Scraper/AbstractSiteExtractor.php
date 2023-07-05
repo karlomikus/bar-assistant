@@ -113,6 +113,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             'instructions' => $this->instructions(),
             'garnish' => $this->garnish(),
             'tags' => $this->tags(),
+            'method' => null,
             'images' => [
                 $this->image()
             ],
