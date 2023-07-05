@@ -154,6 +154,10 @@ class DefaultScraper extends AbstractSiteExtractor
     private function copyrightHolder(): ?string
     {
         if ($this->recipeSchema) {
+            if (is_string($this->recipeSchema->author->getFirstValue())) {
+                return $this->recipeSchema->author->getFirstValue();
+            }
+
             return $this->recipeSchema->author->getFirstValue()->name->toString();
         }
 
