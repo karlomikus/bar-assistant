@@ -12,13 +12,14 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CollectionRequest;
 use Kami\Cocktail\Http\Resources\CollectionResource;
+use Kami\Cocktail\Http\Filters\CollectionQueryFilter;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class CollectionController extends Controller
 {
     public function index(Request $request): JsonResource
     {
-        $collections = CocktailCollection::where('user_id', $request->user()->id)->get();
+        $collections = (new CollectionQueryFilter())->where('user_id', $request->user()->id)->get();
 
         return CollectionResource::collection($collections);
     }
