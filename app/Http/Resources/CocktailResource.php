@@ -33,6 +33,7 @@ class CocktailResource extends JsonResource
             'images' => ImageResource::collection($this->images),
             'tags' => $this->tags->pluck('name'),
             'user_id' => $this->user_id,
+            'user_name' => $this->user?->name ?? null,
             'user_rating' => $this->user_rating ?? null,
             'average_rating' => (int) round($this->average_rating ?? 0),
             'glass' => new GlassResource($this->whenLoaded('glass')),
