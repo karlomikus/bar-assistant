@@ -86,11 +86,6 @@ class MicrodataScraper extends AbstractSiteExtractor
         return $result;
     }
 
-    public function garnish(): ?string
-    {
-        return null;
-    }
-
     public function image(): ?array
     {
         $image = $this->crawler->filter('[itemtype="http://schema.org/Recipe"] :not([itemscope]) [itemprop="image"]')->attr('src');

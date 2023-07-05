@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "96ca476669f7f186037fe6efa59faddb",
+    "content-hash": "90a5b981b8035ec323d6d0cb139e7fca",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -134,6 +134,104 @@
                 }
             ],
             "time": "2023-01-15T23:15:59+00:00"
+        },
+        {
+            "name": "brick/schema",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/brick/schema.git",
+                "reference": "935362907ef1b6e3706dac3d799be42f3c754f93"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/brick/schema/zipball/935362907ef1b6e3706dac3d799be42f3c754f93",
+                "reference": "935362907ef1b6e3706dac3d799be42f3c754f93",
+                "shasum": ""
+            },
+            "require": {
+                "brick/structured-data": "^0.1.0",
+                "ext-dom": "*",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "brick/varexporter": "^0.2.1 || ^0.3.0",
+                "phpunit/phpunit": "^8.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Brick\\Schema\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Schema.org library for PHP",
+            "keywords": [
+                "JSON-LD",
+                "brick",
+                "microdata",
+                "rdfa lite",
+                "schema",
+                "schema.org",
+                "structured data"
+            ],
+            "support": {
+                "issues": "https://github.com/brick/schema/issues",
+                "source": "https://github.com/brick/schema/tree/0.1.1"
+            },
+            "time": "2020-03-27T14:36:17+00:00"
+        },
+        {
+            "name": "brick/structured-data",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/brick/structured-data.git",
+                "reference": "1e1e1c8c87c392e65bb9c91e0f3cd732b4574fe9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/brick/structured-data/zipball/1e1e1c8c87c392e65bb9c91e0f3cd732b4574fe9",
+                "reference": "1e1e1c8c87c392e65bb9c91e0f3cd732b4574fe9",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "ext-json": "*",
+                "ext-libxml": "*",
+                "php": "^7.2 || ^8.0",
+                "sabre/uri": "^2.1"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.0",
+                "phpunit/phpunit": "^8.0 || ^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Brick\\StructuredData\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Microdata, RDFa Lite & JSON-LD structured data reader",
+            "keywords": [
+                "JSON-LD",
+                "brick",
+                "microdata",
+                "rdfa",
+                "structured data"
+            ],
+            "support": {
+                "issues": "https://github.com/brick/structured-data/issues",
+                "source": "https://github.com/brick/structured-data/tree/0.1.1"
+            },
+            "time": "2020-12-06T00:36:03+00:00"
         },
         {
             "name": "clue/stream-filter",
@@ -4205,6 +4303,66 @@
                 }
             ],
             "time": "2023-04-15T23:01:58+00:00"
+        },
+        {
+            "name": "sabre/uri",
+            "version": "2.3.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sabre-io/uri.git",
+                "reference": "7e0e7dfd0b7e14346a27eabd66e843a6e7f1812b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sabre-io/uri/zipball/7e0e7dfd0b7e14346a27eabd66e843a6e7f1812b",
+                "reference": "7e0e7dfd0b7e14346a27eabd66e843a6e7f1812b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.17",
+                "phpstan/extension-installer": "^1.3",
+                "phpstan/phpstan": "^1.10",
+                "phpstan/phpstan-phpunit": "^1.3",
+                "phpstan/phpstan-strict-rules": "^1.5",
+                "phpunit/phpunit": "^9.6"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/functions.php"
+                ],
+                "psr-4": {
+                    "Sabre\\Uri\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Evert Pot",
+                    "email": "me@evertpot.com",
+                    "homepage": "http://evertpot.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Functions for making sense out of URIs.",
+            "homepage": "http://sabre.io/uri/",
+            "keywords": [
+                "rfc3986",
+                "uri",
+                "url"
+            ],
+            "support": {
+                "forum": "https://groups.google.com/group/sabredav-discuss",
+                "issues": "https://github.com/sabre-io/uri/issues",
+                "source": "https://github.com/fruux/sabre-uri"
+            },
+            "time": "2023-06-09T06:54:04+00:00"
         },
         {
             "name": "spatie/array-to-xml",

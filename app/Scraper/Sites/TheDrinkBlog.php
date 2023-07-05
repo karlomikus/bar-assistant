@@ -94,11 +94,6 @@ class TheDrinkBlog extends AbstractSiteExtractor
         return $result;
     }
 
-    public function garnish(): ?string
-    {
-        return null;
-    }
-
     public function image(): ?array
     {
         $imageObject = $this->getTypeFromSchema('ImageObject');

@@ -236,7 +236,7 @@ class CocktailController extends Controller
         abort(400, 'Requested type "' . $type . '" not supported');
     }
 
-    public function similar(Request $request, int|string $idOrSlug)
+    public function similar(Request $request, int|string $idOrSlug): JsonResource
     {
         $limitTotal = $request->get('limit', 5);
 

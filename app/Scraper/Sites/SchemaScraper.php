@@ -102,11 +102,6 @@ class SchemaScraper extends AbstractSiteExtractor
         return $result;
     }
 
-    public function garnish(): ?string
-    {
-        return null;
-    }
-
     public function image(): ?array
     {
         $image = Arr::get($this->schema, 'image.url');

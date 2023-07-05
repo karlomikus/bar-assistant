@@ -14,5 +14,6 @@ parameters:
 #
     excludePaths:
         - ./app/Search # 2much2laravel
+        - ./app/Scraper/Sites/DefaultScraper.php # Interface/Base class mapping stuff
 
     checkMissingIterableValueType: false

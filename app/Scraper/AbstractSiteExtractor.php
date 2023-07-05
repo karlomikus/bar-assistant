@@ -89,7 +89,10 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
      *
      * @return null|string
      */
-    abstract public function garnish(): ?string;
+    public function garnish(): ?string
+    {
+        return null;
+    }
 
     /**
      * Array containing image information
@@ -97,6 +100,16 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
      * @return null|array{"url": string|null, "copyright": string|null}
      */
     abstract public function image(): ?array;
+
+    /**
+     * Cocktail method (shake, stir...)
+     *
+     * @return null|string
+     */
+    public function method(): ?string
+    {
+        return null;
+    }
 
     /**
      * Cocktail information as array
@@ -113,7 +126,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             'instructions' => $this->instructions(),
             'garnish' => $this->garnish(),
             'tags' => $this->tags(),
-            'method' => null,
+            'method' => $this->method(),
             'images' => [
                 $this->image()
             ],
