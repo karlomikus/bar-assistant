@@ -48,7 +48,19 @@ final class CocktailQueryFilter extends QueryBuilder
 
                     $query->leftJoin('cocktail_favorites AS cf', 'cf.cocktail_id', '=', 'cocktails.id')
                         ->orderBy('cf.updated_at', $direction);
-                })
+                }),
+                AllowedSort::callback('missing_ingredients', function ($query, bool $descending) {
+                    $direction = $descending ? 'DESC' : 'ASC';
+
+                    $query
+                        ->selectRaw('cocktails.*, COUNT(ci.ingredient_id) - COUNT(ui.ingredient_id) AS missing_ingredients')
+                        ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')
+                        ->leftJoin('user_ingredients AS ui', function ($query) {
+                            $query->on('ui.ingredient_id', '=', 'ci.ingredient_id')->where('ui.user_id', $this->request->user()->id);
+                        })
+                        ->groupBy('cocktails.id')
+                        ->orderBy('missing_ingredients', $direction);
+                }),
             ])
             ->with('ingredients.ingredient', 'images', 'tags', 'method')
             ->withRatings($this->request->user()->id);
