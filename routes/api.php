@@ -97,6 +97,7 @@ Route::middleware($authMiddleware)->group(function() {
         Route::put('/{id}', [CocktailController::class, 'update'])->name('cocktails.update');
         Route::post('/{id}/public-link', [CocktailController::class, 'makePublic'])->name('cocktails.make-public');
         Route::delete('/{id}/public-link', [CocktailController::class, 'makePrivate'])->name('cocktails.make-private');
+        Route::get('/{id}/similar', [CocktailController::class, 'similar'])->name('cocktails.similar');
     });
 
     Route::prefix('images')->group(function() {

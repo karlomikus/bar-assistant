@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Services;
 
 use Throwable;
+use InvalidArgumentException;
 use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\User;
@@ -310,6 +311,12 @@ class CocktailService
             ->toArray();
     }
 
+    /**
+     * Get cocktail ids with user's rating
+     *
+     * @param int $userId
+     * @return array
+     */
     public function getCocktailUserRatings(int $userId): array
     {
         return $this->db->table('ratings')
@@ -351,5 +358,26 @@ class CocktailService
         $user->favorites()->save($cocktailFavorite);
 
         return true;
+    }
+
+    /**
+     * Get cocktail ids with number of missing user ingredients
+     *
+     * @param int $userId
+     * @param string $direction
+     * @return Collection<int, mixed>
+     */
+    public function getCocktailsWithMissingIngredientsCount(int $userId, string $direction = 'desc'): Collection
+    {
+        return $this->db->table('cocktails AS c')
+            ->selectRaw('c.id, COUNT(ci.ingredient_id) - COUNT(ui.ingredient_id) AS missing_ingredients')
+            ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id')
+            ->leftJoin('user_ingredients AS ui', function ($query) use ($userId) {
+                $query->on('ui.ingredient_id', '=', 'ci.ingredient_id')->where('ui.user_id', $userId);
+            })
+            ->groupBy('c.id')
+            ->orderBy('missing_ingredients', $direction)
+            ->having('missing_ingredients', '>', 0)
+            ->get();
     }
 }

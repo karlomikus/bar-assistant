@@ -33,13 +33,13 @@ class ImportControllerTest extends TestCase
         $response->assertJsonCount(5, 'data.ingredients');
     }
 
-    public function test_cocktail_scrape_fails_for_unknown_url(): void
+    public function test_cocktail_scrape_fails_safely_for_unknown_url(): void
     {
         $response = $this->postJson('/api/import/cocktail', [
             'source' => 'https://google.com'
         ]);
 
-        $response->assertBadRequest();
+        $response->assertOk();
     }
 
     public function test_cocktail_scrape_from_json(): void

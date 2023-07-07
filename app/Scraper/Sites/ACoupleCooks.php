@@ -89,11 +89,6 @@ class ACoupleCooks extends AbstractSiteExtractor
         return $result;
     }
 
-    public function garnish(): ?string
-    {
-        return null;
-    }
-
     public function image(): ?array
     {
         return [

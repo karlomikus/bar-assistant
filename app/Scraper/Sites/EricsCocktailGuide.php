@@ -68,11 +68,6 @@ class EricsCocktailGuide extends AbstractSiteExtractor
         return $result;
     }
 
-    public function garnish(): ?string
-    {
-        return null;
-    }
-
     public function image(): ?array
     {
         $style = $this->crawler->filterXPath("//div[contains(@class, 'recipe_recipeImage__')]")->attr('style');

@@ -44,7 +44,7 @@ class SchemaScraper extends AbstractSiteExtractor
 
     public function name(): string
     {
-        return Arr::get($this->schema, 'name');
+        return Arr::get($this->schema, 'name') ?? $this->crawler->filter('title')->text();
     }
 
     public function description(): ?string
@@ -54,13 +54,13 @@ class SchemaScraper extends AbstractSiteExtractor
 
     public function source(): ?string
     {
-        return null;
+        return $this->url;
     }
 
     public function instructions(): ?string
     {
         $result = '';
-        $instructions = Arr::get($this->schema, 'recipeInstructions');
+        $instructions = Arr::get($this->schema, 'recipeInstructions') ?? [];
         $i = 1;
         foreach ($instructions as $step) {
             $result .= $i . ". " . $step['text'] . "\n\n";
@@ -84,7 +84,7 @@ class SchemaScraper extends AbstractSiteExtractor
     {
         $result = [];
 
-        foreach (Arr::get($this->schema, 'recipeIngredient') as $ingredient) {
+        foreach (Arr::get($this->schema, 'recipeIngredient') ?? [] as $ingredient) {
             ['amount' => $amount, 'units' => $units, 'name' => $name] = (new IngredientParser($ingredient))->parse();
 
             if (empty($amount) || empty($name) || empty($units)) {
@@ -100,11 +100,6 @@ class SchemaScraper extends AbstractSiteExtractor
         }
 
         return $result;
-    }
-
-    public function garnish(): ?string
-    {
-        return null;
     }
 
     public function image(): ?array

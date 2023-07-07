@@ -1,3 +1,16 @@
+# v2.2.0
+## New
+- Improved schema scraping, and added new scrapers for
+    - CocktailParty
+    - LiberAndCo
+    - DiffordsGuide
+    - TheCocktailDB
+- Added `user_name` to cocktail response
+- Added filters to `/collections` endpoint
+- Added `missing_ingredients` sort to cocktails endpoint
+    - This will sort by number of user's missing ingredients #137
+- Added `/cocktails/{id}/similar` endpoint to show similar cocktails #40
+
 # v2.1.0
 ## New
 - Added support for Meilisearch v1.2

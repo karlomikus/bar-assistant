@@ -15,6 +15,10 @@ class CocktailIngredient extends Model
 
     public $timestamps = false;
 
+    protected $casts = [
+        'optional' => 'boolean',
+    ];
+
     /**
      * @return BelongsTo<Ingredient, CocktailIngredient>
      */
