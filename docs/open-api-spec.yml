@@ -161,7 +161,7 @@ paths:
         required: false
         schema:
           type: string
-          example: name,-created_at,favorited_at
+          example: name,-created_at,favorited_at,missing_ingredients
         description: Sort by specific parameters, toggle order by adding "-"
       - in: query
         name: per_page
@@ -443,6 +443,37 @@ paths:
                   message:
                     type: string
                     example: 'Requested type "notype" not supported.'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /cocktails/{id}/similar:
+    get:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Database id of the cocktail
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        description: Limit number of shown cocktails
+        schema:
+          type: integer
+      tags:
+        - "Cocktails"
+      summary: 'Show a list of similar cocktails'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cocktail'
         '404':
           $ref: '#/components/responses/NotFound'
   /shelf/cocktails:
@@ -1628,14 +1659,35 @@ paths:
           $ref: '#/components/responses/NotFound'
   /collections:
     get:
+      parameters:
+      - in: query
+        name: filter
+        required: false
+        description: Filter by specific parameters
+        explode: true
+        style: deepObject
+        schema:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 3,4,5
+            name:
+              type: string
+              example: "my collection"
+            cocktail_id:
+              type: integer
+              example: 1
+      - in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+          example: name,-created_at
+        description: Sort by specific parameters, toggle order by adding "-"
       tags:
         - "Collections"
       summary: List user collections
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CollectionRequest'
       responses:
         '200':
           description: Successful response
