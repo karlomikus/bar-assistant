@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
+use Throwable;
 use Brick\Schema\SchemaReader;
 use Brick\Schema\Interfaces\Recipe;
 use Brick\Schema\Interfaces\Article;
@@ -46,12 +47,19 @@ class DefaultScraper extends AbstractSiteExtractor
             $name = $this->recipeSchema->name?->getFirstValue() ?? null;
         }
 
-        if (!$name) {
-            $name = $this->crawler->filter('meta[property="og:title"]')->first()->attr('content') ?? null;
+        try {
+            if (!$name) {
+                $name = $this->crawler->filter('meta[property="og:title"]')->first()->attr('content') ?? null;
+            }
+    
+            if (!$name) {
+                $name = $this->crawler->filter('title')->text();
+            }
+        } catch (Throwable) {
         }
 
         if (!$name) {
-            $name = $this->crawler->filter('title')->text();
+            $name = '';
         }
 
         return $name;
@@ -97,7 +105,17 @@ class DefaultScraper extends AbstractSiteExtractor
     public function tags(): array
     {
         if ($this->recipeSchema) {
-            $keywords = $this->recipeSchema->keywords?->toString() ?? '';
+            $keywords = '';
+
+            // Try with recipe category first
+            if ($this->recipeSchema->recipeCategory?->count() ?? 0 > 0) {
+                $keywords = implode(',', $this->recipeSchema->recipeCategory->getValues());
+            }
+
+            // Fallback to keywords
+            if ($keywords === '') {
+                $keywords = $this->recipeSchema->keywords?->toString();
+            }
 
             return explode(',', $keywords);
         }
@@ -118,6 +136,16 @@ class DefaultScraper extends AbstractSiteExtractor
 
         $result = [];
         $ingredients = $this->recipeSchema->recipeIngredient?->getValues() ?? [];
+
+        // Try microdata directly from html
+        if (empty($ingredients)) {
+            try {
+                $this->crawler->filterXPath('//*[@itemprop="recipeIngredient"]')->each(function ($node) use (&$ingredients) {
+                    $ingredients[] = $node->text();
+                });
+            } catch (Throwable) {
+            }
+        }
 
         foreach ($ingredients as $ingredient) {
             ['amount' => $amount, 'units' => $units, 'name' => $name] = (new IngredientParser($ingredient))->parse();

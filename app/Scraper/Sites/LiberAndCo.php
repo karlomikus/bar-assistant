@@ -97,14 +97,16 @@ class LiberAndCo extends AbstractSiteExtractor
 
         try {
             $imageAuthor = ' | ' . $this->crawler->filterXPath('//p/strong[contains(text(), \'Photo:\')]/following::*')->first()->text();
-        } catch (Throwable) { }
+        } catch (Throwable) {
+        }
 
         try {
             $imageUrl = trim($this->crawler->filter('.product .product__images img')->first()->attr('data-src'));
             if (str_starts_with($imageUrl, '//')) {
                 $imageUrl = 'https:' . $imageUrl;
             }
-        } catch (Throwable) { }
+        } catch (Throwable) {
+        }
 
         return [
             'url' => $imageUrl,

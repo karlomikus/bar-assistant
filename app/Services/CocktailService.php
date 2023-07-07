@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Services;
 
 use Throwable;
+use InvalidArgumentException;
 use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\User;
@@ -13,7 +14,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
-use InvalidArgumentException;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Exceptions\CocktailException;
@@ -363,9 +363,9 @@ class CocktailService
     /**
      * Get cocktail ids with number of missing user ingredients
      *
-     * @param int $userId 
-     * @param string $direction 
-     * @return Collection
+     * @param int $userId
+     * @param string $direction
+     * @return Collection<int, mixed>
      */
     public function getCocktailsWithMissingIngredientsCount(int $userId, string $direction = 'desc'): Collection
     {
