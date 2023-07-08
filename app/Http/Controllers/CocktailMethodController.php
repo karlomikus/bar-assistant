@@ -16,14 +16,14 @@ class CocktailMethodController extends Controller
 {
     public function index(): JsonResource
     {
-        $methods = CocktailMethod::orderBy('id')->get();
+        $methods = CocktailMethod::orderBy('id')->withCount('cocktails')->get();
 
         return CocktailMethodResource::collection($methods);
     }
 
     public function show(int $id): JsonResource
     {
-        $method = CocktailMethod::findOrFail($id);
+        $method = CocktailMethod::withCount('cocktails')->findOrFail($id);
 
         return new CocktailMethodResource($method);
     }
