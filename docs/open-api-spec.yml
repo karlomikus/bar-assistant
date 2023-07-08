@@ -156,13 +156,25 @@ paths:
             is_public:
               type: boolean
               example: true
+            user_rating_min:
+              type: integer
+              example: 3
+            user_rating_max:
+              type: integer
+              example: 5
+            abv_min:
+              type: number
+              example: 15
+            abv_max:
+              type: number
+              example: 55.5
       - in: query
         name: sort
         required: false
         schema:
           type: string
-          example: name,-created_at,favorited_at,missing_ingredients
-        description: Sort by specific parameters, toggle order by adding "-"
+          example: name,-created_at
+        description: "Sort by specific parameters, change order by prepending `-`. Available sorts: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `favorited_at`, `missing_ingredients`. Seperate multiple sorts with a comma `,`."
       - in: query
         name: per_page
         required: false

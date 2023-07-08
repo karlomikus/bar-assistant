@@ -44,9 +44,18 @@ final class CocktailQueryFilter extends QueryBuilder
                         $query->whereNotNull('public_id');
                     }
                 }),
-                AllowedFilter::callback('user_rating', function ($query, $value) {
+                AllowedFilter::callback('user_rating_min', function ($query, $value) {
                     $query->where('user_rating', '>=', (int) $value);
-                })
+                }),
+                AllowedFilter::callback('user_rating_max', function ($query, $value) {
+                    $query->where('user_rating', '<=', (int) $value);
+                }),
+                AllowedFilter::callback('abv_min', function ($query, $value) {
+                    $query->where('abv', '>=', $value);
+                }),
+                AllowedFilter::callback('abv_max', function ($query, $value) {
+                    $query->where('abv', '<=', $value);
+                }),
             ])
             ->defaultSort('name')
             ->allowedSorts([
@@ -54,6 +63,7 @@ final class CocktailQueryFilter extends QueryBuilder
                 'created_at',
                 'average_rating',
                 'user_rating',
+                'abv',
                 AllowedSort::callback('favorited_at', function ($query, bool $descending) {
                     $direction = $descending ? 'DESC' : 'ASC';
 
