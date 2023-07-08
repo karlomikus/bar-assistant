@@ -108,6 +108,8 @@ class CocktailService
 
         // Refresh model for response
         $cocktail->refresh();
+        // Calculate ABV after adding ingredients
+        $cocktail->abv = $cocktail->getABV();
         // Upsert scout index
         $cocktail->save();
 
@@ -222,6 +224,8 @@ class CocktailService
 
         // Refresh model for response
         $cocktail->refresh();
+        // Calculate ABV after adding ingredients
+        $cocktail->abv = $cocktail->getABV();
         // Upsert scout index
         $cocktail->save();
 

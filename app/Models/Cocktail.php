@@ -99,6 +99,8 @@ class Cocktail extends Model
             return null;
         }
 
+        $this->loadMissing('ingredients.ingredient');
+
         $ingredients = $this->ingredients
             ->filter(function ($cocktailIngredient) {
                 return strtolower($cocktailIngredient->units) === 'ml' || str_starts_with(strtolower($cocktailIngredient->units), 'dash');
@@ -207,7 +209,7 @@ class Cocktail extends Model
             'glass' => $this->glass->name ?? null,
             'average_rating' => (int) round($this->ratings()->avg('rating') ?? 0),
             'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
-            'calculated_abv' => $this->getABV(),
+            'calculated_abv' => $this->abv,
             'method' => $this->method->name ?? null,
             'has_public_link' => $this->public_id !== null,
         ];
