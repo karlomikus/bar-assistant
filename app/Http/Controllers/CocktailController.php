@@ -45,8 +45,8 @@ class CocktailController extends Controller
      */
     public function show(int|string $idOrSlug, Request $request): JsonResource
     {
-        $cocktail = Cocktail::where('id', $idOrSlug)
-            ->orWhere('slug', $idOrSlug)
+        $cocktail = Cocktail::where('slug', $idOrSlug)
+            ->orWhere('id', $idOrSlug)
             ->withRatings($request->user()->id)
             ->firstOrFail()
             ->load(['ingredients.ingredient', 'images' => function ($query) {
