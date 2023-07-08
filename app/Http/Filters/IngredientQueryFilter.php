@@ -26,8 +26,10 @@ final class IngredientQueryFilter extends QueryBuilder
                     $usersList = $this->request->user()->shoppingLists->pluck('ingredient_id');
                     $query->whereIn('id', $usersList);
                 }),
-                AllowedFilter::callback('on_shelf', function ($query) {
-                    $query->join('user_ingredients', 'user_ingredients.ingredient_id', '=', 'ingredients.id')->where('user_ingredients.user_id', $this->request->user()->id);
+                AllowedFilter::callback('on_shelf', function ($query, $value) {
+                    if ($value === true) {
+                        $query->join('user_ingredients', 'user_ingredients.ingredient_id', '=', 'ingredients.id')->where('user_ingredients.user_id', $this->request->user()->id);
+                    }
                 }),
                 AllowedFilter::callback('strength_min', function ($query, $value) {
                     $query->where('strength', '>=', $value);

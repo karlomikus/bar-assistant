@@ -29,20 +29,31 @@ final class CocktailQueryFilter extends QueryBuilder
                 AllowedFilter::exact('user_id'),
                 AllowedFilter::exact('glass_id'),
                 AllowedFilter::exact('cocktail_method_id'),
-                AllowedFilter::callback('favorites', function ($query) {
-                    $query->userFavorites($this->request->user()->id);
+                AllowedFilter::callback('favorites', function ($query, $value) {
+                    if ($value === true) {
+                        $query->userFavorites($this->request->user()->id);
+                    }
                 }),
-                AllowedFilter::callback('on_shelf', function ($query) use ($cocktailService) {
-                    $query->whereIn('cocktails.id', $cocktailService->getCocktailsByUserIngredients($this->request->user()->id));
+                AllowedFilter::callback('on_shelf', function ($query, $value) use ($cocktailService) {
+                    if ($value === true) {
+                        $query->whereIn('cocktails.id', $cocktailService->getCocktailsByUserIngredients($this->request->user()->id));
+                    }
                 }),
-                AllowedFilter::callback('is_public', function ($query) {
-                    $query->whereNotNull('public_id');
+                AllowedFilter::callback('is_public', function ($query, $value) {
+                    if ($value === true) {
+                        $query->whereNotNull('public_id');
+                    }
                 }),
+                AllowedFilter::callback('user_rating', function ($query, $value) {
+                    $query->where('user_rating', '>=', (int) $value);
+                })
             ])
             ->defaultSort('name')
             ->allowedSorts([
                 'name',
                 'created_at',
+                'average_rating',
+                'user_rating',
                 AllowedSort::callback('favorited_at', function ($query, bool $descending) {
                     $direction = $descending ? 'DESC' : 'ASC';
 
