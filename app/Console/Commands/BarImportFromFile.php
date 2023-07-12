@@ -79,6 +79,7 @@ class BarImportFromFile extends Command
         $this->info('Refreshing search indexes...');
 
         Artisan::call('bar:refresh-search');
+        Artisan::call('cache:clear');
 
         $this->info('Importing is finished!');
 
