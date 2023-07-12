@@ -168,6 +168,9 @@ paths:
             abv_max:
               type: number
               example: 55.5
+            main_ingredient_id:
+              type: integer
+              example: 1
       - in: query
         name: sort
         required: false
@@ -553,6 +556,9 @@ paths:
             strength_max:
              type: integer
              example: 50
+            main_ingredients:
+              type: boolean
+              example: true
       - in: query
         name: sort
         required: false

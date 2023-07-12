@@ -7,7 +7,9 @@ namespace Kami\Cocktail\Services;
 use Throwable;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
+use Illuminate\Support\Collection;
 use Kami\Cocktail\Models\Ingredient;
+use Illuminate\Database\DatabaseManager;
 use Kami\Cocktail\Exceptions\ImageException;
 use Kami\Cocktail\Exceptions\IngredientException;
 
@@ -15,6 +17,7 @@ class IngredientService
 {
     public function __construct(
         private readonly LogManager $log,
+        private readonly DatabaseManager $db,
     ) {
     }
 
@@ -142,5 +145,15 @@ class IngredientService
         $ingredient->cocktails->each(fn ($cocktail) => $cocktail->searchable());
 
         return $ingredient;
+    }
+
+    public function getMainIngredientsInCocktails(): Collection
+    {
+        return $this->db->table('cocktail_ingredients')
+            ->selectRaw('ingredient_id, COUNT(cocktail_id) AS cocktails')
+            ->where('sort', 1)
+            ->groupBy('cocktail_id')
+            ->orderBy('id', 'desc')
+            ->get();
     }
 }

@@ -56,6 +56,16 @@ final class CocktailQueryFilter extends QueryBuilder
                 AllowedFilter::callback('abv_max', function ($query, $value) {
                     $query->where('abv', '<=', $value);
                 }),
+                AllowedFilter::callback('main_ingredient_id', function ($query, $value) {
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
+
+                    $query
+                        ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')
+                        ->whereIn('ci.ingredient_id', $value)
+                        ->where('sort', '=', 1);
+                }),
             ])
             ->defaultSort('name')
             ->allowedSorts([
