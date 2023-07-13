@@ -35,7 +35,7 @@ class CocktailController extends Controller
             abort(400, $e->getMessage());
         }
 
-        $cocktails = $cocktails->paginate($request->get('per_page', 15))->withQueryString();
+        $cocktails = $cocktails->paginate($request->get('per_page', 25))->withQueryString();
 
         return CocktailResource::collection($cocktails);
     }
