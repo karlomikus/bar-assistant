@@ -1,3 +1,21 @@
+# v2.3.0
+## New
+- Added cocktails count to `tag`, `glass` and `cocktail_method` resources
+- Added `abv_min`, `abv_max`, `user_rating_min`, `user_rating_max` and `main_ingredient_id` cocktail query filters
+- Added `main_ingredients` ingredient query filter
+
+## Changes
+- ABV is now saved in the cocktails table with the cocktail #139
+- Default results per page on `cocktails` resource increased to 25
+
+## Fixes
+- Fixed boolean query filters not correctly filtering the results
+- Fixed slugs with only numbers fetching by `id` column first instead of `slug` #140
+- Added missing cache clearing after importing data from zip file
+- Fixed missing eager load of `user` relation when fetching cocktails
+- Fixed old cocktail ingredients not having correct ingredient sorting
+- Fixed image extension detection sometimes falling back to jpg for no good reason
+
 # v2.2.0
 ## New
 - Improved schema scraping, and added new scrapers for

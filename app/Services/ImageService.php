@@ -139,8 +139,14 @@ class ImageService
     private function processImageFile(InterventionImage $image, ?string $filename = null): array
     {
         $filename = $filename ?? Str::random(40);
-        /** @phpstan-ignore-next-line */
-        $fileExtension = $image->extension ?? 'jpg';
+
+        $fileExtension = match ($image->mime()) {
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+            default => 'jpg'
+        };
+
         $filepath = 'temp/' . $filename . '.' . $fileExtension;
 
         $thumbHash = null;
