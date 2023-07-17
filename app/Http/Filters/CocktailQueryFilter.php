@@ -26,6 +26,7 @@ final class CocktailQueryFilter extends QueryBuilder
                 AllowedFilter::partial('ingredient_name', 'ingredients.ingredient.name'),
                 AllowedFilter::exact('ingredient_id', 'ingredients.ingredient.id'),
                 AllowedFilter::exact('tag_id', 'tags.id'),
+                AllowedFilter::exact('collection_id', 'collections.id'),
                 AllowedFilter::exact('user_id'),
                 AllowedFilter::exact('glass_id'),
                 AllowedFilter::exact('cocktail_method_id'),
@@ -93,7 +94,7 @@ final class CocktailQueryFilter extends QueryBuilder
                         ->orderBy('missing_ingredients', $direction);
                 }),
             ])
-            ->with('ingredients.ingredient', 'images', 'tags', 'method', 'user')
+            ->with('ingredients.ingredient', 'images', 'tags', 'method', 'user', 'collections')
             ->withRatings($this->request->user()->id);
     }
 }

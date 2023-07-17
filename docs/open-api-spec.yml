@@ -171,6 +171,9 @@ paths:
             main_ingredient_id:
               type: integer
               example: 1
+            collection_id:
+              type: integer
+              example: 1
       - in: query
         name: sort
         required: false

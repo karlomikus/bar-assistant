@@ -80,6 +80,14 @@ class Cocktail extends Model
         return $this->belongsTo(CocktailMethod::class, 'cocktail_method_id');
     }
 
+    /**
+     * @return BelongsToMany<CocktailCollection>
+     */
+    public function collections(): BelongsToMany
+    {
+        return $this->belongsToMany(CocktailCollection::class, 'collections_cocktails');
+    }
+
     public function delete(): ?bool
     {
         $this->deleteImages();
