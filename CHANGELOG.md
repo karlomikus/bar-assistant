@@ -3,6 +3,9 @@
 - Added cocktails count to `tag`, `glass` and `cocktail_method` resources
 - Added `abv_min`, `abv_max`, `user_rating_min`, `user_rating_max` and `main_ingredient_id` cocktail query filters
 - Added `main_ingredients` ingredient query filter
+- Added `shelf_ingredients` cocktail query filter
+    - This will return all cocktails you can make with the given ingredients
+    - This allows you to create on-the-fly custom shelf cocktails
 
 ## Changes
 - ABV is now saved in the cocktails table with the cocktail #139

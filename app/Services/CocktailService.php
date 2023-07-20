@@ -236,13 +236,11 @@ class CocktailService
      * Return all cocktails that user can create with
      * ingredients in his shelf
      *
-     * @param int $userId
+     * @param array<int> $ingredientIds
      * @return \Illuminate\Support\Collection<string, mixed>
      */
-    public function getCocktailsByUserIngredients(int $userId, ?int $limit = null): Collection
+    public function getCocktailsByUserIngredients(array $ingredientIds, ?int $limit = null): Collection
     {
-        $userIngredientIds = $this->db->table('user_ingredients')->select('ingredient_id')->where('user_id', $userId)->pluck('ingredient_id');
-
         $query = $this->db->table('cocktails AS c')
             ->select('c.id')
             ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id')
@@ -253,22 +251,22 @@ class CocktailService
             $query->join('ingredients AS i', function ($join) {
                 $join->on('i.id', '=', 'ci.ingredient_id')->orOn('i.id', '=', 'i.parent_ingredient_id');
             })
-            ->where(function ($query) use ($userIngredientIds) {
+            ->where(function ($query) use ($ingredientIds) {
                 $query->whereNull('i.parent_ingredient_id')
-                    ->whereIn('i.id', $userIngredientIds);
+                    ->whereIn('i.id', $ingredientIds);
             })
-            ->orWhere(function ($query) use ($userIngredientIds) {
+            ->orWhere(function ($query) use ($ingredientIds) {
                 $query->whereNotNull('i.parent_ingredient_id')
-                    ->where(function ($sub) use ($userIngredientIds) {
-                        $sub->whereIn('i.id', $userIngredientIds)->orWhereIn('i.parent_ingredient_id', $userIngredientIds);
+                    ->where(function ($sub) use ($ingredientIds) {
+                        $sub->whereIn('i.id', $ingredientIds)->orWhereIn('i.parent_ingredient_id', $ingredientIds);
                     });
             });
         } else {
             $query->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
-            ->whereIn('i.id', $userIngredientIds);
+            ->whereIn('i.id', $ingredientIds);
         }
 
-        $query->orWhereIn('cis.ingredient_id', $userIngredientIds)
+        $query->orWhereIn('cis.ingredient_id', $ingredientIds)
         ->groupBy('c.id')
         ->havingRaw('COUNT(*) >= (SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_id = c.id AND optional = false)');
 
