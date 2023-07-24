@@ -33,18 +33,18 @@ class CocktailResource extends JsonResource
             'images' => ImageResource::collection($this->images),
             'tags' => $this->tags->pluck('name'),
             'user_id' => $this->user_id,
-            'user_name' => $this->user?->name ?? null,
             'user_rating' => $this->user_rating ?? null,
             'average_rating' => (int) round($this->average_rating ?? 0),
             'glass' => new GlassResource($this->whenLoaded('glass')),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
-            'ingredients' => CocktailIngredientResource::collection($this->ingredients),
+            'ingredients' => CocktailIngredientResource::collection($this->ingredients), // TODO: Cond. load
             'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
             'created_at' => $this->created_at->toDateTimeString(),
             'method' => new CocktailMethodResource($this->whenLoaded('method')),
-            'collections' => $this->collections->pluck('id'),
+            'collections' => CocktailCollectionResource::collection($this->whenLoaded('collections')),
             'abv' => $this->abv,
             'notes' => NoteResource::collection($this->whenLoaded('notes')),
+            'user' => new UserBasicResource($this->whenLoaded('user')),
         ];
     }
 }

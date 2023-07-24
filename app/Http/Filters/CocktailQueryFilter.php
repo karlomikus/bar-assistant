@@ -103,7 +103,8 @@ final class CocktailQueryFilter extends QueryBuilder
                         ->orderBy('missing_ingredients', $direction);
                 }),
             ])
-            ->with('ingredients.ingredient', 'images', 'tags', 'method', 'user', 'collections')
+            ->allowedIncludes(['glass', 'method', 'user', 'collections', 'notes'])
+            ->with('ingredients.ingredient', 'images', 'tags')
             ->withRatings($this->request->user()->id);
     }
 }
