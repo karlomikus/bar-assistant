@@ -195,6 +195,13 @@ paths:
           type: integer
           example: 1
         description: Page number
+      - in: query
+        name: includes
+        required: false
+        schema:
+          type: string
+          example: notes,user
+        description: "Comma seperated names of extra data you want to include in response: `notes`, `glass`, `user`, `collections`, `method`"
       tags:
         - "Cocktails"
       summary: 'Show a paginated list of cocktails'
