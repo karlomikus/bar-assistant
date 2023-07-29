@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Services;
 
 use Throwable;
+use InvalidArgumentException;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Collection;
@@ -147,6 +148,9 @@ class IngredientService
         return $ingredient;
     }
 
+    /**
+     * @return Collection<int, mixed>
+     */
     public function getMainIngredientsInCocktails(): Collection
     {
         return $this->db->table('cocktail_ingredients')
