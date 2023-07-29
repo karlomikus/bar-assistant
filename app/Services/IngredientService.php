@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Collection;
+use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Database\DatabaseManager;
 use Kami\Cocktail\Exceptions\ImageException;
@@ -144,6 +145,10 @@ class IngredientService
         // Upsert scout index
         $ingredient->save();
         $ingredient->cocktails->each(fn ($cocktail) => $cocktail->searchable());
+        $ingredient->cocktails->each(function (Cocktail $cocktail) {
+            $cocktail->abv = $cocktail->getABV();
+            $cocktail->save();
+        });
 
         return $ingredient;
     }
