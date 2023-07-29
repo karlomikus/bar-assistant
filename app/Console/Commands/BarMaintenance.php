@@ -3,10 +3,10 @@
 namespace Kami\Cocktail\Console\Commands;
 
 use Throwable;
-use Kami\Cocktail\Models\User;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
@@ -34,6 +34,14 @@ class BarMaintenance extends Command
      */
     public function handle()
     {
+        Cocktail::with('ingredients.ingredient')->chunk(50, function ($cocktails) {
+            foreach ($cocktails as $cocktail) {
+                $calculatedAbv = $cocktail->getABV();
+                $cocktail->abv = $calculatedAbv;
+                $cocktail->save();
+            }
+        });
+
         // Fix sort
         $this->info('Fixing cocktail ingredients sort order...');
         $this->fixSort();

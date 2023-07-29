@@ -32,7 +32,7 @@ class CocktailResource extends JsonResource
             'main_image_id' => $this->images->sortBy('sort')->first()->id ?? null,
             'images' => ImageResource::collection($this->images),
             'tags' => $this->tags->pluck('name'),
-            'user_id' => $this->user_id,
+            'user_id' => $this->user_id, // Deprecated
             'user_rating' => $this->user_rating ?? null,
             'average_rating' => (int) round($this->average_rating ?? 0),
             'glass' => new GlassResource($this->whenLoaded('glass')),

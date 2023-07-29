@@ -6,10 +6,19 @@
 - Added `shelf_ingredients` cocktail query filter
     - This will return all cocktails you can make with the given ingredients
     - This allows you to create on-the-fly custom shelf cocktails
+- Added POST `/collections/{id}/cocktails` endpoint
+    - This endpoint allows you to add multiple cocktails to collection with single call
+- Added `cocktails` request property to `CollectionRequest` schema
+    - This allows you to add cocktails when creating new collection
+- Added `include` query option to `cocktails` endpoint
+    - This is used to toggle extra available data when fetching cocktails
 
 ## Changes
 - ABV is now saved in the cocktails table with the cocktail #139
 - Default results per page on `cocktails` resource increased to 25
+
+## Deprecations
+- Property `user_id` on `Cocktail` schema will be removed in next release, use `user.id` property instead
 
 ## Fixes
 - Fixed boolean query filters not correctly filtering the results
