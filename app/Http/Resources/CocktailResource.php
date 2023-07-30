@@ -31,7 +31,13 @@ class CocktailResource extends JsonResource
             'public_id' => $this->public_id,
             'main_image_id' => $this->images->sortBy('sort')->first()->id ?? null,
             'images' => ImageResource::collection($this->images),
-            'tags' => $this->tags->pluck('name'),
+            'tags' => $this->tags->pluck('name'), // TODO: introduce braking change
+            'cocktail_tags' => $this->tags->map(function ($tag) {
+                return [
+                    'id' => $tag->id,
+                    'name' => $tag->name,
+                ];
+            }),
             'user_id' => $this->user_id, // Deprecated
             'user_rating' => $this->user_rating ?? null,
             'average_rating' => (int) round($this->average_rating ?? 0),
