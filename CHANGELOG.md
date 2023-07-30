@@ -19,6 +19,7 @@
 
 ## Deprecations
 - Property `user_id` on `Cocktail` schema will be removed in next release, use `user.id` property instead
+- Property `main_ingredient_name` on `Cocktail` schema will be removed in next release
 
 ## Fixes
 - Fixed boolean query filters not correctly filtering the results

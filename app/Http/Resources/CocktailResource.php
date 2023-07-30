@@ -38,7 +38,7 @@ class CocktailResource extends JsonResource
             'glass' => new GlassResource($this->whenLoaded('glass')),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'ingredients' => CocktailIngredientResource::collection($this->ingredients), // TODO: Cond. load
-            'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
+            'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null, // Deprecated
             'created_at' => $this->created_at->toDateTimeString(),
             'method' => new CocktailMethodResource($this->whenLoaded('method')),
             'collections' => CocktailCollectionResource::collection($this->whenLoaded('collections')),
