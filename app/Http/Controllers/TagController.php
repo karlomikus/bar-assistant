@@ -25,7 +25,7 @@ class TagController extends Controller
 
     public function show(int $id): JsonResource
     {
-        $tag = Tag::findOrFail($id)->withCount('cocktails');
+        $tag = Tag::withCount('cocktails')->findOrFail($id);
 
         return new TagResource($tag);
     }
