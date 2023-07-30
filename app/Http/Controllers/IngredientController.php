@@ -17,10 +17,10 @@ use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 
 class IngredientController extends Controller
 {
-    public function index(Request $request): JsonResource
+    public function index(IngredientService $ingredientService, Request $request): JsonResource
     {
         try {
-            $ingredients = (new IngredientQueryFilter())->paginate($request->get('per_page', 50));
+            $ingredients = (new IngredientQueryFilter($ingredientService))->paginate($request->get('per_page', 50));
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }

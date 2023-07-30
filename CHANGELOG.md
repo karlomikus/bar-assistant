@@ -1,3 +1,34 @@
+# v2.3.0
+## New
+- Added cocktails count to `tag`, `glass` and `cocktail_method` resources
+- Added `abv_min`, `abv_max`, `user_rating_min`, `user_rating_max` and `main_ingredient_id` cocktail query filters
+- Added `main_ingredients` ingredient query filter
+- Added `shelf_ingredients` cocktail query filter
+    - This will return all cocktails you can make with the given ingredients
+    - This allows you to create on-the-fly custom shelf cocktails
+- Added POST `/collections/{id}/cocktails` endpoint
+    - This endpoint allows you to add multiple cocktails to collection with single call
+- Added `cocktails` request property to `CollectionRequest` schema
+    - This allows you to add cocktails when creating new collection
+- Added `include` query option to `cocktails` endpoint
+    - This is used to toggle extra available data when fetching cocktails
+
+## Changes
+- ABV is now saved in the cocktails table with the cocktail #139
+- Default results per page on `cocktails` resource increased to 25
+
+## Deprecations
+- Property `user_id` on `Cocktail` schema will be removed in next release, use `user.id` property instead
+- Property `main_ingredient_name` on `Cocktail` schema will be removed in next release
+
+## Fixes
+- Fixed boolean query filters not correctly filtering the results
+- Fixed slugs with only numbers fetching by `id` column first instead of `slug` #140
+- Added missing cache clearing after importing data from zip file
+- Fixed missing eager load of `user` relation when fetching cocktails
+- Fixed old cocktail ingredients not having correct ingredient sorting
+- Fixed image extension detection sometimes falling back to jpg for no good reason
+
 # v2.2.0
 ## New
 - Improved schema scraping, and added new scrapers for

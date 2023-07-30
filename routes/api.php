@@ -173,6 +173,7 @@ Route::middleware($authMiddleware)->group(function() {
         Route::get('/{id}', [CollectionController::class, 'show'])->name('collection.show');
         Route::put('/{id}', [CollectionController::class, 'update']);
         Route::delete('/{id}', [CollectionController::class, 'delete']);
+        Route::post('/{id}/cocktails', [CollectionController::class, 'cocktails']);
         Route::put('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'cocktail']);
         Route::delete('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'deleteResourceFromCollection']);
     });

@@ -35,7 +35,7 @@ class CocktailController extends Controller
             abort(400, $e->getMessage());
         }
 
-        $cocktails = $cocktails->paginate($request->get('per_page', 15));
+        $cocktails = $cocktails->paginate($request->get('per_page', 25))->withQueryString();
 
         return CocktailResource::collection($cocktails);
     }
@@ -45,13 +45,13 @@ class CocktailController extends Controller
      */
     public function show(int|string $idOrSlug, Request $request): JsonResource
     {
-        $cocktail = Cocktail::where('id', $idOrSlug)
-            ->orWhere('slug', $idOrSlug)
+        $cocktail = Cocktail::where('slug', $idOrSlug)
+            ->orWhere('id', $idOrSlug)
             ->withRatings($request->user()->id)
             ->firstOrFail()
             ->load(['ingredients.ingredient', 'images' => function ($query) {
                 $query->orderBy('sort');
-            }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'notes']);
+            }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'notes', 'user', 'collections']);
 
         return new CocktailResource($cocktail);
     }

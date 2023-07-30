@@ -31,7 +31,10 @@ class ShelfController extends Controller
     {
         $limit = $request->has('limit') ? (int) $request->get('limit') : null;
 
-        $cocktailIds = $cocktailService->getCocktailsByUserIngredients($request->user()->id, $limit);
+        $cocktailIds = $cocktailService->getCocktailsByUserIngredients(
+            $request->user()->shelfIngredients->pluck('ingredient_id')->toArray(),
+            $limit
+        );
 
         return response()->json([
             'data' => $cocktailIds

@@ -43,6 +43,9 @@ class CollectionController extends Controller
         $collection->user_id = $request->user()->id;
         $collection->save();
 
+        $cocktailIds = $request->post('cocktails', []);
+        $collection->cocktails()->attach($cocktailIds);
+
         return (new CollectionResource($collection))
             ->response()
             ->setStatusCode(201)
@@ -59,6 +62,24 @@ class CollectionController extends Controller
 
         $collection->name = $request->post('name');
         $collection->description = $request->post('description');
+        $collection->save();
+
+        return new CollectionResource($collection);
+    }
+
+    public function cocktails(Request $request, int $id): JsonResource
+    {
+        $collection = CocktailCollection::findOrFail($id);
+
+        if ($request->user()->cannot('edit', $collection)) {
+            abort(403);
+        }
+
+        try {
+            $collection->cocktails()->syncWithoutDetaching($request->post('cocktails', []));
+        } catch (Throwable) {
+            abort(500, 'Unable to add cocktails to collection!');
+        }
 
         return new CollectionResource($collection);
     }
@@ -75,7 +96,7 @@ class CollectionController extends Controller
 
         try {
             $cocktail->addToCollection($collection);
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             abort(500, 'Unable to add cocktail to collection!');
         }
 

@@ -7,9 +7,9 @@ namespace Kami\Cocktail\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \Kami\Cocktail\Models\CocktailMethod
+ * @mixin \Kami\Cocktail\Models\User
  */
-class CocktailMethodResource extends JsonResource
+class UserBasicResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -22,8 +22,6 @@ class CocktailMethodResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'dilution_percentage' => $this->dilution_percentage,
-            'cocktails_count' => $this->whenCounted('cocktails'),
         ];
     }
 }

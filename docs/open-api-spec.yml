@@ -156,19 +156,40 @@ paths:
             is_public:
               type: boolean
               example: true
+            user_rating_min:
+              type: integer
+              example: 3
+            user_rating_max:
+              type: integer
+              example: 5
+            abv_min:
+              type: number
+              example: 15
+            abv_max:
+              type: number
+              example: 55.5
+            main_ingredient_id:
+              type: integer
+              example: 1
+            collection_id:
+              type: integer
+              example: 1
+            shelf_ingredients:
+              type: string
+              example: 5,6,7
       - in: query
         name: sort
         required: false
         schema:
           type: string
-          example: name,-created_at,favorited_at,missing_ingredients
-        description: Sort by specific parameters, toggle order by adding "-"
+          example: name,-created_at
+        description: "Sort by specific parameters, change order by prepending `-`. Available sorts: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `favorited_at`, `missing_ingredients`. Seperate multiple sorts with a comma `,`."
       - in: query
         name: per_page
         required: false
         schema:
           type: integer
-          example: 15
+          example: 25
         description: Total results per page
       - in: query
         name: page
@@ -177,6 +198,13 @@ paths:
           type: integer
           example: 1
         description: Page number
+      - in: query
+        name: includes
+        required: false
+        schema:
+          type: string
+          example: notes,user
+        description: "Comma seperated names of extra data you want to include in response: `notes`, `glass`, `user`, `collections`, `method`"
       tags:
         - "Cocktails"
       summary: 'Show a paginated list of cocktails'
@@ -541,6 +569,9 @@ paths:
             strength_max:
              type: integer
              example: 50
+            main_ingredients:
+              type: boolean
+              example: true
       - in: query
         name: sort
         required: false
@@ -1757,6 +1788,33 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+        - "Collections"
+      summary: Add multiple cocktails to collection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cocktails:
+                  type: array
+                  example: [1, 2, 3]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CollectionResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
     put:
       tags:
         - "Collections"
@@ -1924,6 +1982,9 @@ components:
           type: string
           nullable: true
           example: 'Description of glass'
+        cocktails_count:
+          type: integer
+          example: 50
     IngredientRequest:
       type: object
       required:
@@ -2256,6 +2317,7 @@ components:
         user_id:
           type: integer
           example: 1
+          deprecated: true
         glass:
           $ref: '#/components/schemas/Glass'
         short_ingredients:
@@ -2279,11 +2341,19 @@ components:
           type: string
           nullable: true
           example: Gin
+          deprecated: true
         created_at:
           type: string
+          format: datetime
           example: 2023-01-01 12:00:00
+        user:
+          $ref: '#/components/schemas/UserBasic'
         method:
           $ref: '#/components/schemas/CocktailMethodResponse'
+        collections:
+          type: array
+          items:
+            $ref: '#/components/schemas/CocktailCollection'
         abv:
           type: number
           format: float
@@ -2292,6 +2362,9 @@ components:
         has_public_link:
           type: boolean
           example: false
+        public_id:
+          type: string
+          format: uuid
         notes:
           type: array
           items:
@@ -2402,6 +2475,9 @@ components:
         name:
           type: string
           example: "Tag name"
+        cocktails_count:
+          type: integer
+          example: 50
     TagRequest:
       type: object
       required:
@@ -2645,6 +2721,24 @@ components:
         created_at:
           type: string
           example: "2023-01-01 12:00:00"
+    UserBasic:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Bartender"
+    CocktailCollection:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "My collection"
     CollectionRequest:
       type: object
       required:
@@ -2656,6 +2750,9 @@ components:
         description:
           type: string
           example: "Collection description"
+        cocktails:
+          type: array
+          example: [1, 2, 3]
     CollectionResponse:
       type: object
       properties:

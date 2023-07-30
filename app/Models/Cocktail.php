@@ -80,6 +80,14 @@ class Cocktail extends Model
         return $this->belongsTo(CocktailMethod::class, 'cocktail_method_id');
     }
 
+    /**
+     * @return BelongsToMany<CocktailCollection>
+     */
+    public function collections(): BelongsToMany
+    {
+        return $this->belongsToMany(CocktailCollection::class, 'collections_cocktails');
+    }
+
     public function delete(): ?bool
     {
         $this->deleteImages();
@@ -98,6 +106,8 @@ class Cocktail extends Model
         if ($this->cocktail_method_id === null) {
             return null;
         }
+
+        $this->loadMissing('ingredients.ingredient');
 
         $ingredients = $this->ingredients
             ->filter(function ($cocktailIngredient) {
@@ -207,7 +217,7 @@ class Cocktail extends Model
             'glass' => $this->glass->name ?? null,
             'average_rating' => (int) round($this->ratings()->avg('rating') ?? 0),
             'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
-            'calculated_abv' => $this->getABV(),
+            'calculated_abv' => $this->abv,
             'method' => $this->method->name ?? null,
             'has_public_link' => $this->public_id !== null,
         ];

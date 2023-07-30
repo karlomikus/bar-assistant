@@ -112,7 +112,7 @@ class ImportServiceTest extends TestCase
         $this->assertCount(2, $cocktail->images);
         $this->assertSame('jpg', $cocktail->images->first()->file_extension);
         $this->assertSame('Image copyright 1', $cocktail->images->first()->copyright);
-        $this->assertSame('jpg', $cocktail->images->last()->file_extension);
+        $this->assertSame('png', $cocktail->images->last()->file_extension);
         $this->assertNull($cocktail->images->last()->copyright);
     }
 
