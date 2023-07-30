@@ -23,7 +23,7 @@ class CocktailControllerTest extends TestCase
     {
         parent::setUp();
 
-        Spectator::using('open-api-spec.yml');
+        // Spectator::using('open-api-spec.yml');
 
         $this->actingAs(
             User::factory()->create()
