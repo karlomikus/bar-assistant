@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Services;
 
 use Throwable;
-use InvalidArgumentException;
 use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\User;
@@ -103,8 +102,6 @@ class CocktailService
                 throw new CocktailException('Error occured while attaching images to cocktail!', 0, $e);
             }
         }
-
-        $this->log->info('[COCKTAIL_SERVICE] Cocktail "' . $cocktailDTO->name . '" created with id: ' . $cocktail->id);
 
         // Refresh model for response
         $cocktail->refresh();
@@ -219,8 +216,6 @@ class CocktailService
                 throw new CocktailException('Error occured while attaching images to cocktail!', 0, $e);
             }
         }
-
-        $this->log->info('[COCKTAIL_SERVICE] Updated cocktail with id: ' . $cocktail->id);
 
         // Refresh model for response
         $cocktail->refresh();
