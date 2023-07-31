@@ -23,7 +23,7 @@ final class IngredientQueryFilter extends QueryBuilder
                 AllowedFilter::beginsWithStrict('name_exact', 'name'),
                 AllowedFilter::exact('category_id', 'ingredient_category_id'),
                 AllowedFilter::partial('origin'),
-                AllowedFilter::exact('user_id'),
+                // AllowedFilter::exact('user_id'),
                 AllowedFilter::callback('on_shopping_list', function ($query) {
                     $usersList = $this->request->user()->shoppingLists->pluck('ingredient_id');
                     $query->whereIn('id', $usersList);
@@ -60,7 +60,7 @@ final class IngredientQueryFilter extends QueryBuilder
                         ->orderBy('cocktails_count', $direction);
                 }),
             ])
-            ->with('category', 'images', 'parentIngredient')
+            ->with('category', 'images')
             ->withCount('cocktails');
     }
 }
