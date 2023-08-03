@@ -3,7 +3,9 @@ info:
   title: 'Bar Assistant API'
   version: '{{VERSION}}'
   description: |-
-    Bar assistant is a self hosted application for managing your home bar. It allows you to add ingredients and create custom cocktail recipes.
+    Bar Assistant is a self hosted application for managing your home bar.
+
+    [Documentation](https://bar-assistant.github.io/docs/) | [Source](https://github.com/karlomikus/bar-assistant)
 servers:
   - url: /api
 tags:
@@ -75,6 +77,7 @@ paths:
       summary: Authenticate and get a token
       security: []
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -199,7 +202,7 @@ paths:
           example: 1
         description: Page number
       - in: query
-        name: includes
+        name: include
         required: false
         schema:
           type: string
@@ -593,6 +596,13 @@ paths:
           type: integer
           example: 1
         description: Page number
+      - in: query
+        name: include
+        required: false
+        schema:
+          type: string
+          example: notes,user
+        description: "Comma seperated names of extra data you want to include in response: `parentIngredient`, `varieties`, `cocktails`, `cocktailIngredientSubstitutes`"
       tags:
         - Ingredients
       summary: 'Get a list of ingredients'

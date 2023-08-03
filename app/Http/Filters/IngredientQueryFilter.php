@@ -23,7 +23,7 @@ final class IngredientQueryFilter extends QueryBuilder
                 AllowedFilter::beginsWithStrict('name_exact', 'name'),
                 AllowedFilter::exact('category_id', 'ingredient_category_id'),
                 AllowedFilter::partial('origin'),
-                // AllowedFilter::exact('user_id'),
+                AllowedFilter::exact('user_id'),
                 AllowedFilter::callback('on_shopping_list', function ($query) {
                     $usersList = $this->request->user()->shoppingLists->pluck('ingredient_id');
                     $query->whereIn('id', $usersList);
@@ -56,10 +56,11 @@ final class IngredientQueryFilter extends QueryBuilder
                     $query
                         ->selectRaw('ingredients.*, COUNT(ci.ingredient_id) AS cocktails_count')
                         ->leftJoin('cocktail_ingredients AS ci', 'ci.ingredient_id', '=', 'ingredients.id')
-                        ->groupBy('ci.ingredient_id')
+                        ->groupBy('ingredients.id')
                         ->orderBy('cocktails_count', $direction);
                 }),
             ])
+            ->allowedIncludes(['parentIngredient', 'varieties', 'cocktails', 'cocktailIngredientSubstitutes'])
             ->with('category', 'images')
             ->withCount('cocktails');
     }
