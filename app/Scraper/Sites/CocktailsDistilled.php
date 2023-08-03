@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
-use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 use Kami\Cocktail\Scraper\IngredientParser;
+use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class CocktailsDistilled extends AbstractSiteExtractor
 {
@@ -47,7 +47,7 @@ class CocktailsDistilled extends AbstractSiteExtractor
 
         $this->crawler->filter('.ingredients ul li')->each(function ($listNode) use (&$result) {
             $ingredientName = $listNode->innerText();
-            if (!$ingredientName || $ingredientName === '') {
+            if (!$ingredientName || (string) $ingredientName === '') {
                 $ingredientName = $listNode->filter('a')->text();
             }
 
