@@ -87,15 +87,26 @@ class DefaultScraper extends AbstractSiteExtractor
             return null;
         }
 
-        $result = "";
+        // Try with the parsed objects first
         $instructions = $this->recipeSchema->recipeInstructions?->getValues() ?? [];
-        $i = 1;
-        foreach ($instructions as $step) {
-            if (!$step->text) {
-                continue;
+        $instructions = array_map(function ($node) {
+            if ($node->text) {
+                return $node->text->toString();
             }
+        }, $instructions);
 
-            $result .= $i . ". " . $step->text->toString() . "\n\n";
+        // Try manually
+        if (empty($instructions)) {
+            $fallback = $this->crawler->filterXPath('//*[@itemprop="recipeInstructions"]');
+            if ($fallback->count() > 0) {
+                $instructions = [$fallback->text()];
+            }
+        }
+
+        $i = 1;
+        $result = "";
+        foreach ($instructions as $step) {
+            $result .= $i . ". " . $step . "\n\n";
             $i++;
         }
 
