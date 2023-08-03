@@ -77,7 +77,22 @@ class CocktailsDistilled extends AbstractSiteExtractor
 
     public function method(): ?string
     {
-        return $this->crawler->filter('.recipe-main .traits div:last-child span')->text('');
+        $method = $this->crawler->filter('.recipe-main .traits div:last-child span')->text('');
+
+        return match ($method) {
+            'Stirred' => 'Stir',
+            'Blended' => 'Blend',
+            'Built' => 'Build',
+            'Dry Shake' => 'Shake',
+            'Muddled' => 'Muddle',
+            'Shaken' => 'Shake',
+            'Stirred' => 'Stir',
+            'Swizzle' => 'Blend',
+            'Thrown' => null,
+            'Whisk' => null,
+            '' => null,
+            default => null
+        };
     }
 
     public function image(): ?array
