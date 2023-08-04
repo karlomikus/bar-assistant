@@ -53,6 +53,7 @@ paths:
       tags:
         - Server
       summary: Get server version information
+      operationId: getServerVersion
       security: []
       responses:
         '200':
@@ -66,6 +67,7 @@ paths:
       tags:
         - Server
       summary: Get open api specification in yaml format
+      operationId: getServerSpec
       security: []
       responses:
         '200':
@@ -75,6 +77,7 @@ paths:
       tags:
         - Auth
       summary: Authenticate and get a token
+      operationId: login
       security: []
       requestBody:
         required: true
@@ -110,6 +113,7 @@ paths:
       tags:
         - Auth
       summary: Logout currently authenticated user
+      operationId: logout
       security: []
       responses:
         '200':
@@ -211,24 +215,32 @@ paths:
       tags:
         - "Cocktails"
       summary: 'Show a paginated list of cocktails'
+      operationId: getCocktails
       responses:
-        '201':
+        '200':
           description: Successful response
           content:
             application/json:
               schema:
-                allOf:
-                  - type: object
-                    properties:
-                      data:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Cocktail'
-                  - $ref: '#/components/schemas/PaginationResponse'
+                type: object
+                required:
+                  - data
+                  - links
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cocktail'
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
     post:
       tags:
         - "Cocktails"
       summary: 'Create a new cocktail'
+      operationId: createCocktail
       requestBody:
         content:
           application/json:
@@ -258,6 +270,7 @@ paths:
         - Auth
       security: []
       summary: "Register a new user"
+      operationId: registerUser
       requestBody:
         content:
           application/json:
@@ -282,7 +295,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/User'
+                    $ref: '#/components/schemas/Profile'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /cocktails/{id}:
@@ -297,6 +310,7 @@ paths:
       tags:
         - "Cocktails"
       summary: 'Details of a specific cocktail'
+      operationId: getCocktail
       responses:
         '200':
           description: Successful response
@@ -313,6 +327,7 @@ paths:
       tags:
         - "Cocktails"
       summary: 'Update a specific cocktail'
+      operationId: updateCocktail
       requestBody:
         content:
           application/json:
@@ -338,6 +353,7 @@ paths:
       tags:
         - "Cocktails"
       summary: 'Delete a specific cocktail'
+      operationId: deleteCocktail
       responses:
         '204':
           description: Successfully deleted cocktail response
@@ -357,6 +373,7 @@ paths:
       tags:
         - "Cocktails"
       summary: 'Toggle adding cocktail to favorites'
+      operationId: toggleFavoriteCocktail
       responses:
         '200':
           description: Successful response
@@ -390,6 +407,7 @@ paths:
       tags:
         - "Cocktails"
       summary: 'Create a public ID for cocktail'
+      operationId: createCocktailPublicLink
       responses:
         '200':
           description: Successful response
@@ -420,6 +438,7 @@ paths:
       tags:
         - "Cocktails"
       summary: 'Delete cocktail public link'
+      operationId: deleteCocktailPublicLink
       responses:
         '204':
           description: Successfully deleted public link
@@ -448,6 +467,7 @@ paths:
       tags:
         - "Cocktails"
       summary: 'Get a shareable cocktail data'
+      operationId: shareCocktail
       responses:
         '200':
           description: Successful response
@@ -493,6 +513,7 @@ paths:
       tags:
         - "Cocktails"
       summary: 'Show a list of similar cocktails'
+      operationId: getSimilarCocktails
       responses:
         '200':
           description: Successful response
@@ -520,6 +541,7 @@ paths:
       tags:
         - "User shelf"
       summary: 'Get a list of cocktail ids that authorized user can make'
+      operationId: getShelfCocktailIds
       responses:
         '200':
           description: Successful response
@@ -581,7 +603,7 @@ paths:
         schema:
           type: string
           example: name,-created_at
-        description: Sort by specific parameters
+        description: "Sort by specific parameters, change order by prepending `-`. Available sorts: `name`, `created_at`, `strength`, `total_cocktails`. Seperate multiple sorts with a comma `,`."
       - in: query
         name: per_page
         required: false
@@ -606,24 +628,32 @@ paths:
       tags:
         - Ingredients
       summary: 'Get a list of ingredients'
+      operationId: getIngredients
       responses:
         '200':
           description: Successful response
           content:
             application/json:
               schema:
-                allOf:
-                  - type: object
-                    properties:
-                      data:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Ingredient'
-                  - $ref: '#/components/schemas/PaginationResponse'
+                type: object
+                required:
+                  - data
+                  - links
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Ingredient'
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
     post:
       tags:
         - Ingredients
       summary: 'Create a new ingredient'
+      operationId: createIngredient
       requestBody:
         content:
           application/json:
@@ -659,6 +689,7 @@ paths:
       tags:
         - Ingredients
       summary: 'Details of a specific ingredient'
+      operationId: getIngredient
       responses:
         '200':
           description: Successful response
@@ -675,6 +706,7 @@ paths:
       tags:
         - Ingredients
       summary: 'Update an existing ingredient'
+      operationId: updateIngredient
       requestBody:
         content:
           application/json:
@@ -700,6 +732,7 @@ paths:
       tags:
         - Ingredients
       summary: 'Delete a specific ingredient'
+      operationId: deleteIngredient
       responses:
         '204':
           description: Successfully deleted ingredient
@@ -712,6 +745,7 @@ paths:
       tags:
         - Glasses
       summary: Show a list of glass types
+      operationId: getGlasses
       responses:
         '200':
           description: Successful response
@@ -728,6 +762,7 @@ paths:
       tags:
         - Glasses
       summary: Create a new glass type
+      operationId: createGlass
       requestBody:
         content:
           application/json:
@@ -763,6 +798,7 @@ paths:
       tags:
         - Glasses
       summary: Get a specific glass type
+      operationId: getGlass
       responses:
         '200':
           description: Successful response
@@ -779,6 +815,7 @@ paths:
       tags:
         - Glasses
       summary: Update a specific glass type
+      operationId: updateGlass
       requestBody:
         content:
           application/json:
@@ -804,6 +841,7 @@ paths:
       tags:
         - Glasses
       summary: Delete specific glass type
+      operationId: deleteGlass
       responses:
         '204':
           description: Successful response
@@ -816,6 +854,7 @@ paths:
       tags:
         - Images
       summary: Paginated list of images
+      operationId: getImages
       responses:
         '200':
           description: Successful response
@@ -836,6 +875,7 @@ paths:
       tags:
         - Images
       summary: Save multiple images
+      operationId: uploadImages
       requestBody:
         content:
           multipart/form-data:
@@ -872,6 +912,7 @@ paths:
       tags:
         - Images
       summary: Get a specific image
+      operationId: getImage
       responses:
         '200':
           description: Successful response
@@ -888,6 +929,7 @@ paths:
       tags:
         - Images
       summary: Update image information
+      operationId: updateImage
       requestBody:
         content:
           multipart/form-data:
@@ -911,6 +953,7 @@ paths:
       tags:
         - Images
       summary: Remove a specific image
+      operationId: deleteImage
       responses:
         '204':
           description: Successful response
@@ -928,6 +971,7 @@ paths:
       tags:
         - Images
       summary: Get a thumbnail of an image
+      operationId: getImageThumb
       responses:
         '200':
           description: Successful response
@@ -943,6 +987,7 @@ paths:
       tags:
         - "Ingredient categories"
       summary: 'Show a list of ingredient categories'
+      operationId: getIngredientCategories
       responses:
         '200':
           description: Successful response
@@ -959,6 +1004,7 @@ paths:
       tags:
         - "Ingredient categories"
       summary: 'Create a new ingredient category'
+      operationId: createIngredientCategory
       requestBody:
         content:
           application/json:
@@ -994,6 +1040,7 @@ paths:
       tags:
         - "Ingredient categories"
       summary: Get a specific ingredient category
+      operationId: getIngredientCategory
       responses:
         '200':
           description: Successful response
@@ -1010,6 +1057,7 @@ paths:
       tags:
         - "Ingredient categories"
       summary: Update a specific ingredient category
+      operationId: updateIngredientCategory
       requestBody:
         content:
           application/json:
@@ -1035,6 +1083,7 @@ paths:
       tags:
         - "Ingredient categories"
       summary: Delete specific ingredient category
+      operationId: deleteIngredientCategory
       responses:
         '204':
           description: Successful response
@@ -1047,6 +1096,7 @@ paths:
       tags:
         - "User shelf"
       summary: "Get all ingredients in user shelf"
+      operationId: getShelfIngredients
       responses:
         '200':
           description: Successful response
@@ -1063,6 +1113,7 @@ paths:
       tags:
         - "User shelf"
       summary: "Add multiple ingredients to user shelf"
+      operationId: addIngredientsToShelf
       requestBody:
         content:
           application/json:
@@ -1100,6 +1151,7 @@ paths:
       tags:
         - "User shelf"
       summary: "Add a single ingredient to user shelf"
+      operationId: addIngredientToShelf
       responses:
         '200':
           description: Successful response
@@ -1118,6 +1170,7 @@ paths:
       tags:
         - "User shelf"
       summary: Delete a single ingredient from user shelf
+      operationId: deleteIngredientFromShelf
       responses:
         '204':
           description: Successfully deleted ingredient
@@ -1128,6 +1181,7 @@ paths:
       tags:
         - "User"
       summary: "Get info about currently authenticated user"
+      operationId: getProfile
       responses:
         '200':
           description: Successful response
@@ -1137,11 +1191,12 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/User'
+                    $ref: '#/components/schemas/Profile'
     post:
       tags:
         - "User"
       summary: "Update currently authenticated user"
+      operationId: updateProfile
       description: "Updates currently authenticated user with new information. If password field is present also changes the password."
       requestBody:
         content:
@@ -1172,7 +1227,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/User'
+                    $ref: '#/components/schemas/Profile'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /shopping-list:
@@ -1180,6 +1235,7 @@ paths:
       tags:
         - "Shopping list"
       summary: "Show ingredients on your shopping list"
+      operationId: getShoppingListIngredients
       responses:
         '200':
           description: Successful response
@@ -1197,6 +1253,7 @@ paths:
       tags:
         - "Shopping list"
       summary: "Add multiple ingredients to a shopping list"
+      operationId: addIngredientsToShoppingList
       requestBody:
         content:
           application/json:
@@ -1225,6 +1282,7 @@ paths:
       tags:
         - "Shopping list"
       summary: "Delete multiple ingredients from a shopping list"
+      operationId: deleteIngredientsFromShoppingList
       requestBody:
         content:
           application/json:
@@ -1260,6 +1318,7 @@ paths:
       tags:
         - "Tags"
       summary: 'Show a list of all tags'
+      operationId: getTags
       responses:
         '200':
           description: Successful response
@@ -1276,6 +1335,7 @@ paths:
       tags:
         - "Tags"
       summary: 'Create a new tag'
+      operationId: createTag
       requestBody:
         content:
           application/json:
@@ -1311,6 +1371,7 @@ paths:
       tags:
         - "Tags"
       summary: Get a specific tag
+      operationId: getTag
       responses:
         '200':
           description: Successful response
@@ -1327,6 +1388,7 @@ paths:
       tags:
         - "Tags"
       summary: Update a specific tag
+      operationId: updateTag
       requestBody:
         content:
           application/json:
@@ -1350,6 +1412,7 @@ paths:
       tags:
         - "Tags"
       summary: Delete specific tag
+      operationId: deleteTag
       responses:
         '204':
           description: Successful response
@@ -1367,6 +1430,7 @@ paths:
       tags:
         - "Ratings"
       summary: "Rate cocktail"
+      operationId: rateCocktail
       requestBody:
         content:
           application/json:
@@ -1405,6 +1469,7 @@ paths:
       tags:
         - "Ratings"
       summary: Delete current user's cocktail rating
+      operationId: deleteCocktailRating
       responses:
         '204':
           description: Successfully deleted rating
@@ -1415,6 +1480,7 @@ paths:
       tags:
         - Users
       summary: Show a list of users
+      operationId: getUsers
       responses:
         '200':
           description: Successful response
@@ -1426,13 +1492,14 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/UserResponse'
+                      $ref: '#/components/schemas/User'
         '403':
           $ref: '#/components/responses/NotAuthorized'
     post:
       tags:
         - Users
       summary: Create a new user
+      operationId: createUser
       requestBody:
         content:
           application/json:
@@ -1453,7 +1520,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/UserResponse'
+                    $ref: '#/components/schemas/User'
         '403':
           $ref: '#/components/responses/NotAuthorized'
         '422':
@@ -1470,6 +1537,7 @@ paths:
       tags:
         - Users
       summary: Get a specific user
+      operationId: getUser
       responses:
         '200':
           description: Successful response
@@ -1479,7 +1547,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/UserResponse'
+                    $ref: '#/components/schemas/User'
         '403':
           $ref: '#/components/responses/NotAuthorized'
         '404':
@@ -1488,6 +1556,7 @@ paths:
       tags:
         - Users
       summary: Update a specific user
+      operationId: updateUser
       requestBody:
         content:
           application/json:
@@ -1502,7 +1571,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/UserResponse'
+                    $ref: '#/components/schemas/User'
         '403':
           $ref: '#/components/responses/NotAuthorized'
         '404':
@@ -1513,6 +1582,7 @@ paths:
       tags:
         - Users
       summary: Delete a specific user
+      operationId: deleteUser
       responses:
         '204':
           description: Successful response
@@ -1525,6 +1595,7 @@ paths:
       tags:
         - Stats
       summary: Application stats
+      operationId: getStats
       responses:
         '200':
           description: Successful response
@@ -1540,6 +1611,7 @@ paths:
       tags:
         - "Cocktail methods"
       summary: 'Show a list of all methods'
+      operationId: getCocktailMethods
       responses:
         '200':
           description: Successful response
@@ -1556,6 +1628,7 @@ paths:
       tags:
         - "Cocktail methods"
       summary: 'Create a new method'
+      operationId: createCocktailMethod
       requestBody:
         content:
           application/json:
@@ -1591,6 +1664,7 @@ paths:
       tags:
         - "Cocktail methods"
       summary: Get a specific method
+      operationId: getCocktailMethod
       responses:
         '200':
           description: Successful response
@@ -1607,6 +1681,7 @@ paths:
       tags:
         - "Cocktail methods"
       summary: Update a specific method
+      operationId: updateCocktailMethod
       requestBody:
         content:
           application/json:
@@ -1630,6 +1705,7 @@ paths:
       tags:
         - "Cocktail methods"
       summary: Delete specific method
+      operationId: deleteCocktailMethod
       responses:
         '204':
           description: Successful response
@@ -1640,6 +1716,7 @@ paths:
       tags:
         - "Notes"
       summary: Create a new note
+      operationId: createNote
       requestBody:
         content:
           application/json:
@@ -1677,6 +1754,7 @@ paths:
       tags:
         - "Notes"
       summary: Show a single note
+      operationId: getNote
       responses:
         '200':
           description: Successful response
@@ -1693,6 +1771,7 @@ paths:
       tags:
         - "Notes"
       summary: Delete specific note
+      operationId: deleteNote
       responses:
         '204':
           description: Successful response
@@ -1725,10 +1804,11 @@ paths:
         schema:
           type: string
           example: name,-created_at
-        description: Sort by specific parameters, toggle order by adding "-"
+        description: "Sort by specific parameters, change order by prepending `-`. Available sorts: `name`, `created_at`. Seperate multiple sorts with a comma `,`."
       tags:
         - "Collections"
       summary: List user collections
+      operationId: getUserCollections
       responses:
         '200':
           description: Successful response
@@ -1747,6 +1827,7 @@ paths:
       tags:
         - "Collections"
       summary: Create a new collection
+      operationId: createUserCollection
       requestBody:
         content:
           application/json:
@@ -1784,6 +1865,7 @@ paths:
       tags:
         - "Collections"
       summary: Show a single collection
+      operationId: getUserCollection
       responses:
         '200':
           description: Successful response
@@ -1802,6 +1884,7 @@ paths:
       tags:
         - "Collections"
       summary: Add multiple cocktails to collection
+      operationId: addCocktailsToCollection
       requestBody:
         content:
           application/json:
@@ -1810,6 +1893,8 @@ paths:
               properties:
                 cocktails:
                   type: array
+                  items:
+                    type: integer
                   example: [1, 2, 3]
       responses:
         '200':
@@ -1829,6 +1914,7 @@ paths:
       tags:
         - "Collections"
       summary: Update a specific collection
+      operationId: updateUserCollection
       requestBody:
         content:
           application/json:
@@ -1854,6 +1940,7 @@ paths:
       tags:
         - "Collections"
       summary: Delete specific collection
+      operationId: deleteUserCollection
       responses:
         '204':
           description: Successful response
@@ -1879,6 +1966,7 @@ paths:
       tags:
         - "Collections"
       summary: Add cocktail to collection
+      operationId: addCocktailToCollection
       responses:
         '200':
           description: Successful response
@@ -1897,6 +1985,7 @@ paths:
       tags:
         - "Collections"
       summary: Remove cocktail from collection
+      operationId: deleteCocktailFromCollection
       responses:
         '204':
           description: Successful response
@@ -1918,6 +2007,7 @@ paths:
       tags:
         - "Import"
       summary: Import cocktail from a data source
+      operationId: importCocktail
       requestBody:
         content:
           application/json:
@@ -1977,14 +2067,71 @@ components:
                 type: string
                 example: 'You are not authorized for this action.'
   schemas:
+    PaginationLinks:
+      type: object
+      properties:
+        first:
+          type: string
+          nullable: true
+          example: http://localhost/api/resource?page=1
+        last:
+          type: string
+          nullable: true
+          example: http://localhost/api/resource?page=10
+        prev:
+          type: string
+          nullable: true
+          example: null
+        next:
+          type: string
+          nullable: true
+          example: http://localhost/api/resource?page=2
+    PaginationMeta:
+      type: object
+      properties:
+        current_page:
+          type: integer
+          example: 1
+        from:
+          type: integer
+          example: 1
+        last_page:
+          type: integer
+          example: 10
+        links:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              label:
+                type: string
+              active:
+                type: boolean
+        path:
+          type: string
+          example: http://localhost/api/resource
+        per_page:
+          type: integer
+          example: 15
+        to:
+          type: integer
+          example: 15
+        total:
+          type: integer
+          example: 100
     Glass:
       type: object
       nullable: true
+      required:
+        - id
+        - name
+        - description
       properties:
         id:
           type: integer
           example: 1
-          readOnly: true
         name:
           type: string
           example: 'Cocktail glass'
@@ -1995,6 +2142,18 @@ components:
         cocktails_count:
           type: integer
           example: 50
+    GlassRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Cocktail glass
+        description:
+          type: string
+          nullable: true
+          example: 'A stemmed glass'
     IngredientRequest:
       type: object
       required:
@@ -2036,15 +2195,24 @@ components:
           nullable: true
     Ingredient:
       type: object
+      required:
+        - id
+        - slug
+        - name
+        - strength
+        - description
+        - origin
+        - main_image_id
+        - images
+        - color
+        - category
       properties:
         id:
           type: integer
           example: 1
-          readOnly: true
         slug:
           type: string
           example: 'jack-daniels'
-          readOnly: true
         name:
           type: string
           example: 'Jack Daniels'
@@ -2124,11 +2292,14 @@ components:
                 example: 'Cocktail 1'
     IngredientCategory:
       type: object
+      required:
+        - id
+        - name
+        - description
       properties:
         id:
           type: integer
           example: 1
-          readOnly: true
         name:
           type: string
           example: Spirits
@@ -2148,20 +2319,14 @@ components:
           type: string
           nullable: true
           example: 'A category of base spirits'
-    GlassRequest:
+    Version:
       type: object
       required:
         - name
-      properties:
-        name:
-          type: string
-          example: Cocktail glass
-        description:
-          type: string
-          nullable: true
-          example: 'A stemmed glass'
-    Version:
-      type: object
+        - version
+        - type
+        - search_host
+        - search_version
       properties:
         name:
           type: string
@@ -2181,6 +2346,13 @@ components:
           example: '0.29.0'
     Image:
       type: object
+      required:
+        - id
+        - file_path
+        - url
+        - copyright
+        - sort
+        - placeholder_hash
       properties:
         id:
           type: integer
@@ -2203,8 +2375,38 @@ components:
           nullable: true
           description: ThumbHash implementation for placeholder image
           example: '1QcSHQRnh493V4dIh4eXh1h4kJUI'
-    User:
+    ImageRequest:
       type: object
+      properties:
+        image:
+          type: string
+          nullable: true
+          format: binary
+        image_url:
+          type: string
+          nullable: true
+          format: URL
+          example: "https://pathtoimage.com/image.jpg"
+        sort:
+          type: integer
+          nullable: true
+          example: 1
+        copyright:
+          type: string
+          example: "Wikipedia"
+          nullable: true
+    Profile:
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - is_admin
+        - search_host
+        - search_api_key
+        - favorite_cocktails
+        - shelf_ingredients
+        - shopping_lists
       properties:
         id:
           type: integer
@@ -2236,8 +2438,55 @@ components:
           example: [1, 2]
           items:
             type: integer
+    UserRequest:
+      type: object
+      required:
+        - name
+        - email
+        - is_admin
+      properties:
+        name:
+          type: string
+          example: User Name
+        email:
+          type: string
+          example: admin@example.com
+        password:
+          type: string
+          example: password
+        is_admin:
+          type: boolean
+          example: false
+    User:
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - is_admin
+        - search_api_key
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: User Name
+        email:
+          type: string
+          example: admin@example.com
+        is_admin:
+          type: boolean
+          example: false
+        search_api_key:
+          type: string
+          example: 3aab83bbed9bb5e38d00c0c10a006676ed8703a26ffc8c644e2f588a5a574584
     CocktailIngredientSubstitute:
       type: object
+      required:
+        - id
+        - slug
+        - name
       properties:
         id:
           type: integer
@@ -2250,10 +2499,15 @@ components:
           example: 'Ingredient 1'
     CocktailIngredient:
       type: object
+      required:
+        - sort
+        - amount
+        - units
+        - optional
+        - ingredient_id
+        - name
+        - ingredient_slug
       properties:
-        id:
-          type: integer
-          example: 1
         sort:
           type: integer
           example: 0
@@ -2282,15 +2536,34 @@ components:
             $ref: '#/components/schemas/CocktailIngredientSubstitute'
     Cocktail:
       type: object
+      required:
+        - id
+        - slug
+        - name
+        - instructions
+        - garnish
+        - description
+        - source
+        - main_image_id
+        - images
+        - tags
+        - user_id
+        - short_ingredients
+        - ingredients
+        - user_rating
+        - average_rating
+        - main_ingredient_name
+        - created_at
+        - abv
+        - has_public_link
+        - public_id
       properties:
         id:
           type: integer
           example: 1
-          readOnly: true
         slug:
           type: string
           example: 'cocktail-name'
-          readOnly: true
         name:
           type: string
           example: 'Cocktail name'
@@ -2324,10 +2597,6 @@ components:
           example: ['Gin', 'IBA Official']
           items:
             type: string
-        user_id:
-          type: integer
-          example: 1
-          deprecated: true
         glass:
           $ref: '#/components/schemas/Glass'
         short_ingredients:
@@ -2374,6 +2643,7 @@ components:
           example: false
         public_id:
           type: string
+          nullable: true
           format: uuid
         notes:
           type: array
@@ -2425,6 +2695,10 @@ components:
           type: array
           items:
             type: object
+            required:
+              - ingredient_id
+              - amount
+              - units
             properties:
               ingredient_id:
                 type: integer
@@ -2442,28 +2716,6 @@ components:
               sort:
                 type: integer
                 example: 0
-    ImageRequest:
-      type: object
-      required:
-        - images
-      properties:
-        image:
-          type: string
-          nullable: true
-          format: binary
-        image_url:
-          type: string
-          nullable: true
-          format: URL
-          example: "https://pathtoimage.com/image.jpg"
-        sort:
-          type: integer
-          nullable: true
-          example: 1
-        copyright:
-          type: string
-          example: "Wikipedia"
-          nullable: true
     UserIngredient:
       type: object
       properties:
@@ -2478,6 +2730,9 @@ components:
           example: "coffee"
     Tag:
       type: object
+      required:
+        - id
+        - name
       properties:
         id:
           type: integer
@@ -2603,39 +2858,6 @@ components:
         rating:
           type: integer
           example: 3
-    UserRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          example: User Name
-        email:
-          type: string
-          example: admin@example.com
-        password:
-          type: string
-          example: password
-        is_admin:
-          type: boolean
-          example: false
-    UserResponse:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: User Name
-        email:
-          type: string
-          example: admin@example.com
-        is_admin:
-          type: boolean
-          example: false
-        search_api_key:
-          type: string
-          example: 3aab83bbed9bb5e38d00c0c10a006676ed8703a26ffc8c644e2f588a5a574584
     StatsResponse:
       type: object
       properties:
@@ -2645,6 +2867,9 @@ components:
         total_ingredients:
           type: integer
           example: 234
+        total_collections:
+          type: integer
+          example: 20
         total_shelf_cocktails:
           type: integer
           example: 43
@@ -2762,7 +2987,9 @@ components:
           example: "Collection description"
         cocktails:
           type: array
-          example: [1, 2, 3]
+          items:
+            type: integer
+            example: 1
     CollectionResponse:
       type: object
       properties:
