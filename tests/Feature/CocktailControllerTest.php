@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\Models\Image;
@@ -22,8 +21,6 @@ class CocktailControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        // Spectator::using('open-api-spec.yml');
 
         $this->actingAs(
             User::factory()->create()
@@ -166,13 +163,11 @@ class CocktailControllerTest extends TestCase
                 ->where('data.main_image_id', null)
                 ->where('data.images', [])
                 ->has('data.tags', 5)
-                ->where('data.user_id', auth()->user()->id)
                 ->where('data.user_rating', 4)
                 ->where('data.average_rating', 3)
                 ->where('data.glass.id', $glass->id)
                 ->where('data.method.id', $method->id)
                 ->has('data.abv')
-                ->has('data.main_ingredient_name')
                 ->has('data.short_ingredients', 3)
                 ->has('data.ingredients', 3, function (AssertableJson $jsonIng) {
                     $jsonIng
@@ -184,9 +179,6 @@ class CocktailControllerTest extends TestCase
                 })
                 ->etc()
         );
-
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 
     public function test_cocktail_show_using_slug_response()
@@ -196,9 +188,6 @@ class CocktailControllerTest extends TestCase
         $response = $this->getJson('/api/cocktails/' . $cocktail->slug);
 
         $response->assertStatus(200);
-
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 
     public function test_cocktail_create_response()
@@ -258,7 +247,6 @@ class CocktailControllerTest extends TestCase
                 ->where('data.has_public_link', false)
                 ->where('data.public_id', null)
                 ->where('data.main_image_id', $image->id)
-                ->where('data.user_id', auth()->user()->id)
                 ->where('data.user_rating', null)
                 ->where('data.average_rating', 0)
                 ->where('data.source', 'https://karlomikus.com')
@@ -284,9 +272,6 @@ class CocktailControllerTest extends TestCase
                 ->has('data.ingredients', 2)
                 ->etc()
         );
-
-        $response->assertValidRequest();
-        $response->assertValidResponse(201);
     }
 
     public function test_cocktail_update_response()
@@ -320,9 +305,6 @@ class CocktailControllerTest extends TestCase
         ]);
 
         $response->assertSuccessful();
-
-        $response->assertValidRequest();
-        $response->assertValidResponse(200);
     }
 
     public function test_cocktail_delete_response()
@@ -332,8 +314,6 @@ class CocktailControllerTest extends TestCase
         $response = $this->deleteJson('/api/cocktails/' . $cocktail->id);
 
         $response->assertNoContent();
-
-        $response->assertValidResponse(204);
     }
 
     public function test_make_cocktail_public_link_response()

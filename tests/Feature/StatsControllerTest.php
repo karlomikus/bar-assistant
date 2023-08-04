@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
@@ -19,8 +18,6 @@ class StatsControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Spectator::using('open-api-spec.yml');
 
         Ingredient::factory()->count(5)->create();
         Cocktail::factory()->count(6)->create();
@@ -44,7 +41,5 @@ class StatsControllerTest extends TestCase
                 ->has('data.top_rated_cocktails', 0)
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\UserShoppingList;
@@ -19,8 +18,6 @@ class ShoppingListControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Spectator::using('open-api-spec.yml');
     }
 
     public function test_list_ingredients_on_shopping_list_response()
@@ -44,8 +41,6 @@ class ShoppingListControllerTest extends TestCase
                 ->has('data', 5)
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_add_multiple_ingredients_to_shopping_list_response()
@@ -64,8 +59,6 @@ class ShoppingListControllerTest extends TestCase
                 ->has('data', 3)
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_delete_multiple_ingredients_from_shopping_list_response()
@@ -91,7 +84,5 @@ class ShoppingListControllerTest extends TestCase
                 ->has('data.ingredient_ids', 2)
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 }

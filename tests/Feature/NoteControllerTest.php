@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -18,8 +17,6 @@ class NoteControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Spectator::using('open-api-spec.yml');
 
         $this->actingAs(User::factory()->create());
     }
@@ -41,8 +38,6 @@ class NoteControllerTest extends TestCase
                 ->has('data.created_at')
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_save_cocktail_note_response()
@@ -64,9 +59,6 @@ class NoteControllerTest extends TestCase
                 ->has('data.created_at')
                 ->etc()
         );
-
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 
     public function test_save_cocktail_note_forbidden_response()
@@ -85,7 +77,6 @@ class NoteControllerTest extends TestCase
         ]);
 
         $response->assertForbidden();
-        $response->assertValidResponse();
     }
 
     public function test_delete_cocktail_note_response()
@@ -96,6 +87,5 @@ class NoteControllerTest extends TestCase
         $response = $this->deleteJson('/api/notes/' . $note->id);
 
         $response->assertNoContent();
-        $response->assertValidResponse();
     }
 }

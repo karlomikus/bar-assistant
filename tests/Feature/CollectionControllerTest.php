@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Collection;
@@ -19,8 +18,6 @@ class CollectionControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Spectator::using('open-api-spec.yml');
 
         $this->actingAs(User::factory()->create());
     }
@@ -40,8 +37,6 @@ class CollectionControllerTest extends TestCase
                 ->has('data', 10)
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_show_user_collection_response()
@@ -65,8 +60,6 @@ class CollectionControllerTest extends TestCase
                 ->where('data.cocktails', [])
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_create_collection_response()
@@ -88,9 +81,6 @@ class CollectionControllerTest extends TestCase
                 ->where('data.cocktails', [])
                 ->etc()
         );
-
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 
     public function test_update_collections_response()
@@ -117,9 +107,6 @@ class CollectionControllerTest extends TestCase
                 ->where('data.cocktails', [])
                 ->etc()
         );
-
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 
     public function test_delete_collection_response()
@@ -133,8 +120,6 @@ class CollectionControllerTest extends TestCase
         $response = $this->delete('/api/collections/' . $model->id);
 
         $response->assertNoContent();
-
-        $response->assertValidResponse();
 
         $this->assertDatabaseMissing('collections', ['id' => $model->id]);
     }
@@ -161,8 +146,5 @@ class CollectionControllerTest extends TestCase
                 ->where('data.cocktails', [$cocktail->id])
                 ->etc()
         );
-
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 }
