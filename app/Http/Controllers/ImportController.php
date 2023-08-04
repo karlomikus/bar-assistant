@@ -51,7 +51,7 @@ class ImportController extends Controller
         }
 
         if ($save) {
-            $dataToImport = new CocktailResource($importService->importCocktailFromArray($dataToImport));
+            $dataToImport = new CocktailResource($importService->importCocktailFromArray($dataToImport, $request->user()->id));
         }
 
         return response()->json([

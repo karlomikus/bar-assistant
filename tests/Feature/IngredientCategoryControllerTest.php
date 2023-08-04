@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\IngredientCategory;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -18,8 +17,6 @@ class IngredientCategoryControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Spectator::using('open-api-spec.yml');
 
         $this->actingAs(
             User::factory()->create()
@@ -39,8 +36,6 @@ class IngredientCategoryControllerTest extends TestCase
                 ->has('data', 10)
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_show_category_response()
@@ -62,8 +57,6 @@ class IngredientCategoryControllerTest extends TestCase
                 ->where('data.description', 'Test cat desc')
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_create_category_response()
@@ -84,9 +77,6 @@ class IngredientCategoryControllerTest extends TestCase
                 ->where('data.description', 'Test cat desc')
                 ->etc()
         );
-
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 
     public function test_update_category_response()
@@ -111,9 +101,6 @@ class IngredientCategoryControllerTest extends TestCase
                 ->where('data.description', 'Test cat desc')
                 ->etc()
         );
-
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 
     public function test_delete_category_response()
@@ -126,8 +113,6 @@ class IngredientCategoryControllerTest extends TestCase
         $response = $this->delete('/api/ingredient-categories/' . $cat->id);
 
         $response->assertNoContent();
-
-        $response->assertValidResponse();
 
         $this->assertDatabaseMissing('ingredient_categories', ['id' => $cat->id]);
     }

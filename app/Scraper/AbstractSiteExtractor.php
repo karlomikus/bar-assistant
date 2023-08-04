@@ -47,14 +47,20 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
      *
      * @return null|string
      */
-    abstract public function description(): ?string;
+    public function description(): ?string
+    {
+        return null;
+    }
 
     /**
      * Cocktail source URL
      *
      * @return null|string
      */
-    abstract public function source(): ?string;
+    public function source(): ?string
+    {
+        return null;
+    }
 
     /**
      * Cocktail preparation instructions, can support markdown
@@ -68,7 +74,10 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
      *
      * @return array<string>
      */
-    abstract public function tags(): array;
+    public function tags(): array
+    {
+        return [];
+    }
 
     /**
      * Cocktail serving glass
@@ -85,7 +94,10 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
      *
      * @return array<int, array{"amount": float|int, "units": string, "name": string, "optional": boolean}>
      */
-    abstract public function ingredients(): array;
+    public function ingredients(): array
+    {
+        return [];
+    }
 
     /**
      * Cocktail garnish, can support markdown
@@ -102,7 +114,10 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
      *
      * @return null|array{"url": string|null, "copyright": string|null}
      */
-    abstract public function image(): ?array;
+    public function image(): ?array
+    {
+        return null;
+    }
 
     /**
      * Cocktail method (shake, stir...)

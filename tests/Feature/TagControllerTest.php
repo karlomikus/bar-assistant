@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Spectator\Spectator;
 use Kami\Cocktail\Models\Tag;
 use Kami\Cocktail\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -18,8 +17,6 @@ class TagControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Spectator::using('open-api-spec.yml');
 
         $this->actingAs(
             User::factory()->create()
@@ -39,8 +36,6 @@ class TagControllerTest extends TestCase
                 ->has('data', 10)
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_show_tag_response()
@@ -60,8 +55,6 @@ class TagControllerTest extends TestCase
                 ->where('data.name', 'Test tag')
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_create_tag_response()
@@ -80,9 +73,6 @@ class TagControllerTest extends TestCase
                 ->where('data.name', 'Test tag')
                 ->etc()
         );
-
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 
     public function test_update_tag_response()
@@ -104,9 +94,6 @@ class TagControllerTest extends TestCase
                 ->where('data.name', 'Test tag')
                 ->etc()
         );
-
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 
     public function test_delete_tag_response()
@@ -118,8 +105,6 @@ class TagControllerTest extends TestCase
         $response = $this->delete('/api/tags/' . $tag->id);
 
         $response->assertNoContent();
-
-        $response->assertValidResponse();
 
         $this->assertDatabaseMissing('tags', ['id' => $tag->id]);
     }

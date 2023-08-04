@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Services;
 
 use Tests\TestCase;
 use Kami\Cocktail\Models\User;

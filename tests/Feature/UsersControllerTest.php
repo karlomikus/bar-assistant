@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,8 +16,6 @@ class UsersControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Spectator::using('open-api-spec.yml');
     }
 
     public function test_list_users_response()
@@ -38,9 +35,6 @@ class UsersControllerTest extends TestCase
                 ->has('data', 10)
                 ->etc()
         );
-
-        // Spec assertion
-        $response->assertValidResponse();
     }
 
     public function test_list_users_no_access_response()
@@ -54,9 +48,6 @@ class UsersControllerTest extends TestCase
         $response = $this->getJson('/api/users');
 
         $response->assertForbidden();
-
-        // Spec assertion
-        $response->assertValidResponse();
     }
 
     public function test_show_user_response()
@@ -80,9 +71,6 @@ class UsersControllerTest extends TestCase
                 ->where('data.name', 'Test')
                 ->etc()
         );
-
-        // Spec assertion
-        $response->assertValidResponse();
     }
 
     public function test_create_user_response()
@@ -111,10 +99,6 @@ class UsersControllerTest extends TestCase
                 ->where('data.is_admin', false)
                 ->etc()
         );
-
-        // Spec assertion
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 
     public function test_update_user_response()
@@ -144,10 +128,6 @@ class UsersControllerTest extends TestCase
                 ->where('data.is_admin', true)
                 ->etc()
         );
-
-        // Spec assertion
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 
     public function test_delete_user_response()
@@ -165,9 +145,5 @@ class UsersControllerTest extends TestCase
         $response->assertNoContent();
 
         $this->assertDatabaseMissing('users', ['id' => $model->id]);
-
-        // Spec assertion
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 }

@@ -62,7 +62,7 @@ class CocktailController extends Controller
     public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
         $ingredients = [];
-        foreach ($request->post('ingredients') as $formIngredient) {
+        foreach ($request->post('ingredients', []) as $formIngredient) {
             $ingredient = new IngredientDTO(
                 (int) $formIngredient['ingredient_id'],
                 null,
@@ -115,7 +115,7 @@ class CocktailController extends Controller
         }
 
         $ingredients = [];
-        foreach ($request->post('ingredients') as $formIngredient) {
+        foreach ($request->post('ingredients', []) as $formIngredient) {
             $ingredient = new IngredientDTO(
                 (int) $formIngredient['ingredient_id'],
                 null,

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Filters;
 
 use Kami\Cocktail\Models\Ingredient;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Kami\Cocktail\Services\IngredientService;
@@ -45,8 +46,22 @@ final class IngredientQueryFilter extends QueryBuilder
                 }),
             ])
             ->defaultSort('name')
-            ->allowedSorts('name', 'created_at', 'strength')
-            ->with('category', 'images', 'parentIngredient')
+            ->allowedSorts([
+                'name',
+                'created_at',
+                'strength',
+                AllowedSort::callback('total_cocktails', function ($query, bool $descending) {
+                    $direction = $descending ? 'DESC' : 'ASC';
+
+                    $query
+                        ->selectRaw('ingredients.*, COUNT(ci.ingredient_id) AS cocktails_count')
+                        ->leftJoin('cocktail_ingredients AS ci', 'ci.ingredient_id', '=', 'ingredients.id')
+                        ->groupBy('ingredients.id')
+                        ->orderBy('cocktails_count', $direction);
+                }),
+            ])
+            ->allowedIncludes(['parentIngredient', 'varieties', 'cocktails', 'cocktailIngredientSubstitutes'])
+            ->with('category', 'images')
             ->withCount('cocktails');
     }
 }

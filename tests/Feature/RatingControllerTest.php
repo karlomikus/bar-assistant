@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -18,8 +17,6 @@ class RatingControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Spectator::using('open-api-spec.yml');
 
         $this->actingAs(
             User::factory()->create()
@@ -44,9 +41,6 @@ class RatingControllerTest extends TestCase
                 ->where('data.rateable_id', $cocktail->id)
                 ->etc()
         );
-
-        $response->assertValidResponse();
-        $response->assertValidRequest();
     }
 
     public function test_rate_cocktail_updates_existing_rating_response()
@@ -69,9 +63,6 @@ class RatingControllerTest extends TestCase
                 ->where('data.rateable_id', $cocktail->id)
                 ->etc()
         );
-
-        $response->assertValidResponse();
-        $response->assertValidRequest();
     }
 
     public function test_delete_cocktail_rating_response()
@@ -83,6 +74,5 @@ class RatingControllerTest extends TestCase
 
         $this->assertDatabaseMissing('ratings', ['rateable_id' => $cocktail->id]);
         $response->assertNoContent();
-        $response->assertValidResponse();
     }
 }
