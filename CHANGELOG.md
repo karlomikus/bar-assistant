@@ -4,14 +4,17 @@
     - CocktailsDistilled
 - Added `total_collections` to `StatsResponse` schema
 - Added new sort to `ingredients` endpoint: `total_cocktails`
+- Removed `user_id` from `Cocktail` schema
+- Removed `main_ingredient_name` from `Cocktail` schema
 
 ## Deprecations
 - Property `short_ingredients` on `Cocktail` schema will be removed in next release
 - Property `tags` on `Cocktail` schema will be changed to array of objects in next release, currently `cocktail_tags`
 - Property `ingredient_category_id` on `Ingredient` schema will be changed to array of objects in next release, currently `cocktail_tags`
+- Property `ingredients` on `Cocktail` schema will be only shown if you are including the relationship via query parameter in the next release
 
 ## Fixes
-- Fixed typo for `include` query param in specification
+- Fixed typo for `include` query param in specification #147
 - Importing recipes via API calls will correctly set cocktail author
 - Improved recipe instructions parsing for default parser
 

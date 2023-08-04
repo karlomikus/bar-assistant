@@ -855,20 +855,41 @@ paths:
         - Images
       summary: Paginated list of images
       operationId: getImages
+      parameters:
+        - in: query
+          name: per_page
+          required: false
+          schema:
+            type: integer
+            example: 15
+          description: Total results per page
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            example: 1
+          description: Page number
       responses:
         '200':
           description: Successful response
           content:
             application/json:
               schema:
-                allOf:
-                  - type: object
-                    properties:
-                      data:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Image'
-                  - $ref: '#/components/schemas/PaginationResponse'
+                type: object
+                required:
+                  - data
+                  - links
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Image'
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
         '403':
           $ref: '#/components/responses/NotAuthorized'
     post:
@@ -1623,7 +1644,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/CocktailMethodResponse'
+                      $ref: '#/components/schemas/CocktailMethod'
     post:
       tags:
         - "Cocktail methods"
@@ -1649,7 +1670,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/CocktailMethodResponse'
+                    $ref: '#/components/schemas/CocktailMethod'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /cocktail-methods/{id}:
@@ -1674,7 +1695,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/CocktailMethodResponse'
+                    $ref: '#/components/schemas/CocktailMethod'
         '404':
           $ref: '#/components/responses/NotFound'
     put:
@@ -1696,7 +1717,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/CocktailMethodResponse'
+                    $ref: '#/components/schemas/CocktailMethod'
         '404':
           $ref: '#/components/responses/NotFound'
         '422':
@@ -1737,7 +1758,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/NoteResponse'
+                    $ref: '#/components/schemas/Note'
         '403':
           $ref: '#/components/responses/NotAuthorized'
         '422':
@@ -1764,7 +1785,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/NoteResponse'
+                    $ref: '#/components/schemas/Note'
         '404':
           $ref: '#/components/responses/NotFound'
     delete:
@@ -2039,7 +2060,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ValidationErrorResponse'
+            $ref: '#/components/schemas/ValidationError'
     NotFound:
       description: Resource not found
       content:
@@ -2069,6 +2090,11 @@ components:
   schemas:
     PaginationLinks:
       type: object
+      required:
+        - first
+        - last
+        - prev
+        - next
       properties:
         first:
           type: string
@@ -2088,6 +2114,15 @@ components:
           example: http://localhost/api/resource?page=2
     PaginationMeta:
       type: object
+      required:
+        - current_page
+        - from
+        - last_page
+        - links
+        - path
+        - per_page
+        - to
+        - total
       properties:
         current_page:
           type: integer
@@ -2102,6 +2137,10 @@ components:
           type: array
           items:
             type: object
+            required:
+              - url
+              - label
+              - active
             properties:
               url:
                 type: string
@@ -2628,7 +2667,7 @@ components:
         user:
           $ref: '#/components/schemas/UserBasic'
         method:
-          $ref: '#/components/schemas/CocktailMethodResponse'
+          $ref: '#/components/schemas/CocktailMethod'
         collections:
           type: array
           items:
@@ -2648,7 +2687,7 @@ components:
         notes:
           type: array
           items:
-            $ref: '#/components/schemas/NoteResponse'
+            $ref: '#/components/schemas/Note'
     CocktailRequest:
       type: object
       required:
@@ -2718,6 +2757,10 @@ components:
                 example: 0
     UserIngredient:
       type: object
+      required:
+        - id
+        - ingredient_id
+        - ingredient_slug
       properties:
         id:
           type: integer
@@ -2753,6 +2796,10 @@ components:
           example: A new tag
     UserShoppingList:
       type: object
+      required:
+        - id
+        - user_id
+        - ingredient
       properties:
         id:
           type: integer
@@ -2762,6 +2809,10 @@ components:
           example: 1
         ingredient:
           type: object
+          required:
+            - id
+            - slug
+            - name
           properties:
             id:
               type: integer
@@ -2772,8 +2823,11 @@ components:
             name:
               type: string
               example: 'Ingredient 1'
-    ValidationErrorResponse:
+    ValidationError:
       type: object
+      required:
+        - message
+        - errors
       properties:
         message:
           type: string
@@ -2786,65 +2840,13 @@ components:
               example: ["The property_key field is required."]
               items:
                 type: string
-    PaginationResponse:
-      type: object
-      properties:
-        links:
-          type: object
-          properties:
-            first:
-              type: string
-              nullable: true
-              example: http://localhost/api/resource?page=1
-            last:
-              type: string
-              nullable: true
-              example: http://localhost/api/resource?page=10
-            prev:
-              type: string
-              nullable: true
-              example: null
-            next:
-              type: string
-              nullable: true
-              example: http://localhost/api/resource?page=2
-        meta:
-          type: object
-          properties:
-            current_page:
-              type: integer
-              example: 1
-            from:
-              type: integer
-              example: 1
-            last_page:
-              type: integer
-              example: 10
-            links:
-              type: array
-              items:
-                type: object
-                properties:
-                  url:
-                    type: string
-                  label:
-                    type: string
-                  active:
-                    type: boolean
-            path:
-              type: string
-              example: http://localhost/api/resource
-            per_page:
-              type: integer
-              example: 15
-            to:
-              type: integer
-              example: 15
-            total:
-              type: integer
-              example: 100
     Rating:
       type: object
+      required:
+        - id
+        - rateable_id
+        - user_id
+        - rating
       properties:
         id:
           type: integer
@@ -2860,6 +2862,14 @@ components:
           example: 3
     StatsResponse:
       type: object
+      required:
+        - total_cocktails
+        - total_ingredients
+        - total_collections
+        - total_shelf_cocktails
+        - total_shelf_ingredients
+        - most_popular_ingredients
+        - top_rated_cocktails
       properties:
         total_cocktails:
           type: integer
@@ -2901,9 +2911,12 @@ components:
               votes:
                 type: integer
                 example: 12
-    CocktailMethodResponse:
+    CocktailMethod:
       type: object
-      nullable: true
+      required:
+        - id
+        - name
+        - dilution_percentage
       properties:
         id:
           type: integer
@@ -2916,6 +2929,9 @@ components:
           example: 23
     CocktailMethodRequest:
       type: object
+      required:
+        - name
+        - dilution_percentage
       properties:
         name:
           type: string
@@ -2941,8 +2957,13 @@ components:
           enum:
             - cocktail
           example: "cocktail"
-    NoteResponse:
+    Note:
       type: object
+      required:
+        - id
+        - note
+        - user_id
+        - created_at
       properties:
         id:
           type: integer
@@ -2958,6 +2979,9 @@ components:
           example: "2023-01-01 12:00:00"
     UserBasic:
       type: object
+      required:
+        - id
+        - name
       properties:
         id:
           type: integer
@@ -2967,6 +2991,9 @@ components:
           example: "Bartender"
     CocktailCollection:
       type: object
+      required:
+        - id
+        - name
       properties:
         id:
           type: integer
