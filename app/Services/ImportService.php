@@ -36,7 +36,7 @@ class ImportService
      * @param array<mixed> $sourceData Scraper data
      * @return Cocktail Database model of the cocktail
      */
-    public function importCocktailFromArray(array $sourceData): Cocktail
+    public function importCocktailFromArray(array $sourceData, int $userId = 1): Cocktail
     {
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
@@ -92,7 +92,7 @@ class ImportService
                 $newIngredient = $this->ingredientService->createIngredient(
                     ucfirst($scrapedIngredient['name']),
                     1,
-                    1,
+                    $userId,
                     $scrapedIngredient['strength'] ?? 0.0,
                     $scrapedIngredient['description'] ?? 'Created by scraper from ' . $sourceData['source'],
                     $scrapedIngredient['origin'] ?? null
@@ -118,7 +118,7 @@ class ImportService
         $cocktailDTO = new CocktailDTO(
             $sourceData['name'],
             $sourceData['instructions'],
-            1,
+            $userId,
             $sourceData['description'],
             $sourceData['source'],
             $sourceData['garnish'],
