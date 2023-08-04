@@ -1,3 +1,20 @@
+# v2.4.0
+## New
+- Added new scrapers
+    - CocktailsDistilled
+- Added `total_collections` to `StatsResponse` schema
+- Added new sort to `ingredients` endpoint: `total_cocktails`
+
+## Deprecations
+- Property `short_ingredients` on `Cocktail` schema will be removed in next release
+- Property `tags` on `Cocktail` schema will be changed to array of objects in next release, currently `cocktail_tags`
+- Property `ingredient_category_id` on `Ingredient` schema will be changed to array of objects in next release, currently `cocktail_tags`
+
+## Fixes
+- Fixed typo for `include` query param in specification
+- Importing recipes via API calls will correctly set cocktail author
+- Improved recipe instructions parsing for default parser
+
 # v2.3.0
 ## New
 - Added cocktails count to `tag`, `glass` and `cocktail_method` resources
