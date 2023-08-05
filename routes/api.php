@@ -111,6 +111,7 @@ Route::middleware($authMiddleware)->group(function() {
 
     Route::prefix('shopping-list')->group(function() {
         Route::get('/', [ShoppingListController::class, 'index']);
+        Route::get('/share', [ShoppingListController::class, 'share']);
         Route::post('/batch-store', [ShoppingListController::class, 'batchStore']);
         Route::post('/batch-delete', [ShoppingListController::class, 'batchDelete']);
     });

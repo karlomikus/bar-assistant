@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Throwable;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Kami\Cocktail\Models\UserShoppingList;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
@@ -48,5 +49,25 @@ class ShoppingListController extends Controller
         }
 
         return new SuccessActionResource((object) ['ingredient_ids' => $ingredientIds]);
+    }
+
+    public function share(Request $request): Response
+    {
+        $type = $request->get('type', 'markdown');
+
+        $shoppingListIngredients = $request->user()
+            ->shoppingLists
+            ->load('ingredient.category')
+            ->groupBy('ingredient.category.name');
+
+        if ($type === 'markdown' || $type === 'md') {
+            return new Response(
+                view('md_shopping_list_template', compact('shoppingListIngredients'))->render(),
+                200,
+                ['Content-Type' => 'text/markdown']
+            );
+        }
+
+        abort(400, 'Requested type "' . $type . '" not supported');
     }
 }

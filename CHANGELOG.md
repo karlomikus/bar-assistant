@@ -1,3 +1,11 @@
+# v2.5.0
+## New
+- Added `markdown` type to share endpoint
+- Added `/collections/{id}/share` endpoint
+    - You can share your collection as JSON, YAML
+- Added `/shopping-list/share` endpoint #124
+    - You can share shopping list as markdown
+
 # v2.4.0
 ## New
 - Added new scrapers
