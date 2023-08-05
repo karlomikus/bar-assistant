@@ -72,9 +72,9 @@ class BarOpen extends Command
         DB::table('users')->insert([
             [
                 'id' => 1,
-                'name' => 'BAR ASSISTANT BOT',
+                'name' => 'Bas Assistant',
                 'password' => '', // password
-                'email' => 'bot@my-bar.localhost',
+                'email' => 'default@localhost.com',
                 'email_verified_at' => null,
                 'remember_token' => null,
                 'is_admin' => false,
