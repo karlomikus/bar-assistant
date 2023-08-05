@@ -29,7 +29,7 @@ class ShoppingListControllerTest extends TestCase
         foreach ($ingredients as $ingredient) {
             $usl = new UserShoppingList();
             $usl->ingredient_id = $ingredient->id;
-            $user->shoppingLists()->save($usl);
+            $user->shoppingList()->save($usl);
         }
 
         $response = $this->getJson('/api/shopping-list');
@@ -70,7 +70,7 @@ class ShoppingListControllerTest extends TestCase
         foreach ($ingredients as $ingredient) {
             $usl = new UserShoppingList();
             $usl->ingredient_id = $ingredient->id;
-            $user->shoppingLists()->save($usl);
+            $user->shoppingList()->save($usl);
         }
 
         $response = $this->postJson('/api/shopping-list/batch-delete', [

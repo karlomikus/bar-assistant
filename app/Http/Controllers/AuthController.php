@@ -53,7 +53,7 @@ class AuthController extends Controller
         $user->save();
 
         return (new ProfileResource(
-            $user->load('favorites', 'shelfIngredients', 'shoppingLists'),
+            $user->load('favorites', 'shelfIngredients', 'shoppingList'),
             app(SearchActionsAdapter::class),
         ))->response()->setStatusCode(200);
     }

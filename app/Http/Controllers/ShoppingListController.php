@@ -17,7 +17,7 @@ class ShoppingListController extends Controller
     public function index(Request $request): JsonResource
     {
         return UserShoppingListResource::collection(
-            $request->user()->shoppingLists->load('ingredient')
+            $request->user()->shoppingList->load('ingredient')
         );
     }
 
@@ -30,7 +30,7 @@ class ShoppingListController extends Controller
             $usl = new UserShoppingList();
             $usl->ingredient_id = $ingId;
             try {
-                $models[] = $request->user()->shoppingLists()->save($usl);
+                $models[] = $request->user()->shoppingList()->save($usl);
             } catch (Throwable) {
             }
         }
@@ -43,7 +43,7 @@ class ShoppingListController extends Controller
         $ingredientIds = $request->post('ingredient_ids');
 
         try {
-            $request->user()->shoppingLists()->whereIn('ingredient_id', $ingredientIds)->delete();
+            $request->user()->shoppingList()->whereIn('ingredient_id', $ingredientIds)->delete();
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
         }
@@ -56,7 +56,7 @@ class ShoppingListController extends Controller
         $type = $request->get('type', 'markdown');
 
         $shoppingListIngredients = $request->user()
-            ->shoppingLists
+            ->shoppingList
             ->load('ingredient.category')
             ->groupBy('ingredient.category.name');
 

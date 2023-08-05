@@ -373,7 +373,7 @@ class BarOpen extends Command
                 new \Kami\Cocktail\Models\CocktailFavorite(['cocktail_id' => 22]),
                 new \Kami\Cocktail\Models\CocktailFavorite(['cocktail_id' => 25]),
             ]);
-            $defaultUser->shoppingLists()->saveMany([
+            $defaultUser->shoppingList()->saveMany([
                 new \Kami\Cocktail\Models\UserShoppingList(['ingredient_id' => $ango->id]),
                 new \Kami\Cocktail\Models\UserShoppingList(['ingredient_id' => $campari->id]),
                 new \Kami\Cocktail\Models\UserShoppingList(['ingredient_id' => $kahlua->id]),

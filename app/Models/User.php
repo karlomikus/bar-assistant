@@ -86,7 +86,7 @@ class User extends Authenticatable
     /**
      * @return HasMany<UserShoppingList>
      */
-    public function shoppingLists(): HasMany
+    public function shoppingList(): HasMany
     {
         return $this->hasMany(UserShoppingList::class);
     }
