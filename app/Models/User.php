@@ -63,19 +63,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @return HasManyThrough<Ingredient>
-     */
-    public function ingredients(): HasManyThrough
-    {
-        return $this->hasManyThrough(
-            Ingredient::class,
-            UserIngredient::class,
-            'user_id',
-            'id',
-        );
-    }
-
-    /**
      * @return HasMany<CocktailFavorite>
      */
     public function favorites(): HasMany
