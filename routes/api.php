@@ -176,6 +176,7 @@ Route::middleware($authMiddleware)->group(function() {
         Route::post('/{id}/cocktails', [CollectionController::class, 'cocktails']);
         Route::put('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'cocktail']);
         Route::delete('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'deleteResourceFromCollection']);
+        Route::get('/{id}/share', [CollectionController::class, 'share'])->name('collection.share');
     });
 
     Route::prefix('import')->group(function() {
