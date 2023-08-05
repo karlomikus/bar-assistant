@@ -213,7 +213,7 @@ class CocktailController extends Controller
             ->firstOrFail()
             ->load(['ingredients.ingredient', 'images' => function ($query) {
                 $query->orderBy('sort');
-            }, 'ingredients.substitutes']);
+            }, 'ingredients.substitutes', 'ingredients.ingredient.category']);
 
         $data = $cocktail->toShareableArray();
 
@@ -231,6 +231,14 @@ class CocktailController extends Controller
 
         if ($type === 'text') {
             return new Response($cocktail->toText(), 200, ['Content-Type' => 'plain/text']);
+        }
+
+        if ($type === 'markdown' || $type === 'md') {
+            return new Response(
+                view('md_recipe_template', compact('cocktail'))->render(),
+                200,
+                ['Content-Type' => 'text/markdown']
+            );
         }
 
         abort(400, 'Requested type "' . $type . '" not supported');
