@@ -59,6 +59,10 @@ class ImportController extends Controller
                 }
             }
 
+            if (count($source['cocktails']) === 0) {
+                abort(400, sprintf('No cocktails found'));
+            }
+
             $collection = $importService->importCocktailCollection($source, $request->user()->id);
 
             return new CollectionResource($collection);

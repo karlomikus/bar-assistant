@@ -266,4 +266,14 @@ class Cocktail extends Model
 
         return sprintf("%s\n%s\n\n%s\n\n%s", $this->name, e($this->description), $ingredients, e($this->instructions));
     }
+
+    public function getNextSlug(): ?string
+    {
+        return $this->query()->distinct()->orderBy('name')->limit(1)->where('name', '>', $this->name)->first()?->slug;
+    }
+
+    public function getPrevSlug(): ?string
+    {
+        return $this->query()->distinct()->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first()?->slug;
+    }
 }
