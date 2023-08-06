@@ -10,11 +10,13 @@ use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Scraper\Manager;
 use Kami\Cocktail\Services\ImportService;
 use Kami\Cocktail\Http\Requests\ImportRequest;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CocktailResource;
+use Kami\Cocktail\Http\Resources\CollectionResource;
 
 class ImportController extends Controller
 {
-    public function cocktail(ImportRequest $request, ImportService $importService): JsonResponse
+    public function cocktail(ImportRequest $request, ImportService $importService): JsonResponse|JsonResource
     {
         $dataToImport = [];
         $type = $request->get('type', 'url');
@@ -48,6 +50,18 @@ class ImportController extends Controller
             } catch (Throwable) {
                 abort(400, sprintf('Unable to parse the YAML string'));
             }
+        }
+
+        if ($type === 'collection') {
+            if (!is_array($source)) {
+                if (!$source = json_decode($source, true)) {
+                    abort(400, 'Unable to parse the JSON string');
+                }
+            }
+
+            $collection = $importService->importCocktailCollection($source, $request->user()->id);
+
+            return new CollectionResource($collection);
         }
 
         if ($save) {
