@@ -7,7 +7,9 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\IngredientRequest;
@@ -93,5 +95,28 @@ class IngredientController extends Controller
         $ingredient->delete();
 
         return response(null, 204);
+    }
+
+    public function extra(Request $request, CocktailService $cocktailService, int $id): JsonResponse
+    {
+        $currentShelfIngredients = $request->user()->shelfIngredients->pluck('ingredient_id');
+        $currentShelfCocktails = $cocktailService->getCocktailsByUserIngredients($currentShelfIngredients->toArray())->values();
+        $extraShelfCocktails = $cocktailService->getCocktailsByUserIngredients($currentShelfIngredients->push($id)->toArray())->values();
+
+        if ($currentShelfCocktails->count() === $extraShelfCocktails->count()) {
+            return response()->json(['data' => []]);
+        }
+
+        $extraCocktails = Cocktail::whereIn('id', $extraShelfCocktails->diff($currentShelfCocktails)->values())->get();
+
+        return response()->json([
+            'data' => $extraCocktails->map(function (Cocktail $cocktail) {
+                return [
+                    'id' => $cocktail->id,
+                    'slug' => $cocktail->slug,
+                    'name' => $cocktail->name,
+                ];
+            })
+        ]);
     }
 }

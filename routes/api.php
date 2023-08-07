@@ -77,6 +77,7 @@ Route::middleware($authMiddleware)->group(function() {
         Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show');
         Route::put('/{id}', [IngredientController::class, 'update']);
         Route::delete('/{id}', [IngredientController::class, 'delete']);
+        Route::get('/{id}/extra', [IngredientController::class, 'extra']);
     });
 
     Route::prefix('ingredient-categories')->group(function() {
