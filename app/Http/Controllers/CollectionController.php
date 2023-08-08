@@ -12,13 +12,14 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CollectionRequest;
 use Kami\Cocktail\Http\Resources\CollectionResource;
+use Kami\Cocktail\Http\Filters\CollectionQueryFilter;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class CollectionController extends Controller
 {
     public function index(Request $request): JsonResource
     {
-        $collections = CocktailCollection::where('user_id', $request->user()->id)->get();
+        $collections = (new CollectionQueryFilter())->where('user_id', $request->user()->id)->get();
 
         return CollectionResource::collection($collections);
     }
@@ -42,6 +43,9 @@ class CollectionController extends Controller
         $collection->user_id = $request->user()->id;
         $collection->save();
 
+        $cocktailIds = $request->post('cocktails', []);
+        $collection->cocktails()->attach($cocktailIds);
+
         return (new CollectionResource($collection))
             ->response()
             ->setStatusCode(201)
@@ -58,6 +62,24 @@ class CollectionController extends Controller
 
         $collection->name = $request->post('name');
         $collection->description = $request->post('description');
+        $collection->save();
+
+        return new CollectionResource($collection);
+    }
+
+    public function cocktails(Request $request, int $id): JsonResource
+    {
+        $collection = CocktailCollection::findOrFail($id);
+
+        if ($request->user()->cannot('edit', $collection)) {
+            abort(403);
+        }
+
+        try {
+            $collection->cocktails()->syncWithoutDetaching($request->post('cocktails', []));
+        } catch (Throwable) {
+            abort(500, 'Unable to add cocktails to collection!');
+        }
 
         return new CollectionResource($collection);
     }
@@ -74,7 +96,7 @@ class CollectionController extends Controller
 
         try {
             $cocktail->addToCollection($collection);
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             abort(500, 'Unable to add cocktail to collection!');
         }
 

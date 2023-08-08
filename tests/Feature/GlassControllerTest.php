@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Glass;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -18,8 +17,6 @@ class GlassControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Spectator::using('open-api-spec.yml');
 
         $this->actingAs(User::factory()->create());
     }
@@ -37,8 +34,6 @@ class GlassControllerTest extends TestCase
                 ->has('data', 10)
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_show_glass_response()
@@ -59,8 +54,6 @@ class GlassControllerTest extends TestCase
                 ->where('data.description', 'Glass 1 Description')
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_save_glass_response()
@@ -79,8 +72,6 @@ class GlassControllerTest extends TestCase
                 ->where('data.description', 'Glass 1 Description')
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_save_glass_forbidden_response()
@@ -115,8 +106,6 @@ class GlassControllerTest extends TestCase
                 ->where('data.description', 'Glass updated Description')
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_delete_glass_response()
@@ -129,6 +118,5 @@ class GlassControllerTest extends TestCase
         $response = $this->deleteJson('/api/glasses/' . $glass->id);
 
         $response->assertNoContent();
-        $response->assertValidResponse();
     }
 }

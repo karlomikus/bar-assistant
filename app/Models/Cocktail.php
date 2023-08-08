@@ -88,6 +88,14 @@ class Cocktail extends Model
         return $this->belongsTo(CocktailMethod::class, 'cocktail_method_id');
     }
 
+    /**
+     * @return BelongsToMany<CocktailCollection>
+     */
+    public function collections(): BelongsToMany
+    {
+        return $this->belongsToMany(CocktailCollection::class, 'collections_cocktails');
+    }
+
     public function delete(): ?bool
     {
         $this->deleteImages();
@@ -106,6 +114,8 @@ class Cocktail extends Model
         if ($this->cocktail_method_id === null) {
             return null;
         }
+
+        $this->loadMissing('ingredients.ingredient');
 
         $ingredients = $this->ingredients
             ->filter(function ($cocktailIngredient) {
@@ -216,9 +226,53 @@ class Cocktail extends Model
             'glass' => $this->glass->name ?? null,
             'average_rating' => (int) round($this->ratings()->avg('rating') ?? 0),
             'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
-            'calculated_abv' => $this->getABV(),
+            'calculated_abv' => $this->abv,
             'method' => $this->method->name ?? null,
             'has_public_link' => $this->public_id !== null,
         ];
+    }
+
+    public function toShareableArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'instructions' => e($this->instructions),
+            'garnish' => e($this->garnish),
+            'description' => e($this->description),
+            'source' => $this->source,
+            'tags' => $this->tags->pluck('name')->toArray(),
+            'glass' => $this->glass?->name ?? null,
+            'method' => $this->method?->name ?? null,
+            'images' => $this->images->map(function (Image $image) {
+                return [
+                    'url' => $image->getImageUrl(),
+                    'copyright' => $image->copyright,
+                    'sort' => $image->sort,
+                ];
+            })->toArray(),
+            'ingredients' => $this->ingredients->map(function (CocktailIngredient $cIngredient) {
+                return [
+                    'sort' => $cIngredient->sort ?? 0,
+                    'name' => $cIngredient->ingredient->name,
+                    'amount' => $cIngredient->amount,
+                    'units' => $cIngredient->units,
+                    'optional' => (bool) $cIngredient->optional,
+                    'category' => $cIngredient->ingredient->category->name,
+                    'description' => $cIngredient->ingredient->description,
+                    'strength' => $cIngredient->ingredient->strength,
+                    'origin' => $cIngredient->ingredient->origin,
+                    'substitutes' => $cIngredient->substitutes->pluck('name')->toArray(),
+                ];
+            })->toArray(),
+        ];
+    }
+
+    public function toText(): string
+    {
+        $ingredients = $this->ingredients->map(function (CocktailIngredient $cIngredient) {
+            return trim(sprintf("- \"%s\" %s %s %s", $cIngredient->ingredient->name, $cIngredient->amount, $cIngredient->units, $cIngredient->optional ? '(optional)' : ''));
+        })->join("\n");
+
+        return sprintf("%s\n%s\n\n%s\n\n%s", $this->name, e($this->description), $ingredients, e($this->instructions));
     }
 }

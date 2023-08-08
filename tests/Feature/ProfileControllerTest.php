@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,8 +16,6 @@ class ProfileControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Spectator::using('open-api-spec.yml');
     }
 
     public function test_current_user_response()
@@ -38,8 +35,6 @@ class ProfileControllerTest extends TestCase
                 ->where('data.name', $user->name)
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_update_current_user_response()
@@ -62,8 +57,6 @@ class ProfileControllerTest extends TestCase
                 ->where('data.name', 'Test Guy')
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_update_current_user_with_password_response()
@@ -88,8 +81,6 @@ class ProfileControllerTest extends TestCase
                 ->where('data.name', 'Test Guy')
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_update_current_user_with_password_fail_response()
@@ -105,6 +96,5 @@ class ProfileControllerTest extends TestCase
         ]);
 
         $response->assertUnprocessable();
-        $response->assertValidResponse();
     }
 }

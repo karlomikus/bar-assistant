@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://karlomikus.com" target="_blank"><img src="resources/art/logotype.svg" alt="Bar assistant Logo" width="300"></a>
+    <a href="https://karlomikus.com" target="_blank"><img src="resources/art/readme-logo.png" alt="Bar assistant Logo" width="500"></a>
 </p>
 
 <p align="center">

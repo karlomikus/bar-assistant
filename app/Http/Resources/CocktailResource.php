@@ -31,19 +31,25 @@ class CocktailResource extends JsonResource
             'public_id' => $this->public_id,
             'main_image_id' => $this->images->sortBy('sort')->first()->id ?? null,
             'images' => ImageResource::collection($this->images),
-            'tags' => $this->tags->pluck('name'),
-            'user_id' => $this->user_id,
+            'tags' => $this->tags->pluck('name'), // TODO: introduce braking change
+            'cocktail_tags' => $this->tags->map(function ($tag) {
+                return [
+                    'id' => $tag->id,
+                    'name' => $tag->name,
+                ];
+            }),
             'user_rating' => $this->user_rating ?? null,
             'average_rating' => (int) round($this->average_rating ?? 0),
             'glass' => new GlassResource($this->whenLoaded('glass')),
             'ustensils' => UstensilResource::collection($this->whenLoaded('ustensils')),
-            'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
-            'ingredients' => CocktailIngredientResource::collection($this->ingredients),
-            'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
+            'short_ingredients' => $this->ingredients->pluck('ingredient.name'), // deprecate
+            'ingredients' => CocktailIngredientResource::collection($this->ingredients), // TODO: Cond. load
             'created_at' => $this->created_at->toDateTimeString(),
             'method' => new CocktailMethodResource($this->whenLoaded('method')),
-            'abv' => $this->getABV(),
+            'collections' => CocktailCollectionResource::collection($this->whenLoaded('collections')),
+            'abv' => $this->abv,
             'notes' => NoteResource::collection($this->whenLoaded('notes')),
+            'user' => new UserBasicResource($this->whenLoaded('user')),
         ];
     }
 }

@@ -16,14 +16,14 @@ class GlassController extends Controller
 {
     public function index(): JsonResource
     {
-        $glasses = Glass::orderBy('name')->get();
+        $glasses = Glass::orderBy('name')->withCount('cocktails')->get();
 
         return GlassResource::collection($glasses);
     }
 
     public function show(int $id): JsonResource
     {
-        $glass = Glass::findOrFail($id);
+        $glass = Glass::withCount('cocktails')->findOrFail($id);
 
         return new GlassResource($glass);
     }

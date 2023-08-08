@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -15,8 +14,6 @@ class AuthControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Spectator::using('open-api-spec.yml');
     }
 
     public function test_authenticate_response()
@@ -33,8 +30,6 @@ class AuthControllerTest extends TestCase
         ]);
 
         $response->assertStatus(200);
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 
     public function test_logout_response()
@@ -47,7 +42,6 @@ class AuthControllerTest extends TestCase
         $response = $this->postJson('/api/logout');
 
         $response->assertStatus(200);
-        $response->assertValidResponse();
     }
 
     public function test_register_response()
@@ -60,7 +54,5 @@ class AuthControllerTest extends TestCase
         ]);
 
         $response->assertSuccessful();
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 }

@@ -10,6 +10,7 @@ use Kami\Cocktail\Http\Controllers\ShelfController;
 use Kami\Cocktail\Http\Controllers\UstensilsController;
 use Kami\Cocktail\Http\Controllers\StatsController;
 use Kami\Cocktail\Http\Controllers\UsersController;
+use Kami\Cocktail\Http\Controllers\ImportController;
 use Kami\Cocktail\Http\Controllers\RatingController;
 use Kami\Cocktail\Http\Controllers\ScrapeController;
 use Kami\Cocktail\Http\Controllers\ServerController;
@@ -90,12 +91,14 @@ Route::middleware($authMiddleware)->group(function() {
     Route::prefix('cocktails')->group(function() {
         Route::get('/', [CocktailController::class, 'index'])->name('cocktails.index');
         Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show');
+        Route::get('/{id}/share', [CocktailController::class, 'share'])->name('cocktails.share');
         Route::post('/{id}/toggle-favorite', [CocktailController::class, 'toggleFavorite'])->name('cocktails.favorite');
         Route::post('/', [CocktailController::class, 'store'])->name('cocktails.store');
         Route::delete('/{id}', [CocktailController::class, 'delete'])->name('cocktails.delete');
         Route::put('/{id}', [CocktailController::class, 'update'])->name('cocktails.update');
         Route::post('/{id}/public-link', [CocktailController::class, 'makePublic'])->name('cocktails.make-public');
         Route::delete('/{id}/public-link', [CocktailController::class, 'makePrivate'])->name('cocktails.make-private');
+        Route::get('/{id}/similar', [CocktailController::class, 'similar'])->name('cocktails.similar');
     });
 
     Route::prefix('images')->group(function() {
@@ -180,8 +183,13 @@ Route::middleware($authMiddleware)->group(function() {
         Route::get('/{id}', [CollectionController::class, 'show'])->name('collection.show');
         Route::put('/{id}', [CollectionController::class, 'update']);
         Route::delete('/{id}', [CollectionController::class, 'delete']);
+        Route::post('/{id}/cocktails', [CollectionController::class, 'cocktails']);
         Route::put('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'cocktail']);
         Route::delete('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'deleteResourceFromCollection']);
+    });
+
+    Route::prefix('import')->group(function() {
+        Route::post('/cocktail', [ImportController::class, 'cocktail']);
     });
 });
 

@@ -7,7 +7,9 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
+use Spatie\ArrayToXml\ArrayToXml;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -33,7 +35,7 @@ class CocktailController extends Controller
             abort(400, $e->getMessage());
         }
 
-        $cocktails = $cocktails->paginate($request->get('per_page', 15));
+        $cocktails = $cocktails->paginate($request->get('per_page', 25))->withQueryString();
 
         return CocktailResource::collection($cocktails);
     }
@@ -43,13 +45,13 @@ class CocktailController extends Controller
      */
     public function show(int|string $idOrSlug, Request $request): JsonResource
     {
-        $cocktail = Cocktail::where('id', $idOrSlug)
-            ->orWhere('slug', $idOrSlug)
+        $cocktail = Cocktail::where('slug', $idOrSlug)
+            ->orWhere('id', $idOrSlug)
             ->withRatings($request->user()->id)
             ->firstOrFail()
             ->load(['ingredients.ingredient', 'images' => function ($query) {
                 $query->orderBy('sort');
-            }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'notes']);
+            }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'notes', 'user', 'collections']);
 
         return new CocktailResource($cocktail);
     }
@@ -60,7 +62,7 @@ class CocktailController extends Controller
     public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
         $ingredients = [];
-        foreach ($request->post('ingredients') as $formIngredient) {
+        foreach ($request->post('ingredients', []) as $formIngredient) {
             $ingredient = new IngredientDTO(
                 (int) $formIngredient['ingredient_id'],
                 null,
@@ -114,7 +116,7 @@ class CocktailController extends Controller
         }
 
         $ingredients = [];
-        foreach ($request->post('ingredients') as $formIngredient) {
+        foreach ($request->post('ingredients', []) as $formIngredient) {
             $ingredient = new IngredientDTO(
                 (int) $formIngredient['ingredient_id'],
                 null,
@@ -202,5 +204,68 @@ class CocktailController extends Controller
         $cocktail = $cocktail->makePrivate();
 
         return response(null, 204);
+    }
+
+    public function share(Request $request, int|string $idOrSlug): Response
+    {
+        $type = $request->get('type', 'json');
+
+        $cocktail = Cocktail::where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
+            ->firstOrFail()
+            ->load(['ingredients.ingredient', 'images' => function ($query) {
+                $query->orderBy('sort');
+            }, 'ingredients.substitutes']);
+
+        $data = $cocktail->toShareableArray();
+
+        if ($type === 'json') {
+            return new Response(json_encode($data, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
+        }
+
+        if ($type === 'yaml' || $type === 'yml') {
+            return new Response(Yaml::dump($data, 4, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK), 200, ['Content-Type' => 'application/yaml']);
+        }
+
+        if ($type === 'xml') {
+            return new Response(ArrayToXml::convert($data, 'cocktail', xmlEncoding: 'UTF-8'), 200, ['Content-Type' => 'application/xml']);
+        }
+
+        if ($type === 'text') {
+            return new Response($cocktail->toText(), 200, ['Content-Type' => 'plain/text']);
+        }
+
+        abort(400, 'Requested type "' . $type . '" not supported');
+    }
+
+    public function similar(Request $request, int|string $idOrSlug): JsonResource
+    {
+        $limitTotal = $request->get('limit', 5);
+
+        $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->firstOrFail();
+        $ingredients = $cocktail->ingredients->filter(fn ($ci) => $ci->optional === false)->pluck('ingredient_id');
+
+        $relatedCocktails = collect();
+        while ($ingredients->count() > 0) {
+            $ingredients->pop();
+            $possibleRelatedCocktails = Cocktail::where('cocktails.id', '<>', $cocktail->id)
+                ->whereIn('cocktails.id', function ($query) use ($ingredients) {
+                    $query->select('ci.cocktail_id')
+                        ->from('cocktail_ingredients AS ci')
+                        ->whereIn('ci.ingredient_id', $ingredients)
+                        ->where('optional', false)
+                        ->groupBy('ci.cocktail_id')
+                        ->havingRaw('COUNT(DISTINCT ci.ingredient_id) = ?', [$ingredients->count()]);
+                })
+                ->get();
+
+            $relatedCocktails = $relatedCocktails->merge($possibleRelatedCocktails)->unique('id');
+            if ($relatedCocktails->count() > $limitTotal) {
+                $relatedCocktails = $relatedCocktails->take($limitTotal);
+                break;
+            }
+        }
+
+        return CocktailResource::collection($relatedCocktails);
     }
 }

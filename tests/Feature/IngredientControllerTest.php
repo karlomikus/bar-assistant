@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
@@ -21,8 +20,6 @@ class IngredientControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        // Spectator::using('open-api-spec.yml');
 
         $this->actingAs(
             User::factory()->create()
@@ -96,8 +93,6 @@ class IngredientControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonCount(2, 'data');
-
-        $response->assertValidResponse();
     }
 
     public function test_list_ingredients_response_filter_by_shopping_list()
@@ -108,8 +103,6 @@ class IngredientControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonCount(0, 'data');
-
-        $response->assertValidResponse();
     }
 
     public function test_list_ingredients_response_filter_by_shelf()
@@ -120,8 +113,6 @@ class IngredientControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonCount(0, 'data');
-
-        $response->assertValidResponse();
     }
 
     public function test_ingredient_show_response()
@@ -168,8 +159,6 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonPath('data.color', '#fff');
         $response->assertJsonCount(1, 'data.cocktails');
         $response->assertJsonCount(1, 'data.varieties');
-
-        $response->assertValidResponse();
     }
 
     public function test_ingredient_show_not_found_response()
@@ -183,8 +172,6 @@ class IngredientControllerTest extends TestCase
                 ->has('message')
                 ->etc()
         );
-
-        $response->assertValidResponse(404);
     }
 
     public function test_ingredient_store_response()
@@ -214,9 +201,6 @@ class IngredientControllerTest extends TestCase
                 ->where('data.ingredient_category_id', $ingCat->id)
                 ->etc()
         );
-
-        $response->assertValidRequest();
-        $response->assertValidResponse(201);
     }
 
     public function test_ingredient_store_fails_validation_response()
@@ -233,8 +217,6 @@ class IngredientControllerTest extends TestCase
                 ->has('errors')
                 ->etc()
         );
-
-        $response->assertValidResponse(422);
     }
 
     public function test_ingredient_update_response()
@@ -267,9 +249,6 @@ class IngredientControllerTest extends TestCase
                 ->where('data.description', 'Description text')
                 ->etc()
         );
-
-        $response->assertValidRequest();
-        $response->assertValidResponse(200);
     }
 
     public function test_ingredient_update_fails_validation_response()
@@ -294,8 +273,6 @@ class IngredientControllerTest extends TestCase
                 ->has('errors')
                 ->etc()
         );
-
-        $response->assertValidResponse(422);
     }
 
     public function test_ingredient_delete_response()

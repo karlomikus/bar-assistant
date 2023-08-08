@@ -18,14 +18,14 @@ class TagController extends Controller
 {
     public function index(): JsonResource
     {
-        $tags = Tag::orderBy('name')->get();
+        $tags = Tag::orderBy('name')->withCount('cocktails')->get();
 
         return TagResource::collection($tags);
     }
 
     public function show(int $id): JsonResource
     {
-        $tag = Tag::findOrFail($id);
+        $tag = Tag::withCount('cocktails')->findOrFail($id);
 
         return new TagResource($tag);
     }

@@ -1,3 +1,79 @@
+# v2.4.0
+## New
+- Added new scrapers
+    - CocktailsDistilled
+- Added `total_collections` to `StatsResponse` schema
+- Added new sort to `ingredients` endpoint: `total_cocktails`
+- Removed `user_id` from `Cocktail` schema
+- Removed `main_ingredient_name` from `Cocktail` schema
+
+## Deprecations
+- Property `short_ingredients` on `Cocktail` schema will be removed in next release
+- Property `tags` on `Cocktail` schema will be changed to array of objects in next release, currently `cocktail_tags`
+- Property `ingredient_category_id` on `Ingredient` schema will be changed to array of objects in next release, currently `cocktail_tags`
+- Property `ingredients` on `Cocktail` schema will be only shown if you are including the relationship via query parameter in the next release
+
+## Fixes
+- Fixed typo for `include` query param in specification #147
+- Importing recipes via API calls will correctly set cocktail author
+- Improved recipe instructions parsing for default parser
+
+# v2.3.0
+## New
+- Added cocktails count to `tag`, `glass` and `cocktail_method` resources
+- Added `abv_min`, `abv_max`, `user_rating_min`, `user_rating_max` and `main_ingredient_id` cocktail query filters
+- Added `main_ingredients` ingredient query filter
+- Added `shelf_ingredients` cocktail query filter
+    - This will return all cocktails you can make with the given ingredients
+    - This allows you to create on-the-fly custom shelf cocktails
+- Added POST `/collections/{id}/cocktails` endpoint
+    - This endpoint allows you to add multiple cocktails to collection with single call
+- Added `cocktails` request property to `CollectionRequest` schema
+    - This allows you to add cocktails when creating new collection
+- Added `include` query option to `cocktails` endpoint
+    - This is used to toggle extra available data when fetching cocktails
+
+## Changes
+- ABV is now saved in the cocktails table with the cocktail #139
+- Default results per page on `cocktails` resource increased to 25
+
+## Deprecations
+- Property `user_id` on `Cocktail` schema will be removed in next release, use `user.id` property instead
+- Property `main_ingredient_name` on `Cocktail` schema will be removed in next release
+
+## Fixes
+- Fixed boolean query filters not correctly filtering the results
+- Fixed slugs with only numbers fetching by `id` column first instead of `slug` #140
+- Added missing cache clearing after importing data from zip file
+- Fixed missing eager load of `user` relation when fetching cocktails
+- Fixed old cocktail ingredients not having correct ingredient sorting
+- Fixed image extension detection sometimes falling back to jpg for no good reason
+
+# v2.2.0
+## New
+- Improved schema scraping, and added new scrapers for
+    - CocktailParty
+    - LiberAndCo
+    - DiffordsGuide
+    - TheCocktailDB
+- Added `user_name` to cocktail response
+- Added filters to `/collections` endpoint
+- Added `missing_ingredients` sort to cocktails endpoint
+    - This will sort by number of user's missing ingredients #137
+- Added `/cocktails/{id}/similar` endpoint to show similar cocktails #40
+
+# v2.1.0
+## New
+- Added support for Meilisearch v1.2
+- Added `/import/cocktail` endpoint
+    - Supports importing cocktails in YAML and JSON formats
+    - Supports importing cocktails from URLs that are supported by built in scrapers
+- Added `/cocktail/{id}/share` endpoint
+    - Supports sharing cocktails in JSON, YAML, XML and plain text format
+
+## Changes
+- Disabled foreign key checks when importing data from zip file #117
+
 # v2.0.0
 ## Breaking changes
 - Minimum supported Meilisearch version is 1.1

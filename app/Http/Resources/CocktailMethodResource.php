@@ -23,6 +23,7 @@ class CocktailMethodResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'dilution_percentage' => $this->dilution_percentage,
+            'cocktails_count' => $this->whenCounted('cocktails'),
         ];
     }
 }

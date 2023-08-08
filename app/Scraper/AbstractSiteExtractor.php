@@ -47,14 +47,20 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
      *
      * @return null|string
      */
-    abstract public function description(): ?string;
+    public function description(): ?string
+    {
+        return null;
+    }
 
     /**
      * Cocktail source URL
      *
      * @return null|string
      */
-    abstract public function source(): ?string;
+    public function source(): ?string
+    {
+        return null;
+    }
 
     /**
      * Cocktail preparation instructions, can support markdown
@@ -68,35 +74,60 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
      *
      * @return array<string>
      */
-    abstract public function tags(): array;
+    public function tags(): array
+    {
+        return [];
+    }
 
     /**
      * Cocktail serving glass
      *
      * @return null|string
      */
-    abstract public function glass(): ?string;
+    public function glass(): ?string
+    {
+        return null;
+    }
 
     /**
      * Array containing cocktail ingredients
      *
      * @return array<int, array{"amount": float|int, "units": string, "name": string, "optional": boolean}>
      */
-    abstract public function ingredients(): array;
+    public function ingredients(): array
+    {
+        return [];
+    }
 
     /**
      * Cocktail garnish, can support markdown
      *
      * @return null|string
      */
-    abstract public function garnish(): ?string;
+    public function garnish(): ?string
+    {
+        return null;
+    }
 
     /**
      * Array containing image information
      *
      * @return null|array{"url": string|null, "copyright": string|null}
      */
-    abstract public function image(): ?array;
+    public function image(): ?array
+    {
+        return null;
+    }
+
+    /**
+     * Cocktail method (shake, stir...)
+     *
+     * @return null|string
+     */
+    public function method(): ?string
+    {
+        return null;
+    }
 
     /**
      * Cocktail information as array
@@ -106,14 +137,17 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
     public function toArray(): array
     {
         return [
-            'name' => $this->name(),
+            'name' => preg_replace("/\s+/u", " ", $this->name()),
             'description' => $this->description(),
             'source' => $this->source(),
             'glass' => $this->glass(),
             'instructions' => $this->instructions(),
             'garnish' => $this->garnish(),
             'tags' => $this->tags(),
-            'image' => $this->image(),
+            'method' => $this->method(),
+            'images' => [
+                $this->image()
+            ],
             'ingredients' => $this->ingredients(),
         ];
     }

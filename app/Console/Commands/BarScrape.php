@@ -71,7 +71,7 @@ class BarScrape extends Command
         }
 
         try {
-            $this->importService->importFromScraper($scrapedData);
+            $this->importService->importCocktailFromArray($scrapedData);
 
             $this->info('Cocktail imported successfully, do not forget to check the imported data for errors.');
         } catch (Throwable $e) {

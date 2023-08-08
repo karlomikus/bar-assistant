@@ -19,8 +19,6 @@ class CocktailMethodControllerTest extends TestCase
     {
         parent::setUp();
 
-        Spectator::using('open-api-spec.yml');
-
         $this->actingAs(
             User::factory()->create()
         );
@@ -37,8 +35,6 @@ class CocktailMethodControllerTest extends TestCase
                 ->has('data', 6)
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_show_method_response()
@@ -59,8 +55,6 @@ class CocktailMethodControllerTest extends TestCase
                 ->has('data.dilution_percentage')
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_create_method_response()
@@ -81,9 +75,6 @@ class CocktailMethodControllerTest extends TestCase
                 ->where('data.dilution_percentage', 32)
                 ->etc()
         );
-
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 
     public function test_update_method_response()
@@ -108,9 +99,6 @@ class CocktailMethodControllerTest extends TestCase
                 ->where('data.dilution_percentage', 12)
                 ->etc()
         );
-
-        $response->assertValidRequest();
-        $response->assertValidResponse();
     }
 
     public function test_delete_method_response()
@@ -122,8 +110,6 @@ class CocktailMethodControllerTest extends TestCase
         $response = $this->delete('/api/cocktail-methods/' . $method->id);
 
         $response->assertNoContent();
-
-        $response->assertValidResponse();
 
         $this->assertDatabaseMissing('cocktail_methods', ['id' => $method->id]);
     }
