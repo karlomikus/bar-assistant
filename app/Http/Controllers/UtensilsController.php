@@ -7,10 +7,10 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Kami\Cocktail\Http\Requests\UtensilRequest;
-use Kami\Cocktail\Http\Resources\UtensilResource;
 use Kami\Cocktail\Models\Utensil;
+use Kami\Cocktail\Http\Requests\UtensilRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Http\Resources\UtensilResource;
 
 class UtensilsController extends Controller
 {
