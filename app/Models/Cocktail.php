@@ -252,7 +252,7 @@ class Cocktail extends Model
                     'description' => $cIngredient->ingredient->description,
                     'strength' => $cIngredient->ingredient->strength,
                     'origin' => $cIngredient->ingredient->origin,
-                    'substitutes' => $cIngredient->substitutes->pluck('name')->toArray(),
+                    'substitutes' => $cIngredient->substitutes->pluck('ingredient.name')->toArray(),
                 ];
             })->toArray(),
         ];
