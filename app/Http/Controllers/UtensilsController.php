@@ -71,13 +71,4 @@ class UtensilsController extends Controller
 
         return response(null, 204);
     }
-
-    public function find(Request $request): JsonResource
-    {
-        $name = $request->get('name');
-
-        $utensil = Utensil::whereRaw('lower(name) = ?', [strtolower($name)])->firstOrFail();
-
-        return new UtensilResource($utensil);
-    }
 }
