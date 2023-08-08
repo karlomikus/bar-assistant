@@ -12,16 +12,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Utensil extends Model
 {
-    use HasFactory, HasImages, HasSlug;
+    use HasFactory, HasImages;
 
     private string $appImagesDir = 'utensils/';
-
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
-    }
 
     /**
      * @return HasMany<Cocktail>

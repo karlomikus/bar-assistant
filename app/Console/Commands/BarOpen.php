@@ -128,7 +128,7 @@ class BarOpen extends Command
 
         DB::table('utensils')->insert([
             ['name' => 'Mixing glass', 'description' => 'A glass with a heavy base that doesn\'t tip over when stirring.'],
-            ['name' => 'Shaker (Boston, Tumbler)', 'description' => 'A recipient in 2 parts to shake cocktails vigorously.', 'slug' => 'shaker'],
+            ['name' => 'Shaker', 'description' => 'A recipient in 2 parts to shake cocktails vigorously.'],
             ['name' => 'Bar spoon', 'description' => 'A long and heavy spiraled spoon used to stir or layer cocktails.'],
             ['name' => 'Julep Strainer', 'description' => 'A style of strainer used when using a mixing glass to strain the ice out.'],
             ['name' => 'Hawthorne Strainer', 'description' => 'A style of strainer used when using a shaker to strain the ice out.'],

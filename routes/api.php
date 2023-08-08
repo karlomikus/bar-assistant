@@ -126,7 +126,6 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('utensils')->group(function() {
-        Route::get('/find', [UtensilsController::class, 'find']);
         Route::get('/', [UtensilsController::class, 'index']);
         Route::post('/', [UtensilsController::class, 'store']);
         Route::get('/{id}', [UtensilsController::class, 'show'])->name('utensils.show');

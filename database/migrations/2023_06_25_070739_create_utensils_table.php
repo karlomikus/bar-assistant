@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('utensils', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->slug('slug')->unique();
             $table->text('description')->nullable();
             $table->timestamps();
         });
