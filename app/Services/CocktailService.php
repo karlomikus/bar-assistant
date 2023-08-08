@@ -9,7 +9,7 @@ use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Image;
-use Kami\Cocktail\Models\Ustensil;
+use Kami\Cocktail\Models\Utensil;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
@@ -128,7 +128,7 @@ class CocktailService
      * @param array<int> $images
      * @param array<string> $tags
      * @param int|null $glassId
-     * @param array<string> $ustensils
+     * @param array<string> $utensils
      * @param int|null $cocktailMethodId
      * @return \Kami\Cocktail\Models\Cocktail
      */
@@ -144,7 +144,7 @@ class CocktailService
         array $images = [],
         array $tags = [],
         ?int $glassId = null,
-        array $ustensils = [],
+        array $utensils = [],
         ?int $cocktailMethodId = null
     ): Cocktail {
         $this->db->beginTransaction();
@@ -198,7 +198,7 @@ class CocktailService
                 $dbTags[] = $tag->id;
             }
 
-            $cocktail->ustensils()->sync($ustensils);
+            $cocktail->utensils()->sync($utensils);
 
             $cocktail->tags()->sync($dbTags);
         } catch (Throwable $e) {

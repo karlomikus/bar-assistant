@@ -10,11 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Ustensil extends Model
+class Utensil extends Model
 {
     use HasFactory, HasImages, HasSlug;
 
-    private string $appImagesDir = 'ustensils/';
+    private string $appImagesDir = 'utensils/';
 
     public function getSlugOptions(): SlugOptions
     {

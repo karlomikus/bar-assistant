@@ -7,11 +7,11 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
-use Kami\Cocktail\Models\Ustensil;
+use Kami\Cocktail\Models\Utensil;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class UstensilsControllerTest extends TestCase
+class UtensilsControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -24,11 +24,11 @@ class UstensilsControllerTest extends TestCase
         $this->actingAs(User::factory()->create());
     }
 
-    public function test_list_all_ustensils_response()
+    public function test_list_all_utensils_response()
     {
-        Ustensil::factory()->count(10)->create();
+        Utensil::factory()->count(10)->create();
 
-        $response = $this->getJson('/api/ustensils');
+        $response = $this->getJson('/api/utensils');
 
         $response->assertOk();
         $response->assertJson(
@@ -41,33 +41,33 @@ class UstensilsControllerTest extends TestCase
         $response->assertValidResponse();
     }
 
-    public function test_show_ustensil_response()
+    public function test_show_utensil_response()
     {
-        $ustensil = Ustensil::factory()->create([
-            'name' => 'Ustensil 1',
-            'description' => 'Ustensil 1 Description',
+        $utensil = Utensil::factory()->create([
+            'name' => 'Utensil 1',
+            'description' => 'Utensil 1 Description',
         ]);
 
-        $response = $this->getJson('/api/ustensils/' . $ustensil->id);
+        $response = $this->getJson('/api/utensils/' . $utensil->id);
 
         $response->assertOk();
         $response->assertJson(
             fn (AssertableJson $json) =>
             $json
                 ->has('data.id')
-                ->where('data.name', 'Ustensil 1')
-                ->where('data.description', 'Ustensil 1 Description')
+                ->where('data.name', 'Utensil 1')
+                ->where('data.description', 'Utensil 1 Description')
                 ->etc()
         );
 
         $response->assertValidResponse();
     }
 
-    public function test_save_ustensil_response()
+    public function test_save_utensil_response()
     {
-        $response = $this->postJson('/api/ustensils/', [
-            'name' => 'Ustensil 1',
-            'description' => 'Ustensil 1 Description',
+        $response = $this->postJson('/api/utensils/', [
+            'name' => 'Utensil 1',
+            'description' => 'Utensil 1 Description',
         ]);
 
         $response->assertCreated();
@@ -75,35 +75,35 @@ class UstensilsControllerTest extends TestCase
             fn (AssertableJson $json) =>
             $json
                 ->has('data.id')
-                ->where('data.name', 'Ustensil 1')
-                ->where('data.description', 'Ustensil 1 Description')
+                ->where('data.name', 'Utensil 1')
+                ->where('data.description', 'Utensil 1 Description')
                 ->etc()
         );
 
         $response->assertValidResponse();
     }
 
-    public function test_save_ustensil_forbidden_response()
+    public function test_save_utensil_forbidden_response()
     {
         $this->actingAs(User::factory()->create(['is_admin' => false]));
 
-        $response = $this->postJson('/api/ustensils/', [
-            'name' => 'Ustensil 1'
+        $response = $this->postJson('/api/utensils/', [
+            'name' => 'Utensil 1'
         ]);
 
         $response->assertForbidden();
     }
 
-    public function test_update_ustensil_response()
+    public function test_update_utensil_response()
     {
-        $ustensil = Ustensil::factory()->create([
-            'name' => 'Ustensil 1',
-            'description' => 'Ustensil 1 Description',
+        $utensil = Utensil::factory()->create([
+            'name' => 'Utensil 1',
+            'description' => 'Utensil 1 Description',
         ]);
 
-        $response = $this->putJson('/api/ustensils/' . $ustensil->id, [
-            'name' => 'Ustensil updated',
-            'description' => 'Ustensil updated Description',
+        $response = $this->putJson('/api/utensils/' . $utensil->id, [
+            'name' => 'Utensil updated',
+            'description' => 'Utensil updated Description',
         ]);
 
         $response->assertOk();
@@ -111,22 +111,22 @@ class UstensilsControllerTest extends TestCase
             fn (AssertableJson $json) =>
             $json
                 ->has('data.id')
-                ->where('data.name', 'Ustensil updated')
-                ->where('data.description', 'Ustensil updated Description')
+                ->where('data.name', 'Utensil updated')
+                ->where('data.description', 'Utensil updated Description')
                 ->etc()
         );
 
         $response->assertValidResponse();
     }
 
-    public function test_delete_ustensil_response()
+    public function test_delete_utensil_response()
     {
-        $ustensil = Ustensil::factory()->create([
-            'name' => 'Ustensil 1',
-            'description' => 'Ustensil 1 Description',
+        $utensil = Utensil::factory()->create([
+            'name' => 'Utensil 1',
+            'description' => 'Utensil 1 Description',
         ]);
 
-        $response = $this->deleteJson('/api/ustensils/' . $ustensil->id);
+        $response = $this->deleteJson('/api/utensils/' . $utensil->id);
 
         $response->assertNoContent();
         $response->assertValidResponse();

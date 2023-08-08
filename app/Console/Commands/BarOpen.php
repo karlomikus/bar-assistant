@@ -126,7 +126,7 @@ class BarOpen extends Command
             ['name' => 'Tiki', 'description' => 'The term "tiki mug" is a blanket term for the sculptural drinkware even though they vary in size and most do not contain handles.'],
         ]);
 
-        DB::table('ustensils')->insert([
+        DB::table('utensils')->insert([
             ['name' => 'Mixing glass', 'description' => 'A glass with a heavy base that doesn\'t tip over when stirring.'],
             ['name' => 'Shaker (Boston, Tumbler)', 'description' => 'A recipient in 2 parts to shake cocktails vigorously.', 'slug' => 'shaker'],
             ['name' => 'Bar spoon', 'description' => 'A long and heavy spiraled spoon used to stir or layer cocktails.'],

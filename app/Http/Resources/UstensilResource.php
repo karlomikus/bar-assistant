@@ -7,9 +7,9 @@ namespace Kami\Cocktail\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \Kami\Cocktail\Models\Ustensil
+ * @mixin \Kami\Cocktail\Models\Utensil
  */
-class UstensilResource extends JsonResource
+class UtensilResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

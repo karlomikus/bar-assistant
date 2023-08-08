@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Kami\Cocktail\Models\Cocktail>
  */
-class UstensilFactory extends Factory
+class UtensilFactory extends Factory
 {
     /**
      * Define the model's default state.

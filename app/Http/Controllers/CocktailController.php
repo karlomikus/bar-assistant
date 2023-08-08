@@ -85,7 +85,7 @@ class CocktailController extends Controller
             $request->post('glass_id') ? (int) $request->post('glass_id') : null,
             $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
             $request->post('tags', []),
-            $request->post('ustensils', []),
+            $request->post('utensils', []),
             $ingredients,
             $request->post('images', []),
         );
@@ -96,7 +96,7 @@ class CocktailController extends Controller
             abort(500, $e->getMessage());
         }
 
-        $cocktail->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'ustensils');
+        $cocktail->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'utensils');
 
         return (new CocktailResource($cocktail))
             ->response()
@@ -142,14 +142,14 @@ class CocktailController extends Controller
                 $request->post('images', []),
                 $request->post('tags', []),
                 $request->post('glass_id') ? (int) $request->post('glass_id') : null,
-                $request->post('ustensils', []),
+                $request->post('utensils', []),
                 $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
             );
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
         }
 
-        $cocktail->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'ustensils');
+        $cocktail->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'utensils');
 
         return new CocktailResource($cocktail);
     }

@@ -7,58 +7,58 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Kami\Cocktail\Http\Requests\UstensilRequest;
-use Kami\Cocktail\Http\Resources\UstensilResource;
-use Kami\Cocktail\Models\Ustensil;
+use Kami\Cocktail\Http\Requests\UtensilRequest;
+use Kami\Cocktail\Http\Resources\UtensilResource;
+use Kami\Cocktail\Models\Utensil;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UstensilsController extends Controller
+class UtensilsController extends Controller
 {
     public function index(): JsonResource
     {
-        $ustensils = Ustensil::orderBy('name')->get();
+        $utensils = Utensil::orderBy('name')->get();
 
-        return UstensilResource::collection($ustensils);
+        return UtensilResource::collection($utensils);
     }
 
     public function show(int $id): JsonResource
     {
-        $ustensil = Ustensil::findOrFail($id);
+        $utensil = Utensil::findOrFail($id);
 
-        return new UstensilResource($ustensil);
+        return new UtensilResource($utensil);
     }
 
-    public function store(UstensilRequest $request): JsonResponse
+    public function store(UtensilRequest $request): JsonResponse
     {
         if (!$request->user()->isAdmin()) {
             abort(403);
         }
 
-        $ustensil = new Ustensil();
-        $ustensil->name = $request->post('name');
-        $ustensil->description = $request->post('description');
-        $ustensil->save();
+        $utensil = new Utensil();
+        $utensil->name = $request->post('name');
+        $utensil->description = $request->post('description');
+        $utensil->save();
 
-        return (new UstensilResource($ustensil))
+        return (new UtensilResource($utensil))
             ->response()
             ->setStatusCode(201)
-            ->header('Location', route('ustensils.show', $ustensil->id));
+            ->header('Location', route('utensils.show', $utensil->id));
     }
 
-    public function update(int $id, UstensilRequest $request): JsonResource
+    public function update(int $id, UtensilRequest $request): JsonResource
     {
         if (!$request->user()->isAdmin()) {
             abort(403);
         }
 
-        $ustensil = Ustensil::findOrFail($id);
-        $ustensil->name = $request->post('name');
-        $ustensil->description = $request->post('description');
-        $ustensil->save();
+        $utensil = Utensil::findOrFail($id);
+        $utensil->name = $request->post('name');
+        $utensil->description = $request->post('description');
+        $utensil->save();
 
-        $ustensil->cocktails->each(fn ($cocktail) => $cocktail->searchable());
+        $utensil->cocktails->each(fn ($cocktail) => $cocktail->searchable());
 
-        return new UstensilResource($ustensil);
+        return new UtensilResource($utensil);
     }
 
     public function delete(Request $request, int $id): Response
@@ -67,7 +67,7 @@ class UstensilsController extends Controller
             abort(403);
         }
 
-        Ustensil::findOrFail($id)->delete();
+        Utensil::findOrFail($id)->delete();
 
         return response(null, 204);
     }
@@ -76,8 +76,8 @@ class UstensilsController extends Controller
     {
         $name = $request->get('name');
 
-        $ustensil = Ustensil::whereRaw('lower(name) = ?', [strtolower($name)])->firstOrFail();
+        $utensil = Utensil::whereRaw('lower(name) = ?', [strtolower($name)])->firstOrFail();
 
-        return new UstensilResource($ustensil);
+        return new UtensilResource($utensil);
     }
 }

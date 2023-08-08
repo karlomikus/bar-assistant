@@ -73,11 +73,11 @@ class Cocktail extends Model
     }
 
     /**
-     * @return BelongsToMany<Ustensil>
+     * @return BelongsToMany<Utensil>
      */
-    public function ustensils(): BelongsToMany
+    public function utensils(): BelongsToMany
     {
-        return $this->belongsToMany(Ustensil::class);
+        return $this->belongsToMany(Utensil::class);
     }
 
     /**
@@ -221,7 +221,7 @@ class Cocktail extends Model
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'user_id' => $this->user_id,
             'tags' => $this->tags->pluck('name'),
-            'ustensils' => $this->ustensils->pluck('name'),
+            'utensils' => $this->utensils->pluck('name'),
             'date' => $this->updated_at->format('Y-m-d H:i:s'),
             'glass' => $this->glass->name ?? null,
             'average_rating' => (int) round($this->ratings()->avg('rating') ?? 0),
