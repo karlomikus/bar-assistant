@@ -6,8 +6,10 @@ use Tests\TestCase;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\Models\Image;
+use Illuminate\Http\UploadedFile;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
@@ -326,6 +328,26 @@ class CocktailControllerTest extends TestCase
         $response = $this->deleteJson('/api/cocktails/' . $cocktail->id);
 
         $response->assertNoContent();
+    }
+
+    public function test_cocktail_delete_deletes_images_response()
+    {
+        $cocktail = Cocktail::factory()->create();
+        $storage = Storage::fake('bar-assistant');
+        $imageFile = UploadedFile::fake()->image('image1.jpg');
+        $image = Image::factory()->for($cocktail, 'imageable')->create([
+            'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'bar-assistant'),
+            'file_extension' => $imageFile->extension(),
+            'copyright' => 'initial',
+            'sort' => 7,
+            'user_id' => auth()->user()->id
+        ]);
+
+        $this->assertTrue($storage->exists($image->file_path));
+
+        $this->deleteJson('/api/cocktails/' . $cocktail->id);
+
+        $this->assertFalse($storage->exists($image->file_path));
     }
 
     public function test_make_cocktail_public_link_response()
