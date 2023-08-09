@@ -85,9 +85,9 @@ class CocktailController extends Controller
             $request->post('glass_id') ? (int) $request->post('glass_id') : null,
             $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
             $request->post('tags', []),
-            $request->post('utensils', []),
             $ingredients,
             $request->post('images', []),
+            $request->post('utensils', []),
         );
 
         try {
