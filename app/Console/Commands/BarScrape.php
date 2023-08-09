@@ -8,7 +8,6 @@ use Throwable;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Scraper\Manager;
 use Kami\Cocktail\Services\ImportService;
-use Kami\Cocktail\Scraper\ScraperInfoContract;
 
 class BarScrape extends Command
 {
@@ -44,10 +43,6 @@ class BarScrape extends Command
             $this->error($e->getMessage());
 
             return Command::FAILURE;
-        }
-
-        if ($scraper instanceof ScraperInfoContract) {
-            $this->info($scraper->getInfoMessage());
         }
 
         $scrapedData = $scraper->toArray();
