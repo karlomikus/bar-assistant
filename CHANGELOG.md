@@ -11,6 +11,12 @@
     - This will show you how many cocktails you can make if you add ingredient to shelf
 - Added next and prev cocktail actions #149
 
+## Changes
+- Scrapers
+    - Improved ImbibeMagazine recipe scraping
+    - Removed ACoupleCooks scraper, this will default to schema parser that works better
+    - Removed TheDrinkBlog scraper, this will default to schema parser that works better
+
 # v2.4.0
 ## New
 - Added new scrapers
