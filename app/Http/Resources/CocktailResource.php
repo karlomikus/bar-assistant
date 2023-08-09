@@ -52,7 +52,7 @@ class CocktailResource extends JsonResource
             'abv' => $this->abv,
             'notes' => NoteResource::collection($this->whenLoaded('notes')),
             'user' => new UserBasicResource($this->whenLoaded('user')),
-            'navigation' => $this->when($loadNavigation, function() {
+            'navigation' => $this->when($loadNavigation, function () {
                 return [
                     'prev' => $this->getPrevSlug(),
                     'next' => $this->getNextSlug(),

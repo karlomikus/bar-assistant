@@ -9,7 +9,6 @@ use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Image;
-use Kami\Cocktail\Models\Utensil;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
