@@ -5,6 +5,11 @@
     - You can share your collection as JSON, YAML
 - Added `/shopping-list/share` endpoint #124
     - You can share shopping list as markdown
+- Added `utensils` #127
+    - You can attach required utensils for cocktail recipes
+- Added `/ingredients/{id}/extra` #133
+    - This will show you how many cocktails you can make if you add ingredient to shelf
+- Added next and prev cocktail actions #149
 
 # v2.4.0
 ## New
