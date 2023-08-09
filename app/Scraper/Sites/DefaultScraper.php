@@ -62,7 +62,7 @@ class DefaultScraper extends AbstractSiteExtractor
             $name = '';
         }
 
-        return $name;
+        return trim($name);
     }
 
     public function description(): ?string
@@ -110,11 +110,11 @@ class DefaultScraper extends AbstractSiteExtractor
         $i = 1;
         $result = "";
         foreach ($instructions as $step) {
-            $result .= $i . ". " . $step . "\n\n";
+            $result .= $i . ". " . trim($step) . "\n\n";
             $i++;
         }
 
-        return $result;
+        return trim($result);
     }
 
     public function tags(): array

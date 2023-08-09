@@ -14,6 +14,7 @@
 ## Changes
 - Scrapers
     - Improved ImbibeMagazine recipe scraping
+    - Improved PunchDrink recipe scraping
     - Removed ACoupleCooks scraper, this will default to schema parser that works better
     - Removed TheDrinkBlog scraper, this will default to schema parser that works better
 
