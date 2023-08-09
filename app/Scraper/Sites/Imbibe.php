@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
-use Kami\Cocktail\Utils;
-use Kami\Cocktail\Scraper\HasJsonLd;
-use Kami\Cocktail\Scraper\ScraperInfoContract;
+use Kami\Cocktail\Scraper\IngredientParser;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
-class Imbibe extends AbstractSiteExtractor implements ScraperInfoContract
+class Imbibe extends AbstractSiteExtractor
 {
-    use HasJsonLd;
-
     public static function getSupportedUrls(): array
     {
         return [
@@ -22,37 +18,29 @@ class Imbibe extends AbstractSiteExtractor implements ScraperInfoContract
 
     public function name(): string
     {
-        return str_replace(' - Imbibe Magazine', '', $this->getTypeFromSchema('WebPage')['name']);
+        return $this->getRecipeSchema()['name'];
     }
 
     public function description(): ?string
     {
-        return $this->getTypeFromSchema('WebPage')['description'];
+        return trim($this->getRecipeSchema()['articleBody']);
     }
 
     public function source(): ?string
     {
-        return $this->getTypeFromSchema('WebPage')['url'];
+        return $this->url;
     }
 
     public function instructions(): ?string
     {
-        $jsonLdSchema = $this->crawler->filterXPath('//script[@type="application/ld+json"]')->last()->text();
-        $recipeSchema = json_decode($jsonLdSchema, true);
-
         $result = '';
         $i = 1;
-        foreach ($recipeSchema['recipeInstructions'] as $step) {
-            $result .= $i . '. ' . $step['text'] . "\n\n";
+        foreach ($this->getRecipeSchema()['recipeInstructions'] as $step) {
+            $result .= $i . '. ' . trim($step['text']) . "\n\n";
             $i++;
         }
 
-        return $result;
-    }
-
-    public function tags(): array
-    {
-        return [];
+        return trim($result);
     }
 
     public function glass(): ?string
@@ -74,24 +62,16 @@ class Imbibe extends AbstractSiteExtractor implements ScraperInfoContract
     {
         $result = [];
 
-        $jsonLdSchema = $this->crawler->filterXPath('//script[@type="application/ld+json"]')->last()->text();
-        $recipeSchema = json_decode($jsonLdSchema, true);
+        $schemaIngredients = $this->getRecipeSchema()['recipeIngredient'];
 
-        foreach ($recipeSchema['recipeIngredient'] as $ingredient) {
-            $ingredient = $ingredient['ingredient'];
+        foreach ($schemaIngredients as $ingredient) {
+            $schemaIngredient = $ingredient['ingredient'];
 
-            $amount = 0;
-            $units = '';
-            $name = $ingredient;
+            // if (str_starts_with($schemaIngredient, '___')) {
+            //     break;
+            // }
 
-            if (str_contains(strtolower($ingredient), 'oz.')) {
-                $splitByOunce = explode('oz.', $ingredient);
-
-                ['amount' => $amount, 'units' => $units] = Utils::parseIngredientAmount($splitByOunce[0] . ' oz');
-                $name = trim($splitByOunce[1]);
-            } else {
-                continue;
-            }
+            ['amount' => $amount, 'units' => $units, 'name' => $name] = (new IngredientParser($schemaIngredient))->parse();
 
             $result[] = [
                 'amount' => $amount,
@@ -121,28 +101,31 @@ class Imbibe extends AbstractSiteExtractor implements ScraperInfoContract
 
     public function image(): ?array
     {
-        $imageObject = $this->getTypeFromSchema('ImageObject');
+        $schema = $this->getRecipeSchema();
+
+        $extra = '';
+        $imageCredit = $this->crawler->filter('.recipe__image-credit');
+        if ($imageCredit->count() > 0) {
+            $extra .= ' | ' . str_replace('Photo: ', '', $imageCredit->text(''));
+        }
 
         return [
-            'url' => $imageObject['contentUrl'],
-            'copyright' => $imageObject['caption'],
+            'url' => $schema['image'],
+            'copyright' => $schema['publisher'] . $extra,
         ];
     }
 
-    public function getInfoMessage(): string
+    private function getRecipeSchema(): ?array
     {
-        return 'This scraper currently imports only ingredients with "ounce" units, the rest are skipped!';
-    }
+        $recipeSchema = null;
 
-    private function getTypeFromSchema(string $type): ?array
-    {
-        $schema = $this->getSchema();
-        foreach ($schema['@graph'] as $node) {
-            if ($node['@type'] === $type) {
-                return $node;
+        $this->crawler->filterXPath('//script[@type="application/ld+json"]')->each(function ($node) use (&$recipeSchema) {
+            $parsedSchema = json_decode($node->text(), true);
+            if (array_key_exists('@type', $parsedSchema) && $parsedSchema['@type'] === 'Recipe') {
+                $recipeSchema = $parsedSchema;
             }
-        }
+        });
 
-        return null;
+        return $recipeSchema;
     }
 }

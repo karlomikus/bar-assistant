@@ -11,7 +11,6 @@ use Kami\Cocktail\Scraper\Sites\DefaultScraper;
 final class Manager
 {
     private array $supportedSites = [
-        \Kami\Cocktail\Scraper\Sites\ACoupleCooks::class,
         \Kami\Cocktail\Scraper\Sites\TuxedoNo2::class,
         \Kami\Cocktail\Scraper\Sites\Imbibe::class,
         \Kami\Cocktail\Scraper\Sites\EricsCocktailGuide::class,
