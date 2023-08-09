@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Kami\Cocktail\Models\Cocktail>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Kami\Cocktail\Models\Utensil>
  */
 class UtensilFactory extends Factory
 {
