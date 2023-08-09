@@ -56,8 +56,6 @@ class UtensilsController extends Controller
         $utensil->description = $request->post('description');
         $utensil->save();
 
-        $utensil->cocktails->each(fn ($cocktail) => $cocktail->searchable());
-
         return new UtensilResource($utensil);
     }
 
