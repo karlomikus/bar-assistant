@@ -19,6 +19,12 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->timestamps();
         });
+
+        Schema::create('cocktail_utensil', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('cocktail_id')->constrained()->onDelete('cascade');
+            $table->foreignId('utensil_id')->constrained()->onDelete('cascade');
+        });
     }
 
     /**
@@ -28,6 +34,7 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('cocktail_utensil');
         Schema::dropIfExists('utensils');
     }
 };
