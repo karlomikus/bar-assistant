@@ -104,7 +104,8 @@ class CocktailService
     }
 
 
-    public function updateCocktail(int $id, CocktailDTO $cocktailDTO): Cocktail {
+    public function updateCocktail(int $id, CocktailDTO $cocktailDTO): Cocktail
+    {
         $this->db->beginTransaction();
 
         try {
