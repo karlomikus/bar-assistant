@@ -129,22 +129,23 @@ class CocktailController extends Controller
             $ingredients[] = $ingredient;
         }
 
+        $cocktailDTO = new CocktailDTO(
+            $request->post('name'),
+            $request->post('instructions'),
+            $request->user()->id,
+            $request->post('description'),
+            $request->post('source'),
+            $request->post('garnish'),
+            $request->post('glass_id') ? (int) $request->post('glass_id') : null,
+            $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
+            $request->post('tags', []),
+            $ingredients,
+            $request->post('images', []),
+            $request->post('utensils', []),
+        );
+
         try {
-            $cocktail = $cocktailService->updateCocktail(
-                $id,
-                $request->post('name'),
-                $request->post('instructions'),
-                $ingredients,
-                $request->user()->id,
-                $request->post('description'),
-                $request->post('garnish'),
-                $request->post('source'),
-                $request->post('images', []),
-                $request->post('tags', []),
-                $request->post('glass_id') ? (int) $request->post('glass_id') : null,
-                $request->post('utensils', []),
-                $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
-            );
+            $cocktail = $cocktailService->updateCocktail($id, $cocktailDTO);
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
         }

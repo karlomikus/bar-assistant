@@ -28,12 +28,6 @@ class CocktailService
     ) {
     }
 
-    /**
-     * Create a new cocktail
-     *
-     * @param CocktailDTO $cocktailDTO
-     * @return \Kami\Cocktail\Models\Cocktail
-     */
     public function createCocktail(CocktailDTO $cocktailDTO): Cocktail
     {
         $this->db->beginTransaction();
@@ -51,11 +45,6 @@ class CocktailService
             $cocktail->save();
 
             foreach ($cocktailDTO->ingredients as $ingredient) {
-                if (!($ingredient instanceof Ingredient)) {
-                    $this->log->warning('[COCKTAIL_SERVICE] Ingredient in ingredients array is of wrong type!');
-                    continue;
-                }
-
                 $cIngredient = new CocktailIngredient();
                 $cIngredient->ingredient_id = $ingredient->id;
                 $cIngredient->amount = $ingredient->amount;
@@ -114,63 +103,27 @@ class CocktailService
         return $cocktail;
     }
 
-    /**
-     * Update cocktail by id
-     *
-     * @param int $id
-     * @param string $name
-     * @param string $instructions
-     * @param array<Ingredient> $ingredients
-     * @param int $userId
-     * @param string|null $description
-     * @param string|null $garnish
-     * @param string|null $cocktailSource
-     * @param array<int> $images
-     * @param array<string> $tags
-     * @param int|null $glassId
-     * @param array<int> $utensils
-     * @param int|null $cocktailMethodId
-     * @return \Kami\Cocktail\Models\Cocktail
-     */
-    public function updateCocktail(
-        int $id,
-        string $name,
-        string $instructions,
-        array $ingredients,
-        int $userId,
-        ?string $description = null,
-        ?string $garnish = null,
-        ?string $cocktailSource = null,
-        array $images = [],
-        array $tags = [],
-        ?int $glassId = null,
-        array $utensils = [],
-        ?int $cocktailMethodId = null
-    ): Cocktail {
+
+    public function updateCocktail(int $id, CocktailDTO $cocktailDTO): Cocktail {
         $this->db->beginTransaction();
 
         try {
             $cocktail = Cocktail::findOrFail($id);
-            $cocktail->name = $name;
-            $cocktail->instructions = $instructions;
-            $cocktail->description = $description;
-            $cocktail->garnish = $garnish;
-            $cocktail->source = $cocktailSource;
+            $cocktail->name = $cocktailDTO->name;
+            $cocktail->instructions = $cocktailDTO->instructions;
+            $cocktail->description = $cocktailDTO->description;
+            $cocktail->garnish = $cocktailDTO->garnish;
+            $cocktail->source = $cocktailDTO->source;
             if ($cocktail->user_id !== 1) {
-                $cocktail->user_id = $userId;
+                $cocktail->user_id = $cocktailDTO->userId;
             }
-            $cocktail->glass_id = $glassId;
-            $cocktail->cocktail_method_id = $cocktailMethodId;
+            $cocktail->glass_id = $cocktailDTO->glassId;
+            $cocktail->cocktail_method_id = $cocktailDTO->methodId;
             $cocktail->save();
 
             // TODO: Implement upsert and delete
             $cocktail->ingredients()->delete();
-            foreach ($ingredients as $ingredient) {
-                if (!($ingredient instanceof Ingredient)) {
-                    $this->log->warning('[COCKTAIL_SERVICE] Ingredient in ingredients array is of wrong type!');
-                    continue;
-                }
-
+            foreach ($cocktailDTO->ingredients as $ingredient) {
                 $cIngredient = new CocktailIngredient();
                 $cIngredient->ingredient_id = $ingredient->id;
                 $cIngredient->amount = $ingredient->amount;
@@ -190,7 +143,7 @@ class CocktailService
             }
 
             $dbTags = [];
-            foreach ($tags as $tagName) {
+            foreach ($cocktailDTO->tags as $tagName) {
                 $tag = Tag::firstOrNew([
                     'name' => trim($tagName),
                 ]);
@@ -199,7 +152,7 @@ class CocktailService
             }
 
             $cocktail->tags()->sync($dbTags);
-            $cocktail->utensils()->sync($utensils);
+            $cocktail->utensils()->sync($cocktailDTO->utensils);
         } catch (Throwable $e) {
             $this->log->error('[COCKTAIL_SERVICE] ' . $e->getMessage());
             $this->db->rollBack();
@@ -209,10 +162,10 @@ class CocktailService
 
         $this->db->commit();
 
-        if (count($images) > 0) {
+        if (count($cocktailDTO->images) > 0) {
             // $cocktail->deleteImages();
             try {
-                $imageModels = Image::findOrFail($images);
+                $imageModels = Image::findOrFail($cocktailDTO->images);
                 $cocktail->attachImages($imageModels);
             } catch (Throwable $e) {
                 $this->log->error('[COCKTAIL_SERVICE] Image attach error. ' . $e->getMessage());
