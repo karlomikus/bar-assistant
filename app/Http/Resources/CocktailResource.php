@@ -43,6 +43,7 @@ class CocktailResource extends JsonResource
             'user_rating' => $this->user_rating ?? null,
             'average_rating' => (int) round($this->average_rating ?? 0),
             'glass' => new GlassResource($this->whenLoaded('glass')),
+            'utensils' => UtensilResource::collection($this->whenLoaded('utensils')),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'), // deprecate
             'ingredients' => CocktailIngredientResource::collection($this->ingredients), // TODO: Cond. load
             'created_at' => $this->created_at->toDateTimeString(),
@@ -51,7 +52,7 @@ class CocktailResource extends JsonResource
             'abv' => $this->abv,
             'notes' => NoteResource::collection($this->whenLoaded('notes')),
             'user' => new UserBasicResource($this->whenLoaded('user')),
-            'navigation' => $this->when($loadNavigation, function() {
+            'navigation' => $this->when($loadNavigation, function () {
                 return [
                     'prev' => $this->getPrevSlug(),
                     'next' => $this->getNextSlug(),

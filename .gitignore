@@ -16,3 +16,4 @@ yarn-error.log
 /.idea
 /.vscode
 notes.sql
+composer.phar

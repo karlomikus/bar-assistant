@@ -83,6 +83,7 @@ class CocktailService
             }
 
             $cocktail->tags()->attach($dbTags);
+            $cocktail->utensils()->attach($cocktailDTO->utensils);
         } catch (Throwable $e) {
             $this->log->error('[COCKTAIL_SERVICE] ' . $e->getMessage());
             $this->db->rollBack();
@@ -127,6 +128,7 @@ class CocktailService
      * @param array<int> $images
      * @param array<string> $tags
      * @param int|null $glassId
+     * @param array<int> $utensils
      * @param int|null $cocktailMethodId
      * @return \Kami\Cocktail\Models\Cocktail
      */
@@ -142,6 +144,7 @@ class CocktailService
         array $images = [],
         array $tags = [],
         ?int $glassId = null,
+        array $utensils = [],
         ?int $cocktailMethodId = null
     ): Cocktail {
         $this->db->beginTransaction();
@@ -196,6 +199,7 @@ class CocktailService
             }
 
             $cocktail->tags()->sync($dbTags);
+            $cocktail->utensils()->sync($utensils);
         } catch (Throwable $e) {
             $this->log->error('[COCKTAIL_SERVICE] ' . $e->getMessage());
             $this->db->rollBack();

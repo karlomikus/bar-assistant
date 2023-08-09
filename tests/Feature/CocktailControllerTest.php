@@ -214,6 +214,7 @@ class CocktailControllerTest extends TestCase
             'glass_id' => $glass->id,
             'images' => [$image->id],
             'tags' => ['Test', 'Gin'],
+            'utensils' => [2, 5, 7],
             'ingredients' => [
                 [
                     'ingredient_id' => $gin->id,
@@ -270,6 +271,7 @@ class CocktailControllerTest extends TestCase
                 ->has('data.images', 1)
                 ->has('data.tags', 2)
                 ->has('data.ingredients', 2)
+                ->has('data.utensils', 3)
                 ->etc()
         );
     }
@@ -293,6 +295,7 @@ class CocktailControllerTest extends TestCase
             'source' => "https://karlomikus.com",
             'images' => [],
             'tags' => ['Test', 'Gin'],
+            'utensils' => [2, 1],
             'ingredients' => [
                 [
                     'ingredient_id' => $gin->id,
@@ -305,6 +308,15 @@ class CocktailControllerTest extends TestCase
         ]);
 
         $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->where('data.id', $cocktail->id)
+                ->where('data.slug', 'cocktail-name')
+                ->where('data.name', 'Cocktail name')
+                ->has('data.utensils', 2)
+                ->etc()
+        );
     }
 
     public function test_cocktail_delete_response()
