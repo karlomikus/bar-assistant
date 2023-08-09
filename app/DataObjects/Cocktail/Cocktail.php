@@ -10,6 +10,7 @@ class Cocktail
      * @param array<string> $tags
      * @param array<\Kami\Cocktail\DataObjects\Cocktail\Ingredient> $ingredients
      * @param array<int> $images
+     * @param array<int> $utensils
      */
     public function __construct(
         public readonly string $name,
