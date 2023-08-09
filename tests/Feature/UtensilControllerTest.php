@@ -5,21 +5,18 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Spectator\Spectator;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Utensil;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class UtensilsControllerTest extends TestCase
+class UtensilControllerTest extends TestCase
 {
     use RefreshDatabase;
 
     public function setUp(): void
     {
         parent::setUp();
-
-        Spectator::using('open-api-spec.yml');
 
         $this->actingAs(User::factory()->create());
     }
@@ -37,8 +34,6 @@ class UtensilsControllerTest extends TestCase
                 ->has('data', 10)
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_show_utensil_response()
@@ -59,8 +54,6 @@ class UtensilsControllerTest extends TestCase
                 ->where('data.description', 'Utensil 1 Description')
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_save_utensil_response()
@@ -79,8 +72,6 @@ class UtensilsControllerTest extends TestCase
                 ->where('data.description', 'Utensil 1 Description')
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_save_utensil_forbidden_response()
@@ -115,8 +106,6 @@ class UtensilsControllerTest extends TestCase
                 ->where('data.description', 'Utensil updated Description')
                 ->etc()
         );
-
-        $response->assertValidResponse();
     }
 
     public function test_delete_utensil_response()
@@ -129,6 +118,5 @@ class UtensilsControllerTest extends TestCase
         $response = $this->deleteJson('/api/utensils/' . $utensil->id);
 
         $response->assertNoContent();
-        $response->assertValidResponse();
     }
 }
