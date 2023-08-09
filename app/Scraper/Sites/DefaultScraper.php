@@ -90,6 +90,10 @@ class DefaultScraper extends AbstractSiteExtractor
         // Try with the parsed objects first
         $instructions = $this->recipeSchema->recipeInstructions?->getValues() ?? [];
         $instructions = array_map(function ($node) {
+            if (is_string($node)) {
+                return $node;
+            }
+
             if ($node->text) {
                 return $node->text->toString();
             }
@@ -146,7 +150,14 @@ class DefaultScraper extends AbstractSiteExtractor
         }
 
         $result = [];
+
+        // Try "recipeIngredient" schema item
         $ingredients = $this->recipeSchema->recipeIngredient?->getValues() ?? [];
+
+        // Try "ingredients" schema item
+        if (empty($ingredients)) {
+            $ingredients = $this->recipeSchema->ingredients?->getValues() ?? [];
+        }
 
         // Try microdata directly from html
         if (empty($ingredients)) {
