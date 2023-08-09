@@ -115,9 +115,9 @@ class Imbibe extends AbstractSiteExtractor
         ];
     }
 
-    private function getRecipeSchema(): ?array
+    private function getRecipeSchema(): array
     {
-        $recipeSchema = null;
+        $recipeSchema = [];
 
         $this->crawler->filterXPath('//script[@type="application/ld+json"]')->each(function ($node) use (&$recipeSchema) {
             $parsedSchema = json_decode($node->text(), true);
