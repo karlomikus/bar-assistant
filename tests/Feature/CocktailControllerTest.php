@@ -214,6 +214,7 @@ class CocktailControllerTest extends TestCase
             'glass_id' => $glass->id,
             'images' => [$image->id],
             'tags' => ['Test', 'Gin'],
+            'utensils' => [2, 5, 7],
             'ingredients' => [
                 [
                     'ingredient_id' => $gin->id,
@@ -270,6 +271,7 @@ class CocktailControllerTest extends TestCase
                 ->has('data.images', 1)
                 ->has('data.tags', 2)
                 ->has('data.ingredients', 2)
+                ->has('data.utensils', 3)
                 ->etc()
         );
     }
