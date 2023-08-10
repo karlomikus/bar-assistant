@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
+use Brick\Schema\Base;
 use Throwable;
 use Brick\Schema\SchemaReader;
 use Brick\Schema\Interfaces\Recipe;
@@ -110,7 +111,7 @@ class DefaultScraper extends AbstractSiteExtractor
         $i = 1;
         $result = "";
         foreach ($instructions as $step) {
-            $result .= $i . ". " . trim($step) . "\n\n";
+            $result .= $i . ". " . trim($step) . "\n";
             $i++;
         }
 
@@ -170,6 +171,7 @@ class DefaultScraper extends AbstractSiteExtractor
         }
 
         foreach ($ingredients as $ingredient) {
+            $ingredient = trim($ingredient, " \n\r\t\v\x00\"\'");
             ['amount' => $amount, 'units' => $units, 'name' => $name] = (new IngredientParser($ingredient))->parse();
 
             if (empty($amount) || empty($name) || empty($units)) {
@@ -192,7 +194,16 @@ class DefaultScraper extends AbstractSiteExtractor
         $images = $this->recipeSchema?->image->getValues() ?? [];
         $mainImage = end($images);
 
-        $image = $mainImage ?? null;
+        $image = '';
+
+        if (is_string($mainImage)) {
+            $image = $mainImage ?? null;
+        }
+
+        if ($mainImage instanceof Base && $mainImage->url) {
+            $image = (string) $mainImage->url;
+        }
+
         $copyright = $this->copyrightHolder();
 
         return [

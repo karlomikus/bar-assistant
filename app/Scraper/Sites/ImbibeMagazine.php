@@ -7,7 +7,7 @@ namespace Kami\Cocktail\Scraper\Sites;
 use Kami\Cocktail\Scraper\IngredientParser;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
-class Imbibe extends AbstractSiteExtractor
+class ImbibeMagazine extends AbstractSiteExtractor
 {
     public static function getSupportedUrls(): array
     {
@@ -36,7 +36,7 @@ class Imbibe extends AbstractSiteExtractor
         $result = '';
         $i = 1;
         foreach ($this->getRecipeSchema()['recipeInstructions'] as $step) {
-            $result .= $i . '. ' . trim($step['text']) . "\n\n";
+            $result .= $i . '. ' . trim($step['text']) . "\n";
             $i++;
         }
 

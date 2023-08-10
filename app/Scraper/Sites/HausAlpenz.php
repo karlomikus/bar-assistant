@@ -39,12 +39,12 @@ class HausAlpenz extends AbstractSiteExtractor
 
         $this->crawler->filter(".recipeFull p:not(:first-child):not(.measure)")->each(function ($node) use (&$result, &$step) {
             if (!str_contains(strtolower($node->text()), 'garnish')) {
-                $result .= $step . '. ' . $node->text() . "\n";
+                $result .= $step . '. ' . trim($node->text()) . "\n";
             }
             $step++;
         });
 
-        return $result;
+        return trim($result);
     }
 
     public function tags(): array

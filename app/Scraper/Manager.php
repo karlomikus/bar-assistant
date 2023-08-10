@@ -12,7 +12,7 @@ final class Manager
 {
     private array $supportedSites = [
         \Kami\Cocktail\Scraper\Sites\TuxedoNo2::class,
-        \Kami\Cocktail\Scraper\Sites\Imbibe::class,
+        \Kami\Cocktail\Scraper\Sites\ImbibeMagazine::class,
         \Kami\Cocktail\Scraper\Sites\EricsCocktailGuide::class,
         \Kami\Cocktail\Scraper\Sites\HausAlpenz::class,
         \Kami\Cocktail\Scraper\Sites\DiffordsGuide::class,
