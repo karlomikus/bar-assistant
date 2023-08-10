@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Tests\Scrapers;
 
 use Tests\TestCase;
 use Kami\Cocktail\Scraper\Manager;
