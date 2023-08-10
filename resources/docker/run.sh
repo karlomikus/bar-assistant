@@ -12,11 +12,7 @@ first_time_check() {
         if [ ! -f /var/www/cocktails/storage/bar-assistant/database.sqlite ]; then
             echo "Database not found, creating a new database..."
             touch /var/www/cocktails/storage/bar-assistant/database.sqlite
-            php artisan migrate --force
             php artisan bar:open
-        else
-            echo "Database already exists, running migrations..."
-            php artisan migrate --force
         fi
     fi
 }
@@ -24,6 +20,8 @@ first_time_check() {
 start_system() {
     mkdir -p /var/www/cocktails/storage/bar-assistant/uploads/{cocktails,ingredients,temp}
     first_time_check
+
+    php artisan migrate --force
 
     php artisan bar:refresh-search
 
