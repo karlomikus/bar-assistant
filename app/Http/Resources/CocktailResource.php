@@ -33,8 +33,7 @@ class CocktailResource extends JsonResource
             'public_id' => $this->public_id,
             'main_image_id' => $this->images->sortBy('sort')->first()->id ?? null,
             'images' => ImageResource::collection($this->images),
-            'tags' => $this->tags->pluck('name'), // TODO: introduce braking change
-            'cocktail_tags' => $this->tags->map(function ($tag) {
+            'tags' => $this->tags->map(function ($tag) {
                 return [
                     'id' => $tag->id,
                     'name' => $tag->name,
@@ -44,8 +43,7 @@ class CocktailResource extends JsonResource
             'average_rating' => (int) round($this->average_rating ?? 0),
             'glass' => new GlassResource($this->whenLoaded('glass')),
             'utensils' => UtensilResource::collection($this->whenLoaded('utensils')),
-            'short_ingredients' => $this->ingredients->pluck('ingredient.name'), // deprecate
-            'ingredients' => CocktailIngredientResource::collection($this->ingredients), // TODO: Cond. load
+            'ingredients' => CocktailIngredientResource::collection($this->whenLoaded('ingredients')),
             'created_at' => $this->created_at->toDateTimeString(),
             'method' => new CocktailMethodResource($this->whenLoaded('method')),
             'collections' => CocktailCollectionResource::collection($this->whenLoaded('collections')),

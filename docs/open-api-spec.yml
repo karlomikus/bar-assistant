@@ -211,7 +211,7 @@ paths:
         schema:
           type: string
           example: notes,user
-        description: "Comma seperated names of extra data you want to include in response: `notes`, `glass`, `user`, `collections`, `method`"
+        description: "Comma seperated names of extra data you want to include in response: `notes`, `glass`, `user`, `collections`, `method`, `ingredients`"
       tags:
         - "Cocktails"
       summary: 'Show a paginated list of cocktails'
@@ -2288,9 +2288,6 @@ components:
             name:
               type: string
               example: "Vodka"
-        ingredient_category_id:
-          type: integer
-          example: 1
         color:
           type: string
           format: hex
@@ -2587,8 +2584,6 @@ components:
         - images
         - tags
         - user_id
-        - short_ingredients
-        - ingredients
         - user_rating
         - average_rating
         - main_ingredient_name
@@ -2633,16 +2628,17 @@ components:
             $ref: '#/components/schemas/Image'
         tags:
           type: array
-          example: ['Gin', 'IBA Official']
           items:
-            type: string
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                format: Tagname
         glass:
           $ref: '#/components/schemas/Glass'
-        short_ingredients:
-          type: array
-          example: ['Gin', 'Tonic', 'Lemon Juice']
-          items:
-            type: string
         ingredients:
           type: array
           items:

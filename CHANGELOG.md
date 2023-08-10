@@ -12,6 +12,10 @@
 - Added next and prev cocktail actions #149
 
 ## Changes
+- Property `ingredients` on `Cocktail` schema is now only shown if you include it with `include=ingredients` query string
+- Property `short_ingredients` on `Cocktail` schema removed
+- Property `tags` on `Cocktail` schema is now array of objects
+- Property `ingredient_category_id` on `Ingredient` schema removed
 - Improved website recipe scraping
 
 # v2.4.0

@@ -28,7 +28,6 @@ class IngredientResource extends JsonResource
             'origin' => $this->origin,
             'main_image_id' => $this->images->first()->id ?? null,
             'images' => ImageResource::collection($this->images),
-            'ingredient_category_id' => $this->ingredient_category_id, // deprecate
             'parent_ingredient' => $this->when($this->relationLoaded('parentIngredient') && $this->parent_ingredient_id !== null, function () {
                 return [
                     'id' => $this->parentIngredient->id,

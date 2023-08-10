@@ -251,13 +251,14 @@ class CocktailController extends Controller
     {
         $limitTotal = $request->get('limit', 5);
 
-        $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->firstOrFail();
+        $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->with('ingredients')->firstOrFail();
         $ingredients = $cocktail->ingredients->filter(fn ($ci) => $ci->optional === false)->pluck('ingredient_id');
 
         $relatedCocktails = collect();
         while ($ingredients->count() > 0) {
             $ingredients->pop();
             $possibleRelatedCocktails = Cocktail::where('cocktails.id', '<>', $cocktail->id)
+                ->with('ingredients')
                 ->whereIn('cocktails.id', function ($query) use ($ingredients) {
                     $query->select('ci.cocktail_id')
                         ->from('cocktail_ingredients AS ci')
