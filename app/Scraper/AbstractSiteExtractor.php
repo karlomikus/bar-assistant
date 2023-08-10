@@ -18,7 +18,9 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
         protected readonly string $url,
     ) {
         $store = new Store(storage_path('http_cache/'));
-        $client = HttpClient::create();
+        $client = HttpClient::create([
+            'timeout' => 10
+        ]);
         $client = new CachingHttpClient($client, $store);
         $browser = new HttpBrowser($client);
 
