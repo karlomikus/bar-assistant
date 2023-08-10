@@ -12,11 +12,7 @@
 - Added next and prev cocktail actions #149
 
 ## Changes
-- Scrapers
-    - Improved ImbibeMagazine recipe scraping
-    - Improved PunchDrink recipe scraping
-    - Removed ACoupleCooks scraper, this will default to schema parser that works better
-    - Removed TheDrinkBlog scraper, this will default to schema parser that works better
+- Improved website recipe scraping
 
 # v2.4.0
 ## New

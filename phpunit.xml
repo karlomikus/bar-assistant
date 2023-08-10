@@ -14,9 +14,9 @@
         <testsuite name="Contract">
             <directory suffix="Test.php">./tests/Contract</directory>
         </testsuite>
-        <!-- <testsuite name="Scrapers">
+        <testsuite name="Scrapers">
             <directory suffix="Test.php">./tests/Scrapers</directory>
-        </testsuite> -->
+        </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
         <include>
