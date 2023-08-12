@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
+use Kami\RecipeUtils\Parser\Parser;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\BrowserKit\HttpBrowser;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpClient\CachingHttpClient;
 abstract class AbstractSiteExtractor implements SiteExtractorContract
 {
     protected readonly Crawler $crawler;
+    protected readonly Parser $ingredientParser;
 
     public function __construct(
         protected readonly string $url,
@@ -27,6 +29,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
         $browser->request('GET', $url);
 
         $this->crawler = new Crawler($browser->getResponse()->getContent());
+        $this->ingredientParser = new Parser();
     }
 
     /**
