@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
-use Brick\Schema\Base;
 use Throwable;
+use Brick\Schema\Base;
 use Brick\Schema\SchemaReader;
 use Brick\Schema\Interfaces\Recipe;
-use Brick\Schema\Interfaces\Article;
 use Kami\Cocktail\Scraper\IngredientParser;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class DefaultScraper extends AbstractSiteExtractor
 {
     private ?Recipe $recipeSchema = null;
-    private ?Article $articleSchema = null;
 
     public function __construct(string $url)
     {
@@ -27,10 +25,6 @@ class DefaultScraper extends AbstractSiteExtractor
         foreach ($things as $thing) {
             if ($thing instanceof Recipe) {
                 $this->recipeSchema = $thing;
-            }
-
-            if ($thing instanceof Article) {
-                $this->articleSchema = $thing;
             }
         }
     }

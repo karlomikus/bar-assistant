@@ -10,6 +10,8 @@
 - Added `/ingredients/{id}/extra` #133
     - This will show you how many cocktails you can make if you add ingredient to shelf
 - Added next and prev cocktail actions #149
+- Added new scrapers
+    - Steve The Bartender
 
 ## Changes
 - Property `ingredients` on `Cocktail` schema is now only shown if you include it with `include=ingredients` query string
