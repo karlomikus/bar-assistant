@@ -111,7 +111,7 @@ class TuxedoNo2 extends AbstractSiteExtractor
             }
         });
 
-        return is_string($garnish) ? trim($garnish) : $garnish;
+        return $garnish;
     }
 
     public function image(): ?array
