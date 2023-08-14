@@ -2340,6 +2340,7 @@ components:
             properties:
               url:
                 type: string
+                nullable: true
               label:
                 type: string
               active:
@@ -2779,10 +2780,8 @@ components:
         - main_image_id
         - images
         - tags
-        - user_id
         - user_rating
         - average_rating
-        - main_ingredient_name
         - created_at
         - abv
         - has_public_link
@@ -3100,6 +3099,7 @@ components:
                 example: 12
     CocktailMethod:
       type: object
+      nullable: true
       required:
         - id
         - name

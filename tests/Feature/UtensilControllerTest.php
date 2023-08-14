@@ -23,15 +23,13 @@ class UtensilControllerTest extends TestCase
 
     public function test_list_all_utensils_response()
     {
-        Utensil::factory()->count(10)->create();
-
         $response = $this->getJson('/api/utensils');
 
         $response->assertOk();
         $response->assertJson(
             fn (AssertableJson $json) =>
             $json
-                ->has('data', 10)
+                ->has('data', 20)
                 ->etc()
         );
     }

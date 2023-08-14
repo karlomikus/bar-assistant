@@ -155,7 +155,7 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonPath('data.origin', 'Croatia');
         $response->assertJsonPath('data.main_image_id', null);
         $response->assertJsonPath('data.images', []);
-        $response->assertJsonPath('data.ingredient_category_id', 1);
+        $response->assertJsonPath('data.category.id', 1);
         $response->assertJsonPath('data.parent_ingredient.id', null);
         $response->assertJsonPath('data.color', '#fff');
         $response->assertJsonCount(1, 'data.cocktails');
@@ -199,7 +199,7 @@ class IngredientControllerTest extends TestCase
                 ->where('data.description', 'Description text')
                 ->where('data.origin', 'Worldwide')
                 ->where('data.color', '#000000')
-                ->where('data.ingredient_category_id', $ingCat->id)
+                ->where('data.category.id', $ingCat->id)
                 ->etc()
         );
     }

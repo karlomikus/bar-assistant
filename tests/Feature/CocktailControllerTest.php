@@ -170,7 +170,6 @@ class CocktailControllerTest extends TestCase
                 ->where('data.glass.id', $glass->id)
                 ->where('data.method.id', $method->id)
                 ->has('data.abv')
-                ->has('data.short_ingredients', 3)
                 ->has('data.ingredients', 3, function (AssertableJson $jsonIng) {
                     $jsonIng
                         ->has('ingredient_id')

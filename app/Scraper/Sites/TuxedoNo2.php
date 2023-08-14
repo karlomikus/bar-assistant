@@ -103,7 +103,7 @@ class TuxedoNo2 extends AbstractSiteExtractor
 
     public function garnish(): ?string
     {
-        $garnish = null;
+        $garnish = '';
 
         $this->crawler->filter('.recipe__recipe ul')->first()->filter('li')->each(function ($node) use (&$garnish) {
             if ($node->filter('.amount .unit')->count() === 0) {
@@ -111,7 +111,7 @@ class TuxedoNo2 extends AbstractSiteExtractor
             }
         });
 
-        return $garnish;
+        return trim($garnish);
     }
 
     public function image(): ?array
