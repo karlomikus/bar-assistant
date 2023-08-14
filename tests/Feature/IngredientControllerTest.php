@@ -8,6 +8,7 @@ use Tests\TestCase;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\IngredientCategory;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -154,7 +155,7 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonPath('data.origin', 'Croatia');
         $response->assertJsonPath('data.main_image_id', null);
         $response->assertJsonPath('data.images', []);
-        $response->assertJsonPath('data.ingredient_category_id', 1);
+        $response->assertJsonPath('data.category.id', 1);
         $response->assertJsonPath('data.parent_ingredient.id', null);
         $response->assertJsonPath('data.color', '#fff');
         $response->assertJsonCount(1, 'data.cocktails');
@@ -198,7 +199,7 @@ class IngredientControllerTest extends TestCase
                 ->where('data.description', 'Description text')
                 ->where('data.origin', 'Worldwide')
                 ->where('data.color', '#000000')
-                ->where('data.ingredient_category_id', $ingCat->id)
+                ->where('data.category.id', $ingCat->id)
                 ->etc()
         );
     }
@@ -289,5 +290,40 @@ class IngredientControllerTest extends TestCase
 
         $response->assertNoContent();
         $this->assertDatabaseMissing('ingredients', ['id' => $ing->id]);
+    }
+
+    public function test_ingredients_extra_response()
+    {
+        $ingredient1 = Ingredient::factory()->create();
+        $ingredient2 = Ingredient::factory()->create();
+
+        $userIngredient = new UserIngredient();
+        $userIngredient->ingredient_id = $ingredient1->id;
+        auth()->user()->shelfIngredients()->save($userIngredient);
+
+        $cocktail = Cocktail::factory()
+            ->has(CocktailIngredient::factory()->for(
+                $ingredient1
+            ), 'ingredients')
+            ->has(CocktailIngredient::factory()->for(
+                $ingredient2
+            ), 'ingredients')
+            ->create();
+
+        $response = $this->getJson('/api/ingredients/' . $ingredient1->id . '/extra');
+        $response->assertJsonCount(0, 'data');
+
+        $response = $this->getJson('/api/ingredients/' . $ingredient2->id . '/extra');
+
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data', 1, function (AssertableJson $jsonIng) use ($cocktail) {
+                    $jsonIng
+                        ->where('id', $cocktail->id)
+                        ->where('slug', $cocktail->slug)
+                        ->where('name', $cocktail->name);
+                })
+        );
     }
 }

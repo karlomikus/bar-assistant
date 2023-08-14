@@ -7,6 +7,7 @@ use Kami\Cocktail\Http\Controllers\NoteController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
+use Kami\Cocktail\Http\Controllers\UtensilsController;
 use Kami\Cocktail\Http\Controllers\StatsController;
 use Kami\Cocktail\Http\Controllers\UsersController;
 use Kami\Cocktail\Http\Controllers\ImportController;
@@ -77,6 +78,7 @@ Route::middleware($authMiddleware)->group(function() {
         Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show');
         Route::put('/{id}', [IngredientController::class, 'update']);
         Route::delete('/{id}', [IngredientController::class, 'delete']);
+        Route::get('/{id}/extra', [IngredientController::class, 'extra']);
     });
 
     Route::prefix('ingredient-categories')->group(function() {
@@ -111,6 +113,7 @@ Route::middleware($authMiddleware)->group(function() {
 
     Route::prefix('shopping-list')->group(function() {
         Route::get('/', [ShoppingListController::class, 'index']);
+        Route::get('/share', [ShoppingListController::class, 'share']);
         Route::post('/batch-store', [ShoppingListController::class, 'batchStore']);
         Route::post('/batch-delete', [ShoppingListController::class, 'batchDelete']);
     });
@@ -122,6 +125,14 @@ Route::middleware($authMiddleware)->group(function() {
         Route::get('/{id}', [GlassController::class, 'show'])->name('glasses.show');
         Route::put('/{id}', [GlassController::class, 'update']);
         Route::delete('/{id}', [GlassController::class, 'delete']);
+    });
+
+    Route::prefix('utensils')->group(function() {
+        Route::get('/', [UtensilsController::class, 'index']);
+        Route::post('/', [UtensilsController::class, 'store']);
+        Route::get('/{id}', [UtensilsController::class, 'show'])->name('utensils.show');
+        Route::put('/{id}', [UtensilsController::class, 'update']);
+        Route::delete('/{id}', [UtensilsController::class, 'delete']);
     });
 
     Route::prefix('tags')->group(function() {
@@ -176,6 +187,7 @@ Route::middleware($authMiddleware)->group(function() {
         Route::post('/{id}/cocktails', [CollectionController::class, 'cocktails']);
         Route::put('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'cocktail']);
         Route::delete('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'deleteResourceFromCollection']);
+        Route::get('/{id}/share', [CollectionController::class, 'share'])->name('collection.share');
     });
 
     Route::prefix('import')->group(function() {

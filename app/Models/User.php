@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class User extends Authenticatable
 {
@@ -63,19 +61,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @return HasManyThrough<Ingredient>
-     */
-    public function ingredients(): HasManyThrough
-    {
-        return $this->hasManyThrough(
-            Ingredient::class,
-            UserIngredient::class,
-            'user_id',
-            'id',
-        );
-    }
-
-    /**
      * @return HasMany<CocktailFavorite>
      */
     public function favorites(): HasMany
@@ -86,7 +71,7 @@ class User extends Authenticatable
     /**
      * @return HasMany<UserShoppingList>
      */
-    public function shoppingLists(): HasMany
+    public function shoppingList(): HasMany
     {
         return $this->hasMany(UserShoppingList::class);
     }

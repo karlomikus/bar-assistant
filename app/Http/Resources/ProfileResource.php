@@ -34,7 +34,7 @@ class ProfileResource extends JsonResource
             'search_api_key' => $this->search_api_key,
             'favorite_cocktails' => $this->favorites->pluck('cocktail_id'),
             'shelf_ingredients' => $this->shelfIngredients->pluck('ingredient_id'),
-            'shopping_lists' => $this->shoppingLists->pluck('ingredient_id'),
+            'shopping_lists' => $this->shoppingList->pluck('ingredient_id'),
         ];
     }
 }

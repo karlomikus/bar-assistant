@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -131,5 +132,36 @@ class CollectionController extends Controller
         }
 
         return response(null, 204);
+    }
+
+    public function share(Request $request, int $id): Response
+    {
+        $type = $request->get('type', 'json');
+
+        $collection = CocktailCollection::findOrFail($id);
+
+        if ($request->user()->cannot('show', $collection)) {
+            abort(403);
+        }
+
+        $collection->load('cocktails.glass', 'cocktails.method', 'cocktails.images', 'cocktails.tags', 'cocktails.ingredients.ingredient.category', 'cocktails.ingredients.substitutes');
+
+        $data = [
+            'name' => $collection->name,
+            'description' => $collection->description,
+            'cocktails' => $collection->cocktails->map(function (Cocktail $cocktail) {
+                return $cocktail->toShareableArray();
+            })->toArray(),
+        ];
+
+        if ($type === 'json') {
+            return new Response(json_encode($data, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
+        }
+
+        if ($type === 'yaml' || $type === 'yml') {
+            return new Response(Yaml::dump($data, 4, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK), 200, ['Content-Type' => 'application/yaml']);
+        }
+
+        abort(400, 'Requested type "' . $type . '" not supported');
     }
 }

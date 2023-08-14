@@ -75,7 +75,7 @@ class EricsCocktailGuide extends AbstractSiteExtractor
 
         return [
             'url' => $this->getSupportedUrls()[0] . $matches['image'][0],
-            'copyright' => 'Eric\s Cocktail Guide',
+            'copyright' => 'Eric\'s Cocktail Guide',
         ];
     }
 }

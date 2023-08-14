@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Throwable;
+use Brick\Schema\Base;
 use Brick\Schema\SchemaReader;
 use Brick\Schema\Interfaces\Recipe;
-use Brick\Schema\Interfaces\Article;
 use Kami\Cocktail\Scraper\IngredientParser;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class DefaultScraper extends AbstractSiteExtractor
 {
     private ?Recipe $recipeSchema = null;
-    private ?Article $articleSchema = null;
 
     public function __construct(string $url)
     {
@@ -26,10 +25,6 @@ class DefaultScraper extends AbstractSiteExtractor
         foreach ($things as $thing) {
             if ($thing instanceof Recipe) {
                 $this->recipeSchema = $thing;
-            }
-
-            if ($thing instanceof Article) {
-                $this->articleSchema = $thing;
             }
         }
     }
@@ -62,7 +57,7 @@ class DefaultScraper extends AbstractSiteExtractor
             $name = '';
         }
 
-        return $name;
+        return trim($name);
     }
 
     public function description(): ?string
@@ -90,6 +85,10 @@ class DefaultScraper extends AbstractSiteExtractor
         // Try with the parsed objects first
         $instructions = $this->recipeSchema->recipeInstructions?->getValues() ?? [];
         $instructions = array_map(function ($node) {
+            if (is_string($node)) {
+                return $node;
+            }
+
             if ($node->text) {
                 return $node->text->toString();
             }
@@ -106,11 +105,11 @@ class DefaultScraper extends AbstractSiteExtractor
         $i = 1;
         $result = "";
         foreach ($instructions as $step) {
-            $result .= $i . ". " . $step . "\n\n";
+            $result .= $i . ". " . trim($step) . "\n";
             $i++;
         }
 
-        return $result;
+        return trim($result);
     }
 
     public function tags(): array
@@ -146,7 +145,14 @@ class DefaultScraper extends AbstractSiteExtractor
         }
 
         $result = [];
+
+        // Try "recipeIngredient" schema item
         $ingredients = $this->recipeSchema->recipeIngredient?->getValues() ?? [];
+
+        // Try "ingredients" schema item
+        if (empty($ingredients)) {
+            $ingredients = $this->recipeSchema->ingredients?->getValues() ?? [];
+        }
 
         // Try microdata directly from html
         if (empty($ingredients)) {
@@ -159,6 +165,7 @@ class DefaultScraper extends AbstractSiteExtractor
         }
 
         foreach ($ingredients as $ingredient) {
+            $ingredient = trim($ingredient, " \n\r\t\v\x00\"\'");
             ['amount' => $amount, 'units' => $units, 'name' => $name] = (new IngredientParser($ingredient))->parse();
 
             if (empty($amount) || empty($name) || empty($units)) {
@@ -181,7 +188,16 @@ class DefaultScraper extends AbstractSiteExtractor
         $images = $this->recipeSchema?->image->getValues() ?? [];
         $mainImage = end($images);
 
-        $image = $mainImage ?? null;
+        $image = '';
+
+        if (is_string($mainImage)) {
+            $image = $mainImage ?? null;
+        }
+
+        if ($mainImage instanceof Base && $mainImage->url) {
+            $image = (string) $mainImage->url;
+        }
+
         $copyright = $this->copyrightHolder();
 
         return [

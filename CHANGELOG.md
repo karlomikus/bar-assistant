@@ -1,3 +1,25 @@
+# v2.5.0
+## New
+- Added `markdown` type to share endpoint
+- Added `/collections/{id}/share` endpoint
+    - You can share your collection as JSON, YAML
+- Added `/shopping-list/share` endpoint #124
+    - You can share shopping list as markdown
+- Added `utensils` #127
+    - You can attach required utensils for cocktail recipes
+- Added `/ingredients/{id}/extra` #133
+    - This will show you how many cocktails you can make if you add ingredient to shelf
+- Added next and prev cocktail actions #149
+- Added new scrapers
+    - Steve The Bartender
+
+## Changes
+- Property `ingredients` on `Cocktail` schema is now only shown if you include it with `include=ingredients` query string
+- Property `short_ingredients` on `Cocktail` schema removed
+- Property `tags` on `Cocktail` schema is now array of objects
+- Property `ingredient_category_id` on `Ingredient` schema removed
+- Improved website recipe scraping
+
 # v2.4.0
 ## New
 - Added new scrapers

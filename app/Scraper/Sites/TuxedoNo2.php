@@ -41,7 +41,7 @@ class TuxedoNo2 extends AbstractSiteExtractor
             $step++;
         });
 
-        return $result;
+        return trim($result);
     }
 
     public function tags(): array
@@ -103,15 +103,15 @@ class TuxedoNo2 extends AbstractSiteExtractor
 
     public function garnish(): ?string
     {
-        $garnish = null;
+        $garnish = '';
 
         $this->crawler->filter('.recipe__recipe ul')->first()->filter('li')->each(function ($node) use (&$garnish) {
             if ($node->filter('.amount .unit')->count() === 0) {
-                $garnish .= $node->filter('.ingredient')->text() . "\n\n";
+                $garnish .= trim($node->filter('.ingredient')->text()) . "\n";
             }
         });
 
-        return $garnish;
+        return trim($garnish);
     }
 
     public function image(): ?array
@@ -127,6 +127,17 @@ class TuxedoNo2 extends AbstractSiteExtractor
             'url' => $sources[2],
             'copyright' => 'TuxedoNo2',
         ];
+    }
+
+    public function method(): ?string
+    {
+        $method = $this->crawler->filter('.recipe__header-titles-and-icons .recipe__tag-icons a')->first()->attr('href');
+
+        return str_replace(
+            '-',
+            ' ',
+            str_replace('/tags/', '', $method)
+        );
     }
 
     private function hintCommonIngredients(string $ingredientName): string

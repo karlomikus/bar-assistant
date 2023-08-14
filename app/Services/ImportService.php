@@ -17,7 +17,9 @@ use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Exceptions\ImportException;
 use Kami\Cocktail\Services\IngredientService;
+use Illuminate\Database\Eloquent\InvalidCastException;
 use Intervention\Image\Facades\Image as ImageProcessor;
+use Kami\Cocktail\Models\Collection as CocktailCollection;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDTO;
 
@@ -101,6 +103,13 @@ class ImportService
                 $ingredientId = $newIngredient->id;
             }
 
+            $substitutes = [];
+            if (array_key_exists('substitutes', $scrapedIngredient) && !empty($scrapedIngredient['substitutes'])) {
+                foreach ($scrapedIngredient['substitutes'] as $substituteName) {
+                    $substitutes[] = $dbIngredients->get(strtolower($substituteName), null)?->id;
+                }
+            }
+
             $ingredient = new IngredientDTO(
                 $ingredientId,
                 $scrapedIngredient['name'],
@@ -108,7 +117,7 @@ class ImportService
                 $scrapedIngredient['units'],
                 $sort,
                 $scrapedIngredient['optional'] ?? false,
-                $scrapedIngredient['substitutes'] ?? [],
+                $substitutes,
             );
 
             $ingredients[] = $ingredient;
@@ -214,5 +223,24 @@ class ImportService
         Log::info(sprintf('[IMPORT_SERVICE] Finished importing data in %s seconds', $importTimeEnd - $importTimeStart));
 
         $disk->deleteDirectory('/');
+    }
+
+    /**
+     * @param array{name: string, description: string|null, cocktails: array<mixed>} $sourceData
+     */
+    public function importCocktailCollection(array $sourceData, int $userId = 1): CocktailCollection
+    {
+        $collection = new CocktailCollection();
+        $collection->name = $sourceData['name'];
+        $collection->description = $sourceData['description'];
+        $collection->user_id = $userId;
+        $collection->save();
+
+        foreach ($sourceData['cocktails'] as $cocktail) {
+            $cocktail = $this->importCocktailFromArray($cocktail, $userId);
+            $cocktail->addToCollection($collection);
+        }
+
+        return $collection;
     }
 }

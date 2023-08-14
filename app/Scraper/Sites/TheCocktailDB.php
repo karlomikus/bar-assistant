@@ -98,7 +98,7 @@ class TheCocktailDB extends AbstractSiteExtractor
     public function image(): ?array
     {
         return [
-            'url' => $this->apiDrinkData['strImageSource'],
+            'url' => $this->apiDrinkData['strDrinkThumb'],
             'copyright' => $this->apiDrinkData['strImageAttribution'],
         ];
     }

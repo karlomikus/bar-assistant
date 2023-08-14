@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Throwable;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Kami\Cocktail\Models\UserShoppingList;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\SuccessActionResource;
@@ -16,7 +17,7 @@ class ShoppingListController extends Controller
     public function index(Request $request): JsonResource
     {
         return UserShoppingListResource::collection(
-            $request->user()->shoppingLists->load('ingredient')
+            $request->user()->shoppingList->load('ingredient')
         );
     }
 
@@ -29,7 +30,7 @@ class ShoppingListController extends Controller
             $usl = new UserShoppingList();
             $usl->ingredient_id = $ingId;
             try {
-                $models[] = $request->user()->shoppingLists()->save($usl);
+                $models[] = $request->user()->shoppingList()->save($usl);
             } catch (Throwable) {
             }
         }
@@ -42,11 +43,31 @@ class ShoppingListController extends Controller
         $ingredientIds = $request->post('ingredient_ids');
 
         try {
-            $request->user()->shoppingLists()->whereIn('ingredient_id', $ingredientIds)->delete();
+            $request->user()->shoppingList()->whereIn('ingredient_id', $ingredientIds)->delete();
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
         }
 
         return new SuccessActionResource((object) ['ingredient_ids' => $ingredientIds]);
+    }
+
+    public function share(Request $request): Response
+    {
+        $type = $request->get('type', 'markdown');
+
+        $shoppingListIngredients = $request->user()
+            ->shoppingList
+            ->load('ingredient.category')
+            ->groupBy('ingredient.category.name');
+
+        if ($type === 'markdown' || $type === 'md') {
+            return new Response(
+                view('md_shopping_list_template', compact('shoppingListIngredients'))->render(),
+                200,
+                ['Content-Type' => 'text/markdown']
+            );
+        }
+
+        abort(400, 'Requested type "' . $type . '" not supported');
     }
 }

@@ -87,6 +87,7 @@ class CocktailController extends Controller
             $request->post('tags', []),
             $ingredients,
             $request->post('images', []),
+            $request->post('utensils', []),
         );
 
         try {
@@ -95,7 +96,7 @@ class CocktailController extends Controller
             abort(500, $e->getMessage());
         }
 
-        $cocktail->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes');
+        $cocktail->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'utensils');
 
         return (new CocktailResource($cocktail))
             ->response()
@@ -128,26 +129,28 @@ class CocktailController extends Controller
             $ingredients[] = $ingredient;
         }
 
+        $cocktailDTO = new CocktailDTO(
+            $request->post('name'),
+            $request->post('instructions'),
+            $request->user()->id,
+            $request->post('description'),
+            $request->post('source'),
+            $request->post('garnish'),
+            $request->post('glass_id') ? (int) $request->post('glass_id') : null,
+            $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
+            $request->post('tags', []),
+            $ingredients,
+            $request->post('images', []),
+            $request->post('utensils', []),
+        );
+
         try {
-            $cocktail = $cocktailService->updateCocktail(
-                $id,
-                $request->post('name'),
-                $request->post('instructions'),
-                $ingredients,
-                $request->user()->id,
-                $request->post('description'),
-                $request->post('garnish'),
-                $request->post('source'),
-                $request->post('images', []),
-                $request->post('tags', []),
-                $request->post('glass_id') ? (int) $request->post('glass_id') : null,
-                $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
-            );
+            $cocktail = $cocktailService->updateCocktail($id, $cocktailDTO);
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
         }
 
-        $cocktail->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes');
+        $cocktail->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'utensils');
 
         return new CocktailResource($cocktail);
     }
@@ -213,7 +216,7 @@ class CocktailController extends Controller
             ->firstOrFail()
             ->load(['ingredients.ingredient', 'images' => function ($query) {
                 $query->orderBy('sort');
-            }, 'ingredients.substitutes']);
+            }, 'ingredients.substitutes', 'ingredients.ingredient.category']);
 
         $data = $cocktail->toShareableArray();
 
@@ -233,6 +236,14 @@ class CocktailController extends Controller
             return new Response($cocktail->toText(), 200, ['Content-Type' => 'plain/text']);
         }
 
+        if ($type === 'markdown' || $type === 'md') {
+            return new Response(
+                view('md_recipe_template', compact('cocktail'))->render(),
+                200,
+                ['Content-Type' => 'text/markdown']
+            );
+        }
+
         abort(400, 'Requested type "' . $type . '" not supported');
     }
 
@@ -240,13 +251,14 @@ class CocktailController extends Controller
     {
         $limitTotal = $request->get('limit', 5);
 
-        $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->firstOrFail();
+        $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->with('ingredients')->firstOrFail();
         $ingredients = $cocktail->ingredients->filter(fn ($ci) => $ci->optional === false)->pluck('ingredient_id');
 
         $relatedCocktails = collect();
         while ($ingredients->count() > 0) {
             $ingredients->pop();
             $possibleRelatedCocktails = Cocktail::where('cocktails.id', '<>', $cocktail->id)
+                ->with('ingredients')
                 ->whereIn('cocktails.id', function ($query) use ($ingredients) {
                     $query->select('ci.cocktail_id')
                         ->from('cocktail_ingredients AS ci')

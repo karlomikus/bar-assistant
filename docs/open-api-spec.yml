@@ -45,6 +45,8 @@ tags:
     description: Operations related to user collections
   - name: "Import"
     description: Data import operations
+  - name: "Utensils"
+    description: Operations related to utensils
 security:
   - user_token: []
 paths:
@@ -211,7 +213,7 @@ paths:
         schema:
           type: string
           example: notes,user
-        description: "Comma seperated names of extra data you want to include in response: `notes`, `glass`, `user`, `collections`, `method`"
+        description: "Comma seperated names of extra data you want to include in response: `notes`, `glass`, `user`, `collections`, `method`, `ingredients`"
       tags:
         - "Cocktails"
       summary: 'Show a paginated list of cocktails'
@@ -738,6 +740,41 @@ paths:
           description: Successfully deleted ingredient
         '403':
           $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /ingredients/{id}/extra:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Database id of the ingredient
+        schema:
+          type: integer
+    get:
+      tags:
+        - Ingredients
+      summary: 'Show how many extra cocktails you can make if you add this to your shelf'
+      operationId: extraIngredientCocktails
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        slug:
+                          type: string
+                          example: mai-tai
+                        name:
+                          type: string
+                          example: Mai Tai
         '404':
           $ref: '#/components/responses/NotFound'
   /glasses:
@@ -1269,6 +1306,22 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/UserShoppingList'
+  /shopping-list/share:
+    get:
+      tags:
+        - "Shopping list"
+      summary: "Share your shopping list"
+      operationId: shareShoppingList
+      responses:
+        '200':
+          description: Successful response
+          content:
+            text/markdown:
+              schema:
+                type: string
+                example: |-
+                  # Recipe name
+                  Description
   /shopping-list/batch-store:
     post:
       tags:
@@ -2049,6 +2102,149 @@ paths:
                 properties:
                   data:
                     type: object
+                    additionalProperties: true
+  /collections/{id}/share:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a collection'
+        schema:
+          type: integer
+        required: true
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum:
+            - json
+            - yaml
+            - yml
+    get:
+      tags:
+        - "Collections"
+      summary: Share a collection
+      operationId: shareUserCollection
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+            application/yaml:
+              schema:
+                type: object
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /utensils:
+    get:
+      tags:
+        - "Utensils"
+      summary: 'Show a list of utensils'
+      operationId: getUtensils
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Utensil'
+    post:
+      tags:
+        - "Utensils"
+      summary: Add utensil
+      operationId: addUtensil
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtensilRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Utensil'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /utensils/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of utensil'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - "Utensils"
+      summary: Show a single utensil
+      operationId: getUtensil
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Utensil'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - "Utensils"
+      summary: Update a specific utensil
+      operationId: updateUtensil
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtensilRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Utensil'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      tags:
+        - "Utensils"
+      summary: Delete specific utensil
+      operationId: deleteUtensil
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -2144,6 +2340,7 @@ components:
             properties:
               url:
                 type: string
+                nullable: true
               label:
                 type: string
               active:
@@ -2288,9 +2485,6 @@ components:
             name:
               type: string
               example: "Vodka"
-        ingredient_category_id:
-          type: integer
-          example: 1
         color:
           type: string
           format: hex
@@ -2586,12 +2780,8 @@ components:
         - main_image_id
         - images
         - tags
-        - user_id
-        - short_ingredients
-        - ingredients
         - user_rating
         - average_rating
-        - main_ingredient_name
         - created_at
         - abv
         - has_public_link
@@ -2633,16 +2823,17 @@ components:
             $ref: '#/components/schemas/Image'
         tags:
           type: array
-          example: ['Gin', 'IBA Official']
           items:
-            type: string
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                format: Tagname
         glass:
           $ref: '#/components/schemas/Glass'
-        short_ingredients:
-          type: array
-          example: ['Gin', 'Tonic', 'Lemon Juice']
-          items:
-            type: string
         ingredients:
           type: array
           items:
@@ -2655,11 +2846,6 @@ components:
           type: integer
           nullable: true
           example: 3
-        main_ingredient_name:
-          type: string
-          nullable: true
-          example: Gin
-          deprecated: true
         created_at:
           type: string
           format: datetime
@@ -2913,6 +3099,7 @@ components:
                 example: 12
     CocktailMethod:
       type: object
+      nullable: true
       required:
         - id
         - name
@@ -3123,3 +3310,30 @@ components:
                 type: string
                 nullable: true
                 example: France
+    Utensil:
+      type: object
+      required:
+        - id
+        - name
+        - description
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Shaker"
+        description:
+          type: string
+          example: "A recipient in 2 parts to shake cocktails vigorously."
+    UtensilRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "Shaker"
+        description:
+          type: string
+          example: "A recipient in 2 parts to shake cocktails vigorously."

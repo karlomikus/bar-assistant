@@ -11,17 +11,17 @@ use Kami\Cocktail\Scraper\Sites\DefaultScraper;
 final class Manager
 {
     private array $supportedSites = [
-        \Kami\Cocktail\Scraper\Sites\ACoupleCooks::class,
         \Kami\Cocktail\Scraper\Sites\TuxedoNo2::class,
-        \Kami\Cocktail\Scraper\Sites\Imbibe::class,
+        \Kami\Cocktail\Scraper\Sites\ImbibeMagazine::class,
         \Kami\Cocktail\Scraper\Sites\EricsCocktailGuide::class,
         \Kami\Cocktail\Scraper\Sites\HausAlpenz::class,
-        \Kami\Cocktail\Scraper\Sites\TheDrinkBlog::class,
         \Kami\Cocktail\Scraper\Sites\DiffordsGuide::class,
         \Kami\Cocktail\Scraper\Sites\TheCocktailDB::class,
         \Kami\Cocktail\Scraper\Sites\CocktailParty::class,
         \Kami\Cocktail\Scraper\Sites\LiberAndCo::class,
         \Kami\Cocktail\Scraper\Sites\CocktailsDistilled::class,
+        \Kami\Cocktail\Scraper\Sites\PunchDrink::class,
+        \Kami\Cocktail\Scraper\Sites\SteveTheBartender::class,
     ];
 
     public function __construct(private readonly string $url)

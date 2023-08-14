@@ -37,10 +37,10 @@ class LiberAndCo extends AbstractSiteExtractor
         $result = '';
 
         $this->crawler->filterXPath('//p/strong[contains(text(), \'Instructions:\')]/following::ul')->first()->filter('li')->each(function ($node, $i) use (&$result) {
-            $result .= ($i + 1) . ". " . $node->text() . "\n";
+            $result .= ($i + 1) . ". " . trim($node->text()) . "\n";
         });
 
-        return $result;
+        return trim($result);
     }
 
     public function garnish(): ?string

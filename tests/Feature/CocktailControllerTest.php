@@ -6,8 +6,10 @@ use Tests\TestCase;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\Models\Image;
+use Illuminate\Http\UploadedFile;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
@@ -168,7 +170,6 @@ class CocktailControllerTest extends TestCase
                 ->where('data.glass.id', $glass->id)
                 ->where('data.method.id', $method->id)
                 ->has('data.abv')
-                ->has('data.short_ingredients', 3)
                 ->has('data.ingredients', 3, function (AssertableJson $jsonIng) {
                     $jsonIng
                         ->has('ingredient_id')
@@ -214,6 +215,7 @@ class CocktailControllerTest extends TestCase
             'glass_id' => $glass->id,
             'images' => [$image->id],
             'tags' => ['Test', 'Gin'],
+            'utensils' => [2, 5, 7],
             'ingredients' => [
                 [
                     'ingredient_id' => $gin->id,
@@ -270,6 +272,7 @@ class CocktailControllerTest extends TestCase
                 ->has('data.images', 1)
                 ->has('data.tags', 2)
                 ->has('data.ingredients', 2)
+                ->has('data.utensils', 3)
                 ->etc()
         );
     }
@@ -293,6 +296,7 @@ class CocktailControllerTest extends TestCase
             'source' => "https://karlomikus.com",
             'images' => [],
             'tags' => ['Test', 'Gin'],
+            'utensils' => [2, 1],
             'ingredients' => [
                 [
                     'ingredient_id' => $gin->id,
@@ -305,6 +309,15 @@ class CocktailControllerTest extends TestCase
         ]);
 
         $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->where('data.id', $cocktail->id)
+                ->where('data.slug', 'cocktail-name')
+                ->where('data.name', 'Cocktail name')
+                ->has('data.utensils', 2)
+                ->etc()
+        );
     }
 
     public function test_cocktail_delete_response()
@@ -314,6 +327,26 @@ class CocktailControllerTest extends TestCase
         $response = $this->deleteJson('/api/cocktails/' . $cocktail->id);
 
         $response->assertNoContent();
+    }
+
+    public function test_cocktail_delete_deletes_images_response()
+    {
+        $cocktail = Cocktail::factory()->create();
+        $storage = Storage::fake('bar-assistant');
+        $imageFile = UploadedFile::fake()->image('image1.jpg');
+        $image = Image::factory()->for($cocktail, 'imageable')->create([
+            'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'bar-assistant'),
+            'file_extension' => $imageFile->extension(),
+            'copyright' => 'initial',
+            'sort' => 7,
+            'user_id' => auth()->user()->id
+        ]);
+
+        $this->assertTrue($storage->exists($image->file_path));
+
+        $this->deleteJson('/api/cocktails/' . $cocktail->id);
+
+        $this->assertFalse($storage->exists($image->file_path));
     }
 
     public function test_make_cocktail_public_link_response()
