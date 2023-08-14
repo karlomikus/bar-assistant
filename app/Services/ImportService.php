@@ -103,6 +103,13 @@ class ImportService
                 $ingredientId = $newIngredient->id;
             }
 
+            $substitutes = [];
+            if (array_key_exists('susbstitutes', $scrapedIngredient) && !empty($scrapedIngredient['substitutes'])) {
+                foreach ($scrapedIngredient['substitutes'] as $substituteName) {
+                    $substitutes[] = $dbIngredients->get(strtolower($substituteName), null)?->id;
+                }
+            }
+
             $ingredient = new IngredientDTO(
                 $ingredientId,
                 $scrapedIngredient['name'],
@@ -110,7 +117,7 @@ class ImportService
                 $scrapedIngredient['units'],
                 $sort,
                 $scrapedIngredient['optional'] ?? false,
-                $scrapedIngredient['substitutes'] ?? [],
+                $substitutes,
             );
 
             $ingredients[] = $ingredient;
