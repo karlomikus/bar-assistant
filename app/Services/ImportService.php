@@ -104,7 +104,7 @@ class ImportService
             }
 
             $substitutes = [];
-            if (array_key_exists('susbstitutes', $scrapedIngredient) && !empty($scrapedIngredient['substitutes'])) {
+            if (array_key_exists('substitutes', $scrapedIngredient) && !empty($scrapedIngredient['substitutes'])) {
                 foreach ($scrapedIngredient['substitutes'] as $substituteName) {
                     $substitutes[] = $dbIngredients->get(strtolower($substituteName), null)?->id;
                 }

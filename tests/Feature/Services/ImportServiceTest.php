@@ -73,7 +73,7 @@ class ImportServiceTest extends TestCase
                     'amount' => 22.5,
                     'units' => 'ml',
                     'optional' => false,
-                    'substitutes' => [1],
+                    'substitutes' => ['Ingredient 1'],
                     'strength' => 40,
                     'description' => 'New ingredient description',
                     'origin' => 'Laravel test suite',
