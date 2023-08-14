@@ -33,8 +33,8 @@ jobs:
     - name: Check coding style
       run: vendor/bin/ecs --clear-cache
 
-    - name: Execute tests (Unit and Feature tests) via PHPUnit
-      run: vendor/bin/phpunit tests/
+    - name: Execute tests
+      run: vendor/bin/phpunit
 
     - name: Execute PHPStan
       run: composer static
