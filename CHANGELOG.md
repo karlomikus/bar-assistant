@@ -1,3 +1,7 @@
+# v2.5.2
+## Fixes
+- Fixed missing utensil info on GET cocktail endpoint
+
 # v2.5.1
 ## Fixes
 - Fixed missing ratings
