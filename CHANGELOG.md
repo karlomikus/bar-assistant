@@ -1,3 +1,7 @@
+# v2.5.1
+## Fixes
+- Fixed missing ratings
+
 # v2.5.0
 ## New
 - Added `markdown` type to share endpoint
