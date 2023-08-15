@@ -101,6 +101,7 @@ final class CocktailQueryFilter extends QueryBuilder
             ->leftJoin('user_ingredients AS ui', function ($query) {
                 $query->on('ui.ingredient_id', '=', 'ci.ingredient_id')->where('ui.user_id', $this->request->user()->id);
             })
-            ->groupBy('cocktails.id');
+            ->groupBy('cocktails.id')
+            ->withRatings($this->request->user()->id);
     }
 }
