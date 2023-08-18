@@ -91,8 +91,18 @@ class User extends Authenticatable
         return !$this->isAdmin();
     }
 
-    public function getBarMembership(int $barId): BarMembership
+    public function getBarMembership(int $barId): ?BarMembership
     {
-        return $this->memberships()->where('bar_id', $barId)->firstOrFail();
+        return $this->memberships()->where('bar_id', $barId)->first();
+    }
+
+    public function hasBarMembership(int $barId): bool
+    {
+        return $this->getBarMembership($barId)?->id !== null;
+    }
+
+    public function isBarOwner(Bar $bar): bool
+    {
+        return $this->id === $bar->user_id;
     }
 }

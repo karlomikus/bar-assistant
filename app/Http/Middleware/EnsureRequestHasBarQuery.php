@@ -8,7 +8,7 @@ use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Http\BarContext;
 use Symfony\Component\HttpFoundation\Response;
 
-class HasBarContext
+class EnsureRequestHasBarQuery
 {
     /**
      * Handle an incoming request.
@@ -20,10 +20,14 @@ class HasBarContext
         $barId = $request->get('bar_id', null);
 
         if (!$barId) {
-            abort(400, 'Missing required \'bar_id\' parameter');
+            abort(400, sprintf("Missing required '%s' parameter while requesting '%s'", 'bar_id', $request->path()));
         }
 
         $bar = Bar::findOrFail($barId);
+
+        if (!$request->user()->hasBarMembership($bar->id) && !$request->user()->isBarOwner($bar)) {
+            abort(403);
+        }
 
         app()->singleton(BarContext::class, function () use ($bar) {
             return new BarContext($bar);

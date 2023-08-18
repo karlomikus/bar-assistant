@@ -15,6 +15,7 @@ class BarService
         $this->importBaseData('glasses', resource_path('/data/base_glasses.yml'), $bar->id);
         $this->importBaseData('cocktail_methods', resource_path('/data/base_methods.yml'), $bar->id);
         $this->importBaseData('utensils', resource_path('/data/base_utensils.yml'), $bar->id);
+        $this->importBaseData('ingredient_categories', resource_path('/data/base_ingredient_categories.yml'), $bar->id);
 
         return true;
     }

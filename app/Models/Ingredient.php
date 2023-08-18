@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ingredient extends Model
 {
-    use HasFactory, Searchable, HasImages, HasSlug;
+    use HasFactory, Searchable, HasImages, HasSlug, HasBarAwareScope;
 
     private string $appImagesDir = 'ingredients/';
 

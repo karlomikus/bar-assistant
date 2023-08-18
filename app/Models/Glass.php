@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Glass extends Model
 {
-    use HasFactory;
+    use HasFactory, HasBarAwareScope;
 
     /**
      * @return HasMany<Cocktail>

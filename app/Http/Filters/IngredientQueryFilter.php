@@ -62,7 +62,7 @@ final class IngredientQueryFilter extends QueryBuilder
             ])
             ->allowedIncludes(['parentIngredient', 'varieties', 'cocktails', 'cocktailIngredientSubstitutes'])
             ->with('category', 'images')
-            ->where('bar_id', bar()->id)
+            ->barAware()
             ->withCount('cocktails');
     }
 }

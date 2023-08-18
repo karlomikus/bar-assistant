@@ -30,12 +30,16 @@ class IngredientController extends Controller
         return IngredientResource::collection($ingredients);
     }
 
-    public function show(int|string $id): JsonResource
+    public function show(Request $request, int|string $id): JsonResource
     {
         $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient')
             ->where('id', $id)
             ->orWhere('slug', $id)
             ->firstOrFail();
+
+        if ($request->user()->cannot('show', $ingredient)) {
+            abort(403);
+        }
 
         return new IngredientResource($ingredient);
     }
@@ -43,6 +47,7 @@ class IngredientController extends Controller
     public function store(IngredientService $ingredientService, IngredientRequest $request): JsonResponse
     {
         $ingredient = $ingredientService->createIngredient(
+            bar()->id,
             $request->post('name'),
             (int) $request->post('ingredient_category_id'),
             auth()->user()->id,

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CocktailMethod extends Model
 {
-    use HasFactory;
+    use HasFactory, HasBarAwareScope;
 
     public $timestamps = false;
 

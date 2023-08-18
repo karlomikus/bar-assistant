@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Services;
 
 use Throwable;
-use InvalidArgumentException;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Collection;
@@ -26,6 +25,7 @@ class IngredientService
     /**
      * Create a new ingredient
      *
+     * @param int $barId
      * @param string $name
      * @param int $ingredientCategoryId
      * @param int $userId
@@ -38,6 +38,7 @@ class IngredientService
      * @return \Kami\Cocktail\Models\Ingredient
      */
     public function createIngredient(
+        int $barId,
         string $name,
         int $ingredientCategoryId,
         int $userId,
@@ -50,6 +51,7 @@ class IngredientService
     ): Ingredient {
         try {
             $ingredient = new Ingredient();
+            $ingredient->bar_id = $barId;
             $ingredient->name = $name;
             $ingredient->ingredient_category_id = $ingredientCategoryId;
             $ingredient->strength = $strength;

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Utensil extends Model
 {
-    use HasFactory;
+    use HasFactory, HasBarAwareScope;
 
     /**
      * @return HasMany<Cocktail>

@@ -23,7 +23,7 @@ use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
 use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
-use Kami\Cocktail\Http\Middleware\HasBarContext;
+use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,13 +74,13 @@ Route::middleware($authMiddleware)->group(function() {
         Route::delete('/ingredients/{ingredientId}', [ShelfController::class, 'delete']);
     });
 
-    Route::prefix('ingredients')->middleware(HasBarContext::class)->group(function() {
-        Route::get('/', [IngredientController::class, 'index']);
-        Route::post('/', [IngredientController::class, 'store']);
+    Route::prefix('ingredients')->group(function() {
+        Route::get('/', [IngredientController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/', [IngredientController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show');
         Route::put('/{id}', [IngredientController::class, 'update']);
         Route::delete('/{id}', [IngredientController::class, 'delete']);
-        Route::get('/{id}/extra', [IngredientController::class, 'extra']);
+        Route::get('/{id}/extra', [IngredientController::class, 'extra'])->middleware(EnsureRequestHasBarQuery::class);
     });
 
     Route::prefix('ingredient-categories')->group(function() {

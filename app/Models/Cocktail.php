@@ -25,7 +25,8 @@ class Cocktail extends Model
         HasImages,
         HasSlug,
         HasRating,
-        HasNotes;
+        HasNotes,
+        HasBarAwareScope;
 
     protected $casts = [
         'public_at' => 'datetime',

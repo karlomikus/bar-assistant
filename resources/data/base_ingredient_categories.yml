@@ -1,0 +1,27 @@
+-
+  name: 'Uncategorized'
+  description: null
+-
+  name: 'Spirits'
+  description: 'Alcoholic drinks produced by distillation of grains, fruits, vegetables, or sugar, that have already gone through alcoholic fermentation.'
+-
+  name: 'Liqueurs'
+  description: 'Alcoholic drinks composed of spirits (often rectified spirit) and additional flavorings such as sugar, fruits, herbs, and spices.'
+-
+  name: 'Juices'
+  description: 'Drinks made from the extraction or pressing of the natural liquid contained in fruit and vegetables.'
+-
+  name: 'Fruits and vegetables'
+  description: null
+-
+  name: 'Syrups'
+  description: 'Condiment that is a thick, viscous liquid consisting primarily of a solution of sugar in water, containing a large amount of dissolved sugars but showing little tendency to deposit crystals.'
+-
+  name: 'Wines'
+  description: null
+-
+  name: 'Bitters'
+  description: null
+-
+  name: 'Beverages'
+  description: null

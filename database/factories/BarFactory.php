@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Kami\Cocktail\Models\IngredientCategory>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Kami\Cocktail\Models\Bar>
  */
-class IngredientCategoryFactory extends Factory
+class BarFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +18,7 @@ class IngredientCategoryFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'bar_id' => bar()->id,
+            'user_id' => \Kami\Cocktail\Models\User::factory(),
         ];
     }
 }

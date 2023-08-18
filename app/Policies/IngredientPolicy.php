@@ -14,20 +14,25 @@ class IngredientPolicy
 
     public function before(User $user, string $ability): bool|null
     {
-        if ($user->isAdmin()) {
+        if ($user->isBarOwner(bar())) {
             return true;
         }
 
         return null;
     }
 
+    public function show(User $user, Ingredient $ingredient): bool
+    {
+        return $user->id === $ingredient->user_id && $user->hasBarMembership($ingredient->bar_id);
+    }
+
     public function edit(User $user, Ingredient $ingredient): bool
     {
-        return $user->id === $ingredient->user_id;
+        return $user->id === $ingredient->user_id && $user->hasBarMembership($ingredient->bar_id);
     }
 
     public function delete(User $user, Ingredient $ingredient): bool
     {
-        return $user->id === $ingredient->user_id;
+        return $user->id === $ingredient->user_id && $user->hasBarMembership($ingredient->bar_id);
     }
 }
