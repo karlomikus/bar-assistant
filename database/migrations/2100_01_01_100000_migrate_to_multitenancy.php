@@ -21,49 +21,58 @@ return new class extends Migration
         // Offer import from previous version when creating a new bar
         // Maybe import from .sqlite file?
 
-        /** @var SearchActionsContract */
-        $searchActions = app(SearchActionsAdapter::class)->getActions();
-
-        DB::statement('PRAGMA foreign_keys = OFF');
-
         // Remove unused columns
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('is_admin');
         });
+
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('search_api_key');
         });
 
-        // Remove default user
-        DB::table('users')->delete(1);
-
-        // Create a new default bar
-        DB::table('bars')->insert([
-            ['id' => 1, 'name' => 'My bar', 'search_driver_api_key' => $searchActions->getPublicApiKey()],
-        ]);
-
-        $users = DB::table('users')->get();
-        $memberships = [];
-        foreach ($users as $user) {
-            $memberships[] = [
-                'bar_id' => 1,
-                'user_id' => $user->id,
-                'user_role_id' => 1,
-            ];
-        }
-        DB::table('bar_memberships')->insert($memberships);
-
         Schema::table('cocktails', function (Blueprint $table) {
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
         });
-        DB::table('cocktails')->update(['bar_id' => 1]);
 
         Schema::table('ingredients', function (Blueprint $table) {
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
         });
-        DB::table('ingredients')->update(['bar_id' => 1]);
 
-        DB::statement('PRAGMA foreign_keys = ON');
+        Schema::table('images', function (Blueprint $table) {
+            $table->foreignId('bar_id')->constrained()->onDelete('cascade');
+        });
+
+        Schema::table('glasses', function (Blueprint $table) {
+            $table->foreignId('bar_id')->constrained()->onDelete('cascade');
+        });
+
+        Schema::table('ingredient_categories', function (Blueprint $table) {
+            $table->foreignId('bar_id')->constrained()->onDelete('cascade');
+        });
+
+        Schema::table('tags', function (Blueprint $table) {
+            $table->foreignId('bar_id')->constrained()->onDelete('cascade');
+        });
+
+        DB::table('utensils')->truncate();
+        Schema::table('utensils', function (Blueprint $table) {
+            $table->foreignId('bar_id')->constrained()->onDelete('cascade');
+        });
+
+        DB::table('cocktail_methods')->truncate();
+        Schema::table('cocktail_methods', function (Blueprint $table) {
+            $table->foreignId('bar_id')->constrained()->onDelete('cascade');
+        });
+
+        Schema::table('collections', function (Blueprint $table) {
+            $table->dropColumn('user_id');
+            $table->foreignId('bar_membership_id')->constrained()->onDelete('cascade');
+        });
+
+        Schema::table('notes', function (Blueprint $table) {
+            $table->dropColumn('user_id');
+            $table->foreignId('bar_membership_id')->constrained()->onDelete('cascade');
+        });
     }
 
     /**

@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Kami\Cocktail\Http\Controllers\BarController;
 use Kami\Cocktail\Http\Controllers\TagController;
 use Kami\Cocktail\Http\Controllers\AuthController;
 use Kami\Cocktail\Http\Controllers\NoteController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
-use Kami\Cocktail\Http\Controllers\UtensilsController;
 use Kami\Cocktail\Http\Controllers\StatsController;
 use Kami\Cocktail\Http\Controllers\UsersController;
 use Kami\Cocktail\Http\Controllers\ImportController;
@@ -17,6 +17,7 @@ use Kami\Cocktail\Http\Controllers\ServerController;
 use Kami\Cocktail\Http\Controllers\ExploreController;
 use Kami\Cocktail\Http\Controllers\ProfileController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
+use Kami\Cocktail\Http\Controllers\UtensilsController;
 use Kami\Cocktail\Http\Controllers\CollectionController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
@@ -192,6 +193,11 @@ Route::middleware($authMiddleware)->group(function() {
 
     Route::prefix('import')->group(function() {
         Route::post('/cocktail', [ImportController::class, 'cocktail']);
+    });
+
+    Route::prefix('bars')->group(function() {
+        Route::get('/', [BarController::class, 'index']);
+        Route::post('/', [BarController::class, 'store']);
     });
 });
 

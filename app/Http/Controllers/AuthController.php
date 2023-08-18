@@ -49,7 +49,7 @@ class AuthController extends Controller
         $user->password = Hash::make($req->post('password'));
         $user->email = $req->post('email');
         $user->email_verified_at = now();
-        $user->search_api_key = $search->getActions()->getPublicApiKey();
+        // $user->search_api_key = $search->getActions()->getPublicApiKey();
         $user->save();
 
         return (new ProfileResource(

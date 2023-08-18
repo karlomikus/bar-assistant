@@ -18,15 +18,18 @@ return new class extends Migration
         });
 
         DB::table('bar_types')->insert([
-            ['id' => 1, 'name' => 'NORMAL'],
-            ['id' => 2, 'name' => 'PREMIUM'],
+            ['id' => 1, 'name' => 'Normal'],
+            ['id' => 2, 'name' => 'Premium'],
         ]);
 
         Schema::create('bars', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('subtitle')->nullable();
+            $table->string('description')->nullable();
             $table->string('search_driver_api_key')->nullable();
             $table->foreignId('bar_type_id')->default(1)->constrained()->onDelete('restrict');
+            $table->foreignId('user_id')->constrained()->onDelete('restrict');
             $table->timestamps();
         });
 
