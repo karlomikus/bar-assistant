@@ -221,7 +221,7 @@ class Cocktail extends Model
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'user_id' => $this->user_id,
             'tags' => $this->tags->pluck('name'),
-            'utensils' => $this->utensils->pluck('name'),
+            // 'utensils' => $this->utensils->pluck('name'),
             'date' => $this->updated_at->format('Y-m-d H:i:s'),
             'glass' => $this->glass->name ?? null,
             'average_rating' => (int) round($this->ratings()->avg('rating') ?? 0),
