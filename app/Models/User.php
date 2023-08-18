@@ -10,6 +10,8 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class User extends Authenticatable
 {
@@ -45,13 +47,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected static function booted(): void
-    {
-        static::addGlobalScope('realUsers', function (Builder $builder) {
-            $builder->where('id', '>', 1);
-        });
-    }
-
     /**
      * @return HasMany<UserIngredient>
      */
@@ -74,6 +69,16 @@ class User extends Authenticatable
     public function shoppingList(): HasMany
     {
         return $this->hasMany(UserShoppingList::class);
+    }
+
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(BarMembership::class);
+    }
+
+    public function ownedBars(): HasMany
+    {
+        return $this->hasMany(Bar::class);
     }
 
     public function isAdmin(): bool
