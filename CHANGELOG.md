@@ -1,3 +1,8 @@
+# v2.5.3
+## Fixes
+- Fixed null mapping of cocktail substitutes when importing from collection
+- Fixed failing migrations due to meilisearch syncing #158
+
 # v2.5.2
 ## Fixes
 - Fixed missing utensil info on GET cocktail endpoint
