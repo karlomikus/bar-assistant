@@ -90,4 +90,9 @@ class User extends Authenticatable
     {
         return !$this->isAdmin();
     }
+
+    public function getBarMembership(int $barId): BarMembership
+    {
+        return $this->memberships()->where('bar_id', $barId)->firstOrFail();
+    }
 }

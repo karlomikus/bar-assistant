@@ -23,6 +23,7 @@ use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
 use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
+use Kami\Cocktail\Http\Middleware\HasBarContext;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,7 +74,7 @@ Route::middleware($authMiddleware)->group(function() {
         Route::delete('/ingredients/{ingredientId}', [ShelfController::class, 'delete']);
     });
 
-    Route::prefix('ingredients')->group(function() {
+    Route::prefix('ingredients')->middleware(HasBarContext::class)->group(function() {
         Route::get('/', [IngredientController::class, 'index']);
         Route::post('/', [IngredientController::class, 'store']);
         Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show');

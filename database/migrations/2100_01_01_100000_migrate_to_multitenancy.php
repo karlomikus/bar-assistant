@@ -4,8 +4,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Kami\Cocktail\Search\SearchActionsAdapter;
-use Kami\Cocktail\Search\SearchActionsContract;
 
 return new class extends Migration
 {
@@ -20,6 +18,14 @@ return new class extends Migration
         // Drop all current data
         // Offer import from previous version when creating a new bar
         // Maybe import from .sqlite file?
+
+        $backupSuccess = copy(
+            storage_path('bar-assistant/database.sqlite'),
+            storage_path('bar-assistant/database.sqlite.backup')
+        );
+        if (!$backupSuccess) {
+            throw new \Exception('Database backup failed, stopping...');
+        }
 
         // Remove unused columns
         Schema::table('users', function (Blueprint $table) {
