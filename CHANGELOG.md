@@ -1,3 +1,10 @@
+# rc3.0.0
+## New
+- Added Bars
+
+## Changes
+- Removed `bar:make-admin` command
+
 # v2.5.2
 ## Fixes
 - Fixed missing utensil info on GET cocktail endpoint

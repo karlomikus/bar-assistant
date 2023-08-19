@@ -8,16 +8,18 @@ use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Kami\Cocktail\Services\BarService;
+use Kami\Cocktail\Http\Resources\BarResource;
 use Kami\Cocktail\Search\SearchActionsAdapter;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class BarController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResource
     {
-        return response()->json($request->user()->ownedBars);
+        return BarResource::collection($request->user()->ownedBars);
     }
 
-    public function store(SearchActionsAdapter $search, BarService $barService, Request $request)
+    public function store(SearchActionsAdapter $search, BarService $barService, Request $request): JsonResource
     {
         if ($request->user()->cannot('create', Bar::class)) {
             abort(403, 'You can not create anymore bars');
@@ -35,6 +37,6 @@ class BarController extends Controller
 
         $barService->openBar($bar);
 
-        return response()->json($bar);
+        return new BarResource($bar);
     }
 }

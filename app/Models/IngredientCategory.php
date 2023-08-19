@@ -9,5 +9,5 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class IngredientCategory extends Model
 {
-    use HasFactory;
+    use HasFactory, HasBarAwareScope;
 }
