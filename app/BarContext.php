@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Http;
+namespace Kami\Cocktail;
 
 use Kami\Cocktail\Models\Bar;
 

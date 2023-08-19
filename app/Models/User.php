@@ -105,4 +105,9 @@ class User extends Authenticatable
     {
         return $this->id === $bar->user_id;
     }
+
+    public function canAccessBar(Bar $bar): bool
+    {
+        return $this->hasBarMembership($bar->id) || $this->isBarOwner($bar);
+    }
 }

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Kami\Cocktail\Models\Bar;
-use Kami\Cocktail\Http\BarContext;
+use Kami\Cocktail\BarContext;
 
 if (! function_exists('bar')) {
     function bar(): Bar

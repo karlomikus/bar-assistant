@@ -5,7 +5,7 @@ namespace Kami\Cocktail\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Bar;
-use Kami\Cocktail\Http\BarContext;
+use Kami\Cocktail\BarContext;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureRequestHasBarQuery
@@ -25,7 +25,7 @@ class EnsureRequestHasBarQuery
 
         $bar = Bar::findOrFail($barId);
 
-        if (!$request->user()->hasBarMembership($bar->id) && !$request->user()->isBarOwner($bar)) {
+        if (!$request->user()->canAccessBar($bar)) {
             abort(403);
         }
 
