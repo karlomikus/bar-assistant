@@ -46,6 +46,10 @@ class IngredientController extends Controller
 
     public function store(IngredientService $ingredientService, IngredientRequest $request): JsonResponse
     {
+        if ($request->user()->cannot('create', Ingredient::class)) {
+            abort(403);
+        }
+
         $ingredient = $ingredientService->createIngredient(
             bar()->id,
             $request->post('name'),
@@ -104,7 +108,7 @@ class IngredientController extends Controller
 
     public function extra(Request $request, CocktailService $cocktailService, int $id): JsonResponse
     {
-        $currentShelfIngredients = $request->user()->shelfIngredients->pluck('ingredient_id');
+        $currentShelfIngredients = $request->user()->getShelfIngredients(bar()->id)->pluck('ingredient_id');
         $currentShelfCocktails = $cocktailService->getCocktailsByUserIngredients($currentShelfIngredients->toArray())->values();
         $extraShelfCocktails = $cocktailService->getCocktailsByUserIngredients($currentShelfIngredients->push($id)->toArray())->values();
 
@@ -112,7 +116,7 @@ class IngredientController extends Controller
             return response()->json(['data' => []]);
         }
 
-        $extraCocktails = Cocktail::whereIn('id', $extraShelfCocktails->diff($currentShelfCocktails)->values())->get();
+        $extraCocktails = Cocktail::whereIn('id', $extraShelfCocktails->diff($currentShelfCocktails)->values())->barAware()->get();
 
         return response()->json([
             'data' => $extraCocktails->map(function (Cocktail $cocktail) {

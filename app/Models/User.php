@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Models;
 
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -48,11 +49,11 @@ class User extends Authenticatable
     ];
 
     /**
-     * @return HasMany<UserIngredient>
+     * @return null|Collection<int, UserIngredient>
      */
-    public function shelfIngredients(): HasMany
+    public function getShelfIngredients(int $barId): Collection
     {
-        return $this->hasMany(UserIngredient::class);
+        return $this->getBarMembership($barId)?->shelfIngredients ?? new Collection();
     }
 
     /**

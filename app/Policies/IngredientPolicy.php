@@ -21,9 +21,14 @@ class IngredientPolicy
         return null;
     }
 
+    public function create(User $user): bool
+    {
+        return $user->hasBarMembership(bar()->id);
+    }
+
     public function show(User $user, Ingredient $ingredient): bool
     {
-        return $user->id === $ingredient->user_id && $user->hasBarMembership($ingredient->bar_id);
+        return $user->hasBarMembership($ingredient->bar_id);
     }
 
     public function edit(User $user, Ingredient $ingredient): bool

@@ -29,12 +29,12 @@ class ProfileResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'is_admin' => $this->isAdmin(),
-            'search_host' => $this->adapter->getActions()->getHost(),
-            'search_api_key' => $this->search_api_key,
-            'favorite_cocktails' => $this->favorites->pluck('cocktail_id'),
-            'shelf_ingredients' => $this->shelfIngredients->pluck('ingredient_id'),
-            'shopping_lists' => $this->shoppingList->pluck('ingredient_id'),
+            // 'is_admin' => $this->isAdmin(),
+            // 'search_host' => $this->adapter->getActions()->getHost(),
+            // 'search_api_key' => $this->search_api_key,
+            // 'favorite_cocktails' => $this->favorites->pluck('cocktail_id'),
+            // 'shelf_ingredients' => $this->shelfIngredients->pluck('ingredient_id'),
+            // 'shopping_lists' => $this->shoppingList->pluck('ingredient_id'),
         ];
     }
 }

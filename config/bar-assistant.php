@@ -58,4 +58,6 @@ return [
         false
     ),
 
+    'max_default_bars' => 5,
+
 ];

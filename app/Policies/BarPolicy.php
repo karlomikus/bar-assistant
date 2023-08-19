@@ -13,6 +13,6 @@ class BarPolicy
 
     public function create(User $user): bool
     {
-        return $user->ownedBars->count() < 100;
+        return $user->ownedBars->count() < config('bar-assistant.max_default_bars', 1);
     }
 }

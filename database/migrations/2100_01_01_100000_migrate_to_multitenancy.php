@@ -71,13 +71,24 @@ return new class extends Migration
         });
 
         Schema::table('collections', function (Blueprint $table) {
-            $table->dropColumn('user_id');
             $table->foreignId('bar_membership_id')->constrained()->onDelete('cascade');
+        });
+        Schema::table('collections', function (Blueprint $table) {
+            $table->dropColumn('user_id');
         });
 
         Schema::table('notes', function (Blueprint $table) {
-            $table->dropColumn('user_id');
             $table->foreignId('bar_membership_id')->constrained()->onDelete('cascade');
+        });
+        Schema::table('notes', function (Blueprint $table) {
+            $table->dropColumn('user_id');
+        });
+
+        Schema::table('user_ingredients', function (Blueprint $table) {
+            $table->foreignId('bar_membership_id')->constrained()->onDelete('cascade');
+        });
+        Schema::table('user_ingredients', function (Blueprint $table) {
+            $table->dropColumn('user_id');
         });
     }
 

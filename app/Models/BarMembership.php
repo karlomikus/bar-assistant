@@ -24,4 +24,9 @@ class BarMembership extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function userIngredients()
+    {
+        return $this->hasMany(UserIngredient::class);
+    }
 }
