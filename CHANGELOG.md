@@ -1,4 +1,8 @@
 # rc3.0.0
+## Breaking changes
+- Removed POST `shelf/ingredients/{ingredientId}`
+- Removed DELETE `shelf/ingredients/{ingredientId}`
+
 ## New
 - Added Bars
 

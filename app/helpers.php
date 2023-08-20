@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\BarContext;
+use Kami\Cocktail\Models\Bar;
 
-if (! function_exists('bar')) {
+if (!function_exists('bar')) {
     /**
      * Get current Bar model instance
      * Usually set through http query string

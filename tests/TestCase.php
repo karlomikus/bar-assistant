@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\BarContext;
+use Kami\Cocktail\Models\Bar;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase

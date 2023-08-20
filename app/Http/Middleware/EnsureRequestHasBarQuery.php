@@ -4,8 +4,8 @@ namespace Kami\Cocktail\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\BarContext;
+use Kami\Cocktail\Models\Bar;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureRequestHasBarQuery

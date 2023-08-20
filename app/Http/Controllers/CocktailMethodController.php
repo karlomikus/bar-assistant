@@ -56,8 +56,6 @@ class CocktailMethodController extends Controller
         $method->dilution_percentage = (int) $request->post('dilution_percentage');
         $method->save();
 
-        // TODO: Update index abv
-
         return new CocktailMethodResource($method);
     }
 

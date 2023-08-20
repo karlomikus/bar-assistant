@@ -22,7 +22,7 @@ class BarService
 
     private function importBaseData(string $tableName, string $filepath, int $barId)
     {
-        $importData = array_map(function(array $item) use ($barId) {
+        $importData = array_map(function (array $item) use ($barId) {
             $item['bar_id'] = $barId;
 
             return $item;
