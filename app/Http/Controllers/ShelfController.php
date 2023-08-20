@@ -30,10 +30,11 @@ class ShelfController extends Controller
 
     public function cocktails(CocktailService $cocktailService, Request $request): JsonResponse
     {
+        $barMembership = $request->user()->getBarMembership(bar()->id);
         $limit = $request->has('limit') ? (int) $request->get('limit') : null;
 
         $cocktailIds = $cocktailService->getCocktailsByIngredients(
-            $request->user()->shelfIngredients->pluck('ingredient_id')->toArray(),
+            $barMembership->userIngredients->pluck('ingredient_id')->toArray(),
             $limit
         );
 

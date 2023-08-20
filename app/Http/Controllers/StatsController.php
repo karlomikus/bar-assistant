@@ -17,11 +17,15 @@ class StatsController extends Controller
 {
     public function index(CocktailService $cocktailService, Request $request): JsonResponse
     {
+        $bar = bar();
+        $barMembership = $request->user()->getBarMembership(bar()->id);
         $limit = $request->get('limit', 5);
         $stats = [];
 
         $popularIngredientIds = DB::table('cocktail_ingredients')
             ->select('ingredient_id', DB::raw('COUNT(ingredient_id) AS cocktails_count'))
+            ->join('cocktails', 'cocktails.id', '=', 'cocktail_ingredients.cocktail_id')
+            ->where('cocktails.bar_id', $bar->id)
             ->groupBy('ingredient_id')
             ->orderBy('cocktails_count', 'desc')
             ->limit($limit)
@@ -47,10 +51,10 @@ class StatsController extends Controller
             ->limit($limit)
             ->get();
 
-        $stats['total_cocktails'] = Cocktail::count();
-        $stats['total_ingredients'] = Ingredient::count();
+        $stats['total_cocktails'] = Cocktail::where('bar_id', $bar->id)->count();
+        $stats['total_ingredients'] = Ingredient::where('bar_id', $bar->id)->count();
         $stats['total_shelf_cocktails'] = $cocktailService->getCocktailsByIngredients(
-            $request->user()->shelfIngredients->pluck('ingredient_id')->toArray()
+            $barMembership->userIngredients->pluck('ingredient_id')->toArray()
         )->count();
         $stats['total_shelf_ingredients'] = UserIngredient::where('user_id', $request->user()->id)->count();
         $stats['most_popular_ingredients'] = $popularIngredientIds;

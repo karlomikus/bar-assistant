@@ -91,7 +91,7 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('cocktails')->group(function() {
-        Route::get('/', [CocktailController::class, 'index'])->name('cocktails.index');
+        Route::get('/', [CocktailController::class, 'index'])->name('cocktails.index')->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show');
         Route::get('/{id}/share', [CocktailController::class, 'share'])->name('cocktails.share');
         Route::post('/{id}/toggle-favorite', [CocktailController::class, 'toggleFavorite'])->name('cocktails.favorite');
@@ -158,7 +158,7 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('stats')->group(function() {
-        Route::get('/', [StatsController::class, 'index']);
+        Route::get('/', [StatsController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
     });
 
     Route::prefix('cocktail-methods')->group(function() {

@@ -19,6 +19,8 @@ final class CocktailQueryFilter extends QueryBuilder
     {
         parent::__construct(Cocktail::query());
 
+        $barMembership = $this->request->user()->getBarMembership(bar()->id);
+
         $this
             ->allowedFilters([
                 AllowedFilter::exact('id'),
@@ -98,8 +100,8 @@ final class CocktailQueryFilter extends QueryBuilder
             ->with('ingredients.ingredient', 'images', 'tags')
             ->selectRaw('cocktails.*, COUNT(ci.cocktail_id) AS total_ingredients, COUNT(ci.ingredient_id) - COUNT(ui.ingredient_id) AS missing_ingredients')
             ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')
-            ->leftJoin('user_ingredients AS ui', function ($query) {
-                $query->on('ui.ingredient_id', '=', 'ci.ingredient_id')->where('ui.user_id', $this->request->user()->id);
+            ->leftJoin('user_ingredients AS ui', function ($query) use ($barMembership) {
+                $query->on('ui.ingredient_id', '=', 'ci.ingredient_id')->where('ui.bar_membership_id', $barMembership->id);
             })
             ->groupBy('cocktails.id')
             ->withRatings($this->request->user()->id);
