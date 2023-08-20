@@ -37,7 +37,7 @@ final class CocktailQueryFilter extends QueryBuilder
                 }),
                 AllowedFilter::callback('on_shelf', function ($query, $value) use ($cocktailService) {
                     if ($value === true) {
-                        $query->whereIn('cocktails.id', $cocktailService->getCocktailsByUserIngredients(
+                        $query->whereIn('cocktails.id', $cocktailService->getCocktailsByIngredients(
                             $this->request->user()->shelfIngredients->pluck('ingredient_id')->toArray()
                         ));
                     }
@@ -47,7 +47,7 @@ final class CocktailQueryFilter extends QueryBuilder
                         $value = [$value];
                     }
 
-                    $query->whereIn('cocktails.id', $cocktailService->getCocktailsByUserIngredients($value));
+                    $query->whereIn('cocktails.id', $cocktailService->getCocktailsByIngredients($value));
                 }),
                 AllowedFilter::callback('is_public', function ($query, $value) {
                     if ($value === true) {

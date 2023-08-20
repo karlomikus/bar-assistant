@@ -49,7 +49,7 @@ class StatsController extends Controller
 
         $stats['total_cocktails'] = Cocktail::count();
         $stats['total_ingredients'] = Ingredient::count();
-        $stats['total_shelf_cocktails'] = $cocktailService->getCocktailsByUserIngredients(
+        $stats['total_shelf_cocktails'] = $cocktailService->getCocktailsByIngredients(
             $request->user()->shelfIngredients->pluck('ingredient_id')->toArray()
         )->count();
         $stats['total_shelf_ingredients'] = UserIngredient::where('user_id', $request->user()->id)->count();

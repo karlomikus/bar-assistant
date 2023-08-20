@@ -192,7 +192,7 @@ class CocktailService
      * @param array<int> $ingredientIds
      * @return \Illuminate\Support\Collection<string, mixed>
      */
-    public function getCocktailsByUserIngredients(array $ingredientIds, ?int $limit = null): Collection
+    public function getCocktailsByIngredients(array $ingredientIds, ?int $limit = null): Collection
     {
         $query = $this->db->table('cocktails AS c')
             ->select('c.id')

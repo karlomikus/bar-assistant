@@ -109,8 +109,8 @@ class IngredientController extends Controller
     public function extra(Request $request, CocktailService $cocktailService, int $id): JsonResponse
     {
         $currentShelfIngredients = $request->user()->getShelfIngredients(bar()->id)->pluck('ingredient_id');
-        $currentShelfCocktails = $cocktailService->getCocktailsByUserIngredients($currentShelfIngredients->toArray())->values();
-        $extraShelfCocktails = $cocktailService->getCocktailsByUserIngredients($currentShelfIngredients->push($id)->toArray())->values();
+        $currentShelfCocktails = $cocktailService->getCocktailsByIngredients($currentShelfIngredients->toArray())->values();
+        $extraShelfCocktails = $cocktailService->getCocktailsByIngredients($currentShelfIngredients->push($id)->toArray())->values();
 
         if ($currentShelfCocktails->count() === $extraShelfCocktails->count()) {
             return response()->json(['data' => []]);
