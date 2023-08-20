@@ -17,20 +17,22 @@ class ShoppingListController extends Controller
     public function index(Request $request): JsonResource
     {
         return UserShoppingListResource::collection(
-            $request->user()->shoppingList->load('ingredient')
+            $request->user()->getBarMembership(bar()->id)->shoppingListIngredients->load('ingredient')
         );
     }
 
     public function batchStore(Request $request): JsonResource
     {
+        $barMembership = $request->user()->getBarMembership(bar()->id);
         $ingredientIds = $request->post('ingredient_ids');
 
         $models = [];
         foreach ($ingredientIds as $ingId) {
             $usl = new UserShoppingList();
             $usl->ingredient_id = $ingId;
+            $usl->bar_membership_id = $barMembership->id;
             try {
-                $models[] = $request->user()->shoppingList()->save($usl);
+                $models[] = $barMembership->shoppingListIngredients()->save($usl);
             } catch (Throwable) {
             }
         }
@@ -38,25 +40,27 @@ class ShoppingListController extends Controller
         return UserShoppingListResource::collection($models);
     }
 
-    public function batchDelete(Request $request): JsonResource
+    public function batchDelete(Request $request): Response
     {
+        $barMembership = $request->user()->getBarMembership(bar()->id);
         $ingredientIds = $request->post('ingredient_ids');
 
         try {
-            $request->user()->shoppingList()->whereIn('ingredient_id', $ingredientIds)->delete();
+            $barMembership->shoppingListIngredients()->whereIn('ingredient_id', $ingredientIds)->delete();
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
         }
 
-        return new SuccessActionResource((object) ['ingredient_ids' => $ingredientIds]);
+        return response(null, 204);
     }
 
     public function share(Request $request): Response
     {
+        $barMembership = $request->user()->getBarMembership(bar()->id);
         $type = $request->get('type', 'markdown');
 
-        $shoppingListIngredients = $request->user()
-            ->shoppingList
+        $shoppingListIngredients = $barMembership
+            ->shoppingListIngredients
             ->load('ingredient.category')
             ->groupBy('ingredient.category.name');
 

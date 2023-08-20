@@ -16,7 +16,7 @@ class ProfileController extends Controller
     public function show(Request $request): JsonResource
     {
         return new ProfileResource(
-            $request->user()->load('favorites', 'shelfIngredients', 'shoppingList'),
+            $request->user()->load('favorites'),
             app(SearchActionsAdapter::class),
         );
     }
@@ -36,7 +36,7 @@ class ProfileController extends Controller
         $currentUser->save();
 
         return new ProfileResource(
-            $request->user()->load('favorites', 'shelfIngredients', 'shoppingList'),
+            $request->user()->load('favorites'),
             app(SearchActionsAdapter::class),
         );
     }

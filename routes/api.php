@@ -67,11 +67,10 @@ Route::middleware($authMiddleware)->group(function() {
     Route::post('/user', [ProfileController::class, 'update']);
 
     Route::prefix('shelf')->group(function() {
-        Route::get('/cocktails', [ShelfController::class, 'cocktails']);
-        Route::get('/ingredients', [ShelfController::class, 'ingredients']);
-        Route::post('/ingredients', [ShelfController::class, 'batch']);
-        Route::post('/ingredients/{ingredientId}', [ShelfController::class, 'save']);
-        Route::delete('/ingredients/{ingredientId}', [ShelfController::class, 'delete']);
+        Route::get('/cocktails', [ShelfController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/ingredients', [ShelfController::class, 'ingredients'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/ingredients/batch-store', [ShelfController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/ingredients/batch-delete', [ShelfController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
     });
 
     Route::prefix('ingredients')->group(function() {
@@ -114,10 +113,10 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('shopping-list')->group(function() {
-        Route::get('/', [ShoppingListController::class, 'index']);
-        Route::get('/share', [ShoppingListController::class, 'share']);
-        Route::post('/batch-store', [ShoppingListController::class, 'batchStore']);
-        Route::post('/batch-delete', [ShoppingListController::class, 'batchDelete']);
+        Route::get('/', [ShoppingListController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/share', [ShoppingListController::class, 'share'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/batch-store', [ShoppingListController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/batch-delete', [ShoppingListController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
     });
 
     Route::prefix('glasses')->group(function() {
