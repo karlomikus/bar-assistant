@@ -9,7 +9,7 @@ use Kami\Cocktail\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Kami\Cocktail\Search\SearchActionsAdapter;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\RegisterRequest;
 use Kami\Cocktail\Http\Resources\ProfileResource;
 
@@ -38,7 +38,7 @@ class AuthController extends Controller
         return response()->json(['data' => ['success' => true]]);
     }
 
-    public function register(SearchActionsAdapter $search, RegisterRequest $req): JsonResponse
+    public function register(RegisterRequest $req): JsonResource
     {
         if (config('bar-assistant.allow_registration') == false) {
             abort(404, 'Registrations are closed.');
@@ -51,9 +51,6 @@ class AuthController extends Controller
         $user->email_verified_at = now();
         $user->save();
 
-        return (new ProfileResource(
-            $user,
-            app(SearchActionsAdapter::class),
-        ))->response()->setStatusCode(200);
+        return new ProfileResource($user);
     }
 }
