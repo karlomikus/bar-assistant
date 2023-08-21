@@ -89,14 +89,15 @@ class BarService
 
                 $disk->makeDirectory($ingredientModel->getUploadPath());
 
+                $imageFilePath = $ingredientModel->getUploadPath() . $ingredientModel->slug . '_' . Str::random(6) . '.png';
                 copy(
                     resource_path($ingredient['images'][0]['resource_path']),
-                    $disk->path($ingredientModel->getUploadPath() . $ingredientModel->slug . '_' . Str::random(6) . '.png')
+                    $disk->path($imageFilePath)
                 );
 
                 $image = new ImageModel();
                 $image->copyright = $ingredient['images'][0]['copyright'] ?? null;
-                $image->file_path = $filepath;
+                $image->file_path = $imageFilePath;
                 $image->file_extension = 'png';
                 $image->user_id = $user->id;
                 $image->sort = 1;
