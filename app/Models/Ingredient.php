@@ -34,7 +34,7 @@ class Ingredient extends Model
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
-            ->generateSlugsFrom('name')
+            ->generateSlugsFrom(['name', 'bar_id'])
             ->saveSlugsTo('slug');
     }
 

@@ -1,0 +1,1380 @@
+-
+    name: Absinthe
+    category: Spirits
+    strength: 40
+    description: 'Anise-flavoured spirit derived from several plants, including wormwood.'
+    color: '#b7ca8e'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/absinthe.png
+            copyright: null
+-
+    name: 'Agave Syrup'
+    category: Syrups
+    strength: 0
+    description: 'Syrup made from agave.'
+    color: '#deca3f'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/agave-syrup.png
+            copyright: null
+-
+    name: Amaretto
+    category: Liqueurs
+    strength: 24
+    description: 'Sweet almond-flavored liqueur'
+    color: '#d62b0e'
+    origin: Italy
+    images:
+        -
+            resource_path: data/ingredients/amaretto.png
+            copyright: null
+-
+    name: 'Amaro Nonino'
+    category: Liqueurs
+    strength: 35
+    description: 'Sweet amaro'
+    color: '#c16e4b'
+    origin: Italy
+    images:
+        -
+            resource_path: data/ingredients/amaro-nonino.png
+            copyright: null
+-
+    name: 'Angostura aromatic bitters'
+    category: Bitters
+    strength: 44.7
+    description: 'Angostura bitters is a concentrated bitters (herbal alcoholic preparation) based on gentian, herbs, and spices, by House of Angostura in Trinidad and Tobago.'
+    color: '#e95310'
+    origin: 'Trinidad & Tobago'
+    images:
+        -
+            resource_path: data/ingredients/angostura-aromatic-bitters.png
+            copyright: null
+-
+    name: 'Angostura cocoa bitters'
+    category: Bitters
+    strength: 38
+    description: 'Top notes of rich bitter, floral, nutty cocoa with a bold infusion of aromatic botanicals provide endless possibilities to remix classic cocktails.'
+    color: '#894c36'
+    origin: 'Trinidad & Tobago'
+    images:
+        -
+            resource_path: data/ingredients/angostura-cocoa-bitters.png
+            copyright: null
+-
+    name: Aperol
+    category: Liqueurs
+    strength: 11
+    description: 'Italian bitter apéritif made of gentian, rhubarb and cinchona, among other ingredients.'
+    color: '#fa4321'
+    origin: Italy
+    images:
+        -
+            resource_path: data/ingredients/aperol.png
+            copyright: null
+-
+    name: Apple
+    category: 'Fruits and vegetables'
+    strength: 0
+    description: 'Apple fruit'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/apple.png
+            copyright: null
+-
+    name: 'Apricot Brandy'
+    category: Spirits
+    strength: 40
+    description: 'Liquor distilled from fermented apricot juice or a liqueur made from apricot flesh and kernels.'
+    color: '#ca5210'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/apricot-brandy.png
+            copyright: null
+-
+    name: 'Baileys Irish Cream'
+    category: Liqueurs
+    strength: 17
+    description: 'Baileys Irish Cream is an Irish cream liqueur, an alcoholic drink flavoured with cream, cocoa and Irish whiskey. It is made by Diageo at Nangor Road, in Dublin, Ireland and in Mallusk, Northern Ireland. It is the original Irish cream, invented by a team headed by Tom Jago in 1971 for Gilbeys of Ireland.'
+    color: null
+    origin: Ireland
+    images:
+        -
+            resource_path: data/ingredients/baileys-irish-cream.png
+            copyright: null
+-
+    name: 'Blue Curaçao'
+    category: Liqueurs
+    strength: 20
+    description: 'Curaçao with added blue dye.'
+    color: '#0192fe'
+    origin: Netherlands
+    images:
+        -
+            resource_path: data/ingredients/blue-curacao.png
+            copyright: null
+-
+    name: 'Bourbon Whiskey'
+    category: Spirits
+    strength: 40
+    description: 'Barrel-aged distilled liquor made primarily from corn.'
+    color: '#d54a06'
+    origin: 'North America'
+    images:
+        -
+            resource_path: data/ingredients/bourbon-whiskey.png
+            copyright: null
+-
+    name: Brandy
+    category: Spirits
+    strength: 40
+    description: 'Liquor produced by distilling wine.'
+    color: '#e66500'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/brandy.png
+            copyright: null
+-
+    name: Bénédictine
+    category: Liqueurs
+    strength: 40
+    description: 'Herbal liqueur flavored with twenty-seven flowers, berries, herbs, roots, and spices.'
+    color: '#f39100'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/benedictine.png
+            copyright: null
+-
+    name: Cachaça
+    category: Spirits
+    strength: 40
+    description: 'Distilled spirit made from fermented sugarcane juice.'
+    color: '#ffffff'
+    origin: Brazil
+    images:
+        -
+            resource_path: data/ingredients/cachaca.png
+            copyright: null
+-
+    name: Calvados
+    category: Spirits
+    strength: 40
+    description: 'Brandy made from apples or pears.'
+    color: '#ca5210'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/calvados.png
+            copyright: null
+-
+    name: Campari
+    category: Liqueurs
+    strength: 25
+    description: 'Italian alcoholic liqueur obtained from the infusion of herbs and fruit.'
+    color: '#ca101e'
+    origin: Italy
+    images:
+        -
+            resource_path: data/ingredients/campari.png
+            copyright: null
+-
+    name: Chambord
+    category: Liqueurs
+    strength: 16.5
+    description: 'Raspberry liqueur modelled after a liqueur produced in the Loire Valley of France during the late 17th century.'
+    color: '#6f1123'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/chambord.png
+            copyright: null
+-
+    name: 'Chamomile cordial'
+    category: Juices
+    strength: 0
+    description: 'Herbal juice made from chamomile.'
+    color: '#e2dccc'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/chamomile-cordial.png
+            copyright: null
+-
+    name: Champagne
+    category: Wines
+    strength: 12
+    description: 'Sparkling wine.'
+    color: '#f6e1b0'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/champagne.png
+            copyright: null
+-
+    name: 'Chilli Pepper'
+    category: 'Fruits and vegetables'
+    strength: 0
+    description: 'Hot pepper'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/chilli-pepper.png
+            copyright: null
+-
+    name: 'Club soda'
+    category: Beverages
+    strength: 0
+    description: 'Club soda is a manufactured form of carbonated water, commonly used as a drink mixer.'
+    color: '#fff'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/club-soda.png
+            copyright: null
+-
+    name: 'Coconut Cream'
+    category: Uncategorized
+    strength: 0
+    description: 'Opaque, milky-white liquid extracted from the grated pulp of mature coconuts.'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/coconut-cream.png
+            copyright: null
+-
+    name: Coffee
+    category: Beverages
+    strength: 0
+    description: 'Coffee is a drink prepared from roasted coffee beans.'
+    color: '#fff'
+    origin: Africa
+    images:
+        -
+            resource_path: data/ingredients/coffee.png
+            copyright: null
+-
+    name: Cognac
+    category: Spirits
+    strength: 40
+    description: 'A variety of brandy named after the commune of Cognac, France.'
+    color: '#7b1c0a'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/cognac.png
+            copyright: null
+-
+    name: Cointreau
+    category: Liqueurs
+    strength: 40
+    description: 'Orange-flavoured triple sec liqueur, it was originally called Curaçao Blanco Triple Sec. Usually more dry tasting than Orange Curaçao.'
+    color: '#ffffff'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/cointreau.png
+            copyright: null
+-
+    name: Cola
+    category: Beverages
+    strength: 0
+    description: 'Cola is a carbonated soft drink flavored with vanilla, cinnamon, citrus oils and other flavorings.'
+    color: '#411919'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/cola.png
+            copyright: null
+-
+    name: 'Cranberry juice'
+    category: Juices
+    strength: 0
+    description: 'Juice made from cranberries.'
+    color: '#9c0024'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/cranberry-juice.png
+            copyright: null
+-
+    name: Cream
+    category: Uncategorized
+    strength: 0
+    description: 'Cream is a dairy product composed of the higher-fat layer skimmed from the top of milk before homogenization.'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/cream.png
+            copyright: null
+-
+    name: 'Crème de Violette'
+    category: Liqueurs
+    strength: 16
+    description: 'Crème de violette is a delicate, barely-sweet liqueur made from violet flower petals.'
+    color: '#a5a2fd'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/creme-de-violette.png
+            copyright: null
+-
+    name: 'Crème de cassis (blackcurrant liqueur)'
+    category: Liqueurs
+    strength: 25
+    description: 'It is made from blackcurrants that are crushed and soaked in alcohol, with sugar subsequently added.'
+    color: '#282722'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/creme-de-cassis-blackcurrant-liqueur.png
+            copyright: null
+-
+    name: 'Crème de mûre (blackberry liqueur)'
+    category: Liqueurs
+    strength: 42.3
+    description: 'Crème de mûre is a liqueur made with fresh blackberries.'
+    color: '#5f1933'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/creme-de-mure-blackberry-liqueur.png
+            copyright: null
+-
+    name: 'Dark Crème de Cacao'
+    category: Liqueurs
+    strength: 25
+    description: 'Dark brown creamy chocolate-flavored liqueur made from cacao seed.'
+    color: '#0b0504'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/dark-creme-de-cacao.png
+            copyright: null
+-
+    name: 'Dark Rum'
+    category: Spirits
+    strength: 40
+    description: 'Rum made from caramelized sugar or molasses.'
+    color: '#ca5210'
+    origin: Caribbean
+    images:
+        -
+            resource_path: data/ingredients/dark-rum.png
+            copyright: null
+-
+    name: 'Demerara Rum'
+    category: Spirits
+    strength: 40
+    description: 'Rum made with demerara sugar'
+    color: '#ca5210'
+    origin: Caribbean
+    images:
+        -
+            resource_path: data/ingredients/demerara-rum.png
+            copyright: null
+-
+    name: "Donn's Mix"
+    category: Syrups
+    strength: 0
+    description: '2 parts fresh yellow grapefruit and 1 part cinnamon syrup'
+    color: '#c6972c'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/donns-mix.png
+            copyright: null
+-
+    name: Drambuie
+    category: Liqueurs
+    strength: 40
+    description: 'Liqueur made from Scotch whisky, heather honey, herbs and spices.'
+    color: '#ea7e00'
+    origin: Scotland
+    images:
+        -
+            resource_path: data/ingredients/drambuie.png
+            copyright: null
+-
+    name: 'Dry Curaçao'
+    category: Liqueurs
+    strength: 40
+    description: 'While Curaçao and sweet oranges are the main ingredients, vanilla, prunes and lemon peel are amongst the other botanicals called for in the old recipe.'
+    color: '#ffc613'
+    origin: Italy
+    images:
+        -
+            resource_path: data/ingredients/dry-curacao.png
+            copyright: null
+-
+    name: 'Dry Sherry'
+    category: Wines
+    strength: 17
+    description: 'Fortified wine made from white grapes that are grown near the city of Jerez de la Frontera in Andalusia, Spain.'
+    color: '#8c4122'
+    origin: Spain
+    images:
+        -
+            resource_path: data/ingredients/dry-sherry.png
+            copyright: null
+-
+    name: 'Dry Vermouth'
+    category: Wines
+    strength: 18
+    description: 'Aromatized fortified wine.'
+    color: '#ffffff'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/dry-vermouth.png
+            copyright: null
+-
+    name: 'Egg White'
+    category: Uncategorized
+    strength: 0
+    description: 'Chicken egg without yolk.'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/egg-white.png
+            copyright: null
+-
+    name: 'Egg Yolk'
+    category: Uncategorized
+    strength: 0
+    description: 'Yolk from chicken egg'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/egg-yolk.png
+            copyright: null
+-
+    name: 'Elderflower Cordial'
+    category: Juices
+    strength: 0
+    description: 'Herbal juice made from elderflower.'
+    color: '#d9cfae'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/elderflower-cordial.png
+            copyright: null
+-
+    name: Espresso
+    category: Beverages
+    strength: 0
+    description: 'Espresso is generally thicker than coffee brewed by other methods, with a viscosity similar to that of warm honey.'
+    color: '#fff'
+    origin: Italy
+    images:
+        -
+            resource_path: data/ingredients/espresso.png
+            copyright: null
+-
+    name: Falernum
+    category: Liqueurs
+    strength: 11
+    description: 'Liqueur with flavors of ginger, lime, and almond, and frequently cloves or allspice. It may be thought of as a spicier version of orgeat syrup.'
+    color: '#f4f2e5'
+    origin: Caribbean
+    images:
+        -
+            resource_path: data/ingredients/falernum.png
+            copyright: null
+-
+    name: 'Fernet Branca'
+    category: Liqueurs
+    strength: 39
+    description: 'Fernet Branca is a bittersweet, herbal liqueur made with a number of different herbs and spices, including myrrh, rhubarb, chamomile, cardamom, aloe, and gentian root.'
+    color: null
+    origin: Italy
+    images:
+        -
+            resource_path: data/ingredients/fernet-branca.png
+            copyright: null
+-
+    name: Galliano
+    category: Liqueurs
+    strength: 42.3
+    description: 'Galliano is sweet with vanilla-anise flavour and subtle citrus and woodsy herbal undernotes.'
+    color: '#caa701'
+    origin: Italy
+    images:
+        -
+            resource_path: data/ingredients/galliano.png
+            copyright: null
+-
+    name: Gin
+    category: Spirits
+    strength: 40
+    description: 'Distilled alcoholic drink that derives its flavour from juniper berries.'
+    color: '#ffffff'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/gin.png
+            copyright: null
+-
+    name: Ginger
+    category: 'Fruits and vegetables'
+    strength: 0
+    description: 'Ginger root used as a spice'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/ginger.png
+            copyright: null
+-
+    name: 'Ginger beer'
+    category: Beverages
+    strength: 0
+    description: 'Ginger beer is a sweetened and carbonated, usually non-alcoholic beverage.'
+    color: '#fff'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/ginger-beer.png
+            copyright: null
+-
+    name: 'Ginger syrup'
+    category: Syrups
+    strength: 0
+    description: 'Syrup made from ginger root.'
+    color: '#c6972c'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/ginger-syrup.png
+            copyright: null
+-
+    name: 'Gold Rum'
+    category: Spirits
+    strength: 40
+    description: 'Medium-bodied rum aged in wooden barrels.'
+    color: '#c79141'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/gold-rum.png
+            copyright: null
+-
+    name: 'Gomme Syrup'
+    category: Syrups
+    strength: 0
+    description: 'A thicker simple syrup mixed with arabica gum powder.'
+    color: '#e6dfcc'
+    origin: null
+    images: {  }
+-
+    name: 'Grand Marnier'
+    category: Liqueurs
+    strength: 40
+    description: 'Orange-flavored liqueur made from a blend of Cognac brandy, distilled essence of bitter orange, and sugar.'
+    color: '#f34e02'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/grand-marnier.png
+            copyright: null
+-
+    name: 'Grapefruit juice'
+    category: Juices
+    strength: 0
+    description: 'Freshly squeezed grapefruit juice.'
+    color: '#ed7500'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/grapefruit-juice.png
+            copyright: null
+-
+    name: Grappa
+    category: Spirits
+    strength: 50
+    description: 'Fragrant, grape-based pomace brandy.'
+    color: '#ffffff'
+    origin: Italy
+    images:
+        -
+            resource_path: data/ingredients/grappa.png
+            copyright: null
+-
+    name: 'Green Chartreuse'
+    category: Liqueurs
+    strength: 55
+    description: 'Green Chartreuse is a naturally green liqueur made from 130 herbs and other plants macerated in alcohol and steeped for about eight hours.'
+    color: '#85993a'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/green-chartreuse.png
+            copyright: null
+-
+    name: 'Grenadine Syrup'
+    category: Syrups
+    strength: 0
+    description: 'Fruit syrup made from pomegranates.'
+    color: '#bb0014'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/grenadine-syrup.png
+            copyright: null
+-
+    name: 'Honey Syrup'
+    category: Syrups
+    strength: 0
+    description: 'Syrup made from dissolving honey in water.'
+    color: '#f2a900'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/honey-syrup.png
+            copyright: null
+-
+    name: 'Irish whiskey'
+    category: Spirits
+    strength: 40
+    description: 'Whiskey made on the island of Ireland.'
+    color: '#d54a06'
+    origin: Ireland
+    images:
+        -
+            resource_path: data/ingredients/irish-whiskey.png
+            copyright: null
+-
+    name: 'Islay Scotch'
+    category: Spirits
+    strength: 40
+    description: 'Scotch whisky made on Islay island.'
+    color: '#d54a06'
+    origin: Scotland
+    images:
+        -
+            resource_path: data/ingredients/islay-scotch.png
+            copyright: null
+-
+    name: 'Jamaican Rum'
+    category: Spirits
+    strength: 40
+    description: 'Rum made in Jamaica.'
+    color: '#ca5210'
+    origin: Jamaica
+    images:
+        -
+            resource_path: data/ingredients/jamaican-rum.png
+            copyright: null
+-
+    name: 'Kahlua coffee liqueur'
+    category: Liqueurs
+    strength: 20
+    description: 'Coffee liqueur made with rum, sugar and arabica coffee.'
+    color: '#1a0d0a'
+    origin: Mexico
+    images:
+        -
+            resource_path: data/ingredients/kahlua-coffee-liqueur.png
+            copyright: null
+-
+    name: Lemon
+    category: 'Fruits and vegetables'
+    strength: 0
+    description: 'Lemon fruit'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/lemon.png
+            copyright: null
+-
+    name: 'Lemon juice'
+    category: Juices
+    strength: 0
+    description: 'Freshly squeezed lemon juice.'
+    color: '#f3efda'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/lemon-juice.png
+            copyright: null
+-
+    name: 'Lillet Blanc'
+    category: Wines
+    strength: 17
+    description: 'Aromatized sweet wine.'
+    color: '#f7ec77'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/lillet-blanc.png
+            copyright: null
+-
+    name: Lime
+    category: 'Fruits and vegetables'
+    strength: 0
+    description: 'Lime fruit'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/lime.png
+            copyright: null
+-
+    name: 'Lime juice'
+    category: Juices
+    strength: 0
+    description: 'Freshly squeezed lime juice.'
+    color: '#e9f1d7'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/lime-juice.png
+            copyright: null
+-
+    name: Maraschino
+    category: Liqueurs
+    strength: 32
+    description: 'Liqueur obtained from the distillation of Marasca cherries. The small, slightly sour fruit of the Tapiwa cherry tree, which grows wild along parts of the Dalmatian coast in Croatia, lends the liqueur its unique aroma.'
+    color: '#ffffff'
+    origin: Croatia
+    images:
+        -
+            resource_path: data/ingredients/maraschino.png
+            copyright: null
+-
+    name: 'Menthe Crème de Cacao'
+    category: Liqueurs
+    strength: 25
+    description: 'Mint flavored chocolate liqueur.'
+    color: '#88ad91'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/menthe-creme-de-cacao.png
+            copyright: null
+-
+    name: Mezcal
+    category: Spirits
+    strength: 40
+    description: 'Distilled alcoholic beverage made from any type of agave.'
+    color: '#ffffff'
+    origin: Mexico
+    images:
+        -
+            resource_path: data/ingredients/mezcal.png
+            copyright: null
+-
+    name: Mint
+    category: 'Fruits and vegetables'
+    strength: 0
+    description: 'Mint/mentha leaves.'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/mint.png
+            copyright: null
+-
+    name: 'Old Tom Gin'
+    category: Spirits
+    strength: 40
+    description: ' It is slightly sweeter than London Dry, but slightly drier than the Dutch Jenever, thus is sometimes called "the missing link".'
+    color: '#ffffff'
+    origin: UK
+    images:
+        -
+            resource_path: data/ingredients/old-tom-gin.png
+            copyright: null
+-
+    name: 'Oleo Saccharum'
+    category: Syrups
+    strength: 0
+    description: 'Oil extracted from citrus peels by using sugar.'
+    color: '#c6972c'
+    origin: null
+    images: {  }
+-
+    name: Orange
+    category: 'Fruits and vegetables'
+    strength: 0
+    description: 'Orange fruit'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/orange.png
+            copyright: null
+-
+    name: 'Orange Curaçao'
+    category: Liqueurs
+    strength: 20
+    description: 'Liqueur flavored with the dried peel of the bitter orange laraha, a citrus fruit grown on the Dutch island of Curaçao. Curaçao is used by liqueur makers overt the world as a generic name for orange-flavoured liqueurs.'
+    color: '#edaa53'
+    origin: Netherlands
+    images:
+        -
+            resource_path: data/ingredients/orange-curacao.png
+            copyright: null
+-
+    name: 'Orange Flower Water'
+    category: Beverages
+    strength: 0
+    description: 'Clear aromatic by-product of the distillation of fresh bitter-orange blossoms for their essential oil.'
+    color: '#fff'
+    origin: Mediterranean
+    images:
+        -
+            resource_path: data/ingredients/orange-flower-water.png
+            copyright: null
+-
+    name: 'Orange bitters'
+    category: Bitters
+    strength: 28
+    description: 'Orange bitters is a form of bitters, a cocktail flavoring made from such ingredients as the peels of Seville oranges, cardamom, caraway seed, coriander, anise, and burnt sugar in an alcohol base.'
+    color: '#ed8300'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/orange-bitters.png
+            copyright: null
+-
+    name: 'Orange juice'
+    category: Juices
+    strength: 0
+    description: 'Freshly squeezed orange juice.'
+    color: '#ff9518'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/orange-juice.png
+            copyright: null
+-
+    name: 'Orgeat Syrup'
+    category: Syrups
+    strength: 0
+    description: 'Sweet syrup made from almonds, sugar, and rose water or orange flower water.'
+    color: '#d9ca9f'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/orgeat-syrup.png
+            copyright: null
+-
+    name: Ouzo
+    category: Liqueurs
+    strength: 35
+    description: 'Dry anise-flavored aperitif that is widely consumed in Greece.'
+    color: '#ffffff'
+    origin: Greece
+    images:
+        -
+            resource_path: data/ingredients/ouzo.png
+            copyright: null
+-
+    name: 'Overproof Rum'
+    category: Spirits
+    strength: 50
+    description: 'Rum much higher than the standard 40% ABV (80 proof), with many as high as 75% (150 proof) to 80% (160 proof) available.'
+    color: '#5d201a'
+    origin: Caribbean
+    images:
+        -
+            resource_path: data/ingredients/overproof-rum.png
+            copyright: null
+-
+    name: Passoã
+    category: Liqueurs
+    strength: 17
+    description: 'Liqueur with passion fruit being the main ingredient.'
+    color: '#ea5f4c'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/passoa.png
+            copyright: null
+-
+    name: Peach
+    category: 'Fruits and vegetables'
+    strength: 0
+    description: 'Peach fruit'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/peach.png
+            copyright: null
+-
+    name: 'Peach Schnapps'
+    category: Spirits
+    strength: 40
+    description: 'Schnapps made from peaches.'
+    color: '#ffffff'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/peach-schnapps.png
+            copyright: null
+-
+    name: 'Peach bitters'
+    category: Bitters
+    strength: 35
+    description: 'Peach bitters flavored with peaches and herbs.'
+    color: '#ca7c00'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/peach-bitters.png
+            copyright: null
+-
+    name: Pelinkovac
+    category: Liqueurs
+    strength: 32
+    description: 'Pelinkovac is a liqueur based on wormwood, it has a very bitter taste, resembling that of Jägermeister.'
+    color: '#573f42'
+    origin: 'Southeast Europe'
+    images:
+        -
+            resource_path: data/ingredients/pelinkovac.png
+            copyright: null
+-
+    name: Pepper
+    category: Uncategorized
+    strength: 0
+    description: 'Black pepper'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/pepper.png
+            copyright: null
+-
+    name: Pernod
+    category: Liqueurs
+    strength: 40
+    description: 'Anise flavored liqueur'
+    color: '#c6c0a0'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/pernod.png
+            copyright: null
+-
+    name: 'Peychauds Bitters'
+    category: Bitters
+    strength: 35
+    description: 'It is a gentian-based bitters, comparable to Angostura bitters, but with a predominant anise aroma combined with a background of mint.'
+    color: '#622426'
+    origin: 'North America'
+    images:
+        -
+            resource_path: data/ingredients/peychauds-bitters.png
+            copyright: null
+-
+    name: Pineapple
+    category: 'Fruits and vegetables'
+    strength: 0
+    description: 'Pineapple fruit'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/pineapple.png
+            copyright: null
+-
+    name: 'Pineapple juice'
+    category: Juices
+    strength: 0
+    description: 'Juice from pineapple fruit.'
+    color: '#eadb34'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/pineapple-juice.png
+            copyright: null
+-
+    name: Pisco
+    category: Spirits
+    strength: 40
+    description: 'Made by distilling fermented grape juice into a high-proof spirit.'
+    color: '#ffffff'
+    origin: 'South America'
+    images:
+        -
+            resource_path: data/ingredients/pisco.png
+            copyright: null
+-
+    name: Prosecco
+    category: Wines
+    strength: 11
+    description: 'Sparkling wine made from Prosecco grapes.'
+    color: '#a57600'
+    origin: Italy
+    images:
+        -
+            resource_path: data/ingredients/prosecco.png
+            copyright: null
+-
+    name: 'Raspberry Syrup'
+    category: Syrups
+    strength: 0
+    description: 'Fruit syrup made from raspberries.'
+    color: '#b71f23'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/raspberry-syrup.png
+            copyright: null
+-
+    name: 'Red wine'
+    category: Wines
+    strength: 11
+    description: 'Red wine is a type of wine made from dark-colored grape varieties.'
+    color: '#801212'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/red-wine.png
+            copyright: null
+-
+    name: 'Rhum agricole'
+    category: Spirits
+    strength: 50
+    description: 'Rum distilled from freshly squeezed sugarcane juice rather than molasses.'
+    color: '#ffffff'
+    origin: Caribbean
+    images:
+        -
+            resource_path: data/ingredients/rhum-agricole.png
+            copyright: null
+-
+    name: 'Rye whiskey'
+    category: Spirits
+    strength: 40
+    description: 'Whiskey made with at least 51 percent rye grain.'
+    color: '#d54a06'
+    origin: 'North America'
+    images:
+        -
+            resource_path: data/ingredients/rye-whiskey.png
+            copyright: null
+-
+    name: Salt
+    category: Uncategorized
+    strength: 0
+    description: Salt
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/salt.png
+            copyright: null
+-
+    name: 'Scotch whiskey'
+    category: Spirits
+    strength: 40
+    description: 'Malt whisky or grain whisky (or a blend of the two), made in Scotland.'
+    color: '#d54a06'
+    origin: Scotland
+    images:
+        -
+            resource_path: data/ingredients/scotch-whiskey.png
+            copyright: null
+-
+    name: 'Simple Syrup'
+    category: Syrups
+    strength: 0
+    description: 'Syrup made with sugar and water. Usually in 1:1 or 2:1 ratio.'
+    color: '#e6dfcc'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/simple-syrup.png
+            copyright: null
+-
+    name: 'Sloe Gin'
+    category: Liqueurs
+    strength: 40
+    description: 'Sloe gin is a red liqueur made with gin and sloes. Sloes are the fruit (drupe) of Prunus spinosa, the blackthorn plant, a relative of the plum.'
+    color: '#d74536'
+    origin: UK
+    images:
+        -
+            resource_path: data/ingredients/sloe-gin.png
+            copyright: null
+-
+    name: St-Germain
+    category: Liqueurs
+    strength: 20
+    description: 'St-Germain is an elderflower liqueur It is made using the petals of Sambucus nigra from the Savoie region in France, and each bottle is numbered with the year the petals were collected. Petals are collected annually in the spring over a period of three to four weeks, and are often transported by bicycle to collection points to avoid damaging the petals and impacting the flavour.'
+    color: '#f8e888'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/st-germain.png
+            copyright: null
+-
+    name: Sugar
+    category: Uncategorized
+    strength: 0
+    description: 'White sugar'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/sugar.png
+            copyright: null
+-
+    name: Suze
+    category: Liqueurs
+    strength: 15
+    description: 'Bitter flavored drink made with the roots of the plant gentian.'
+    color: '#ffffff'
+    origin: Switzerland
+    images:
+        -
+            resource_path: data/ingredients/suze.png
+            copyright: null
+-
+    name: 'Sweet Vermouth'
+    category: Wines
+    strength: 18
+    description: 'Aromatized fortified wine.'
+    color: '#8e4201'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/sweet-vermouth.png
+            copyright: null
+-
+    name: Tabasco
+    category: Uncategorized
+    strength: 0
+    description: 'Hot sauce made from vinegar, tabasco peppers, and salt.'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/tabasco.png
+            copyright: null
+-
+    name: Tequila
+    category: Spirits
+    strength: 40
+    description: 'Distilled beverage made from the blue agave plant.'
+    color: '#ffffff'
+    origin: Mexico
+    images:
+        -
+            resource_path: data/ingredients/tequila.png
+            copyright: null
+-
+    name: 'Tequila Añejo'
+    category: Spirits
+    strength: 40
+    description: 'Tequila aged a minimum of one year, but less than three years in small oak barrels.'
+    color: '#f5d58a'
+    origin: Mexico
+    images:
+        -
+            resource_path: data/ingredients/tequila-anejo.png
+            copyright: null
+-
+    name: 'Tequila Extra Añejo'
+    category: Spirits
+    strength: 40
+    description: 'Tequila aged a minimum of three years in oak barrels.'
+    color: '#e8a934'
+    origin: Mexico
+    images:
+        -
+            resource_path: data/ingredients/tequila-extra-anejo.png
+            copyright: null
+-
+    name: 'Tequila Reposado'
+    category: Spirits
+    strength: 40
+    description: 'Tequila aged a minimum of two months, but less than a year in oak barrels of any size.'
+    color: '#d8cca6'
+    origin: Mexico
+    images:
+        -
+            resource_path: data/ingredients/tequila-reposado.png
+            copyright: null
+-
+    name: 'Tomato juice'
+    category: Juices
+    strength: 0
+    description: 'Juice made from tomatoes.'
+    color: '#f16624'
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/tomato-juice.png
+            copyright: null
+-
+    name: Tonic
+    category: Beverages
+    strength: 0
+    description: 'Tonic water (or Indian tonic water) is a carbonated soft drink in which quinine is dissolved.'
+    color: '#fff'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/tonic.png
+            copyright: null
+-
+    name: 'Triple Sec'
+    category: Liqueurs
+    strength: 40
+    description: 'Triple sec is usually made from orange peels steeped in a spirit derived from sugar beet due to its neutral flavor.'
+    color: '#ffffff'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/triple-sec.png
+            copyright: null
+-
+    name: 'Vanilla Extract'
+    category: Uncategorized
+    strength: 0
+    description: 'Solution made by macerating and percolating vanilla pods in a solution of ethanol and water.'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/vanilla-extract.png
+            copyright: null
+-
+    name: 'Vanilla Vodka'
+    category: Spirits
+    strength: 40
+    description: 'Vodka with added vanilla essence.'
+    color: '#ffffff'
+    origin: Russia
+    images:
+        -
+            resource_path: data/ingredients/vanilla-vodka.png
+            copyright: null
+-
+    name: Vodka
+    category: Spirits
+    strength: 40
+    description: 'Clear alcoholic beverage distilled from cereal grains and potatos.'
+    color: '#ffffff'
+    origin: Russia
+    images:
+        -
+            resource_path: data/ingredients/vodka.png
+            copyright: null
+-
+    name: 'Vodka Citron'
+    category: Spirits
+    strength: 40
+    description: 'Vodka with added lemon essence.'
+    color: '#ffffff'
+    origin: Sweden
+    images:
+        -
+            resource_path: data/ingredients/vodka-citron.png
+            copyright: null
+-
+    name: Water
+    category: Beverages
+    strength: 0
+    description: "It's water."
+    color: '#fff'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/water.png
+            copyright: null
+-
+    name: Whiskey
+    category: Spirits
+    strength: 40
+    description: 'Distilled alcoholic beverage made from fermented grain mash.'
+    color: '#d54a06'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/whiskey.png
+            copyright: null
+-
+    name: 'White Crème de Cacao'
+    category: Liqueurs
+    strength: 25
+    description: 'Milk chocolate flavored liqueur with a hint of vanilla.'
+    color: '#ffffff'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/white-creme-de-cacao.png
+            copyright: null
+-
+    name: 'White Peach Puree'
+    category: Uncategorized
+    strength: 0
+    description: 'A purée (or mash) is cooked food, usually vegetables, fruits or legumes, that has been ground, pressed, blended or sieved to the consistency of a creamy paste or liquid.'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/white-peach-puree.png
+            copyright: null
+-
+    name: 'White Rum'
+    category: Spirits
+    strength: 40
+    description: 'Liquor made by fermenting and then distilling sugarcane molasses or sugarcane juice.'
+    color: '#ffffff'
+    origin: Caribbean
+    images:
+        -
+            resource_path: data/ingredients/white-rum.png
+            copyright: null
+-
+    name: 'White wine'
+    category: Wines
+    strength: 11
+    description: 'Wine is an alcoholic drink typically made from fermented grapes.'
+    color: '#f6e1b0'
+    origin: Worldwide
+    images:
+        -
+            resource_path: data/ingredients/white-wine.png
+            copyright: null
+-
+    name: 'Worcestershire Sauce'
+    category: Uncategorized
+    strength: 0
+    description: 'Fermented liquid condiment created in the city of Worcester'
+    color: null
+    origin: null
+    images:
+        -
+            resource_path: data/ingredients/worcestershire-sauce.png
+            copyright: null
+-
+    name: 'Yellow Chartreuse'
+    category: Liqueurs
+    strength: 40
+    description: 'Yellow Chartreuse has a milder and sweeter flavor and aroma than Green Chartreuse, and is lower in alcohol content.'
+    color: '#fbfb4b'
+    origin: France
+    images:
+        -
+            resource_path: data/ingredients/yellow-chartreuse.png
+            copyright: null

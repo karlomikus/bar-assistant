@@ -57,8 +57,6 @@ class ImageService
             $image->placeholder_hash = $thumbHash;
             $image->save();
 
-            $this->log->info('[IMAGE_SERVICE] Image created with id: ' . $image->id);
-
             $images[] = $image;
         }
 
@@ -85,13 +83,13 @@ class ImageService
                 $image->placeholder_hash = $thumbHash;
                 $image->file_extension = $fileExtension;
             } catch (Throwable $e) {
-                $this->log->info('[IMAGE_SERVICE] File upload error | ' . $e->getMessage());
+                $this->log->error('[IMAGE_SERVICE] File upload error | ' . $e->getMessage());
             }
 
             try {
                 $this->disk->delete($oldFilePath);
             } catch (Throwable $e) {
-                $this->log->info('[IMAGE_SERVICE] File delete error | ' . $e->getMessage());
+                $this->log->error('[IMAGE_SERVICE] File delete error | ' . $e->getMessage());
             }
         }
 
@@ -104,8 +102,6 @@ class ImageService
         }
 
         $image->save();
-
-        $this->log->info('[IMAGE_SERVICE] Image updated with id: ' . $image->id);
 
         return $image;
     }
@@ -153,7 +149,7 @@ class ImageService
         try {
             $thumbHash = $this->generateThumbHash($image);
         } catch (Throwable $e) {
-            $this->log->info('[IMAGE_SERVICE] ThumbHash Error | ' . $e->getMessage());
+            $this->log->error('[IMAGE_SERVICE] ThumbHash Error | ' . $e->getMessage());
 
             throw $e;
         }
@@ -161,7 +157,7 @@ class ImageService
         try {
             $this->disk->put($filepath, (string) $image->encode());
         } catch (Throwable $e) {
-            $this->log->info('[IMAGE_SERVICE] ' . $e->getMessage());
+            $this->log->error('[IMAGE_SERVICE] ' . $e->getMessage());
 
             throw $e;
         }

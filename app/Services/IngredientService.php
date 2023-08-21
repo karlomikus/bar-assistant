@@ -74,8 +74,6 @@ class IngredientService
             }
         }
 
-        $this->log->info('[INGREDIENT_SERVICE] Ingredient created with id:' . $ingredient->id);
-
         // Refresh model for response
         $ingredient->refresh();
         // Upsert scout index
