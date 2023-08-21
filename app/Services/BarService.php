@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
-use Throwable;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Kami\Cocktail\DataObjects\Image;
 use Illuminate\Support\Facades\Cache;
-use Intervention\Image\Facades\Image as ImageProcessor;
+use Illuminate\Support\Facades\Storage;
+use Kami\Cocktail\Models\Image as ImageModel;
 
 class BarService
 {
@@ -73,26 +72,7 @@ class BarService
         foreach ($ingredients as $ingredient) {
             $category = $categories->firstWhere('name', $ingredient['category']);
 
-            $ingredientImages = [];
-            $imageSource = null;
-            if (isset($ingredient['images'][0]['resource_path'])) {
-                $imageSource = resource_path($ingredient['images'][0]['resource_path']);
-            }
-
-            if ($imageSource) {
-                try {
-                    $imageDTO = new Image(
-                        ImageProcessor::make($imageSource),
-                        $ingredient['images'][0]['copyright'] ?? null
-                    );
-    
-                    $ingredientImages[] = $this->imageService->uploadAndSaveImages([$imageDTO], $user->id)[0]->id;
-                } catch (Throwable $e) {
-                    Log::error($e->getMessage());
-                }
-            }
-
-            $this->ingredientService->createIngredient(
+            $ingredientModel = $this->ingredientService->createIngredient(
                 $bar->id,
                 $ingredient['name'],
                 $category->id,
@@ -100,10 +80,31 @@ class BarService
                 $ingredient['strength'],
                 $ingredient['description'],
                 $ingredient['origin'],
-                $ingredient['color'],
-                null,
-                $ingredientImages
+                $ingredient['color']
             );
+
+            // For performance, manually copy the files and create image references
+            if (isset($ingredient['images'][0]['resource_path']) && file_exists(resource_path($ingredient['images'][0]['resource_path']))) {
+                $disk = Storage::disk('bar-assistant');
+
+                $disk->makeDirectory($ingredientModel->getUploadPath());
+
+                copy(
+                    resource_path($ingredient['images'][0]['resource_path']),
+                    $disk->path($ingredientModel->getUploadPath() . $ingredientModel->slug . '_' . Str::random(6) . '.png')
+                );
+
+                $image = new ImageModel();
+                $image->copyright = $ingredient['images'][0]['copyright'] ?? null;
+                $image->file_path = $filepath;
+                $image->file_extension = 'png';
+                $image->user_id = $user->id;
+                $image->sort = 1;
+                $image->placeholder_hash = $ingredient['images'][0]['placeholder_hash'] ?? null;
+                $image->save();
+
+                $ingredientModel->images()->save($image);
+            }
         }
     }
 
