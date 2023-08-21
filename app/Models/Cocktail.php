@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
-class Cocktail extends Model
+class Cocktail extends Model implements ImageableInterface
 {
     use HasFactory,
         Searchable,
@@ -32,7 +32,10 @@ class Cocktail extends Model
         'public_at' => 'datetime',
     ];
 
-    private string $appImagesDir = 'cocktails/';
+    public function getUploadPath(): string
+    {
+        return 'cocktails/' . $this->bar_id . '/';
+    }
 
     public function getSlugOptions(): SlugOptions
     {

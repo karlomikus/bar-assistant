@@ -31,6 +31,11 @@ class Ingredient extends Model
         'parent_ingredient_id',
     ];
 
+    public function getUploadPath(): string
+    {
+        return 'ingredients/' . $this->bar_id . '/';
+    }
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()

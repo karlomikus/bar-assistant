@@ -51,7 +51,7 @@ trait HasImages
             }
 
             $oldFilePath = $image->file_path;
-            $newFilePath = $this->appImagesDir . $this->slug . '_' . Str::random(6) . '.' . $image->file_extension;
+            $newFilePath = $this->getUploadPath() . $this->slug . '_' . Str::random(6) . '.' . $image->file_extension;
 
             if ($disk->exists($oldFilePath)) {
                 $disk->move($oldFilePath, $newFilePath);
