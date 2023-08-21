@@ -127,9 +127,7 @@ class Ingredient extends Model
             'image_url' => $this->getMainImageUrl(),
             'description' => $this->description,
             'category' => $this->category->name,
-            'strength_abv' => $this->strength,
-            'color' => $this->color ?? 'No color',
-            'origin' => $this->origin ?? 'No origin',
+            'origin' => $this->origin,
         ];
     }
 }

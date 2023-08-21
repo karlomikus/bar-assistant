@@ -215,21 +215,10 @@ class Cocktail extends Model
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
-            'garnish' => $this->garnish,
             'image_url' => $this->getMainImageUrl(),
-            'image_hash' => $this->getMainImage()?->placeholder_hash ?? null,
-            'main_image_id' => $this->getMainImage()?->id ?? null,
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
-            'user_id' => $this->user_id,
             'tags' => $this->tags->pluck('name'),
-            'utensils' => $this->utensils->pluck('name'),
-            'date' => $this->updated_at->format('Y-m-d H:i:s'),
-            'glass' => $this->glass->name ?? null,
-            'average_rating' => (int) round($this->ratings()->avg('rating') ?? 0),
-            'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
-            'calculated_abv' => $this->abv,
-            'method' => $this->method->name ?? null,
-            'has_public_link' => $this->public_id !== null,
+            'date' => $this->updated_at->format('Y-m-d H:i:s')
         ];
     }
 
