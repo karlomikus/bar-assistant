@@ -16,7 +16,6 @@ use Illuminate\Database\DatabaseManager;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Exceptions\CocktailException;
-use Kami\Cocktail\DataObjects\Cocktail\Ingredient;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
 
@@ -42,6 +41,7 @@ class CocktailService
             $cocktail->user_id = $cocktailDTO->userId;
             $cocktail->glass_id = $cocktailDTO->glassId;
             $cocktail->cocktail_method_id = $cocktailDTO->methodId;
+            $cocktail->bar_id = $cocktailDTO->barId;
             $cocktail->save();
 
             foreach ($cocktailDTO->ingredients as $ingredient) {
@@ -66,6 +66,7 @@ class CocktailService
             foreach ($cocktailDTO->tags as $tagName) {
                 $tag = Tag::firstOrNew([
                     'name' => trim($tagName),
+                    'bar_id' => $cocktailDTO->barId,
                 ]);
                 $tag->save();
                 $dbTags[] = $tag->id;
@@ -300,7 +301,9 @@ class CocktailService
             return false;
         }
 
-        $existing = CocktailFavorite::where('cocktail_id', $cocktailId)->where('user_id', $user->id)->first();
+        $barMembership = $user->getBarMembership($cocktail->bar_id);
+
+        $existing = CocktailFavorite::where('cocktail_id', $cocktailId)->where('bar_membership_id', $barMembership->id)->first();
         if ($existing) {
             $existing->delete();
 
@@ -309,8 +312,9 @@ class CocktailService
 
         $cocktailFavorite = new CocktailFavorite();
         $cocktailFavorite->cocktail_id = $cocktail->id;
+        $cocktailFavorite->bar_membership_id = $barMembership->id;
 
-        $user->favorites()->save($cocktailFavorite);
+        $barMembership->cocktailFavorites()->save($cocktailFavorite);
 
         return true;
     }

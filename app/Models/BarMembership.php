@@ -41,4 +41,12 @@ class BarMembership extends Model
     {
         return $this->hasMany(UserShoppingList::class);
     }
+
+    /**
+     * @return HasMany<CocktailFavorite>
+     */
+    public function cocktailFavorites(): HasMany
+    {
+        return $this->hasMany(CocktailFavorite::class);
+    }
 }

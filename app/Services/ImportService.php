@@ -17,7 +17,6 @@ use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Exceptions\ImportException;
 use Kami\Cocktail\Services\IngredientService;
-use Illuminate\Database\Eloquent\InvalidCastException;
 use Intervention\Image\Facades\Image as ImageProcessor;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
@@ -38,24 +37,34 @@ class ImportService
      * @param array<mixed> $sourceData Scraper data
      * @return Cocktail Database model of the cocktail
      */
-    public function importCocktailFromArray(array $sourceData, int $userId = 1): Cocktail
+    public function importCocktailFromArray(array $sourceData, int $userId, int $barId): Cocktail
     {
-        $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
-        $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
-        $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->get()->keyBy('name');
+        // TODO: Move to constructor
+        $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
+        $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
+        $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
 
         // Add images
         $cocktailImages = [];
         foreach ($sourceData['images'] ?? [] as $image) {
-            try {
-                $imageDTO = new Image(
-                    ImageProcessor::make($image['url']),
-                    $image['copyright'] ?? null
-                );
+            $imageSource = null;
+            if (array_key_exists('resource_path', $image)) {
+                $imageSource = resource_path($image['resource_path']);
+            } else if (array_key_exists('url', $image)) {
+                $imageSource = $image['url'];
+            }
 
-                $cocktailImages[] = $this->imageService->uploadAndSaveImages([$imageDTO], 1)[0]->id;
-            } catch (Throwable $e) {
-                Log::error($e->getMessage());
+            if ($imageSource) {
+                try {
+                    $imageDTO = new Image(
+                        ImageProcessor::make($imageSource),
+                        $image['copyright'] ?? null
+                    );
+    
+                    $cocktailImages[] = $this->imageService->uploadAndSaveImages([$imageDTO], 1)[0]->id;
+                } catch (Throwable $e) {
+                    Log::error($e->getMessage());
+                }
             }
         }
 
@@ -68,7 +77,8 @@ class ImportService
             } elseif ($sourceData['glass'] !== null) {
                 $newGlass = new Glass();
                 $newGlass->name = ucfirst($sourceData['glass']);
-                $newGlass->description = 'Created by scraper from ' . $sourceData['source'];
+                $newGlass->description = 'Created from "' . $sourceData['source'] . '"';
+                $newGlass->bar_id = $barId;
                 $newGlass->save();
                 $dbGlasses->put($glassNameLower, $newGlass->id);
                 $glassId = $newGlass->id;
@@ -92,6 +102,7 @@ class ImportService
                 $ingredientId = $dbIngredients->get(strtolower($scrapedIngredient['name']))->id;
             } else {
                 $newIngredient = $this->ingredientService->createIngredient(
+                    $barId,
                     ucfirst($scrapedIngredient['name']),
                     1,
                     $userId,
@@ -106,7 +117,9 @@ class ImportService
             $substitutes = [];
             if (array_key_exists('substitutes', $scrapedIngredient) && !empty($scrapedIngredient['substitutes'])) {
                 foreach ($scrapedIngredient['substitutes'] as $substituteName) {
-                    $substitutes[] = $dbIngredients->get(strtolower($substituteName), null)?->id;
+                    if ($dbIngredients->has(strtolower($substituteName))) {
+                        $substitutes[] = $dbIngredients->get(strtolower($substituteName))->id;
+                    }
                 }
             }
 
@@ -128,6 +141,7 @@ class ImportService
             $sourceData['name'],
             $sourceData['instructions'],
             $userId,
+            $barId,
             $sourceData['description'],
             $sourceData['source'],
             $sourceData['garnish'],

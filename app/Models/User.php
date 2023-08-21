@@ -56,22 +56,6 @@ class User extends Authenticatable
         return $this->getBarMembership($barId)?->shelfIngredients ?? new Collection();
     }
 
-    /**
-     * @return HasMany<CocktailFavorite>
-     */
-    public function favorites(): HasMany
-    {
-        return $this->hasMany(CocktailFavorite::class);
-    }
-
-    /**
-     * @return HasMany<UserShoppingList>
-     */
-    public function shoppingList(): HasMany
-    {
-        return $this->hasMany(UserShoppingList::class);
-    }
-
     public function memberships(): HasMany
     {
         return $this->hasMany(BarMembership::class);

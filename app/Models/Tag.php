@@ -14,7 +14,7 @@ class Tag extends Model
 
     public $timestamps = false;
 
-    public $fillable = ['name'];
+    public $fillable = ['name', 'bar_id'];
 
     /**
      * @return BelongsToMany<Cocktail>

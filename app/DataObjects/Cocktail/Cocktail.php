@@ -16,6 +16,7 @@ class Cocktail
         public readonly string $name,
         public readonly string $instructions,
         public readonly int $userId,
+        public readonly int $barId,
         public readonly ?string $description = null,
         public readonly ?string $source = null,
         public readonly ?string $garnish = null,

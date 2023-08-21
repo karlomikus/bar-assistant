@@ -79,6 +79,7 @@ class CocktailController extends Controller
             $request->post('name'),
             $request->post('instructions'),
             $request->user()->id,
+            bar()->id,
             $request->post('description'),
             $request->post('source'),
             $request->post('garnish'),
@@ -133,6 +134,7 @@ class CocktailController extends Controller
             $request->post('name'),
             $request->post('instructions'),
             $request->user()->id,
+            bar()->id,
             $request->post('description'),
             $request->post('source'),
             $request->post('garnish'),
@@ -176,7 +178,7 @@ class CocktailController extends Controller
      */
     public function toggleFavorite(CocktailService $cocktailService, Request $request, int $id): JsonResource
     {
-        $isFavorite = $cocktailService->toggleFavorite($request->user(), $id);
+        $isFavorite = $cocktailService->toggleFavorite($request->user(), $id, bar());
 
         return new SuccessActionResource((object) ['id' => $id, 'is_favorited' => $isFavorite]);
     }

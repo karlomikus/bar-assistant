@@ -17,3 +17,8 @@ if (!function_exists('bar')) {
         return app()->make(BarContext::class)->getBar();
     }
 }
+
+function barMembership()
+{
+    return app()->make(BarContext::class)->getCurrentUserBarMembership();
+}

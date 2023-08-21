@@ -35,7 +35,7 @@ class BarController extends Controller
 
         $bar->users()->save($request->user(), ['user_role_id' => UserRoleEnum::Admin->value]);
 
-        $barService->openBar($bar);
+        $barService->openBar($bar, $request->user());
 
         return new BarResource($bar);
     }

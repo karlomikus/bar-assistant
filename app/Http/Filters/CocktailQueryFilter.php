@@ -88,11 +88,11 @@ final class CocktailQueryFilter extends QueryBuilder
                 'abv',
                 'total_ingredients',
                 'missing_ingredients',
-                AllowedSort::callback('favorited_at', function ($query, bool $descending) {
+                AllowedSort::callback('favorited_at', function ($query, bool $descending) use ($barMembership) {
                     $direction = $descending ? 'DESC' : 'ASC';
 
                     $query->leftJoin('cocktail_favorites AS cf', 'cf.cocktail_id', '=', 'cocktails.id')
-                        ->where('cf.user_id', $this->request->user()->id)
+                        ->where('cf.bar_membership_id', $barMembership->id)
                         ->orderBy('cf.updated_at', $direction);
                 }),
             ])

@@ -94,7 +94,7 @@ Route::middleware($authMiddleware)->group(function() {
         Route::get('/', [CocktailController::class, 'index'])->name('cocktails.index')->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show');
         Route::get('/{id}/share', [CocktailController::class, 'share'])->name('cocktails.share');
-        Route::post('/{id}/toggle-favorite', [CocktailController::class, 'toggleFavorite'])->name('cocktails.favorite');
+        Route::post('/{id}/toggle-favorite', [CocktailController::class, 'toggleFavorite'])->middleware(EnsureRequestHasBarQuery::class)->name('cocktails.favorite');
         Route::post('/', [CocktailController::class, 'store'])->name('cocktails.store');
         Route::delete('/{id}', [CocktailController::class, 'delete'])->name('cocktails.delete');
         Route::put('/{id}', [CocktailController::class, 'update'])->name('cocktails.update');

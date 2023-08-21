@@ -44,9 +44,9 @@ return new class extends Migration
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
         });
 
-        Schema::table('images', function (Blueprint $table) {
-            $table->foreignId('bar_id')->constrained()->onDelete('cascade');
-        });
+        // Schema::table('images', function (Blueprint $table) {
+        //     $table->foreignId('bar_id')->constrained()->onDelete('cascade');
+        // });
 
         Schema::table('glasses', function (Blueprint $table) {
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
@@ -95,6 +95,13 @@ return new class extends Migration
             $table->foreignId('bar_membership_id')->constrained()->onDelete('cascade');
         });
         Schema::table('user_shopping_lists', function (Blueprint $table) {
+            $table->dropColumn('user_id');
+        });
+
+        Schema::table('cocktail_favorites', function (Blueprint $table) {
+            $table->foreignId('bar_membership_id')->constrained()->onDelete('cascade');
+        });
+        Schema::table('cocktail_favorites', function (Blueprint $table) {
             $table->dropColumn('user_id');
         });
     }
