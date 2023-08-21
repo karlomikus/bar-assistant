@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
+use Throwable;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Kami\Cocktail\DataObjects\Image;
 use Illuminate\Support\Facades\Cache;
+use Intervention\Image\Facades\Image as ImageProcessor;
 
 class BarService
 {
@@ -70,6 +73,25 @@ class BarService
         foreach ($ingredients as $ingredient) {
             $category = $categories->firstWhere('name', $ingredient['category']);
 
+            $ingredientImages = [];
+            $imageSource = null;
+            if (isset($ingredient['images'][0]['resource_path'])) {
+                $imageSource = resource_path($ingredient['images'][0]['resource_path']);
+            }
+
+            if ($imageSource) {
+                try {
+                    $imageDTO = new Image(
+                        ImageProcessor::make($imageSource),
+                        $ingredient['images'][0]['copyright'] ?? null
+                    );
+    
+                    $ingredientImages[] = $this->imageService->uploadAndSaveImages([$imageDTO], $user->id)[0]->id;
+                } catch (Throwable $e) {
+                    Log::error($e->getMessage());
+                }
+            }
+
             $this->ingredientService->createIngredient(
                 $bar->id,
                 $ingredient['name'],
@@ -78,7 +100,9 @@ class BarService
                 $ingredient['strength'],
                 $ingredient['description'],
                 $ingredient['origin'],
-                $ingredient['color']
+                $ingredient['color'],
+                null,
+                $ingredientImages
             );
         }
     }
