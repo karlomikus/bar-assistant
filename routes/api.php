@@ -92,10 +92,10 @@ Route::middleware($authMiddleware)->group(function() {
 
     Route::prefix('cocktails')->group(function() {
         Route::get('/', [CocktailController::class, 'index'])->name('cocktails.index')->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show');
-        Route::get('/{id}/share', [CocktailController::class, 'share'])->name('cocktails.share');
+        Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show')->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/{id}/share', [CocktailController::class, 'share'])->name('cocktails.share')->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/{id}/toggle-favorite', [CocktailController::class, 'toggleFavorite'])->middleware(EnsureRequestHasBarQuery::class)->name('cocktails.favorite');
-        Route::post('/', [CocktailController::class, 'store'])->name('cocktails.store');
+        Route::post('/', [CocktailController::class, 'store'])->name('cocktails.store')->middleware(EnsureRequestHasBarQuery::class);
         Route::delete('/{id}', [CocktailController::class, 'delete'])->name('cocktails.delete');
         Route::put('/{id}', [CocktailController::class, 'update'])->name('cocktails.update');
         Route::post('/{id}/public-link', [CocktailController::class, 'makePublic'])->name('cocktails.make-public');
@@ -120,25 +120,25 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('glasses')->group(function() {
-        Route::get('/find', [GlassController::class, 'find']);
-        Route::get('/', [GlassController::class, 'index']);
-        Route::post('/', [GlassController::class, 'store']);
+        Route::get('/find', [GlassController::class, 'find'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/', [GlassController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/', [GlassController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [GlassController::class, 'show'])->name('glasses.show');
         Route::put('/{id}', [GlassController::class, 'update']);
         Route::delete('/{id}', [GlassController::class, 'delete']);
     });
 
     Route::prefix('utensils')->group(function() {
-        Route::get('/', [UtensilsController::class, 'index']);
-        Route::post('/', [UtensilsController::class, 'store']);
+        Route::get('/', [UtensilsController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/', [UtensilsController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [UtensilsController::class, 'show'])->name('utensils.show');
         Route::put('/{id}', [UtensilsController::class, 'update']);
         Route::delete('/{id}', [UtensilsController::class, 'delete']);
     });
 
     Route::prefix('tags')->group(function() {
-        Route::get('/', [TagController::class, 'index']);
-        Route::post('/', [TagController::class, 'store']);
+        Route::get('/', [TagController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/', [TagController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [TagController::class, 'show'])->name('tags.show');
         Route::put('/{id}', [TagController::class, 'update']);
         Route::delete('/{id}', [TagController::class, 'delete']);
@@ -150,8 +150,8 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('users')->group(function() {
-        Route::get('/', [UsersController::class, 'index']);
-        Route::post('/', [UsersController::class, 'store']);
+        Route::get('/', [UsersController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/', [UsersController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [UsersController::class, 'show'])->name('users.show');
         Route::put('/{id}', [UsersController::class, 'update']);
         Route::delete('/{id}', [UsersController::class, 'delete']);
@@ -162,8 +162,8 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('cocktail-methods')->group(function() {
-        Route::get('/', [CocktailMethodController::class, 'index']);
-        Route::post('/', [CocktailMethodController::class, 'store']);
+        Route::get('/', [CocktailMethodController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/', [CocktailMethodController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [CocktailMethodController::class, 'show'])->name('cocktail-methods.show');
         Route::put('/{id}', [CocktailMethodController::class, 'update']);
         Route::delete('/{id}', [CocktailMethodController::class, 'delete']);
@@ -180,8 +180,8 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('collections')->group(function() {
-        Route::get('/', [CollectionController::class, 'index']);
-        Route::post('/', [CollectionController::class, 'store']);
+        Route::get('/', [CollectionController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/', [CollectionController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [CollectionController::class, 'show'])->name('collection.show');
         Route::put('/{id}', [CollectionController::class, 'update']);
         Route::delete('/{id}', [CollectionController::class, 'delete']);

@@ -31,6 +31,7 @@ return new class extends Migration
             $table->foreignId('bar_type_id')->default(1)->constrained()->onDelete('restrict');
             $table->foreignId('user_id')->constrained()->onDelete('restrict');
             $table->string('invite_code')->unique()->nullable();
+            $table->boolean('active')->default(false);
             $table->timestamps();
         });
 
@@ -54,6 +55,7 @@ return new class extends Migration
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_role_id')->constrained()->onDelete('restrict');
+            $table->boolean('active')->default(true);
             $table->timestamps();
 
             $table->unique(['bar_id', 'user_id', 'user_role_id']);
