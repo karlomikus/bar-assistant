@@ -21,18 +21,27 @@ class CocktailMethodController extends Controller
         return CocktailMethodResource::collection($methods);
     }
 
-    public function show(int $id): JsonResource
+    public function show(Request $request, int $id): JsonResource
     {
         $method = CocktailMethod::withCount('cocktails')->findOrFail($id);
+
+        if ($request->user()->isBarOwner($method->bar)) {
+            abort(403);
+        }
 
         return new CocktailMethodResource($method);
     }
 
     public function store(CocktailMethodRequest $request): JsonResponse
     {
+        if ($request->user()->isBarOwner(bar())) {
+            abort(403);
+        }
+
         $method = new CocktailMethod();
         $method->name = $request->post('name');
         $method->dilution_percentage = (int) $request->post('dilution_percentage');
+        $method->bar_id = bar()->id;
         $method->save();
 
         return (new CocktailMethodResource($method))
@@ -44,6 +53,11 @@ class CocktailMethodController extends Controller
     public function update(CocktailMethodRequest $request, int $id): JsonResource
     {
         $method = CocktailMethod::findOrFail($id);
+
+        if ($request->user()->isBarOwner($method->bar)) {
+            abort(403);
+        }
+
         $method->name = $request->post('name');
         $method->dilution_percentage = (int) $request->post('dilution_percentage');
         $method->save();
@@ -53,7 +67,13 @@ class CocktailMethodController extends Controller
 
     public function delete(Request $request, int $id): Response
     {
-        CocktailMethod::findOrFail($id)->delete();
+        $method = CocktailMethod::findOrFail($id);
+
+        if ($request->user()->isBarOwner($method->bar)) {
+            abort(403);
+        }
+
+        $method->delete();
 
         return response(null, 204);
     }
