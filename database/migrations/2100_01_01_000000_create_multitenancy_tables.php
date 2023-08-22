@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('search_driver_api_key')->nullable();
             $table->foreignId('bar_type_id')->default(1)->constrained()->onDelete('restrict');
             $table->foreignId('user_id')->constrained()->onDelete('restrict');
+            $table->string('invite_code')->unique()->nullable();
             $table->timestamps();
         });
 

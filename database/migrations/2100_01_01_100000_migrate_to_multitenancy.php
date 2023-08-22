@@ -44,10 +44,6 @@ return new class extends Migration
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
         });
 
-        // Schema::table('images', function (Blueprint $table) {
-        //     $table->foreignId('bar_id')->constrained()->onDelete('cascade');
-        // });
-
         Schema::table('glasses', function (Blueprint $table) {
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
         });

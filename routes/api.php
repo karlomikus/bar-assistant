@@ -198,6 +198,7 @@ Route::middleware($authMiddleware)->group(function() {
     Route::prefix('bars')->group(function() {
         Route::get('/', [BarController::class, 'index']);
         Route::post('/', [BarController::class, 'store']);
+        Route::delete('/{id}', [BarController::class, 'delete']);
     });
 });
 

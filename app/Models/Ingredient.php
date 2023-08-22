@@ -133,6 +133,7 @@ class Ingredient extends Model
             'description' => $this->description,
             'category' => $this->category->name,
             'origin' => $this->origin,
+            'bar_id' => $this->bar_id,
         ];
     }
 }

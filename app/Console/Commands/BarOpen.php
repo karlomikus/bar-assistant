@@ -88,7 +88,7 @@ class BarOpen extends Command
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
                 'is_admin' => true,
-                'search_api_key' => $searchActions->getPublicApiKey()
+                'search_api_key' => $searchActions->getBarSearchApiKey()
             ]
         ]);
 

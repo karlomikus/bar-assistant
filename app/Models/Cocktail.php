@@ -221,7 +221,8 @@ class Cocktail extends Model implements ImageableInterface
             'image_url' => $this->getMainImageUrl(),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'tags' => $this->tags->pluck('name'),
-            'date' => $this->updated_at->format('Y-m-d H:i:s')
+            'date' => $this->updated_at->format('Y-m-d H:i:s'),
+            'bar_id' => $this->bar_id,
         ];
     }
 

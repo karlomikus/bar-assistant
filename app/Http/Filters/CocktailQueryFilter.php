@@ -104,6 +104,7 @@ final class CocktailQueryFilter extends QueryBuilder
                 $query->on('ui.ingredient_id', '=', 'ci.ingredient_id')->where('ui.bar_membership_id', $barMembership->id);
             })
             ->groupBy('cocktails.id')
+            ->barAware()
             ->withRatings($this->request->user()->id);
     }
 }
