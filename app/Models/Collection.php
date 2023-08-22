@@ -28,4 +28,12 @@ class Collection extends Model
     {
         return $this->belongsToMany(Cocktail::class, 'collections_cocktails');
     }
+
+    /**
+     * @return BelongsTo<BarMembership, Collection>
+     */
+    public function barMembership(): BelongsTo
+    {
+        return $this->belongsTo(BarMembership::class);
+    }
 }

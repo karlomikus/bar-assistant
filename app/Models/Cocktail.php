@@ -272,11 +272,11 @@ class Cocktail extends Model implements ImageableInterface
 
     public function getNextSlug(): ?string
     {
-        return $this->distinct()->orderBy('name')->limit(1)->where('name', '>', $this->name)->first()?->slug;
+        return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name')->limit(1)->where('name', '>', $this->name)->first()?->slug;
     }
 
     public function getPrevSlug(): ?string
     {
-        return $this->distinct()->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first()?->slug;
+        return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first()?->slug;
     }
 }

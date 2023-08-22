@@ -16,7 +16,7 @@ class GlassController extends Controller
 {
     public function index(): JsonResource
     {
-        $glasses = Glass::orderBy('name')->withCount('cocktails')->get();
+        $glasses = Glass::orderBy('name')->withCount('cocktails')->filterByBar()->get();
 
         return GlassResource::collection($glasses);
     }

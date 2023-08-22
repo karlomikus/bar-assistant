@@ -14,7 +14,10 @@ final class CollectionQueryFilter extends QueryBuilder
     {
         parent::__construct(ItemsCollection::query());
 
+        $barMembership = $this->request->user()->getBarMembership(bar()->id);
+
         $this
+            ->where('bar_membership_id', $barMembership->id)
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::partial('name'),

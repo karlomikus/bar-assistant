@@ -16,7 +16,7 @@ class IngredientCategoryController extends Controller
 {
     public function index(): JsonResource
     {
-        $categories = IngredientCategory::orderBy('name')->barAware()->get();
+        $categories = IngredientCategory::orderBy('name')->filterByBar()->get();
 
         return IngredientCategoryResource::collection($categories);
     }

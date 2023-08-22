@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CollectionRequest;
@@ -18,9 +19,9 @@ use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class CollectionController extends Controller
 {
-    public function index(Request $request): JsonResource
+    public function index(): JsonResource
     {
-        $collections = (new CollectionQueryFilter())->where('user_id', $request->user()->id)->get();
+        $collections = (new CollectionQueryFilter())->get();
 
         return CollectionResource::collection($collections);
     }
@@ -38,14 +39,27 @@ class CollectionController extends Controller
 
     public function store(CollectionRequest $request): JsonResponse
     {
+        if ($request->user()->cannot('create', CocktailCollection::class)) {
+            abort(403);
+        }
+
+        $barMembership = $request->user()->getBarMembership(bar()->id);
+
         $collection = new CocktailCollection();
         $collection->name = $request->post('name');
         $collection->description = $request->post('description');
-        $collection->user_id = $request->user()->id;
+        $collection->bar_membership_id = $barMembership->id;
         $collection->save();
 
         $cocktailIds = $request->post('cocktails', []);
-        $collection->cocktails()->attach($cocktailIds);
+        if (!empty($cocktailIds)) {
+            $cocktails = DB::table('cocktails')
+                ->select('id')
+                ->where('bar_id', $barMembership->bar_id)
+                ->whereIn('id', $cocktailIds)
+                ->pluck('id');
+            $collection->cocktails()->attach($cocktails);
+        }
 
         return (new CollectionResource($collection))
             ->response()
@@ -76,8 +90,17 @@ class CollectionController extends Controller
             abort(403);
         }
 
+        $cocktailIds = $request->post('cocktails', []);
+
         try {
-            $collection->cocktails()->syncWithoutDetaching($request->post('cocktails', []));
+            if (!empty($cocktailIds)) {
+                $cocktails = DB::table('cocktails')
+                    ->select('id')
+                    ->where('bar_id', $collection->barMembership->bar_id)
+                    ->whereIn('id', $cocktailIds)
+                    ->pluck('id');
+                $collection->cocktails()->syncWithoutDetaching($cocktails);
+            }
         } catch (Throwable) {
             abort(500, 'Unable to add cocktails to collection!');
         }
@@ -93,7 +116,7 @@ class CollectionController extends Controller
             abort(403);
         }
 
-        $cocktail = Cocktail::findOrFail($cocktailId);
+        $cocktail = Cocktail::where('id', $cocktailId)->where('bar_id', $collection->barMembership->bar_id)->firstOrFail();
 
         try {
             $cocktail->addToCollection($collection);

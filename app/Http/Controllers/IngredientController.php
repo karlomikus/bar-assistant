@@ -116,7 +116,7 @@ class IngredientController extends Controller
             return response()->json(['data' => []]);
         }
 
-        $extraCocktails = Cocktail::whereIn('id', $extraShelfCocktails->diff($currentShelfCocktails)->values())->barAware()->get();
+        $extraCocktails = Cocktail::whereIn('id', $extraShelfCocktails->diff($currentShelfCocktails)->values())->filterByBar()->get();
 
         return response()->json([
             'data' => $extraCocktails->map(function (Cocktail $cocktail) {

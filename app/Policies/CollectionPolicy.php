@@ -14,25 +14,30 @@ class CollectionPolicy
 
     public function before(User $user, string $ability): bool|null
     {
-        if ($user->isAdmin()) {
+        if ($user->isBarOwner(bar())) {
             return true;
         }
 
         return null;
     }
 
+    public function create(User $user): bool
+    {
+        return $user->hasBarMembership(bar()->id);
+    }
+
     public function show(User $user, Collection $collection): bool
     {
-        return $user->id === $collection->user_id;
+        return $user->memberships->contains('id', $collection->bar_membership_id);
     }
 
     public function edit(User $user, Collection $collection): bool
     {
-        return $user->id === $collection->user_id;
+        return $user->memberships->contains('id', $collection->bar_membership_id);
     }
 
     public function delete(User $user, Collection $collection): bool
     {
-        return $user->id === $collection->user_id;
+        return $user->memberships->contains('id', $collection->bar_membership_id);
     }
 }

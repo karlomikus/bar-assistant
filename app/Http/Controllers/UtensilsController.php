@@ -16,7 +16,7 @@ class UtensilsController extends Controller
 {
     public function index(): JsonResource
     {
-        $utensils = Utensil::orderBy('name')->get();
+        $utensils = Utensil::orderBy('name')->filterByBar()->get();
 
         return UtensilResource::collection($utensils);
     }
@@ -30,10 +30,6 @@ class UtensilsController extends Controller
 
     public function store(UtensilRequest $request): JsonResponse
     {
-        if (!$request->user()->isAdmin()) {
-            abort(403);
-        }
-
         $utensil = new Utensil();
         $utensil->name = $request->post('name');
         $utensil->description = $request->post('description');
@@ -47,10 +43,6 @@ class UtensilsController extends Controller
 
     public function update(int $id, UtensilRequest $request): JsonResource
     {
-        if (!$request->user()->isAdmin()) {
-            abort(403);
-        }
-
         $utensil = Utensil::findOrFail($id);
         $utensil->name = $request->post('name');
         $utensil->description = $request->post('description');
@@ -61,10 +53,6 @@ class UtensilsController extends Controller
 
     public function delete(Request $request, int $id): Response
     {
-        if (!$request->user()->isAdmin()) {
-            abort(403);
-        }
-
         Utensil::findOrFail($id)->delete();
 
         return response(null, 204);

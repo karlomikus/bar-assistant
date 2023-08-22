@@ -16,7 +16,7 @@ class CocktailMethodController extends Controller
 {
     public function index(): JsonResource
     {
-        $methods = CocktailMethod::orderBy('id')->withCount('cocktails')->get();
+        $methods = CocktailMethod::orderBy('id')->withCount('cocktails')->filterByBar()->get();
 
         return CocktailMethodResource::collection($methods);
     }
@@ -30,10 +30,6 @@ class CocktailMethodController extends Controller
 
     public function store(CocktailMethodRequest $request): JsonResponse
     {
-        if (!$request->user()->isAdmin()) {
-            abort(403);
-        }
-
         $method = new CocktailMethod();
         $method->name = $request->post('name');
         $method->dilution_percentage = (int) $request->post('dilution_percentage');
@@ -47,10 +43,6 @@ class CocktailMethodController extends Controller
 
     public function update(CocktailMethodRequest $request, int $id): JsonResource
     {
-        if (!$request->user()->isAdmin()) {
-            abort(403);
-        }
-
         $method = CocktailMethod::findOrFail($id);
         $method->name = $request->post('name');
         $method->dilution_percentage = (int) $request->post('dilution_percentage');
@@ -61,10 +53,6 @@ class CocktailMethodController extends Controller
 
     public function delete(Request $request, int $id): Response
     {
-        if (!$request->user()->isAdmin()) {
-            abort(403);
-        }
-
         CocktailMethod::findOrFail($id)->delete();
 
         return response(null, 204);

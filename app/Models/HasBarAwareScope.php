@@ -14,7 +14,7 @@ trait HasBarAwareScope
      * @param Builder<\Illuminate\Database\Eloquent\Model> $query
      * @return Builder<\Illuminate\Database\Eloquent\Model>
      */
-    public function scopeBarAware(Builder $query): Builder
+    public function scopeFilterByBar(Builder $query): Builder
     {
         return $query->where('bar_id', bar()->id);
     }
