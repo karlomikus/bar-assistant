@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
-class OpenBarService
+class SetupBar
 {
     public function __construct(
         private readonly ImportService $importService,

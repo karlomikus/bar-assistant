@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Bar;
 use Symfony\Component\Uid\Ulid;
 use Kami\Cocktail\Models\UserRoleEnum;
-use Kami\Cocktail\Services\OpenBarService;
+use Kami\Cocktail\Services\SetupBar;
 use Kami\Cocktail\Http\Resources\BarResource;
 use Kami\Cocktail\Search\SearchActionsAdapter;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -21,7 +21,7 @@ class BarController extends Controller
         return BarResource::collection($request->user()->ownedBars);
     }
 
-    public function store(SearchActionsAdapter $search, OpenBarService $barService, Request $request): JsonResource
+    public function store(SearchActionsAdapter $search, SetupBar $barService, Request $request): JsonResource
     {
         if ($request->user()->cannot('create', Bar::class)) {
             abort(403, 'You can not create anymore bars');
