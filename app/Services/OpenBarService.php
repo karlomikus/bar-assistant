@@ -12,7 +12,6 @@ use Symfony\Component\Yaml\Yaml;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
 class OpenBarService
@@ -185,8 +184,7 @@ class OpenBarService
                 $sort++;
             }
 
-            // TODO: Move to yaml
-            $imageResourcePath = sprintf('data/cocktails/%s', Str::slug($cocktail['name']) . '.jpg');
+            $imageResourcePath = $cocktail['images'][0]['resource_path'];
 
             if (file_exists(resource_path($imageResourcePath))) {
                 $disk = Storage::disk('bar-assistant');
