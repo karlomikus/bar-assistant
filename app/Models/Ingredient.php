@@ -18,8 +18,6 @@ class Ingredient extends Model
 {
     use HasFactory, Searchable, HasImages, HasSlug, HasBarAwareScope;
 
-    private string $appImagesDir = 'ingredients/';
-
     protected $fillable = [
         'name',
         'strength',

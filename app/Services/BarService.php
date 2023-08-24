@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
-use Kami\Cocktail\Models\Image as ImageModel;
 
 class BarService
 {
@@ -69,44 +68,60 @@ class BarService
 
         $categories = DB::table('ingredient_categories')->select('id', 'name')->where('bar_id', $bar->id)->get();
 
+        $ingredientsToInsert = [];
+        $imagesToInsert = [];
+        $imagesBasePath = 'ingredients/' . $bar->id . '/';
+
         foreach ($ingredients as $ingredient) {
             $category = $categories->firstWhere('name', $ingredient['category']);
-
-            $ingredientModel = $this->ingredientService->createIngredient(
-                $bar->id,
-                $ingredient['name'],
-                $category->id,
-                $user->id,
-                $ingredient['strength'],
-                $ingredient['description'],
-                $ingredient['origin'],
-                $ingredient['color']
-            );
+            $slug = Str::slug($ingredient['name']) . '-' . $bar->id;
+            $ingredientsToInsert[] = [
+                'bar_id' => $bar->id,
+                'slug' => $slug,
+                'name' => $ingredient['name'],
+                'ingredient_category_id' => $category->id,
+                'strength' => $ingredient['strength'],
+                'description' => $ingredient['description'],
+                'origin' => $ingredient['origin'],
+                'color' => $ingredient['color'],
+                'user_id' => $user->id,
+                'created_at' => now(),
+            ];
 
             // For performance, manually copy the files and create image references
             if (isset($ingredient['images'][0]['resource_path']) && file_exists(resource_path($ingredient['images'][0]['resource_path']))) {
                 $disk = Storage::disk('bar-assistant');
 
-                $disk->makeDirectory($ingredientModel->getUploadPath());
+                $disk->makeDirectory($imagesBasePath);
 
-                $imageFilePath = $ingredientModel->getUploadPath() . $ingredientModel->slug . '_' . Str::random(6) . '.png';
+                $imageFilePath = $imagesBasePath . $slug . '_' . Str::random(6) . '.png';
                 copy(
                     resource_path($ingredient['images'][0]['resource_path']),
                     $disk->path($imageFilePath)
                 );
 
-                $image = new ImageModel();
-                $image->copyright = $ingredient['images'][0]['copyright'] ?? null;
-                $image->file_path = $imageFilePath;
-                $image->file_extension = 'png';
-                $image->user_id = $user->id;
-                $image->sort = 1;
-                $image->placeholder_hash = $ingredient['images'][0]['placeholder_hash'] ?? null;
-                $image->save();
-
-                $ingredientModel->images()->save($image);
+                $imagesToInsert[$slug] = [
+                    'copyright' => $ingredient['images'][0]['copyright'] ?? null,
+                    'file_path' => $imageFilePath,
+                    'file_extension' => 'png',
+                    'user_id' => $user->id,
+                    'sort' => 1,
+                    'placeholder_hash' => $ingredient['images'][0]['placeholder_hash'] ?? null,
+                ];
             }
         }
+
+        DB::table('ingredients')->insert($ingredientsToInsert);
+
+        $ingredients = DB::table('ingredients')->where('bar_id', $bar->id)->get();
+        foreach ($ingredients as $ingredient) {
+            if (array_key_exists($ingredient->slug, $imagesToInsert)) {
+                $imagesToInsert[$ingredient->slug]['imageable_type'] = \Kami\Cocktail\Models\Ingredient::class;
+                $imagesToInsert[$ingredient->slug]['imageable_id'] = $ingredient->id;
+            }
+        }
+
+        DB::table('images')->insert(array_values($imagesToInsert));
     }
 
     private function importCocktails(string $filepath, Bar $bar, User $user): void
