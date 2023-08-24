@@ -125,6 +125,7 @@ return new class extends Migration
             $table->foreignId('ingredient_category_id')->constrained();
             $table->foreignId('parent_ingredient_id')->nullable()->constrained('ingredients')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('updated_user_id')->nullable()->constrained('users');
             $table->timestamps();
         });
 
@@ -138,6 +139,7 @@ return new class extends Migration
             $table->string('source')->nullable();
             $table->text('garnish')->nullable();
             $table->foreignId('user_id')->constrained();
+            $table->foreignId('updated_user_id')->nullable()->constrained('users');
             $table->foreignId('glass_id')->nullable()->constrained();
             $table->foreignId('cocktail_method_id')->nullable()->constrained('cocktail_methods');
             $table->ulid('public_id')->nullable();
