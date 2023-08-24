@@ -21,18 +21,27 @@ class UtensilsController extends Controller
         return UtensilResource::collection($utensils);
     }
 
-    public function show(int $id): JsonResource
+    public function show(Request $request, int $id): JsonResource
     {
         $utensil = Utensil::findOrFail($id);
+
+        if (!$request->user()->isBarOwner($utensil->bar)) {
+            abort(403);
+        }
 
         return new UtensilResource($utensil);
     }
 
     public function store(UtensilRequest $request): JsonResponse
     {
+        if (!$request->user()->isBarOwner(bar())) {
+            abort(403);
+        }
+
         $utensil = new Utensil();
         $utensil->name = $request->post('name');
         $utensil->description = $request->post('description');
+        $utensil->bar_id = bar()->id;
         $utensil->save();
 
         return (new UtensilResource($utensil))
@@ -44,6 +53,11 @@ class UtensilsController extends Controller
     public function update(int $id, UtensilRequest $request): JsonResource
     {
         $utensil = Utensil::findOrFail($id);
+
+        if (!$request->user()->isBarOwner($utensil->bar)) {
+            abort(403);
+        }
+
         $utensil->name = $request->post('name');
         $utensil->description = $request->post('description');
         $utensil->save();
@@ -53,7 +67,13 @@ class UtensilsController extends Controller
 
     public function delete(Request $request, int $id): Response
     {
-        Utensil::findOrFail($id)->delete();
+        $utensil = Utensil::findOrFail($id);
+
+        if (!$request->user()->isBarOwner($utensil->bar)) {
+            abort(403);
+        }
+
+        $utensil->delete();
 
         return response(null, 204);
     }

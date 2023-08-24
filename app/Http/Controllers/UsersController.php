@@ -15,9 +15,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UsersController extends Controller
 {
-    public function index(Request $request): JsonResource
+    public function index(): JsonResource
     {
-        $users = User::orderBy('id')->get();
+        $users = User::orderBy('name')
+            ->join('bar_memberships', 'bar_memberships.user_id', '=', 'users.id')
+            ->where('bar_memberships.bar_id', bar()->id)
+            ->get();
 
         return UserResource::collection($users);
     }
@@ -25,6 +28,10 @@ class UsersController extends Controller
     public function show(Request $request, int $id): JsonResource
     {
         $user = User::findOrFail($id);
+
+        if (!$request->user()->isBarOwner(bar())) {
+            abort(403);
+        }
 
         return new UserResource($user);
     }

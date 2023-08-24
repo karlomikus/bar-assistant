@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Utensil extends Model
@@ -18,5 +19,13 @@ class Utensil extends Model
     public function cocktails(): HasMany
     {
         return $this->hasMany(Cocktail::class);
+    }
+
+    /**
+     * @return BelongsTo<Bar, Collection>
+     */
+    public function bar(): BelongsTo
+    {
+        return $this->belongsTo(Bar::class);
     }
 }

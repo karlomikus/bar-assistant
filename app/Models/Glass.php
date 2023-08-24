@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Models;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Glass extends Model
@@ -19,6 +20,14 @@ class Glass extends Model
     public function cocktails(): HasMany
     {
         return $this->hasMany(Cocktail::class);
+    }
+
+    /**
+     * @return BelongsTo<Bar, Collection>
+     */
+    public function bar(): BelongsTo
+    {
+        return $this->belongsTo(Bar::class);
     }
 
     public function delete(): bool

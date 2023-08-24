@@ -21,22 +21,27 @@ class GlassController extends Controller
         return GlassResource::collection($glasses);
     }
 
-    public function show(int $id): JsonResource
+    public function show(Request $request, int $id): JsonResource
     {
         $glass = Glass::withCount('cocktails')->findOrFail($id);
+
+        if (!$request->user()->isBarOwner($glass->bar)) {
+            abort(403);
+        }
 
         return new GlassResource($glass);
     }
 
     public function store(GlassRequest $request): JsonResponse
     {
-        if (!$request->user()->isAdmin()) {
+        if (!$request->user()->isBarOwner(bar())) {
             abort(403);
         }
 
         $glass = new Glass();
         $glass->name = $request->post('name');
         $glass->description = $request->post('description');
+        $glass->bar_id = bar()->id;
         $glass->save();
 
         return (new GlassResource($glass))
@@ -47,11 +52,12 @@ class GlassController extends Controller
 
     public function update(int $id, GlassRequest $request): JsonResource
     {
-        if (!$request->user()->isAdmin()) {
+        $glass = Glass::findOrFail($id);
+
+        if (!$request->user()->isBarOwner($glass->bar)) {
             abort(403);
         }
 
-        $glass = Glass::findOrFail($id);
         $glass->name = $request->post('name');
         $glass->description = $request->post('description');
         $glass->save();
@@ -63,11 +69,13 @@ class GlassController extends Controller
 
     public function delete(Request $request, int $id): Response
     {
-        if (!$request->user()->isAdmin()) {
+        $glass = Glass::findOrFail($id);
+
+        if (!$request->user()->isBarOwner($glass->bar)) {
             abort(403);
         }
 
-        Glass::findOrFail($id)->delete();
+        $glass->delete();
 
         return response(null, 204);
     }
@@ -76,7 +84,7 @@ class GlassController extends Controller
     {
         $name = $request->get('name');
 
-        $glass = Glass::whereRaw('lower(name) = ?', [strtolower($name)])->firstOrFail();
+        $glass = Glass::whereRaw('lower(name) = ?', [strtolower($name)])->filterByBar()->firstOrFail();
 
         return new GlassResource($glass);
     }
