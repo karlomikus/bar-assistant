@@ -44,7 +44,7 @@ final class IngredientQueryFilter extends QueryBuilder
                 }),
                 AllowedFilter::callback('main_ingredients', function ($query, $value) use ($ingredientService) {
                     if ($value === true) {
-                        $query->whereIn('ingredients.id', $ingredientService->getMainIngredientsInCocktails()->pluck('ingredient_id'));
+                        $query->whereIn('ingredients.id', $ingredientService->getMainIngredientsInCocktails(bar()->id)->pluck('ingredient_id'));
                     }
                 }),
             ])

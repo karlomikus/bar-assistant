@@ -108,15 +108,21 @@ class IngredientController extends Controller
 
     public function extra(Request $request, CocktailService $cocktailService, int $id): JsonResponse
     {
-        $currentShelfIngredients = $request->user()->getShelfIngredients(bar()->id)->pluck('ingredient_id');
+        $ingredient = Ingredient::findOrFail($id);
+
+        if ($request->user()->cannot('show', $ingredient)) {
+            abort(403);
+        }
+
+        $currentShelfIngredients = $request->user()->getShelfIngredients($ingredient->bar_id)->pluck('ingredient_id');
         $currentShelfCocktails = $cocktailService->getCocktailsByIngredients($currentShelfIngredients->toArray())->values();
-        $extraShelfCocktails = $cocktailService->getCocktailsByIngredients($currentShelfIngredients->push($id)->toArray())->values();
+        $extraShelfCocktails = $cocktailService->getCocktailsByIngredients($currentShelfIngredients->push($ingredient->id)->toArray())->values();
 
         if ($currentShelfCocktails->count() === $extraShelfCocktails->count()) {
             return response()->json(['data' => []]);
         }
 
-        $extraCocktails = Cocktail::whereIn('id', $extraShelfCocktails->diff($currentShelfCocktails)->values())->filterByBar()->get();
+        $extraCocktails = Cocktail::whereIn('id', $extraShelfCocktails->diff($currentShelfCocktails)->values())->where('bar_id', '=', $ingredient->bar_id)->get();
 
         return response()->json([
             'data' => $extraCocktails->map(function (Cocktail $cocktail) {
