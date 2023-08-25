@@ -10,6 +10,7 @@ use Kami\Cocktail\Models\Bar;
 use Symfony\Component\Uid\Ulid;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Services\SetupBar;
+use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Kami\Cocktail\Http\Requests\BarRequest;
 use Kami\Cocktail\Http\Resources\BarResource;
@@ -68,6 +69,8 @@ class BarController extends Controller
         if (!$request->user()->isBarOwner($bar)) {
             abort(403);
         }
+
+        Cache::forget('ba:bar:' . $bar->id);
 
         $bar->name = $request->post('name');
         $bar->description = $request->post('description');
