@@ -16,6 +16,6 @@ class SuccessActionResource extends JsonResource
      */
     public function toArray($request)
     {
-        return array_merge((array) $this->resource, ['success' => true]);
+        return array_merge((array) $this->resource, []);
     }
 }

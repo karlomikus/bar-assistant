@@ -17,16 +17,12 @@ use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
-use Kami\Cocktail\Http\Resources\SuccessActionResource;
 use Kami\Cocktail\Http\Resources\CocktailPublicResource;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDTO;
 
 class CocktailController extends Controller
 {
-    /**
-     * List all cocktails
-     */
     public function index(CocktailService $cocktailService, Request $request): JsonResource
     {
         try {
@@ -40,9 +36,6 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails);
     }
 
-    /**
-     * Show a single cocktail by it's id or URL slug
-     */
     public function show(int|string $idOrSlug, Request $request): JsonResource
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)
@@ -53,12 +46,13 @@ class CocktailController extends Controller
                 $query->orderBy('sort');
             }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'notes', 'user', 'collections', 'utensils']);
 
+        if ($request->user()->cannot('show', $cocktail)) {
+            abort(403);
+        }
+
         return new CocktailResource($cocktail);
     }
 
-    /**
-     * Create a new cocktail
-     */
     public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
         $ingredients = [];
@@ -105,9 +99,6 @@ class CocktailController extends Controller
             ->header('Location', route('cocktails.show', $cocktail->id));
     }
 
-    /**
-     * Update a single cocktail by id
-     */
     public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): JsonResource
     {
         $cocktail = Cocktail::findOrFail($id);
@@ -157,9 +148,6 @@ class CocktailController extends Controller
         return new CocktailResource($cocktail);
     }
 
-    /**
-     * Delete a single cocktail by id
-     */
     public function delete(Request $request, int $id): Response
     {
         $cocktail = Cocktail::findOrFail($id);
@@ -173,21 +161,24 @@ class CocktailController extends Controller
         return response(null, 204);
     }
 
-    /**
-     * Favorite a cocktail by id
-     */
-    public function toggleFavorite(CocktailService $cocktailService, Request $request, int $id): JsonResource
+    public function toggleFavorite(CocktailService $cocktailService, Request $request, int $id): JsonResponse
     {
-        $isFavorite = $cocktailService->toggleFavorite($request->user(), $id, bar());
+        $userFavorite = $cocktailService->toggleFavorite($request->user(), $id);
 
-        return new SuccessActionResource((object) ['id' => $id, 'is_favorited' => $isFavorite]);
+        return response()->json([
+            'data' => ['id' => $id, 'is_favorited' => $userFavorite !== null]
+        ]);
     }
 
-    public function makePublic(int|string $idOrSlug): JsonResource
+    public function makePublic(Request $request, int|string $idOrSlug): JsonResource
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
             ->firstOrFail();
+
+        if ($request->user()->cannot('show', $cocktail)) {
+            abort(403);
+        }
 
         if ($cocktail->public_id) {
             return new CocktailPublicResource($cocktail);
@@ -198,11 +189,15 @@ class CocktailController extends Controller
         return new CocktailPublicResource($cocktail);
     }
 
-    public function makePrivate(int|string $idOrSlug): Response
+    public function makePrivate(Request $request, int|string $idOrSlug): Response
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
             ->firstOrFail();
+
+        if ($request->user()->cannot('show', $cocktail)) {
+            abort(403);
+        }
 
         $cocktail = $cocktail->makePrivate();
 
@@ -211,14 +206,18 @@ class CocktailController extends Controller
 
     public function share(Request $request, int|string $idOrSlug): Response
     {
-        $type = $request->get('type', 'json');
-
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
             ->firstOrFail()
             ->load(['ingredients.ingredient', 'images' => function ($query) {
                 $query->orderBy('sort');
             }, 'ingredients.substitutes', 'ingredients.ingredient.category']);
+
+        if ($request->user()->cannot('show', $cocktail)) {
+            abort(403);
+        }
+
+        $type = $request->get('type', 'json');
 
         $data = $cocktail->toShareableArray();
 
@@ -251,15 +250,20 @@ class CocktailController extends Controller
 
     public function similar(Request $request, int|string $idOrSlug): JsonResource
     {
-        $limitTotal = $request->get('limit', 5);
-
         $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->with('ingredients')->firstOrFail();
+
+        if ($request->user()->cannot('show', $cocktail)) {
+            abort(403);
+        }
+
+        $limitTotal = $request->get('limit', 5);
         $ingredients = $cocktail->ingredients->filter(fn ($ci) => $ci->optional === false)->pluck('ingredient_id');
 
         $relatedCocktails = collect();
         while ($ingredients->count() > 0) {
             $ingredients->pop();
             $possibleRelatedCocktails = Cocktail::where('cocktails.id', '<>', $cocktail->id)
+                ->where('bar_id', $cocktail->bar_id)
                 ->with('ingredients')
                 ->whereIn('cocktails.id', function ($query) use ($ingredients) {
                     $query->select('ci.cocktail_id')

@@ -100,6 +100,14 @@ class Cocktail extends Model implements ImageableInterface
         return $this->belongsToMany(CocktailCollection::class, 'collections_cocktails');
     }
 
+    /**
+     * @return BelongsToMany<CocktailCollection>
+     */
+    public function cocktailFavorites()
+    {
+        return $this->hasMany(CocktailFavorite::class);
+    }
+
     public function delete(): ?bool
     {
         $this->deleteImages();
@@ -237,6 +245,7 @@ class Cocktail extends Model implements ImageableInterface
             'tags' => $this->tags->pluck('name')->toArray(),
             'glass' => $this->glass?->name ?? null,
             'method' => $this->method?->name ?? null,
+            'abv' => $this->abv,
             'images' => $this->images->map(function (Image $image) {
                 return [
                     'url' => $image->getImageUrl(),

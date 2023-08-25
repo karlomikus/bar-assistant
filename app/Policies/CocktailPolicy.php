@@ -14,16 +14,21 @@ class CocktailPolicy
 
     public function before(User $user, string $ability): bool|null
     {
-        if ($user->isAdmin()) {
+        if ($user->isBarOwner(bar())) {
             return true;
         }
 
         return null;
     }
 
+    public function show(User $user, Cocktail $cocktail): bool
+    {
+        return $user->hasBarMembership($cocktail->bar_id);
+    }
+
     public function addNote(User $user, Cocktail $cocktail): bool
     {
-        return $user->id === $cocktail->user_id;
+        return $user->hasBarMembership($cocktail->bar_id);
     }
 
     public function edit(User $user, Cocktail $cocktail): bool
@@ -32,6 +37,11 @@ class CocktailPolicy
     }
 
     public function delete(User $user, Cocktail $cocktail): bool
+    {
+        return $user->id === $cocktail->user_id;
+    }
+
+    public function rate(User $user, Cocktail $cocktail): bool
     {
         return $user->id === $cocktail->user_id;
     }

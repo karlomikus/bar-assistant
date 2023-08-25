@@ -14,7 +14,7 @@ class NotePolicy
 
     public function before(User $user, string $ability): bool|null
     {
-        if ($user->isAdmin()) {
+        if ($user->isBarOwner(bar())) {
             return true;
         }
 

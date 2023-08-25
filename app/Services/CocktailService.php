@@ -286,20 +286,9 @@ class CocktailService
             ->toArray();
     }
 
-    /**
-     * Toggle user favorite cocktail
-     *
-     * @param \Kami\Cocktail\Models\User $user
-     * @param int $cocktailId
-     * @return bool
-     */
-    public function toggleFavorite(User $user, int $cocktailId): bool
+    public function toggleFavorite(User $user, int $cocktailId): ?CocktailFavorite
     {
-        $cocktail = Cocktail::find($cocktailId);
-
-        if (!$cocktail) {
-            return false;
-        }
+        $cocktail = Cocktail::findOrFail($cocktailId);
 
         $barMembership = $user->getBarMembership($cocktail->bar_id);
 
@@ -307,7 +296,7 @@ class CocktailService
         if ($existing) {
             $existing->delete();
 
-            return false;
+            return null;
         }
 
         $cocktailFavorite = new CocktailFavorite();
@@ -316,7 +305,7 @@ class CocktailService
 
         $barMembership->cocktailFavorites()->save($cocktailFavorite);
 
-        return true;
+        return $cocktailFavorite;
     }
 
     /**
