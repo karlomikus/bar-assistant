@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Bar;
 use Symfony\Component\Uid\Ulid;
-use Kami\Cocktail\Models\UserRoleEnum;
+use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Services\SetupBar;
+use Kami\Cocktail\Models\UserRoleEnum;
+use Kami\Cocktail\Http\Requests\BarRequest;
 use Kami\Cocktail\Http\Resources\BarResource;
 use Kami\Cocktail\Search\SearchActionsAdapter;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -21,7 +23,18 @@ class BarController extends Controller
         return BarResource::collection($request->user()->ownedBars);
     }
 
-    public function store(SearchActionsAdapter $search, SetupBar $barService, Request $request): JsonResource
+    public function show(Request $request, int $id): JsonResource
+    {
+        $bar = Bar::findOrFail($id);
+
+        if (!$request->user()->isBarOwner($bar->bar)) {
+            abort(403);
+        }
+
+        return new BarResource($bar);
+    }
+
+    public function store(SearchActionsAdapter $search, SetupBar $setupBarService, BarRequest $request): JsonResponse
     {
         if ($request->user()->cannot('create', Bar::class)) {
             abort(403, 'You can not create anymore bars');
@@ -40,7 +53,26 @@ class BarController extends Controller
 
         $bar->users()->save($request->user(), ['user_role_id' => UserRoleEnum::Admin->value]);
 
-        $barService->openBar($bar, $request->user());
+        $setupBarService->openBar($bar, $request->user());
+
+        return (new BarResource($bar))
+            ->response()
+            ->setStatusCode(201)
+            ->header('Location', route('bars.show', $bar->id));
+    }
+
+    public function update(int $id, BarRequest $request): JsonResource
+    {
+        $bar = Bar::findOrFail($id);
+
+        if (!$request->user()->isBarOwner($bar)) {
+            abort(403);
+        }
+
+        $bar->name = $request->post('name');
+        $bar->description = $request->post('description');
+        $bar->subtitle = $request->post('subtitle');
+        $bar->save();
 
         return new BarResource($bar);
     }
