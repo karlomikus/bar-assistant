@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\UserIngredient;
+use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\UserShoppingList;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -37,6 +38,17 @@ class ShelfController extends Controller
             $barMembership->userIngredients->pluck('ingredient_id')->toArray(),
             $limit
         );
+
+        return response()->json([
+            'data' => $cocktailIds
+        ]);
+    }
+
+    public function favorites(Request $request): JsonResponse
+    {
+        $barMembership = $request->user()->getBarMembership(bar()->id);
+
+        $cocktailIds = CocktailFavorite::where('bar_membership_id', $barMembership->id)->pluck('cocktail_id');
 
         return response()->json([
             'data' => $cocktailIds
