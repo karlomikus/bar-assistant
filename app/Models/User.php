@@ -53,7 +53,7 @@ class User extends Authenticatable
      */
     public function getShelfIngredients(int $barId): Collection
     {
-        return $this->getBarMembership($barId)?->shelfIngredients ?? new Collection();
+        return $this->getBarMembership($barId)?->userIngredients ?? new Collection();
     }
 
     public function memberships(): HasMany

@@ -19,6 +19,14 @@ class BarMembership extends Model
     }
 
     /**
+     * @return BelongsTo<UserRole, BarMembership>
+     */
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(UserRole::class, 'user_role_id');
+    }
+
+    /**
      * @return BelongsTo<User, BarMembership>
      */
     public function user(): BelongsTo

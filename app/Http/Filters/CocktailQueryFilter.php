@@ -40,7 +40,7 @@ final class CocktailQueryFilter extends QueryBuilder
                 AllowedFilter::callback('on_shelf', function ($query, $value) use ($cocktailService) {
                     if ($value === true) {
                         $query->whereIn('cocktails.id', $cocktailService->getCocktailsByIngredients(
-                            $this->request->user()->shelfIngredients->pluck('ingredient_id')->toArray()
+                            $this->request->user()->getShelfIngredients(bar()->id)->pluck('ingredient_id')->toArray()
                         ));
                     }
                 }),
