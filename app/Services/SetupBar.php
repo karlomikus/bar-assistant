@@ -152,6 +152,7 @@ class SetupBar
                 'description' => $cocktail['description'],
                 'garnish' => $cocktail['garnish'],
                 'source' => $cocktail['source'],
+                'abv' => $cocktail['abv'],
                 'user_id' => $user->id,
                 'glass_id' => $dbGlasses[strtolower($cocktail['glass'])] ?? null,
                 'cocktail_method_id' => $dbMethods[strtolower($cocktail['method'])] ?? null,

@@ -218,16 +218,16 @@ return new class extends Migration
         Schema::create('ratings', function (Blueprint $table) {
             $table->id();
             $table->morphs('rateable');
-            $table->foreignId('bar_membership_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->smallInteger('rating');
             $table->timestamps();
-            $table->unique(['bar_membership_id', 'rateable_id', 'rateable_type']);
+            $table->unique(['user_id', 'rateable_id', 'rateable_type']);
         });
 
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
             $table->morphs('noteable');
-            $table->foreignId('bar_membership_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('note');
             $table->timestamps();
         });

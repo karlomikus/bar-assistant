@@ -79,7 +79,7 @@ Route::middleware($authMiddleware)->group(function() {
         Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show');
         Route::put('/{id}', [IngredientController::class, 'update']);
         Route::delete('/{id}', [IngredientController::class, 'delete']);
-        Route::get('/{id}/extra', [IngredientController::class, 'extra'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/{id}/extra', [IngredientController::class, 'extra']);
     });
 
     Route::prefix('ingredient-categories')->group(function() {
@@ -92,9 +92,9 @@ Route::middleware($authMiddleware)->group(function() {
 
     Route::prefix('cocktails')->group(function() {
         Route::get('/', [CocktailController::class, 'index'])->name('cocktails.index')->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show')->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/{id}/share', [CocktailController::class, 'share'])->name('cocktails.share')->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/{id}/toggle-favorite', [CocktailController::class, 'toggleFavorite'])->middleware(EnsureRequestHasBarQuery::class)->name('cocktails.favorite');
+        Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show');
+        Route::get('/{id}/share', [CocktailController::class, 'share'])->name('cocktails.share');
+        Route::post('/{id}/toggle-favorite', [CocktailController::class, 'toggleFavorite'])->name('cocktails.favorite');
         Route::post('/', [CocktailController::class, 'store'])->name('cocktails.store')->middleware(EnsureRequestHasBarQuery::class);
         Route::delete('/{id}', [CocktailController::class, 'delete'])->name('cocktails.delete');
         Route::put('/{id}', [CocktailController::class, 'update'])->name('cocktails.update');
@@ -104,7 +104,7 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('images')->group(function() {
-        Route::get('/', [ImageController::class, 'index']);
+        // Route::get('/', [ImageController::class, 'index']);
         Route::get('/{id}', [ImageController::class, 'show']);
         // Route::get('/{id}/thumb', [ImageController::class, 'thumb']);
         Route::post('/', [ImageController::class, 'store']);
@@ -198,6 +198,8 @@ Route::middleware($authMiddleware)->group(function() {
     Route::prefix('bars')->group(function() {
         Route::get('/', [BarController::class, 'index']);
         Route::post('/', [BarController::class, 'store']);
+        Route::get('/{id}', [BarController::class, 'show'])->name('bars.show');
+        Route::put('/{id}', [BarController::class, 'update']);
         Route::delete('/{id}', [BarController::class, 'delete']);
     });
 });
