@@ -1,14 +1,31 @@
-# rc3.0.0
+# v3.0.0
+## Multiple bars
+- Bar Assistant now supports multiple bars.
+    - With this change a lot of endpoints require to have bar reference, this comes in a form of `bar_id` query parameter
+    - Please refer to the new schema specification to see what endpoints now require `bar_id` query parameter
+- This update also changed a lot database table schemas, and having automatic data migration would take a lot of time to implement
+    - To migrate your old data you will have an option to upload v2 .zip file when creating a new bar
+- Users can be invited or join with invite code to specific bars
+
+## Improved user control
+- Users now have more available roles:
+    - Admin: TODO
+    - Moderator: TODO
+    - General: TODO
+    - Guest: TODO
+
 ## Breaking changes
-- Removed POST `shelf/ingredients/{ingredientId}`
-- Removed DELETE `shelf/ingredients/{ingredientId}`
-- Removed `/images` endpoint
+- Removed POST `shelf/ingredients/{ingredientId}` endpoint
+    - **Upgrade guide**: Use `shelf/ingredients/batch-store` endpoint
+- Removed DELETE `shelf/ingredients/{ingredientId}` endpoint
+    - **Upgrade guide**: Use `shelf/ingredients/batch-delete` endpoint
+- Removed GET `/images` endpoint
+- Removed `bar:make-admin` command
+- Removed `bar:open` command
+- Removed `bar:refresh-user-search-keys` command
 
 ## New
-- Added Bars
-
-## Changes
-- Removed `bar:make-admin` command
+- Added `bars/` endpoint
 
 # v2.5.2
 ## Fixes
