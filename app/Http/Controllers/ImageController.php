@@ -21,16 +21,13 @@ use Intervention\Image\Facades\Image as ImageProcessor;
 
 class ImageController extends Controller
 {
-    public function index(Request $request): JsonResource
-    {
-        $images = Image::orderBy('created_at')->paginate($request->get('per_page', 15));
-
-        return ImageResource::collection($images);
-    }
-
-    public function show(int $id): JsonResource
+    public function show(Request $request, int $id): JsonResource
     {
         $image = Image::findOrFail($id);
+
+        if ($request->user()->cannot('show', $image)) {
+            abort(403);
+        }
 
         return new ImageResource($image);
     }

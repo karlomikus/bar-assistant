@@ -2,6 +2,7 @@
 ## Breaking changes
 - Removed POST `shelf/ingredients/{ingredientId}`
 - Removed DELETE `shelf/ingredients/{ingredientId}`
+- Removed `/images` endpoint
 
 ## New
 - Added Bars

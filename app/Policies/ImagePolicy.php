@@ -12,22 +12,36 @@ class ImagePolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, string $ability): bool|null
+    public function show(User $user, Image $image): bool
     {
-        if ($user->isAdmin()) {
-            return true;
+        $barId = $image->imageable?->bar_id ?? null;
+
+        if (!$barId) {
+            return $user->id === $image->user_id;
         }
 
-        return null;
+        return $user->id === $image->user_id && $user->hasBarMembership($barId);
     }
 
     public function edit(User $user, Image $image): bool
     {
-        return $user->id === $image->user_id;
+        $barId = $image->imageable?->bar_id ?? null;
+
+        if (!$barId) {
+            return $user->id === $image->user_id;
+        }
+
+        return $user->id === $image->user_id && $user->hasBarMembership($barId);
     }
 
     public function delete(User $user, Image $image): bool
     {
-        return $user->id === $image->user_id;
+        $barId = $image->imageable?->bar_id ?? null;
+
+        if (!$barId) {
+            return $user->id === $image->user_id;
+        }
+
+        return $user->id === $image->user_id && $user->hasBarMembership($barId);
     }
 }
