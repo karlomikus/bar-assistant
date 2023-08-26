@@ -30,6 +30,10 @@ class BarResource extends JsonResource
             'invite_code' => $this->invite_code,
             'search_driver_host' => $search->getActions()->getHost(),
             'search_driver_api_key' => $this->search_driver_api_key,
+            'created_at' => $this->created_at->toJson(),
+            'updated_at' => $this->updated_at->toJson(),
+            'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
+            'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
         ];
     }
 }

@@ -17,8 +17,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
+use Kami\Cocktail\Models\Concerns\HasAuthors;
 
-class Cocktail extends Model implements ImageableInterface
+class Cocktail extends Model implements UploadableInterface
 {
     use HasFactory,
         Searchable,
@@ -26,7 +27,8 @@ class Cocktail extends Model implements ImageableInterface
         HasSlug,
         HasRating,
         HasNotes,
-        HasBarAwareScope;
+        HasBarAwareScope,
+        HasAuthors;
 
     protected $casts = [
         'public_at' => 'datetime',
@@ -42,14 +44,6 @@ class Cocktail extends Model implements ImageableInterface
         return SlugOptions::create()
             ->generateSlugsFrom(['name', 'bar_id'])
             ->saveSlugsTo('slug');
-    }
-
-    /**
-     * @return BelongsTo<User, Cocktail>
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 
     /**

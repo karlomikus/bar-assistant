@@ -21,11 +21,6 @@ class IngredientCategoryPolicy
         return null;
     }
 
-    public function create(User $user): bool
-    {
-        return $user->hasBarMembership(bar()->id);
-    }
-
     public function show(User $user, IngredientCategory $ingredientCategory): bool
     {
         return $user->hasBarMembership($ingredientCategory->bar_id);

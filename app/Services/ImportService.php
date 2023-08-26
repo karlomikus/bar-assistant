@@ -46,7 +46,7 @@ class ImportService
             $imageSource = null;
             if (array_key_exists('resource_path', $image)) {
                 $imageSource = resource_path($image['resource_path']);
-            } else if (array_key_exists('url', $image)) {
+            } elseif (array_key_exists('url', $image)) {
                 $imageSource = $image['url'];
             }
 

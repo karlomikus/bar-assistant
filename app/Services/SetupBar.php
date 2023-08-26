@@ -26,10 +26,10 @@ class SetupBar
     public function openBar(Bar $bar, User $user, array $flags = []): bool
     {
         $startBase = microtime(true);
-        $this->importBaseData('glasses', resource_path('/data/base_glasses.yml'), $bar->id);
-        $this->importBaseData('cocktail_methods', resource_path('/data/base_methods.yml'), $bar->id);
-        $this->importBaseData('utensils', resource_path('/data/base_utensils.yml'), $bar->id);
-        $this->importBaseData('ingredient_categories', resource_path('/data/base_ingredient_categories.yml'), $bar->id);
+        $this->importBaseData('glasses', resource_path('/data/base_glasses.yml'), $bar->id, $user->id);
+        $this->importBaseData('cocktail_methods', resource_path('/data/base_methods.yml'), $bar->id, $user->id);
+        $this->importBaseData('utensils', resource_path('/data/base_utensils.yml'), $bar->id, $user->id);
+        $this->importBaseData('ingredient_categories', resource_path('/data/base_ingredient_categories.yml'), $bar->id, $user->id);
         $endBase = microtime(true);
 
         $startIngredients = microtime(true);
@@ -45,14 +45,17 @@ class SetupBar
         return true;
     }
 
-    private function importBaseData(string $tableName, string $filepath, int $barId)
+    private function importBaseData(string $tableName, string $filepath, int $barId, int $userId)
     {
         $data = Cache::remember('ba:data-import:' . $filepath, 60 * 60 * 24 * 7, function () use ($filepath) {
             return Yaml::parseFile($filepath);
         });
 
-        $importData = array_map(function (array $item) use ($barId) {
+        $importData = array_map(function (array $item) use ($barId, $userId) {
             $item['bar_id'] = $barId;
+            $item['created_user_id'] = $userId;
+            $item['created_at'] = now();
+            $item['updated_at'] = now();
 
             return $item;
         }, $data);
@@ -84,7 +87,7 @@ class SetupBar
                 'description' => $ingredient['description'],
                 'origin' => $ingredient['origin'],
                 'color' => $ingredient['color'],
-                'user_id' => $user->id,
+                'created_user_id' => $user->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -105,7 +108,7 @@ class SetupBar
                     'copyright' => $ingredient['images'][0]['copyright'] ?? null,
                     'file_path' => $imageFilePath,
                     'file_extension' => 'png',
-                    'user_id' => $user->id,
+                    'created_user_id' => $user->id,
                     'sort' => 1,
                     'placeholder_hash' => $ingredient['images'][0]['placeholder_hash'] ?? null,
                     'created_at' => now(),
@@ -133,9 +136,9 @@ class SetupBar
             return Yaml::parseFile($filepath);
         });
 
-        $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn($row) => $row->id)->toArray();
-        $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn($row) => $row->id)->toArray();
-        $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn($row) => $row->id)->toArray();
+        $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
+        $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
+        $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
 
         $cocktailIngredientsToInsert = [];
         $imagesToInsert = [];
@@ -153,7 +156,7 @@ class SetupBar
                 'garnish' => $cocktail['garnish'] ?? null,
                 'source' => $cocktail['source'] ?? null,
                 'abv' => $cocktail['abv'] ?? null,
-                'user_id' => $user->id,
+                'created_user_id' => $user->id,
                 'glass_id' => $dbGlasses[strtolower($cocktail['glass'])] ?? null,
                 'cocktail_method_id' => $dbMethods[strtolower($cocktail['method'])] ?? null,
                 'bar_id' => $bar->id,
@@ -204,7 +207,7 @@ class SetupBar
                     'copyright' => $cocktail['images'][0]['copyright'] ?? null,
                     'file_path' => $imageFilePath,
                     'file_extension' => 'jpg',
-                    'user_id' => $user->id,
+                    'created_user_id' => $user->id,
                     'sort' => 1,
                     'placeholder_hash' => $cocktail['images'][0]['placeholder_hash'] ?? null,
                     'created_at' => now(),

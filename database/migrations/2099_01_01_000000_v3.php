@@ -57,7 +57,8 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('search_driver_api_key')->nullable();
             $table->foreignId('bar_type_id')->default(1)->constrained()->onDelete('restrict');
-            $table->foreignId('user_id')->constrained()->onDelete('restrict');
+            $table->foreignId('created_user_id')->constrained('users')->onDelete('restrict');
+            $table->foreignId('updated_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('invite_code')->unique()->nullable();
             $table->boolean('active')->default(false);
             $table->timestamps();
@@ -92,6 +93,8 @@ return new class extends Migration
         Schema::create('glasses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
+            $table->foreignId('created_user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('updated_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();
@@ -100,14 +103,19 @@ return new class extends Migration
         Schema::create('cocktail_methods', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
+            $table->foreignId('created_user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('updated_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
             $table->tinyInteger('dilution_percentage');
+            $table->timestamps();
         });
 
         Schema::create('ingredient_categories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
+            $table->foreignId('created_user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('updated_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();
@@ -123,9 +131,9 @@ return new class extends Migration
             $table->text('origin')->nullable();
             $table->string('color')->nullable();
             $table->foreignId('ingredient_category_id')->constrained();
-            $table->foreignId('parent_ingredient_id')->nullable()->constrained('ingredients')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('updated_user_id')->nullable()->constrained('users');
+            $table->foreignId('parent_ingredient_id')->nullable()->constrained('ingredients')->nullOnDelete();
+            $table->foreignId('created_user_id')->constrained('users');
+            $table->foreignId('updated_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
 
@@ -138,10 +146,10 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('source')->nullable();
             $table->text('garnish')->nullable();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('updated_user_id')->nullable()->constrained('users');
-            $table->foreignId('glass_id')->nullable()->constrained();
-            $table->foreignId('cocktail_method_id')->nullable()->constrained('cocktail_methods');
+            $table->foreignId('created_user_id')->constrained('users');
+            $table->foreignId('updated_user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('glass_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('cocktail_method_id')->nullable()->constrained('cocktail_methods')->nullOnDelete();
             $table->ulid('public_id')->nullable();
             $table->dateTime('public_at')->nullable();
             $table->dateTime('public_expires_at')->nullable();
@@ -193,7 +201,8 @@ return new class extends Migration
             $table->string('file_path');
             $table->string('file_extension');
             $table->string('copyright')->nullable();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('created_user_id')->constrained('users');
+            $table->foreignId('updated_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->integer('sort')->default(1);
             $table->string('placeholder_hash')->nullable();
             $table->timestamps();
@@ -251,6 +260,8 @@ return new class extends Migration
         Schema::create('utensils', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
+            $table->foreignId('created_user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('updated_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();

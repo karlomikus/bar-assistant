@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-interface ImageableInterface
+interface UploadableInterface
 {
     public function getUploadPath(): string;
 }

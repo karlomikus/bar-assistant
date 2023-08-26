@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Bar extends Model
 {
-    use HasFactory;
+    use HasFactory, HasAuthors;
 
     public function users(): BelongsToMany
     {

@@ -26,6 +26,15 @@
 
 ## New
 - Added `bars/` endpoint
+- Stats now have users top 5 favorite ingredients, calculated from favorite cocktails
+
+## Changes
+- Optimized base images of cocktails and ingredients
+- Cocktail and ingredient images are now categorized in folders by bar id
+- Merged all migrations to a single one
+- Meilisearch API keys are now generating tenant tokens
+- Changed what data is synced to search servers
+    - TODO
 
 # v2.5.2
 ## Fixes

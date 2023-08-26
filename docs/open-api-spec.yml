@@ -86,17 +86,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - email
-                - password
-              properties:
-                email:
-                  type: string
-                  example: admin@example.com
-                password:
-                  type: string
-                  example: password
+              $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
           description: Successful response
@@ -105,9 +95,8 @@ paths:
               schema:
                 type: object
                 properties:
-                  token:
-                    type: string
-                    example: 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII
+                  data:
+                    $ref: '#/components/schemas/AuthToken'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /logout:
@@ -116,10 +105,33 @@ paths:
         - Auth
       summary: Logout currently authenticated user
       operationId: logout
+      responses:
+        '204':
+          description: Successful response
+  /register:
+    post:
+      tags:
+        - Auth
       security: []
+      summary: "Register a new user"
+      operationId: registerUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
       responses:
         '200':
           description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Profile'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
   /cocktails:
     get:
       parameters:
@@ -264,40 +276,6 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Cocktail'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-  /register:
-    post:
-      tags:
-        - Auth
-      security: []
-      summary: "Register a new user"
-      operationId: registerUser
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  example: "newuser@domain.com"
-                name:
-                  type: string
-                  example: "New User"
-                password:
-                  type: string
-                  example: "P4SSW0RD"
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Profile'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /cocktails/{id}:
@@ -3337,3 +3315,91 @@ components:
         description:
           type: string
           example: "A recipient in 2 parts to shake cocktails vigorously."
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: admin@example.com
+        password:
+          type: string
+          example: password
+    AuthToken:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - name
+        - password
+      properties:
+        email:
+          type: string
+          example: "newuser@domain.com"
+        name:
+          type: string
+          example: "New User"
+        password:
+          type: string
+          example: "P4SSW0RD"
+    Bar:
+      type: object
+      required:
+        - id
+        - name
+        - subtitle
+        - description
+        - invite_code
+        - search_driver_host
+        - search_driver_api_key
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "My bar"
+        subtitle:
+          type: string
+          nullable: true
+          example: "Bar subtitle"
+        description:
+          type: string
+          nullable: true
+          example: "Lorem ipsum dolor sit amet"
+        invite_code:
+          type: string
+          nullable: true
+          example: 01H8S3VH2HTEB3D893AW8NTBBC
+        search_driver_host:
+          type: string
+          nullable: true
+          example: null
+        search_driver_api_key:
+          type: string
+          nullable: true
+          example: null
+        created_at:
+          type: string
+          format: datetime
+          example: 2023-01-01T12:20:25.000000Z
+        updated_at:
+          nullable: true
+          type: string
+          format: datetime
+          example: 2023-01-01T12:20:25.000000Z
+        created_user:
+          $ref: '#/components/schemas/UserBasic'
+        updated_user:
+          $ref: '#/components/schemas/UserBasic'

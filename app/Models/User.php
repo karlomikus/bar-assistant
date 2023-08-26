@@ -63,7 +63,7 @@ class User extends Authenticatable
 
     public function ownedBars(): HasMany
     {
-        return $this->hasMany(Bar::class);
+        return $this->hasMany(Bar::class, 'created_user_id');
     }
 
     public function getBarMembership(int $barId): ?BarMembership
@@ -78,7 +78,7 @@ class User extends Authenticatable
 
     public function isBarOwner(Bar $bar): bool
     {
-        return $this->id === $bar->user_id;
+        return $this->id === $bar->created_user_id;
     }
 
     public function canAccessBar(Bar $bar): bool

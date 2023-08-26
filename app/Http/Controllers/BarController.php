@@ -21,16 +21,20 @@ class BarController extends Controller
 {
     public function index(Request $request): JsonResource
     {
-        return BarResource::collection($request->user()->ownedBars);
+        return BarResource::collection(
+            $request->user()->ownedBars
+        );
     }
 
     public function show(Request $request, int $id): JsonResource
     {
         $bar = Bar::findOrFail($id);
 
-        if (!$request->user()->isBarOwner($bar->bar)) {
+        if (!$request->user()->isBarOwner($bar)) {
             abort(403);
         }
+
+        $bar->load('createdUser', 'updatedUser');
 
         return new BarResource($bar);
     }
@@ -45,7 +49,7 @@ class BarController extends Controller
         $bar->name = $request->post('name');
         $bar->subtitle = $request->post('subtitle');
         $bar->description = $request->post('description');
-        $bar->user_id = $request->user()->id;
+        $bar->created_user_id = $request->user()->id;
         $bar->invite_code = new Ulid();
         $bar->save();
 
@@ -75,6 +79,8 @@ class BarController extends Controller
         $bar->name = $request->post('name');
         $bar->description = $request->post('description');
         $bar->subtitle = $request->post('subtitle');
+        $bar->updated_user_id = $request->user()->id;
+        $bar->updated_at = now();
         $bar->save();
 
         return new BarResource($bar);
