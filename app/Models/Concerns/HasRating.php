@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Models;
+namespace Kami\Cocktail\Models\Concerns;
 
+use Kami\Cocktail\Models\Rating;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasRating

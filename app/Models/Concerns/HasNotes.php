@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Models;
+namespace Kami\Cocktail\Models\Concerns;
 
 use Kami\Cocktail\Models\Note;
 use Illuminate\Database\Eloquent\Collection;

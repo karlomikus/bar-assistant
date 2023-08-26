@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
