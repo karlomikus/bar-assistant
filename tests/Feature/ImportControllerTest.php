@@ -23,7 +23,8 @@ class ImportControllerTest extends TestCase
 
     public function test_cocktail_scrape_from_valid_url(): void
     {
-        $response = $this->postJson('/api/import/cocktail', [
+        $this->setupBar();
+        $response = $this->postJson('/api/import/cocktail?bar_id=1', [
             'source' => 'https://punchdrink.com/recipes/whiskey-peach-smash/'
         ]);
 
@@ -35,7 +36,8 @@ class ImportControllerTest extends TestCase
 
     public function test_cocktail_scrape_fails_safely_for_unknown_url(): void
     {
-        $response = $this->postJson('/api/import/cocktail', [
+        $this->setupBar();
+        $response = $this->postJson('/api/import/cocktail?bar_id=1', [
             'source' => 'https://google.com'
         ]);
 
@@ -44,8 +46,9 @@ class ImportControllerTest extends TestCase
 
     public function test_cocktail_scrape_from_json(): void
     {
+        $this->setupBar();
         $source = file_get_contents(base_path('tests/fixtures/import.json'));
-        $response = $this->postJson('/api/import/cocktail?type=json', [
+        $response = $this->postJson('/api/import/cocktail?bar_id=1&type=json', [
             'source' => $source
         ]);
 
@@ -57,7 +60,8 @@ class ImportControllerTest extends TestCase
 
     public function test_cocktail_scrape_from_json_fails_bad_format(): void
     {
-        $response = $this->postJson('/api/import/cocktail?type=json', [
+        $this->setupBar();
+        $response = $this->postJson('/api/import/cocktail?bar_id=1&type=json', [
             'source' => 'TEST'
         ]);
 
@@ -66,8 +70,9 @@ class ImportControllerTest extends TestCase
 
     public function test_cocktail_scrape_from_yaml(): void
     {
+        $this->setupBar();
         $source = file_get_contents(base_path('tests/fixtures/import.yaml'));
-        $response = $this->postJson('/api/import/cocktail?type=yaml', [
+        $response = $this->postJson('/api/import/cocktail?bar_id=1&type=yaml', [
             'source' => $source
         ]);
 
@@ -79,7 +84,8 @@ class ImportControllerTest extends TestCase
 
     public function test_cocktail_scrape_from_yaml_fails_bad_format(): void
     {
-        $response = $this->postJson('/api/import/cocktail?type=yaml', [
+        $this->setupBar();
+        $response = $this->postJson('/api/import/cocktail?type=yaml&bar_id=1', [
             'source' => "{-- Test \n}\n-test"
         ]);
 
