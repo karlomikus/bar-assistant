@@ -11,7 +11,6 @@ use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Http\UploadedFile;
 use Kami\Cocktail\Models\Utensil;
-use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Storage;
@@ -36,10 +35,7 @@ class CocktailControllerTest extends TestCase
 
     public function test_cocktails_response(): void
     {
-        $this->useBar(
-            Bar::factory()->create(['id' => 1, 'created_user_id' => auth()->user()->id])
-        );
-        DB::table('bar_memberships')->insert(['id' => 1, 'bar_id' => 1, 'user_id' => 1, 'user_role_id' => 1]);
+        $this->setupBar();
 
         Cocktail::factory()->count(55)->create(['bar_id' => 1]);
 
@@ -61,10 +57,7 @@ class CocktailControllerTest extends TestCase
 
     public function test_cocktails_response_with_filters(): void
     {
-        $this->useBar(
-            Bar::factory()->create(['id' => 1, 'created_user_id' => auth()->user()->id])
-        );
-        DB::table('bar_memberships')->insert(['id' => 1, 'bar_id' => 1, 'user_id' => 1, 'user_role_id' => 1]);
+        $this->setupBar();
 
         $user = User::factory()->create();
         Cocktail::factory()->createMany([
@@ -122,10 +115,7 @@ class CocktailControllerTest extends TestCase
 
     public function test_cocktails_response_with_sorts(): void
     {
-        $this->useBar(
-            Bar::factory()->create(['id' => 1, 'created_user_id' => auth()->user()->id])
-        );
-        DB::table('bar_memberships')->insert(['id' => 1, 'bar_id' => 1, 'user_id' => 1, 'user_role_id' => 1]);
+        $this->setupBar();
 
         Cocktail::factory()->createMany([
             ['bar_id' => 1, 'name' => 'B Cocktail'],
@@ -146,8 +136,7 @@ class CocktailControllerTest extends TestCase
 
     public function test_cocktail_show_response(): void
     {
-        $bar = Bar::factory()->create(['id' => 1, 'created_user_id' => auth()->user()->id]);
-        DB::table('bar_memberships')->insert(['id' => 1, 'bar_id' => 1, 'user_id' => 1, 'user_role_id' => 1]);
+        $bar = $this->setupBar();
 
         $glass = Glass::factory()->create(['bar_id' => $bar->id]);
         $method = CocktailMethod::factory()->create(['bar_id' => $bar->id]);
@@ -209,8 +198,7 @@ class CocktailControllerTest extends TestCase
 
     public function test_cocktail_show_using_slug_response(): void
     {
-        Bar::factory()->create(['id' => 1, 'created_user_id' => auth()->user()->id]);
-        DB::table('bar_memberships')->insert(['id' => 1, 'bar_id' => 1, 'user_id' => 1, 'user_role_id' => 1]);
+        $this->setupBar();
 
         $cocktail = Cocktail::factory()->create(['bar_id' => 1]);
 
@@ -230,10 +218,7 @@ class CocktailControllerTest extends TestCase
 
     public function test_cocktail_create_response(): void
     {
-        $this->useBar(
-            Bar::factory()->create(['id' => 1, 'created_user_id' => auth()->user()->id])
-        );
-        DB::table('bar_memberships')->insert(['id' => 1, 'bar_id' => 1, 'user_id' => 1, 'user_role_id' => 1]);
+        $this->setupBar();
 
         $gin = Ingredient::factory()
             ->state([
@@ -321,8 +306,7 @@ class CocktailControllerTest extends TestCase
 
     public function test_cocktail_update_response(): void
     {
-        Bar::factory()->create(['id' => 1, 'created_user_id' => auth()->user()->id]);
-        DB::table('bar_memberships')->insert(['id' => 1, 'bar_id' => 1, 'user_id' => auth()->user()->id, 'user_role_id' => 1]);
+        $this->setupBar();
 
         $cocktail = Cocktail::factory()->create(['bar_id' => 1, 'created_user_id' => 1]);
         Utensil::factory()->count(5)->create(['bar_id' => 1]);
@@ -368,8 +352,7 @@ class CocktailControllerTest extends TestCase
 
     public function test_cocktail_delete_response(): void
     {
-        Bar::factory()->create(['id' => 1, 'created_user_id' => auth()->user()->id]);
-        DB::table('bar_memberships')->insert(['id' => 1, 'bar_id' => 1, 'user_id' => auth()->user()->id, 'user_role_id' => 1]);
+        $this->setupBar();
 
         $cocktail = Cocktail::factory()->create(['created_user_id' => auth()->user()->id, 'bar_id' => 1]);
 
@@ -380,8 +363,7 @@ class CocktailControllerTest extends TestCase
 
     public function test_cocktail_delete_deletes_images_response(): void
     {
-        Bar::factory()->create(['id' => 1, 'created_user_id' => auth()->user()->id]);
-        DB::table('bar_memberships')->insert(['id' => 1, 'bar_id' => 1, 'user_id' => auth()->user()->id, 'user_role_id' => 1]);
+        $this->setupBar();
 
         $cocktail = Cocktail::factory()->create(['created_user_id' => auth()->user()->id, 'bar_id' => 1]);
         $storage = Storage::fake('bar-assistant');
@@ -403,8 +385,7 @@ class CocktailControllerTest extends TestCase
 
     public function test_make_cocktail_public_link_response(): void
     {
-        Bar::factory()->create(['id' => 1, 'created_user_id' => auth()->user()->id]);
-        DB::table('bar_memberships')->insert(['id' => 1, 'bar_id' => 1, 'user_id' => auth()->user()->id, 'user_role_id' => 1]);
+        $this->setupBar();
 
         $cocktail = Cocktail::factory()->create(['created_user_id' => auth()->user()->id, 'bar_id' => 1]);
 
@@ -425,8 +406,7 @@ class CocktailControllerTest extends TestCase
 
     public function test_delete_cocktail_public_link_response(): void
     {
-        Bar::factory()->create(['id' => 1, 'created_user_id' => auth()->user()->id]);
-        DB::table('bar_memberships')->insert(['id' => 1, 'bar_id' => 1, 'user_id' => auth()->user()->id, 'user_role_id' => 1]);
+        $this->setupBar();
 
         $cocktail = Cocktail::factory()->create(['created_user_id' => auth()->user()->id, 'bar_id' => 1]);
 
@@ -440,8 +420,7 @@ class CocktailControllerTest extends TestCase
 
     public function test_cocktail_share_response(): void
     {
-        Bar::factory()->create(['id' => 1, 'created_user_id' => auth()->user()->id]);
-        DB::table('bar_memberships')->insert(['id' => 1, 'bar_id' => 1, 'user_id' => auth()->user()->id, 'user_role_id' => 1]);
+        $this->setupBar();
 
         $cocktail = Cocktail::factory()
             ->has(CocktailIngredient::factory()->count(3), 'ingredients')
