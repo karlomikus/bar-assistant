@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Scraper\Manager;
 use Kami\Cocktail\Services\ImportService;
 use Kami\Cocktail\Http\Requests\ImportRequest;
@@ -22,6 +23,10 @@ class ImportController extends Controller
         $type = $request->get('type', 'url');
         $save = $request->get('save', false);
         $source = $request->post('source');
+
+        $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', bar()->id)->get()->keyBy('name');
+        $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', bar()->id)->get()->keyBy('name');
+        $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', bar()->id)->get()->keyBy('name');
 
         if ($type === 'url') {
             $request->validate(['source' => 'url']);
@@ -63,13 +68,13 @@ class ImportController extends Controller
                 abort(400, sprintf('No cocktails found'));
             }
 
-            $collection = $importService->importCocktailCollection($source, $request->user()->id);
+            $collection = $importService->importCocktailCollection($source, $request->user()->id, bar()->id);
 
             return new CollectionResource($collection);
         }
 
         if ($save) {
-            $dataToImport = new CocktailResource($importService->importCocktailFromArray($dataToImport, $request->user()->id));
+            $dataToImport = new CocktailResource($importService->importCocktailFromArray($dataToImport, $request->user()->id, bar()->id, $dbIngredients, $dbGlasses, $dbMethods));
         }
 
         return response()->json([

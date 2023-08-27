@@ -193,7 +193,7 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('import')->group(function() {
-        Route::post('/cocktail', [ImportController::class, 'cocktail']);
+        Route::post('/cocktail', [ImportController::class, 'cocktail'])->middleware(EnsureRequestHasBarQuery::class);
     });
 
     Route::prefix('bars')->group(function() {

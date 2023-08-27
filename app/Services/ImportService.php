@@ -40,13 +40,13 @@ class ImportService
      */
     public function importCocktailFromArray(array $sourceData, int $userId, int $barId, ?Collection $dbIngredients = null, ?Collection $dbGlasses = null, ?Collection $dbMethods = null): Cocktail
     {
+        $defaultDescription = 'Created from "' . $sourceData['source'] . '"';
+
         // Add images
         $cocktailImages = [];
         foreach ($sourceData['images'] ?? [] as $image) {
             $imageSource = null;
-            if (array_key_exists('resource_path', $image)) {
-                $imageSource = resource_path($image['resource_path']);
-            } elseif (array_key_exists('url', $image)) {
+            if (array_key_exists('url', $image)) {
                 $imageSource = $image['url'];
             }
 
@@ -56,7 +56,7 @@ class ImportService
                         ImageProcessor::make($imageSource),
                         $image['copyright'] ?? null
                     );
-    
+
                     $cocktailImages[] = $this->imageService->uploadAndSaveImages([$imageDTO], 1)[0]->id;
                 } catch (Throwable $e) {
                     Log::error($e->getMessage());
@@ -73,8 +73,9 @@ class ImportService
             } elseif ($sourceData['glass'] !== null) {
                 $newGlass = new Glass();
                 $newGlass->name = ucfirst($sourceData['glass']);
-                $newGlass->description = 'Created from "' . $sourceData['source'] . '"';
+                $newGlass->description = $defaultDescription;
                 $newGlass->bar_id = $barId;
+                $newGlass->created_user_id = $userId;
                 $newGlass->save();
                 $dbGlasses->put($glassNameLower, $newGlass->id);
                 $glassId = $newGlass->id;
@@ -103,7 +104,7 @@ class ImportService
                     1,
                     $userId,
                     $scrapedIngredient['strength'] ?? 0.0,
-                    $scrapedIngredient['description'] ?? 'Created by scraper from ' . $sourceData['source'],
+                    $scrapedIngredient['description'] ?? $defaultDescription,
                     $scrapedIngredient['origin'] ?? null
                 );
                 $dbIngredients->put(strtolower($scrapedIngredient['name']), $newIngredient->id);
