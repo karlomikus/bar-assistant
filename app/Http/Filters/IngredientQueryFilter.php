@@ -25,15 +25,19 @@ final class IngredientQueryFilter extends QueryBuilder
                 AllowedFilter::beginsWithStrict('name_exact', 'name'),
                 AllowedFilter::exact('category_id', 'ingredient_category_id'),
                 AllowedFilter::partial('origin'),
-                AllowedFilter::exact('user_id'),
-                AllowedFilter::callback('on_shopping_list', function ($query) use ($barMembership) {
-                    $query->whereIn('id', $barMembership->shoppingListIngredients->pluck('ingredient_id'));
+                AllowedFilter::exact('created_user_id'),
+                AllowedFilter::callback('on_shopping_list', function ($query, $value) use ($barMembership) {
+                    if ($value === true) {
+                        $query
+                            ->join('user_shopping_lists', 'user_shopping_lists.ingredient_id', '=', 'ingredients.id')
+                            ->where('user_shopping_lists.bar_membership_id', $barMembership->id);
+                    }
                 }),
                 AllowedFilter::callback('on_shelf', function ($query, $value) use ($barMembership) {
                     if ($value === true) {
                         $query
                             ->join('user_ingredients', 'user_ingredients.ingredient_id', '=', 'ingredients.id')
-                            ->whereIn('user_ingredients.ingredient_id', $barMembership->shoppingListIngredients->pluck('ingredient_id'));
+                            ->where('user_ingredients.bar_membership_id', $barMembership->id);
                     }
                 }),
                 AllowedFilter::callback('strength_min', function ($query, $value) {

@@ -10,6 +10,7 @@ use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\UserIngredient;
+use Kami\Cocktail\Models\UserShoppingList;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\IngredientCategory;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -26,15 +27,12 @@ class IngredientControllerTest extends TestCase
         $this->actingAs(
             User::factory()->create()
         );
-
-        $this->useBar(
-            Bar::factory()->create(['id' => 1, 'user_id' => auth()->user()->id])
-        );
     }
 
     public function test_list_ingredients_response()
     {
-        Ingredient::factory()->count(55)->create();
+        $this->setupBar();
+        Ingredient::factory()->count(55)->create(['bar_id' => 1]);
 
         $response = $this->getJson('/api/ingredients?bar_id=1');
 
@@ -64,20 +62,21 @@ class IngredientControllerTest extends TestCase
 
     public function test_list_ingredients_response_filters()
     {
+        $bar = $this->setupBar();
         $user = User::factory()->create();
         $ingCat = IngredientCategory::factory()->create();
         Ingredient::factory()->createMany([
-            ['name' => 'Whiskey', 'origin' => 'America', 'strength' => 35.5],
-            ['name' => 'XXXX', 'strength' => 0],
-            ['name' => 'Test', 'user_id' => $user->id, 'strength' => 40],
-            ['name' => 'Test 2', 'ingredient_category_id' => $ingCat->id, 'strength' => 0],
+            ['bar_id' => $bar->id, 'name' => 'Whiskey', 'origin' => 'America', 'strength' => 35.5],
+            ['bar_id' => $bar->id, 'name' => 'XXXX', 'strength' => 0],
+            ['bar_id' => $bar->id, 'name' => 'Test', 'created_user_id' => $user->id, 'strength' => 40],
+            ['bar_id' => $bar->id, 'name' => 'Test 2', 'ingredient_category_id' => $ingCat->id, 'strength' => 0],
         ]);
 
         $response = $this->getJson('/api/ingredients?bar_id=1&filter[name]=whi');
         $response->assertJsonCount(1, 'data');
         $response = $this->getJson('/api/ingredients?bar_id=1&filter[name]=whi,xx');
         $response->assertJsonCount(2, 'data');
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[user_id]=' . $user->id);
+        $response = $this->getJson('/api/ingredients?bar_id=1&filter[created_user_id]=' . $user->id);
         $response->assertJsonCount(1, 'data');
         $response = $this->getJson('/api/ingredients?bar_id=1&filter[category_id]=' . $ingCat->id);
         $response->assertJsonCount(1, 'data');
@@ -95,42 +94,45 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonCount(0, 'data');
     }
 
-    public function test_list_ingredients_response_filter_by_category()
-    {
-        Ingredient::factory()->count(5)->create();
-        $ingCat = IngredientCategory::factory()->create();
-        Ingredient::factory()->count(2)->create([
-            'ingredient_category_id' => $ingCat->id,
-        ]);
-
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[category_id]=' . $ingCat->id);
-
-        $response->assertStatus(200);
-        $response->assertJsonCount(2, 'data');
-    }
-
     public function test_list_ingredients_response_filter_by_shopping_list()
     {
-        Ingredient::factory()->count(5)->create();
+        $bar = $this->setupBar();
+        $ingredients = Ingredient::factory()->count(5)->create(['bar_id' => $bar->id]);
+        foreach ($ingredients as $ing) {
+            $rel = new UserShoppingList();
+            $rel->ingredient_id = $ing->id;
+            $rel->bar_membership_id = 1;
+            $rel->save();
+        }
+        Ingredient::factory()->count(5)->create(['bar_id' => $bar->id]);
 
         $response = $this->getJson('/api/ingredients?bar_id=1&filter[on_shopping_list]=true');
 
         $response->assertStatus(200);
-        $response->assertJsonCount(0, 'data');
+        $response->assertJsonCount(5, 'data');
     }
 
     public function test_list_ingredients_response_filter_by_shelf()
     {
-        Ingredient::factory()->count(5)->create();
+        $bar = $this->setupBar();
+        $ingredients = Ingredient::factory()->count(5)->create(['bar_id' => $bar->id]);
+        foreach ($ingredients as $ing) {
+            $rel = new UserIngredient();
+            $rel->ingredient_id = $ing->id;
+            $rel->bar_membership_id = 1;
+            $rel->save();
+        }
+        Ingredient::factory()->count(5)->create(['bar_id' => $bar->id]);
 
         $response = $this->getJson('/api/ingredients?bar_id=1&filter[on_shelf]=true');
 
         $response->assertStatus(200);
-        $response->assertJsonCount(0, 'data');
+        $response->assertJsonCount(5, 'data');
     }
 
     public function test_ingredient_show_response()
     {
+        $bar = $this->setupBar();
         $ingredient = Ingredient::factory()
             ->state([
                 'name' => 'Test ingredient',
@@ -138,6 +140,7 @@ class IngredientControllerTest extends TestCase
                 'description' => 'Test',
                 'origin' => 'Croatia',
                 'color' => '#fff',
+                'bar_id' => $bar->id,
             ])
             ->create();
 
@@ -145,7 +148,8 @@ class IngredientControllerTest extends TestCase
             ->state([
                 'name' => 'Child ingredient',
                 'strength' => 45.5,
-                'parent_ingredient_id' => $ingredient->id
+                'parent_ingredient_id' => $ingredient->id,
+                'bar_id' => $bar->id,
             ])
             ->create();
 
@@ -161,7 +165,7 @@ class IngredientControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonPath('data.id', 1);
-        $response->assertJsonPath('data.slug', 'test-ingredient');
+        $response->assertJsonPath('data.slug', 'test-ingredient-1');
         $response->assertJsonPath('data.name', 'Test ingredient');
         $response->assertJsonPath('data.strength', 45.5);
         $response->assertJsonPath('data.description', 'Test');
@@ -190,7 +194,8 @@ class IngredientControllerTest extends TestCase
 
     public function test_ingredient_store_response()
     {
-        $ingCat = IngredientCategory::factory()->create();
+        $this->setupBar();
+        $ingCat = IngredientCategory::factory()->create(['bar_id' => 1]);
 
         $response = $this->postJson('/api/ingredients?bar_id=1', [
             'name' => "Ingredient name",
@@ -219,6 +224,8 @@ class IngredientControllerTest extends TestCase
 
     public function test_ingredient_store_fails_validation_response()
     {
+        $this->setupBar();
+
         $response = $this->postJson('/api/ingredients?bar_id=1', [
             'strength' => 12.2,
         ]);
@@ -235,11 +242,13 @@ class IngredientControllerTest extends TestCase
 
     public function test_ingredient_update_response()
     {
+        $this->setupBar();
         $ing = Ingredient::factory()
             ->state([
                 'name' => 'Test ingredient',
                 'strength' => 45.5,
-                'description' => 'Test'
+                'description' => 'Test',
+                'bar_id' => 1,
             ])
             ->create();
 
@@ -291,11 +300,13 @@ class IngredientControllerTest extends TestCase
 
     public function test_ingredient_delete_response()
     {
+        $this->setupBar();
         $ing = Ingredient::factory()
             ->state([
                 'name' => 'Test ingredient',
                 'strength' => 45.5,
-                'description' => 'Test'
+                'description' => 'Test',
+                'bar_id' => 1,
             ])
             ->create();
 
@@ -307,12 +318,14 @@ class IngredientControllerTest extends TestCase
 
     public function test_ingredients_extra_response()
     {
-        $ingredient1 = Ingredient::factory()->create();
-        $ingredient2 = Ingredient::factory()->create();
+        $this->setupBar();
+        $ingredient1 = Ingredient::factory()->create(['bar_id' => 1]);
+        $ingredient2 = Ingredient::factory()->create(['bar_id' => 1]);
 
         $userIngredient = new UserIngredient();
         $userIngredient->ingredient_id = $ingredient1->id;
-        auth()->user()->shelfIngredients()->save($userIngredient);
+        $userIngredient->bar_membership_id = 1;
+        $userIngredient->save();
 
         $cocktail = Cocktail::factory()
             ->has(CocktailIngredient::factory()->for(
@@ -321,7 +334,7 @@ class IngredientControllerTest extends TestCase
             ->has(CocktailIngredient::factory()->for(
                 $ingredient2
             ), 'ingredients')
-            ->create();
+            ->create(['bar_id' => 1]);
 
         $response = $this->getJson('/api/ingredients/' . $ingredient1->id . '/extra?bar_id=1');
         $response->assertJsonCount(0, 'data');
