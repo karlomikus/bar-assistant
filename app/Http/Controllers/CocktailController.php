@@ -44,7 +44,7 @@ class CocktailController extends Controller
             ->firstOrFail()
             ->load(['ingredients.ingredient', 'images' => function ($query) {
                 $query->orderBy('sort');
-            }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'notes', 'user', 'collections', 'utensils']);
+            }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'notes', 'createdUser', 'updatedUser', 'collections', 'utensils']);
 
         if ($request->user()->cannot('show', $cocktail)) {
             abort(403);
@@ -91,7 +91,9 @@ class CocktailController extends Controller
             abort(500, $e->getMessage());
         }
 
-        $cocktail->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'utensils');
+        $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
+            $query->orderBy('sort');
+        }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'notes', 'createdUser', 'updatedUser', 'collections', 'utensils']);
 
         return (new CocktailResource($cocktail))
             ->response()
@@ -143,7 +145,9 @@ class CocktailController extends Controller
             abort(500, $e->getMessage());
         }
 
-        $cocktail->load('ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'utensils');
+        $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
+            $query->orderBy('sort');
+        }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'notes', 'createdUser', 'updatedUser', 'collections', 'utensils']);
 
         return new CocktailResource($cocktail);
     }
@@ -176,7 +180,7 @@ class CocktailController extends Controller
             ->orWhere('slug', $idOrSlug)
             ->firstOrFail();
 
-        if ($request->user()->cannot('show', $cocktail)) {
+        if ($request->user()->cannot('edit', $cocktail)) {
             abort(403);
         }
 
@@ -195,7 +199,7 @@ class CocktailController extends Controller
             ->orWhere('slug', $idOrSlug)
             ->firstOrFail();
 
-        if ($request->user()->cannot('show', $cocktail)) {
+        if ($request->user()->cannot('edit', $cocktail)) {
             abort(403);
         }
 

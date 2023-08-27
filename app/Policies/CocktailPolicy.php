@@ -33,16 +33,16 @@ class CocktailPolicy
 
     public function edit(User $user, Cocktail $cocktail): bool
     {
-        return $user->id === $cocktail->user_id;
+        return $user->id === $cocktail->user_id && $user->hasBarMembership($cocktail->bar_id);
     }
 
     public function delete(User $user, Cocktail $cocktail): bool
     {
-        return $user->id === $cocktail->user_id;
+        return $user->id === $cocktail->user_id && $user->hasBarMembership($cocktail->bar_id);
     }
 
     public function rate(User $user, Cocktail $cocktail): bool
     {
-        return $user->id === $cocktail->user_id;
+        return $user->hasBarMembership($cocktail->bar_id);
     }
 }

@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Models;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Glass extends Model
 {
-    use HasFactory, HasBarAwareScope;
+    use HasFactory, HasBarAwareScope, HasAuthors;
 
     /**
      * @return HasMany<Cocktail>

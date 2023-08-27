@@ -42,7 +42,7 @@ class IngredientCategoryController extends Controller
         $category->name = $request->post('name');
         $category->description = $request->post('description');
         $category->bar_id = bar()->id;
-        $category->user_id = $request->user()->id;
+        $category->created_user_id = $request->user()->id;
         $category->save();
 
         return (new IngredientCategoryResource($category))
@@ -62,6 +62,7 @@ class IngredientCategoryController extends Controller
         $category->name = $request->post('name');
         $category->description = $request->post('description');
         $category->updated_user_id = $request->user()->id;
+        $category->updated_at = now();
         $category->save();
 
         return new IngredientCategoryResource($category);

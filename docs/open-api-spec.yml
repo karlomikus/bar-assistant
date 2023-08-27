@@ -2761,8 +2761,8 @@ components:
         - user_rating
         - average_rating
         - created_at
+        - updated_at
         - abv
-        - has_public_link
         - public_id
       properties:
         id:
@@ -2827,8 +2827,15 @@ components:
         created_at:
           type: string
           format: datetime
-          example: 2023-01-01 12:00:00
-        user:
+          example: 2023-01-01T12:20:25.000000Z
+        updated_at:
+          type: string
+          format: datetime
+          nullable: true
+          example: 2023-01-01T12:20:25.000000Z
+        created_user:
+          $ref: '#/components/schemas/UserBasic'
+        updated_user:
           $ref: '#/components/schemas/UserBasic'
         method:
           $ref: '#/components/schemas/CocktailMethod'
@@ -2836,14 +2843,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CocktailCollection'
+        utensils:
+          type: array
+          items:
+            $ref: '#/components/schemas/Utensil'
         abv:
           type: number
           format: float
           nullable: true
           example: 18.12
-        has_public_link:
-          type: boolean
-          example: false
         public_id:
           type: string
           nullable: true
@@ -2852,6 +2860,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Note'
+        navigation:
+          type: object
+          properties:
+            prev:
+              type: string
+              example: 'whiskey-sour-1'
+              description: Slug of prev cocktail
+            next:
+              type: string
+              example: 'martini-1'
+              description: Slug of next cocktail
     CocktailRequest:
       type: object
       required:

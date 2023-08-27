@@ -77,6 +77,7 @@ class CollectionController extends Controller
 
         $collection->name = $request->post('name');
         $collection->description = $request->post('description');
+        $collection->updated_at = now();
         $collection->save();
 
         return new CollectionResource($collection);
@@ -100,6 +101,8 @@ class CollectionController extends Controller
                     ->whereIn('id', $cocktailIds)
                     ->pluck('id');
                 $collection->cocktails()->syncWithoutDetaching($cocktails);
+                $collection->updated_at = now();
+                $collection->save();
             }
         } catch (Throwable) {
             abort(500, 'Unable to add cocktails to collection!');
@@ -120,6 +123,8 @@ class CollectionController extends Controller
 
         try {
             $cocktail->addToCollection($collection);
+            $collection->updated_at = now();
+            $collection->save();
         } catch (Throwable) {
             abort(500, 'Unable to add cocktail to collection!');
         }
@@ -150,6 +155,8 @@ class CollectionController extends Controller
 
         try {
             $collection->cocktails()->detach($cocktailId);
+            $collection->updated_at = now();
+            $collection->save();
         } catch (Throwable $e) {
             abort(500, 'Unable to remove cocktail from collection!');
         }

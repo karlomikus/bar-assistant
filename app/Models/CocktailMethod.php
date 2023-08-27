@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CocktailMethod extends Model
 {
-    use HasFactory, HasBarAwareScope;
+    use HasFactory, HasBarAwareScope, HasAuthors;
 
     public $timestamps = false;
 

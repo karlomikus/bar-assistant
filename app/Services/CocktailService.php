@@ -38,7 +38,7 @@ class CocktailService
             $cocktail->description = $cocktailDTO->description;
             $cocktail->garnish = $cocktailDTO->garnish;
             $cocktail->source = $cocktailDTO->source;
-            $cocktail->user_id = $cocktailDTO->userId;
+            $cocktail->created_user_id = $cocktailDTO->userId;
             $cocktail->glass_id = $cocktailDTO->glassId;
             $cocktail->cocktail_method_id = $cocktailDTO->methodId;
             $cocktail->bar_id = $cocktailDTO->barId;
@@ -116,11 +116,10 @@ class CocktailService
             $cocktail->description = $cocktailDTO->description;
             $cocktail->garnish = $cocktailDTO->garnish;
             $cocktail->source = $cocktailDTO->source;
-            if ($cocktail->user_id !== 1) {
-                $cocktail->user_id = $cocktailDTO->userId;
-            }
+            $cocktail->updated_user_id = $cocktailDTO->userId;
             $cocktail->glass_id = $cocktailDTO->glassId;
             $cocktail->cocktail_method_id = $cocktailDTO->methodId;
+            $cocktail->updated_at = now();
             $cocktail->save();
 
             // TODO: Implement upsert and delete

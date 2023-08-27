@@ -59,7 +59,7 @@ class IngredientService
             $ingredient->origin = $origin;
             $ingredient->color = $color;
             $ingredient->parent_ingredient_id = $parentIngredientId;
-            $ingredient->user_id = $userId;
+            $ingredient->created_user_id = $userId;
             $ingredient->save();
         } catch (Throwable $e) {
             throw new IngredientException('Error occured while creating ingredient!', 0, $e);
@@ -122,7 +122,8 @@ class IngredientService
             $ingredient->origin = $origin;
             $ingredient->color = $color;
             $ingredient->parent_ingredient_id = $parentIngredientId;
-            $ingredient->user_id = $userId;
+            $ingredient->updated_user_id = $userId;
+            $ingredient->updated_at = now();
             $ingredient->save();
         } catch (Throwable $e) {
             throw new IngredientException('Error occured while updating ingredient!', 0, $e);
