@@ -93,14 +93,19 @@ class SetupBar
             ];
 
             // For performance, manually copy the files and create image references
-            if (isset($ingredient['images'][0]['resource_path']) && file_exists(resource_path($ingredient['images'][0]['resource_path']))) {
+            if (isset($ingredient['images'][0]['resource_path'])) {
+                $fullImagePath = resource_path('data/' . $ingredient['images'][0]['resource_path']);
+                if (!file_exists($fullImagePath)) {
+                    continue;
+                }
+
                 $disk = Storage::disk('bar-assistant');
 
                 $disk->makeDirectory($imagesBasePath);
 
                 $imageFilePath = $imagesBasePath . $slug . '_' . Str::random(6) . '.png';
                 copy(
-                    resource_path($ingredient['images'][0]['resource_path']),
+                    $fullImagePath,
                     $disk->path($imageFilePath)
                 );
 
@@ -188,16 +193,19 @@ class SetupBar
                 $sort++;
             }
 
-            $imageResourcePath = $cocktail['images'][0]['resource_path'];
-
-            if (file_exists(resource_path($imageResourcePath))) {
+            // For performance, manually copy the files and create image references
+            if (isset($cocktail['images'][0]['resource_path'])) {
+                $fullImagePath = resource_path('data/' . $cocktail['images'][0]['resource_path']);
+                if (!file_exists($fullImagePath)) {
+                    continue;
+                }
                 $disk = Storage::disk('bar-assistant');
 
                 $disk->makeDirectory($imagesBasePath);
 
                 $imageFilePath = $imagesBasePath . $slug . '_' . Str::random(6) . '.jpg';
                 copy(
-                    resource_path($imageResourcePath),
+                    $fullImagePath,
                     $disk->path($imageFilePath)
                 );
 
