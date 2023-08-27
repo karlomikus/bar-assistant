@@ -18,6 +18,7 @@ class TagFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'bar_id' => bar()->id
         ];
     }
 }

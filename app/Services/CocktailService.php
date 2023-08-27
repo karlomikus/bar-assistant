@@ -147,6 +147,7 @@ class CocktailService
             foreach ($cocktailDTO->tags as $tagName) {
                 $tag = Tag::firstOrNew([
                     'name' => trim($tagName),
+                    'bar_id' => $cocktail->bar_id,
                 ]);
                 $tag->save();
                 $dbTags[] = $tag->id;

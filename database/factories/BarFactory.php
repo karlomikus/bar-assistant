@@ -18,7 +18,7 @@ class BarFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'user_id' => \Kami\Cocktail\Models\User::factory(),
+            'created_user_id' => \Kami\Cocktail\Models\User::factory(),
         ];
     }
 }

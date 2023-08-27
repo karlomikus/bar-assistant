@@ -29,12 +29,12 @@ final class CocktailQueryFilter extends QueryBuilder
                 AllowedFilter::exact('ingredient_id', 'ingredients.ingredient.id'),
                 AllowedFilter::exact('tag_id', 'tags.id'),
                 AllowedFilter::exact('collection_id', 'collections.id'),
-                AllowedFilter::exact('user_id'),
+                AllowedFilter::exact('created_user_id'),
                 AllowedFilter::exact('glass_id'),
                 AllowedFilter::exact('cocktail_method_id'),
-                AllowedFilter::callback('favorites', function ($query, $value) {
+                AllowedFilter::callback('favorites', function ($query, $value) use ($barMembership) {
                     if ($value === true) {
-                        $query->userFavorites($this->request->user()->id);
+                        $query->userFavorites($barMembership->id);
                     }
                 }),
                 AllowedFilter::callback('on_shelf', function ($query, $value) use ($cocktailService) {

@@ -185,15 +185,15 @@ class Cocktail extends Model implements UploadableInterface
      * Only user favorites
      *
      * @param Builder<Cocktail> $baseQuery
-     * @param int $userId
+     * @param int $barMembershipId
      * @return Builder<Cocktail>
      */
-    public function scopeUserFavorites(Builder $baseQuery, int $userId): Builder
+    public function scopeUserFavorites(Builder $baseQuery, int $barMembershipId): Builder
     {
-        return $baseQuery->whereIn('cocktails.id', function ($query) use ($userId) {
+        return $baseQuery->whereIn('cocktails.id', function ($query) use ($barMembershipId) {
             $query->select('cocktail_id')
                 ->from('cocktail_favorites')
-                ->where('user_id', $userId);
+                ->where('bar_membership_id', $barMembershipId);
         });
     }
 

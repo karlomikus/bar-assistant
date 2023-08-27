@@ -19,6 +19,8 @@ class UtensilFactory extends Factory
         return [
             'name' => fake()->name(),
             'description' => fake()->paragraph(),
+            'created_user_id' => \Kami\Cocktail\Models\User::factory(),
+            'bar_id' => bar()->id,
         ];
     }
 }

@@ -21,7 +21,7 @@ class IngredientFactory extends Factory
             'origin' => fake()->country(),
             'strength' => fake()->randomFloat(2),
             'ingredient_category_id' => \Kami\Cocktail\Models\IngredientCategory::factory(),
-            'user_id' => \Kami\Cocktail\Models\User::factory(),
+            'created_user_id' => \Kami\Cocktail\Models\User::factory(),
             'bar_id' => bar()->id,
         ];
     }
