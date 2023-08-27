@@ -52,7 +52,7 @@ class ImageService
             $image->copyright = $dtoImage->copyright;
             $image->file_path = $filepath;
             $image->file_extension = $fileExtension;
-            $image->user_id = $userId;
+            $image->created_user_id = $userId;
             $image->sort = $dtoImage->sort;
             $image->placeholder_hash = $thumbHash;
             $image->save();
@@ -70,7 +70,7 @@ class ImageService
      * @param ImageDTO $imageDTO Image object
      * @return \Kami\Cocktail\Models\Image Database image model
      */
-    public function updateImage(int $imageId, ImageDTO $imageDTO): Image
+    public function updateImage(int $imageId, ImageDTO $imageDTO, int $userId): Image
     {
         $image = Image::findOrFail($imageId);
 
@@ -82,6 +82,8 @@ class ImageService
                 $image->file_path = $filepath;
                 $image->placeholder_hash = $thumbHash;
                 $image->file_extension = $fileExtension;
+                $image->updated_user_id = $userId;
+                $image->updated_at = now();
             } catch (Throwable $e) {
                 $this->log->error('[IMAGE_SERVICE] File upload error | ' . $e->getMessage());
             }

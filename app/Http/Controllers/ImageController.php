@@ -74,7 +74,7 @@ class ImageController extends Controller
             $request->has('sort') ? (int) $request->input('sort') : null,
         );
 
-        $image = $imageservice->updateImage($id, $imageDTO);
+        $image = $imageservice->updateImage($id, $imageDTO, $request->user()->id);
 
         return new ImageResource($image);
     }

@@ -17,10 +17,10 @@ class ImagePolicy
         $barId = $image->imageable?->bar_id ?? null;
 
         if (!$barId) {
-            return $user->id === $image->user_id;
+            return $user->id === $image->created_user_id;
         }
 
-        return $user->id === $image->user_id && $user->hasBarMembership($barId);
+        return $user->id === $image->created_user_id && $user->hasBarMembership($barId);
     }
 
     public function edit(User $user, Image $image): bool
@@ -28,10 +28,10 @@ class ImagePolicy
         $barId = $image->imageable?->bar_id ?? null;
 
         if (!$barId) {
-            return $user->id === $image->user_id;
+            return $user->id === $image->created_user_id;
         }
 
-        return $user->id === $image->user_id && $user->hasBarMembership($barId);
+        return $user->id === $image->created_user_id && $user->hasBarMembership($barId);
     }
 
     public function delete(User $user, Image $image): bool
@@ -39,9 +39,9 @@ class ImagePolicy
         $barId = $image->imageable?->bar_id ?? null;
 
         if (!$barId) {
-            return $user->id === $image->user_id;
+            return $user->id === $image->created_user_id;
         }
 
-        return $user->id === $image->user_id && $user->hasBarMembership($barId);
+        return $user->id === $image->created_user_id && $user->hasBarMembership($barId);
     }
 }
