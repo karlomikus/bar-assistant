@@ -28,11 +28,11 @@ class IngredientCategoryPolicy
 
     public function edit(User $user, IngredientCategory $ingredientCategory): bool
     {
-        return $user->id === $ingredientCategory->user_id && $user->hasBarMembership($ingredientCategory->bar_id);
+        return $user->id === $ingredientCategory->created_user_id && $user->hasBarMembership($ingredientCategory->bar_id);
     }
 
     public function delete(User $user, IngredientCategory $ingredientCategory): bool
     {
-        return $user->id === $ingredientCategory->user_id && $user->hasBarMembership($ingredientCategory->bar_id);
+        return $user->id === $ingredientCategory->created_user_id && $user->hasBarMembership($ingredientCategory->bar_id);
     }
 }
