@@ -127,7 +127,7 @@ class CocktailController extends Controller
             $request->post('name'),
             $request->post('instructions'),
             $request->user()->id,
-            bar()->id,
+            $cocktail->bar_id,
             $request->post('description'),
             $request->post('source'),
             $request->post('garnish'),

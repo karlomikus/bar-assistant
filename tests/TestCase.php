@@ -10,7 +10,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    public function useBar(Bar $bar)
+    public function useBar(?Bar $bar)
     {
         $this->app->singleton(BarContext::class, function () use ($bar) {
             return new BarContext($bar);

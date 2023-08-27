@@ -19,7 +19,7 @@ class CocktailMethodFactory extends Factory
         return [
             'name' => fake()->name(),
             'dilution_percentage' => fake()->numberBetween(0, 50),
-            'bar_id' => bar()->id,
+            'bar_id' => \Kami\Cocktail\Models\Bar::factory(),
             'created_user_id' => \Kami\Cocktail\Models\User::factory(),
         ];
     }
