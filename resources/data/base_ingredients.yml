@@ -7,8 +7,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/absinthe.png
+            resource_path: ingredients/absinthe.png
             copyright: null
+            placeholder_hash: m4qBFQIrY/SRu4XLp/d3e3CIB1eCdoRneA
 -
     name: 'Agave Syrup'
     category: Syrups
@@ -18,8 +19,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/agave-syrup.png
+            resource_path: ingredients/agave-syrup.png
             copyright: null
+            placeholder_hash: 6HqKRQo8iXaAeXioh3mPh/Z3CCiHd4d3eA
 -
     name: Amaretto
     category: Liqueurs
@@ -29,8 +31,9 @@
     origin: Italy
     images:
         -
-            resource_path: data/ingredients/amaretto.png
+            resource_path: ingredients/amaretto.png
             copyright: null
+            placeholder_hash: 3YmGDQRJONh0i3+Dp+OvRv5ZB1iFiIZoeA
 -
     name: 'Amaro Nonino'
     category: Liqueurs
@@ -40,8 +43,9 @@
     origin: Italy
     images:
         -
-            resource_path: data/ingredients/amaro-nonino.png
+            resource_path: ingredients/amaro-nonino.png
             copyright: null
+            placeholder_hash: I1mGDQRISeaEeXv158iPg/toB3iGeHZodw
 -
     name: 'Angostura aromatic bitters'
     category: Bitters
@@ -51,8 +55,9 @@
     origin: 'Trinidad & Tobago'
     images:
         -
-            resource_path: data/ingredients/angostura-aromatic-bitters.png
+            resource_path: ingredients/angostura-aromatic-bitters.png
             copyright: null
+            placeholder_hash: MAiGBQAPaQd5iHeYxwl3yP3+CQmWlod3eA
 -
     name: 'Angostura cocoa bitters'
     category: Bitters
@@ -62,8 +67,9 @@
     origin: 'Trinidad & Tobago'
     images:
         -
-            resource_path: data/ingredients/angostura-cocoa-bitters.png
+            resource_path: ingredients/angostura-cocoa-bitters.png
             copyright: null
+            placeholder_hash: 7AeGBQIPCQmLh31mNwZ3dRB3AQF3d4h4dw
 -
     name: Aperol
     category: Liqueurs
@@ -73,8 +79,9 @@
     origin: Italy
     images:
         -
-            resource_path: data/ingredients/aperol.png
+            resource_path: ingredients/aperol.png
             copyright: null
+            placeholder_hash: o6mGFQhYmDiAfn1jV4iPiPioCHeGeHZ4dw
 -
     name: Apple
     category: 'Fruits and vegetables'
@@ -84,8 +91,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/apple.png
+            resource_path: ingredients/apple.png
             copyright: null
+            placeholder_hash: FuqCFQQsoXGNVOwHeziPiVUHJ1h3iHB0Rw
 -
     name: 'Apricot Brandy'
     category: Spirits
@@ -95,8 +103,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/apricot-brandy.png
+            resource_path: ingredients/apricot-brandy.png
             copyright: null
+            placeholder_hash: H4uCDQIzaNafUXt0iIeAegiXB9iGeXeIeA
 -
     name: 'Baileys Irish Cream'
     category: Liqueurs
@@ -106,8 +115,9 @@
     origin: Ireland
     images:
         -
-            resource_path: data/ingredients/baileys-irish-cream.png
+            resource_path: ingredients/baileys-irish-cream.png
             copyright: null
+            placeholder_hash: USiKDQItSDiAa3mniAhxhREHBzeEhXRleA
 -
     name: 'Blue Curaçao'
     category: Liqueurs
@@ -117,8 +127,9 @@
     origin: Netherlands
     images:
         -
-            resource_path: data/ingredients/blue-curacao.png
+            resource_path: ingredients/blue-curacao.png
             copyright: null
+            placeholder_hash: 55WRRQ48iHdweXioiIdweQiXCCiHd4d3eA
 -
     name: 'Bourbon Whiskey'
     category: Spirits
@@ -128,8 +139,9 @@
     origin: 'North America'
     images:
         -
-            resource_path: data/ingredients/bourbon-whiskey.png
+            resource_path: ingredients/bourbon-whiskey.png
             copyright: null
+            placeholder_hash: 35mGBQJFeYR1mnj3KHqHgFgIB6iFeXaIhw
 -
     name: Brandy
     category: Spirits
@@ -139,8 +151,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/brandy.png
+            resource_path: ingredients/brandy.png
             copyright: null
+            placeholder_hash: 03mCHQY7amdqcm/l6FKmPwfLGHiAdHaIiA
 -
     name: Bénédictine
     category: Liqueurs
@@ -150,8 +163,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/benedictine.png
+            resource_path: ingredients/benedictine.png
             copyright: null
+            placeholder_hash: W0mGDQJFSPeJiI9BlySvN6QKB5h0iYeYdw
 -
     name: Cachaça
     category: Spirits
@@ -161,8 +175,9 @@
     origin: Brazil
     images:
         -
-            resource_path: data/ingredients/cachaca.png
+            resource_path: ingredients/cachaca.png
             copyright: null
+            placeholder_hash: KCmKFQJJqCaJdX+Chml/cWoEB1h4iId3eA
 -
     name: Calvados
     category: Spirits
@@ -172,8 +187,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/calvados.png
+            resource_path: ingredients/calvados.png
             copyright: null
+            placeholder_hash: YsqGFQY7JYiNl49Dl/iVlQ0HB3hwhIeYeA
 -
     name: Campari
     category: Liqueurs
@@ -183,8 +199,9 @@
     origin: Italy
     images:
         -
-            resource_path: data/ingredients/campari.png
+            resource_path: ingredients/campari.png
             copyright: null
+            placeholder_hash: HomGDQRGaLZzjHf4eIeNb/joCKeGeHZ4dw
 -
     name: Chambord
     category: Liqueurs
@@ -194,8 +211,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/chambord.png
+            resource_path: ingredients/chambord.png
             copyright: null
+            placeholder_hash: ExiKDQBJWLh7hXj2WFh/evKYB2h0h3WXhw
 -
     name: 'Chamomile cordial'
     category: Juices
@@ -205,8 +223,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/chamomile-cordial.png
+            resource_path: ingredients/chamomile-cordial.png
             copyright: null
+            placeholder_hash: tQiCBQBWi3BrpZWoZlXAXpQEB5iHeHd4eA
 -
     name: Champagne
     category: Wines
@@ -216,8 +235,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/champagne.png
+            resource_path: ingredients/champagne.png
             copyright: null
+            placeholder_hash: nQmCDQAzeJV6hY8xB3eOgNf3CNeFeXeIiA
 -
     name: 'Chilli Pepper'
     category: 'Fruits and vegetables'
@@ -227,8 +247,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/chilli-pepper.png
+            resource_path: ingredients/chilli-pepper.png
             copyright: null
+            placeholder_hash: WaqCBQISmbqMdoQp9/9rBlB5OmaDeVD7aQ
 -
     name: 'Club soda'
     category: Beverages
@@ -238,8 +259,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/club-soda.png
+            resource_path: ingredients/club-soda.png
             copyright: null
+            placeholder_hash: 7riFBQQeDJp6eHepZ5qQypCHCAiGhoZ2eA
 -
     name: 'Coconut Cream'
     category: Uncategorized
@@ -249,8 +271,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/coconut-cream.png
+            resource_path: ingredients/coconut-cream.png
             copyright: null
+            placeholder_hash: LQiCBQBJa3BtpXVpmWOgBiN7B1iIh4aIeA
 -
     name: Coffee
     category: Beverages
@@ -260,8 +283,9 @@
     origin: Africa
     images:
         -
-            resource_path: data/ingredients/coffee.png
+            resource_path: ingredients/coffee.png
             copyright: null
+            placeholder_hash: MwiKDQI52EhzinrzWCd/hfFHJ2eEh4CHVw
 -
     name: Cognac
     category: Spirits
@@ -271,8 +295,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/cognac.png
+            resource_path: ingredients/cognac.png
             copyright: null
+            placeholder_hash: X0mGDQJGdYuWaI9iF1hzj6UHB4iEeYeYiA
 -
     name: Cointreau
     category: Liqueurs
@@ -282,8 +307,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/cointreau.png
+            resource_path: ingredients/cointreau.png
             copyright: null
+            placeholder_hash: oJqOHQQeB2eFe3uHh/iqaf+KBzdwcoEzSA
 -
     name: Cola
     category: Beverages
@@ -293,8 +319,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/cola.png
+            resource_path: ingredients/cola.png
             copyright: null
+            placeholder_hash: GpmOHQoei1R8h3BYeGeccMUIBQZ2hneHeA
 -
     name: 'Cranberry juice'
     category: Juices
@@ -304,8 +331,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/cranberry-juice.png
+            resource_path: ingredients/cranberry-juice.png
             copyright: null
+            placeholder_hash: EhmHDQBWuQWId4mGiE99pJAXB5iHeHd4eA
 -
     name: Cream
     category: Uncategorized
@@ -315,8 +343,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/cream.png
+            resource_path: ingredients/cream.png
             copyright: null
+            placeholder_hash: 7BiCBQAjqSV7hHM4+Dh/cvAoCJeFeXHMhw
 -
     name: 'Crème de Violette'
     category: Liqueurs
@@ -326,8 +355,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/creme-de-violette.png
+            resource_path: ingredients/creme-de-violette.png
             copyright: null
+            placeholder_hash: TxeGDQAt2Ad0iXLalwd7eU+JBxeJiYVmZw
 -
     name: 'Crème de cassis (blackcurrant liqueur)'
     category: Liqueurs
@@ -337,8 +367,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/creme-de-cassis-blackcurrant-liqueur.png
+            resource_path: ingredients/creme-de-cassis-blackcurrant-liqueur.png
             copyright: null
+            placeholder_hash: 2BeGBQBFd4iDfI9hp3Z5f/eHCLeGeHd4dw
 -
     name: 'Crème de mûre (blackberry liqueur)'
     category: Liqueurs
@@ -348,8 +379,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/creme-de-mure-blackberry-liqueur.png
+            resource_path: ingredients/creme-de-mure-blackberry-liqueur.png
             copyright: null
+            placeholder_hash: 1QeGBQBGlzmCfI8x6HaHf7b4CJd2eHZ4dw
 -
     name: 'Dark Crème de Cacao'
     category: Liqueurs
@@ -359,8 +391,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/dark-creme-de-cacao.png
+            resource_path: ingredients/dark-creme-de-cacao.png
             copyright: null
+            placeholder_hash: EQiGBQBI9zhzd4pWZ4tHv3f1CHdzd3iYeA
 -
     name: 'Dark Rum'
     category: Spirits
@@ -370,8 +403,9 @@
     origin: Caribbean
     images:
         -
-            resource_path: data/ingredients/dark-rum.png
+            resource_path: ingredients/dark-rum.png
             copyright: null
+            placeholder_hash: UiiGDQQPdTZ0eHA4yBiPiPDICAh4eId3dw
 -
     name: 'Demerara Rum'
     category: Spirits
@@ -381,8 +415,9 @@
     origin: Caribbean
     images:
         -
-            resource_path: data/ingredients/demerara-rum.png
+            resource_path: ingredients/demerara-rum.png
             copyright: null
+            placeholder_hash: ZhiGBQA0h2iAbnzkl2d4cPdnB8mGeYd4iA
 -
     name: "Donn's Mix"
     category: Syrups
@@ -392,8 +427,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/donns-mix.png
+            resource_path: ingredients/donns-mix.png
             copyright: null
+            placeholder_hash: XUmGJQpYeJeAfXeYp3h/ivfHB2iHiId3eA
 -
     name: Drambuie
     category: Liqueurs
@@ -403,8 +439,9 @@
     origin: Scotland
     images:
         -
-            resource_path: data/ingredients/drambuie.png
+            resource_path: ingredients/drambuie.png
             copyright: null
+            placeholder_hash: lSiGDQBGaaVyjXj4V1dwfeH3B5iGeHZ4iA
 -
     name: 'Dry Curaçao'
     category: Liqueurs
@@ -414,8 +451,9 @@
     origin: Italy
     images:
         -
-            resource_path: data/ingredients/dry-curacao.png
+            resource_path: ingredients/dry-curacao.png
             copyright: null
+            placeholder_hash: 7EmGHQJJiFeAenU3mFh/jfa3BliHh4d3eA
 -
     name: 'Dry Sherry'
     category: Wines
@@ -425,8 +463,9 @@
     origin: Spain
     images:
         -
-            resource_path: data/ingredients/dry-sherry.png
+            resource_path: ingredients/dry-sherry.png
             copyright: null
+            placeholder_hash: mgiKHQIs91aCiHtVlyePeDC4BzeEhXRmeA
 -
     name: 'Dry Vermouth'
     category: Wines
@@ -436,8 +475,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/dry-vermouth.png
+            resource_path: ingredients/dry-vermouth.png
             copyright: null
+            placeholder_hash: I+mFDQAziHZwj4iXWHd+gAj4B9iGiYd4hw
 -
     name: 'Egg White'
     category: Uncategorized
@@ -447,8 +487,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/egg-white.png
+            resource_path: ingredients/egg-white.png
             copyright: null
+            placeholder_hash: HnuCBQA5w0hPppgmWi+k8wFLR3iKeYBXZw
 -
     name: 'Egg Yolk'
     category: Uncategorized
@@ -458,8 +499,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/egg-yolk.png
+            resource_path: ingredients/egg-yolk.png
             copyright: null
+            placeholder_hash: 3cuCBQAjZWmNZJQL5gOMQaAoB5h4h4B8mA
 -
     name: 'Elderflower Cordial'
     category: Juices
@@ -469,8 +511,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/elderflower-cordial.png
+            resource_path: ingredients/elderflower-cordial.png
             copyright: null
+            placeholder_hash: 8RiCBQBXfGBrhpandsHgjsECB5iHeHd4eA
 -
     name: Espresso
     category: Beverages
@@ -480,8 +523,9 @@
     origin: Italy
     images:
         -
-            resource_path: data/ingredients/espresso.png
+            resource_path: ingredients/espresso.png
             copyright: null
+            placeholder_hash: YxiGBQA0l0h7hYsEGGiPgNYICJd3iHJ7eA
 -
     name: Falernum
     category: Liqueurs
@@ -491,8 +535,9 @@
     origin: Caribbean
     images:
         -
-            resource_path: data/ingredients/falernum.png
+            resource_path: ingredients/falernum.png
             copyright: null
+            placeholder_hash: qAiGBQAzeIZ8k4CeSIaQlqgGB9h2iYd4hw
 -
     name: 'Fernet Branca'
     category: Liqueurs
@@ -502,8 +547,9 @@
     origin: Italy
     images:
         -
-            resource_path: data/ingredients/fernet-branca.png
+            resource_path: ingredients/fernet-branca.png
             copyright: null
+            placeholder_hash: EQiOFQIeN5iAfIe4h1eAexj4CAiHh3d3dw
 -
     name: Galliano
     category: Liqueurs
@@ -513,8 +559,9 @@
     origin: Italy
     images:
         -
-            resource_path: data/ingredients/galliano.png
+            resource_path: ingredients/galliano.png
             copyright: null
+            placeholder_hash: KBqCDQAzVf6aVYvkp3d/eAiIB9iGeXd4iA
 -
     name: Gin
     category: Spirits
@@ -524,8 +571,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/gin.png
+            resource_path: ingredients/gin.png
             copyright: null
+            placeholder_hash: ZwiGDQBIxgqIdnlGWEeFXwH4B2iGeIZ4eA
 -
     name: Ginger
     category: 'Fruits and vegetables'
@@ -535,8 +583,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/ginger.png
+            resource_path: ingredients/ginger.png
             copyright: null
+            placeholder_hash: 5xmGDQI1qDWCi3f2t8DAlAhpBnmFiIKaaA
 -
     name: 'Ginger beer'
     category: Beverages
@@ -546,8 +595,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/ginger-beer.png
+            resource_path: ingredients/ginger-beer.png
             copyright: null
+            placeholder_hash: 6ymCBQBFaLd7hYBu15h8gHn3B8h2iId4iA
 -
     name: 'Ginger syrup'
     category: Syrups
@@ -557,8 +607,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/ginger-syrup.png
+            resource_path: ingredients/ginger-syrup.png
             copyright: null
+            placeholder_hash: 9BiGHQA8aneAeHRpp3d/iPLGCCiHd4d3eA
 -
     name: 'Gold Rum'
     category: Spirits
@@ -568,8 +619,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/gold-rum.png
+            resource_path: ingredients/gold-rum.png
             copyright: null
+            placeholder_hash: JEqGDQBFh1mGeYT6Z1eOf/W3CLd2iId4dw
 -
     name: 'Gomme Syrup'
     category: Syrups
@@ -587,8 +639,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/grand-marnier.png
+            resource_path: ingredients/grand-marnier.png
             copyright: null
+            placeholder_hash: 0FiGDQJHSMh5eH9BiDd/dPI3B4iDiIiIdw
 -
     name: 'Grapefruit juice'
     category: Juices
@@ -598,8 +651,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/grapefruit-juice.png
+            resource_path: ingredients/grapefruit-juice.png
             copyright: null
+            placeholder_hash: XdyGDQJH2QCmZVtnug9sY4A1B5iHd3h4iA
 -
     name: Grappa
     category: Spirits
@@ -609,8 +663,9 @@
     origin: Italy
     images:
         -
-            resource_path: data/ingredients/grappa.png
+            resource_path: ingredients/grappa.png
             copyright: null
+            placeholder_hash: LgiCBQAiikB3p2E9mXWDYHgICOd2iXaJeA
 -
     name: 'Green Chartreuse'
     category: Liqueurs
@@ -620,8 +675,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/green-chartreuse.png
+            resource_path: ingredients/green-chartreuse.png
             copyright: null
+            placeholder_hash: XOmFDQJIh3h/gYlViGePgrkHB3h2iIZ4dw
 -
     name: 'Grenadine Syrup'
     category: Syrups
@@ -631,8 +687,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/grenadine-syrup.png
+            resource_path: ingredients/grenadine-syrup.png
             copyright: null
+            placeholder_hash: YjiWDQQ8iHiAenioh5yfqviJCCiHd4d3eA
 -
     name: 'Honey Syrup'
     category: Syrups
@@ -642,8 +699,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/honey-syrup.png
+            resource_path: ingredients/honey-syrup.png
             copyright: null
+            placeholder_hash: 7GqOVQo8iGeAeXioh3iPd/Z3CCiHd4d3eA
 -
     name: 'Irish whiskey'
     category: Spirits
@@ -653,8 +711,9 @@
     origin: Ireland
     images:
         -
-            resource_path: data/ingredients/irish-whiskey.png
+            resource_path: ingredients/irish-whiskey.png
             copyright: null
+            placeholder_hash: 4QmKDQJYe3KAbHaZl1/ufAd3CHeHeHd4dw
 -
     name: 'Islay Scotch'
     category: Spirits
@@ -664,8 +723,9 @@
     origin: Scotland
     images:
         -
-            resource_path: data/ingredients/islay-scotch.png
+            resource_path: ingredients/islay-scotch.png
             copyright: null
+            placeholder_hash: 4giGDQBFeIZ4h3H9eHePdccICLeGeHd4hw
 -
     name: 'Jamaican Rum'
     category: Spirits
@@ -675,8 +735,9 @@
     origin: Jamaica
     images:
         -
-            resource_path: data/ingredients/jamaican-rum.png
+            resource_path: ingredients/jamaican-rum.png
             copyright: null
+            placeholder_hash: 4XmCBQA0Z8iHeXP8mKCpAYlLB7iFeYaJhw
 -
     name: 'Kahlua coffee liqueur'
     category: Liqueurs
@@ -686,8 +747,9 @@
     origin: Mexico
     images:
         -
-            resource_path: data/ingredients/kahlua-coffee-liqueur.png
+            resource_path: ingredients/kahlua-coffee-liqueur.png
             copyright: null
+            placeholder_hash: 3lqGHQBXSPWAfoaqh3hwlwUXCId3eHd4dw
 -
     name: Lemon
     category: 'Fruits and vegetables'
@@ -697,8 +759,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/lemon.png
+            resource_path: ingredients/lemon.png
             copyright: null
+            placeholder_hash: pyyCDQI3VaGlXZK69fLeoQgdKFd2h4CZZw
 -
     name: 'Lemon juice'
     category: Juices
@@ -708,8 +771,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/lemon-juice.png
+            resource_path: ingredients/lemon-juice.png
             copyright: null
+            placeholder_hash: NxmCDQBXXKBetaLZNaPALwrrB5iHeHd4eA
 -
     name: 'Lillet Blanc'
     category: Wines
@@ -719,8 +783,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/lillet-blanc.png
+            resource_path: ingredients/lillet-blanc.png
             copyright: null
+            placeholder_hash: LRmGJQJKuwOaZKGZqHZ/bPhmCDh3d4d3eA
 -
     name: Lime
     category: 'Fruits and vegetables'
@@ -730,8 +795,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/lime.png
+            resource_path: ingredients/lime.png
             copyright: null
+            placeholder_hash: YuuFBQI7N81UaiDWuFJ8sAVXSWeVaJCGWQ
 -
     name: 'Lime juice'
     category: Juices
@@ -741,8 +807,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/lime-juice.png
+            resource_path: ingredients/lime-juice.png
             copyright: null
+            placeholder_hash: 9/iBBQBXi3BfwqHsNmSgjvsFB5iHeHd4eA
 -
     name: Maraschino
     category: Liqueurs
@@ -752,8 +819,9 @@
     origin: Croatia
     images:
         -
-            resource_path: data/ingredients/maraschino.png
+            resource_path: ingredients/maraschino.png
             copyright: null
+            placeholder_hash: KQiKBQItB4h3h4iHh8qAiQOYBxd4eId3eA
 -
     name: 'Menthe Crème de Cacao'
     category: Liqueurs
@@ -763,8 +831,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/menthe-creme-de-cacao.png
+            resource_path: ingredients/menthe-creme-de-cacao.png
             copyright: null
+            placeholder_hash: EeiFBQBJ+DhzhotGZzxpD4WOCHdzd3iYeA
 -
     name: Mezcal
     category: Spirits
@@ -774,8 +843,9 @@
     origin: Mexico
     images:
         -
-            resource_path: data/ingredients/mezcal.png
+            resource_path: ingredients/mezcal.png
             copyright: null
+            placeholder_hash: cwiGBQAP/IeLd3y12AaEhVBXCAiLi3eHdw
 -
     name: Mint
     category: 'Fruits and vegetables'
@@ -785,8 +855,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/mint.png
+            resource_path: ingredients/mint.png
             copyright: null
+            placeholder_hash: HbuBBQAla9c7w4wGDP545mKwKmeGh2CrZw
 -
     name: 'Old Tom Gin'
     category: Spirits
@@ -796,8 +867,9 @@
     origin: UK
     images:
         -
-            resource_path: data/ingredients/old-tom-gin.png
+            resource_path: ingredients/old-tom-gin.png
             copyright: null
+            placeholder_hash: HTmCBQA0eJd/gYD+p2eCfyf4B8iGeYZ4iA
 -
     name: 'Oleo Saccharum'
     category: Syrups
@@ -815,8 +887,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/orange.png
+            resource_path: ingredients/orange.png
             copyright: null
+            placeholder_hash: 4nuGDQI2j7JphyhWak9q+LOVOXd3h2CJeA
 -
     name: 'Orange Curaçao'
     category: Liqueurs
@@ -826,8 +899,9 @@
     origin: Netherlands
     images:
         -
-            resource_path: data/ingredients/orange-curacao.png
+            resource_path: ingredients/orange-curacao.png
             copyright: null
+            placeholder_hash: XYqCDQI6SYZ2emc3CPSFNh0JCIeAdIeYeA
 -
     name: 'Orange Flower Water'
     category: Beverages
@@ -837,8 +911,9 @@
     origin: Mediterranean
     images:
         -
-            resource_path: data/ingredients/orange-flower-water.png
+            resource_path: ingredients/orange-flower-water.png
             copyright: null
+            placeholder_hash: aymCBQAieIaIZ38BN4d/c9kHB+iHeIaJdw
 -
     name: 'Orange bitters'
     category: Bitters
@@ -848,8 +923,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/orange-bitters.png
+            resource_path: ingredients/orange-bitters.png
             copyright: null
+            placeholder_hash: 6CiOPQoPWVhveHeIeXWQSge6AwMkJFRUVQ
 -
     name: 'Orange juice'
     category: Juices
@@ -859,8 +935,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/orange-juice.png
+            resource_path: ingredients/orange-juice.png
             copyright: null
+            placeholder_hash: pMyGDQJXfGBqd4eWhwVZI4AUB5iHd3h4iA
 -
     name: 'Orgeat Syrup'
     category: Syrups
@@ -870,8 +947,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/orgeat-syrup.png
+            resource_path: ingredients/orgeat-syrup.png
             copyright: null
+            placeholder_hash: sxiGFQA8h2hgiYeYqHiPpvV4CCiHd4d3eA
 -
     name: Ouzo
     category: Liqueurs
@@ -881,8 +959,9 @@
     origin: Greece
     images:
         -
-            resource_path: data/ingredients/ouzo.png
+            resource_path: ingredients/ouzo.png
             copyright: null
+            placeholder_hash: MDmCBQAzh3iJdnoFiHhwewcoB9iGeYd4iA
 -
     name: 'Overproof Rum'
     category: Spirits
@@ -892,8 +971,9 @@
     origin: Caribbean
     images:
         -
-            resource_path: data/ingredients/overproof-rum.png
+            resource_path: ingredients/overproof-rum.png
             copyright: null
+            placeholder_hash: 0ViCBQAzd6h4h47CCHSATQe4CNd2iYeIhw
 -
     name: Passoã
     category: Liqueurs
@@ -903,8 +983,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/passoa.png
+            resource_path: ingredients/passoa.png
             copyright: null
+            placeholder_hash: SgiCBQAzh3iHeIj3Z0eBcASoB9iGeYaIhw
 -
     name: Peach
     category: 'Fruits and vegetables'
@@ -914,8 +995,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/peach.png
+            resource_path: ingredients/peach.png
             copyright: null
+            placeholder_hash: YJuGFQRH3DePc0IG2O9pFNkJSGeFeHCYhw
 -
     name: 'Peach Schnapps'
     category: Spirits
@@ -925,8 +1007,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/peach-schnapps.png
+            resource_path: ingredients/peach-schnapps.png
             copyright: null
+            placeholder_hash: rziCBQAzeJd1i3YJiHeHcHcICNeGeYaIhw
 -
     name: 'Peach bitters'
     category: Bitters
@@ -936,8 +1019,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/peach-bitters.png
+            resource_path: ingredients/peach-bitters.png
             copyright: null
+            placeholder_hash: 7SiCBQAziHdwj4Qbd3iHgDgICNd2iHeIdw
 -
     name: Pelinkovac
     category: Liqueurs
@@ -947,8 +1031,9 @@
     origin: 'Southeast Europe'
     images:
         -
-            resource_path: data/ingredients/pelinkovac.png
+            resource_path: ingredients/pelinkovac.png
             copyright: null
+            placeholder_hash: nSiGDQJGaaaPcn2Sl3eAeAeHCId1iHZ4iA
 -
     name: Pepper
     category: Uncategorized
@@ -958,8 +1043,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/pepper.png
+            resource_path: ingredients/pepper.png
             copyright: null
+            placeholder_hash: jyiCBQBGp3iLhokFd01L36P0WGh1eHCpiA
 -
     name: Pernod
     category: Liqueurs
@@ -969,8 +1055,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/pernod.png
+            resource_path: ingredients/pernod.png
             copyright: null
+            placeholder_hash: Y/mFDQJFabR2mXX6l2t/iGcIB7iGeHd4dw
 -
     name: 'Peychauds Bitters'
     category: Bitters
@@ -980,8 +1067,9 @@
     origin: 'North America'
     images:
         -
-            resource_path: data/ingredients/peychauds-bitters.png
+            resource_path: ingredients/peychauds-bitters.png
             copyright: null
+            placeholder_hash: 3ViKDQZHl1hwjXm3mGePivaYCId2eHd4hw
 -
     name: Pineapple
     category: 'Fruits and vegetables'
@@ -991,8 +1079,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/pineapple.png
+            resource_path: ingredients/pineapple.png
             copyright: null
+            placeholder_hash: Y0uGDQYpzpVHhZDb6e6goQlrBzxBl2DJWQ
 -
     name: 'Pineapple juice'
     category: Juices
@@ -1002,8 +1091,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/pineapple-juice.png
+            resource_path: ingredients/pineapple-juice.png
             copyright: null
+            placeholder_hash: KSyGDQBXi3B7loeIiAxPQ7DhB5iHeHd4dw
 -
     name: Pisco
     category: Spirits
@@ -1013,8 +1103,9 @@
     origin: 'South America'
     images:
         -
-            resource_path: data/ingredients/pisco.png
+            resource_path: ingredients/pisco.png
             copyright: null
+            placeholder_hash: aCmGFQJFiHeDfH4zCId5gJcHB6iHeHZ4eA
 -
     name: Prosecco
     category: Wines
@@ -1024,8 +1115,9 @@
     origin: Italy
     images:
         -
-            resource_path: data/ingredients/prosecco.png
+            resource_path: ingredients/prosecco.png
             copyright: null
+            placeholder_hash: 3zqGDQAzd4h2iI9Bh3hyj3CcCNd1iYeIhw
 -
     name: 'Raspberry Syrup'
     category: Syrups
@@ -1035,8 +1127,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/raspberry-syrup.png
+            resource_path: ingredients/raspberry-syrup.png
             copyright: null
+            placeholder_hash: JKmSHRI8iHhweoioeHmfmPd4CCiHd4d3eA
 -
     name: 'Red wine'
     category: Wines
@@ -1046,8 +1139,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/red-wine.png
+            resource_path: ingredients/red-wine.png
             copyright: null
+            placeholder_hash: GxiGBQA0imJxnXT6iGePjvfYCNd2iYd4iA
 -
     name: 'Rhum agricole'
     category: Spirits
@@ -1057,8 +1151,9 @@
     origin: Caribbean
     images:
         -
-            resource_path: data/ingredients/rhum-agricole.png
+            resource_path: ingredients/rhum-agricole.png
             copyright: null
+            placeholder_hash: LimCDQA0epBqpXZZN3aAPARZB8h2iYd4hw
 -
     name: 'Rye whiskey'
     category: Spirits
@@ -1068,8 +1163,9 @@
     origin: 'North America'
     images:
         -
-            resource_path: data/ingredients/rye-whiskey.png
+            resource_path: ingredients/rye-whiskey.png
             copyright: null
+            placeholder_hash: JDqGHQRHOfiGaoOrp2h/iPd3B4iGiIZ4iA
 -
     name: Salt
     category: Uncategorized
@@ -1079,8 +1175,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/salt.png
+            resource_path: ingredients/salt.png
             copyright: null
+            placeholder_hash: 8TiGDQI3GcV3h3GPyMaIb434CFd3eHCJVw
 -
     name: 'Scotch whiskey'
     category: Spirits
@@ -1090,8 +1187,9 @@
     origin: Scotland
     images:
         -
-            resource_path: data/ingredients/scotch-whiskey.png
+            resource_path: ingredients/scotch-whiskey.png
             copyright: null
+            placeholder_hash: Y1qGHQRHzABTuJeZR3eGkIYIB3iEiIaIhw
 -
     name: 'Simple Syrup'
     category: Syrups
@@ -1101,8 +1199,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/simple-syrup.png
+            resource_path: ingredients/simple-syrup.png
             copyright: null
+            placeholder_hash: shiGBQI8T0SeYnd614pAhweHCCiHd4d3eA
 -
     name: 'Sloe Gin'
     category: Liqueurs
@@ -1112,8 +1211,9 @@
     origin: UK
     images:
         -
-            resource_path: data/ingredients/sloe-gin.png
+            resource_path: ingredients/sloe-gin.png
             copyright: null
+            placeholder_hash: JjiGDQJIR7mCfYj3t3h/h/hXB2iGeHZodw
 -
     name: St-Germain
     category: Liqueurs
@@ -1123,8 +1223,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/st-germain.png
+            resource_path: ingredients/st-germain.png
             copyright: null
+            placeholder_hash: YRmKFQIt+DZ5d4pXd/mMjL/ICBh4eIiIhw
 -
     name: Sugar
     category: Uncategorized
@@ -1134,8 +1235,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/sugar.png
+            resource_path: ingredients/sugar.png
             copyright: null
+            placeholder_hash: dgiCBQA0mXN8hGoER1NwNAVIB5iId4F7hw
 -
     name: Suze
     category: Liqueurs
@@ -1145,8 +1247,9 @@
     origin: Switzerland
     images:
         -
-            resource_path: data/ingredients/suze.png
+            resource_path: ingredients/suze.png
             copyright: null
+            placeholder_hash: rEmOPQgeZ2d0eHBJeGd7j7f3CwqIiHiIiA
 -
     name: 'Sweet Vermouth'
     category: Wines
@@ -1156,8 +1259,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/sweet-vermouth.png
+            resource_path: ingredients/sweet-vermouth.png
             copyright: null
+            placeholder_hash: m0iKDQBXh3iAfYq2eGmfu/XbCId3iHd4dw
 -
     name: Tabasco
     category: Uncategorized
@@ -1167,8 +1271,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/tabasco.png
+            resource_path: ingredients/tabasco.png
             copyright: null
+            placeholder_hash: ormGHQwtZ4eAj3toeIiPg/g4F2eAg3R1iA
 -
     name: Tequila
     category: Spirits
@@ -1178,8 +1283,9 @@
     origin: Mexico
     images:
         -
-            resource_path: data/ingredients/tequila.png
+            resource_path: ingredients/tequila.png
             copyright: null
+            placeholder_hash: 7uaFDQJIh2mMZHwDGLabf6v4B2iFiIZ4eA
 -
     name: 'Tequila Añejo'
     category: Spirits
@@ -1189,8 +1295,9 @@
     origin: Mexico
     images:
         -
-            resource_path: data/ingredients/tequila-anejo.png
+            resource_path: ingredients/tequila-anejo.png
             copyright: null
+            placeholder_hash: rTqCFQI5JmSRj4JeN/pxpn92B2hyh4aIhw
 -
     name: 'Tequila Extra Añejo'
     category: Spirits
@@ -1200,8 +1307,9 @@
     origin: Mexico
     images:
         -
-            resource_path: data/ingredients/tequila-extra-anejo.png
+            resource_path: ingredients/tequila-extra-anejo.png
             copyright: null
+            placeholder_hash: 4ZuGLQQ5BreOloUqaHaQmA2HCHhydoaIiA
 -
     name: 'Tequila Reposado'
     category: Spirits
@@ -1211,8 +1319,9 @@
     origin: Mexico
     images:
         -
-            resource_path: data/ingredients/tequila-reposado.png
+            resource_path: ingredients/tequila-reposado.png
             copyright: null
+            placeholder_hash: cSmGDQI5Z0aAjYV7d+9a9tpkB2hyh3aIhw
 -
     name: 'Tomato juice'
     category: Juices
@@ -1222,8 +1331,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/tomato-juice.png
+            resource_path: ingredients/tomato-juice.png
             copyright: null
+            placeholder_hash: YfuGDQJWmzB5hneXiAlrAkN4B5iHeId4eA
 -
     name: Tonic
     category: Beverages
@@ -1233,8 +1343,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/tonic.png
+            resource_path: ingredients/tonic.png
             copyright: null
+            placeholder_hash: qgiCFQJGh3mLdHC9iHhwjwbnCId2iHd4dw
 -
     name: 'Triple Sec'
     category: Liqueurs
@@ -1244,8 +1355,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/triple-sec.png
+            resource_path: ingredients/triple-sec.png
             copyright: null
+            placeholder_hash: 3QmCBQJFZquJd4D9NwlxguDXCJd1iYaIhw
 -
     name: 'Vanilla Extract'
     category: Uncategorized
@@ -1255,8 +1367,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/vanilla-extract.png
+            resource_path: ingredients/vanilla-extract.png
             copyright: null
+            placeholder_hash: 2AiCDQA0d4qFaob5V4eHcNgICMeHeHaJdw
 -
     name: 'Vanilla Vodka'
     category: Spirits
@@ -1266,8 +1379,9 @@
     origin: Russia
     images:
         -
-            resource_path: data/ingredients/vanilla-vodka.png
+            resource_path: ingredients/vanilla-vodka.png
             copyright: null
+            placeholder_hash: MwiCBQA0Z9qAf4m3eHePeveYCMd3iHd4dw
 -
     name: Vodka
     category: Spirits
@@ -1277,8 +1391,9 @@
     origin: Russia
     images:
         -
-            resource_path: data/ingredients/vodka.png
+            resource_path: ingredients/vodka.png
             copyright: null
+            placeholder_hash: cOeJHQIPvIp2iH/0mNdyfy73Bwd3d3VlaA
 -
     name: 'Vodka Citron'
     category: Spirits
@@ -1288,8 +1403,9 @@
     origin: Sweden
     images:
         -
-            resource_path: data/ingredients/vodka-citron.png
+            resource_path: ingredients/vodka-citron.png
             copyright: null
+            placeholder_hash: dwiCDQAziVRxjXc3CHd6gJcHCMd2iXaJeA
 -
     name: Water
     category: Beverages
@@ -1299,8 +1415,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/water.png
+            resource_path: ingredients/water.png
             copyright: null
+            placeholder_hash: 9geKFQgeendZeKf1NlptkMQGBwd4eHiIhw
 -
     name: Whiskey
     category: Spirits
@@ -1310,8 +1427,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/whiskey.png
+            resource_path: ingredients/whiskey.png
             copyright: null
+            placeholder_hash: zyiCDQJFeoJ8hHBOZ3iPcPcHB7eGeXd4iA
 -
     name: 'White Crème de Cacao'
     category: Liqueurs
@@ -1321,8 +1439,9 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/white-creme-de-cacao.png
+            resource_path: ingredients/white-creme-de-cacao.png
             copyright: null
+            placeholder_hash: YQiKBQBImGh2iHCsmJ8XvXf0CHdzd4iYeA
 -
     name: 'White Peach Puree'
     category: Uncategorized
@@ -1332,8 +1451,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/white-peach-puree.png
+            resource_path: ingredients/white-peach-puree.png
             copyright: null
+            placeholder_hash: oaqCFQRFe5BmuYe3qIlwdgh4B6iGiIeIhw
 -
     name: 'White Rum'
     category: Spirits
@@ -1343,8 +1463,9 @@
     origin: Caribbean
     images:
         -
-            resource_path: data/ingredients/white-rum.png
+            resource_path: ingredients/white-rum.png
             copyright: null
+            placeholder_hash: 7QeKDQQPtTqfYHiHVwhziCCHBwd4eId3dw
 -
     name: 'White wine'
     category: Wines
@@ -1354,8 +1475,9 @@
     origin: Worldwide
     images:
         -
-            resource_path: data/ingredients/white-wine.png
+            resource_path: ingredients/white-wine.png
             copyright: null
+            placeholder_hash: 7OeBBQI0iWR6hXA+iHh/i/e3B9iGeYd4hw
 -
     name: 'Worcestershire Sauce'
     category: Uncategorized
@@ -1365,8 +1487,9 @@
     origin: null
     images:
         -
-            resource_path: data/ingredients/worcestershire-sauce.png
+            resource_path: ingredients/worcestershire-sauce.png
             copyright: null
+            placeholder_hash: 2ziGBQAzd4h3iIn2aIdwggkICNd2iIeIhw
 -
     name: 'Yellow Chartreuse'
     category: Liqueurs
@@ -1376,5 +1499,6 @@
     origin: France
     images:
         -
-            resource_path: data/ingredients/yellow-chartreuse.png
+            resource_path: ingredients/yellow-chartreuse.png
             copyright: null
+            placeholder_hash: nyyGPQI8CWeNdXSKl0iPg/Q3ByeGh3ZneA

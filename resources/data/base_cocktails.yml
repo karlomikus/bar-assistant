@@ -6,6 +6,7 @@
     source: 'https://en.wikipedia.org/wiki/20th_Century_(cocktail)'
     glass: 'Nick and Nora'
     method: Shake
+    abv: 20.91
     tags:
         - Gin
     ingredients:
@@ -31,7 +32,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/20th-century.jpg
+            resource_path: cocktails/20th-century.jpg
             copyright: 'Imbibe Magazine'
             placeholder_hash: DykODwIIt3iHdnh0i0aniId3dwKIxnYP
 -
@@ -42,6 +43,7 @@
     source: 'https://en.wikipedia.org/wiki/Adonis_(cocktail)'
     glass: Coupe
     method: Stir
+    abv: 14.7
     tags:
         - Wine
     ingredients:
@@ -62,7 +64,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/adonis.jpg
+            resource_path: cocktails/adonis.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: GAgGDwJXeYhFe5Z8lqeHV1atQLCSBl4E
 -
@@ -73,6 +75,7 @@
     source: 'https://en.wikipedia.org/wiki/Airmail_(cocktail)'
     glass: Cocktail
     method: Shake
+    abv: 13.87
     tags:
         - Rum
     ingredients:
@@ -100,7 +103,7 @@
                 - 'Simple Syrup'
     images:
         -
-            resource_path: data/cocktails/airmail.jpg
+            resource_path: cocktails/airmail.jpg
             copyright: 'Imbibe Magazine'
             placeholder_hash: ixgKFwAImIeLdnh3iRfHaIh5isB4DbML
 -
@@ -111,6 +114,7 @@
     source: 'https://tuxedono2.com/alaska-cocktail-recipe'
     glass: 'Nick and Nora'
     method: Stir
+    abv: 33.23
     tags:
         - Gin
     ingredients:
@@ -131,7 +135,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/alaska.jpg
+            resource_path: cocktails/alaska.jpg
             copyright: Punch
             placeholder_hash: 2DgaFwZnh4eAh3iJiGeXZ4eJd2QIh5YA
 -
@@ -142,6 +146,7 @@
     source: 'https://iba-world.com/alexander/'
     glass: Coupe
     method: Shake
+    abv: 17.33
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -164,7 +169,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/alexander.jpg
+            resource_path: cocktails/alexander.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: kAcKDwAHqIefdHh6hUioJ7d0pPJGBpkF
 -
@@ -175,6 +180,7 @@
     source: '1974'
     glass: Lowball
     method: Shake
+    abv: 11.11
     tags:
         - Sour
     ingredients:
@@ -200,7 +206,7 @@
             optional: true
     images:
         -
-            resource_path: data/cocktails/amaretto-sour.jpg
+            resource_path: cocktails/amaretto-sour.jpg
             copyright: 'The Spruce Eats'
             placeholder_hash: MCkKLwb1nWmIiHedZpZ4pml5p2BICnUD
 -
@@ -211,6 +217,7 @@
     source: 'https://iba-world.com/americano/'
     glass: Lowball
     method: Stir
+    abv: 17.92
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -232,7 +239,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/americano.jpg
+            resource_path: cocktails/americano.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: DFkKHwgMqJiIhXmIiVaYiIh2tYBYCYgE
 -
@@ -243,6 +250,7 @@
     source: 'https://iba-world.com/angel-face/'
     glass: 'Nick and Nora'
     method: Shake
+    abv: 32
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -266,7 +274,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/angel-face.jpg
+            resource_path: cocktails/angel-face.jpg
             copyright: 'Wine Enthusiast / Tyler Zieliniski'
             placeholder_hash: JEkKLwhjV3lQdYjEiHeLt5WZhPe4aI8K
 -
@@ -277,6 +285,7 @@
     source: 'https://www.journal.hr/lifestyle/gastro/antique-pelinkovac-strukani-pelin-jesenski-koktel-cool-pice/'
     glass: Lowball
     method: Shake
+    abv: 9.85
     tags: {  }
     ingredients:
         -
@@ -301,7 +310,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/antikovac.jpg
+            resource_path: cocktails/antikovac.jpg
             copyright: Tasteatlas
             placeholder_hash: o0oKLwphRXeDkoaQm4p11omGpXCXBmYJ
 -
@@ -312,6 +321,7 @@
     source: 'https://iba-world.com/692/'
     glass: Cocktail
     method: Shake
+    abv: 24.32
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -339,7 +349,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/aviation.jpg
+            resource_path: cocktails/aviation.jpg
             copyright: 'The Spruce Eats / Cara Cormack'
             placeholder_hash: 7vcFHwJ5OZhQa3aal4eHZlh8SEz+QtkP
 -
@@ -350,6 +360,7 @@
     source: 'https://en.wikipedia.org/wiki/B-52_(cocktail)'
     glass: Shot
     method: Layer
+    abv: 25.67
     tags:
         - Shot
     ingredients:
@@ -370,7 +381,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/b-52.jpg
+            resource_path: cocktails/b-52.jpg
             copyright: Alchetron
             placeholder_hash: VAgOJwRXiJeAhHqHema3iGeFiLAnC30D
 -
@@ -381,6 +392,7 @@
     source: 'https://en.wikipedia.org/wiki/Bacardi_cocktail'
     glass: Coupe
     method: Shake
+    abv: 23.27
     tags:
         - Rum
     ingredients:
@@ -406,7 +418,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/bacardi-cocktail.jpg
+            resource_path: cocktails/bacardi-cocktail.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: SxgGFwYXd4d3d4ZriJaJCKWalNCJCZ4H
 -
@@ -417,6 +429,7 @@
     source: 'https://iba-world.com/barracuda/'
     glass: Highball
     method: Shake
+    abv: 16.11
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -450,7 +463,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/barracuda.jpg
+            resource_path: cocktails/barracuda.jpg
             copyright: 'Ape Time'
             placeholder_hash: bCkKFwILhpmHh4Z4mIeHd4iHJ5COtKAI
 -
@@ -461,6 +474,7 @@
     source: 'https://iba-world.com/bees-knees/'
     glass: Coupe
     method: Shake
+    abv: 17.23
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -488,7 +502,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/bees-knees.jpg
+            resource_path: cocktails/bees-knees.jpg
             copyright: 'Kitchen Swagger'
             placeholder_hash: lAgKHwIEq5WRlGmSeDiVh4SbR4QJVpgA
 -
@@ -499,6 +513,7 @@
     source: 'https://iba-world.com/bellini/'
     glass: Champagne
     method: Stir
+    abv: 6.11
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -516,7 +531,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/bellini.jpg
+            resource_path: cocktails/bellini.jpg
             copyright: 'Olive & Mango'
             placeholder_hash: LjkKHwhiVWN8V3WfhpmXaYd6lyQEZ1MA
 -
@@ -527,6 +542,7 @@
     source: 'https://iba-world.com/between-the-sheets/'
     glass: Fizzio
     method: Shake
+    abv: 26.18
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -554,7 +570,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/between-the-sheets.jpg
+            resource_path: cocktails/between-the-sheets.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: TAgGFwKZiFWxk4gSXAaXuFtvRVAbA8QD
 -
@@ -565,6 +581,7 @@
     source: 'https://en.wikipedia.org/wiki/Bijou_(cocktail)'
     glass: 'Nick and Nora'
     method: Stir
+    abv: 31.28
     tags:
         - Gin
     ingredients:
@@ -590,7 +607,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/bijou.jpg
+            resource_path: cocktails/bijou.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: CvgFJwRC9KRodniFiwXWppeVW5ULC6oB
 -
@@ -601,6 +618,7 @@
     source: 'https://iba-world.com/black-russian/'
     glass: Lowball
     method: Stir
+    abv: 28.57
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -618,7 +636,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/black-russian.jpg
+            resource_path: cocktails/black-russian.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: SxgKDwIHXMZydoeSSyiol2d4xiYHi4AB
 -
@@ -629,6 +647,7 @@
     source: 'https://iba-world.com/bloody-mary/'
     glass: Highball
     method: Build
+    abv: 10.78
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -671,7 +690,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/bloody-mary.jpg
+            resource_path: cocktails/bloody-mary.jpg
             copyright: Ocado
             placeholder_hash: llgGHwZseIlgdnmuamWHaFeqZ0BYB6gC
 -
@@ -682,6 +701,7 @@
     source: 'https://iba-world.com/boulevardier/'
     glass: Lowball
     method: Stir
+    abv: 24.52
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -706,7 +726,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/boulevardier.jpg
+            resource_path: cocktails/boulevardier.jpg
             copyright: Reddit
             placeholder_hash: TygKFwY4h3e/lJVnaXd3iYZ7mFYJSZYA
 -
@@ -717,6 +737,7 @@
     source: 'https://iba-world.com/bramble/'
     glass: Lowball
     method: Shake
+    abv: 20.66
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -744,7 +765,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/bramble.jpg
+            resource_path: cocktails/bramble.jpg
             copyright: Anders
             placeholder_hash: 00gGFwYQuVdYeJahfRWrpXh5VAm5WIAH
 -
@@ -755,6 +776,7 @@
     source: 'https://iba-world.com/brandy-crusta/'
     glass: 'Nick and Nora'
     method: Stir
+    abv: 26.13
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -792,7 +814,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/brandy-crusta.jpg
+            resource_path: cocktails/brandy-crusta.jpg
             copyright: Mangosalsa
             placeholder_hash: WDkKHwQ5d4hviIiId0h6N5l4OfE3BnsB
 -
@@ -803,6 +825,7 @@
     source: 'https://iba-world.com/caipirinha/'
     glass: Lowball
     method: Muddle
+    abv: 36.36
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -824,7 +847,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/caipirinha.jpg
+            resource_path: cocktails/caipirinha.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: JxkWJwR3h4d/iYeHh4d4h3d4l1A4ynAH
 -
@@ -835,6 +858,7 @@
     source: 'https://iba-world.com/cachanchara/'
     glass: Lowball
     method: Build
+    abv: 15.58
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -862,7 +886,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/canchanchara.jpg
+            resource_path: cocktails/canchanchara.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: 2RgOHwQoaJdxeXdwiZlniJiJSB+W9nEL
 -
@@ -873,6 +897,7 @@
     source: Mexico
     glass: Highball
     method: Build
+    abv: 9.7
     tags:
         - Tequila
     ingredients:
@@ -908,7 +933,7 @@
             optional: true
     images:
         -
-            resource_path: data/cocktails/cantaritos.jpg
+            resource_path: cocktails/cantaritos.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: ZwgKLwy3QmeKlnePp2p3t3l1xwFXHYAF
 -
@@ -919,6 +944,7 @@
     source: 'https://iba-world.com/casino/'
     glass: Lowball
     method: Shake
+    abv: 25.54
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -948,7 +974,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/casino.jpg
+            resource_path: cocktails/casino.jpg
             copyright: 'Cocktail Society'
             placeholder_hash: ZxgKDwIISJqSl4iUe0p4Z4iHt6C7CawJ
 -
@@ -959,6 +985,7 @@
     source: 'https://iba-world.com/champagne-cocktail/'
     glass: Champagne
     method: Build
+    abv: 13.78
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -991,7 +1018,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/champagne-cocktail.jpg
+            resource_path: cocktails/champagne-cocktail.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: DPgJDwBHqWdxhniOiQeH14hyevEmWW8A
 -
@@ -1002,6 +1029,7 @@
     source: 'https://iba-world.com/clover-club/'
     glass: Coupe
     method: Shake
+    abv: 19.2
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1029,7 +1057,7 @@
             optional: true
     images:
         -
-            resource_path: data/cocktails/clover-club.jpg
+            resource_path: cocktails/clover-club.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: CRgKFwRIiYhndYaKiQend6l0evMmCH4B
 -
@@ -1040,6 +1068,7 @@
     source: 'https://www.diffordsguide.com/cocktails/recipe/7257/comte-de-sureau'
     glass: Lowball
     method: Stir
+    abv: 26.75
     tags:
         - Gin
     ingredients:
@@ -1062,7 +1091,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/comte-de-sureau.jpg
+            resource_path: cocktails/comte-de-sureau.jpg
             copyright: "Eric's Cocktail Guide"
             placeholder_hash: I0kKJwirmGePd4eJd5ZoiGeHN2BmBXUF
 -
@@ -1073,6 +1102,7 @@
     source: 'https://iba-world.com/corpse-reviver-2/'
     glass: Fizzio
     method: Shake
+    abv: 19.46
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1106,7 +1136,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/corpse-reviver-2.jpg
+            resource_path: cocktails/corpse-reviver-2.jpg
             copyright: 'Punch Drink'
             placeholder_hash: ZQgaFwJKeIdwd3hld3eHd5iHl8BYCJwD
 -
@@ -1117,6 +1147,7 @@
     source: 'https://iba-world.com/cosmopolitan/'
     glass: Cocktail
     method: Shake
+    abv: 17.6
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1146,7 +1177,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/cosmopolitan.jpg
+            resource_path: cocktails/cosmopolitan.jpg
             copyright: "Amanda's Cookin'"
             placeholder_hash: cBgKDwRXdodzd3efeseYZ2aVCvZnC58H
 -
@@ -1157,6 +1188,7 @@
     source: 'https://iba-world.com/cuba-libre/'
     glass: Highball
     method: Build
+    abv: 10.1
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1179,7 +1211,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/cuba-libre.jpg
+            resource_path: cocktails/cuba-libre.jpg
             copyright: 'Jamie Oliver'
             placeholder_hash: 1SgKHwZbaIdUgHqLiHh4SIeHd2BnBoUF
 -
@@ -1190,6 +1222,7 @@
     source: 'https://iba-world.com/daiquiri/'
     glass: Coupe
     method: Shake
+    abv: 24
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1212,7 +1245,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/daiquiri.jpg
+            resource_path: cocktails/daiquiri.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: p4YJFwRWh4dvdneDiGenV4h4OCf8RJMP
 -
@@ -1223,6 +1256,7 @@
     source: 'https://iba-world.com/dark-n-stormy/'
     glass: Highball
     method: Build
+    abv: 13.64
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -1240,7 +1274,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/dark-n-stormy.jpg
+            resource_path: cocktails/dark-n-stormy.jpg
             copyright: 'The Spruce / Madhumita Sathishkumar'
             placeholder_hash: rCgKJwb3SIibd4eKhZlXh5h1qFA3B3YE
 -
@@ -1251,6 +1285,7 @@
     source: 'https://iba-world.com/dry-martini/'
     glass: Cocktail
     method: Stir
+    abv: 30.71
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1268,7 +1303,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/dry-martini.jpg
+            resource_path: cocktails/dry-martini.jpg
             copyright: 'Getty Images/iStockphoto'
             placeholder_hash: lBgGDwKgujooSpejaBqomWp5mLB5C5sH
 -
@@ -1279,6 +1314,7 @@
     source: 'https://www.liquor.com/recipes/el-presidente/'
     glass: Cocktail
     method: Stir
+    abv: 26.17
     tags:
         - Rum
     ingredients:
@@ -1306,7 +1342,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/el-presidente.jpg
+            resource_path: cocktails/el-presidente.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: 8ecFFwTnd2iHeXeIdvoniHd3RICWBHQJ
 -
@@ -1317,6 +1353,7 @@
     source: 'https://iba-world.com/espresso-martini/'
     glass: Cocktail
     method: Shake
+    abv: 23.11
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -1344,7 +1381,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/espresso-martini.jpg
+            resource_path: cocktails/espresso-martini.jpg
             copyright: "It's Liv B."
             placeholder_hash: zygGFwJPqId4Zoh0iUfHKLZp+qVJT5kD
 -
@@ -1355,6 +1392,7 @@
     source: 'https://iba-world.com/fernandito/'
     glass: Highball
     method: Build
+    abv: 10.43
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -1371,7 +1409,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/fernandito.jpg
+            resource_path: cocktails/fernandito.jpg
             copyright: 'The daily meal'
             placeholder_hash: JykGJwT3R3ZchZd1cHvqZnd1der4eJ8P
 -
@@ -1382,6 +1420,7 @@
     source: 'https://iba-world.com/french-75/'
     glass: Champagne
     method: Shake
+    abv: 12.8
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1409,7 +1448,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/french-75.jpg
+            resource_path: cocktails/french-75.jpg
             copyright: 'Sip and Feast'
             placeholder_hash: bggKHwKIiIeeiId9dyd4d3ePxBsGj2IE
 -
@@ -1420,6 +1459,7 @@
     source: 'https://iba-world.com/french-connection/'
     glass: Lowball
     method: Build
+    abv: 29.09
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1437,7 +1477,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/french-connection.jpg
+            resource_path: cocktails/french-connection.jpg
             copyright: 'Punch Drink'
             placeholder_hash: aUkKLwbZ11l/hnWLhad3hoiKdjB5BpMF
 -
@@ -1448,6 +1488,7 @@
     source: 'https://iba-world.com/french-martini/'
     glass: Fizzio
     method: Shake
+    abv: 21.84
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -1470,7 +1511,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/french-martini.jpg
+            resource_path: cocktails/french-martini.jpg
             copyright: 'Supergolden Bakes'
             placeholder_hash: yAcGDwIHlpZ5o5eFeTbWCceSucPzHyoN
 -
@@ -1481,6 +1522,7 @@
     source: 'https://www.acouplecooks.com/best-gin-and-tonic/'
     glass: Wine
     method: Build
+    abv: 12.12
     tags:
         - Gin
     ingredients:
@@ -1496,7 +1538,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/gin-tonic.jpg
+            resource_path: cocktails/gin-tonic.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: mAgOFwRTWmmgeHdmaVdouHiFmACCOUQP
 -
@@ -1507,6 +1549,7 @@
     source: 'https://iba-world.com/gin-fizz/'
     glass: Highball
     method: Shake
+    abv: 16.94
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1534,7 +1577,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/gin-fizz.jpg
+            resource_path: cocktails/gin-fizz.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: 3OcNLwh5m4enhndwa4eXd3l4VwJoRYAG
 -
@@ -1545,6 +1588,7 @@
     source: 'https://www.acouplecooks.com/gin-gimlet-cocktail/'
     glass: Coupe
     method: Shake
+    abv: 21.33
     tags:
         - Gin
     ingredients:
@@ -1570,7 +1614,7 @@
             optional: true
     images:
         -
-            resource_path: data/cocktails/gin-gimlet.jpg
+            resource_path: cocktails/gin-gimlet.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: C/gJDwI0l4jChndYbgaa6FaKVQBEVUAI
 -
@@ -1581,6 +1625,7 @@
     source: 'https://iba-world.com/golden-dream/'
     glass: Coupe
     method: Shake
+    abv: 18.81
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1607,7 +1652,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/golden-dream.jpg
+            resource_path: cocktails/golden-dream.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: dggGDwD2SLV3hoiIZbo4V3h4pYBmDFUG
 -
@@ -1618,6 +1663,7 @@
     source: 'https://iba-world.com/grasshopper/'
     glass: Fizzio
     method: Shake
+    abv: 13.33
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1639,7 +1685,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/grasshopper.jpg
+            resource_path: cocktails/grasshopper.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: 0SgKDwIIqIiPhnaZdyeYOJd1pvWb+70N
 -
@@ -1650,6 +1696,7 @@
     source: 'https://iba-world.com/hanky-panky/'
     glass: 'Nick and Nora'
     method: Stir
+    abv: 24.81
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1672,7 +1719,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/hanky-panky.jpg
+            resource_path: cocktails/hanky-panky.jpg
             copyright: 'Punch / Daniel Krieger'
             placeholder_hash: NQgKDwL0SHeEfIeHZtk4t1iIVrBlB2wF
 -
@@ -1683,6 +1730,7 @@
     source: 'https://iba-world.com/hemingway-special/'
     glass: Coupe
     method: Shake
+    abv: 17.72
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1710,7 +1758,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/hemingway-special.jpg
+            resource_path: cocktails/hemingway-special.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: MggGFwJ1WHdUhnmAl5hmaIh3l/B5CI0E
 -
@@ -1721,6 +1769,7 @@
     source: 'https://iba-world.com/horses-neck/'
     glass: Highball
     method: Build
+    abv: 9.21
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1743,7 +1792,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/horses-neck.jpg
+            resource_path: cocktails/horses-neck.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: uQgKLwL4N5Z5h4eJdnh4t2aHiJBXCXkG
 -
@@ -1754,6 +1803,7 @@
     source: 'https://iba-world.com/illegal/'
     glass: Fizzio
     method: Shake
+    abv: 16.12
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -1796,7 +1846,7 @@
             optional: true
     images:
         -
-            resource_path: data/cocktails/illegal.jpg
+            resource_path: cocktails/illegal.jpg
             copyright: 'The Shaken Cocktail'
             placeholder_hash: XvgJFwIraXifhId1h0eHWId1VtEHB58D
 -
@@ -1807,6 +1857,7 @@
     source: 'https://iba-world.com/irish-coffee/'
     glass: 'Glass mug'
     method: Build
+    abv: 8.26
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1834,7 +1885,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/irish-coffee.jpg
+            resource_path: cocktails/irish-coffee.jpg
             copyright: VinePair
             placeholder_hash: yPcJDwIIuHeJhXh5d0ioJ8hzlvZ4WJ8I
 -
@@ -1845,6 +1896,7 @@
     source: null
     glass: Coupe
     method: Stir
+    abv: 26.83
     tags:
         - Brandy
     ingredients:
@@ -1865,7 +1917,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/japanese-cocktail.jpg
+            resource_path: cocktails/japanese-cocktail.jpg
             copyright: 'The Drink Blog'
             placeholder_hash: HQgWDwJoiHdwh3h6eIeIR4d5OKBnAnoG
 -
@@ -1876,6 +1928,7 @@
     source: 'https://iba-world.com/john-collins/'
     glass: Highball
     method: Build
+    abv: 10.91
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -1903,7 +1956,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/john-collins.jpg
+            resource_path: cocktails/john-collins.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: 0fcNJwQMyHhSeIiXilWHeHeYVzCXBHMJ
 -
@@ -1914,6 +1967,7 @@
     source: 'https://iba-world.com/kir/'
     glass: Champagne
     method: Build
+    abv: 11.27
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -1931,7 +1985,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/kir.jpg
+            resource_path: cocktails/kir.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: ywcKDwJoh3iQd4h/hyiHyHh1h/NoCI8K
 -
@@ -1942,6 +1996,7 @@
     source: 'https://www.acouplecooks.com/la-louisiane-cocktail/'
     glass: Cocktail
     method: Stir
+    abv: 28.94
     tags:
         - Whiskey
     ingredients:
@@ -1972,7 +2027,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/la-louisiane.jpg
+            resource_path: cocktails/la-louisiane.jpg
             copyright: 'A couple cooks'
             placeholder_hash: mhgWHwSXeIiAdnd0h5iYh3d3dgHICIQL
 -
@@ -1983,6 +2038,7 @@
     source: 'https://iba-world.com/last-word/'
     glass: 'Nick and Nora'
     method: Shake
+    abv: 25.4
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2010,7 +2066,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/last-word.jpg
+            resource_path: cocktails/last-word.jpg
             copyright: 'A Serious Eats / Vicky Wasik'
             placeholder_hash: VAgKDwINtoqnd4dziie3eIiItzoNcaAN
 -
@@ -2021,6 +2077,7 @@
     source: 'https://iba-world.com/lemon-drop-martini/'
     glass: Cocktail
     method: Shake
+    abv: 24.62
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2045,7 +2102,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/lemon-drop-martini.jpg
+            resource_path: cocktails/lemon-drop-martini.jpg
             copyright: 'Basil & Bubbly'
             placeholder_hash: mxgKDwI5iHhhmIeaiGamB5mZCQC1hXAJ
 -
@@ -2056,6 +2113,7 @@
     source: 'https://iba-world.com/long-island-ice-tea/'
     glass: Highball
     method: Build
+    abv: 21.82
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2102,7 +2160,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/long-island-ice-tea.jpg
+            resource_path: cocktails/long-island-ice-tea.jpg
             copyright: 'Kitchen Stories'
             placeholder_hash: TBgGHwQF64asp3mnbmXKdoiJuYA3CWUD
 -
@@ -2113,6 +2171,7 @@
     source: 'https://iba-world.com/mai-tai/'
     glass: Lowball
     method: Shake
+    abv: 18.82
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2151,7 +2210,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/mai-tai.jpg
+            resource_path: cocktails/mai-tai.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: LgkKVwj1V3mraIdVdbiJeFaKiEBXCHAG
 -
@@ -2162,6 +2221,7 @@
     source: 'https://iba-world.com/manhattan/'
     glass: Cocktail
     method: Stir
+    abv: 28.17
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2184,7 +2244,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/manhattan.jpg
+            resource_path: cocktails/manhattan.jpg
             copyright: "Sainsbury's Magazine / Toby Scott"
             placeholder_hash: pvcJDwIObYVYiYZoV5lppneHd9A5CJ0D
 -
@@ -2195,6 +2255,7 @@
     source: 'https://iba-world.com/margarita/'
     glass: Margarita
     method: Shake
+    abv: 26.35
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2217,7 +2278,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/margarita.jpg
+            resource_path: cocktails/margarita.jpg
             copyright: 'Jamie Oliver'
             placeholder_hash: VQgOFwIYh3ePdXaLh2aXeId3R/s2uWkA
 -
@@ -2228,6 +2289,7 @@
     source: 'https://iba-world.com/martinez/'
     glass: Cocktail
     method: Stir
+    abv: 24.16
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2255,7 +2317,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/martinez.jpg
+            resource_path: cocktails/martinez.jpg
             copyright: Wikipedia
             placeholder_hash: n1kWFwZ4eIeAd3d4iId4aIh2qMgJiZ8B
 -
@@ -2266,6 +2328,7 @@
     source: 'https://iba-world.com/mary-pickford/'
     glass: Fizzio
     method: Shake
+    abv: 15.92
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2293,7 +2356,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/mary-pickford.jpg
+            resource_path: cocktails/mary-pickford.jpg
             copyright: Drinkoteket
             placeholder_hash: zBcGFwQIqJiMhodxjAbHeIiLeqAHB4sA
 -
@@ -2304,6 +2367,7 @@
     source: 'https://iba-world.com/mimosa/'
     glass: Champagne
     method: Build
+    abv: 5
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2321,7 +2385,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/mimosa.jpg
+            resource_path: cocktails/mimosa.jpg
             copyright: 'Inspired Taste'
             placeholder_hash: LyoGPwaGWMcyeIdfiUh7eXeH6PItd/oA
 -
@@ -2332,6 +2396,7 @@
     source: 'https://iba-world.com/mint-julep/'
     glass: Julep
     method: Build
+    abv: 36.36
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2359,7 +2424,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/mint-julep.jpg
+            resource_path: cocktails/mint-julep.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: 0jgKJwRGe8VgZoiaiiiHhpeXd1BYBXED
 -
@@ -2370,6 +2435,7 @@
     source: 'https://iba-world.com/mojito/'
     glass: Highball
     method: Build
+    abv: 25.17
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2402,7 +2468,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/mojito.jpg
+            resource_path: cocktails/mojito.jpg
             copyright: 'Bon Apetite'
             placeholder_hash: MhkGFwB+WZaZf6RjaURa55hGDYp09hkH
 -
@@ -2413,6 +2479,7 @@
     source: 'https://iba-world.com/monkey-gland/'
     glass: Cocktail
     method: Shake
+    abv: 16
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2440,7 +2507,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/monkey-gland.jpg
+            resource_path: cocktails/monkey-gland.jpg
             copyright: 'The Spruce'
             placeholder_hash: sRgKFwJXiplwaHead2aGeYiIdmYMaLcA
 -
@@ -2451,6 +2518,7 @@
     source: 'https://iba-world.com/moscow-mule/'
     glass: 'Copper mug'
     method: Build
+    abv: 9.35
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2473,7 +2541,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/moscow-mule.jpg
+            resource_path: cocktails/moscow-mule.jpg
             copyright: 'Bake It With Love'
             placeholder_hash: JAkGFwigP4bhlYdpiui3pmW3t0EIFpAD
 -
@@ -2484,6 +2552,7 @@
     source: 'https://iba-world.com/naked-and-famous/'
     glass: 'Nick and Nora'
     method: Shake
+    abv: 18.2
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2511,7 +2580,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/naked-and-famous.jpg
+            resource_path: cocktails/naked-and-famous.jpg
             copyright: Epicurious
             placeholder_hash: SwgKHwQHtnmIhXiIdoinSJeVh9BoCI4G
 -
@@ -2522,6 +2591,7 @@
     source: 'https://iba-world.com/negroni/'
     glass: Lowball
     method: Build
+    abv: 25.15
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2544,7 +2614,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/negroni.jpg
+            resource_path: cocktails/negroni.jpg
             copyright: 'Kitchen Swagger'
             placeholder_hash: 4jgGHwa8FpkhYKvMl0vHaSR3TIcHNnIA
 -
@@ -2555,6 +2625,7 @@
     source: 'https://iba-world.com/new-york-sour/'
     glass: Lowball
     method: Shake
+    abv: 16.09
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2588,7 +2659,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/new-york-sour.jpg
+            resource_path: cocktails/new-york-sour.jpg
             copyright: 'Kitchen Swagger'
             placeholder_hash: ZhgOFwJ4hoh/iHeIiJhniIeFaEEIJoUA
 -
@@ -2599,6 +2670,7 @@
     source: 'https://iba-world.com/old-cuban/'
     glass: Coupe
     method: Shake
+    abv: 12.97
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2636,7 +2708,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/old-cuban.jpg
+            resource_path: cocktails/old-cuban.jpg
             copyright: 'NYT Cooking'
             placeholder_hash: yxgOLwQHiHh9dId2iTiXaId3Z9A3F3sA
 -
@@ -2647,6 +2719,7 @@
     source: 'https://iba-world.com/old-fashioned/'
     glass: Lowball
     method: Build
+    abv: 35.55
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2674,7 +2747,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/old-fashioned.jpg
+            resource_path: cocktails/old-fashioned.jpg
             copyright: Epicurious
             placeholder_hash: bzkGJwbxeBWfd2ZecmibZphotlEIGoUA
 -
@@ -2685,6 +2758,7 @@
     source: 'https://iba-world.com/paloma/'
     glass: Lowball
     method: Build
+    abv: 11.73
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2712,7 +2786,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/paloma.jpg
+            resource_path: cocktails/paloma.jpg
             copyright: 'Love and Lemons'
             placeholder_hash: rhgGHwRqNHahd5eQeUaYyHmHGXQEQDgB
 -
@@ -2723,6 +2797,7 @@
     source: 'https://iba-world.com/paper-plane/'
     glass: Coupe
     method: Shake
+    abv: 17.2
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2750,7 +2825,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/paper-plane.jpg
+            resource_path: cocktails/paper-plane.jpg
             copyright: 'Bon Apetite'
             placeholder_hash: ImkKHwpCiql5Z4aPWGhoeWd4tVBYXJAJ
 -
@@ -2761,6 +2836,7 @@
     source: 'https://iba-world.com/paradise/'
     glass: Cocktail
     method: Shake
+    abv: 24.62
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2783,7 +2859,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/paradise.jpg
+            resource_path: cocktails/paradise.jpg
             copyright: Wikipedia
             placeholder_hash: eRgGHwL1F5h3fYVzeNg4yDd9aNCHCH4I
 -
@@ -2794,6 +2870,7 @@
     source: 'https://iba-world.com/penicillin/'
     glass: Lowball
     method: Shake
+    abv: 19.2
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -2826,7 +2903,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/penicillin.jpg
+            resource_path: cocktails/penicillin.jpg
             copyright: Unknown
             placeholder_hash: lAgSJwIIeJhyeIiFe1h3h4h4eDB4CIUJ
 -
@@ -2837,6 +2914,7 @@
     source: 'https://iba-world.com/pina-colada/'
     glass: Hurricane
     method: Blend
+    abv: 12.31
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2860,7 +2938,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/pina-colada.jpg
+            resource_path: cocktails/pina-colada.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: TQgOHwIIyXdkd3eXe1Z3l4iGmZAYCpYD
 -
@@ -2871,6 +2949,7 @@
     source: 'https://iba-world.com/pisco-sour/'
     glass: 'Nick and Nora'
     method: Shake
+    abv: 17.45
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -2898,7 +2977,7 @@
             optional: true
     images:
         -
-            resource_path: data/cocktails/pisco-sour.jpg
+            resource_path: cocktails/pisco-sour.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: YwgSDwBqiHd/iYeJd3d3h4d4V6AnAZkE
 -
@@ -2909,6 +2988,7 @@
     source: 'https://iba-world.com/planters-punch/'
     glass: Hurricane
     method: Build
+    abv: 18.18
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -2932,7 +3012,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/planters-punch.jpg
+            resource_path: cocktails/planters-punch.jpg
             copyright: Wikipedia
             placeholder_hash: DjkKJwaQtEeFeGlXelaXiHloBzZ5FJAH
 -
@@ -2943,6 +3023,7 @@
     source: 'Douglas Ankrah, The Townhouse | London'
     glass: Coupe
     method: Shake
+    abv: 16.36
     tags:
         - Vodka
     ingredients:
@@ -2977,7 +3058,7 @@
                 - Prosecco
     images:
         -
-            resource_path: data/cocktails/porn-star-martini.jpg
+            resource_path: cocktails/porn-star-martini.jpg
             copyright: 'Punch / Jamie Lau'
             placeholder_hash: 2vcNFwJqWHiCeHd7iAmGmIaXyKQJXYoA
 -
@@ -2988,6 +3069,7 @@
     source: 'https://iba-world.com/porto-flip/'
     glass: Coupe
     method: Shake
+    abv: 12.51
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -3011,7 +3093,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/porto-flip.jpg
+            resource_path: cocktails/porto-flip.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: b+cJDwJjZ4dwdndldZh4h5iGVrCGBXoN
 -
@@ -3022,6 +3104,7 @@
     source: 'https://www.cocktailexplorer.co/cocktails/queens-park-hotel-super-cocktail/anders-erickson/'
     glass: Coupe
     method: Shake
+    abv: 18.63
     tags:
         - Rum
     ingredients:
@@ -3052,7 +3135,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/queens-park-hotel-super-cocktail.jpg
+            resource_path: cocktails/queens-park-hotel-super-cocktail.jpg
             copyright: 'Anders Erickson'
             placeholder_hash: TTgGFwYHaHd2eIWMhVaXeHdxhpQHOHkA
 -
@@ -3063,6 +3146,7 @@
     source: 'https://iba-world.com/ramos-fizz/'
     glass: Highball
     method: Shake
+    abv: 7.32
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -3115,7 +3199,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/ramos-fizz.jpg
+            resource_path: cocktails/ramos-fizz.jpg
             copyright: 'Punch Drink'
             placeholder_hash: KQkSFwIwhXqbiHiYiYd3eIh399y8YKYP
 -
@@ -3126,6 +3210,7 @@
     source: 'https://iba-world.com/russian-spring-punch/'
     glass: Highball
     method: Shake
+    abv: 14.67
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -3158,7 +3243,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/russian-spring-punch.jpg
+            resource_path: cocktails/russian-spring-punch.jpg
             copyright: 'Liquido Spirits'
             placeholder_hash: 1VgKJwwL2oiDloqJfESXV4l5lnBKCIYG
 -
@@ -3169,6 +3254,7 @@
     source: 'https://iba-world.com/rusty-nail/'
     glass: Lowball
     method: Build
+    abv: 36.36
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -3186,7 +3272,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/rusty-nail.jpg
+            resource_path: cocktails/rusty-nail.jpg
             copyright: 'Serious Eats'
             placeholder_hash: aCkGLwSv2YnnsIm0njYcVSuNpgOJSYAI
 -
@@ -3197,6 +3283,7 @@
     source: 'https://www.acouplecooks.com/gin-gimlet-cocktail/'
     glass: Wine
     method: Build
+    abv: 10.52
     tags:
         - Wine
     ingredients:
@@ -3237,7 +3324,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/sangria.jpg
+            resource_path: cocktails/sangria.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: 8PcJHwaaxKxvpmabiBWYpWZ3qGgJi4YA
 -
@@ -3248,6 +3335,7 @@
     source: 'https://iba-world.com/sazerac/'
     glass: Lowball
     method: Stir
+    abv: 33.25
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -3275,7 +3363,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/sazerac.jpg
+            resource_path: cocktails/sazerac.jpg
             copyright: 'The Spruce Eats'
             placeholder_hash: l8cJJwzAdnmJhndoloh5Vpd3OGBVBGME
 -
@@ -3286,6 +3374,7 @@
     source: 'https://iba-world.com/sea-breeze/'
     glass: Highball
     method: Build
+    abv: 7.66
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -3308,7 +3397,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/sea-breeze.jpg
+            resource_path: cocktails/sea-breeze.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: I0kKRxL7SIZZmIerdVhKuHWoePU4B40B
 -
@@ -3319,6 +3408,7 @@
     source: 'https://www.seriouseats.com/seelbach-cocktail-recipe'
     glass: Champagne
     method: Stir
+    abv: 18.43
     tags:
         - Whiskey
     ingredients:
@@ -3349,7 +3439,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/seelbach.jpg
+            resource_path: cocktails/seelbach.jpg
             copyright: 'The Educated Barfly'
             placeholder_hash: eAgGFwL4J8iGe4R5hqlXqGd4eMBnB3wG
 -
@@ -3360,6 +3450,7 @@
     source: 'https://iba-world.com/sex-on-the-beach/'
     glass: Highball
     method: Build
+    abv: 15.58
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -3387,7 +3478,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/sex-on-the-beach.jpg
+            resource_path: cocktails/sex-on-the-beach.jpg
             copyright: 'Copy Kat Recipes'
             placeholder_hash: rYkSRxT2aHhplXl4h3h3h3iIl5B6CJYH
 -
@@ -3398,6 +3489,7 @@
     source: 'https://iba-world.com/sidecar/'
     glass: Cocktail
     method: Shake
+    abv: 24.89
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -3420,7 +3512,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/sidecar.jpg
+            resource_path: cocktails/sidecar.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: SggKFwJFd3mmhHd8aQiZeKZ1J5B9BKYH
 -
@@ -3431,6 +3523,7 @@
     source: 'https://iba-world.com/singapore-sling/'
     glass: Hurricane
     method: Shake
+    abv: 8.98
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -3479,7 +3572,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/singapore-sling.jpg
+            resource_path: cocktails/singapore-sling.jpg
             copyright: 'The Spruce Eats'
             placeholder_hash: sSgKFwioRYhveIiqiFmIeFZqODCLBYYF
 -
@@ -3490,6 +3583,7 @@
     source: 'https://iba-world.com/southside/'
     glass: 'Nick and Nora'
     method: Shake
+    abv: 18.29
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -3517,7 +3611,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/southside.jpg
+            resource_path: cocktails/southside.jpg
             copyright: 'Limoncello Kitchen'
             placeholder_hash: cwgKDwJkdmZgZ3iHeYeIiIiKm/poUmAC
 -
@@ -3528,6 +3622,7 @@
     source: 'https://iba-world.com/spicy-fifty/'
     glass: Cocktail
     method: Shake
+    abv: 17.78
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -3560,7 +3655,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/spicy-fifty.jpg
+            resource_path: cocktails/spicy-fifty.jpg
             copyright: MixolopediA
             placeholder_hash: ThgODwIFeYluhJeFeRepR5iHaPEGOI8G
 -
@@ -3571,6 +3666,7 @@
     source: 'https://iba-world.com/spritz/'
     glass: Wine
     method: Build
+    abv: 10
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -3593,7 +3689,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/spritz.jpg
+            resource_path: cocktails/spritz.jpg
             copyright: 'Kitchen Swagger'
             placeholder_hash: DjkKLwoDhJxPgbdveGiGOYiJN/O0U08I
 -
@@ -3604,6 +3700,7 @@
     source: 'https://iba-world.com/stinger/'
     glass: Cocktail
     method: Stir
+    abv: 29.76
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -3621,7 +3718,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/stinger.jpg
+            resource_path: cocktails/stinger.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: 1SgSJwZmV3iAh4d5eSmHl3h4mVAHCYIA
 -
@@ -3632,6 +3729,7 @@
     source: 'https://iba-world.com/suffering-bastard/'
     glass: Tiki
     method: Shake
+    abv: 25.76
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -3666,7 +3764,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/suffering-bastard.jpg
+            resource_path: cocktails/suffering-bastard.jpg
             copyright: 'Keg Works'
             placeholder_hash: qxgKDwK5RZ5vh2etiHh2iHiHhwl6+3AI
 -
@@ -3677,6 +3775,7 @@
     source: 'https://iba-world.com/tequila-sunrise/'
     glass: Highball
     method: Build
+    abv: 10.91
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -3699,7 +3798,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/tequila-sunrise.jpg
+            resource_path: cocktails/tequila-sunrise.jpg
             copyright: 'Homemade Hooplah'
             placeholder_hash: JIsKTwzAqpiKenmaiViJyYZkOqCJBYYK
 -
@@ -3710,6 +3809,7 @@
     source: 'https://iba-world.com/tipperary/'
     glass: Cocktail
     method: Stir
+    abv: 30.42
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -3737,7 +3837,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/tipperary.jpg
+            resource_path: cocktails/tipperary.jpg
             copyright: MixolopediA
             placeholder_hash: TwgKFwI0t3Z/d3eHiHaHWJeImKBJCYsD
 -
@@ -3748,6 +3848,7 @@
     source: 'https://iba-world.com/tommys-margarita/'
     glass: Lowball
     method: Shake
+    abv: 16
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -3770,7 +3871,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/tommys-margarita.jpg
+            resource_path: cocktails/tommys-margarita.jpg
             copyright: 'Moody Mixologist'
             placeholder_hash: VAgODwIWhqiEh3eQe2eHd4eJmS+ph4AP
 -
@@ -3781,6 +3882,7 @@
     source: 'https://iba-world.com/trinidad-sour/'
     glass: Cocktail
     method: Shake
+    abv: 18.57
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -3808,7 +3910,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/trinidad-sour.jpg
+            resource_path: cocktails/trinidad-sour.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: 8NcFDwSwBaaKr2WFY8hX6ClpCJDLBIkJ
 -
@@ -3819,6 +3921,7 @@
     source: 'https://iba-world.com/tuxedo/'
     glass: Cocktail
     method: Stir
+    abv: 24.14
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -3851,7 +3954,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/tuxedo.jpg
+            resource_path: cocktails/tuxedo.jpg
             copyright: Punch
             placeholder_hash: kQgKJwQJaIiLhXVmhkm2h4dohvJ3CG8J
 -
@@ -3862,6 +3965,7 @@
     source: 'https://iba-world.com/ve-n-to/'
     glass: Lowball
     method: Shake
+    abv: 18.46
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -3888,7 +3992,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/vento.jpg
+            resource_path: cocktails/vento.jpg
             copyright: 'IBA World'
             placeholder_hash: e/gFFwD4V2eHeHeKdphnqFd4iKBYao8K
 -
@@ -3899,6 +4003,7 @@
     source: 'https://iba-world.com/vesper/'
     glass: Cocktail
     method: Shake
+    abv: 29.96
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -3921,7 +4026,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/vesper.jpg
+            resource_path: cocktails/vesper.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: SwgKDwAlWHl+doVkjAa3Z4eICPeCoB4I
 -
@@ -3932,6 +4037,7 @@
     source: 'https://iba-world.com/vieux-carre/'
     glass: Cocktail
     method: Stir
+    abv: 27.25
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -3965,7 +4071,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/vieux-carre.jpg
+            resource_path: cocktails/vieux-carre.jpg
             copyright: 'Liquor.com / Tim Nusog'
             placeholder_hash: mCgGHwQzepeNhoh5WgaZlYdWt2AoHHMA
 -
@@ -3976,6 +4082,7 @@
     source: 'https://iba-world.com/whiskey-sour/'
     glass: Lowball
     method: Shake
+    abv: 16
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -4004,7 +4111,7 @@
             optional: true
     images:
         -
-            resource_path: data/cocktails/whiskey-sour.jpg
+            resource_path: cocktails/whiskey-sour.jpg
             copyright: VinePair
             placeholder_hash: ZKcJNxBHiYh0cYeVf5eJeKV3aSAHNnAD
 -
@@ -4015,6 +4122,7 @@
     source: 'https://iba-world.com/white-lady/'
     glass: Coupe
     method: Shake
+    abv: 24.89
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
@@ -4037,7 +4145,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/white-lady.jpg
+            resource_path: cocktails/white-lady.jpg
             copyright: 'BBC Good Food'
             placeholder_hash: XAgKBwA2hYdRZ4h6igeXiKd1CytDwDAG
 -
@@ -4048,6 +4156,7 @@
     source: 'https://tuxedono2.com/white-negroni-cocktail-recipe'
     glass: Lowball
     method: Stir
+    abv: 20
     tags:
         - Gin
     ingredients:
@@ -4068,7 +4177,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/white-negroni.jpg
+            resource_path: cocktails/white-negroni.jpg
             copyright: 'A Couple Cooks'
             placeholder_hash: URkKLwRKSfqAdnmGfRmYqYeJqQJ4aJAJ
 -
@@ -4079,6 +4188,7 @@
     source: 'https://iba-world.com/yellow-bird/'
     glass: Coupe
     method: Shake
+    abv: 25.97
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
@@ -4106,7 +4216,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/yellow-bird.jpg
+            resource_path: cocktails/yellow-bird.jpg
             copyright: 'Cooking to Entertain'
             placeholder_hash: GOoJLwJViHiHiXhqigaXuGeFavY2CpMC
 -
@@ -4117,6 +4227,7 @@
     source: 'https://iba-world.com/zombie/'
     glass: Highball
     method: Blend
+    abv: 23.41
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
@@ -4170,7 +4281,7 @@
             optional: false
     images:
         -
-            resource_path: data/cocktails/zombie.jpg
+            resource_path: cocktails/zombie.jpg
             copyright: 'Punch Drink'
             placeholder_hash: rggKJwT2O5R5lnmGeXeIh3iImXB4CHEH
 -
@@ -4181,6 +4292,7 @@
     source: 'https://www.journal.hr/lifestyle/gastro/antique-pelinkovac-strukani-pelin-jesenski-koktel-cool-pice/'
     glass: Lowball
     method: Build
+    abv: 9.19
     tags: {  }
     ingredients:
         -
@@ -4200,6 +4312,6 @@
             optional: true
     images:
         -
-            resource_path: data/cocktails/strukani-pelin.jpg
+            resource_path: cocktails/strukani-pelin.jpg
             copyright: Tasteatlas
             placeholder_hash: owgOHwbY2YePdpeZhSand1h2R6AZFpcA
