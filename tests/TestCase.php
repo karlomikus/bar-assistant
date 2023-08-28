@@ -6,8 +6,8 @@ namespace Tests;
 
 use Kami\Cocktail\Models\Bar;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Kami\Cocktail\Models\UserRoleEnum;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {

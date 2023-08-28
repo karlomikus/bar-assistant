@@ -6,7 +6,6 @@ use Tests\TestCase;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Glass;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\Services\ImportService;

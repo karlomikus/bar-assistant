@@ -7,7 +7,6 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Scraper\Manager;
 use Kami\Cocktail\Services\ImportService;
 use Kami\Cocktail\Http\Requests\ImportRequest;
