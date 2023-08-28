@@ -17,7 +17,6 @@ final class CollectionQueryFilter extends QueryBuilder
         $barMembership = $this->request->user()->getBarMembership(bar()->id);
 
         $this
-            ->where('bar_membership_id', $barMembership->id)
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::partial('name'),
@@ -25,6 +24,7 @@ final class CollectionQueryFilter extends QueryBuilder
             ])
             ->defaultSort('name')
             ->allowedSorts('name', 'created_at')
-            ->with('cocktails');
+            ->with('cocktails')
+            ->where('bar_membership_id', $barMembership->id);
     }
 }

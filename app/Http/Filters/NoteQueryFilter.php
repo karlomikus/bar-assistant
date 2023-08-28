@@ -15,7 +15,6 @@ final class NoteQueryFilter extends QueryBuilder
         parent::__construct(Note::query());
 
         $this
-            ->where('user_id', $this->request->user()->id)
             ->allowedFilters([
                 AllowedFilter::callback('cocktail_id', function ($query, $value) {
                     $query
@@ -24,6 +23,7 @@ final class NoteQueryFilter extends QueryBuilder
                 }),
             ])
             ->defaultSort('created_at')
-            ->allowedSorts('created_at');
+            ->allowedSorts('created_at')
+            ->where('user_id', $this->request->user()->id);
     }
 }

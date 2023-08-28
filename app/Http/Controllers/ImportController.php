@@ -24,10 +24,6 @@ class ImportController extends Controller
         $save = $request->get('save', false);
         $source = $request->post('source');
 
-        $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', bar()->id)->get()->keyBy('name');
-        $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', bar()->id)->get()->keyBy('name');
-        $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', bar()->id)->get()->keyBy('name');
-
         if ($type === 'url') {
             $request->validate(['source' => 'url']);
             try {
@@ -74,7 +70,7 @@ class ImportController extends Controller
         }
 
         if ($save) {
-            $dataToImport = new CocktailResource($importService->importCocktailFromArray($dataToImport, $request->user()->id, bar()->id, $dbIngredients, $dbGlasses, $dbMethods));
+            $dataToImport = new CocktailResource($importService->importCocktailFromArray($dataToImport, $request->user()->id, bar()->id));
         }
 
         return response()->json([

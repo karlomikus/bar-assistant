@@ -49,18 +49,24 @@ class User extends Authenticatable
     ];
 
     /**
-     * @return null|Collection<int, UserIngredient>
+     * @return Collection<int, UserIngredient>
      */
     public function getShelfIngredients(int $barId): Collection
     {
         return $this->getBarMembership($barId)?->userIngredients ?? new Collection();
     }
 
+    /**
+     * @return HasMany<BarMembership>
+     */
     public function memberships(): HasMany
     {
         return $this->hasMany(BarMembership::class);
     }
 
+    /**
+     * @return HasMany<Bar>
+     */
     public function ownedBars(): HasMany
     {
         return $this->hasMany(Bar::class, 'created_user_id');

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 trait HasAuthors
 {
     /**
-     * @return BelongsTo<User, Model>
+     * @return BelongsTo<User, self>
      */
     public function createdUser(): BelongsTo
     {
@@ -18,7 +18,7 @@ trait HasAuthors
     }
 
     /**
-     * @return BelongsTo<User, Model>
+     * @return BelongsTo<User, self>
      */
     public function updatedUser(): BelongsTo
     {

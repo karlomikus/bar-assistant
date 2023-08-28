@@ -8,7 +8,6 @@ use Throwable;
 use ZipArchive;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Glass;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
@@ -33,13 +32,14 @@ class ImportService
     }
 
     /**
-     * Create a cocktail from scraper data
-     *
-     * @param array<mixed> $sourceData Scraper data
-     * @return Cocktail Database model of the cocktail
+     * @param array<mixed> $sourceData
      */
-    public function importCocktailFromArray(array $sourceData, int $userId, int $barId, ?Collection $dbIngredients = null, ?Collection $dbGlasses = null, ?Collection $dbMethods = null): Cocktail
+    public function importCocktailFromArray(array $sourceData, int $userId, int $barId): Cocktail
     {
+        $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
+        $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
+        $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
+
         $defaultDescription = 'Created from "' . $sourceData['source'] . '"';
 
         // Add images
@@ -241,18 +241,14 @@ class ImportService
      */
     public function importCocktailCollection(array $sourceData, int $userId, int $barId): CocktailCollection
     {
-        $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
-        $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
-        $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
-
         $collection = new CocktailCollection();
         $collection->name = $sourceData['name'];
         $collection->description = $sourceData['description'];
-        $collection->user_id = $userId;
+        // $collection->user_id = $userId; // TODO: Bar membership
         $collection->save();
 
         foreach ($sourceData['cocktails'] as $cocktail) {
-            $cocktail = $this->importCocktailFromArray($cocktail, $userId, $barId, $dbIngredients, $dbGlasses, $dbMethods);
+            $cocktail = $this->importCocktailFromArray($cocktail, $userId, $barId);
             $cocktail->addToCollection($collection);
         }
 

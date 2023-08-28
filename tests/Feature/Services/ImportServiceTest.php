@@ -86,11 +86,7 @@ class ImportServiceTest extends TestCase
             ]
         ];
 
-        $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name');
-        $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name');
-        $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name');
-
-        $cocktail = $service->importCocktailFromArray($importArray, auth()->user()->id, $bar->id, $dbIngredients, $dbGlasses, $dbMethods);
+        $cocktail = $service->importCocktailFromArray($importArray, auth()->user()->id, $bar->id);
 
         $this->assertSame('Cocktail name', $cocktail->name);
         $this->assertSame('Instruction data', $cocktail->instructions);

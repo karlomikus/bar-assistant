@@ -10,6 +10,9 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Kami\Cocktail\Services\IngredientService;
 
+/**
+ * @mixin \Kami\Cocktail\Models\Ingredient
+ */
 final class IngredientQueryFilter extends QueryBuilder
 {
     public function __construct(IngredientService $ingredientService)
@@ -69,7 +72,7 @@ final class IngredientQueryFilter extends QueryBuilder
             ])
             ->allowedIncludes(['parentIngredient', 'varieties', 'cocktails', 'cocktailIngredientSubstitutes'])
             ->with('category', 'images')
-            ->filterByBar()
-            ->withCount('cocktails');
+            ->withCount('cocktails')
+            ->filterByBar();
     }
 }

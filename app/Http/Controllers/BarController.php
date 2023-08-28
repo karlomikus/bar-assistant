@@ -50,7 +50,7 @@ class BarController extends Controller
         $bar->subtitle = $request->post('subtitle');
         $bar->description = $request->post('description');
         $bar->created_user_id = $request->user()->id;
-        $bar->invite_code = new Ulid();
+        $bar->invite_code = (string) new Ulid();
         $bar->save();
 
         $bar->search_driver_api_key = $search->getActions()->getBarSearchApiKey($bar->id);

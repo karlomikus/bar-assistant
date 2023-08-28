@@ -27,7 +27,7 @@ class Tag extends Model
     }
 
     /**
-     * @return BelongsTo<Bar, Collection>
+     * @return BelongsTo<Bar, Tag>
      */
     public function bar(): BelongsTo
     {

@@ -98,14 +98,6 @@ class Cocktail extends Model implements UploadableInterface
         return $this->belongsToMany(CocktailCollection::class, 'collections_cocktails');
     }
 
-    /**
-     * @return BelongsToMany<CocktailCollection>
-     */
-    public function cocktailFavorites()
-    {
-        return $this->hasMany(CocktailFavorite::class);
-    }
-
     public function delete(): ?bool
     {
         $this->deleteImages();

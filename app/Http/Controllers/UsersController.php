@@ -48,7 +48,7 @@ class UsersController extends Controller
             abort(403);
         }
 
-        $roleId = $request->post('role_id', UserRoleEnum::General->value);
+        $roleId = $request->post('role_id', (string) UserRoleEnum::General->value);
 
         $user = new User();
         $user->name = $request->post('name');

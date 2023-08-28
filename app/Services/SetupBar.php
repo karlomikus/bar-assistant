@@ -16,13 +16,6 @@ use Illuminate\Support\Facades\Storage;
 
 class SetupBar
 {
-    public function __construct(
-        private readonly ImportService $importService,
-        private readonly IngredientService $ingredientService,
-        private readonly ImageService $imageService
-    ) {
-    }
-
     public function openBar(Bar $bar, User $user, array $flags = []): bool
     {
         $startBase = microtime(true);
@@ -45,7 +38,7 @@ class SetupBar
         return true;
     }
 
-    private function importBaseData(string $tableName, string $filepath, int $barId, int $userId)
+    private function importBaseData(string $tableName, string $filepath, int $barId, int $userId): void
     {
         $data = Cache::remember('ba:data-import:' . $filepath, 60 * 60 * 24 * 7, function () use ($filepath) {
             return Yaml::parseFile($filepath);

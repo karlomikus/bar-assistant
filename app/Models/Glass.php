@@ -25,7 +25,7 @@ class Glass extends Model
     }
 
     /**
-     * @return BelongsTo<Bar, Collection>
+     * @return BelongsTo<Bar, Glass>
      */
     public function bar(): BelongsTo
     {

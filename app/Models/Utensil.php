@@ -23,7 +23,7 @@ class Utensil extends Model
     }
 
     /**
-     * @return BelongsTo<Bar, Collection>
+     * @return BelongsTo<Bar, Utensil>
      */
     public function bar(): BelongsTo
     {

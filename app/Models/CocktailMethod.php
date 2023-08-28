@@ -15,8 +15,6 @@ class CocktailMethod extends Model
 {
     use HasFactory, HasBarAwareScope, HasAuthors;
 
-    public $timestamps = false;
-
     /**
      * @return HasMany<Cocktail>
      */
@@ -26,7 +24,7 @@ class CocktailMethod extends Model
     }
 
     /**
-     * @return BelongsTo<Bar, Collection>
+     * @return BelongsTo<Bar, CocktailMethod>
      */
     public function bar(): BelongsTo
     {

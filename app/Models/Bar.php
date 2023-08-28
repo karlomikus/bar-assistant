@@ -14,6 +14,9 @@ class Bar extends Model
 {
     use HasFactory, HasAuthors;
 
+    /**
+     * @return BelongsToMany<User>
+     */
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'bar_memberships')
@@ -22,6 +25,9 @@ class Bar extends Model
             ->withTimestamps();
     }
 
+    /**
+     * @return HasMany<BarMembership>
+     */
     public function memberships(): HasMany
     {
         return $this->hasMany(BarMembership::class);
