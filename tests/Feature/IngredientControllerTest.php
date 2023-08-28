@@ -249,6 +249,7 @@ class IngredientControllerTest extends TestCase
                 'strength' => 45.5,
                 'description' => 'Test',
                 'bar_id' => 1,
+                'created_user_id' => auth()->user()->id,
             ])
             ->create();
 
@@ -307,6 +308,7 @@ class IngredientControllerTest extends TestCase
                 'strength' => 45.5,
                 'description' => 'Test',
                 'bar_id' => 1,
+                'created_user_id' => auth()->user()->id,
             ])
             ->create();
 
