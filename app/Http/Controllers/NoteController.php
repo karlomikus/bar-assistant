@@ -15,6 +15,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class NoteController extends Controller
 {
+    public function index(Request $request): JsonResource
+    {
+        $notes = Note::orderBy('created_at')->where('user_id', $request->user()->id)->get();
+
+        return NoteResource::collection($notes);
+    }
+
     public function show(Request $request, int $id): JsonResource
     {
         $note = Note::findOrFail($id);

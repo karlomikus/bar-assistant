@@ -175,6 +175,7 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('notes')->group(function() {
+        Route::get('/', [NoteController::class, 'index']);
         Route::post('/', [NoteController::class, 'store']);
         Route::get('/{id}', [NoteController::class, 'show'])->name('notes.show');
         Route::delete('/{id}', [NoteController::class, 'delete']);
