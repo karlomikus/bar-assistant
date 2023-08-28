@@ -105,9 +105,7 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('images')->group(function() {
-        // Route::get('/', [ImageController::class, 'index']);
         Route::get('/{id}', [ImageController::class, 'show']);
-        // Route::get('/{id}/thumb', [ImageController::class, 'thumb']);
         Route::post('/', [ImageController::class, 'store']);
         Route::post('/{id}', [ImageController::class, 'update']);
         Route::delete('/{id}', [ImageController::class, 'delete']);
@@ -121,7 +119,6 @@ Route::middleware($authMiddleware)->group(function() {
     });
 
     Route::prefix('glasses')->group(function() {
-        Route::get('/find', [GlassController::class, 'find'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/', [GlassController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/', [GlassController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [GlassController::class, 'show'])->name('glasses.show');

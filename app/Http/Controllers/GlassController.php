@@ -11,12 +11,13 @@ use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Http\Requests\GlassRequest;
 use Kami\Cocktail\Http\Resources\GlassResource;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Http\Filters\GlassQueryFilter;
 
 class GlassController extends Controller
 {
     public function index(): JsonResource
     {
-        $glasses = Glass::orderBy('name')->withCount('cocktails')->filterByBar()->get();
+        $glasses = (new GlassQueryFilter())->get();
 
         return GlassResource::collection($glasses);
     }

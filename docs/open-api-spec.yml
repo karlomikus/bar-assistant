@@ -133,6 +133,14 @@ paths:
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /cocktails:
+    parameters:
+    - in: query
+      name: bar_id
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: Bar reference
     get:
       parameters:
       - in: query
@@ -159,7 +167,7 @@ paths:
             tag_id:
               type: string
               example: 4
-            user_id:
+            created_user_id:
               type: string
               example: 3
             glass_id:
@@ -397,21 +405,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    type: object
-                    properties:
-                      public_id:
-                        type: string
-                        description: 'Public cocktail ULID'
-                        example: "01ARZ3NDEKTSV4RRFFQ69G5FAV"
-                      public_at:
-                        type: string
-                        description: 'ULID created at datetime'
-                        example: "2023-03-14T20:20:20.000000Z"
-                      public_expires_at:
-                        type: string
-                        description: 'ULID expiration datetime'
-                        example: "2023-05-14T21:23:40.000000Z"
-                        nullable: true
+                    $ref: '#/components/schemas/CocktailPublic'
         '404':
           $ref: '#/components/responses/NotFound'
     delete:
@@ -509,6 +503,14 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /shelf/cocktails:
+    parameters:
+    - in: query
+      name: bar_id
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: Bar reference
     get:
       parameters:
         - in: query
@@ -536,6 +538,14 @@ paths:
                       type: integer
                       example: 1
   /ingredients:
+    parameters:
+    - in: query
+      name: bar_id
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: Bar reference
     get:
       parameters:
       - in: query
@@ -557,6 +567,9 @@ paths:
              type: string
              example: "whiskey"
             category_id:
+             type: string
+             example: 1
+            created_user_id:
              type: string
              example: 1
             origin:
@@ -1019,6 +1032,14 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /ingredient-categories:
+    parameters:
+    - in: query
+      name: bar_id
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: Bar reference
     get:
       tags:
         - "Ingredient categories"
@@ -1267,6 +1288,14 @@ paths:
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /shopping-list:
+    parameters:
+    - in: query
+      name: bar_id
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: Bar reference
     get:
       tags:
         - "Shopping list"
@@ -1285,6 +1314,14 @@ paths:
                     items:
                       $ref: '#/components/schemas/UserShoppingList'
   /shopping-list/share:
+    parameters:
+    - in: query
+      name: bar_id
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: Bar reference
     get:
       tags:
         - "Shopping list"
@@ -1301,6 +1338,14 @@ paths:
                   # Recipe name
                   Description
   /shopping-list/batch-store:
+    parameters:
+    - in: query
+      name: bar_id
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: Bar reference
     post:
       tags:
         - "Shopping list"
@@ -1330,6 +1375,14 @@ paths:
                     items:
                       $ref: '#/components/schemas/UserShoppingList'
   /shopping-list/batch-delete:
+    parameters:
+    - in: query
+      name: bar_id
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: Bar reference
     post:
       tags:
         - "Shopping list"
@@ -1366,6 +1419,14 @@ paths:
                         items:
                           type: integer
   /tags:
+    parameters:
+    - in: query
+      name: bar_id
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: Bar reference
     get:
       tags:
         - "Tags"
@@ -1528,6 +1589,14 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /users:
+    parameters:
+    - in: query
+      name: bar_id
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: Bar reference
     get:
       tags:
         - Users
@@ -1585,6 +1654,13 @@ paths:
         description: Database id of the user
         schema:
           type: integer
+      - in: query
+        name: bar_id
+        required: true
+        schema:
+          type: integer
+          example: 1
+        description: Bar reference
     get:
       tags:
         - Users
@@ -1643,6 +1719,14 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /stats:
+    parameters:
+    - in: query
+      name: bar_id
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: Bar reference
     get:
       tags:
         - Stats
@@ -1659,6 +1743,14 @@ paths:
                   data:
                     $ref: '#/components/schemas/StatsResponse'
   /cocktail-methods:
+    parameters:
+    - in: query
+      name: bar_id
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: Bar reference
     get:
       tags:
         - "Cocktail methods"
@@ -1830,6 +1922,14 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /collections:
+    parameters:
+    - in: query
+      name: bar_id
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: Bar reference
     get:
       parameters:
       - in: query
@@ -2047,6 +2147,13 @@ paths:
           $ref: '#/components/responses/NotFound'
   /import/cocktail:
     parameters:
+      - in: query
+        name: bar_id
+        required: true
+        schema:
+          type: integer
+          example: 1
+        description: Bar reference
       - in: query
         name: type
         description: Data source type, defaults to URL
@@ -3159,6 +3266,7 @@ components:
           example: "2023-01-01 12:00:00"
     UserBasic:
       type: object
+      nullable: true
       required:
         - id
         - name
@@ -3418,3 +3526,25 @@ components:
           $ref: '#/components/schemas/UserBasic'
         updated_user:
           $ref: '#/components/schemas/UserBasic'
+    CocktailPublic:
+      type: object
+      required:
+        - public_id
+        - public_at
+        - public_expires_at
+      properties:
+        public_id:
+          type: string
+          nullable: true
+          description: 'Public cocktail ULID'
+          example: "01ARZ3NDEKTSV4RRFFQ69G5FAV"
+        public_at:
+          type: string
+          nullable: true
+          description: 'ULID created at datetime'
+          example: "2023-03-14T20:20:20.000000Z"
+        public_expires_at:
+          type: string
+          description: 'ULID expiration datetime'
+          example: "2023-05-14T21:23:40.000000Z"
+          nullable: true

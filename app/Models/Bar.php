@@ -20,8 +20,7 @@ class Bar extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'bar_memberships')
-            ->as('membership')
-            ->with('user_role_id')
+            ->withPivot('user_role_id')
             ->withTimestamps();
     }
 

@@ -94,6 +94,8 @@ class BarController extends Controller
             abort(403);
         }
 
+        Cache::forget('ba:bar:' . $bar->id);
+
         $bar->delete();
 
         return response(null, 204);

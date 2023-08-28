@@ -21,6 +21,8 @@
     - **Upgrade guide**: Use `shelf/ingredients/batch-delete` endpoint
 - Removed `notes` property from `Cocktail` schema
     - **Upgrade guide**: Use `notes/` endpoint to get users notes
+- Removed `glasses/find` endpoint
+    - **Upgrade guide**: Use `glasses/` endpoint with `filter[name]` query string
 - Removed GET `/images` endpoint
 - Removed `bar:make-admin` command
 - Removed `bar:open` command

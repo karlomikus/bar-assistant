@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -34,10 +33,7 @@ class Glass extends Model
 
     public function delete(): bool
     {
-        $cocktailIds = $this->cocktails->pluck('id');
-        DB::table('cocktails')->where('glass_id', $this->id)->update(['glass_id' => null]);
-        /** @phpstan-ignore-next-line Laravel macro */
-        Cocktail::find($cocktailIds)->searchable();
+        $this->cocktails->each(fn ($cocktail) => $cocktail->searchable());
 
         return parent::delete();
     }
