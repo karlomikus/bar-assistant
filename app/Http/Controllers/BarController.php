@@ -45,12 +45,14 @@ class BarController extends Controller
             abort(403, 'You can not create anymore bars');
         }
 
+        $inviteEnabled = $request->post('enable_invites', true);
+
         $bar = new Bar();
         $bar->name = $request->post('name');
         $bar->subtitle = $request->post('subtitle');
         $bar->description = $request->post('description');
         $bar->created_user_id = $request->user()->id;
-        $bar->invite_code = (string) new Ulid();
+        $bar->invite_code = $inviteEnabled ? (string) new Ulid() : null;
         $bar->save();
 
         $bar->search_driver_api_key = $search->getActions()->getBarSearchApiKey($bar->id);
@@ -75,6 +77,13 @@ class BarController extends Controller
         }
 
         Cache::forget('ba:bar:' . $bar->id);
+
+        $inviteEnabled = $request->post('enable_invites', true);
+        if ($inviteEnabled && $bar->invite_code === null) {
+            $bar->invite_code = (string) new Ulid();
+        } else {
+            $bar->invite_code = null;
+        }
 
         $bar->name = $request->post('name');
         $bar->description = $request->post('description');
