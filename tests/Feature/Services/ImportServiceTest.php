@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Glass;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\Services\ImportService;
@@ -26,20 +27,24 @@ class ImportServiceTest extends TestCase
 
     public function test_cocktail_default_import_from_array()
     {
+        $bar = $this->setupBar();
         $existingIngredient = Ingredient::factory()
             ->state([
                 'name' => 'Ingredient 1',
                 'strength' => 45.5,
-                'description' => 'Test'
+                'description' => 'Test',
+                'bar_id' => $bar->id,
             ])
             ->create();
 
         $method = CocktailMethod::factory()->create([
-            'name' => 'Method name'
+            'name' => 'Method name',
+            'bar_id' => $bar->id,
         ]);
 
         $glass = Glass::factory()->create([
             'name' => 'Glass name',
+            'bar_id' => $bar->id,
         ]);
 
         $service = $this->getService();
@@ -81,7 +86,11 @@ class ImportServiceTest extends TestCase
             ]
         ];
 
-        $cocktail = $service->importCocktailFromArray($importArray);
+        $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name');
+        $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name');
+        $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name');
+
+        $cocktail = $service->importCocktailFromArray($importArray, auth()->user()->id, $bar->id, $dbIngredients, $dbGlasses, $dbMethods);
 
         $this->assertSame('Cocktail name', $cocktail->name);
         $this->assertSame('Instruction data', $cocktail->instructions);

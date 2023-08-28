@@ -107,7 +107,7 @@ class ImportService
                     $scrapedIngredient['description'] ?? $defaultDescription,
                     $scrapedIngredient['origin'] ?? null
                 );
-                $dbIngredients->put(strtolower($scrapedIngredient['name']), $newIngredient->id);
+                $dbIngredients->put(strtolower($scrapedIngredient['name']), $newIngredient);
                 $ingredientId = $newIngredient->id;
             }
 

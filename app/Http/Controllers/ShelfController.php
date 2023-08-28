@@ -8,6 +8,7 @@ use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\UserShoppingList;
@@ -58,15 +59,20 @@ class ShelfController extends Controller
     public function batchStore(UserIngredientBatchRequest $request): JsonResource
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
-        $ingredientIds = $request->post('ingredient_ids');
+
+        $ingredients = DB::table('ingredients')
+            ->select('id')
+            ->where('bar_id', $barMembership->bar_id)
+            ->whereIn('id', $request->post('ingredient_ids'))
+            ->pluck('id');
 
         // Let's remove ingredients from shopping list since they are on our shelf now
-        UserShoppingList::whereIn('ingredient_id', $ingredientIds)->delete();
+        UserShoppingList::whereIn('ingredient_id', $ingredients)->delete();
 
         $models = [];
-        foreach ($ingredientIds as $ingId) {
+        foreach ($ingredients as $dbIngredientId) {
             $userIngredient = new UserIngredient();
-            $userIngredient->ingredient_id = $ingId;
+            $userIngredient->ingredient_id = $dbIngredientId;
             $models[] = $userIngredient;
         }
 
@@ -78,10 +84,15 @@ class ShelfController extends Controller
     public function batchDelete(Request $request): Response
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
-        $ingredientIds = $request->post('ingredient_ids');
+
+        $ingredients = DB::table('ingredients')
+            ->select('id')
+            ->where('bar_id', $barMembership->bar_id)
+            ->whereIn('id', $request->post('ingredient_ids'))
+            ->pluck('id');
 
         try {
-            $barMembership->userIngredients()->whereIn('ingredient_id', $ingredientIds)->delete();
+            $barMembership->userIngredients()->whereIn('ingredient_id', $ingredients)->delete();
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
         }

@@ -21,7 +21,33 @@ class NoteControllerTest extends TestCase
         $this->actingAs(User::factory()->create());
     }
 
-    public function test_show_note_response()
+    public function test_list_notes_response(): void
+    {
+        $cocktail = Cocktail::factory()->create();
+        $cocktail->addNote('Test note 1', auth()->user()->id);
+        $cocktail->addNote('Test note 2', auth()->user()->id);
+        $cocktail->addNote('Test note 3', auth()->user()->id);
+
+        $response = $this->getJson('/api/notes');
+
+        $response->assertOk();
+        $response->assertJsonCount(3, 'data');
+    }
+
+    public function test_list_notes_by_cocktail_response(): void
+    {
+        $cocktail1 = Cocktail::factory()->create();
+        $cocktail2 = Cocktail::factory()->create();
+        $cocktail1->addNote('Test note 1', auth()->user()->id);
+        $cocktail2->addNote('Test note 2', auth()->user()->id);
+
+        $response = $this->getJson('/api/notes?filter[cocktail_id]=' . $cocktail1->id);
+
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+    }
+
+    public function test_show_note_response(): void
     {
         $cocktail = Cocktail::factory()->create();
         $note = $cocktail->addNote('Test note', auth()->user()->id);
@@ -40,9 +66,10 @@ class NoteControllerTest extends TestCase
         );
     }
 
-    public function test_save_cocktail_note_response()
+    public function test_save_cocktail_note_response(): void
     {
-        $cocktail = Cocktail::factory()->create();
+        $this->setupBar();
+        $cocktail = Cocktail::factory()->create(['bar_id' => 1]);
         $response = $this->postJson('/api/notes/', [
             'note' => 'A new note',
             'resource_id' => $cocktail->id,
@@ -61,14 +88,14 @@ class NoteControllerTest extends TestCase
         );
     }
 
-    public function test_save_cocktail_note_forbidden_response()
+    public function test_save_cocktail_note_forbidden_response(): void
     {
-        $cocktailUser = User::factory()->create(['is_admin' => false]);
+        $cocktailUser = User::factory()->create();
         $cocktail = Cocktail::factory()->create([
-            'user_id' => $cocktailUser->id,
+            'created_user_id' => $cocktailUser->id,
         ]);
 
-        $this->actingAs(User::factory()->create(['is_admin' => false]));
+        $this->actingAs(User::factory()->create());
 
         $response = $this->postJson('/api/notes/', [
             'note' => 'A new note',
@@ -79,7 +106,7 @@ class NoteControllerTest extends TestCase
         $response->assertForbidden();
     }
 
-    public function test_delete_cocktail_note_response()
+    public function test_delete_cocktail_note_response(): void
     {
         $cocktail = Cocktail::factory()->create();
         $note = $cocktail->addNote('Test note', auth()->user()->id);

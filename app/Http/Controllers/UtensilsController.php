@@ -41,6 +41,7 @@ class UtensilsController extends Controller
         $utensil = new Utensil();
         $utensil->name = $request->post('name');
         $utensil->description = $request->post('description');
+        $utensil->created_user_id = $request->user()->id;
         $utensil->bar_id = bar()->id;
         $utensil->save();
 
@@ -60,6 +61,8 @@ class UtensilsController extends Controller
 
         $utensil->name = $request->post('name');
         $utensil->description = $request->post('description');
+        $utensil->created_user_id = $request->user()->id;
+        $utensil->updated_at = now();
         $utensil->save();
 
         return new UtensilResource($utensil);

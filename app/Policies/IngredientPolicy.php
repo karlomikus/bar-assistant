@@ -33,11 +33,11 @@ class IngredientPolicy
 
     public function edit(User $user, Ingredient $ingredient): bool
     {
-        return $user->id === $ingredient->user_id && $user->hasBarMembership($ingredient->bar_id);
+        return $user->id === $ingredient->created_user_id && $user->hasBarMembership($ingredient->bar_id);
     }
 
     public function delete(User $user, Ingredient $ingredient): bool
     {
-        return $user->id === $ingredient->user_id && $user->hasBarMembership($ingredient->bar_id);
+        return $user->id === $ingredient->created_user_id && $user->hasBarMembership($ingredient->bar_id);
     }
 }

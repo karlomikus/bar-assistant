@@ -25,7 +25,8 @@ class RatingControllerTest extends TestCase
 
     public function test_rate_cocktail_response()
     {
-        $cocktail = Cocktail::factory()->create();
+        $this->setupBar();
+        $cocktail = Cocktail::factory()->create(['bar_id' => 1]);
 
         $response = $this->postJson('/api/ratings/cocktails/' . $cocktail->id, [
             'rating' => 3
@@ -36,16 +37,17 @@ class RatingControllerTest extends TestCase
             fn (AssertableJson $json) =>
             $json
                 ->has('data')
-                ->has('data.id')
                 ->where('data.rating', 3)
                 ->where('data.rateable_id', $cocktail->id)
+                ->where('data.user_id', 1)
                 ->etc()
         );
     }
 
     public function test_rate_cocktail_updates_existing_rating_response()
     {
-        $cocktail = Cocktail::factory()->create();
+        $this->setupBar();
+        $cocktail = Cocktail::factory()->create(['bar_id' => 1]);
 
         $cocktail->rate(2, auth()->user()->id);
 
@@ -58,16 +60,17 @@ class RatingControllerTest extends TestCase
             fn (AssertableJson $json) =>
             $json
                 ->has('data')
-                ->has('data.id')
                 ->where('data.rating', 4)
                 ->where('data.rateable_id', $cocktail->id)
+                ->where('data.user_id', 1)
                 ->etc()
         );
     }
 
     public function test_delete_cocktail_rating_response()
     {
-        $cocktail = Cocktail::factory()->create();
+        $this->setupBar();
+        $cocktail = Cocktail::factory()->create(['bar_id' => 1]);
         $cocktail->rate(2, auth()->user()->id);
 
         $response = $this->delete('/api/ratings/cocktails/' . $cocktail->id);

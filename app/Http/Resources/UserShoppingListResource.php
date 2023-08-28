@@ -20,7 +20,6 @@ class UserShoppingListResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
             'ingredient_id' => $this->ingredient_id,
             'ingredient_slug' => $this->ingredient->slug,
         ];

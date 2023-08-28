@@ -35,7 +35,6 @@ class UserRequest extends FormRequest
                 'required',
                 'email',
             ],
-            'is_admin' => 'required|boolean',
         ];
 
         if ($this->isMethod('POST')) {
