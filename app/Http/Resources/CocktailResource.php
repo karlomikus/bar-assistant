@@ -48,7 +48,6 @@ class CocktailResource extends JsonResource
             'method' => new CocktailMethodResource($this->whenLoaded('method')),
             'collections' => CocktailCollectionResource::collection($this->whenLoaded('collections')),
             'abv' => $this->abv,
-            'notes' => NoteResource::collection($this->whenLoaded('notes')),
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
             'navigation' => $this->when($loadNavigation, function () {

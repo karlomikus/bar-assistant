@@ -44,7 +44,7 @@ class CocktailController extends Controller
             ->firstOrFail()
             ->load(['ingredients.ingredient', 'images' => function ($query) {
                 $query->orderBy('sort');
-            }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'notes', 'createdUser', 'updatedUser', 'collections', 'utensils']);
+            }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
 
         if ($request->user()->cannot('show', $cocktail)) {
             abort(403);
@@ -93,7 +93,7 @@ class CocktailController extends Controller
 
         $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
             $query->orderBy('sort');
-        }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'notes', 'createdUser', 'updatedUser', 'collections', 'utensils']);
+        }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
 
         return (new CocktailResource($cocktail))
             ->response()
@@ -147,7 +147,7 @@ class CocktailController extends Controller
 
         $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
             $query->orderBy('sort');
-        }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'notes', 'createdUser', 'updatedUser', 'collections', 'utensils']);
+        }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
 
         return new CocktailResource($cocktail);
     }

@@ -2856,10 +2856,6 @@ components:
           type: string
           nullable: true
           format: uuid
-        notes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Note'
         navigation:
           type: object
           properties:
