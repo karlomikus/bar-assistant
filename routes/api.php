@@ -197,6 +197,7 @@ Route::middleware($authMiddleware)->group(function() {
     Route::prefix('bars')->group(function() {
         Route::get('/', [BarController::class, 'index']);
         Route::post('/', [BarController::class, 'store']);
+        Route::post('/join', [BarController::class, 'join']);
         Route::get('/{id}', [BarController::class, 'show'])->name('bars.show');
         Route::put('/{id}', [BarController::class, 'update']);
         Route::delete('/{id}', [BarController::class, 'delete']);

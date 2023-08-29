@@ -21,9 +21,12 @@ class BarController extends Controller
 {
     public function index(Request $request): JsonResource
     {
-        return BarResource::collection(
-            $request->user()->ownedBars
-        );
+        $bars = Bar::select('bars.*')
+            ->join('bar_memberships', 'bar_memberships.bar_id', '=', 'bars.id')
+            ->where('bar_memberships.user_id', $request->user()->id)
+            ->get();
+
+        return BarResource::collection($bars);
     }
 
     public function show(Request $request, int $id): JsonResource
@@ -108,5 +111,14 @@ class BarController extends Controller
         $bar->delete();
 
         return response(null, 204);
+    }
+
+    public function join(Request $request): JsonResource
+    {
+        $barToJoin = Bar::where('invite_code', $request->post('invite_code'))->firstOrFail();
+
+        $barToJoin->users()->save($request->user(), ['user_role_id' => UserRoleEnum::General->value]);
+
+        return new BarResource($barToJoin);
     }
 }

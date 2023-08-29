@@ -47,6 +47,8 @@ tags:
     description: Data import operations
   - name: "Utensils"
     description: Operations related to utensils
+  - name: Bars
+    description: Operations related to bars
 security:
   - user_token: []
 paths:
@@ -2330,6 +2332,107 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /bars:
+    get:
+      tags:
+        - Bars
+      summary: 'Show a list of bars'
+      operationId: getBars
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Bar'
+    post:
+      tags:
+        - Bars
+      summary: Add bar
+      operationId: addBar
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BarRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Bar'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /bars/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a bar'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - Bars
+      summary: Get a specific bar
+      operationId: getBar
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Bar'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - Bars
+      summary: Update a specific bar
+      operationId: updateBar
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BarRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Bar'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      tags:
+        - Bars
+      summary: Delete specific bar
+      operationId: deleteBar
+      responses:
+        '204':
+          description: Successful response
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -3526,6 +3629,28 @@ components:
           $ref: '#/components/schemas/UserBasic'
         updated_user:
           $ref: '#/components/schemas/UserBasic'
+    BarRequest:
+      type: object
+      required:
+        - name
+        - subtitle
+        - description
+        - enable_invites
+      properties:
+        name:
+          type: string
+          example: "My bar name"
+        subtitle:
+          type: string
+          nullable: true
+          example: "The awesome bar"
+        description:
+          type: string
+          nullable: true
+          example: "A bar at the end of the town"
+        enable_invites:
+          type: boolean
+          example: true
     CocktailPublic:
       type: object
       required:
