@@ -25,7 +25,7 @@ class UtensilsController extends Controller
     {
         $utensil = Utensil::findOrFail($id);
 
-        if (!$request->user()->isBarOwner($utensil->bar)) {
+        if (!$request->user()->isBarAdmin($utensil->bar_id)) {
             abort(403);
         }
 
@@ -34,7 +34,7 @@ class UtensilsController extends Controller
 
     public function store(UtensilRequest $request): JsonResponse
     {
-        if (!$request->user()->isBarOwner(bar())) {
+        if (!$request->user()->isBarAdmin(bar()->id)) {
             abort(403);
         }
 
@@ -55,7 +55,7 @@ class UtensilsController extends Controller
     {
         $utensil = Utensil::findOrFail($id);
 
-        if (!$request->user()->isBarOwner($utensil->bar)) {
+        if (!$request->user()->isBarAdmin($utensil->bar_id)) {
             abort(403);
         }
 
@@ -72,7 +72,7 @@ class UtensilsController extends Controller
     {
         $utensil = Utensil::findOrFail($id);
 
-        if (!$request->user()->isBarOwner($utensil->bar)) {
+        if (!$request->user()->isBarAdmin($utensil->bar_id)) {
             abort(403);
         }
 

@@ -14,7 +14,7 @@ class IngredientCategoryPolicy
 
     public function before(User $user, string $ability): bool|null
     {
-        if ($user->isBarOwner(bar())) {
+        if ($user->isBarAdmin(bar()->id)) {
             return true;
         }
 

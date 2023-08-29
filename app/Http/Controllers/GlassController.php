@@ -26,7 +26,7 @@ class GlassController extends Controller
     {
         $glass = Glass::withCount('cocktails')->findOrFail($id);
 
-        if (!$request->user()->isBarOwner($glass->bar)) {
+        if (!$request->user()->isBarAdmin($glass->bar_id)) {
             abort(403);
         }
 
@@ -35,7 +35,7 @@ class GlassController extends Controller
 
     public function store(GlassRequest $request): JsonResponse
     {
-        if (!$request->user()->isBarOwner(bar())) {
+        if (!$request->user()->isBarAdmin(bar()->id)) {
             abort(403);
         }
 
@@ -56,7 +56,7 @@ class GlassController extends Controller
     {
         $glass = Glass::findOrFail($id);
 
-        if (!$request->user()->isBarOwner($glass->bar)) {
+        if (!$request->user()->isBarAdmin($glass->bar_id)) {
             abort(403);
         }
 
@@ -75,7 +75,7 @@ class GlassController extends Controller
     {
         $glass = Glass::findOrFail($id);
 
-        if (!$request->user()->isBarOwner($glass->bar)) {
+        if (!$request->user()->isBarAdmin($glass->bar_id)) {
             abort(403);
         }
 

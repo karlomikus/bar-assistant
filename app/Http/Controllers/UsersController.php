@@ -18,7 +18,7 @@ class UsersController extends Controller
 {
     public function index(Request $request): JsonResource
     {
-        if (!$request->user()->isBarOwner(bar())) {
+        if (!$request->user()->isBarAdmin(bar()->id)) {
             abort(403);
         }
 
@@ -35,7 +35,7 @@ class UsersController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if (!$request->user()->isBarOwner(bar()) || !$user->hasBarMembership(bar()->id)) {
+        if (!$request->user()->isBarAdmin(bar()->id) || !$user->hasBarMembership(bar()->id)) {
             abort(403);
         }
 
@@ -44,7 +44,7 @@ class UsersController extends Controller
 
     public function store(UserRequest $request): JsonResponse
     {
-        if (!$request->user()->isBarOwner(bar())) {
+        if (!$request->user()->isBarAdmin(bar()->id)) {
             abort(403);
         }
 
@@ -69,7 +69,7 @@ class UsersController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if (!$request->user()->isBarOwner(bar()) || !$user->hasBarMembership(bar()->id)) {
+        if (!$request->user()->isBarAdmin(bar()->id) || !$user->hasBarMembership(bar()->id)) {
             abort(403);
         }
 
@@ -90,7 +90,7 @@ class UsersController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if (!$request->user()->isBarOwner(bar()) || !$user->hasBarMembership(bar()->id)) {
+        if (!$request->user()->isBarAdmin(bar()->id) || !$user->hasBarMembership(bar()->id)) {
             abort(403);
         }
 

@@ -27,7 +27,7 @@ class TagController extends Controller
     {
         $tag = Tag::withCount('cocktails')->findOrFail($id);
 
-        if (!$request->user()->isBarOwner($tag->bar)) {
+        if (!$request->user()->isBarAdmin($tag->bar_id)) {
             abort(403);
         }
 
@@ -36,7 +36,7 @@ class TagController extends Controller
 
     public function store(TagRequest $request): JsonResponse
     {
-        if (!$request->user()->isBarOwner(bar())) {
+        if (!$request->user()->isBarAdmin(bar()->id)) {
             abort(403);
         }
 
@@ -55,7 +55,7 @@ class TagController extends Controller
     {
         $tag = Tag::findOrFail($id);
 
-        if (!$request->user()->isBarOwner($tag->bar)) {
+        if (!$request->user()->isBarAdmin($tag->bar_id)) {
             abort(403);
         }
 
@@ -72,7 +72,7 @@ class TagController extends Controller
     {
         $tag = Tag::findOrFail($id);
 
-        if (!$request->user()->isBarOwner($tag->bar)) {
+        if (!$request->user()->isBarAdmin($tag->bar_id)) {
             abort(403);
         }
 

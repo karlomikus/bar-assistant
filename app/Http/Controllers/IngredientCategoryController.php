@@ -34,7 +34,7 @@ class IngredientCategoryController extends Controller
 
     public function store(IngredientCategoryRequest $request): JsonResponse
     {
-        if (!$request->user()->isBarOwner(bar())) {
+        if (!$request->user()->isBarAdmin(bar()->id)) {
             abort(403);
         }
 

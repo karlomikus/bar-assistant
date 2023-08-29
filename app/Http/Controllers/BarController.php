@@ -33,7 +33,7 @@ class BarController extends Controller
     {
         $bar = Bar::findOrFail($id);
 
-        if (!$request->user()->isBarOwner($bar)) {
+        if (!$request->user()->isBarAdmin($bar->id)) {
             abort(403);
         }
 
@@ -75,7 +75,7 @@ class BarController extends Controller
     {
         $bar = Bar::findOrFail($id);
 
-        if (!$request->user()->isBarOwner($bar)) {
+        if (!$request->user()->isBarAdmin($bar->id)) {
             abort(403);
         }
 

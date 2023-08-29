@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Laravel\Sanctum\HasApiTokens;
+use Kami\Cocktail\Models\UserRoleEnum;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -79,13 +80,16 @@ class User extends Authenticatable
         return $this->getBarMembership($barId)?->id !== null;
     }
 
-    public function isBarOwner(Bar $bar): bool
+    public function isBarAdmin(int $barId): bool
     {
-        return $this->id === $bar->created_user_id;
+        return $this->hasBarRole($barId, UserRoleEnum::Admin);
     }
 
-    public function canAccessBar(Bar $bar): bool
+    private function hasBarRole(int $barId, UserRoleEnum $role): bool
     {
-        return $this->hasBarMembership($bar->id) || $this->isBarOwner($bar);
+        return $this->memberships()
+            ->where('bar_id', $barId)
+            ->where('user_role_id', $role->value)
+            ->count() > 0;
     }
 }
