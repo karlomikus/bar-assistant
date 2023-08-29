@@ -83,13 +83,4 @@ class GlassController extends Controller
 
         return response(null, 204);
     }
-
-    public function find(Request $request): JsonResource
-    {
-        $name = $request->get('name');
-
-        $glass = Glass::whereRaw('lower(name) = ?', [strtolower($name)])->filterByBar()->firstOrFail();
-
-        return new GlassResource($glass);
-    }
 }
