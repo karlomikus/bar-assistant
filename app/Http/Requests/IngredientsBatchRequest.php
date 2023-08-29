@@ -6,7 +6,7 @@ namespace Kami\Cocktail\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserIngredientBatchRequest extends FormRequest
+class IngredientsBatchRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,7 +27,6 @@ class UserIngredientBatchRequest extends FormRequest
     {
         return [
             'ingredient_ids' => 'required|array',
-            'ingredient_ids.*' => 'unique:user_ingredients,ingredient_id',
         ];
     }
 }

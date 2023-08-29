@@ -15,7 +15,7 @@ use Kami\Cocktail\Models\UserShoppingList;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\UserIngredientResource;
-use Kami\Cocktail\Http\Requests\UserIngredientBatchRequest;
+use Kami\Cocktail\Http\Requests\IngredientsBatchRequest;
 
 class ShelfController extends Controller
 {
@@ -56,7 +56,7 @@ class ShelfController extends Controller
         ]);
     }
 
-    public function batchStore(UserIngredientBatchRequest $request): JsonResource
+    public function batchStore(IngredientsBatchRequest $request): JsonResource
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
 

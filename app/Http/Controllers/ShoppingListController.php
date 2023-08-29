@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\UserShoppingList;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Http\Requests\IngredientsBatchRequest;
 use Kami\Cocktail\Http\Resources\UserShoppingListResource;
 
 class ShoppingListController extends Controller
@@ -21,7 +22,7 @@ class ShoppingListController extends Controller
         );
     }
 
-    public function batchStore(Request $request): JsonResource
+    public function batchStore(IngredientsBatchRequest $request): JsonResource
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
 
@@ -45,7 +46,7 @@ class ShoppingListController extends Controller
         return UserShoppingListResource::collection($models);
     }
 
-    public function batchDelete(Request $request): Response
+    public function batchDelete(IngredientsBatchRequest $request): Response
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
 
