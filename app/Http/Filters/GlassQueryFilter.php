@@ -8,6 +8,9 @@ use Kami\Cocktail\Models\Glass;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 
+/**
+ * @mixin \Kami\Cocktail\Models\Glass
+ */
 final class GlassQueryFilter extends QueryBuilder
 {
     public function __construct()

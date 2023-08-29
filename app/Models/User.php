@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Laravel\Sanctum\HasApiTokens;
-use Kami\Cocktail\Models\UserRoleEnum;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;

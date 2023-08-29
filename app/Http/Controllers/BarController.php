@@ -48,7 +48,7 @@ class BarController extends Controller
             abort(403, 'You can not create anymore bars');
         }
 
-        $inviteEnabled = $request->post('enable_invites', true);
+        $inviteEnabled = (bool) $request->post('enable_invites', '1');
 
         $bar = new Bar();
         $bar->name = $request->post('name');
@@ -81,7 +81,7 @@ class BarController extends Controller
 
         Cache::forget('ba:bar:' . $bar->id);
 
-        $inviteEnabled = $request->post('enable_invites', true);
+        $inviteEnabled = (bool) $request->post('enable_invites', '1');
         if ($inviteEnabled && $bar->invite_code === null) {
             $bar->invite_code = (string) new Ulid();
         } else {

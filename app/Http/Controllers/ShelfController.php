@@ -14,8 +14,8 @@ use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\UserShoppingList;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\Http\Resources\UserIngredientResource;
 use Kami\Cocktail\Http\Requests\IngredientsBatchRequest;
+use Kami\Cocktail\Http\Resources\UserIngredientResource;
 
 class ShelfController extends Controller
 {
