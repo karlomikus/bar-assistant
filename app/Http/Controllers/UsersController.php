@@ -81,6 +81,12 @@ class UsersController extends Controller
             $user->password = Hash::make($request->post('password'));
         }
 
+        if ($request->has('role_id')) {
+            $barMembership = $user->getBarMembership(bar()->id);
+            $barMembership->user_role_id = $request->post('role_id');
+            $barMembership->save();
+        }
+
         $user->save();
 
         return new UserResource($user);

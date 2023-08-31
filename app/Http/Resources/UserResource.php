@@ -26,13 +26,13 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'roles' => $this->memberships->where('bar_id', $bar->id)->map(function (BarMembership $membership) {
+            'role' => $this->memberships->where('bar_id', $bar->id)->map(function (BarMembership $membership) {
                 return [
                     'bar_id' => $membership->bar_id,
                     'role_id' => $membership->role->id ?? null,
                     'role_name' => $membership->role->name ?? null,
                 ];
-            })->values(),
+            })->first(),
         ];
     }
 }

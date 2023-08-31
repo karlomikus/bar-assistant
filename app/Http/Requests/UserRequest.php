@@ -6,7 +6,9 @@ namespace Kami\Cocktail\Http\Requests;
 
 use Kami\Cocktail\Models\User;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Foundation\Http\FormRequest;
+use Kami\Cocktail\Models\UserRoleEnum;
 
 class UserRequest extends FormRequest
 {
@@ -31,6 +33,7 @@ class UserRequest extends FormRequest
 
         $rules = [
             'name' => 'required',
+            'role_id' => [new Enum(UserRoleEnum::class)],
             'email' => [
                 'required',
                 'email',
