@@ -47,7 +47,6 @@ class CocktailResource extends JsonResource
             'created_at' => $this->created_at->toJson(),
             'updated_at' => $this->updated_at->toJson(),
             'method' => new CocktailMethodResource($this->whenLoaded('method')),
-            'collections' => CocktailCollectionResource::collection($this->whenLoaded('collections')),
             'abv' => $this->abv,
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
