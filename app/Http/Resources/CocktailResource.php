@@ -51,6 +51,12 @@ class CocktailResource extends JsonResource
             'abv' => $this->abv,
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
+            'access' => [
+                'can_edit' => $request->user()->can('edit', $this->resource),
+                'can_delete' => $request->user()->can('delete', $this->resource),
+                'can_rate' => $request->user()->can('rate', $this->resource),
+                'can_add_note' => $request->user()->can('addNote', $this->resource),
+            ],
             'navigation' => $this->when($loadNavigation, function () {
                 return [
                     'prev' => $this->getPrevSlug(),

@@ -34,6 +34,10 @@ class BarResource extends JsonResource
             'updated_at' => $this->updated_at->toJson(),
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
+            'access' => [
+                'can_edit' => $request->user()->can('edit', $this->resource),
+                'can_delete' => $request->user()->can('delete', $this->resource),
+            ]
         ];
     }
 }

@@ -12,15 +12,6 @@ class CocktailPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, string $ability): bool|null
-    {
-        if (bar()->id && $user->isBarAdmin(bar()->id)) {
-            return true;
-        }
-
-        return null;
-    }
-
     public function show(User $user, Cocktail $cocktail): bool
     {
         return $user->hasBarMembership($cocktail->bar_id);
@@ -33,12 +24,14 @@ class CocktailPolicy
 
     public function edit(User $user, Cocktail $cocktail): bool
     {
-        return $user->id === $cocktail->created_user_id && $user->hasBarMembership($cocktail->bar_id);
+        return ($user->id === $cocktail->created_user_id && $user->hasBarMembership($cocktail->bar_id))
+            || $user->isBarAdmin($cocktail->bar_id);
     }
 
     public function delete(User $user, Cocktail $cocktail): bool
     {
-        return $user->id === $cocktail->created_user_id && $user->hasBarMembership($cocktail->bar_id);
+        return ($user->id === $cocktail->created_user_id && $user->hasBarMembership($cocktail->bar_id))
+            || $user->isBarAdmin($cocktail->bar_id);
     }
 
     public function rate(User $user, Cocktail $cocktail): bool

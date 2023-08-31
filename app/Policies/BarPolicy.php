@@ -17,8 +17,18 @@ class BarPolicy
         return $user->ownedBars->count() < config('bar-assistant.max_default_bars', 1);
     }
 
+    public function show(User $user, Bar $bar): bool
+    {
+        return $user->isBarAdmin($bar->id);
+    }
+
+    public function edit(User $user, Bar $bar): bool
+    {
+        return $user->isBarAdmin($bar->id);
+    }
+
     public function delete(User $user, Bar $bar): bool
     {
-        return $user->id === $bar->created_user_id;
+        return $user->isBarAdmin($bar->id);
     }
 }
