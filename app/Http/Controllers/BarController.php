@@ -24,6 +24,7 @@ class BarController extends Controller
         $bars = Bar::select('bars.*')
             ->join('bar_memberships', 'bar_memberships.bar_id', '=', 'bars.id')
             ->where('bar_memberships.user_id', $request->user()->id)
+            ->with('createdUser')
             ->get();
 
         return BarResource::collection($bars);
@@ -33,7 +34,7 @@ class BarController extends Controller
     {
         $bar = Bar::findOrFail($id);
 
-        if (!$request->user()->isBarAdmin($bar->id)) {
+        if ($request->user()->cannot('show', $bar)) {
             abort(403);
         }
 
@@ -75,7 +76,7 @@ class BarController extends Controller
     {
         $bar = Bar::findOrFail($id);
 
-        if (!$request->user()->isBarAdmin($bar->id)) {
+        if ($request->user()->cannot('edit', $bar)) {
             abort(403);
         }
 
@@ -120,5 +121,14 @@ class BarController extends Controller
         $barToJoin->users()->save($request->user(), ['user_role_id' => UserRoleEnum::General->value]);
 
         return new BarResource($barToJoin);
+    }
+
+    public function leave(Request $request, int $id): Response
+    {
+        $bar = Bar::findOrFail($id);
+
+        $request->user()->getBarMembership($bar->id)->delete();
+
+        return response(status: 204);
     }
 }

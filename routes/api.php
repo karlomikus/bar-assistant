@@ -201,6 +201,7 @@ Route::middleware($authMiddleware)->group(function() {
         Route::get('/{id}', [BarController::class, 'show'])->name('bars.show');
         Route::put('/{id}', [BarController::class, 'update']);
         Route::delete('/{id}', [BarController::class, 'delete']);
+        Route::delete('/{id}/memebership', [BarController::class, 'leave']);
     });
 });
 
