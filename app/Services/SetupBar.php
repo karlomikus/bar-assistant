@@ -35,6 +35,9 @@ class SetupBar
 
         Log::info(sprintf('[BAR_OPEN] Bar %s finished importing data. Base: %s | Ingredients: %s | Cocktails: %s', $bar->id, ($endBase - $startBase), ($endIngredients - $startIngredients), ($endCocktails - $startCocktails)));
 
+        \Kami\Cocktail\Models\Ingredient::where('bar_id', $bar->id)->searchable();
+        \Kami\Cocktail\Models\Cocktail::where('bar_id', $bar->id)->searchable();
+
         return true;
     }
 
