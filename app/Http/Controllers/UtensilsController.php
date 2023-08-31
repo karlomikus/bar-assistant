@@ -25,7 +25,7 @@ class UtensilsController extends Controller
     {
         $utensil = Utensil::findOrFail($id);
 
-        if (!$request->user()->isBarAdmin($utensil->bar_id)) {
+        if ($request->user()->cannot('show', $utensil)) {
             abort(403);
         }
 
@@ -55,7 +55,7 @@ class UtensilsController extends Controller
     {
         $utensil = Utensil::findOrFail($id);
 
-        if (!$request->user()->isBarAdmin($utensil->bar_id)) {
+        if ($request->user()->cannot('edit', $utensil)) {
             abort(403);
         }
 
@@ -72,7 +72,7 @@ class UtensilsController extends Controller
     {
         $utensil = Utensil::findOrFail($id);
 
-        if (!$request->user()->isBarAdmin($utensil->bar_id)) {
+        if ($request->user()->cannot('delete', $utensil)) {
             abort(403);
         }
 
