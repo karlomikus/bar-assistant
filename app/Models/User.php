@@ -71,7 +71,7 @@ class User extends Authenticatable
 
     public function getBarMembership(int $barId): ?BarMembership
     {
-        return $this->memberships()->where('bar_id', $barId)->first();
+        return $this->memberships->where('bar_id', $barId)->first();
     }
 
     public function hasBarMembership(int $barId): bool
@@ -86,7 +86,7 @@ class User extends Authenticatable
 
     private function hasBarRole(int $barId, UserRoleEnum $role): bool
     {
-        return $this->memberships()
+        return $this->memberships
             ->where('bar_id', $barId)
             ->where('user_role_id', $role->value)
             ->count() > 0;
