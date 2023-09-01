@@ -43,6 +43,13 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
+        'sqlite_import_from_v2' => [
+            'driver' => 'sqlite',
+            'database' => storage_path('bar-assistant/backupv2/database.sqlite'),
+            'prefix' => '',
+            'foreign_key_constraints' => false,
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),

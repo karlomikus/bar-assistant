@@ -8,11 +8,16 @@
 - Users can be invited or join with invite code to specific bars
 
 ## Improved user control
-- Users now have more available roles:
-    - Admin: TODO
-    - Moderator: TODO
-    - General: TODO
-    - Guest: TODO
+- Users can have one of the following roles in a bar:
+    - Admin
+        - Full access to all actions
+    - Moderator
+        - Can't modify bar settings
+    - General
+        - Can add cocktails and ingredients
+        - Manage its own shelf and collections
+    - Guest
+        - Can't add cocktails and ingredients
 
 ## Breaking changes
 - Removed POST `shelf/ingredients/{ingredientId}` endpoint
