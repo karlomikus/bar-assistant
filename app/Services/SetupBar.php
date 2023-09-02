@@ -10,7 +10,9 @@ use Kami\Cocktail\Models\Tag;
 use Kami\Cocktail\Models\User;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
+use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
@@ -35,8 +37,10 @@ class SetupBar
 
         Log::info(sprintf('[BAR_OPEN] Bar %s finished importing data. Base: %s | Ingredients: %s | Cocktails: %s', $bar->id, ($endBase - $startBase), ($endIngredients - $startIngredients), ($endCocktails - $startCocktails)));
 
-        \Kami\Cocktail\Models\Ingredient::where('bar_id', $bar->id)->searchable();
-        \Kami\Cocktail\Models\Cocktail::where('bar_id', $bar->id)->searchable();
+        /** @phpstan-ignore-next-line */
+        Ingredient::where('bar_id', $bar->id)->searchable();
+        /** @phpstan-ignore-next-line */
+        Cocktail::where('bar_id', $bar->id)->searchable();
 
         return true;
     }

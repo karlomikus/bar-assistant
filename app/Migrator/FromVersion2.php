@@ -17,11 +17,12 @@ class FromVersion2
     {
     }
 
-    public function migrate()
+    public function migrate(): void
     {
         $backupDB = DB::connection('sqlite_import_from_v2');
+        $oldUploads = 'bar-assistant/backupv2/uploads';
 
-        DB::transaction(function () use ($backupDB) {
+        DB::transaction(function () use ($backupDB, $oldUploads) {
             $newUsers = [];
             $newAdminId = null;
             $oldUsers = $backupDB->table('users')->get();
@@ -197,7 +198,6 @@ class FromVersion2
                         'units' => $oldCocktailIngredientRow->units,
                         'optional' => $oldCocktailIngredientRow->optional,
                         'sort' => $oldCocktailIngredientRow->sort,
-                        'optional' => $oldCocktailIngredientRow->optional,
                     ];
                 }
             }
@@ -248,6 +248,36 @@ class FromVersion2
                 ];
             }
             DB::table('user_shopping_lists')->insert($newList);
+
+            // Migrate ratings
+            $newRatings = [];
+            $oldRatings = $backupDB->table('ratings')->get();
+            foreach ($oldRatings as $row) {
+                $newRatings[] = [
+                    'rateable_type' => $row->rateable_type,
+                    'rateable_id' => $newCocktails[$row->rateable_id],
+                    'user_id' => $newUsers[$row->user_id],
+                    'rating' => $row->rating,
+                    'created_at' => $row->created_at ?? now(),
+                    'updated_at' => now(),
+                ];
+            }
+            DB::table('ratings')->insert($newRatings);
+
+            // Migrate notes
+            $newNotes = [];
+            $oldNotes = $backupDB->table('notes')->get();
+            foreach ($oldNotes as $row) {
+                $newNotes[] = [
+                    'noteable_type' => $row->noteable_type,
+                    'noteable_id' => $newCocktails[$row->noteable_id],
+                    'user_id' => $newUsers[$row->user_id],
+                    'note' => $row->note,
+                    'created_at' => $row->created_at ?? now(),
+                    'updated_at' => now(),
+                ];
+            }
+            DB::table('notes')->insert($newNotes);
 
             // Migrate collections
             $newCollections = [];
@@ -305,9 +335,9 @@ class FromVersion2
                 ]);
             }
 
-            File::move(storage_path('bar-assistant/backupv2/uploads/cocktails'), storage_path('bar-assistant/uploads/cocktails/' . $barId));
-            File::move(storage_path('bar-assistant/backupv2/uploads/ingredients'), storage_path('bar-assistant/uploads/ingredients/' . $barId));
-            File::move(storage_path('bar-assistant/backupv2/uploads/temp'), storage_path('bar-assistant/uploads/temp'));
+            File::move(storage_path($oldUploads . '/cocktails'), storage_path('bar-assistant/uploads/cocktails/' . $barId));
+            File::move(storage_path($oldUploads . '/ingredients'), storage_path('bar-assistant/uploads/ingredients/' . $barId));
+            File::move(storage_path($oldUploads . '/temp'), storage_path('bar-assistant/uploads/temp'));
         });
     }
 }

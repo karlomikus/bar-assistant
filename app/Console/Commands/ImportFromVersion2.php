@@ -26,7 +26,7 @@ class ImportFromVersion2 extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $migrator = app(FromVersion2::class);
         $migrator->migrate();
