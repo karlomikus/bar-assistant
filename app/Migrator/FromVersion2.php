@@ -6,8 +6,10 @@ namespace Kami\Cocktail\Migrator;
 
 use Symfony\Component\Uid\Ulid;
 use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Kami\Cocktail\Search\SearchActionsAdapter;
 
@@ -338,6 +340,11 @@ class FromVersion2
             File::move(storage_path($oldUploads . '/cocktails'), storage_path('bar-assistant/uploads/cocktails/' . $barId));
             File::move(storage_path($oldUploads . '/ingredients'), storage_path('bar-assistant/uploads/ingredients/' . $barId));
             File::move(storage_path($oldUploads . '/temp'), storage_path('bar-assistant/uploads/temp'));
+
+            /** @phpstan-ignore-next-line */
+            Ingredient::where('bar_id', $barId)->searchable();
+            /** @phpstan-ignore-next-line */
+            Cocktail::where('bar_id', $barId)->searchable();
         });
     }
 }
