@@ -62,7 +62,7 @@ class BarController extends Controller
         $bar->search_driver_api_key = $search->getActions()->getBarSearchApiKey($bar->id);
         $bar->save();
 
-        $bar->users()->save($request->user(), ['user_role_id' => UserRoleEnum::Admin->value]);
+        $request->user()->joinBarAs($bar, UserRoleEnum::Admin);
 
         SetupBar::dispatch($bar, $request->user());
 
@@ -118,7 +118,7 @@ class BarController extends Controller
     {
         $barToJoin = Bar::where('invite_code', $request->post('invite_code'))->firstOrFail();
 
-        $barToJoin->users()->save($request->user(), ['user_role_id' => UserRoleEnum::General->value]);
+        $request->user()->joinBarAs($barToJoin, UserRoleEnum::General);
 
         return new BarResource($barToJoin);
     }
@@ -127,7 +127,7 @@ class BarController extends Controller
     {
         $bar = Bar::findOrFail($id);
 
-        $request->user()->getBarMembership($bar->id)->delete();
+        $request->user()->leaveBar($bar);
 
         return response(status: 204);
     }

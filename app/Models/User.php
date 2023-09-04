@@ -61,6 +61,22 @@ class User extends Authenticatable
         return $this->hasMany(BarMembership::class);
     }
 
+    public function joinBarAs(Bar $bar, UserRoleEnum $role = UserRoleEnum::General): BarMembership
+    {
+        $barMemberShip = new BarMembership();
+        $barMemberShip->bar_id = $bar->id;
+        $barMemberShip->user_role_id = $role->value;
+
+        $this->memberships()->save($barMemberShip);
+
+        return $barMemberShip;
+    }
+
+    public function leaveBar(Bar $bar): void
+    {
+        $this->getBarMembership($bar->id)->delete();
+    }
+
     /**
      * @return HasMany<Bar>
      */
