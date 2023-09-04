@@ -7,8 +7,11 @@ namespace Kami\Cocktail\Services;
 use Throwable;
 use Thumbhash\Thumbhash;
 use Illuminate\Support\Str;
+use Kami\Cocktail\Models\Bar;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Kami\Cocktail\DataObjects\Image as ImageDTO;
@@ -132,6 +135,27 @@ class ImageService
         $key = Thumbhash::convertHashToString($hash);
 
         return $key;
+    }
+
+    public function cleanBarImages(Bar $bar): void
+    {
+        $cocktailIds = $bar->cocktails()->pluck('id');
+        $ingredientIds = $bar->ingredients()->pluck('id');
+
+        DB::transaction(function () use ($cocktailIds, $ingredientIds) {
+            DB::table('images')
+                ->where('imageable_type', \Kami\Cocktail\Models\Cocktail::class)
+                ->whereIn('imageable_id', $cocktailIds)
+                ->delete();
+
+            DB::table('images')
+                ->where('imageable_type', \Kami\Cocktail\Models\Ingredient::class)
+                ->whereIn('imageable_id', $ingredientIds)
+                ->delete();
+        });
+
+        File::deleteDirectory(storage_path('bar-assistant/uploads/cocktails/' . $bar->id . '/'));
+        File::deleteDirectory(storage_path('bar-assistant/uploads/ingredients/' . $bar->id . '/'));
     }
 
     private function processImageFile(InterventionImage $image, ?string $filename = null): array
