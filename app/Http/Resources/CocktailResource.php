@@ -39,6 +39,11 @@ class CocktailResource extends JsonResource
                     'name' => $tag->name,
                 ];
             }),
+            'rating' => [
+                'user' => $this->user_rating ?? null,
+                'average' => (int) round($this->average_rating ?? 0),
+                'total_votes' => $this->totalRatedCount(),
+            ],
             'user_rating' => $this->user_rating ?? null,
             'average_rating' => (int) round($this->average_rating ?? 0),
             'glass' => new GlassResource($this->whenLoaded('glass')),

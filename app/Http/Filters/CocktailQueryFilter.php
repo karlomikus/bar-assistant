@@ -97,7 +97,7 @@ final class CocktailQueryFilter extends QueryBuilder
                 }),
             ])
             ->allowedIncludes(['glass', 'method', 'user', 'collections', 'navigation'])
-            ->with('ingredients.ingredient', 'images', 'tags')
+            ->with('ingredients.ingredient', 'images', 'tags', 'ratings')
             ->selectRaw('cocktails.*, COUNT(ci.cocktail_id) AS total_ingredients, COUNT(ci.ingredient_id) - COUNT(ui.ingredient_id) AS missing_ingredients')
             ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')
             ->leftJoin('user_ingredients AS ui', function ($query) use ($barMembership) {

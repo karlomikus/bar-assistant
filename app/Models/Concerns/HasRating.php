@@ -35,7 +35,7 @@ trait HasRating
 
     public function totalRatedCount(): int
     {
-        return $this->ratings()->count();
+        return $this->ratings->count();
     }
 
     public function deleteUserRating(int $userId): void
