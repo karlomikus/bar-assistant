@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Bar;
 use Symfony\Component\Uid\Ulid;
+use Kami\Cocktail\Jobs\SetupBar;
 use Illuminate\Http\JsonResponse;
-use Kami\Cocktail\Services\SetupBar;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Kami\Cocktail\Http\Requests\BarRequest;
@@ -43,7 +43,7 @@ class BarController extends Controller
         return new BarResource($bar);
     }
 
-    public function store(SearchActionsAdapter $search, SetupBar $setupBarService, BarRequest $request): JsonResponse
+    public function store(SearchActionsAdapter $search, BarRequest $request): JsonResponse
     {
         if ($request->user()->cannot('create', Bar::class)) {
             abort(403, 'You can not create anymore bars');
@@ -64,7 +64,7 @@ class BarController extends Controller
 
         $bar->users()->save($request->user(), ['user_role_id' => UserRoleEnum::Admin->value]);
 
-        $setupBarService->openBar($bar, $request->user());
+        SetupBar::dispatch($bar, $request->user());
 
         return (new BarResource($bar))
             ->response()

@@ -11,7 +11,7 @@ return [
     |
     */
 
-    'version' => env('BAR_ASSISTANT_VERSION', 'v0-dev'),
+    'version' => env('BAR_ASSISTANT_VERSION', 'develop'),
 
     /*
     |--------------------------------------------------------------------------
