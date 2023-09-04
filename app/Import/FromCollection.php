@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Import;
 
-use Kami\Cocktail\Import\FromArray;
 use Kami\Cocktail\Models\BarMembership;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 

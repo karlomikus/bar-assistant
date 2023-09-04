@@ -8,7 +8,7 @@ use Illuminate\Bus\Queueable;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use Illuminate\Queue\SerializesModels;
-use Kami\Cocktail\Import\FromVersion2;
+use Kami\Cocktail\Import\FromLocalData;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -32,7 +32,7 @@ class SetupBar implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(FromVersion2 $import): void
+    public function handle(FromLocalData $import): void
     {
         $import->process($this->bar, $this->user);
     }

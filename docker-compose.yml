@@ -15,6 +15,18 @@ services:
       - ./:/var/www/cocktails
       - ./resources/php.dev.ini:/usr/local/etc/php/conf.d/local.ini
 
+  # queue:
+  #   build:
+  #     args:
+  #       user: developer
+  #       uid: 1000
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   restart: always
+  #   command: php artisan queue:work
+  #   volumes:
+  #     - ./:/var/www/cocktails
+
   webserver:
     image: nginx:alpine
     container_name: webserver
@@ -32,7 +44,7 @@ services:
     restart: unless-stopped
 
   meilisearch:
-    image: getmeili/meilisearch:latest
+    image: getmeili/meilisearch:v1.2.0
     environment:
       - MEILI_MASTER_KEY=masterKey
     restart: unless-stopped
