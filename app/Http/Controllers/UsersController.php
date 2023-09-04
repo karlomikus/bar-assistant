@@ -96,7 +96,7 @@ class UsersController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if (!$request->user()->isBarAdmin(bar()->id) || !$user->hasBarMembership(bar()->id)) {
+        if ($request->user()->id !== $user->id) {
             abort(403);
         }
 
