@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Route;
 use Kami\Cocktail\Http\Controllers\BarController;
 use Kami\Cocktail\Http\Controllers\TagController;
@@ -201,7 +203,8 @@ Route::middleware($authMiddleware)->group(function() {
         Route::get('/{id}', [BarController::class, 'show'])->name('bars.show');
         Route::put('/{id}', [BarController::class, 'update']);
         Route::delete('/{id}', [BarController::class, 'delete']);
-        Route::delete('/{id}/membership', [BarController::class, 'leave']);
+        Route::delete('/{id}/memberships', [BarController::class, 'leave']);
+        Route::delete('/{id}/memberships/{userId}', [BarController::class, 'removeMembership']);
     });
 });
 

@@ -131,4 +131,17 @@ class BarController extends Controller
 
         return response(status: 204);
     }
+
+    public function removeMembership(Request $request, int $id, int $userId): Response
+    {
+        $bar = Bar::findOrFail($id);
+
+        if ($request->user()->cannot('deleteMembership', $bar)) {
+            abort(403);
+        }
+
+        $bar->memberships()->where('user_id', $userId)->delete();
+
+        return response(status: 204);
+    }
 }

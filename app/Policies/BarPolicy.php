@@ -31,4 +31,9 @@ class BarPolicy
     {
         return $user->isBarAdmin($bar->id);
     }
+
+    public function deleteMembership(User $user, Bar $bar): bool
+    {
+        return $user->isBarAdmin($bar->id);
+    }
 }
