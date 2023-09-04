@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Migrator;
+namespace Kami\Cocktail\Import;
 
 use Symfony\Component\Uid\Ulid;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +19,7 @@ class FromVersion2
     {
     }
 
-    public function migrate(): void
+    public function process(): void
     {
         $backupDB = DB::connection('sqlite_import_from_v2');
         $oldUploads = 'bar-assistant/backupv2/uploads';
@@ -76,7 +76,7 @@ class FromVersion2
             // Migrate glasses
             $newGlasses = [];
             $oldGlasses = $backupDB->table('glasses')->get();
-            foreach($oldGlasses as $row) {
+            foreach ($oldGlasses as $row) {
                 $newGlasses[$row->id] = DB::table('glasses')->insertGetId([
                     'bar_id' => $barId,
                     'name' => $row->name,
@@ -90,7 +90,7 @@ class FromVersion2
             // Migrate methods
             $newMethods = [];
             $oldMethods = $backupDB->table('cocktail_methods')->get();
-            foreach($oldMethods as $row) {
+            foreach ($oldMethods as $row) {
                 $newMethods[$row->id] = DB::table('cocktail_methods')->insertGetId([
                     'bar_id' => $barId,
                     'name' => $row->name,
@@ -105,7 +105,7 @@ class FromVersion2
             // Migrate utensils
             $newUtensils = [];
             $oldUtensils = $backupDB->table('utensils')->get();
-            foreach($oldUtensils as $row) {
+            foreach ($oldUtensils as $row) {
                 $newUtensils[$row->id] = DB::table('utensils')->insertGetId([
                     'bar_id' => $barId,
                     'name' => $row->name,
@@ -119,7 +119,7 @@ class FromVersion2
             // Migrate categories
             $newCategories = [];
             $oldCategories = $backupDB->table('ingredient_categories')->get();
-            foreach($oldCategories as $row) {
+            foreach ($oldCategories as $row) {
                 $newCategories[$row->id] = DB::table('ingredient_categories')->insertGetId([
                     'bar_id' => $barId,
                     'name' => $row->name,
@@ -133,7 +133,7 @@ class FromVersion2
             // Migrate tags
             $newTags = [];
             $oldTags = $backupDB->table('tags')->get();
-            foreach($oldTags as $row) {
+            foreach ($oldTags as $row) {
                 $newTags[$row->id] = DB::table('tags')->insertGetId([
                     'bar_id' => $barId,
                     'name' => $row->name,
@@ -143,7 +143,7 @@ class FromVersion2
             // Migrate ingredients
             $newIngredients = [];
             $oldIngredients = $backupDB->table('ingredients')->get();
-            foreach($oldIngredients as $row) {
+            foreach ($oldIngredients as $row) {
                 $newIngredients[$row->id] = DB::table('ingredients')->insertGetId([
                     'bar_id' => $barId,
                     'slug' => $row->slug . '-' . $barId,
@@ -171,7 +171,7 @@ class FromVersion2
             $newCocktails = [];
             $newCocktailIngredients = [];
             $oldCocktails = $backupDB->table('cocktails')->get();
-            foreach($oldCocktails as $row) {
+            foreach ($oldCocktails as $row) {
                 $newCocktails[$row->id] = DB::table('cocktails')->insertGetId([
                     'bar_id' => $barId,
                     'slug' => $row->slug . '-' . $barId,

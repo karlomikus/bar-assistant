@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Services;
+namespace Kami\Cocktail\Import;
 
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Bar;
@@ -16,9 +16,9 @@ use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
-class SetupBar
+class FromLocalData
 {
-    public function openBar(Bar $bar, User $user, array $flags = []): bool
+    public function process(Bar $bar, User $user, array $flags = []): bool
     {
         $startBase = microtime(true);
         $this->importBaseData('glasses', resource_path('/data/base_glasses.yml'), $bar->id, $user->id);

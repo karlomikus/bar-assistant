@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Console\Commands;
 
 use Illuminate\Console\Command;
-use Kami\Cocktail\Migrator\FromVersion2;
+use Kami\Cocktail\Import\FromVersion2;
 
 class ImportFromVersion2 extends Command
 {
@@ -29,6 +29,6 @@ class ImportFromVersion2 extends Command
     public function handle(): void
     {
         $migrator = app(FromVersion2::class);
-        $migrator->migrate();
+        $migrator->process();
     }
 }
