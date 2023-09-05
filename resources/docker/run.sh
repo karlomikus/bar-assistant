@@ -9,10 +9,11 @@ first_time_check() {
         php artisan key:generate
         php artisan storage:link
 
-        if [ ! -f /var/www/cocktails/storage/bar-assistant/database.sqlite ]; then
-            echo "Database not found, creating a new database..."
-            touch /var/www/cocktails/storage/bar-assistant/database.sqlite
-            php artisan bar:open
+        if [[ $DB_CONNECTION == "sqlite" && $DB_DATABASE ]]; then
+            if [ ! -f "$DB_DATABASE" ]; then
+                echo "SQLite database not found, creating a new one..."
+                touch "$DB_DATABASE"
+            fi
         fi
     fi
 }
@@ -21,9 +22,9 @@ start_system() {
     mkdir -p /var/www/cocktails/storage/bar-assistant/uploads/{cocktails,ingredients,temp}
     first_time_check
 
-    php artisan migrate --force
+    php artisan migrate --force --isolated
 
-    php artisan bar:refresh-search
+    php artisan bar:refresh-search --clear
 
     echo "Adding routes and config to cache..."
 
