@@ -1,7 +1,12 @@
 FROM php:8.2-fpm
 
 ARG BAR_ASSISTANT_VERSION
-ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-v0-dev}
+ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-develop}
+
+ARG PGID=33
+ENV PGID=${PGID}
+ARG PUID=33
+ENV PUID=${PUID}
 
 # Add dependencies
 RUN apt update \
@@ -33,11 +38,11 @@ RUN chmod +x /usr/local/bin/entrypoint
 # Add composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-USER www-data:www-data
+USER $PUID:$PGID
 
 WORKDIR /var/www/cocktails
 
-COPY --chown=www-data:www-data . .
+COPY --chown=$PUID:$PGID . .
 
 RUN sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/open-api-spec.yml
 
