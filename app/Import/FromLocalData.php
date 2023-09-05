@@ -11,7 +11,6 @@ use Kami\Cocktail\Models\User;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
-use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -20,22 +19,18 @@ class FromLocalData
 {
     public function process(Bar $bar, User $user, array $flags = []): bool
     {
-        $startBase = microtime(true);
         $this->importBaseData('glasses', resource_path('/data/base_glasses.yml'), $bar->id, $user->id);
         $this->importBaseData('cocktail_methods', resource_path('/data/base_methods.yml'), $bar->id, $user->id);
         $this->importBaseData('utensils', resource_path('/data/base_utensils.yml'), $bar->id, $user->id);
         $this->importBaseData('ingredient_categories', resource_path('/data/base_ingredient_categories.yml'), $bar->id, $user->id);
-        $endBase = microtime(true);
 
-        $startIngredients = microtime(true);
-        $this->importIngredients(resource_path('/data/base_ingredients.yml'), $bar, $user);
-        $endIngredients = microtime(true);
+        if (in_array('ingredients', $flags)) {
+            $this->importIngredients(resource_path('/data/base_ingredients.yml'), $bar, $user);
+        }
 
-        $startCocktails = microtime(true);
-        $this->importBaseCocktails(resource_path('/data/base_cocktails.yml'), $bar, $user);
-        $endCocktails = microtime(true);
-
-        Log::info(sprintf('[BAR_OPEN] Bar %s finished importing data. Base: %s | Ingredients: %s | Cocktails: %s', $bar->id, ($endBase - $startBase), ($endIngredients - $startIngredients), ($endCocktails - $startCocktails)));
+        if (in_array('ingredients', $flags) && in_array('cocktails', $flags)) {
+            $this->importBaseCocktails(resource_path('/data/base_cocktails.yml'), $bar, $user);
+        }
 
         /** @phpstan-ignore-next-line */
         Ingredient::where('bar_id', $bar->id)->searchable();

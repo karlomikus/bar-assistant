@@ -50,6 +50,7 @@ class BarController extends Controller
         }
 
         $inviteEnabled = (bool) $request->post('enable_invites', '1');
+        $barOptions = $request->post('options', []);
 
         $bar = new Bar();
         $bar->name = $request->post('name');
@@ -64,7 +65,7 @@ class BarController extends Controller
 
         $request->user()->joinBarAs($bar, UserRoleEnum::Admin);
 
-        SetupBar::dispatch($bar, $request->user());
+        SetupBar::dispatch($bar, $request->user(), $barOptions);
 
         return (new BarResource($bar))
             ->response()

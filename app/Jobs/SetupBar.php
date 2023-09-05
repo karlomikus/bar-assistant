@@ -25,7 +25,8 @@ class SetupBar implements ShouldQueue
         #[WithoutRelations]
         private readonly Bar $bar,
         #[WithoutRelations]
-        private readonly User $user
+        private readonly User $user,
+        private array $barOptions = []
     ) {
     }
 
@@ -34,6 +35,6 @@ class SetupBar implements ShouldQueue
      */
     public function handle(FromLocalData $import): void
     {
-        $import->process($this->bar, $this->user);
+        $import->process($this->bar, $this->user, $this->barOptions);
     }
 }

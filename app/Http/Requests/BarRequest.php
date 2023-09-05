@@ -28,6 +28,7 @@ class BarRequest extends FormRequest
         return [
             'name' => 'required',
             'enable_invites' => 'boolean',
+            'options' => 'array',
         ];
     }
 }
