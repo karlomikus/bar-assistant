@@ -249,7 +249,7 @@
     name: 'Angel Face'
     description: "Although the origin of the cocktail is not known, the main hypotheses assume that it was born in the twenties of the twentieth century in France: this thesis would prove the presence of calvados, a liqueur commonly used in France and, in particular, in that period, as an epidemic of phylloxera in European vineyards had limited the production of brandy.\nOn this basis, one of the most frequent hypotheses has it that the cocktail was created by Harry MacElhone, founder of Harry’s New York Bar in Paris on July 19, 1919, in honor of the celebrations for the victory of the First World War.\nThe first reliable evidence, however, dates back to 1930 when Harry Craddock included the Angel Face among the recipes of his book “Savoy cocktail book”. Some sources indicate that the name derives from that of an American gangster active during Prohibition; less likely the dedication to Rick Blaine, the protagonist of Casablanca played by Humphrey Bogart, as the film follows the first testimonies (1942)."
     instructions: "1. Pour all ingredients into cocktail shaker filled with ice cubes.\n2. Shake and strain into a chilled cocktail glass."
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/angel-face/'
     glass: 'Nick and Nora'
     method: Shake
@@ -475,7 +475,7 @@
     name: Bellini
     description: "The Bellini was invented sometime between 1934 and 1948 by Giuseppe Cipriani, founder of Harry's Bar in Venice, Italy. He named the drink the Bellini because its unique pink color reminded him of the toga of a saint in a painting by 15th-century Venetian artist Giovanni Bellini.\n\nVariations:\n\n**PUCCINI** – Fresh Mandarin Orange Juice;\n\n**ROSSINI** – Fresh Strawberry Puree;\n\n**TINTORETTO** – Fresh Pomegranate Juice."
     instructions: "1. Pour peach puree into the mixing glass with ice\n2. Add the Prosecco wine.\n3. Stir gently and pour in a chilled flute glass."
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/bellini/'
     glass: Champagne
     method: Stir
@@ -504,7 +504,7 @@
     name: 'Between the Sheets'
     description: "The origin of the cocktail is usually credited to Harry MacElhone at Harry's New York Bar in Paris in the 1930s as a derivative of the sidecar. However, competing theories exist that claim the cocktail was created at The Berkeley in approximately 1921, or in French brothels as an apéritif for consumption by the prostitutes."
     instructions: "1. Add all ingredients into a cocktail shaker\n2. Shake with ice and strain into a chilled cocktail glass"
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/between-the-sheets/'
     glass: Fizzio
     method: Shake
@@ -580,7 +580,7 @@
     name: 'Black Russian'
     description: "Variations:\n\n**WHITE RUSSIAN** – Float fresh cream on the top and stir in slowly."
     instructions: 'Pour the ingredients into the old fashioned glass filled with ice cubes. Stir gently.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/black-russian/'
     glass: Lowball
     method: Stir
@@ -787,7 +787,7 @@
     name: Caipirinha
     description: "Although the origin of the drink is unknown, one account says it came about around 1918 in the region of Alentejo in Portugal, with a popular recipe made with lemon, garlic, and honey, indicated for patients with the Spanish flu. Another account is that Caipirinha is based on Poncha, an alcoholic drink from Madeira, Portugal. The main ingredient is aguardente de cana, which is made from sugar cane. Sugar cane production was switched from Madeira to Brazil by the Portuguese as they needed more land to plant it on. Before this people in Madeira had already created aguardente de cana, which was the ancestor to cachaça.\n\nVariations:\n\n**CAIPIROSKA** – Instead of Cachaça use Vodka;"
     instructions: "1. Place lime and sugar into a double old fashioned glass and muddle gently.\n2. Fill the glass with cracked ice and add Cachaça.\n3. Stir gently to involve ingredients."
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/caipirinha/'
     glass: Lowball
     method: Muddle
@@ -1184,7 +1184,7 @@
     name: Daiquiri
     description: 'Daiquirí is also the name of a beach and an iron mine near Santiago de Cuba, and is a word of Taíno origin. The drink was supposedly invented by an American mining engineer named Jennings Cox, who was in Cuba (then at the tail-end of the Spanish Captaincy-General government) at the time of the Spanish–American War. It is also possible that William A. Chanler, a US congressman who purchased the Santiago iron mines in 1902, introduced the daiquiri to clubs in New York in that year.'
     instructions: 'In a cocktail shaker add all ingredients. Stir well to dissolve the sugar. Add ice and shake. Strain into chilled cocktail glass.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/daiquiri/'
     glass: Coupe
     method: Shake
@@ -1315,7 +1315,7 @@
     name: 'Espresso Martini'
     description: 'It is not a true martini as it contains neither gin nor vermouth, but is one of many drinks that incorporate the term martini into their names.'
     instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/espresso-martini/'
     glass: Cocktail
     method: Shake
@@ -1354,7 +1354,7 @@
     name: Fernandito
     description: "The cocktail first became popular among the youth of the college town of Córdoba, in the 1980s and—impulsed by an advertising campaign led by Fratelli Branca—its consumption grew in popularity during the following decades to become widespread throughout the country, surpassed only by that of beer and wine. It is now considered a cultural icon of Argentina and is especially associated with its home province of Córdoba, where the drink is most consumed. The popularity of fernet con coca is such that Argentina consumes more than 75% of all fernet produced globally. The cocktail can also be found in some of its bordering countries, like Uruguay.\n\nAlthough typically made with Fernet-Branca and Coca-Cola, several amaro brands have appeared in Argentina since its popularization, as well as ready-to-drink versions. "
     instructions: 'Pour the Fernet Branca into a double old fashioned glass with ice, fill the glass up with Cola. Gently stir.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/fernandito/'
     glass: Highball
     method: Build
@@ -1382,7 +1382,7 @@
     name: 'French 75'
     description: "The drink dates to World War I, and an early form was created in 1915 at the New York Bar in Paris—later Harry's New York Bar—by barman Harry MacElhone. The combination was said to have such a kick that it felt like being shelled with the powerful French 75mm field gun."
     instructions: 'Pour all the ingredients, except Champagne, into a shaker. Shake well and strain into a Champagne flute. Top up with Champagne. Stir gently.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/french-75/'
     glass: Champagne
     method: Shake
@@ -1421,7 +1421,7 @@
     name: 'French Connection'
     description: 'The cocktail is named for the Gene Hackman film of the same name.'
     instructions: 'Pour all ingredients directly into an old fashioned glass filled with ice cubes. Stir gently.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/french-connection/'
     glass: Lowball
     method: Build
@@ -1587,7 +1587,7 @@
     name: 'Golden Dream'
     description: "The Golden Dream was popular during the 60s and 70s and originated at the Old King Bar in Miami, mixed by Raimundo Alvarez.\n\nThe cocktail was dedicated to actress Joan Crawford and became quite popular at the end of the 1960s on the east coast of the United States. "
     instructions: 'Pour all ingredients into shaker filled with ice. Shake briskly for few seconds. Strain into chilled cocktail glass.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/golden-dream/'
     glass: Coupe
     method: Shake
@@ -1625,7 +1625,7 @@
     name: Grasshopper
     description: "A Grasshopper is a sweet, mint-flavored, after-dinner drink. The name of the drink derives from its green color, which comes from crème de menthe. A bar in the French Quarter of New Orleans, Louisiana, Tujague's, claims the drink was invented in 1918 by its owner, Philip Guichet. The drink gained popularity during the 1950s and 1960s throughout the American South."
     instructions: "Pour all ingredients into shaker filled with ice.\nShake briskly for few seconds. Strain into chilled cocktail glass."
-    garnish: 'N/A, optional mint leaf'
+    garnish: 'Optional mint leaf'
     source: 'https://iba-world.com/grasshopper/'
     glass: Fizzio
     method: Shake
@@ -1692,7 +1692,7 @@
     name: 'Hemingway Special'
     description: 'Ernest Hemingway, who stayed in Cuba, tried the Floridita''s signature drink, the Floridita Daiquiri, and said "That''s good but I prefer it without sugar and double rum," which became a cocktail now known as the Hemingway Daiquiri or the Papa Doble. This recipe was later modified further, adding grapefruit juice to the mix, at which point the drink was dubbed the "Hemingway Special".'
     instructions: 'Pour all ingredients into a shaker with ice. Shake well and strain into a large cocktail glass.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/hemingway-special/'
     glass: Coupe
     method: Shake
@@ -1765,7 +1765,7 @@
     name: Illegal
     description: null
     instructions: "Pour all ingredients into the shaker. Shake vigorously with ice.\_ Strain into a chilled cocktail glass, or “on the rocks” in a traditional clay or terracotta mug."
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/illegal/'
     glass: Fizzio
     method: Shake
@@ -1819,7 +1819,7 @@
     name: 'Irish Coffee'
     description: 'Caffeinated alcoholic drink consisting of Irish whiskey, hot coffee, and sugar, stirred, and topped with cream (sometimes cream liqueur) The coffee is drunk through the cream.'
     instructions: "1. Warm black coffee is poured into a pre-heated Irish coffee glass.\n2. Whiskey and at least one teaspoon of sugar is added and stirred until dissolved.\n3. Fresh thick chilled cream is carefully poured over the back of a spoon held just above the surface of the coffee.\n4. The layer of cream will float on the coffee without mixing.\n5. Plain sugar can be replaced with sugar syrup"
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/irish-coffee/'
     glass: 'Glass mug'
     method: Build
@@ -1929,7 +1929,7 @@
     name: KIR
     description: 'In France it is usually drunk as an apéritif before a meal or snack. It was originally made with Bourgogne Aligoté, a white wine of Burgundy, but today various white wines are used throughout France, according to the region and the barkeeper. Many prefer a white Chardonnay-based Burgundy, such as Chablis.'
     instructions: "Pour Crème de cassis into glass, top up with white wine.\n\nNote:\n\nKIR ROYAL – Use Champagne instead of white wine"
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/kir/'
     glass: Champagne
     method: Build
@@ -2000,7 +2000,7 @@
     name: 'Last word'
     description: 'While the drink eventually fell out of favor, it enjoyed a renewed popularity after being rediscovered by the bartender Murray Stenson in 2004 during his tenure at the Zig Zag Café and becoming a cult hit in the Seattle area.'
     instructions: 'Add all ingredients into a cocktail shaker. Shake with ice and strain into a chilled cocktail glass.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/last-word/'
     glass: 'Nick and Nora'
     method: Shake
@@ -2290,7 +2290,7 @@
     name: 'Mary Pickford'
     description: null
     instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled cocktail glass.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/mary-pickford/'
     glass: Fizzio
     method: Shake
@@ -2441,7 +2441,7 @@
     name: 'Monkey Gland'
     description: null
     instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled cocktail glass.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/monkey-gland/'
     glass: Cocktail
     method: Shake
@@ -2514,7 +2514,7 @@
     name: 'Naked and Famous'
     description: null
     instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/naked-and-famous/'
     glass: 'Nick and Nora'
     method: Shake
@@ -2759,7 +2759,7 @@
     name: 'Paper Plane'
     description: "Developed around 2007 by Sasha Petraske and Sam Ross of Milk & Honey for their former colleague Toby Maloney's Chicago bar The Violet Hour. The recipe is a riff on a Last Word, which is a riff on the classic Corpse Reviver #2."
     instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/paper-plane/'
     glass: Coupe
     method: Shake
@@ -2798,7 +2798,7 @@
     name: Paradise
     description: 'The earliest known in-print recipe for the Paradise Cocktail was written by Harry Craddock in 1930. This cocktail is prepared using gin, apricot brandy (apricot liqueur), and orange juice in a 2:1:1 ratio, with a splash of lemon juice.'
     instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/paradise/'
     glass: Cocktail
     method: Shake
@@ -3108,7 +3108,7 @@
     name: 'Ramos Fizz'
     description: 'The drink was invented by Henry Ramos in 1888, at his bar Meyer’s Table d’Hôtel Internationale in New Orleans. The Ramos Fizz was originally shaken for 12 minutes by a crew of 30 bartenders who passed the shaker from one to another.'
     instructions: "1. Pour all ingredients except soda water in a cocktail shaker with ice.\n2. Shake for two minutes.\n3. Double strain in a glass.\n4. Pour the drink back in the shaker, and hard shake without ice for one minute.\n5. Strain into a highball glass, top up with soda."
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/ramos-fizz/'
     glass: Highball
     method: Shake
@@ -3451,7 +3451,7 @@
     name: Sidecar
     description: "The exact origin of the sidecar is unclear, but it is thought to have been invented around the end of World War I in either London or Paris. The drink was directly named for the motorcycle attachment, which was very commonly used back then.\n\nLike the daiquiri, the sidecar evolved from the original sour formula, but sidecars are often drier than sours, combining liqueurs like curaçao with citrus. Sidecars are considered more of a challenge for bartenders because the proportion of ingredients is more difficult to balance for liqueurs of variable sweetness."
     instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled cocktail glass.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/sidecar/'
     glass: Cocktail
     method: Shake
@@ -3844,7 +3844,7 @@
     name: 'Trinidad Sour'
     description: 'Unusually for a cocktail, it uses Angostura bitters as a base spirit rather than as a flavoring, the bitters being the single largest component of the drink in its IBA formulation.'
     instructions: "1. Pour all ingredients into a cocktail shaker\n2. Shake well with ice\n3. Strain into a chilled cocktail glass."
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/trinidad-sour/'
     glass: Cocktail
     method: Shake
@@ -4084,7 +4084,7 @@
     name: 'White Lady'
     description: "The original recipe for the White Lady was devised by Harry MacElhone in 1919 at Ciro's Club in London. He originally used crème de menthe, but replaced it with gin at Harry's New York Bar in Paris in 1929. According to the American Bar at the Savoy Hotel, the drink was created there by Harry Craddock."
     instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled cocktail glass.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/white-lady/'
     glass: Coupe
     method: Shake
@@ -4150,7 +4150,7 @@
     name: 'Yellow Bird'
     description: null
     instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
-    garnish: N/A
+    garnish: null
     source: 'https://iba-world.com/yellow-bird/'
     glass: Coupe
     method: Shake
