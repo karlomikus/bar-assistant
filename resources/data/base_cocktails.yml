@@ -77,7 +77,8 @@
     method: Shake
     abv: 13.87
     tags:
-        - Rum
+        - Wine
+        - Aperitif
     ingredients:
         -
             name: 'White Rum'
@@ -116,7 +117,7 @@
     method: Stir
     abv: 33.23
     tags:
-        - Gin
+        - Herbacious
     ingredients:
         -
             name: Gin
@@ -150,7 +151,7 @@
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
-        - Brandy
+        - Savory
     ingredients:
         -
             name: Cognac
@@ -183,6 +184,7 @@
     abv: 11.11
     tags:
         - Sour
+        - Sweet
     ingredients:
         -
             name: Amaretto
@@ -221,6 +223,7 @@
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
+        - Bitter
     ingredients:
         -
             name: Campari
@@ -254,8 +257,7 @@
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
-        - Gin
-        - Brandy
+        - Fruity
     ingredients:
         -
             name: Gin
@@ -278,42 +280,6 @@
             copyright: 'Wine Enthusiast / Tyler Zieliniski'
             placeholder_hash: JEkKLwhjV3lQdYjEiHeLt5WZhPe4aI8K
 -
-    name: Antikovac
-    description: null
-    instructions: "1. Shake all the ingredients\n2. Strain into a lowball glass"
-    garnish: 'Orange zest'
-    source: 'https://www.journal.hr/lifestyle/gastro/antique-pelinkovac-strukani-pelin-jesenski-koktel-cool-pice/'
-    glass: Lowball
-    method: Shake
-    abv: 9.85
-    tags: {  }
-    ingredients:
-        -
-            name: Pelinkovac
-            amount: 50
-            units: ml
-            optional: false
-        -
-            name: 'Orgeat Syrup'
-            amount: 20
-            units: ml
-            optional: false
-        -
-            name: 'Lemon juice'
-            amount: 10
-            units: ml
-            optional: false
-        -
-            name: 'Orange juice'
-            amount: 50
-            units: ml
-            optional: false
-    images:
-        -
-            resource_path: cocktails/antikovac.jpg
-            copyright: Tasteatlas
-            placeholder_hash: o0oKLwphRXeDkoaQm4p11omGpXCXBmYJ
--
     name: Aviation
     description: "Aviation was created in New York at the Walkick hotel by the head bartender Hugo Ensslin while he was writing his book “Recipes for Mixed Drinks” (1916) one of the last cocktail books published before the start of American Prohibition.\n\nLately David Wondrich found the aviation recipe in a 1911 magazine, so the recipe is thought to have been born earlier then 1916.\n\nIn his book Ensslin also indicates the type of Gin to be used ‘El Bart Gin “and the recipe is made up in addition to gin, with lemon juice, maraschino and Creme di Violette.\n\nThe recipe is found again in Harry Craddock’s 1930 Savoy Cocktail Book but without the Creme de Violette, this probably due to the difficulty of finding the violet cream during the post-war period In the 1960s it was still unavailable and therefore, simply, the basic ingredient of the Aviation cocktail was discontinued and the bartenders definitively gave up the characteristic blue color of the drink.\n\nThe IBA proposes it today in its original version with the creme de violette which is now on the market again.  This fragrant ingredient not only gave the mix a sweetly floral taste, but also gave it a beautiful sky blue color."
     instructions: "1. Add all ingredients into a cocktail shaker.\n2. Shake with cracked ice and strain into a chilled cocktail glass."
@@ -325,7 +291,7 @@
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
-        - Gin
+        - Herbacious
     ingredients:
         -
             name: Gin
@@ -362,7 +328,7 @@
     method: Layer
     abv: 25.67
     tags:
-        - Shot
+        - Sweet
     ingredients:
         -
             name: 'Kahlua coffee liqueur'
@@ -394,7 +360,7 @@
     method: Shake
     abv: 23.27
     tags:
-        - Rum
+        - Sweet
     ingredients:
         -
             name: 'White Rum'
@@ -433,7 +399,6 @@
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
-        - Rum
         - Tiki
     ingredients:
         -
@@ -468,8 +433,8 @@
             placeholder_hash: bCkKFwILhpmHh4Z4mIeHd4iHJ5COtKAI
 -
     name: 'Bee’s Knees'
-    description: "The Bee's Knees was invented by Frank Meier, an Austrian-born, part Jewish bartender who was the first head bartender at the Ritz in Paris in 1921, when its Cafe Parisian opened its doors.\n\nThe name comes from prohibition-era slang meaning \"the best\"."
-    instructions: "1. Stir honey with lemon and orange juices until it dissolves\n2. Add gin and shake with ice\n3. Strain into a chilled cocktail glass\n\n**Variations:**\n- Barr Hill Gin is sometimes recommended for its honey infusion, though other gins may be used (including Barr Hill's Tom Cat gin).\n- The honey may be diluted 1:1 with warm water to thin the consistency.\n- The honey may be diluted 1:1 with simple syrup instead of water.\n- A sprig of basil or thyme may be used for garnish instead of lemon peel.\n- Some variations contain orange juice\n- Add 2 dashes of absinthe and 2 dashes of orange bitters to make a variation called \"Oldest Living Confederate Widow\""
+    description: "The Bee's Knees was invented by Frank Meier, an Austrian-born, part Jewish bartender who was the first head bartender at the Ritz in Paris in 1921, when its Cafe Parisian opened its doors.\n\nThe name comes from prohibition-era slang meaning \"the best\".\n\n**Variations:**\n- Barr Hill Gin is sometimes recommended for its honey infusion, though other gins may be used (including Barr Hill's Tom Cat gin).\n- The honey may be diluted 1:1 with warm water to thin the consistency.\n- The honey may be diluted 1:1 with simple syrup instead of water.\n- A sprig of basil or thyme may be used for garnish instead of lemon peel.\n- Some variations contain orange juice\n- Add 2 dashes of absinthe and 2 dashes of orange bitters to make a variation called \"Oldest Living Confederate Widow\""
+    instructions: "1. Stir honey with lemon and orange juices until it dissolves\n2. Add gin and shake with ice\n3. Strain into a chilled cocktail glass"
     garnish: 'Optionally garnish with a lemon or orange zest.'
     source: 'https://iba-world.com/bees-knees/'
     glass: Coupe
@@ -478,7 +443,8 @@
     tags:
         - 'IBA Cocktail'
         - 'New Era Drinks'
-        - Gin
+        - Sweet
+        - Sour
     ingredients:
         -
             name: Gin
@@ -517,7 +483,7 @@
     tags:
         - 'Contemporary Classics'
         - 'IBA Cocktail'
-        - Wine
+        - Fruity
     ingredients:
         -
             name: Prosecco
