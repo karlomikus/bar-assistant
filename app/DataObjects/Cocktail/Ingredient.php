@@ -17,6 +17,7 @@ class Ingredient
         public readonly int $sort = 0,
         public readonly bool $optional = false,
         public readonly array $substitutes = [],
+        public readonly ?float $amountMax = null,
     ) {
     }
 }

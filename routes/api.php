@@ -154,7 +154,7 @@ Route::middleware($authMiddleware)->group(function() {
         Route::post('/', [UsersController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [UsersController::class, 'show'])->middleware(EnsureRequestHasBarQuery::class)->name('users.show');
         Route::put('/{id}', [UsersController::class, 'update'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::delete('/{id}', [UsersController::class, 'delete'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::delete('/{id}', [UsersController::class, 'delete']);
     });
 
     Route::prefix('stats')->group(function() {

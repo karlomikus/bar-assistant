@@ -148,7 +148,7 @@ class FromVersion2
                     'bar_id' => $barId,
                     'slug' => $row->slug . '-' . $barId,
                     'name' => $row->name,
-                    'ingredient_category_id' => $newCategories[$row->ingredient_category_id],
+                    'ingredient_category_id' => $newCategories[$row->ingredient_category_id] ?? null,
                     'strength' => $row->strength,
                     'description' => $row->description,
                     'origin' => $row->origin,

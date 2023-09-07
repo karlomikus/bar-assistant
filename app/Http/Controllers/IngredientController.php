@@ -16,6 +16,7 @@ use Kami\Cocktail\Http\Requests\IngredientRequest;
 use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Filters\IngredientQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Kami\Cocktail\DataObjects\Ingredient\Ingredient as IngredientDTO;
 
 class IngredientController extends Controller
 {
@@ -50,18 +51,20 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $ingredient = $ingredientService->createIngredient(
+        $ingredientDTO = new IngredientDTO(
             bar()->id,
             $request->post('name'),
-            (int) $request->post('ingredient_category_id'),
             auth()->user()->id,
+            $request->post('ingredient_category_id') ? (int) $request->post('ingredient_category_id') : null,
             floatval($request->post('strength', '0')),
             $request->post('description'),
             $request->post('origin'),
             $request->post('color'),
             $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null,
-            $request->post('images', [])
+            $request->post('images', []),
         );
+
+        $ingredient = $ingredientService->createIngredient($ingredientDTO);
 
         return (new IngredientResource($ingredient))
             ->response()
@@ -77,18 +80,20 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $ingredient = $ingredientService->updateIngredient(
-            $id,
+        $ingredientDTO = new IngredientDTO(
+            $ingredient->bar_id,
             $request->post('name'),
-            (int) $request->post('ingredient_category_id'),
             auth()->user()->id,
+            $request->post('ingredient_category_id') ? (int) $request->post('ingredient_category_id') : null,
             floatval($request->post('strength', '0')),
             $request->post('description'),
             $request->post('origin'),
             $request->post('color'),
             $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null,
-            $request->post('images', [])
+            $request->post('images', []),
         );
+
+        $ingredient = $ingredientService->updateIngredient($id, $ingredientDTO);
 
         return new IngredientResource($ingredient);
     }

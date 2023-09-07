@@ -15,7 +15,8 @@ use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
 use Intervention\Image\Facades\Image as ImageProcessor;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
-use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDTO;
+use Kami\Cocktail\DataObjects\Ingredient\Ingredient as IngredientDTO;
+use Kami\Cocktail\DataObjects\Cocktail\Ingredient as CocktailIngredientDTO;
 
 class FromArray
 {
@@ -90,15 +91,16 @@ class FromArray
             if ($dbIngredients->has(strtolower($scrapedIngredient['name']))) {
                 $ingredientId = $dbIngredients->get(strtolower($scrapedIngredient['name']))->id;
             } else {
-                $newIngredient = $this->ingredientService->createIngredient(
+                $ingredientDTO = new IngredientDTO(
                     $barId,
                     ucfirst($scrapedIngredient['name']),
-                    1,
                     $userId,
+                    null,
                     $scrapedIngredient['strength'] ?? 0.0,
                     $scrapedIngredient['description'] ?? $defaultDescription,
                     $scrapedIngredient['origin'] ?? null
                 );
+                $newIngredient = $this->ingredientService->createIngredient($ingredientDTO);
                 $dbIngredients->put(strtolower($scrapedIngredient['name']), $newIngredient);
                 $ingredientId = $newIngredient->id;
             }
@@ -112,7 +114,7 @@ class FromArray
                 }
             }
 
-            $ingredient = new IngredientDTO(
+            $ingredient = new CocktailIngredientDTO(
                 $ingredientId,
                 $scrapedIngredient['name'],
                 $scrapedIngredient['amount'],

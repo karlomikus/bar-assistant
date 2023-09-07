@@ -76,7 +76,7 @@ class FromLocalData
                 'bar_id' => $bar->id,
                 'slug' => $slug,
                 'name' => $ingredient['name'],
-                'ingredient_category_id' => $category->id,
+                'ingredient_category_id' => $category->id ?? null,
                 'strength' => $ingredient['strength'],
                 'description' => $ingredient['description'],
                 'origin' => $ingredient['origin'],

@@ -98,7 +98,7 @@ class ImportService
                 $newIngredient = $this->ingredientService->createIngredient(
                     $barId,
                     ucfirst($scrapedIngredient['name']),
-                    1,
+                    null,
                     $userId,
                     $scrapedIngredient['strength'] ?? 0.0,
                     $scrapedIngredient['description'] ?? $defaultDescription,
