@@ -68,7 +68,6 @@ class FromArray
                 $newGlass->name = ucfirst($sourceData['glass']);
                 $newGlass->description = $defaultDescription;
                 $newGlass->bar_id = $barId;
-                $newGlass->created_user_id = $userId;
                 $newGlass->save();
                 $dbGlasses->put($glassNameLower, $newGlass->id);
                 $glassId = $newGlass->id;

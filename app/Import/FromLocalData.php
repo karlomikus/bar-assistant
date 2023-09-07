@@ -19,10 +19,10 @@ class FromLocalData
 {
     public function process(Bar $bar, User $user, array $flags = []): bool
     {
-        $this->importBaseData('glasses', resource_path('/data/base_glasses.yml'), $bar->id, $user->id);
-        $this->importBaseData('cocktail_methods', resource_path('/data/base_methods.yml'), $bar->id, $user->id);
-        $this->importBaseData('utensils', resource_path('/data/base_utensils.yml'), $bar->id, $user->id);
-        $this->importBaseData('ingredient_categories', resource_path('/data/base_ingredient_categories.yml'), $bar->id, $user->id);
+        $this->importBaseData('glasses', resource_path('/data/base_glasses.yml'), $bar->id);
+        $this->importBaseData('cocktail_methods', resource_path('/data/base_methods.yml'), $bar->id);
+        $this->importBaseData('utensils', resource_path('/data/base_utensils.yml'), $bar->id);
+        $this->importBaseData('ingredient_categories', resource_path('/data/base_ingredient_categories.yml'), $bar->id);
 
         if (in_array('ingredients', $flags)) {
             $this->importIngredients(resource_path('/data/base_ingredients.yml'), $bar, $user);
@@ -40,13 +40,13 @@ class FromLocalData
         return true;
     }
 
-    private function importBaseData(string $tableName, string $filepath, int $barId, int $userId): void
+    private function importBaseData(string $tableName, string $filepath, int $barId): void
     {
         $data = Cache::remember('ba:data-import:' . $filepath, 60 * 60 * 24 * 7, function () use ($filepath) {
             return Yaml::parseFile($filepath);
         });
 
-        $importData = array_map(function (array $item) use ($barId, $userId) {
+        $importData = array_map(function (array $item) use ($barId) {
             $item['bar_id'] = $barId;
             $item['created_at'] = now();
             $item['updated_at'] = now();

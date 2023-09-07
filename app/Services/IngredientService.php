@@ -23,7 +23,8 @@ class IngredientService
     ) {
     }
 
-    public function createIngredient(IngredientDTO $dto): Ingredient {
+    public function createIngredient(IngredientDTO $dto): Ingredient
+    {
         try {
             $ingredient = new Ingredient();
             $ingredient->bar_id = $dto->barId;

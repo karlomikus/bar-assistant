@@ -8,7 +8,8 @@ use Throwable;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Scraper\Manager;
-use Kami\Cocktail\Services\ImportService;
+use Kami\Cocktail\Import\FromArray;
+use Kami\Cocktail\Import\FromCollection;
 use Kami\Cocktail\Http\Requests\ImportRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CocktailResource;
@@ -16,7 +17,7 @@ use Kami\Cocktail\Http\Resources\CollectionResource;
 
 class ImportController extends Controller
 {
-    public function cocktail(ImportRequest $request, ImportService $importService): JsonResponse|JsonResource
+    public function cocktail(ImportRequest $request, FromArray $arrayImporter, FromCollection $collectionImporter): JsonResponse|JsonResource
     {
         $dataToImport = [];
         $type = $request->get('type', 'url');
@@ -63,13 +64,13 @@ class ImportController extends Controller
                 abort(400, sprintf('No cocktails found'));
             }
 
-            $collection = $importService->importCocktailCollection($source, $request->user()->id, bar()->id);
+            $collection = $collectionImporter->process($source, $request->user()->id, bar()->id);
 
             return new CollectionResource($collection);
         }
 
         if ($save) {
-            $dataToImport = new CocktailResource($importService->importCocktailFromArray($dataToImport, $request->user()->id, bar()->id));
+            $dataToImport = new CocktailResource($arrayImporter->process($dataToImport, $request->user()->id, bar()->id));
         }
 
         return response()->json([
