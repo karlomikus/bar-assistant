@@ -12,18 +12,13 @@ class IngredientPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, string $ability): bool|null
-    {
-        if (bar()->id && $user->isBarAdmin(bar()->id)) {
-            return true;
-        }
-
-        return null;
-    }
-
     public function create(User $user): bool
     {
-        return $user->hasBarMembership(bar()->id);
+        $barId = bar()->id;
+
+        return $user->isBarAdmin($barId)
+            || $user->isBarModerator($barId)
+            || $user->isBarGeneral($barId);
     }
 
     public function show(User $user, Ingredient $ingredient): bool
@@ -33,11 +28,15 @@ class IngredientPolicy
 
     public function edit(User $user, Ingredient $ingredient): bool
     {
-        return $user->id === $ingredient->created_user_id && $user->hasBarMembership($ingredient->bar_id);
+        return ($user->id === $ingredient->created_user_id && $user->hasBarMembership($ingredient->bar_id))
+            || $user->isBarAdmin($ingredient->bar_id)
+            || $user->isBarModerator($ingredient->bar_id);
     }
 
     public function delete(User $user, Ingredient $ingredient): bool
     {
-        return $user->id === $ingredient->created_user_id && $user->hasBarMembership($ingredient->bar_id);
+        return ($user->id === $ingredient->created_user_id && $user->hasBarMembership($ingredient->bar_id))
+            || $user->isBarAdmin($ingredient->bar_id)
+            || $user->isBarModerator($ingredient->bar_id);
     }
 }

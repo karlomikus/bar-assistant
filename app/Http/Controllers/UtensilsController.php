@@ -34,7 +34,7 @@ class UtensilsController extends Controller
 
     public function store(UtensilRequest $request): JsonResponse
     {
-        if (!$request->user()->isBarAdmin(bar()->id)) {
+        if ($request->user()->cannot('create', Utensil::class)) {
             abort(403);
         }
 

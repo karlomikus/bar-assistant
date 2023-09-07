@@ -12,12 +12,16 @@ class CocktailPolicy
 {
     use HandlesAuthorization;
 
-    public function show(User $user, Cocktail $cocktail): bool
+    public function create(User $user): bool
     {
-        return $user->hasBarMembership($cocktail->bar_id);
+        $barId = bar()->id;
+
+        return $user->isBarAdmin($barId)
+            || $user->isBarModerator($barId)
+            || $user->isBarGeneral($barId);
     }
 
-    public function addNote(User $user, Cocktail $cocktail): bool
+    public function show(User $user, Cocktail $cocktail): bool
     {
         return $user->hasBarMembership($cocktail->bar_id);
     }
@@ -25,13 +29,20 @@ class CocktailPolicy
     public function edit(User $user, Cocktail $cocktail): bool
     {
         return ($user->id === $cocktail->created_user_id && $user->hasBarMembership($cocktail->bar_id))
-            || $user->isBarAdmin($cocktail->bar_id);
+            || $user->isBarAdmin($cocktail->bar_id)
+            || $user->isBarModerator($cocktail->bar_id);
     }
 
     public function delete(User $user, Cocktail $cocktail): bool
     {
         return ($user->id === $cocktail->created_user_id && $user->hasBarMembership($cocktail->bar_id))
-            || $user->isBarAdmin($cocktail->bar_id);
+            || $user->isBarAdmin($cocktail->bar_id)
+            || $user->isBarModerator($cocktail->bar_id);
+    }
+
+    public function addNote(User $user, Cocktail $cocktail): bool
+    {
+        return $user->hasBarMembership($cocktail->bar_id);
     }
 
     public function rate(User $user, Cocktail $cocktail): bool

@@ -12,15 +12,6 @@ class CollectionPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, string $ability): bool|null
-    {
-        if (bar()->id && $user->isBarAdmin(bar()->id)) {
-            return true;
-        }
-
-        return null;
-    }
-
     public function create(User $user): bool
     {
         return $user->hasBarMembership(bar()->id);

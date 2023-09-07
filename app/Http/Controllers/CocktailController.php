@@ -55,6 +55,10 @@ class CocktailController extends Controller
 
     public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
+        if ($request->user()->cannot('create', Cocktail::class)) {
+            abort(403);
+        }
+
         $ingredients = [];
         foreach ($request->post('ingredients', []) as $formIngredient) {
             $ingredient = new IngredientDTO(

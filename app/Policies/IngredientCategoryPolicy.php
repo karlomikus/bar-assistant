@@ -12,13 +12,10 @@ class IngredientCategoryPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, string $ability): bool|null
+    public function create(User $user): bool
     {
-        if (bar()->id && $user->isBarAdmin(bar()->id)) {
-            return true;
-        }
-
-        return null;
+        return $user->isBarAdmin(bar()->id)
+            || $user->isBarModerator(bar()->id);
     }
 
     public function show(User $user, IngredientCategory $ingredientCategory): bool
@@ -28,11 +25,13 @@ class IngredientCategoryPolicy
 
     public function edit(User $user, IngredientCategory $ingredientCategory): bool
     {
-        return $user->hasBarMembership($ingredientCategory->bar_id);
+        return $user->isBarAdmin($ingredientCategory->bar_id)
+            || $user->isBarModerator($ingredientCategory->bar_id);
     }
 
     public function delete(User $user, IngredientCategory $ingredientCategory): bool
     {
-        return $user->hasBarMembership($ingredientCategory->bar_id);
+        return $user->isBarAdmin($ingredientCategory->bar_id)
+            || $user->isBarModerator($ingredientCategory->bar_id);
     }
 }

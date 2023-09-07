@@ -100,6 +100,21 @@ class User extends Authenticatable
         return $this->hasBarRole($barId, UserRoleEnum::Admin);
     }
 
+    public function isBarModerator(int $barId): bool
+    {
+        return $this->hasBarRole($barId, UserRoleEnum::Moderator);
+    }
+
+    public function isBarGeneral(int $barId): bool
+    {
+        return $this->hasBarRole($barId, UserRoleEnum::General);
+    }
+
+    public function isBarGuest(int $barId): bool
+    {
+        return $this->hasBarRole($barId, UserRoleEnum::Guest);
+    }
+
     private function hasBarRole(int $barId, UserRoleEnum $role): bool
     {
         return $this->memberships

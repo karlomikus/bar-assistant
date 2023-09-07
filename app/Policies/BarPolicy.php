@@ -19,12 +19,12 @@ class BarPolicy
 
     public function show(User $user, Bar $bar): bool
     {
-        return $user->isBarAdmin($bar->id);
+        return $user->isBarAdmin($bar->id) || $user->isBarModerator($bar->id);
     }
 
     public function edit(User $user, Bar $bar): bool
     {
-        return $user->isBarAdmin($bar->id);
+        return $user->isBarAdmin($bar->id) || $user->isBarModerator($bar->id);
     }
 
     public function delete(User $user, Bar $bar): bool
