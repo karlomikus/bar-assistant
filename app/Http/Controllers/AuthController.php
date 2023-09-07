@@ -29,7 +29,7 @@ class AuthController extends Controller
             return new TokenResource($token);
         }
 
-        abort(404, 'User not found. Check your username and password and try again.');
+        abort(404, 'Unable to authenticate. Check your login credentials and try again.');
     }
 
     public function logout(Request $request): JsonResponse

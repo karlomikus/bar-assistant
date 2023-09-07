@@ -62,7 +62,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (NotFoundHttpException $e, $request) {
             return response()->json([
                 'type' => 'api_error',
-                'message' => 'Resource record not found.',
+                'message' => $e->getMessage() === '' ? 'Resource not found.' : $e->getMessage(),
             ], 404);
         });
 
