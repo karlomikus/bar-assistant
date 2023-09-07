@@ -48,7 +48,6 @@ class FromLocalData
 
         $importData = array_map(function (array $item) use ($barId, $userId) {
             $item['bar_id'] = $barId;
-            $item['created_user_id'] = $userId;
             $item['created_at'] = now();
             $item['updated_at'] = now();
 

@@ -16,7 +16,7 @@ class IngredientCategoryController extends Controller
 {
     public function index(): JsonResource
     {
-        $categories = IngredientCategory::orderBy('name')->filterByBar()->get();
+        $categories = IngredientCategory::orderBy('name')->withCount('ingredients')->filterByBar()->get();
 
         return IngredientCategoryResource::collection($categories);
     }
@@ -42,7 +42,6 @@ class IngredientCategoryController extends Controller
         $category->name = $request->post('name');
         $category->description = $request->post('description');
         $category->bar_id = bar()->id;
-        $category->created_user_id = $request->user()->id;
         $category->save();
 
         return (new IngredientCategoryResource($category))
@@ -61,7 +60,6 @@ class IngredientCategoryController extends Controller
 
         $category->name = $request->post('name');
         $category->description = $request->post('description');
-        $category->updated_user_id = $request->user()->id;
         $category->updated_at = now();
         $category->save();
 

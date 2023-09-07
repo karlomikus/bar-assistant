@@ -43,7 +43,6 @@ class GlassController extends Controller
         $glass->name = $request->post('name');
         $glass->description = $request->post('description');
         $glass->bar_id = bar()->id;
-        $glass->created_user_id = $request->user()->id;
         $glass->save();
 
         return (new GlassResource($glass))
@@ -62,7 +61,6 @@ class GlassController extends Controller
 
         $glass->name = $request->post('name');
         $glass->description = $request->post('description');
-        $glass->updated_user_id = $request->user()->id;
         $glass->updated_at = now();
         $glass->save();
 

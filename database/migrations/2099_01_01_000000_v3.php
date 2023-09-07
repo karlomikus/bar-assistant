@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->nullable()->unique();
+            $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
@@ -53,6 +53,7 @@ return new class extends Migration
         Schema::create('bars', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('status')->nullable();
             $table->text('subtitle')->nullable();
             $table->text('description')->nullable();
             $table->text('search_driver_api_key')->nullable();
@@ -94,8 +95,6 @@ return new class extends Migration
         Schema::create('glasses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
-            $table->foreignId('created_user_id')->constrained('users')->onDelete('restrict');
-            $table->foreignId('updated_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();
@@ -104,8 +103,6 @@ return new class extends Migration
         Schema::create('cocktail_methods', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
-            $table->foreignId('created_user_id')->constrained('users')->onDelete('restrict');
-            $table->foreignId('updated_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
             $table->tinyInteger('dilution_percentage');
@@ -115,8 +112,6 @@ return new class extends Migration
         Schema::create('ingredient_categories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
-            $table->foreignId('created_user_id')->constrained('users')->onDelete('restrict');
-            $table->foreignId('updated_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();
@@ -131,7 +126,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->text('origin')->nullable();
             $table->string('color')->nullable();
-            $table->foreignId('ingredient_category_id')->constrained()->onDelete('restrict');
+            $table->foreignId('ingredient_category_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('parent_ingredient_id')->nullable()->constrained('ingredients')->nullOnDelete();
             $table->foreignId('created_user_id')->constrained('users')->onDelete('restrict');
             $table->foreignId('updated_user_id')->nullable()->constrained('users')->nullOnDelete();
@@ -164,6 +159,7 @@ return new class extends Migration
             $table->foreignId('ingredient_id')->constrained()->onDelete('cascade');
             $table->foreignId('cocktail_id')->constrained()->onDelete('cascade');
             $table->decimal('amount');
+            $table->decimal('amount_max')->nullable();
             $table->string('units');
             $table->integer('sort')->default(0);
             $table->boolean('optional')->default(false);
@@ -222,6 +218,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('cocktail_ingredient_id')->constrained()->onDelete('cascade');
             $table->foreignId('ingredient_id')->constrained()->onDelete('cascade');
+            $table->decimal('amount')->nullable();
+            $table->string('units')->nullable();
             $table->timestamps();
         });
 
@@ -261,8 +259,6 @@ return new class extends Migration
         Schema::create('utensils', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bar_id')->constrained()->onDelete('cascade');
-            $table->foreignId('created_user_id')->constrained('users')->onDelete('restrict');
-            $table->foreignId('updated_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();
