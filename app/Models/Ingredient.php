@@ -132,7 +132,7 @@ class Ingredient extends Model
             'name' => $this->name,
             'image_url' => $this->getMainImageUrl(),
             'description' => $this->description,
-            'category' => $this->category->name,
+            'category' => $this->category?->name ?? null,
             'origin' => $this->origin,
             'bar_id' => $this->bar_id,
         ];
