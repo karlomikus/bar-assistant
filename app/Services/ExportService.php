@@ -73,4 +73,36 @@ class ExportService
 
         return $filename;
     }
+
+    public function exportForVersion3(?string $exportPath = null): string
+    {
+        $meta = [
+            'version_exported_from' => config('bar-assistant.version'),
+        ];
+
+        $zip = new ZipArchive();
+
+        $filename = storage_path(sprintf('bar-assistant/%s_%s.zip', 'ba_export', Carbon::now()->format('Y-m-d-h-i-s')));
+        if ($exportPath) {
+            $filename = $exportPath;
+        }
+
+        if ($zip->open($filename, ZipArchive::CREATE) !== true) {
+            $message = sprintf('Error creating zip archive with filepath "%s"', $filename);
+            $this->log->error($message);
+
+            throw new ExportException($message);
+        }
+
+        $zip->addGlob(storage_path('bar-assistant/uploads/*/*'), options: ['remove_path' => storage_path('bar-assistant')]);
+        $zip->addGlob(storage_path('bar-assistant/database.sqlite'), options: ['remove_path' => storage_path('bar-assistant')]);
+
+        if ($metaContent = json_encode($meta)) {
+            $zip->addFromString('_meta.json', $metaContent);
+        }
+
+        $zip->close();
+
+        return $filename;
+    }
 }

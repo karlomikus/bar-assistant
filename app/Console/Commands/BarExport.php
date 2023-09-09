@@ -13,7 +13,7 @@ class BarExport extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:export-zip';
+    protected $signature = 'bar:export-zip {--version3}';
 
     /**
      * The console command description.
@@ -34,8 +34,14 @@ class BarExport extends Command
      */
     public function handle()
     {
+        $forVersion3 = $this->option('version3');
+
         try {
-            $filepath = $this->exportService->instanceShareExport();
+            if ($forVersion3) {
+                $filepath = $this->exportService->exportForVersion3();
+            } else {
+                $filepath = $this->exportService->instanceShareExport();
+            }
         } catch (Throwable $e) {
             $this->error($e->getMessage());
 
