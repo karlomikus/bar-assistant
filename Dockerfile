@@ -3,10 +3,15 @@ FROM php:8.2-fpm
 ARG BAR_ASSISTANT_VERSION
 ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-develop}
 
-ARG PGID=33
+ARG PGID=1000
 ENV PGID=${PGID}
-ARG PUID=33
+ARG PUID=1000
 ENV PUID=${PUID}
+
+# User and Group
+RUN set -eux && \
+    groupadd -g ${PGID} -r bass && \
+    useradd -u ${PUID} -m -s /bin/bash -g bass bass
 
 # Add dependencies
 RUN apt update \
@@ -28,7 +33,6 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
 COPY ./resources/docker/php.ini $PHP_INI_DIR/php.ini
 
 # Setup nginx
-COPY ./resources/docker/nginx.conf /etc/nginx/sites-enabled/default
 RUN echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf
 
 # Add container entrypoint script

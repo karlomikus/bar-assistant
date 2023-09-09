@@ -1,13 +1,13 @@
-/vendor
-/node_modules
-/.vscode
-/public/build
-/public/hot
-/public/storage
-/public/app_images
-/storage/*.key
-/database/database.sqlite
-/storage/database.sqlite
+vendor
+node_modules
+.vscode
+.github
+public/storage
+public/uploads
+storage/logs/*
+storage/http_cache/*
+storage/debugbar/*
+storage/bar-assistant
 .env
 
 Dockerfile
