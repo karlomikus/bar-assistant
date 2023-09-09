@@ -63,6 +63,11 @@ class User extends Authenticatable
 
     public function joinBarAs(Bar $bar, UserRoleEnum $role = UserRoleEnum::General): BarMembership
     {
+        $existingMembership = $this->getBarMembership($bar->id);
+        if ($existingMembership !== null) {
+            return $existingMembership;
+        }
+
         $barMemberShip = new BarMembership();
         $barMemberShip->bar_id = $bar->id;
         $barMemberShip->user_role_id = $role->value;

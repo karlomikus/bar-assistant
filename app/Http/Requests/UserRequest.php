@@ -33,7 +33,7 @@ class UserRequest extends FormRequest
 
         $rules = [
             'name' => 'required',
-            'role_id' => [new Enum(UserRoleEnum::class)],
+            'role_id' => ['required', new Enum(UserRoleEnum::class)],
             'email' => [
                 'required',
                 'email',
