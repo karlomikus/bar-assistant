@@ -1,3 +1,8 @@
+# v2.5.4
+## Fixes
+- Fixed notes staying after cocktail delete
+- Fixed missing env variable
+
 # v2.5.3
 ## Fixes
 - Fixed null mapping of cocktail substitutes when importing from collection

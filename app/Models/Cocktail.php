@@ -100,6 +100,7 @@ class Cocktail extends Model
     {
         $this->deleteImages();
         $this->deleteRatings();
+        $this->deleteNotes();
 
         return parent::delete();
     }

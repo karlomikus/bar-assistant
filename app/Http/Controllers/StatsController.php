@@ -17,13 +17,14 @@ class StatsController extends Controller
 {
     public function index(CocktailService $cocktailService, Request $request): JsonResponse
     {
+        $limit = $request->get('limit', 5);
         $stats = [];
 
         $popularIngredientIds = DB::table('cocktail_ingredients')
             ->select('ingredient_id', DB::raw('COUNT(ingredient_id) AS cocktails_count'))
             ->groupBy('ingredient_id')
             ->orderBy('cocktails_count', 'desc')
-            ->limit(10)
+            ->limit($limit)
             ->get();
 
         $topRatedCocktailIds = DB::table('ratings')
@@ -32,7 +33,18 @@ class StatsController extends Controller
             ->groupBy('rateable_id')
             ->orderBy('avg_rating', 'desc')
             ->orderBy('votes', 'desc')
-            ->limit(10)
+            ->limit($limit)
+            ->get();
+
+        $userFavoriteIngredients = DB::table('cocktail_ingredients')
+            ->selectRaw('ingredient_id, ingredients.name, COUNT(cocktail_id) AS cocktails_count')
+            ->whereIn('cocktail_id', function ($query) use ($request) {
+                $query->from('cocktail_favorites')->select('cocktail_id')->where('user_id', $request->user()->id);
+            })
+            ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
+            ->groupBy('ingredient_id')
+            ->orderBy('cocktails_count', 'DESC')
+            ->limit($limit)
             ->get();
 
         $stats['total_cocktails'] = Cocktail::count();
@@ -44,6 +56,7 @@ class StatsController extends Controller
         $stats['most_popular_ingredients'] = $popularIngredientIds;
         $stats['top_rated_cocktails'] = $topRatedCocktailIds;
         $stats['total_collections'] = CocktailCollection::where('user_id', $request->user()->id)->count();
+        $stats['your_top_ingredients'] = $userFavoriteIngredients;
 
         return response()->json(['data' => $stats]);
     }
