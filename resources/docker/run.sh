@@ -3,6 +3,8 @@
 set -e
 
 first_time_check() {
+    mkdir -p /var/www/cocktails/storage/bar-assistant/uploads/{cocktails,ingredients,temp}
+
     if [ ! -f /var/www/cocktails/.env ]; then
         cp .env.dist .env
 
@@ -19,7 +21,6 @@ first_time_check() {
 }
 
 start_system() {
-    mkdir -p /var/www/cocktails/storage/bar-assistant/uploads/{cocktails,ingredients,temp}
     first_time_check
 
     php artisan migrate --force --isolated
