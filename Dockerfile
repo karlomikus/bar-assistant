@@ -28,7 +28,7 @@ RUN apt update \
 # Add composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-FROM php-base
+FROM php-base as dist
 
 WORKDIR /var/www/cocktails
 
@@ -54,3 +54,17 @@ EXPOSE 3000
 VOLUME ["/var/www/cocktails/storage/bar-assistant"]
 
 ENTRYPOINT ["entrypoint"]
+
+FROM php-base as localdev
+
+RUN useradd -G www-data,root -u $PUID -d /home/developer developer
+RUN mkdir -p /home/developer/.composer && \
+    chown -R developer:developer /home/developer
+
+USER developer
+
+WORKDIR /var/www/cocktails
+
+EXPOSE 9000
+
+CMD ["php-fpm"]

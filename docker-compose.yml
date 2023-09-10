@@ -2,11 +2,11 @@ version: "3.7"
 services:
   app:
     build:
+      target: localdev
       args:
-        user: developer
-        uid: 1000
+        PUID: 1000
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     container_name: app
     restart: unless-stopped
     extra_hosts:
