@@ -4,6 +4,7 @@ set -e
 
 first_time_check() {
     mkdir -p /var/www/cocktails/storage/bar-assistant/uploads/{cocktails,ingredients,temp}
+    mkdir /var/www/cocktails/storage/bar-assistant/backups
 
     if [ ! -f /var/www/cocktails/.env ]; then
         cp .env.dist .env
