@@ -15,17 +15,17 @@ services:
       - ./:/var/www/cocktails
       - ./resources/php.dev.ini:/usr/local/etc/php/conf.d/local.ini
 
-  # queue:
-  #   build:
-  #     args:
-  #       user: developer
-  #       uid: 1000
-  #     context: .
-  #     dockerfile: Dockerfile.dev
-  #   restart: always
-  #   command: php artisan queue:work
-  #   volumes:
-  #     - ./:/var/www/cocktails
+  queue:
+    build:
+      target: localdev
+      args:
+        PUID: 1000
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: php artisan queue:work --tries=3 --max-time=3600
+    volumes:
+      - ./:/var/www/cocktails
 
   # minio:
   #   image: 'bitnami/minio:latest'
