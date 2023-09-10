@@ -21,7 +21,7 @@ class BarBackup extends Command
      *
      * @var string
      */
-    protected $description = 'Backup all data related to bars.';
+    protected $description = 'Complete backup of all data related to a bar.';
 
     /**
      * Execute the console command.

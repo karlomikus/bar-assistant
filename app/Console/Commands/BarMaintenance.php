@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Kami\Cocktail\Console\Commands;
 
 use Throwable;
@@ -48,11 +50,11 @@ class BarMaintenance extends Command
 
         // Clear unused images
         $this->info('Checking unused images...');
-        $this->deleteUnusedImages();
+        // $this->deleteUnusedImages();
 
         // Optimize images
         $this->info('Optimizing images...');
-        $this->optimizeImages();
+        // $this->optimizeImages();
 
         // Update indexes
         Artisan::call('bar:refresh-search --clear');
