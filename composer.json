@@ -12,7 +12,7 @@
         "karlomikus/recipe-utils": "^0.3.0",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
-        "laravel/scout": "^9.4",
+        "laravel/scout": "^10.3",
         "laravel/tinker": "^2.7",
         "meilisearch/meilisearch-php": "^1.0",
         "spatie/array-to-xml": "^3.1",
