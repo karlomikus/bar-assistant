@@ -77,30 +77,30 @@ class BarMaintenance extends Command
         });
     }
 
-    private function deleteUnusedImages(): void
-    {
-        $baDisk = Storage::disk('bar-assistant');
-        $images = Image::whereNull('imageable_id')->get();
+    // private function deleteUnusedImages(): void
+    // {
+    //     $baDisk = Storage::disk('bar-assistant');
+    //     $images = Image::whereNull('imageable_id')->get();
 
-        if ($images->isNotEmpty()) {
-            $i = 0;
-            foreach ($images as $image) {
-                try {
-                    $i++;
-                    $image->delete();
-                } catch (Throwable) {
-                }
-            }
-            $this->info('Deleted ' . $i . ' images.');
-        }
+    //     if ($images->isNotEmpty()) {
+    //         $i = 0;
+    //         foreach ($images as $image) {
+    //             try {
+    //                 $i++;
+    //                 $image->delete();
+    //             } catch (Throwable) {
+    //             }
+    //         }
+    //         $this->info('Deleted ' . $i . ' images.');
+    //     }
 
-        $tempFiles = $baDisk->files('temp/');
+    //     $tempFiles = $baDisk->files('temp/');
 
-        if (count($tempFiles) > 0) {
-            $baDisk->delete($tempFiles);
-            $this->info('Deleted ' . count($tempFiles) . ' temporary images.');
-        }
-    }
+    //     if (count($tempFiles) > 0) {
+    //         $baDisk->delete($tempFiles);
+    //         $this->info('Deleted ' . count($tempFiles) . ' temporary images.');
+    //     }
+    // }
 
     public function optimizeImages(): void
     {

@@ -9,20 +9,21 @@ use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Scraper\Manager;
 use Kami\Cocktail\Import\FromArray;
-use Kami\Cocktail\Import\FromCollection;
+use Kami\Cocktail\Jobs\ImportCollection;
 use Kami\Cocktail\Http\Requests\ImportRequest;
+use Kami\Cocktail\Import\DuplicateActionsEnum;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CocktailResource;
-use Kami\Cocktail\Http\Resources\CollectionResource;
 
 class ImportController extends Controller
 {
-    public function cocktail(ImportRequest $request, FromArray $arrayImporter, FromCollection $collectionImporter): JsonResponse|JsonResource
+    public function cocktail(ImportRequest $request, FromArray $arrayImporter): JsonResponse|JsonResource
     {
         $dataToImport = [];
         $type = $request->get('type', 'url');
         $save = $request->get('save', false);
         $source = $request->post('source');
+        $duplicateAction = DuplicateActionsEnum::from((int) $request->post('duplicate_actions', '0'));
 
         if ($type === 'url') {
             $request->validate(['source' => 'url']);
@@ -64,9 +65,11 @@ class ImportController extends Controller
                 abort(400, sprintf('No cocktails found'));
             }
 
-            $collection = $collectionImporter->process($source, $request->user()->id, bar()->id);
+            ImportCollection::dispatch($source, $request->user()->id, bar()->id, $duplicateAction);
 
-            return new CollectionResource($collection);
+            return response()->json([
+                'data' => ['status' => 'started']
+            ]);
         }
 
         if ($save) {

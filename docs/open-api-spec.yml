@@ -5,6 +5,27 @@ info:
   description: |-
     Bar Assistant is a self hosted application for managing your home bar.
 
+    ## Content
+
+    You should add Content-Type header for every request: `Content-Type: application/json`
+
+    ## Authentication
+
+    Add your login token in header for every request, for example: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.
+    For requests that need reference to bar, add your bar id via query string, for example: `/api/example?bar_id=1`
+
+    ## Authorization
+
+    You will get response with error message and status code `403` if you try to access resource that you don't have permissions for.
+
+    ## Sorting
+
+    ## Includes
+
+    ## Pagination
+
+    ## Filtering
+
     [Documentation](https://bar-assistant.github.io/docs/) | [Source](https://github.com/karlomikus/bar-assistant)
 servers:
   - url: /api
@@ -136,13 +157,7 @@ paths:
           $ref: '#/components/responses/UnprocessableEntity'
   /cocktails:
     parameters:
-    - in: query
-      name: bar_id
-      required: true
-      schema:
-        type: integer
-        example: 1
-      description: Bar reference
+      - $ref: '#/components/parameters/barReference'
     get:
       parameters:
       - in: query
@@ -541,13 +556,7 @@ paths:
                       example: 1
   /ingredients:
     parameters:
-    - in: query
-      name: bar_id
-      required: true
-      schema:
-        type: integer
-        example: 1
-      description: Bar reference
+      - $ref: '#/components/parameters/barReference'
     get:
       parameters:
       - in: query
@@ -771,6 +780,8 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /glasses:
+    parameters:
+      - $ref: '#/components/parameters/barReference'
     get:
       tags:
         - Glasses
@@ -1035,13 +1046,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /ingredient-categories:
     parameters:
-    - in: query
-      name: bar_id
-      required: true
-      schema:
-        type: integer
-        example: 1
-      description: Bar reference
+      - $ref: '#/components/parameters/barReference'
     get:
       tags:
         - "Ingredient categories"
@@ -1151,6 +1156,8 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /shelf/ingredients:
+    parameters:
+      - $ref: '#/components/parameters/barReference'
     get:
       tags:
         - "User shelf"
@@ -1291,13 +1298,7 @@ paths:
           $ref: '#/components/responses/UnprocessableEntity'
   /shopping-list:
     parameters:
-    - in: query
-      name: bar_id
-      required: true
-      schema:
-        type: integer
-        example: 1
-      description: Bar reference
+      - $ref: '#/components/parameters/barReference'
     get:
       tags:
         - "Shopping list"
@@ -1317,13 +1318,7 @@ paths:
                       $ref: '#/components/schemas/UserShoppingList'
   /shopping-list/share:
     parameters:
-    - in: query
-      name: bar_id
-      required: true
-      schema:
-        type: integer
-        example: 1
-      description: Bar reference
+      - $ref: '#/components/parameters/barReference'
     get:
       tags:
         - "Shopping list"
@@ -1341,13 +1336,7 @@ paths:
                   Description
   /shopping-list/batch-store:
     parameters:
-    - in: query
-      name: bar_id
-      required: true
-      schema:
-        type: integer
-        example: 1
-      description: Bar reference
+      - $ref: '#/components/parameters/barReference'
     post:
       tags:
         - "Shopping list"
@@ -1378,13 +1367,7 @@ paths:
                       $ref: '#/components/schemas/UserShoppingList'
   /shopping-list/batch-delete:
     parameters:
-    - in: query
-      name: bar_id
-      required: true
-      schema:
-        type: integer
-        example: 1
-      description: Bar reference
+      - $ref: '#/components/parameters/barReference'
     post:
       tags:
         - "Shopping list"
@@ -1422,13 +1405,7 @@ paths:
                           type: integer
   /tags:
     parameters:
-    - in: query
-      name: bar_id
-      required: true
-      schema:
-        type: integer
-        example: 1
-      description: Bar reference
+      - $ref: '#/components/parameters/barReference'
     get:
       tags:
         - "Tags"
@@ -1592,13 +1569,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /users:
     parameters:
-    - in: query
-      name: bar_id
-      required: true
-      schema:
-        type: integer
-        example: 1
-      description: Bar reference
+      - $ref: '#/components/parameters/barReference'
     get:
       tags:
         - Users
@@ -1722,13 +1693,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /stats:
     parameters:
-    - in: query
-      name: bar_id
-      required: true
-      schema:
-        type: integer
-        example: 1
-      description: Bar reference
+      - $ref: '#/components/parameters/barReference'
     get:
       tags:
         - Stats
@@ -1746,13 +1711,7 @@ paths:
                     $ref: '#/components/schemas/StatsResponse'
   /cocktail-methods:
     parameters:
-    - in: query
-      name: bar_id
-      required: true
-      schema:
-        type: integer
-        example: 1
-      description: Bar reference
+      - $ref: '#/components/parameters/barReference'
     get:
       tags:
         - "Cocktail methods"
@@ -1925,13 +1884,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /collections:
     parameters:
-    - in: query
-      name: bar_id
-      required: true
-      schema:
-        type: integer
-        example: 1
-      description: Bar reference
+      - $ref: '#/components/parameters/barReference'
     get:
       parameters:
       - in: query
@@ -2149,13 +2102,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /import/cocktail:
     parameters:
-      - in: query
-        name: bar_id
-        required: true
-        schema:
-          type: integer
-          example: 1
-        description: Bar reference
+      - $ref: '#/components/parameters/barReference'
       - in: query
         name: type
         description: Data source type, defaults to URL
@@ -2226,6 +2173,8 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /utensils:
+    parameters:
+      - $ref: '#/components/parameters/barReference'
     get:
       tags:
         - "Utensils"
@@ -2438,6 +2387,14 @@ components:
     user_token:
       type: http
       scheme: bearer
+  parameters:
+    barReference:
+      name: bar_id
+      in: query
+      description: Reference to bar resource
+      required: true
+      schema:
+        type: integer
   responses:
     UnprocessableEntity:
       description: Request body validation failed

@@ -23,7 +23,8 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
-    command: php artisan queue:work --tries=3 --max-time=3600
+    # In dev env use listen instead of work
+    command: php artisan queue:listen
     volumes:
       - ./:/var/www/cocktails
 

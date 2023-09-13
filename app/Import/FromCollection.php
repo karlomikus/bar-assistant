@@ -13,7 +13,7 @@ class FromCollection
     {
     }
 
-    public function process(array $sourceData, int $userId, int $barId): CocktailCollection
+    public function process(array $sourceData, int $userId, int $barId, DuplicateActionsEnum $duplicateAction): CocktailCollection
     {
         $barMembership = BarMembership::where('bar_id', $barId)->where('user_id', $userId)->firstOrFail();
 
@@ -24,7 +24,7 @@ class FromCollection
         $collection->save();
 
         foreach ($sourceData['cocktails'] as $cocktail) {
-            $cocktail = $this->fromArrayImporter->process($cocktail, $userId, $barId);
+            $cocktail = $this->fromArrayImporter->process($cocktail, $userId, $barId, $duplicateAction);
             $cocktail->addToCollection($collection);
         }
 

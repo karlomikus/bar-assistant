@@ -27,8 +27,23 @@ class FromArray
     ) {
     }
 
-    public function process(array $sourceData, int $userId, int $barId): Cocktail
-    {
+    /**
+     *
+     * @param array<mixed> $sourceData
+     */
+    public function process(
+        array $sourceData,
+        int $userId,
+        int $barId,
+        DuplicateActionsEnum $duplicateAction = DuplicateActionsEnum::None
+    ): Cocktail {
+        if ($duplicateAction === DuplicateActionsEnum::Skip) {
+            $existingCocktail = Cocktail::whereRaw('LOWER(name) = ?', [strtolower($sourceData['name'])])->first();
+            if ($existingCocktail !== null) {
+                return $existingCocktail;
+            }
+        }
+
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
         $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
@@ -141,6 +156,13 @@ class FromArray
             $ingredients,
             $cocktailImages,
         );
+
+        if ($duplicateAction === DuplicateActionsEnum::Overwrite) {
+            $existingCocktail = DB::table('cocktails')->select('id')->whereRaw('LOWER(name) = ?', [strtolower($sourceData['name'])])->first();
+            if ($existingCocktail !== null) {
+                return $this->cocktailService->updateCocktail($existingCocktail->id, $cocktailDTO);
+            }
+        }
 
         return $this->cocktailService->createCocktail($cocktailDTO);
     }

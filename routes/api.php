@@ -14,7 +14,6 @@ use Kami\Cocktail\Http\Controllers\StatsController;
 use Kami\Cocktail\Http\Controllers\UsersController;
 use Kami\Cocktail\Http\Controllers\ImportController;
 use Kami\Cocktail\Http\Controllers\RatingController;
-use Kami\Cocktail\Http\Controllers\ScrapeController;
 use Kami\Cocktail\Http\Controllers\ServerController;
 use Kami\Cocktail\Http\Controllers\ExploreController;
 use Kami\Cocktail\Http\Controllers\ProfileController;
@@ -167,10 +166,6 @@ Route::middleware($authMiddleware)->group(function() {
         Route::get('/{id}', [CocktailMethodController::class, 'show'])->name('cocktail-methods.show');
         Route::put('/{id}', [CocktailMethodController::class, 'update']);
         Route::delete('/{id}', [CocktailMethodController::class, 'delete']);
-    });
-
-    Route::prefix('scrape')->group(function() {
-        Route::post('/cocktail', [ScrapeController::class, 'cocktail']);
     });
 
     Route::prefix('notes')->group(function() {

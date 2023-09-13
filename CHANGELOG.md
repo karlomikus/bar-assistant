@@ -9,15 +9,19 @@
 
 ## Improved user control
 - Users can have one of the following roles in a bar:
-    - Admin
-        - Full access to all actions
-    - Moderator
-        - Can't modify bar settings
-    - General
-        - Can add cocktails and ingredients
-        - Manage its own shelf and collections
     - Guest
-        - Can't add cocktails and ingredients
+        - Rate and favorite cocktails
+        - Create personal collections
+    - General
+        - Everything as "Guest"
+        - Can add cocktails and ingredients
+    - Moderator
+        - Everything as "General"
+        - Can not modify bar
+        - Can not change user roles
+    - Admin
+        - Everything as "Moderator"
+        - Full access to all bar actions
 
 ## Breaking changes
 - Removed POST `shelf/ingredients/{ingredientId}` endpoint
@@ -32,10 +36,16 @@
 - Removed `bar:make-admin` command
 - Removed `bar:open` command
 - Removed `bar:refresh-user-search-keys` command
+- Removed `bar:import-zip` command
+- Removed `bar:scrape` command
+- Removed `bar:export-zip` command
+    - You can use `bar:backup {barId}` instead
 
 ## New
 - Added `bars/` endpoint
 - Stats now have users top 5 favorite ingredients, calculated from favorite cocktails
+- Importing cocktails from collection now has actions on how to handle duplicates
+- Added `bar:backup {barId}` command
 
 ## Changes
 - Optimized base images of cocktails and ingredients
