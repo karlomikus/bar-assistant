@@ -62,6 +62,12 @@ final class CocktailQueryFilter extends QueryBuilder
                 AllowedFilter::callback('user_rating_max', function ($query, $value) {
                     $query->where('user_rating', '<=', (int) $value);
                 }),
+                AllowedFilter::callback('average_rating_min', function ($query, $value) {
+                    $query->where('average_rating', '>=', (int) $value);
+                }),
+                AllowedFilter::callback('average_rating_max', function ($query, $value) {
+                    $query->where('average_rating', '<=', (int) $value);
+                }),
                 AllowedFilter::callback('abv_min', function ($query, $value) {
                     $query->where('abv', '>=', $value);
                 }),
@@ -96,7 +102,7 @@ final class CocktailQueryFilter extends QueryBuilder
                         ->orderBy('cf.updated_at', $direction);
                 }),
             ])
-            ->allowedIncludes(['glass', 'method', 'user', 'collections', 'navigation'])
+            ->allowedIncludes(['glass', 'method', 'user', 'navigation', 'utensils', 'createdUser', 'updatedUser'])
             ->with('ingredients.ingredient', 'images', 'tags', 'ratings')
             ->selectRaw('cocktails.*, COUNT(ci.cocktail_id) AS total_ingredients, COUNT(ci.ingredient_id) - COUNT(ui.ingredient_id) AS missing_ingredients')
             ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')

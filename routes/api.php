@@ -64,8 +64,8 @@ Route::middleware($authMiddleware)->group(function() {
 
     Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
 
-    Route::get('/user', [ProfileController::class, 'show']);
-    Route::post('/user', [ProfileController::class, 'update']);
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::post('/profile', [ProfileController::class, 'update']);
 
     Route::prefix('shelf')->group(function() {
         Route::get('/cocktails', [ShelfController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);

@@ -24,6 +24,7 @@
         - Full access to all bar actions
 
 ## Breaking changes
+- Removed POST `shelf/ingredients` endpoint
 - Removed POST `shelf/ingredients/{ingredientId}` endpoint
     - **Upgrade guide**: Use `shelf/ingredients/batch-store` endpoint
 - Removed DELETE `shelf/ingredients/{ingredientId}` endpoint
@@ -40,6 +41,7 @@
 - Removed `bar:scrape` command
 - Removed `bar:export-zip` command
     - You can use `bar:backup {barId}` instead
+- Renamed `/user` endpoint to `/profile`
 
 ## New
 - Added `bars/` endpoint

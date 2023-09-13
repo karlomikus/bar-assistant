@@ -7,7 +7,7 @@ info:
 
     ## Content
 
-    You should add Content-Type header for every request: `Content-Type: application/json`
+    You should set `Content-Type: application/json` header for each request.
 
     ## Authentication
 
@@ -20,11 +20,19 @@ info:
 
     ## Sorting
 
+    Some endpoints allow sorting by specific attributes. Prepending `-` defines descending order, and omitting it defines ascending order. Seperate multiple sorts by a comma. For example: `?sort=name` will sort by name attribute in ascending order.
+
     ## Includes
+
+    Some endpoints allow including extra relationship data on demand. Seperate multiple relations witha a comma. For example: `?include=notes,user` will include extra extra data for notes and user.
 
     ## Pagination
 
+    Some endpoints allow paginating results. Use `?per_page=30` to limit total results per request. Use `?page=3` to go to a specific page.
+
     ## Filtering
+
+    Some endpoints allow filtering by a specific attribute. For example: `?filter[attribute_name]=value`.
 
     [Documentation](https://bar-assistant.github.io/docs/) | [Source](https://github.com/karlomikus/bar-assistant)
 servers:
@@ -34,6 +42,8 @@ tags:
     description: Operations related to server
   - name: Auth
     description: Operations related to user authentication
+  - name: Profile
+    description: Operations related to current user
   - name: Ingredients
     description: Operations related to ingredients
   - name: Cocktails
@@ -46,8 +56,6 @@ tags:
     description: Operations related to ingredient categories
   - name: "User shelf"
     description: Operations related to user shelf
-  - name: User
-    description: Operations related to current user
   - name: Users
     description: Operations related to users
   - name: "Shopping list"
@@ -77,7 +85,7 @@ paths:
     get:
       tags:
         - Server
-      summary: Get server version information
+      summary: Get server information
       operationId: getServerVersion
       security: []
       responses:
@@ -101,7 +109,7 @@ paths:
     post:
       tags:
         - Auth
-      summary: Authenticate and get a token
+      summary: Authenticate user and get a token
       operationId: login
       security: []
       requestBody:
@@ -163,7 +171,7 @@ paths:
       - in: query
         name: filter
         required: false
-        description: Filter by specific parameters
+        description: Filter by specific attributes
         explode: true
         style: deepObject
         schema:
@@ -171,7 +179,7 @@ paths:
           properties:
             id:
               type: string
-              example: 3,4,5
+              example: "3"
             name:
               type: string
               example: "old"
@@ -179,20 +187,20 @@ paths:
               type: string
               example: "campari"
             ingredient_id:
-              type: integer
-              example: 3
+              type: string
+              example: "3"
             tag_id:
               type: string
-              example: 4
+              example: "4"
             created_user_id:
               type: string
-              example: 3
+              example: "3"
             glass_id:
               type: string
-              example: 1
+              example: "1"
             cocktail_method_id:
               type: string
-              example: 1
+              example: "1"
             favorites:
               type: boolean
               example: true
@@ -208,6 +216,12 @@ paths:
             user_rating_max:
               type: integer
               example: 5
+            average_rating_min:
+              type: integer
+              example: 3
+            average_rating_max:
+              type: integer
+              example: 5
             abv_min:
               type: number
               example: 15
@@ -215,11 +229,11 @@ paths:
               type: number
               example: 55.5
             main_ingredient_id:
-              type: integer
-              example: 1
+              type: string
+              example: "1"
             collection_id:
-              type: integer
-              example: 1
+              type: string
+              example: "1"
             shelf_ingredients:
               type: string
               example: 5,6,7
@@ -229,7 +243,7 @@ paths:
         schema:
           type: string
           example: name,-created_at
-        description: "Sort by specific parameters, change order by prepending `-`. Available sorts: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `favorited_at`, `missing_ingredients`. Seperate multiple sorts with a comma `,`."
+        description: "Available sort attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `favorited_at`, `missing_ingredients`. Seperate multiple sorts with a comma `,`."
       - in: query
         name: per_page
         required: false
@@ -250,7 +264,7 @@ paths:
         schema:
           type: string
           example: notes,user
-        description: "Comma seperated names of extra data you want to include in response: `notes`, `glass`, `user`, `collections`, `method`, `ingredients`"
+        description: "Comma seperated names of extra data you want to include in response: `glass`, `createdUser`, `updatedUser`, `method`, `ingredients`, `utensils`"
       tags:
         - "Cocktails"
       summary: 'Show a paginated list of cocktails'
@@ -275,6 +289,8 @@ paths:
                     $ref: '#/components/schemas/PaginationLinks'
                   meta:
                     $ref: '#/components/schemas/PaginationMeta'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
     post:
       tags:
         - "Cocktails"
@@ -301,6 +317,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Cocktail'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /cocktails/{id}:
@@ -326,6 +344,8 @@ paths:
                 properties:
                     data:
                       $ref: '#/components/schemas/Cocktail'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
     put:
@@ -398,6 +418,8 @@ paths:
                         type: boolean
                         description: 'Is cocktail favorited'
                         example: true
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
   /cocktails/{id}/public-link:
@@ -423,6 +445,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/CocktailPublic'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
     delete:
@@ -485,6 +509,8 @@ paths:
                   message:
                     type: string
                     example: 'Requested type "notype" not supported.'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
   /cocktails/{id}/similar:
@@ -517,17 +543,13 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Cocktail'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
   /shelf/cocktails:
     parameters:
-    - in: query
-      name: bar_id
-      required: true
-      schema:
-        type: integer
-        example: 1
-      description: Bar reference
+      - $ref: '#/components/parameters/barReference'
     get:
       parameters:
         - in: query
@@ -554,6 +576,102 @@ paths:
                     items:
                       type: integer
                       example: 1
+  /shelf/cocktail-favorites:
+    parameters:
+      - $ref: '#/components/parameters/barReference'
+    get:
+      tags:
+        - "User shelf"
+      summary: 'Get a list of cocktail ids that you favorited'
+      operationId: getFavoritedCocktailIds
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: integer
+                      example: 1
+  /shelf/ingredients:
+    parameters:
+      - $ref: '#/components/parameters/barReference'
+    get:
+      tags:
+        - "User shelf"
+      summary: "Get all ingredients in user shelf"
+      operationId: getShelfIngredients
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserIngredient'
+  /shelf/ingredients/batch-store:
+    parameters:
+      - $ref: '#/components/parameters/barReference'
+    post:
+      tags:
+        - "User shelf"
+      summary: "Add multiple ingredients to user shelf"
+      operationId: addIngredientsToShelf
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ingredient_ids:
+                  type: array
+                  example: [1]
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserIngredient'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /shelf/ingredients/batch-delete:
+    parameters:
+      - $ref: '#/components/parameters/barReference'
+    post:
+      tags:
+        - "User shelf"
+      summary: "Add a single ingredient to user shelf"
+      operationId: removeIngredientsFromShelf
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ingredient_ids:
+                  type: array
+                  example: [1]
+                  items:
+                    type: integer
+      responses:
+        '204':
+          description: Successfully deleted ingredients
   /ingredients:
     parameters:
       - $ref: '#/components/parameters/barReference'
@@ -653,6 +771,8 @@ paths:
                     $ref: '#/components/schemas/PaginationLinks'
                   meta:
                     $ref: '#/components/schemas/PaginationMeta'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
     post:
       tags:
         - Ingredients
@@ -679,6 +799,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Ingredient'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /ingredients/{id}:
@@ -704,6 +826,8 @@ paths:
                 properties:
                     data:
                       $ref: '#/components/schemas/Ingredient'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
     put:
@@ -777,6 +901,8 @@ paths:
                         name:
                           type: string
                           example: Mai Tai
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
   /glasses:
@@ -1155,97 +1281,10 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
-  /shelf/ingredients:
-    parameters:
-      - $ref: '#/components/parameters/barReference'
+  /profile:
     get:
       tags:
-        - "User shelf"
-      summary: "Get all ingredients in user shelf"
-      operationId: getShelfIngredients
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserIngredient'
-    post:
-      tags:
-        - "User shelf"
-      summary: "Add multiple ingredients to user shelf"
-      operationId: addIngredientsToShelf
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                ingredient_ids:
-                  type: array
-                  example: [1]
-                  items:
-                    type: integer
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserIngredient'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-  /shelf/ingredients/{ingredientId}:
-    parameters:
-      - in: path
-        name: ingredientId
-        description: 'Database id of the ingredient'
-        schema:
-          type: integer
-        required: true
-    post:
-      tags:
-        - "User shelf"
-      summary: "Add a single ingredient to user shelf"
-      operationId: addIngredientToShelf
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/UserIngredient'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-    delete:
-      tags:
-        - "User shelf"
-      summary: Delete a single ingredient from user shelf
-      operationId: deleteIngredientFromShelf
-      responses:
-        '204':
-          description: Successfully deleted ingredient
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /user:
-    get:
-      tags:
-        - "User"
+        - "Profile"
       summary: "Get info about currently authenticated user"
       operationId: getProfile
       responses:
@@ -1260,7 +1299,7 @@ paths:
                     $ref: '#/components/schemas/Profile'
     post:
       tags:
-        - "User"
+        - "Profile"
       summary: "Update currently authenticated user"
       operationId: updateProfile
       description: "Updates currently authenticated user with new information. If password field is present also changes the password."
@@ -2346,6 +2385,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Bar'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
     put:
@@ -2368,6 +2409,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Bar'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
         '422':
@@ -2380,6 +2423,41 @@ paths:
       responses:
         '204':
           description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /bars/{id}/memberships:
+    delete:
+      tags:
+        - Bars
+      summary: Leave the bar if you have membership
+      operationId: leaveBar
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /bars/{id}/memberships/{userId}:
+    parameters:
+      - in: path
+        name: userId
+        description: 'Database id of user'
+        schema:
+          type: integer
+        required: true
+    delete:
+      tags:
+        - Bars
+      summary: Remove user from the bar
+      operationId: deleteMembership
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 components:
@@ -2700,28 +2778,24 @@ components:
     Version:
       type: object
       required:
-        - name
         - version
         - type
         - search_host
         - search_version
       properties:
-        name:
-          type: string
-          example: 'Bar Assistant'
         version:
           type: string
-          example: 'v1.0.0'
+          example: 'v3.0.0'
         type:
           type: string
           example: 'local'
         search_host:
           type: string
           format: hostname
-          example: 'https://my-meilisearch-server.com'
+          example: 'https://search.example.com'
         search_version:
           type: string
-          example: '0.29.0'
+          example: '1.3.0'
     Image:
       type: object
       required:
@@ -2925,12 +2999,12 @@ components:
         - main_image_id
         - images
         - tags
-        - user_rating
-        - average_rating
+        - rating
         - created_at
         - updated_at
         - abv
         - public_id
+        - access
       properties:
         id:
           type: integer
@@ -2983,14 +3057,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CocktailIngredient'
-        user_rating:
-          type: integer
-          nullable: true
-          example: 3
-        average_rating:
-          type: integer
-          nullable: true
-          example: 3
+        rating:
+          type: object
+          properties:
+            user:
+              type: integer
+              example: 5
+            average:
+              type: integer
+              example: 5
+            total_votes:
+              type: integer
+              example: 322
         created_at:
           type: string
           format: datetime
@@ -3006,10 +3084,6 @@ components:
           $ref: '#/components/schemas/UserBasic'
         method:
           $ref: '#/components/schemas/CocktailMethod'
-        collections:
-          type: array
-          items:
-            $ref: '#/components/schemas/CocktailCollection'
         utensils:
           type: array
           items:
@@ -3023,6 +3097,17 @@ components:
           type: string
           nullable: true
           format: uuid
+        access:
+          type: object
+          properties:
+            can_edit:
+              type: boolean
+            can_delete:
+              type: boolean
+            can_rate:
+              type: boolean
+            can_add_note:
+              type: boolean
         navigation:
           type: object
           properties:
