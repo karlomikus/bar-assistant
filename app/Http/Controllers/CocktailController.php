@@ -69,6 +69,7 @@ class CocktailController extends Controller
                 (int) $formIngredient['sort'],
                 $formIngredient['optional'] ?? false,
                 $formIngredient['substitutes'] ?? [],
+                $formIngredient['amount_max'] ?? null
             );
             $ingredients[] = $ingredient;
         }
@@ -123,6 +124,7 @@ class CocktailController extends Controller
                 (int) $formIngredient['sort'],
                 $formIngredient['optional'] ?? false,
                 $formIngredient['substitutes'] ?? [],
+                $formIngredient['amount_max'] ?? null
             );
             $ingredients[] = $ingredient;
         }

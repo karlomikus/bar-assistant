@@ -249,6 +249,7 @@ class Cocktail extends Model implements UploadableInterface
                     'sort' => $cIngredient->sort ?? 0,
                     'name' => $cIngredient->ingredient->name,
                     'amount' => $cIngredient->amount,
+                    'amount_max' => $cIngredient->amount_max,
                     'units' => $cIngredient->units,
                     'optional' => (bool) $cIngredient->optional,
                     'category' => $cIngredient->ingredient->category->name,

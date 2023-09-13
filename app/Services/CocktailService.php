@@ -51,6 +51,7 @@ class CocktailService
                 $cIngredient->units = $ingredient->units;
                 $cIngredient->optional = $ingredient->optional;
                 $cIngredient->sort = $ingredient->sort;
+                $cIngredient->amount_max = $ingredient->amountMax;
 
                 $cocktail->ingredients()->save($cIngredient);
 
@@ -131,6 +132,7 @@ class CocktailService
                 $cIngredient->units = $ingredient->units;
                 $cIngredient->optional = $ingredient->optional;
                 $cIngredient->sort = $ingredient->sort;
+                $cIngredient->amount_max = $ingredient->amountMax;
 
                 $cocktail->ingredients()->save($cIngredient);
 
