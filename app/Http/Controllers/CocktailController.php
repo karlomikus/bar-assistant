@@ -20,6 +20,7 @@ use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\CocktailPublicResource;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDTO;
+use Kami\Cocktail\DataObjects\Cocktail\Substitute as SubstituteDTO;
 
 class CocktailController extends Controller
 {
@@ -61,6 +62,16 @@ class CocktailController extends Controller
 
         $ingredients = [];
         foreach ($request->post('ingredients', []) as $formIngredient) {
+            $substitutes = [];
+            foreach ($formIngredient['substitutes'] ?? [] as $sub) {
+                $substitutes[] = new SubstituteDTO(
+                    $sub['id'],
+                    $sub['amount'] ? (float) $sub['amount'] : null,
+                    $sub['amount_max'] ? (float) $sub['amount_max'] : null,
+                    $sub['units'],
+                );
+            }
+
             $ingredient = new IngredientDTO(
                 (int) $formIngredient['ingredient_id'],
                 null,
@@ -68,8 +79,9 @@ class CocktailController extends Controller
                 $formIngredient['units'],
                 (int) $formIngredient['sort'],
                 $formIngredient['optional'] ?? false,
-                $formIngredient['substitutes'] ?? [],
-                $formIngredient['amount_max'] ?? null
+                $substitutes,
+                $formIngredient['amount_max'] ? (float) $formIngredient['amount_max'] : null,
+                $formIngredient['note']
             );
             $ingredients[] = $ingredient;
         }
@@ -116,6 +128,16 @@ class CocktailController extends Controller
 
         $ingredients = [];
         foreach ($request->post('ingredients', []) as $formIngredient) {
+            $substitutes = [];
+            foreach ($formIngredient['substitutes'] ?? [] as $sub) {
+                $substitutes[] = new SubstituteDTO(
+                    (int) $sub['id'],
+                    $sub['amount'] ? (float) $sub['amount'] : null,
+                    $sub['amount_max'] ? (float) $sub['amount_max'] : null,
+                    $sub['units'],
+                );
+            }
+
             $ingredient = new IngredientDTO(
                 (int) $formIngredient['ingredient_id'],
                 null,
@@ -123,8 +145,9 @@ class CocktailController extends Controller
                 $formIngredient['units'],
                 (int) $formIngredient['sort'],
                 $formIngredient['optional'] ?? false,
-                $formIngredient['substitutes'] ?? [],
-                $formIngredient['amount_max'] ?? null
+                $substitutes,
+                $formIngredient['amount_max'] ? (float) $formIngredient['amount_max'] : null,
+                $formIngredient['note']
             );
             $ingredients[] = $ingredient;
         }

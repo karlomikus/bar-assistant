@@ -52,13 +52,17 @@ class CocktailService
                 $cIngredient->optional = $ingredient->optional;
                 $cIngredient->sort = $ingredient->sort;
                 $cIngredient->amount_max = $ingredient->amountMax;
+                $cIngredient->note = $ingredient->note;
 
                 $cocktail->ingredients()->save($cIngredient);
 
                 // Substitutes
-                foreach ($ingredient->substitutes as $subId) {
+                foreach ($ingredient->substitutes as $substituteDto) {
                     $substitute = new CocktailIngredientSubstitute();
-                    $substitute->ingredient_id = $subId;
+                    $substitute->ingredient_id = $substituteDto->ingredientId;
+                    $substitute->amount = $substituteDto->amount;
+                    $substitute->amount_max = $substituteDto->amountMax;
+                    $substitute->units = $substituteDto->units;
                     $cIngredient->substitutes()->save($substitute);
                 }
             }
@@ -79,7 +83,7 @@ class CocktailService
             $this->log->error('[COCKTAIL_SERVICE] ' . $e->getMessage());
             $this->db->rollBack();
 
-            throw new CocktailException('Error occured while creating a cocktail!', 0, $e);
+            throw $e;
         }
 
         $this->db->commit();
@@ -133,14 +137,18 @@ class CocktailService
                 $cIngredient->optional = $ingredient->optional;
                 $cIngredient->sort = $ingredient->sort;
                 $cIngredient->amount_max = $ingredient->amountMax;
+                $cIngredient->note = $ingredient->note;
 
                 $cocktail->ingredients()->save($cIngredient);
 
                 // Substitutes
                 $cIngredient->substitutes()->delete();
-                foreach ($ingredient->substitutes as $subId) {
+                foreach ($ingredient->substitutes as $substituteDto) {
                     $substitute = new CocktailIngredientSubstitute();
-                    $substitute->ingredient_id = $subId;
+                    $substitute->ingredient_id = $substituteDto->ingredientId;
+                    $substitute->amount = $substituteDto->amount;
+                    $substitute->amount_max = $substituteDto->amountMax;
+                    $substitute->units = $substituteDto->units;
                     $cIngredient->substitutes()->save($substitute);
                 }
             }
@@ -161,7 +169,7 @@ class CocktailService
             $this->log->error('[COCKTAIL_SERVICE] ' . $e->getMessage());
             $this->db->rollBack();
 
-            throw new CocktailException('Error occured while updating a cocktail with id "' . $id . '"!', 0, $e);
+            throw $e;
         }
 
         $this->db->commit();

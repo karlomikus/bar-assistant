@@ -48,6 +48,9 @@
 - Stats now have users top 5 favorite ingredients, calculated from favorite cocktails
 - Importing cocktails from collection now has actions on how to handle duplicates
 - Added `bar:backup {barId}` command
+- Cocktail ingredient now supports variable amounts, you can add max amount with `amount_max` attribute
+- Cocktail ingredient now supports note, you can add note with `note` attribute
+- Cocktail substitutes now have the following attributes: `ingredient_id`, `amount`, `amount_max`, `units`
 
 ## Changes
 - Optimized base images of cocktails and ingredients

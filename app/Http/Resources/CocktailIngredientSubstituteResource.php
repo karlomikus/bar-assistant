@@ -23,6 +23,9 @@ class CocktailIngredientSubstituteResource extends JsonResource
             'id' => $this->ingredient_id,
             'slug' => $this->ingredient->slug,
             'name' => $this->ingredient->name,
+            'amount' => $this->amount,
+            'amount_max' => $this->amount_max,
+            'units' => $this->units,
         ];
     }
 }

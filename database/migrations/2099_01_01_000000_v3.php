@@ -163,6 +163,7 @@ return new class extends Migration
             $table->string('units');
             $table->integer('sort')->default(0);
             $table->boolean('optional')->default(false);
+            $table->text('note')->nullable();
         });
 
         Schema::create('cocktail_favorites', function (Blueprint $table) {
@@ -219,6 +220,7 @@ return new class extends Migration
             $table->foreignId('cocktail_ingredient_id')->constrained()->onDelete('cascade');
             $table->foreignId('ingredient_id')->constrained()->onDelete('cascade');
             $table->decimal('amount')->nullable();
+            $table->decimal('amount_max')->nullable();
             $table->string('units')->nullable();
             $table->timestamps();
         });
