@@ -12,7 +12,14 @@ first_time_check() {
         if [ ! -f /var/www/cocktails/storage/bar-assistant/database.sqlite ]; then
             echo "Database not found, creating a new database..."
             touch /var/www/cocktails/storage/bar-assistant/database.sqlite
-            php artisan bar:open
+            php artisan migrate:fresh --force
+            echo "Opening new Bar"
+            if [ $IMPORT_DEFAULT_DATA = false ];
+            then
+                php artisan bar:open -c
+            else
+                php artisan bar:open
+            fi
         fi
     fi
 }
