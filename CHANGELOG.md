@@ -1,3 +1,10 @@
+# v2.6.0
+## New
+- Added export options for version 3: `php artisan bar:export-zip --version3`
+
+## Fixes
+- Fixed migrations missing on first start
+
 # v2.5.4
 ## Fixes
 - Fixed notes staying after cocktail delete
