@@ -14,12 +14,7 @@ first_time_check() {
             touch /var/www/cocktails/storage/bar-assistant/database.sqlite
             php artisan migrate:fresh --force
             echo "Opening new Bar"
-            if [ $IMPORT_DEFAULT_DATA = false ];
-            then
-                php artisan bar:open -c
-            else
-                php artisan bar:open
-            fi
+            php artisan bar:open
         fi
     fi
 }
