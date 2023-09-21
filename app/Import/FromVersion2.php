@@ -22,7 +22,7 @@ class FromVersion2
     public function process(): void
     {
         $backupDB = DB::connection('sqlite_import_from_v2');
-        $oldUploads = 'bar-assistant/backupv2/uploads';
+        $oldUploads = 'bar-assistant/uploads';
 
         DB::transaction(function () use ($backupDB, $oldUploads) {
             $newUsers = [];
@@ -81,7 +81,6 @@ class FromVersion2
                     'bar_id' => $barId,
                     'name' => $row->name,
                     'description' => $row->description,
-                    'created_user_id' => $newAdminId,
                     'created_at' => $row->created_at ?? now(),
                     'updated_at' => now(),
                 ]);
@@ -96,7 +95,6 @@ class FromVersion2
                     'name' => $row->name,
                     'description' => $row->description,
                     'dilution_percentage' => $row->dilution_percentage,
-                    'created_user_id' => $newAdminId,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -110,7 +108,6 @@ class FromVersion2
                     'bar_id' => $barId,
                     'name' => $row->name,
                     'description' => $row->description,
-                    'created_user_id' => $newAdminId,
                     'created_at' => $row->created_at ?? now(),
                     'updated_at' => now(),
                 ]);
@@ -124,7 +121,6 @@ class FromVersion2
                     'bar_id' => $barId,
                     'name' => $row->name,
                     'description' => $row->description,
-                    'created_user_id' => $newAdminId,
                     'created_at' => $row->created_at ?? now(),
                     'updated_at' => now(),
                 ]);
@@ -337,9 +333,25 @@ class FromVersion2
                 ]);
             }
 
-            File::move(storage_path($oldUploads . '/cocktails'), storage_path('bar-assistant/uploads/cocktails/' . $barId));
-            File::move(storage_path($oldUploads . '/ingredients'), storage_path('bar-assistant/uploads/ingredients/' . $barId));
-            File::move(storage_path($oldUploads . '/temp'), storage_path('bar-assistant/uploads/temp'));
+            // Backup old uploads
+            File::ensureDirectoryExists(storage_path('bar-assistant/backup_v2/'));
+            if (File::exists(storage_path($oldUploads . '/cocktails'))) {
+                File::move(storage_path($oldUploads . '/cocktails'), storage_path('bar-assistant/backup_v2/cocktails'));
+            }
+            if (File::exists(storage_path($oldUploads . '/ingredients'))) {
+                File::move(storage_path($oldUploads . '/ingredients'), storage_path('bar-assistant/backup_v2/ingredients'));
+            }
+            if (File::exists(storage_path($oldUploads . '/temp'))) {
+                File::move(storage_path($oldUploads . '/temp'), storage_path('bar-assistant/backup_v2/temp'));
+            }
+
+            // Move to new strucutre
+            File::ensureDirectoryExists(storage_path('bar-assistant/uploads/cocktails'));
+            File::ensureDirectoryExists(storage_path('bar-assistant/uploads/ingredients'));
+            File::ensureDirectoryExists(storage_path('bar-assistant/uploads/temp'));
+            File::move(storage_path('bar-assistant/backup_v2/cocktails'), storage_path('bar-assistant/uploads/cocktails/' . $barId));
+            File::move(storage_path('bar-assistant/backup_v2/ingredients'), storage_path('bar-assistant/uploads/ingredients/' . $barId));
+            File::move(storage_path('bar-assistant/backup_v2/temp'), storage_path('bar-assistant/uploads/temp'));
 
             /** @phpstan-ignore-next-line */
             Ingredient::where('bar_id', $barId)->searchable();
