@@ -20,7 +20,6 @@ class GlassFactory extends Factory
             'name' => fake()->name(),
             'description' => fake()->paragraph(),
             'bar_id' => \Kami\Cocktail\Models\Bar::factory(),
-            'created_user_id' => \Kami\Cocktail\Models\User::factory(),
         ];
     }
 }

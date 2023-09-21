@@ -70,6 +70,7 @@ class UsersControllerTest extends TestCase
             'name' => 'Test',
             'email' => 'test@test.com',
             'password' => 'TEST',
+            'role_id' => UserRoleEnum::Admin->value,
         ]);
 
         $response->assertCreated();
@@ -95,6 +96,7 @@ class UsersControllerTest extends TestCase
         $response = $this->putJson('/api/users/' . $user->id . '?bar_id=1', [
             'name' => 'Updated Name',
             'email' => 'test@test.com',
+            'role_id' => UserRoleEnum::General->value,
         ]);
 
         $response->assertSuccessful();
@@ -104,7 +106,7 @@ class UsersControllerTest extends TestCase
                 ->has('data')
                 ->where('data.id', $user->id)
                 ->where('data.name', 'Updated Name')
-                ->where('data.email', 'test@test.com')
+                ->where('data.email', $user->email)
                 ->etc()
         );
     }
@@ -116,7 +118,9 @@ class UsersControllerTest extends TestCase
         ]);
         DB::table('bar_memberships')->insert(['bar_id' => 1, 'user_id' => $user->id, 'user_role_id' => UserRoleEnum::General->value]);
 
-        $response = $this->delete('/api/users/' . $user->id . '?bar_id=1');
+        $this->actingAs($user);
+
+        $response = $this->delete('/api/users/' . $user->id);
 
         $response->assertNoContent();
 

@@ -234,7 +234,7 @@ class FromVersion2
                     'bar_membership_id' => $barMemberships[$newUsers[$row->user_id]],
                     'cocktail_id' => $newCocktails[$row->cocktail_id],
                     'created_at' => $row->created_at ?? now(),
-                    'updated_at' => now(),
+                    'updated_at' => $row->updated_at ?? now(),
                 ];
             }
             DB::table('cocktail_favorites')->insert($newCocktailFavorites);
@@ -371,6 +371,8 @@ class FromVersion2
             Ingredient::where('bar_id', $barId)->searchable();
             /** @phpstan-ignore-next-line */
             Cocktail::where('bar_id', $barId)->searchable();
+
+            File::move(storage_path('bar-assistant/database.sqlite'), storage_path('bar-assistant/_database.sqlite'));
         });
     }
 }

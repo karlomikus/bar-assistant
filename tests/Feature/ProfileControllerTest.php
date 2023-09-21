@@ -18,12 +18,12 @@ class ProfileControllerTest extends TestCase
         parent::setUp();
     }
 
-    public function test_current_user_response()
+    public function test_current_user_response(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->getJson('/api/user');
+        $response = $this->getJson('/api/profile');
 
         $response->assertOk();
         $response->assertJson(
@@ -37,12 +37,12 @@ class ProfileControllerTest extends TestCase
         );
     }
 
-    public function test_update_current_user_response()
+    public function test_update_current_user_response(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->postJson('/api/user', [
+        $response = $this->postJson('/api/profile', [
             'email' => 'new@example.com',
             'name' => 'Test Guy',
         ]);
@@ -59,12 +59,12 @@ class ProfileControllerTest extends TestCase
         );
     }
 
-    public function test_update_current_user_with_password_response()
+    public function test_update_current_user_with_password_response(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->postJson('/api/user', [
+        $response = $this->postJson('/api/profile', [
             'email' => 'new@example.com',
             'name' => 'Test Guy',
             'password' => '12345',
@@ -83,12 +83,12 @@ class ProfileControllerTest extends TestCase
         );
     }
 
-    public function test_update_current_user_with_password_fail_response()
+    public function test_update_current_user_with_password_fail_response(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->postJson('/api/user', [
+        $response = $this->postJson('/api/profile', [
             'email' => 'new@example.com',
             'name' => 'Test Guy',
             'password' => '12345',

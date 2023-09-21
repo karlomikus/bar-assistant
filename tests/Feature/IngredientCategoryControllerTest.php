@@ -89,7 +89,6 @@ class IngredientCategoryControllerTest extends TestCase
         $cat = IngredientCategory::factory()->create([
             'name' => 'Start cat',
             'description' => 'Start cat desc',
-            'created_user_id' => auth()->user()->id,
             'bar_id' => $bar->id,
         ]);
 
@@ -116,7 +115,6 @@ class IngredientCategoryControllerTest extends TestCase
         $cat = IngredientCategory::factory()->create([
             'name' => 'Start cat',
             'description' => 'Start cat desc',
-            'created_user_id' => auth()->user()->id,
             'bar_id' => $bar->id,
         ]);
 

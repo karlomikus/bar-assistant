@@ -179,8 +179,9 @@ class CocktailControllerTest extends TestCase
                 ->where('data.main_image_id', null)
                 ->where('data.images', [])
                 ->has('data.tags', 5)
-                ->where('data.user_rating', 4)
-                ->where('data.average_rating', 3)
+                ->where('data.rating.user', 4)
+                ->where('data.rating.average', 3)
+                ->where('data.rating.total_votes', 2)
                 ->where('data.glass.id', $glass->id)
                 ->where('data.method.id', $method->id)
                 ->has('data.abv')
@@ -258,7 +259,9 @@ class CocktailControllerTest extends TestCase
                     'units' => 'ml',
                     'optional' => false,
                     'sort' => 2,
-                    'substitutes' => [$ing3->id]
+                    'substitutes' => [
+                        ['id' => $ing3->id]
+                    ]
                 ]
             ]
         ]);
@@ -276,8 +279,9 @@ class CocktailControllerTest extends TestCase
                 ->where('data.garnish', 'Lemon peel')
                 ->where('data.public_id', null)
                 ->where('data.main_image_id', $image->id)
-                ->where('data.user_rating', null)
-                ->where('data.average_rating', 0)
+                ->where('data.rating.user', null)
+                ->where('data.rating.average', 0)
+                ->where('data.rating.total_votes', 0)
                 ->where('data.source', 'https://karlomikus.com')
                 ->where('data.method.id', $method->id)
                 ->where('data.glass.id', $glass->id)

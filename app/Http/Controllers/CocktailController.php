@@ -66,9 +66,9 @@ class CocktailController extends Controller
             foreach ($formIngredient['substitutes'] ?? [] as $sub) {
                 $substitutes[] = new SubstituteDTO(
                     $sub['id'],
-                    $sub['amount'] ? (float) $sub['amount'] : null,
-                    $sub['amount_max'] ? (float) $sub['amount_max'] : null,
-                    $sub['units'],
+                    array_key_exists('amount', $sub) ? (float) $sub['amount'] : null,
+                    array_key_exists('amount_max', $sub) ? (float) $sub['amount_max'] : null,
+                    $sub['units'] ?? null,
                 );
             }
 
@@ -80,8 +80,8 @@ class CocktailController extends Controller
                 (int) $formIngredient['sort'],
                 $formIngredient['optional'] ?? false,
                 $substitutes,
-                $formIngredient['amount_max'] ? (float) $formIngredient['amount_max'] : null,
-                $formIngredient['note']
+                array_key_exists('amount_max', $formIngredient) ? (float) $formIngredient['amount_max'] : null,
+                $formIngredient['note'] ?? null
             );
             $ingredients[] = $ingredient;
         }
@@ -132,9 +132,9 @@ class CocktailController extends Controller
             foreach ($formIngredient['substitutes'] ?? [] as $sub) {
                 $substitutes[] = new SubstituteDTO(
                     (int) $sub['id'],
-                    $sub['amount'] ? (float) $sub['amount'] : null,
-                    $sub['amount_max'] ? (float) $sub['amount_max'] : null,
-                    $sub['units'],
+                    array_key_exists('amount', $sub) ? (float) $sub['amount'] : null,
+                    array_key_exists('amount_max', $sub) ? (float) $sub['amount_max'] : null,
+                    $sub['units'] ?? null,
                 );
             }
 
@@ -146,8 +146,8 @@ class CocktailController extends Controller
                 (int) $formIngredient['sort'],
                 $formIngredient['optional'] ?? false,
                 $substitutes,
-                $formIngredient['amount_max'] ? (float) $formIngredient['amount_max'] : null,
-                $formIngredient['note']
+                array_key_exists('amount_max', $formIngredient) ? (float) $formIngredient['amount_max'] : null,
+                $formIngredient['note'] ?? null
             );
             $ingredients[] = $ingredient;
         }

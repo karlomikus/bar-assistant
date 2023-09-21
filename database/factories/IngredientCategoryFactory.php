@@ -18,7 +18,6 @@ class IngredientCategoryFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'created_user_id' => \Kami\Cocktail\Models\User::factory(),
             'bar_id' => \Kami\Cocktail\Models\Bar::factory(),
         ];
     }
