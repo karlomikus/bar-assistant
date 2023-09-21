@@ -26,20 +26,24 @@ class ImportServiceTest extends TestCase
 
     public function test_cocktail_default_import_from_array()
     {
+        $bar = $this->setupBar();
         $existingIngredient = Ingredient::factory()
             ->state([
                 'name' => 'Ingredient 1',
                 'strength' => 45.5,
-                'description' => 'Test'
+                'description' => 'Test',
+                'bar_id' => $bar->id,
             ])
             ->create();
 
         $method = CocktailMethod::factory()->create([
-            'name' => 'Method name'
+            'name' => 'Method name',
+            'bar_id' => $bar->id,
         ]);
 
         $glass = Glass::factory()->create([
             'name' => 'Glass name',
+            'bar_id' => $bar->id,
         ]);
 
         $service = $this->getService();
@@ -81,7 +85,7 @@ class ImportServiceTest extends TestCase
             ]
         ];
 
-        $cocktail = $service->importCocktailFromArray($importArray);
+        $cocktail = $service->importCocktailFromArray($importArray, auth()->user()->id, $bar->id);
 
         $this->assertSame('Cocktail name', $cocktail->name);
         $this->assertSame('Instruction data', $cocktail->instructions);

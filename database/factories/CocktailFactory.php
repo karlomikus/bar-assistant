@@ -19,7 +19,8 @@ class CocktailFactory extends Factory
         return [
             'name' => fake()->name(),
             'instructions' => fake()->paragraph(),
-            'user_id' => \Kami\Cocktail\Models\User::factory(),
+            'created_user_id' => \Kami\Cocktail\Models\User::factory(),
+            'bar_id' => \Kami\Cocktail\Models\Bar::factory(),
         ];
     }
 }

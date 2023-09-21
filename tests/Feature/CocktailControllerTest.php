@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Http\UploadedFile;
+use Kami\Cocktail\Models\Utensil;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Storage;
@@ -29,11 +33,13 @@ class CocktailControllerTest extends TestCase
         );
     }
 
-    public function test_cocktails_response()
+    public function test_cocktails_response(): void
     {
-        Cocktail::factory()->count(55)->create();
+        $this->setupBar();
 
-        $response = $this->getJson('/api/cocktails');
+        Cocktail::factory()->count(55)->create(['bar_id' => 1]);
+
+        $response = $this->getJson('/api/cocktails?bar_id=1');
 
         $response->assertStatus(200);
         $response->assertJsonCount(25, 'data');
@@ -42,90 +48,98 @@ class CocktailControllerTest extends TestCase
         $response->assertJsonPath('meta.per_page', 25);
         $response->assertJsonPath('meta.total', 55);
 
-        $response = $this->getJson('/api/cocktails?page=2');
+        $response = $this->getJson('/api/cocktails?bar_id=1&page=2');
         $response->assertJsonPath('meta.current_page', 2);
 
-        $response = $this->getJson('/api/cocktails?per_page=5');
+        $response = $this->getJson('/api/cocktails?bar_id=1&per_page=5');
         $response->assertJsonPath('meta.last_page', 11);
     }
 
-    public function test_cocktails_response_filters()
+    public function test_cocktails_response_with_filters(): void
     {
+        $this->setupBar();
+
         $user = User::factory()->create();
         Cocktail::factory()->createMany([
-            ['name' => 'Old Fashioned'],
-            ['name' => 'XXXX'],
-            ['name' => 'Test', 'user_id' => $user->id],
-            ['name' => 'public', 'public_id' => 'UUID'],
+            ['bar_id' => 1, 'name' => 'Old Fashioned'],
+            ['bar_id' => 1, 'name' => 'XXXX'],
+            ['bar_id' => 1, 'name' => 'Test', 'created_user_id' => $user->id],
+            ['bar_id' => 1, 'name' => 'public', 'public_id' => 'UUID'],
         ]);
-        Cocktail::factory()->hasTags(1)->create(['name' => 'test 1']);
+        Cocktail::factory()->hasTags(1)->create(['name' => 'test 1', 'bar_id' => 1]);
         Cocktail::factory()->has(
             CocktailIngredient::factory()->for(
                 Ingredient::factory()->state(['name' => 'absinthe'])->create()
             ),
             'ingredients'
         )->create([
-            'abv' => 33.3
+            'abv' => 33.3,
+            'bar_id' => 1
         ]);
-        $cocktailFavorited = Cocktail::factory()->create();
+        $cocktailFavorited = Cocktail::factory()->create(['bar_id' => 1]);
 
         $favorite = new CocktailFavorite();
         $favorite->cocktail_id = $cocktailFavorited->id;
-        auth()->user()->favorites()->save($favorite);
+        $favorite->bar_membership_id = 1;
+        $favorite->save();
 
-        $response = $this->getJson('/api/cocktails?filter[name]=old');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[name]=old');
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/cocktails?filter[name]=old,xx');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[name]=old,xx');
         $response->assertJsonCount(2, 'data');
-        $response = $this->getJson('/api/cocktails?filter[tag_id]=1');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[tag_id]=1');
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/cocktails?filter[user_id]=' . $user->id);
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[created_user_id]=' . $user->id);
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/cocktails?filter[on_shelf]=true');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[on_shelf]=true');
         $response->assertJsonCount(0, 'data');
-        $response = $this->getJson('/api/cocktails?filter[favorites]=true');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[favorites]=true');
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/cocktails?filter[is_public]=true');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[is_public]=true');
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/cocktails?filter[ingredient_name]=absinthe');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[ingredient_name]=absinthe');
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/cocktails?filter[id]=1,2');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[id]=1,2');
         $response->assertJsonCount(2, 'data');
-        $response = $this->getJson('/api/cocktails?filter[ingredient_id]=1');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[ingredient_id]=1');
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/cocktails?filter[abv_min]=30');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[abv_min]=30');
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/cocktails?filter[abv_min]=34');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[abv_min]=34');
         $response->assertJsonCount(0, 'data');
-        $response = $this->getJson('/api/cocktails?filter[abv_max]=30');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[abv_max]=30');
         $response->assertJsonCount(0, 'data');
-        $response = $this->getJson('/api/cocktails?filter[abv_max]=50');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[abv_max]=50');
         $response->assertJsonCount(1, 'data');
     }
 
-    public function test_cocktails_response_sorts()
+    public function test_cocktails_response_with_sorts(): void
     {
+        $this->setupBar();
+
         Cocktail::factory()->createMany([
-            ['name' => 'B Cocktail'],
-            ['name' => 'A Cocktail'],
-            ['name' => 'C Cocktail'],
+            ['bar_id' => 1, 'name' => 'B Cocktail'],
+            ['bar_id' => 1, 'name' => 'A Cocktail'],
+            ['bar_id' => 1, 'name' => 'C Cocktail'],
         ]);
 
-        $response = $this->getJson('/api/cocktails?sort=name');
+        $response = $this->getJson('/api/cocktails?bar_id=1&sort=name');
         $response->assertJsonPath('data.0.name', 'A Cocktail');
         $response->assertJsonPath('data.1.name', 'B Cocktail');
         $response->assertJsonPath('data.2.name', 'C Cocktail');
 
-        $response = $this->getJson('/api/cocktails?sort=-name');
+        $response = $this->getJson('/api/cocktails?bar_id=1&sort=-name');
         $response->assertJsonPath('data.0.name', 'C Cocktail');
         $response->assertJsonPath('data.1.name', 'B Cocktail');
         $response->assertJsonPath('data.2.name', 'A Cocktail');
     }
 
-    public function test_cocktail_show_response()
+    public function test_cocktail_show_response(): void
     {
-        $glass = Glass::factory()->create();
-        $method = CocktailMethod::factory()->create();
+        $bar = $this->setupBar();
+
+        $glass = Glass::factory()->create(['bar_id' => $bar->id]);
+        $method = CocktailMethod::factory()->create(['bar_id' => $bar->id]);
         $cocktail = Cocktail::factory()
             ->has(CocktailIngredient::factory()->count(3), 'ingredients')
             ->hasRatings(1, [
@@ -144,7 +158,8 @@ class CocktailControllerTest extends TestCase
                 'garnish' => '# Lemon twist',
                 'description' => 'A short description',
                 'source' => 'http://test.com',
-                'user_id' => auth()->user()->id,
+                'created_user_id' => auth()->user()->id,
+                'bar_id' => $bar->id
             ]);
 
         $response = $this->getJson('/api/cocktails/' . $cocktail->id);
@@ -155,12 +170,11 @@ class CocktailControllerTest extends TestCase
             $json
                 ->has('data.id')
                 ->where('data.name', 'A cocktail name')
-                ->where('data.slug', 'a-cocktail-name')
+                ->where('data.slug', 'a-cocktail-name-1')
                 ->where('data.instructions', "1. Step 1\n2. Step two")
                 ->where('data.garnish', '# Lemon twist')
                 ->where('data.description', 'A short description')
                 ->where('data.source', 'http://test.com')
-                ->where('data.has_public_link', false)
                 ->where('data.public_id', null)
                 ->where('data.main_image_id', null)
                 ->where('data.images', [])
@@ -182,17 +196,30 @@ class CocktailControllerTest extends TestCase
         );
     }
 
-    public function test_cocktail_show_using_slug_response()
+    public function test_cocktail_show_using_slug_response(): void
     {
-        $cocktail = Cocktail::factory()->create();
+        $this->setupBar();
+
+        $cocktail = Cocktail::factory()->create(['bar_id' => 1]);
+
+        $response = $this->getJson('/api/cocktails/' . $cocktail->slug);
+
+        $response->assertStatus(200);
+
+        $cocktail = Cocktail::factory()->create([
+            'slug' => '200',
+            'bar_id' => 1,
+        ]);
 
         $response = $this->getJson('/api/cocktails/' . $cocktail->slug);
 
         $response->assertStatus(200);
     }
 
-    public function test_cocktail_create_response()
+    public function test_cocktail_create_response(): void
     {
+        $this->setupBar();
+
         $gin = Ingredient::factory()
             ->state([
                 'name' => 'Gin',
@@ -203,9 +230,10 @@ class CocktailControllerTest extends TestCase
         $ing3 = Ingredient::factory()->create();
         $method = CocktailMethod::factory()->create();
         $glass = Glass::factory()->create();
-        $image = Image::factory()->create(['user_id' => auth()->user()->id]);
+        $image = Image::factory()->create(['created_user_id' => auth()->user()->id]);
+        Utensil::factory()->count(5)->create();
 
-        $response = $this->postJson('/api/cocktails', [
+        $response = $this->postJson('/api/cocktails?bar_id=1', [
             'name' => "Cocktail name",
             'instructions' => "1. Step\n2. Step",
             'description' => "Cocktail description",
@@ -215,7 +243,7 @@ class CocktailControllerTest extends TestCase
             'glass_id' => $glass->id,
             'images' => [$image->id],
             'tags' => ['Test', 'Gin'],
-            'utensils' => [2, 5, 7],
+            'utensils' => [2, 5, 3],
             'ingredients' => [
                 [
                     'ingredient_id' => $gin->id,
@@ -242,11 +270,10 @@ class CocktailControllerTest extends TestCase
             $json
                 ->has('data.id')
                 ->has('data.created_at')
-                ->where('data.slug', 'cocktail-name')
+                ->where('data.slug', 'cocktail-name-1')
                 ->where('data.name', 'Cocktail name')
                 ->where('data.description', 'Cocktail description')
                 ->where('data.garnish', 'Lemon peel')
-                ->where('data.has_public_link', false)
                 ->where('data.public_id', null)
                 ->where('data.main_image_id', $image->id)
                 ->where('data.user_rating', null)
@@ -277,16 +304,19 @@ class CocktailControllerTest extends TestCase
         );
     }
 
-    public function test_cocktail_update_response()
+    public function test_cocktail_update_response(): void
     {
-        $cocktail = Cocktail::factory()->create();
+        $this->setupBar();
+
+        $cocktail = Cocktail::factory()->create(['bar_id' => 1, 'created_user_id' => 1]);
+        Utensil::factory()->count(5)->create(['bar_id' => 1]);
 
         $gin = Ingredient::factory()
             ->state([
                 'name' => 'Gin',
                 'strength' => 40,
             ])
-            ->create();
+            ->create(['bar_id' => 1]);
 
         $response = $this->putJson('/api/cocktails/' . $cocktail->id, [
             'name' => "Cocktail name",
@@ -313,25 +343,29 @@ class CocktailControllerTest extends TestCase
             fn (AssertableJson $json) =>
             $json
                 ->where('data.id', $cocktail->id)
-                ->where('data.slug', 'cocktail-name')
+                ->where('data.slug', 'cocktail-name-1')
                 ->where('data.name', 'Cocktail name')
                 ->has('data.utensils', 2)
                 ->etc()
         );
     }
 
-    public function test_cocktail_delete_response()
+    public function test_cocktail_delete_response(): void
     {
-        $cocktail = Cocktail::factory()->create();
+        $this->setupBar();
+
+        $cocktail = Cocktail::factory()->create(['created_user_id' => auth()->user()->id, 'bar_id' => 1]);
 
         $response = $this->deleteJson('/api/cocktails/' . $cocktail->id);
 
         $response->assertNoContent();
     }
 
-    public function test_cocktail_delete_deletes_images_response()
+    public function test_cocktail_delete_deletes_images_response(): void
     {
-        $cocktail = Cocktail::factory()->create();
+        $this->setupBar();
+
+        $cocktail = Cocktail::factory()->create(['created_user_id' => auth()->user()->id, 'bar_id' => 1]);
         $storage = Storage::fake('bar-assistant');
         $imageFile = UploadedFile::fake()->image('image1.jpg');
         $image = Image::factory()->for($cocktail, 'imageable')->create([
@@ -339,7 +373,7 @@ class CocktailControllerTest extends TestCase
             'file_extension' => $imageFile->extension(),
             'copyright' => 'initial',
             'sort' => 7,
-            'user_id' => auth()->user()->id
+            'created_user_id' => auth()->user()->id
         ]);
 
         $this->assertTrue($storage->exists($image->file_path));
@@ -349,9 +383,11 @@ class CocktailControllerTest extends TestCase
         $this->assertFalse($storage->exists($image->file_path));
     }
 
-    public function test_make_cocktail_public_link_response()
+    public function test_make_cocktail_public_link_response(): void
     {
-        $cocktail = Cocktail::factory()->create();
+        $this->setupBar();
+
+        $cocktail = Cocktail::factory()->create(['created_user_id' => auth()->user()->id, 'bar_id' => 1]);
 
         $response = $this->postJson('/api/cocktails/' . $cocktail->id . '/public-link');
 
@@ -368,9 +404,11 @@ class CocktailControllerTest extends TestCase
         $this->assertNotNull($cocktail->public_id);
     }
 
-    public function test_delete_cocktail_public_link_response()
+    public function test_delete_cocktail_public_link_response(): void
     {
-        $cocktail = Cocktail::factory()->create();
+        $this->setupBar();
+
+        $cocktail = Cocktail::factory()->create(['created_user_id' => auth()->user()->id, 'bar_id' => 1]);
 
         $response = $this->deleteJson('/api/cocktails/' . $cocktail->id . '/public-link');
 
@@ -380,8 +418,10 @@ class CocktailControllerTest extends TestCase
         $this->assertNull($cocktail->public_id);
     }
 
-    public function test_cocktail_share_response()
+    public function test_cocktail_share_response(): void
     {
+        $this->setupBar();
+
         $cocktail = Cocktail::factory()
             ->has(CocktailIngredient::factory()->count(3), 'ingredients')
             ->create([
@@ -390,11 +430,30 @@ class CocktailControllerTest extends TestCase
                 'garnish' => '# Lemon twist',
                 'description' => 'A short description',
                 'source' => 'http://test.com',
-                'user_id' => auth()->user()->id,
+                'created_user_id' => auth()->user()->id,
+                'bar_id' => 1,
             ]);
 
         $response = $this->getJson('/api/cocktails/' . $cocktail->id . '/share');
 
         $response->assertStatus(200);
+    }
+
+    public function test_cocktail_share_forbidden_response(): void
+    {
+        $user = User::factory()->create();
+        $bar = Bar::factory()->create(['created_user_id' => $user->id]);
+
+        $cocktail = Cocktail::factory()
+            ->create([
+                'name' => 'A cocktail name',
+                'instructions' => "1. Step 1\n2. Step two",
+                'created_user_id' => $user->id,
+                'bar_id' => $bar->id,
+            ]);
+
+        $response = $this->getJson('/api/cocktails/' . $cocktail->id . '/share');
+
+        $response->assertForbidden();
     }
 }

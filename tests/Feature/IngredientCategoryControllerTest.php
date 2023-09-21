@@ -25,9 +25,10 @@ class IngredientCategoryControllerTest extends TestCase
 
     public function test_list_categories_response()
     {
-        IngredientCategory::factory()->count(10)->create();
+        $this->setupBar();
+        IngredientCategory::factory()->count(10)->create(['bar_id' => 1]);
 
-        $response = $this->getJson('/api/ingredient-categories');
+        $response = $this->getJson('/api/ingredient-categories?bar_id=1');
 
         $response->assertStatus(200);
         $response->assertJson(
@@ -40,9 +41,11 @@ class IngredientCategoryControllerTest extends TestCase
 
     public function test_show_category_response()
     {
+        $bar = $this->setupBar();
         $cat = IngredientCategory::factory()->create([
             'name' => 'Test cat',
             'description' => 'Test cat desc',
+            'bar_id' => $bar->id,
         ]);
 
         $response = $this->getJson('/api/ingredient-categories/' . $cat->id);
@@ -61,7 +64,8 @@ class IngredientCategoryControllerTest extends TestCase
 
     public function test_create_category_response()
     {
-        $response = $this->postJson('/api/ingredient-categories/', [
+        $this->setupBar();
+        $response = $this->postJson('/api/ingredient-categories?bar_id=1', [
             'name' => 'Test cat',
             'description' => 'Test cat desc',
         ]);
@@ -81,9 +85,12 @@ class IngredientCategoryControllerTest extends TestCase
 
     public function test_update_category_response()
     {
+        $bar = $this->setupBar();
         $cat = IngredientCategory::factory()->create([
             'name' => 'Start cat',
             'description' => 'Start cat desc',
+            'created_user_id' => auth()->user()->id,
+            'bar_id' => $bar->id,
         ]);
 
         $response = $this->putJson('/api/ingredient-categories/' . $cat->id, [
@@ -105,9 +112,12 @@ class IngredientCategoryControllerTest extends TestCase
 
     public function test_delete_category_response()
     {
+        $bar = $this->setupBar();
         $cat = IngredientCategory::factory()->create([
             'name' => 'Start cat',
             'description' => 'Start cat desc',
+            'created_user_id' => auth()->user()->id,
+            'bar_id' => $bar->id,
         ]);
 
         $response = $this->delete('/api/ingredient-categories/' . $cat->id);

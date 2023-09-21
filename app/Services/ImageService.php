@@ -7,8 +7,11 @@ namespace Kami\Cocktail\Services;
 use Throwable;
 use Thumbhash\Thumbhash;
 use Illuminate\Support\Str;
+use Kami\Cocktail\Models\Bar;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Kami\Cocktail\DataObjects\Image as ImageDTO;
@@ -52,12 +55,10 @@ class ImageService
             $image->copyright = $dtoImage->copyright;
             $image->file_path = $filepath;
             $image->file_extension = $fileExtension;
-            $image->user_id = $userId;
+            $image->created_user_id = $userId;
             $image->sort = $dtoImage->sort;
             $image->placeholder_hash = $thumbHash;
             $image->save();
-
-            $this->log->info('[IMAGE_SERVICE] Image created with id: ' . $image->id);
 
             $images[] = $image;
         }
@@ -72,7 +73,7 @@ class ImageService
      * @param ImageDTO $imageDTO Image object
      * @return \Kami\Cocktail\Models\Image Database image model
      */
-    public function updateImage(int $imageId, ImageDTO $imageDTO): Image
+    public function updateImage(int $imageId, ImageDTO $imageDTO, int $userId): Image
     {
         $image = Image::findOrFail($imageId);
 
@@ -84,14 +85,16 @@ class ImageService
                 $image->file_path = $filepath;
                 $image->placeholder_hash = $thumbHash;
                 $image->file_extension = $fileExtension;
+                $image->updated_user_id = $userId;
+                $image->updated_at = now();
             } catch (Throwable $e) {
-                $this->log->info('[IMAGE_SERVICE] File upload error | ' . $e->getMessage());
+                $this->log->error('[IMAGE_SERVICE] File upload error | ' . $e->getMessage());
             }
 
             try {
                 $this->disk->delete($oldFilePath);
             } catch (Throwable $e) {
-                $this->log->info('[IMAGE_SERVICE] File delete error | ' . $e->getMessage());
+                $this->log->error('[IMAGE_SERVICE] File delete error | ' . $e->getMessage());
             }
         }
 
@@ -104,8 +107,6 @@ class ImageService
         }
 
         $image->save();
-
-        $this->log->info('[IMAGE_SERVICE] Image updated with id: ' . $image->id);
 
         return $image;
     }
@@ -136,6 +137,27 @@ class ImageService
         return $key;
     }
 
+    public function cleanBarImages(Bar $bar): void
+    {
+        $cocktailIds = $bar->cocktails()->pluck('id');
+        $ingredientIds = $bar->ingredients()->pluck('id');
+
+        DB::transaction(function () use ($cocktailIds, $ingredientIds) {
+            DB::table('images')
+                ->where('imageable_type', \Kami\Cocktail\Models\Cocktail::class)
+                ->whereIn('imageable_id', $cocktailIds)
+                ->delete();
+
+            DB::table('images')
+                ->where('imageable_type', \Kami\Cocktail\Models\Ingredient::class)
+                ->whereIn('imageable_id', $ingredientIds)
+                ->delete();
+        });
+
+        File::deleteDirectory(storage_path('bar-assistant/uploads/cocktails/' . $bar->id . '/'));
+        File::deleteDirectory(storage_path('bar-assistant/uploads/ingredients/' . $bar->id . '/'));
+    }
+
     private function processImageFile(InterventionImage $image, ?string $filename = null): array
     {
         $filename = $filename ?? Str::random(40);
@@ -153,7 +175,7 @@ class ImageService
         try {
             $thumbHash = $this->generateThumbHash($image);
         } catch (Throwable $e) {
-            $this->log->info('[IMAGE_SERVICE] ThumbHash Error | ' . $e->getMessage());
+            $this->log->error('[IMAGE_SERVICE] ThumbHash Error | ' . $e->getMessage());
 
             throw $e;
         }
@@ -161,7 +183,7 @@ class ImageService
         try {
             $this->disk->put($filepath, (string) $image->encode());
         } catch (Throwable $e) {
-            $this->log->info('[IMAGE_SERVICE] ' . $e->getMessage());
+            $this->log->error('[IMAGE_SERVICE] ' . $e->getMessage());
 
             throw $e;
         }

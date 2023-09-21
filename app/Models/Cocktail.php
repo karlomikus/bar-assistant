@@ -12,40 +12,42 @@ use Symfony\Component\Uid\Ulid;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Kami\Cocktail\Models\Concerns\HasNotes;
+use Kami\Cocktail\Models\Concerns\HasImages;
+use Kami\Cocktail\Models\Concerns\HasRating;
+use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
-class Cocktail extends Model
+class Cocktail extends Model implements UploadableInterface
 {
     use HasFactory,
         Searchable,
         HasImages,
         HasSlug,
         HasRating,
-        HasNotes;
+        HasNotes,
+        HasBarAwareScope,
+        HasAuthors;
 
     protected $casts = [
         'public_at' => 'datetime',
     ];
 
-    private string $appImagesDir = 'cocktails/';
+    public function getUploadPath(): string
+    {
+        return 'cocktails/' . $this->bar_id . '/';
+    }
 
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
-            ->generateSlugsFrom('name')
+            ->generateSlugsFrom(['name', 'bar_id'])
             ->saveSlugsTo('slug');
-    }
-
-    /**
-     * @return BelongsTo<User, Cocktail>
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 
     /**
@@ -176,15 +178,15 @@ class Cocktail extends Model
      * Only user favorites
      *
      * @param Builder<Cocktail> $baseQuery
-     * @param int $userId
+     * @param int $barMembershipId
      * @return Builder<Cocktail>
      */
-    public function scopeUserFavorites(Builder $baseQuery, int $userId): Builder
+    public function scopeUserFavorites(Builder $baseQuery, int $barMembershipId): Builder
     {
-        return $baseQuery->whereIn('cocktails.id', function ($query) use ($userId) {
+        return $baseQuery->whereIn('cocktails.id', function ($query) use ($barMembershipId) {
             $query->select('cocktail_id')
                 ->from('cocktail_favorites')
-                ->where('user_id', $userId);
+                ->where('bar_membership_id', $barMembershipId);
         });
     }
 
@@ -215,21 +217,11 @@ class Cocktail extends Model
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
-            'garnish' => $this->garnish,
             'image_url' => $this->getMainImageUrl(),
-            'image_hash' => $this->getMainImage()?->placeholder_hash ?? null,
-            'main_image_id' => $this->getMainImage()?->id ?? null,
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
-            'user_id' => $this->user_id,
             'tags' => $this->tags->pluck('name'),
-            // 'utensils' => $this->utensils->pluck('name'),
             'date' => $this->updated_at->format('Y-m-d H:i:s'),
-            'glass' => $this->glass->name ?? null,
-            'average_rating' => (int) round($this->ratings()->avg('rating') ?? 0),
-            'main_ingredient_name' => $this->getMainIngredient()?->ingredient->name ?? null,
-            'calculated_abv' => $this->abv,
-            'method' => $this->method->name ?? null,
-            'has_public_link' => $this->public_id !== null,
+            'bar_id' => $this->bar_id,
         ];
     }
 
@@ -244,6 +236,7 @@ class Cocktail extends Model
             'tags' => $this->tags->pluck('name')->toArray(),
             'glass' => $this->glass?->name ?? null,
             'method' => $this->method?->name ?? null,
+            'abv' => $this->abv,
             'images' => $this->images->map(function (Image $image) {
                 return [
                     'url' => $image->getImageUrl(),
@@ -256,6 +249,7 @@ class Cocktail extends Model
                     'sort' => $cIngredient->sort ?? 0,
                     'name' => $cIngredient->ingredient->name,
                     'amount' => $cIngredient->amount,
+                    'amount_max' => $cIngredient->amount_max,
                     'units' => $cIngredient->units,
                     'optional' => (bool) $cIngredient->optional,
                     'category' => $cIngredient->ingredient->category->name,
@@ -279,11 +273,11 @@ class Cocktail extends Model
 
     public function getNextSlug(): ?string
     {
-        return $this->distinct()->orderBy('name')->limit(1)->where('name', '>', $this->name)->first()?->slug;
+        return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name')->limit(1)->where('name', '>', $this->name)->first()?->slug;
     }
 
     public function getPrevSlug(): ?string
     {
-        return $this->distinct()->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first()?->slug;
+        return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first()?->slug;
     }
 }

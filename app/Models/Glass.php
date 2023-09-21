@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Glass extends Model
 {
-    use HasFactory;
+    use HasFactory, HasBarAwareScope, HasAuthors;
 
     /**
      * @return HasMany<Cocktail>
@@ -21,12 +23,17 @@ class Glass extends Model
         return $this->hasMany(Cocktail::class);
     }
 
+    /**
+     * @return BelongsTo<Bar, Glass>
+     */
+    public function bar(): BelongsTo
+    {
+        return $this->belongsTo(Bar::class);
+    }
+
     public function delete(): bool
     {
-        $cocktailIds = $this->cocktails->pluck('id');
-        DB::table('cocktails')->where('glass_id', $this->id)->update(['glass_id' => null]);
-        /** @phpstan-ignore-next-line Laravel macro */
-        Cocktail::find($cocktailIds)->searchable();
+        $this->cocktails->each(fn ($cocktail) => $cocktail->searchable());
 
         return parent::delete();
     }

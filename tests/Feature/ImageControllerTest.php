@@ -24,36 +24,6 @@ class ImageControllerTest extends TestCase
         );
     }
 
-    public function test_list_images_response()
-    {
-        Image::factory()->for(Cocktail::factory(), 'imageable')->count(45)->create(['user_id' => auth()->user()->id]);
-
-        $response = $this->get('/api/images');
-        $response->assertOk();
-        $response->assertJsonCount(15, 'data');
-        $response->assertJsonPath('meta.current_page', 1);
-        $response->assertJsonPath('meta.last_page', 3);
-        $response->assertJsonPath('meta.per_page', 15);
-        $response->assertJsonPath('meta.total', 45);
-
-        $response = $this->getJson('/api/images?page=2');
-        $response->assertJsonPath('meta.current_page', 2);
-
-        $response = $this->getJson('/api/images?per_page=5');
-        $response->assertJsonPath('meta.last_page', 9);
-    }
-
-    public function test_list_images_response_forbidden()
-    {
-        $this->actingAs(
-            User::factory()->create(['is_admin' => false])
-        );
-        Image::factory()->for(Cocktail::factory(), 'imageable')->count(45)->create(['user_id' => auth()->user()->id]);
-
-        $response = $this->get('/api/images');
-        $response->assertForbidden();
-    }
-
     public function test_single_image_upload()
     {
         Storage::fake('bar-assistant');
@@ -180,7 +150,7 @@ class ImageControllerTest extends TestCase
         $cocktailImage = Image::factory()->for(Cocktail::factory(), 'imageable')->create([
             'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'bar-assistant'),
             'file_extension' => $imageFile->extension(),
-            'user_id' => auth()->user()->id
+            'created_user_id' => auth()->user()->id
         ]);
 
         $response = $this->get('/api/images/' . $cocktailImage->id . '/thumb');
@@ -190,14 +160,15 @@ class ImageControllerTest extends TestCase
 
     public function test_image_update()
     {
+        $bar = $this->setupBar();
         Storage::fake('bar-assistant');
         $imageFile = UploadedFile::fake()->image('image1.jpg');
-        $cocktailImage = Image::factory()->for(Cocktail::factory(), 'imageable')->create([
+        $cocktailImage = Image::factory()->for(Cocktail::factory()->create(['bar_id' => $bar->id]), 'imageable')->create([
             'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'bar-assistant'),
             'file_extension' => $imageFile->extension(),
             'copyright' => 'initial',
             'sort' => 7,
-            'user_id' => auth()->user()->id
+            'created_user_id' => auth()->user()->id
         ]);
 
         $response = $this->postJson('/api/images/' . $cocktailImage->id, [
@@ -234,7 +205,7 @@ class ImageControllerTest extends TestCase
             'file_extension' => $imageFile->extension(),
             'copyright' => 'initial',
             'sort' => 7,
-            'user_id' => auth()->user()->id
+            'created_user_id' => auth()->user()->id
         ]);
 
         $response = $this->post('/api/images/' . $cocktailImage->id, [

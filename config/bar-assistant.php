@@ -11,7 +11,7 @@ return [
     |
     */
 
-    'version' => env('BAR_ASSISTANT_VERSION', 'v0-dev'),
+    'version' => env('BAR_ASSISTANT_VERSION', 'develop'),
 
     /*
     |--------------------------------------------------------------------------
@@ -57,5 +57,7 @@ return [
         'DISABLE_LOGIN',
         false
     ),
+
+    'max_default_bars' => 100,
 
 ];

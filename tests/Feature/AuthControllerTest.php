@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
 use Tests\TestCase;
@@ -11,15 +13,9 @@ class AuthControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    public function test_authenticate_response()
+    public function test_authenticate_response(): void
     {
         $user = User::factory()->create([
-            'id' => 2,
             'email' => 'test@test.com',
             'password' => Hash::make('my-test-password'),
         ]);
@@ -29,10 +25,26 @@ class AuthControllerTest extends TestCase
             'password' => 'my-test-password'
         ]);
 
-        $response->assertStatus(200);
+        $response->assertOk();
+        $this->assertNotNull($response['data']['token']);
     }
 
-    public function test_logout_response()
+    public function test_authenticate_not_found_response(): void
+    {
+        User::factory()->create([
+            'email' => 'test@test.com',
+            'password' => Hash::make('my-test-password'),
+        ]);
+
+        $response = $this->postJson('/api/login', [
+            'email' => 'test@test2.com',
+            'password' => 'my-test-password'
+        ]);
+
+        $response->assertNotFound();
+    }
+
+    public function test_logout_response(): void
     {
         $this->actingAs(
             User::factory()->create()
@@ -41,10 +53,10 @@ class AuthControllerTest extends TestCase
         // Logout and check headers
         $response = $this->postJson('/api/logout');
 
-        $response->assertStatus(200);
+        $response->assertNoContent();
     }
 
-    public function test_register_response()
+    public function test_register_response(): void
     {
         // Logout and check headers
         $response = $this->postJson('/api/register', [
@@ -54,5 +66,7 @@ class AuthControllerTest extends TestCase
         ]);
 
         $response->assertSuccessful();
+        $response->assertJsonPath('data.name', 'Test Guy');
+        $response->assertJsonPath('data.email', 'test@test.com');
     }
 }

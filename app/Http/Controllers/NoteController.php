@@ -11,10 +11,18 @@ use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Http\Requests\NoteRequest;
 use Kami\Cocktail\Http\Resources\NoteResource;
+use Kami\Cocktail\Http\Filters\NoteQueryFilter;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class NoteController extends Controller
 {
+    public function index(Request $request): JsonResource
+    {
+        $notes = (new NoteQueryFilter())->paginate($request->get('per_page', 100))->withQueryString();
+
+        return NoteResource::collection($notes);
+    }
+
     public function show(Request $request, int $id): JsonResource
     {
         $note = Note::findOrFail($id);

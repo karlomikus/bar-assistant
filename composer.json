@@ -40,6 +40,9 @@
         "symplify/easy-coding-standard": "^11.1"
     },
     "autoload": {
+        "files": [
+            "app/helpers.php"
+        ],
         "psr-4": {
             "Kami\\Cocktail\\": "app/",
             "Database\\Factories\\": "database/factories/",

@@ -6,7 +6,7 @@ namespace Kami\Cocktail\Search;
 
 interface SearchActionsContract
 {
-    public function getPublicApiKey(): ?string;
+    public function getBarSearchApiKey(int $barId): ?string;
 
     public function isAvailable(): bool;
 

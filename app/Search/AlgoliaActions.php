@@ -13,7 +13,7 @@ class AlgoliaActions implements SearchActionsContract
     {
     }
 
-    public function getPublicApiKey(): ?string
+    public function getBarSearchApiKey(int $barId): ?string
     {
         $response = $this->client->addApiKey(['search']);
 

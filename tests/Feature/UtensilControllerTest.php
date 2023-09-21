@@ -23,22 +23,26 @@ class UtensilControllerTest extends TestCase
 
     public function test_list_all_utensils_response()
     {
-        $response = $this->getJson('/api/utensils');
+        $this->setupBar();
+        Utensil::factory()->count(10)->create(['bar_id' => 1]);
+        $response = $this->getJson('/api/utensils?bar_id=1');
 
         $response->assertOk();
         $response->assertJson(
             fn (AssertableJson $json) =>
             $json
-                ->has('data', 20)
+                ->has('data', 10)
                 ->etc()
         );
     }
 
     public function test_show_utensil_response()
     {
+        $this->setupBar();
         $utensil = Utensil::factory()->create([
             'name' => 'Utensil 1',
             'description' => 'Utensil 1 Description',
+            'bar_id' => 1,
         ]);
 
         $response = $this->getJson('/api/utensils/' . $utensil->id);
@@ -56,7 +60,8 @@ class UtensilControllerTest extends TestCase
 
     public function test_save_utensil_response()
     {
-        $response = $this->postJson('/api/utensils/', [
+        $this->setupBar();
+        $response = $this->postJson('/api/utensils?bar_id=1', [
             'name' => 'Utensil 1',
             'description' => 'Utensil 1 Description',
         ]);
@@ -72,22 +77,13 @@ class UtensilControllerTest extends TestCase
         );
     }
 
-    public function test_save_utensil_forbidden_response()
-    {
-        $this->actingAs(User::factory()->create(['is_admin' => false]));
-
-        $response = $this->postJson('/api/utensils/', [
-            'name' => 'Utensil 1'
-        ]);
-
-        $response->assertForbidden();
-    }
-
     public function test_update_utensil_response()
     {
+        $this->setupBar();
         $utensil = Utensil::factory()->create([
             'name' => 'Utensil 1',
             'description' => 'Utensil 1 Description',
+            'bar_id' => 1,
         ]);
 
         $response = $this->putJson('/api/utensils/' . $utensil->id, [
@@ -108,13 +104,16 @@ class UtensilControllerTest extends TestCase
 
     public function test_delete_utensil_response()
     {
+        $this->setupBar();
         $utensil = Utensil::factory()->create([
             'name' => 'Utensil 1',
             'description' => 'Utensil 1 Description',
+            'bar_id' => 1,
         ]);
 
         $response = $this->deleteJson('/api/utensils/' . $utensil->id);
 
         $response->assertNoContent();
+        $this->assertDatabaseMissing('utensils', ['id' => $utensil->id]);
     }
 }

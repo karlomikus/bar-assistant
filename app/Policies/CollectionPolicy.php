@@ -12,27 +12,23 @@ class CollectionPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, string $ability): bool|null
+    public function create(User $user): bool
     {
-        if ($user->isAdmin()) {
-            return true;
-        }
-
-        return null;
+        return $user->hasBarMembership(bar()->id);
     }
 
     public function show(User $user, Collection $collection): bool
     {
-        return $user->id === $collection->user_id;
+        return $user->memberships->contains('id', $collection->bar_membership_id);
     }
 
     public function edit(User $user, Collection $collection): bool
     {
-        return $user->id === $collection->user_id;
+        return $user->memberships->contains('id', $collection->bar_membership_id);
     }
 
     public function delete(User $user, Collection $collection): bool
     {
-        return $user->id === $collection->user_id;
+        return $user->memberships->contains('id', $collection->bar_membership_id);
     }
 }

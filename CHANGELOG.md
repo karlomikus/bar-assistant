@@ -1,3 +1,65 @@
+# v3.0.0
+## Multiple bars
+- Bar Assistant now supports multiple bars.
+    - With this change a lot of endpoints require to have bar reference, this comes in a form of `bar_id` query parameter
+    - Please refer to the new schema specification to see what endpoints now require `bar_id` query parameter
+- This update also changed a lot database table schemas, and having automatic data migration would take a lot of time to implement
+    - To migrate your old data you will have an option to upload v2 .zip file when creating a new bar
+- Users can be invited or join with invite code to specific bars
+
+## Improved user control
+- Users can have one of the following roles in a bar:
+    - Guest
+        - Rate and favorite cocktails
+        - Create personal collections
+    - General
+        - Everything as "Guest"
+        - Can add cocktails and ingredients
+    - Moderator
+        - Everything as "General"
+        - Can not modify bar
+        - Can not change user roles
+    - Admin
+        - Everything as "Moderator"
+        - Full access to all bar actions
+
+## Breaking changes
+- Removed POST `shelf/ingredients` endpoint
+- Removed POST `shelf/ingredients/{ingredientId}` endpoint
+    - **Upgrade guide**: Use `shelf/ingredients/batch-store` endpoint
+- Removed DELETE `shelf/ingredients/{ingredientId}` endpoint
+    - **Upgrade guide**: Use `shelf/ingredients/batch-delete` endpoint
+- Removed `notes` property from `Cocktail` schema
+    - **Upgrade guide**: Use `notes/` endpoint to get users notes
+- Removed `glasses/find` endpoint
+    - **Upgrade guide**: Use `glasses/` endpoint with `filter[name]` query string
+- Removed GET `/images` endpoint
+- Removed `bar:make-admin` command
+- Removed `bar:open` command
+- Removed `bar:refresh-user-search-keys` command
+- Removed `bar:import-zip` command
+- Removed `bar:scrape` command
+- Removed `bar:export-zip` command
+    - You can use `bar:backup {barId}` instead
+- Renamed `/user` endpoint to `/profile`
+
+## New
+- Added `bars/` endpoint
+- Stats now have users top 5 favorite ingredients, calculated from favorite cocktails
+- Importing cocktails from collection now has actions on how to handle duplicates
+- Added `bar:backup {barId}` command
+- Cocktail ingredient now supports variable amounts, you can add max amount with `amount_max` attribute
+- Cocktail ingredient now supports note, you can add note with `note` attribute
+- Cocktail substitutes now have the following attributes: `ingredient_id`, `amount`, `amount_max`, `units`
+
+## Changes
+- Optimized base images of cocktails and ingredients
+- Cocktail and ingredient images are now categorized in folders by bar id
+- Merged all migrations to a single one
+- Meilisearch API keys are now generating tenant tokens
+- Changed what data is synced to search servers
+    - TODO
+
 # v2.6.0
 ## New
 - Added export options for version 3: `php artisan bar:export-zip --version3`

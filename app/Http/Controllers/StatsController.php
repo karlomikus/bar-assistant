@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\UserIngredient;
+use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
@@ -17,11 +18,15 @@ class StatsController extends Controller
 {
     public function index(CocktailService $cocktailService, Request $request): JsonResponse
     {
+        $bar = bar();
+        $barMembership = $request->user()->getBarMembership(bar()->id);
         $limit = $request->get('limit', 5);
         $stats = [];
 
         $popularIngredientIds = DB::table('cocktail_ingredients')
             ->select('ingredient_id', DB::raw('COUNT(ingredient_id) AS cocktails_count'))
+            ->join('cocktails', 'cocktails.id', '=', 'cocktail_ingredients.cocktail_id')
+            ->where('cocktails.bar_id', $bar->id)
             ->groupBy('ingredient_id')
             ->orderBy('cocktails_count', 'desc')
             ->limit($limit)
@@ -29,7 +34,9 @@ class StatsController extends Controller
 
         $topRatedCocktailIds = DB::table('ratings')
             ->select('rateable_id AS cocktail_id', DB::raw('AVG(rating) AS avg_rating'), DB::raw('COUNT(*) AS votes'))
+            ->join('cocktails', 'cocktails.id', '=', 'ratings.rateable_id')
             ->where('rateable_type', Cocktail::class)
+            ->where('cocktails.bar_id', $bar->id)
             ->groupBy('rateable_id')
             ->orderBy('avg_rating', 'desc')
             ->orderBy('votes', 'desc')
@@ -38,8 +45,8 @@ class StatsController extends Controller
 
         $userFavoriteIngredients = DB::table('cocktail_ingredients')
             ->selectRaw('ingredient_id, ingredients.name, COUNT(cocktail_id) AS cocktails_count')
-            ->whereIn('cocktail_id', function ($query) use ($request) {
-                $query->from('cocktail_favorites')->select('cocktail_id')->where('user_id', $request->user()->id);
+            ->whereIn('cocktail_id', function ($query) use ($barMembership) {
+                $query->from('cocktail_favorites')->select('cocktail_id')->where('bar_membership_id', $barMembership->id);
             })
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
             ->groupBy('ingredient_id')
@@ -47,15 +54,16 @@ class StatsController extends Controller
             ->limit($limit)
             ->get();
 
-        $stats['total_cocktails'] = Cocktail::count();
-        $stats['total_ingredients'] = Ingredient::count();
-        $stats['total_shelf_cocktails'] = $cocktailService->getCocktailsByUserIngredients(
-            $request->user()->shelfIngredients->pluck('ingredient_id')->toArray()
+        $stats['total_cocktails'] = Cocktail::where('bar_id', $bar->id)->count();
+        $stats['total_ingredients'] = Ingredient::where('bar_id', $bar->id)->count();
+        $stats['total_favorited_cocktails'] = CocktailFavorite::where('bar_membership_id', $barMembership->id)->count();
+        $stats['total_shelf_cocktails'] = $cocktailService->getCocktailsByIngredients(
+            $barMembership->userIngredients->pluck('ingredient_id')->toArray()
         )->count();
-        $stats['total_shelf_ingredients'] = UserIngredient::where('user_id', $request->user()->id)->count();
+        $stats['total_shelf_ingredients'] = UserIngredient::where('bar_membership_id', $barMembership->id)->count();
         $stats['most_popular_ingredients'] = $popularIngredientIds;
         $stats['top_rated_cocktails'] = $topRatedCocktailIds;
-        $stats['total_collections'] = CocktailCollection::where('user_id', $request->user()->id)->count();
+        $stats['total_collections'] = CocktailCollection::where('bar_membership_id', $barMembership->id)->count();
         $stats['your_top_ingredients'] = $userFavoriteIngredients;
 
         return response()->json(['data' => $stats]);

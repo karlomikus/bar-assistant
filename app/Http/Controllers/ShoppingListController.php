@@ -7,9 +7,10 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\UserShoppingList;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\Http\Resources\SuccessActionResource;
+use Kami\Cocktail\Http\Requests\IngredientsBatchRequest;
 use Kami\Cocktail\Http\Resources\UserShoppingListResource;
 
 class ShoppingListController extends Controller
@@ -17,20 +18,27 @@ class ShoppingListController extends Controller
     public function index(Request $request): JsonResource
     {
         return UserShoppingListResource::collection(
-            $request->user()->shoppingList->load('ingredient')
+            $request->user()->getBarMembership(bar()->id)->shoppingListIngredients->load('ingredient')
         );
     }
 
-    public function batchStore(Request $request): JsonResource
+    public function batchStore(IngredientsBatchRequest $request): JsonResource
     {
-        $ingredientIds = $request->post('ingredient_ids');
+        $barMembership = $request->user()->getBarMembership(bar()->id);
+
+        $ingredients = DB::table('ingredients')
+            ->select('id')
+            ->where('bar_id', $barMembership->bar_id)
+            ->whereIn('id', $request->post('ingredient_ids'))
+            ->pluck('id');
 
         $models = [];
-        foreach ($ingredientIds as $ingId) {
+        foreach ($ingredients as $ingId) {
             $usl = new UserShoppingList();
             $usl->ingredient_id = $ingId;
+            $usl->bar_membership_id = $barMembership->id;
             try {
-                $models[] = $request->user()->shoppingList()->save($usl);
+                $models[] = $barMembership->shoppingListIngredients()->save($usl);
             } catch (Throwable) {
             }
         }
@@ -38,25 +46,32 @@ class ShoppingListController extends Controller
         return UserShoppingListResource::collection($models);
     }
 
-    public function batchDelete(Request $request): JsonResource
+    public function batchDelete(IngredientsBatchRequest $request): Response
     {
-        $ingredientIds = $request->post('ingredient_ids');
+        $barMembership = $request->user()->getBarMembership(bar()->id);
+
+        $ingredients = DB::table('ingredients')
+            ->select('id')
+            ->where('bar_id', $barMembership->bar_id)
+            ->whereIn('id', $request->post('ingredient_ids'))
+            ->pluck('id');
 
         try {
-            $request->user()->shoppingList()->whereIn('ingredient_id', $ingredientIds)->delete();
+            $barMembership->shoppingListIngredients()->whereIn('ingredient_id', $ingredients)->delete();
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
         }
 
-        return new SuccessActionResource((object) ['ingredient_ids' => $ingredientIds]);
+        return response(null, 204);
     }
 
     public function share(Request $request): Response
     {
+        $barMembership = $request->user()->getBarMembership(bar()->id);
         $type = $request->get('type', 'markdown');
 
-        $shoppingListIngredients = $request->user()
-            ->shoppingList
+        $shoppingListIngredients = $barMembership
+            ->shoppingListIngredients
             ->load('ingredient.category')
             ->groupBy('ingredient.category.name');
 

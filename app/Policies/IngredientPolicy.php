@@ -12,22 +12,31 @@ class IngredientPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, string $ability): bool|null
+    public function create(User $user): bool
     {
-        if ($user->isAdmin()) {
-            return true;
-        }
+        $barId = bar()->id;
 
-        return null;
+        return $user->isBarAdmin($barId)
+            || $user->isBarModerator($barId)
+            || $user->isBarGeneral($barId);
+    }
+
+    public function show(User $user, Ingredient $ingredient): bool
+    {
+        return $user->hasBarMembership($ingredient->bar_id);
     }
 
     public function edit(User $user, Ingredient $ingredient): bool
     {
-        return $user->id === $ingredient->user_id;
+        return ($user->id === $ingredient->created_user_id && $user->hasBarMembership($ingredient->bar_id))
+            || $user->isBarAdmin($ingredient->bar_id)
+            || $user->isBarModerator($ingredient->bar_id);
     }
 
     public function delete(User $user, Ingredient $ingredient): bool
     {
-        return $user->id === $ingredient->user_id;
+        return ($user->id === $ingredient->created_user_id && $user->hasBarMembership($ingredient->bar_id))
+            || $user->isBarAdmin($ingredient->bar_id)
+            || $user->isBarModerator($ingredient->bar_id);
     }
 }

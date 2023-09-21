@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\UserRoleEnum;
 use Kami\Cocktail\Models\UserIngredient;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,21 +22,23 @@ class ShelfControllerTest extends TestCase
     {
         parent::setUp();
 
-        $ingredients = Ingredient::factory()->count(5)->create();
         $user = User::factory()->create();
+        $this->actingAs($user);
+        $this->setupBar();
+    }
+
+    public function test_list_ingredients_on_shelf_response(): void
+    {
+        $ingredients = Ingredient::factory()->count(5)->create(['bar_id' => 1]);
 
         foreach ($ingredients as $ingredient) {
             $userIngredient = new UserIngredient();
             $userIngredient->ingredient_id = $ingredient->id;
-            $user->shelfIngredients()->save($userIngredient);
+            $userIngredient->bar_membership_id = 1;
+            $userIngredient->save();
         }
 
-        $this->actingAs($user);
-    }
-
-    public function test_list_all_user_ingredients_response()
-    {
-        $response = $this->getJson('/api/shelf/ingredients');
+        $response = $this->getJson('/api/shelf/ingredients?bar_id=1');
 
         $response->assertSuccessful();
         $response->assertJson(
@@ -44,11 +49,11 @@ class ShelfControllerTest extends TestCase
         );
     }
 
-    public function test_add_multiple_ingredients_to_shelf_response()
+    public function test_add_multiple_ingredients_to_shelf_response(): void
     {
-        $newIngredients = Ingredient::factory()->count(2)->create();
+        $newIngredients = Ingredient::factory()->count(2)->create(['bar_id' => 1]);
 
-        $response = $this->postJson('/api/shelf/ingredients', [
+        $response = $this->postJson('/api/shelf/ingredients/batch-store?bar_id=1', [
             'ingredient_ids' => $newIngredients->pluck('id')->toArray()
         ]);
 
@@ -61,37 +66,82 @@ class ShelfControllerTest extends TestCase
         );
     }
 
-    public function test_add_ingredient_to_shelf_response()
+    public function test_add_multiple_ingredients_from_another_bar_to_shelf_response(): void
     {
-        $newIngredient = Ingredient::factory()->create();
+        Bar::factory()->create(['id' => 2]);
+        DB::table('bar_memberships')->insert(['id' => 2, 'bar_id' => 2, 'user_id' => 1, 'user_role_id' => UserRoleEnum::Admin->value]);
+        $ing1 = Ingredient::factory()->create(['bar_id' => 1]);
+        $ing2 = Ingredient::factory()->create(['bar_id' => 2]);
 
-        $response = $this->postJson('/api/shelf/ingredients/' . $newIngredient->id);
+        $response = $this->postJson('/api/shelf/ingredients/batch-store?bar_id=1', [
+            'ingredient_ids' => [$ing1->id, $ing2->id]
+        ]);
 
-        $response->assertOk();
+        $response->assertSuccessful();
         $response->assertJson(
             fn (AssertableJson $json) =>
             $json
-                ->has('data.id')
-                ->has('data.ingredient_slug')
-                ->where('data.ingredient_id', $newIngredient->id)
+                ->has('data', 1)
+                ->where('data.0.ingredient_id', $ing1->id)
                 ->etc()
         );
     }
 
-    public function test_delete_ingredient_from_shelf_response()
+    public function test_delete_multiple_ingredients_from_shelf_response(): void
     {
-        $newIngredient = Ingredient::factory()->create();
+        $ing1 = Ingredient::factory()->create(['bar_id' => 1]);
+        $ing2 = Ingredient::factory()->create(['bar_id' => 1]);
 
-        $response = $this->deleteJson('/api/shelf/ingredients/' . $newIngredient->id);
+        $userIngredient = new UserIngredient();
+        $userIngredient->ingredient_id = $ing1->id;
+        $userIngredient->bar_membership_id = 1;
+        $userIngredient->save();
+
+        $userIngredient = new UserIngredient();
+        $userIngredient->ingredient_id = $ing2->id;
+        $userIngredient->bar_membership_id = 1;
+        $userIngredient->save();
+
+        $response = $this->postJson('/api/shelf/ingredients/batch-delete?bar_id=1', [
+            'ingredient_ids' => [$ing1->id, $ing2->id]
+        ]);
 
         $response->assertNoContent();
 
-        $this->assertDatabaseMissing('user_ingredients', ['ingredient_id' => $newIngredient->id]);
+        $this->assertDatabaseMissing('user_ingredients', ['ingredient_id' => $ing1->id]);
+        $this->assertDatabaseMissing('user_ingredients', ['ingredient_id' => $ing2->id]);
     }
 
-    public function test_user_shelf_cocktails_response()
+    public function test_delete_multiple_ingredients_from_another_bar_response(): void
     {
-        $response = $this->getJson('/api/shelf/cocktails');
+        Bar::factory()->create(['id' => 2]);
+        DB::table('bar_memberships')->insert(['id' => 2, 'bar_id' => 2, 'user_id' => 1, 'user_role_id' => UserRoleEnum::Admin->value]);
+        $ing1 = Ingredient::factory()->create(['bar_id' => 1]);
+        $ing2 = Ingredient::factory()->create(['bar_id' => 2]);
+
+        $userIngredient = new UserIngredient();
+        $userIngredient->ingredient_id = $ing1->id;
+        $userIngredient->bar_membership_id = 1;
+        $userIngredient->save();
+
+        $userIngredient = new UserIngredient();
+        $userIngredient->ingredient_id = $ing2->id;
+        $userIngredient->bar_membership_id = 2;
+        $userIngredient->save();
+
+        $response = $this->postJson('/api/shelf/ingredients/batch-delete?bar_id=1', [
+            'ingredient_ids' => [$ing1->id, $ing2->id]
+        ]);
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('user_ingredients', ['ingredient_id' => $ing1->id]);
+        $this->assertDatabaseHas('user_ingredients', ['ingredient_id' => $ing2->id]);
+    }
+
+    public function test_show_cocktail_ids_on_shelf_response(): void
+    {
+        $response = $this->getJson('/api/shelf/cocktails?bar_id=1');
 
         $response->assertStatus(200);
     }

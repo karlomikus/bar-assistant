@@ -6,6 +6,8 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Kami\Cocktail\Models\User;
+use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\UserRoleEnum;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,17 +18,22 @@ class UsersControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-    }
 
-    public function test_list_users_response()
-    {
         $this->actingAs(
             User::factory()->create()
         );
 
-        User::factory()->count(10)->create();
+        $this->setupBar();
+    }
 
-        $response = $this->getJson('/api/users');
+    public function test_list_users_response(): void
+    {
+        $users = User::factory()->count(9)->create();
+        foreach ($users as $user) {
+            DB::table('bar_memberships')->insert(['bar_id' => 1, 'user_id' => $user->id, 'user_role_id' => UserRoleEnum::General->value]);
+        }
+
+        $response = $this->getJson('/api/users?bar_id=1');
 
         $response->assertStatus(200);
         $response->assertJson(
@@ -37,30 +44,14 @@ class UsersControllerTest extends TestCase
         );
     }
 
-    public function test_list_users_no_access_response()
+    public function test_show_user_response(): void
     {
-        $this->actingAs(
-            User::factory()->create(['is_admin' => false])
-        );
-
-        User::factory()->count(2)->create();
-
-        $response = $this->getJson('/api/users');
-
-        $response->assertForbidden();
-    }
-
-    public function test_show_user_response()
-    {
-        $this->actingAs(
-            User::factory()->create()
-        );
-
-        $model = User::factory()->create([
+        $user = User::factory()->create([
             'name' => 'Test'
         ]);
+        DB::table('bar_memberships')->insert(['bar_id' => 1, 'user_id' => $user->id, 'user_role_id' => UserRoleEnum::General->value]);
 
-        $response = $this->getJson('/api/users/' . $model->id);
+        $response = $this->getJson('/api/users/' . $user->id . '?bar_id=1');
 
         $response->assertStatus(200);
         $response->assertJson(
@@ -73,17 +64,12 @@ class UsersControllerTest extends TestCase
         );
     }
 
-    public function test_create_user_response()
+    public function test_create_user_response(): void
     {
-        $this->actingAs(
-            User::factory()->create()
-        );
-
-        $response = $this->postJson('/api/users/', [
+        $response = $this->postJson('/api/users?bar_id=1', [
             'name' => 'Test',
             'email' => 'test@test.com',
             'password' => 'TEST',
-            'is_admin' => false,
         ]);
 
         $response->assertCreated();
@@ -93,28 +79,22 @@ class UsersControllerTest extends TestCase
             $json
                 ->has('data')
                 ->has('data.id')
-                ->has('data.search_api_key')
                 ->where('data.name', 'Test')
                 ->where('data.email', 'test@test.com')
-                ->where('data.is_admin', false)
                 ->etc()
         );
     }
 
-    public function test_update_user_response()
+    public function test_update_user_response(): void
     {
-        $this->actingAs(
-            User::factory()->create()
-        );
-
-        $model = User::factory()->create([
+        $user = User::factory()->create([
             'name' => 'Initial Name',
         ]);
+        DB::table('bar_memberships')->insert(['bar_id' => 1, 'user_id' => $user->id, 'user_role_id' => UserRoleEnum::General->value]);
 
-        $response = $this->putJson('/api/users/' . $model->id, [
+        $response = $this->putJson('/api/users/' . $user->id . '?bar_id=1', [
             'name' => 'Updated Name',
             'email' => 'test@test.com',
-            'is_admin' => true,
         ]);
 
         $response->assertSuccessful();
@@ -122,28 +102,24 @@ class UsersControllerTest extends TestCase
             fn (AssertableJson $json) =>
             $json
                 ->has('data')
-                ->where('data.id', $model->id)
+                ->where('data.id', $user->id)
                 ->where('data.name', 'Updated Name')
                 ->where('data.email', 'test@test.com')
-                ->where('data.is_admin', true)
                 ->etc()
         );
     }
 
-    public function test_delete_user_response()
+    public function test_delete_user_response(): void
     {
-        $this->actingAs(
-            User::factory()->create()
-        );
-
-        $model = User::factory()->create([
+        $user = User::factory()->create([
             'name' => 'Initial Name',
         ]);
+        DB::table('bar_memberships')->insert(['bar_id' => 1, 'user_id' => $user->id, 'user_role_id' => UserRoleEnum::General->value]);
 
-        $response = $this->delete('/api/users/' . $model->id);
+        $response = $this->delete('/api/users/' . $user->id . '?bar_id=1');
 
         $response->assertNoContent();
 
-        $this->assertDatabaseMissing('users', ['id' => $model->id]);
+        $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
 }

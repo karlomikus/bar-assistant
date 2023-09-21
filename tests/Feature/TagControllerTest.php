@@ -25,9 +25,10 @@ class TagControllerTest extends TestCase
 
     public function test_list_tags_response()
     {
-        Tag::factory()->count(10)->create();
+        $bar = $this->setupBar();
+        Tag::factory()->count(10)->create(['bar_id' => $bar->id]);
 
-        $response = $this->getJson('/api/tags');
+        $response = $this->getJson('/api/tags?bar_id=' . $bar->id);
 
         $response->assertStatus(200);
         $response->assertJson(
@@ -40,8 +41,10 @@ class TagControllerTest extends TestCase
 
     public function test_show_tag_response()
     {
+        $bar = $this->setupBar();
         $model = Tag::factory()->create([
-            'name' => 'Test tag'
+            'name' => 'Test tag',
+            'bar_id' => $bar->id
         ]);
 
         $response = $this->getJson('/api/tags/' . $model->id);
@@ -59,7 +62,8 @@ class TagControllerTest extends TestCase
 
     public function test_create_tag_response()
     {
-        $response = $this->postJson('/api/tags/', [
+        $this->setupBar();
+        $response = $this->postJson('/api/tags?bar_id=1', [
             'name' => 'Test tag',
         ]);
 
@@ -77,8 +81,10 @@ class TagControllerTest extends TestCase
 
     public function test_update_tag_response()
     {
+        $bar = $this->setupBar();
         $model = Tag::factory()->create([
             'name' => 'Start tag',
+            'bar_id' => $bar->id
         ]);
 
         $response = $this->putJson('/api/tags/' . $model->id, [
@@ -98,8 +104,10 @@ class TagControllerTest extends TestCase
 
     public function test_delete_tag_response()
     {
+        $bar = $this->setupBar();
         $tag = Tag::factory()->create([
             'name' => 'Start cat',
+            'bar_id' => $bar->id,
         ]);
 
         $response = $this->delete('/api/tags/' . $tag->id);

@@ -16,27 +16,32 @@ class UtensilsController extends Controller
 {
     public function index(): JsonResource
     {
-        $utensils = Utensil::orderBy('name')->get();
+        $utensils = Utensil::orderBy('name')->filterByBar()->get();
 
         return UtensilResource::collection($utensils);
     }
 
-    public function show(int $id): JsonResource
+    public function show(Request $request, int $id): JsonResource
     {
         $utensil = Utensil::findOrFail($id);
+
+        if ($request->user()->cannot('show', $utensil)) {
+            abort(403);
+        }
 
         return new UtensilResource($utensil);
     }
 
     public function store(UtensilRequest $request): JsonResponse
     {
-        if (!$request->user()->isAdmin()) {
+        if ($request->user()->cannot('create', Utensil::class)) {
             abort(403);
         }
 
         $utensil = new Utensil();
         $utensil->name = $request->post('name');
         $utensil->description = $request->post('description');
+        $utensil->bar_id = bar()->id;
         $utensil->save();
 
         return (new UtensilResource($utensil))
@@ -47,13 +52,15 @@ class UtensilsController extends Controller
 
     public function update(int $id, UtensilRequest $request): JsonResource
     {
-        if (!$request->user()->isAdmin()) {
+        $utensil = Utensil::findOrFail($id);
+
+        if ($request->user()->cannot('edit', $utensil)) {
             abort(403);
         }
 
-        $utensil = Utensil::findOrFail($id);
         $utensil->name = $request->post('name');
         $utensil->description = $request->post('description');
+        $utensil->updated_at = now();
         $utensil->save();
 
         return new UtensilResource($utensil);
@@ -61,11 +68,13 @@ class UtensilsController extends Controller
 
     public function delete(Request $request, int $id): Response
     {
-        if (!$request->user()->isAdmin()) {
+        $utensil = Utensil::findOrFail($id);
+
+        if ($request->user()->cannot('delete', $utensil)) {
             abort(403);
         }
 
-        Utensil::findOrFail($id)->delete();
+        $utensil->delete();
 
         return response(null, 204);
     }

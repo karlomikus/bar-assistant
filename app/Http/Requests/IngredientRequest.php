@@ -27,7 +27,6 @@ class IngredientRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'ingredient_category_id' => 'required',
             'strength' => 'required|numeric',
         ];
     }

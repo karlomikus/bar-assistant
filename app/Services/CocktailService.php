@@ -16,7 +16,6 @@ use Illuminate\Database\DatabaseManager;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Exceptions\CocktailException;
-use Kami\Cocktail\DataObjects\Cocktail\Ingredient;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
 
@@ -39,9 +38,10 @@ class CocktailService
             $cocktail->description = $cocktailDTO->description;
             $cocktail->garnish = $cocktailDTO->garnish;
             $cocktail->source = $cocktailDTO->source;
-            $cocktail->user_id = $cocktailDTO->userId;
+            $cocktail->created_user_id = $cocktailDTO->userId;
             $cocktail->glass_id = $cocktailDTO->glassId;
             $cocktail->cocktail_method_id = $cocktailDTO->methodId;
+            $cocktail->bar_id = $cocktailDTO->barId;
             $cocktail->save();
 
             foreach ($cocktailDTO->ingredients as $ingredient) {
@@ -51,13 +51,18 @@ class CocktailService
                 $cIngredient->units = $ingredient->units;
                 $cIngredient->optional = $ingredient->optional;
                 $cIngredient->sort = $ingredient->sort;
+                $cIngredient->amount_max = $ingredient->amountMax;
+                $cIngredient->note = $ingredient->note;
 
                 $cocktail->ingredients()->save($cIngredient);
 
                 // Substitutes
-                foreach ($ingredient->substitutes as $subId) {
+                foreach ($ingredient->substitutes as $substituteDto) {
                     $substitute = new CocktailIngredientSubstitute();
-                    $substitute->ingredient_id = $subId;
+                    $substitute->ingredient_id = $substituteDto->ingredientId;
+                    $substitute->amount = $substituteDto->amount;
+                    $substitute->amount_max = $substituteDto->amountMax;
+                    $substitute->units = $substituteDto->units;
                     $cIngredient->substitutes()->save($substitute);
                 }
             }
@@ -66,6 +71,7 @@ class CocktailService
             foreach ($cocktailDTO->tags as $tagName) {
                 $tag = Tag::firstOrNew([
                     'name' => trim($tagName),
+                    'bar_id' => $cocktailDTO->barId,
                 ]);
                 $tag->save();
                 $dbTags[] = $tag->id;
@@ -77,7 +83,7 @@ class CocktailService
             $this->log->error('[COCKTAIL_SERVICE] ' . $e->getMessage());
             $this->db->rollBack();
 
-            throw new CocktailException('Error occured while creating a cocktail!', 0, $e);
+            throw $e;
         }
 
         $this->db->commit();
@@ -115,11 +121,10 @@ class CocktailService
             $cocktail->description = $cocktailDTO->description;
             $cocktail->garnish = $cocktailDTO->garnish;
             $cocktail->source = $cocktailDTO->source;
-            if ($cocktail->user_id !== 1) {
-                $cocktail->user_id = $cocktailDTO->userId;
-            }
+            $cocktail->updated_user_id = $cocktailDTO->userId;
             $cocktail->glass_id = $cocktailDTO->glassId;
             $cocktail->cocktail_method_id = $cocktailDTO->methodId;
+            $cocktail->updated_at = now();
             $cocktail->save();
 
             // TODO: Implement upsert and delete
@@ -131,14 +136,19 @@ class CocktailService
                 $cIngredient->units = $ingredient->units;
                 $cIngredient->optional = $ingredient->optional;
                 $cIngredient->sort = $ingredient->sort;
+                $cIngredient->amount_max = $ingredient->amountMax;
+                $cIngredient->note = $ingredient->note;
 
                 $cocktail->ingredients()->save($cIngredient);
 
                 // Substitutes
                 $cIngredient->substitutes()->delete();
-                foreach ($ingredient->substitutes as $subId) {
+                foreach ($ingredient->substitutes as $substituteDto) {
                     $substitute = new CocktailIngredientSubstitute();
-                    $substitute->ingredient_id = $subId;
+                    $substitute->ingredient_id = $substituteDto->ingredientId;
+                    $substitute->amount = $substituteDto->amount;
+                    $substitute->amount_max = $substituteDto->amountMax;
+                    $substitute->units = $substituteDto->units;
                     $cIngredient->substitutes()->save($substitute);
                 }
             }
@@ -147,6 +157,7 @@ class CocktailService
             foreach ($cocktailDTO->tags as $tagName) {
                 $tag = Tag::firstOrNew([
                     'name' => trim($tagName),
+                    'bar_id' => $cocktail->bar_id,
                 ]);
                 $tag->save();
                 $dbTags[] = $tag->id;
@@ -158,7 +169,7 @@ class CocktailService
             $this->log->error('[COCKTAIL_SERVICE] ' . $e->getMessage());
             $this->db->rollBack();
 
-            throw new CocktailException('Error occured while updating a cocktail with id "' . $id . '"!', 0, $e);
+            throw $e;
         }
 
         $this->db->commit();
@@ -192,7 +203,7 @@ class CocktailService
      * @param array<int> $ingredientIds
      * @return \Illuminate\Support\Collection<string, mixed>
      */
-    public function getCocktailsByUserIngredients(array $ingredientIds, ?int $limit = null): Collection
+    public function getCocktailsByIngredients(array $ingredientIds, ?int $limit = null): Collection
     {
         $query = $this->db->table('cocktails AS c')
             ->select('c.id')
@@ -285,34 +296,26 @@ class CocktailService
             ->toArray();
     }
 
-    /**
-     * Toggle user favorite cocktail
-     *
-     * @param \Kami\Cocktail\Models\User $user
-     * @param int $cocktailId
-     * @return bool
-     */
-    public function toggleFavorite(User $user, int $cocktailId): bool
+    public function toggleFavorite(User $user, int $cocktailId): ?CocktailFavorite
     {
-        $cocktail = Cocktail::find($cocktailId);
+        $cocktail = Cocktail::findOrFail($cocktailId);
 
-        if (!$cocktail) {
-            return false;
-        }
+        $barMembership = $user->getBarMembership($cocktail->bar_id);
 
-        $existing = CocktailFavorite::where('cocktail_id', $cocktailId)->where('user_id', $user->id)->first();
+        $existing = CocktailFavorite::where('cocktail_id', $cocktailId)->where('bar_membership_id', $barMembership->id)->first();
         if ($existing) {
             $existing->delete();
 
-            return false;
+            return null;
         }
 
         $cocktailFavorite = new CocktailFavorite();
         $cocktailFavorite->cocktail_id = $cocktail->id;
+        $cocktailFavorite->bar_membership_id = $barMembership->id;
 
-        $user->favorites()->save($cocktailFavorite);
+        $barMembership->cocktailFavorites()->save($cocktailFavorite);
 
-        return true;
+        return $cocktailFavorite;
     }
 
     /**

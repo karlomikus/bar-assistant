@@ -10,11 +10,16 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Kami\Cocktail\Services\IngredientService;
 
+/**
+ * @mixin \Kami\Cocktail\Models\Ingredient
+ */
 final class IngredientQueryFilter extends QueryBuilder
 {
     public function __construct(IngredientService $ingredientService)
     {
         parent::__construct(Ingredient::query());
+
+        $barMembership = $this->request->user()->getBarMembership(bar()->id);
 
         $this
             ->allowedFilters([
@@ -23,14 +28,19 @@ final class IngredientQueryFilter extends QueryBuilder
                 AllowedFilter::beginsWithStrict('name_exact', 'name'),
                 AllowedFilter::exact('category_id', 'ingredient_category_id'),
                 AllowedFilter::partial('origin'),
-                AllowedFilter::exact('user_id'),
-                AllowedFilter::callback('on_shopping_list', function ($query) {
-                    $usersList = $this->request->user()->shoppingList->pluck('ingredient_id');
-                    $query->whereIn('id', $usersList);
-                }),
-                AllowedFilter::callback('on_shelf', function ($query, $value) {
+                AllowedFilter::exact('created_user_id'),
+                AllowedFilter::callback('on_shopping_list', function ($query, $value) use ($barMembership) {
                     if ($value === true) {
-                        $query->join('user_ingredients', 'user_ingredients.ingredient_id', '=', 'ingredients.id')->where('user_ingredients.user_id', $this->request->user()->id);
+                        $query
+                            ->join('user_shopping_lists', 'user_shopping_lists.ingredient_id', '=', 'ingredients.id')
+                            ->where('user_shopping_lists.bar_membership_id', $barMembership->id);
+                    }
+                }),
+                AllowedFilter::callback('on_shelf', function ($query, $value) use ($barMembership) {
+                    if ($value === true) {
+                        $query
+                            ->join('user_ingredients', 'user_ingredients.ingredient_id', '=', 'ingredients.id')
+                            ->where('user_ingredients.bar_membership_id', $barMembership->id);
                     }
                 }),
                 AllowedFilter::callback('strength_min', function ($query, $value) {
@@ -41,7 +51,7 @@ final class IngredientQueryFilter extends QueryBuilder
                 }),
                 AllowedFilter::callback('main_ingredients', function ($query, $value) use ($ingredientService) {
                     if ($value === true) {
-                        $query->whereIn('ingredients.id', $ingredientService->getMainIngredientsInCocktails()->pluck('ingredient_id'));
+                        $query->whereIn('ingredients.id', $ingredientService->getMainIngredientsInCocktails(bar()->id)->pluck('ingredient_id'));
                     }
                 }),
             ])
@@ -62,6 +72,7 @@ final class IngredientQueryFilter extends QueryBuilder
             ])
             ->allowedIncludes(['parentIngredient', 'varieties', 'cocktails', 'cocktailIngredientSubstitutes'])
             ->with('category', 'images')
-            ->withCount('cocktails');
+            ->withCount('cocktails')
+            ->filterByBar();
     }
 }
