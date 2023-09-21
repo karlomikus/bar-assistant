@@ -3062,6 +3062,7 @@ components:
           properties:
             user:
               type: integer
+              nullable: true
               example: 5
             average:
               type: integer
