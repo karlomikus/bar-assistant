@@ -190,7 +190,7 @@ class FromVersion2
 
                 $oldCocktailIngredients = $backupDB->table('cocktail_ingredients')->where('cocktail_id', $row->id)->get();
                 foreach ($oldCocktailIngredients as $oldCocktailIngredientRow) {
-                    $newCocktailIngredients[] = [
+                    $newCocktailIngredients[$oldCocktailIngredientRow->id] = [
                         'cocktail_id' => $newCocktails[$row->id],
                         'ingredient_id' => $newIngredients[$oldCocktailIngredientRow->ingredient_id],
                         'amount' => $oldCocktailIngredientRow->amount,
@@ -201,6 +201,19 @@ class FromVersion2
                 }
             }
             DB::table('cocktail_ingredients')->insert($newCocktailIngredients);
+
+            // Migrate substitutes
+            $newSubs = [];
+            $oldSubs = $backupDB->table('cocktail_ingredient_substitutes')->get();
+            foreach ($oldSubs as $row) {
+                $newSubs[] = [
+                    'cocktail_ingredient_id' => $newCocktailIngredients[$row->cocktail_ingredient_id],
+                    'ingredient_id' => $newIngredients[$row->ingredient_id],
+                    'created_at' => $row->created_at ?? now(),
+                    'updated_at' => now(),
+                ];
+            }
+            DB::table('cocktail_ingredient_substitutes')->insert($newSubs);
 
             // Migrate cocktail tags
             $newCocktailTags = [];
