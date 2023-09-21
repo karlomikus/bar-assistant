@@ -54,6 +54,7 @@ class FromVersion2
                 'name' => 'My migrated bar',
                 'description' => 'Bar with data migrated from Bar Assistant v2',
                 'created_user_id' => $newAdminId,
+                'is_active' => true,
                 'created_at' => now(),
                 'invite_code' => (string) new Ulid(),
             ]);
