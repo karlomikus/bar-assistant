@@ -70,6 +70,7 @@ class FromVersion2
                     'bar_id' => $barId,
                     'user_id' => $newUserId,
                     'user_role_id' => $newUserId === $newAdminId ? UserRoleEnum::Admin->value : UserRoleEnum::General->value,
+                    'created_at' => now(),
                 ]);
             }
 
