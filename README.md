@@ -25,6 +25,8 @@ This repository only contains the API server, if you are looking for easy to use
 ## Features
 - Includes all current IBA cocktails
 - Over 100 ingredients
+- Add and manage multiple bars
+- Fine grained control with user roles
 - Endpoints for managing of ingredients and cocktails
 - Mark ingredients you have and get all cocktails that you can make
 - Detailed cocktail and ingredient information
@@ -61,7 +63,6 @@ $ docker compose exec app composer install
 $ docker compose exec app php artisan key:generate
 $ docker compose exec app php artisan storage:link
 $ docker compose exec app php artisan migrate
-$ docker compose exec app php artisan bar:open
 ```
 
 Xdebug vscode launch config:

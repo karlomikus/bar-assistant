@@ -25,6 +25,8 @@ class BarToZip
 
         $zip = new ZipArchive();
 
+        // TODO: Query
+
         $filename = storage_path(sprintf('bar-assistant/backups/%s_%s_%s.zip', Carbon::now()->format('Ymdhi'), 'bass', implode('-', $barIds)));
         if ($exportPath) {
             $filename = $exportPath;
