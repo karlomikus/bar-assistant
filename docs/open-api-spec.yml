@@ -152,7 +152,7 @@ paths:
             schema:
               $ref: '#/components/schemas/RegisterRequest'
       responses:
-        '200':
+        '201':
           description: Successful response
           content:
             application/json:
@@ -697,10 +697,10 @@ paths:
              example: "whiskey"
             category_id:
              type: string
-             example: 1
+             example: "1"
             created_user_id:
              type: string
-             example: 1
+             example: "1"
             origin:
              type: string
              example: "France"
@@ -2853,12 +2853,6 @@ components:
         - id
         - name
         - email
-        - is_admin
-        - search_host
-        - search_api_key
-        - favorite_cocktails
-        - shelf_ingredients
-        - shopping_lists
       properties:
         id:
           type: integer
@@ -2869,27 +2863,6 @@ components:
         email:
           type: string
           example: 'bar@tender.com'
-        search_host:
-          type: string
-          example: 'http://meilisearch-server.com'
-        search_api_key:
-          type: string
-          example: MEILI_API_KEY
-        favorite_cocktails:
-          type: array
-          example: [1, 2]
-          items:
-            type: integer
-        shelf_ingredients:
-          type: array
-          example: [1, 2]
-          items:
-            type: integer
-        shopping_lists:
-          type: array
-          example: [1, 2]
-          items:
-            type: integer
     UserRequest:
       type: object
       required:

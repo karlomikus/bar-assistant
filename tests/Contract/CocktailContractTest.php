@@ -22,7 +22,7 @@ class CocktailContractTest extends ContractTestCase
         $this->setupBar();
     }
 
-    public function test_contract_cocktails()
+    public function test_contract_cocktails(): void
     {
         Cocktail::factory()->count(10)->create(['bar_id' => 1]);
 
@@ -30,7 +30,7 @@ class CocktailContractTest extends ContractTestCase
         $response->assertValidResponse(200);
     }
 
-    public function test_contract_cocktail_show()
+    public function test_contract_cocktail_show(): void
     {
         $cocktail = Cocktail::factory()->create([
             'name' => 'Test Case',
@@ -47,7 +47,7 @@ class CocktailContractTest extends ContractTestCase
         $response->assertValidResponse(200);
     }
 
-    public function test_contract_cocktail_create()
+    public function test_contract_cocktail_create(): void
     {
         $response = $this->postJson('/api/cocktails?bar_id=1', [
             'name' => "Cocktail name",
@@ -61,7 +61,7 @@ class CocktailContractTest extends ContractTestCase
         $response->assertValidRequest()->assertValidResponse(422);
     }
 
-    public function test_contract_cocktail_update()
+    public function test_contract_cocktail_update(): void
     {
         $cocktail = Cocktail::factory()->create(['bar_id' => 1, 'created_user_id' => 1]);
 
@@ -77,7 +77,7 @@ class CocktailContractTest extends ContractTestCase
         $response->assertValidRequest()->assertValidResponse(422);
     }
 
-    public function test_contract_cocktail_delete()
+    public function test_contract_cocktail_delete(): void
     {
         $cocktail = Cocktail::factory()->create(['bar_id' => 1, 'created_user_id' => 1]);
 

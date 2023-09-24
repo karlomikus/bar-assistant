@@ -34,6 +34,7 @@ class IngredientController extends Controller
     public function show(Request $request, int|string $id): JsonResource
     {
         $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient')
+            ->withCount('cocktails')
             ->where('id', $id)
             ->orWhere('slug', $id)
             ->firstOrFail();
