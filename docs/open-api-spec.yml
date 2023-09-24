@@ -165,9 +165,11 @@ paths:
           $ref: '#/components/responses/UnprocessableEntity'
   /cocktails:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/PerPageParameter'
       - in: query
         name: filter
         required: false
@@ -242,29 +244,15 @@ paths:
         required: false
         schema:
           type: string
-          example: name,-created_at
-        description: "Available sort attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `favorited_at`, `missing_ingredients`. Seperate multiple sorts with a comma `,`."
-      - in: query
-        name: per_page
-        required: false
-        schema:
-          type: integer
-          example: 25
-        description: Total results per page
-      - in: query
-        name: page
-        required: false
-        schema:
-          type: integer
-          example: 1
-        description: Page number
+          example: attribute_name
+        description: "Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `favorited_at`, `missing_ingredients`."
       - in: query
         name: include
         required: false
         schema:
           type: string
-          example: notes,user
-        description: "Comma seperated names of extra data you want to include in response: `glass`, `createdUser`, `updatedUser`, `method`, `ingredients`, `utensils`"
+          example: attribute_name
+        description: "Available attributes: `glass`, `createdUser`, `updatedUser`, `method`, `ingredients`, `utensils`."
       tags:
         - "Cocktails"
       summary: 'Show a paginated list of cocktails'
@@ -549,7 +537,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /shelf/cocktails:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       parameters:
         - in: query
@@ -578,7 +566,7 @@ paths:
                       example: 1
   /shelf/cocktail-favorites:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - "User shelf"
@@ -599,7 +587,7 @@ paths:
                       example: 1
   /shelf/ingredients:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - "User shelf"
@@ -619,7 +607,7 @@ paths:
                       $ref: '#/components/schemas/UserIngredient'
   /shelf/ingredients/batch-store:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     post:
       tags:
         - "User shelf"
@@ -652,7 +640,7 @@ paths:
           $ref: '#/components/responses/UnprocessableEntity'
   /shelf/ingredients/batch-delete:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     post:
       tags:
         - "User shelf"
@@ -674,9 +662,11 @@ paths:
           description: Successfully deleted ingredients
   /ingredients:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/PerPageParameter'
       - in: query
         name: filter
         required: false
@@ -724,29 +714,15 @@ paths:
         required: false
         schema:
           type: string
-          example: name,-created_at
-        description: "Sort by specific parameters, change order by prepending `-`. Available sorts: `name`, `created_at`, `strength`, `total_cocktails`. Seperate multiple sorts with a comma `,`."
-      - in: query
-        name: per_page
-        required: false
-        schema:
-          type: integer
-          example: 15
-        description: Total results per page
-      - in: query
-        name: page
-        required: false
-        schema:
-          type: integer
-          example: 1
-        description: Page number
+          example: attribute_name
+        description: "Available attributes: `name`, `created_at`, `strength`, `total_cocktails`."
       - in: query
         name: include
         required: false
         schema:
           type: string
-          example: notes,user
-        description: "Comma seperated names of extra data you want to include in response: `parentIngredient`, `varieties`, `cocktails`, `cocktailIngredientSubstitutes`"
+          example: attribute_name
+        description: "Available attributes: `parentIngredient`, `varieties`, `cocktails`, `cocktailIngredientSubstitutes`."
       tags:
         - Ingredients
       summary: 'Get a list of ingredients'
@@ -907,7 +883,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /glasses:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - Glasses
@@ -1017,48 +993,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /images:
-    get:
-      tags:
-        - Images
-      summary: Paginated list of images
-      operationId: getImages
-      parameters:
-        - in: query
-          name: per_page
-          required: false
-          schema:
-            type: integer
-            example: 15
-          description: Total results per page
-        - in: query
-          name: page
-          required: false
-          schema:
-            type: integer
-            example: 1
-          description: Page number
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - data
-                  - links
-                  - meta
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Image'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMeta'
-        '403':
-          $ref: '#/components/responses/NotAuthorized'
     post:
       tags:
         - Images
@@ -1172,7 +1106,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /ingredient-categories:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - "Ingredient categories"
@@ -1337,7 +1271,7 @@ paths:
           $ref: '#/components/responses/UnprocessableEntity'
   /shopping-list:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - "Shopping list"
@@ -1357,7 +1291,7 @@ paths:
                       $ref: '#/components/schemas/UserShoppingList'
   /shopping-list/share:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - "Shopping list"
@@ -1375,7 +1309,7 @@ paths:
                   Description
   /shopping-list/batch-store:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     post:
       tags:
         - "Shopping list"
@@ -1406,7 +1340,7 @@ paths:
                       $ref: '#/components/schemas/UserShoppingList'
   /shopping-list/batch-delete:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     post:
       tags:
         - "Shopping list"
@@ -1444,7 +1378,7 @@ paths:
                           type: integer
   /tags:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - "Tags"
@@ -1608,7 +1542,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /users:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - Users
@@ -1732,7 +1666,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /stats:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - Stats
@@ -1750,7 +1684,7 @@ paths:
                     $ref: '#/components/schemas/StatsResponse'
   /cocktail-methods:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - "Cocktail methods"
@@ -1923,7 +1857,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /collections:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       parameters:
       - in: query
@@ -2141,7 +2075,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /import/cocktail:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
       - in: query
         name: type
         description: Data source type, defaults to URL
@@ -2213,7 +2147,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /utensils:
     parameters:
-      - $ref: '#/components/parameters/barReference'
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - "Utensils"
@@ -2466,11 +2400,25 @@ components:
       type: http
       scheme: bearer
   parameters:
-    barReference:
+    BarParameter:
       name: bar_id
       in: query
       description: Reference to bar resource
       required: true
+      schema:
+        type: integer
+    PageParameter:
+      name: page
+      in: query
+      description: Set current page number
+      required: false
+      schema:
+        type: integer
+    PerPageParameter:
+      name: per_page
+      in: query
+      description: Total number of results per page
+      required: false
       schema:
         type: integer
   responses:
