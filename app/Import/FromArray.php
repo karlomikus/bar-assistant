@@ -124,8 +124,16 @@ class FromArray
             if (array_key_exists('substitutes', $scrapedIngredient) && !empty($scrapedIngredient['substitutes'])) {
                 foreach ($scrapedIngredient['substitutes'] as $substituteName) {
                     if ($dbIngredients->has(strtolower($substituteName))) {
-                        $substituteDTO = new SubstituteDTO($dbIngredients->get(strtolower($substituteName))->id);
-                        $substitutes[] = $substituteDTO;
+                        $substitutes[] = new SubstituteDTO($dbIngredients->get(strtolower($substituteName))->id);
+                    } else {
+                        $ingredientDTO = new IngredientDTO(
+                            $barId,
+                            ucfirst($substituteName),
+                            $userId,
+                        );
+                        $newIngredient = $this->ingredientService->createIngredient($ingredientDTO);
+                        $dbIngredients->put(strtolower($substituteName), $newIngredient);
+                        $substitutes[] = new SubstituteDTO($newIngredient->id);
                     }
                 }
             }
