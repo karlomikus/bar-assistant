@@ -38,7 +38,7 @@ class ImportController extends Controller
 
         if ($type === 'json') {
             if (!is_array($source)) {
-                if (!$source = json_decode($source)) {
+                if (!$source = json_decode($source, true)) {
                     abort(400, 'Unable to parse the JSON string');
                 }
             }
@@ -73,7 +73,11 @@ class ImportController extends Controller
         }
 
         if ($save) {
-            $dataToImport = new CocktailResource($arrayImporter->process($dataToImport, $request->user()->id, bar()->id));
+            $cocktail = $arrayImporter->process($dataToImport, $request->user()->id, bar()->id);
+            $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
+                $query->orderBy('sort');
+            }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
+            $dataToImport = new CocktailResource($cocktail);
         }
 
         return response()->json([
