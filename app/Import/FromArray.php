@@ -15,6 +15,7 @@ use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
 use Intervention\Image\Facades\Image as ImageProcessor;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
+use Kami\Cocktail\DataObjects\Cocktail\Substitute as SubstituteDTO;
 use Kami\Cocktail\DataObjects\Ingredient\Ingredient as IngredientDTO;
 use Kami\Cocktail\DataObjects\Cocktail\Ingredient as CocktailIngredientDTO;
 
@@ -123,7 +124,8 @@ class FromArray
             if (array_key_exists('substitutes', $scrapedIngredient) && !empty($scrapedIngredient['substitutes'])) {
                 foreach ($scrapedIngredient['substitutes'] as $substituteName) {
                     if ($dbIngredients->has(strtolower($substituteName))) {
-                        $substitutes[] = $dbIngredients->get(strtolower($substituteName))->id;
+                        $substituteDTO = new SubstituteDTO($dbIngredients->get(strtolower($substituteName))->id);
+                        $substitutes[] = $substituteDTO;
                     }
                 }
             }
