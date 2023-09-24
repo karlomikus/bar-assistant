@@ -23,7 +23,7 @@ class TagControllerTest extends TestCase
         );
     }
 
-    public function test_list_tags_response()
+    public function test_list_tags_response(): void
     {
         $bar = $this->setupBar();
         Tag::factory()->count(10)->create(['bar_id' => $bar->id]);
@@ -39,7 +39,7 @@ class TagControllerTest extends TestCase
         );
     }
 
-    public function test_show_tag_response()
+    public function test_show_tag_response(): void
     {
         $bar = $this->setupBar();
         $model = Tag::factory()->create([
@@ -60,7 +60,7 @@ class TagControllerTest extends TestCase
         );
     }
 
-    public function test_create_tag_response()
+    public function test_create_tag_response(): void
     {
         $this->setupBar();
         $response = $this->postJson('/api/tags?bar_id=1', [
@@ -79,7 +79,7 @@ class TagControllerTest extends TestCase
         );
     }
 
-    public function test_update_tag_response()
+    public function test_update_tag_response(): void
     {
         $bar = $this->setupBar();
         $model = Tag::factory()->create([
@@ -102,7 +102,7 @@ class TagControllerTest extends TestCase
         );
     }
 
-    public function test_delete_tag_response()
+    public function test_delete_tag_response(): void
     {
         $bar = $this->setupBar();
         $tag = Tag::factory()->create([

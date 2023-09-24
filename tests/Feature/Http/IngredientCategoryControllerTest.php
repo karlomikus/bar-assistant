@@ -23,7 +23,7 @@ class IngredientCategoryControllerTest extends TestCase
         );
     }
 
-    public function test_list_categories_response()
+    public function test_list_categories_response(): void
     {
         $this->setupBar();
         IngredientCategory::factory()->count(10)->create(['bar_id' => 1]);
@@ -39,7 +39,7 @@ class IngredientCategoryControllerTest extends TestCase
         );
     }
 
-    public function test_show_category_response()
+    public function test_show_category_response(): void
     {
         $bar = $this->setupBar();
         $cat = IngredientCategory::factory()->create([
@@ -62,7 +62,7 @@ class IngredientCategoryControllerTest extends TestCase
         );
     }
 
-    public function test_create_category_response()
+    public function test_create_category_response(): void
     {
         $this->setupBar();
         $response = $this->postJson('/api/ingredient-categories?bar_id=1', [
@@ -83,7 +83,7 @@ class IngredientCategoryControllerTest extends TestCase
         );
     }
 
-    public function test_update_category_response()
+    public function test_update_category_response(): void
     {
         $bar = $this->setupBar();
         $cat = IngredientCategory::factory()->create([
@@ -109,7 +109,7 @@ class IngredientCategoryControllerTest extends TestCase
         );
     }
 
-    public function test_delete_category_response()
+    public function test_delete_category_response(): void
     {
         $bar = $this->setupBar();
         $cat = IngredientCategory::factory()->create([

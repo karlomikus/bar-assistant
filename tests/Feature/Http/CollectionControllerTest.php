@@ -23,7 +23,7 @@ class CollectionControllerTest extends TestCase
         $this->actingAs(User::factory()->create());
     }
 
-    public function test_list_user_collections_response()
+    public function test_list_user_collections_response(): void
     {
         $this->setupBar();
 
@@ -42,7 +42,7 @@ class CollectionControllerTest extends TestCase
         );
     }
 
-    public function test_show_user_collection_response()
+    public function test_show_user_collection_response(): void
     {
         $this->setupBar();
 
@@ -67,7 +67,7 @@ class CollectionControllerTest extends TestCase
         );
     }
 
-    public function test_create_collection_response()
+    public function test_create_collection_response(): void
     {
         $bar = $this->setupBar();
 
@@ -92,7 +92,7 @@ class CollectionControllerTest extends TestCase
         );
     }
 
-    public function test_create_collection_does_not_add_cocktail_from_another_bar_response()
+    public function test_create_collection_does_not_add_cocktail_from_another_bar_response(): void
     {
         $bar = $this->setupBar();
         $anotherBar = Bar::factory()->create(['created_user_id' => auth()->user()->id]);
@@ -119,7 +119,7 @@ class CollectionControllerTest extends TestCase
         );
     }
 
-    public function test_update_collections_response()
+    public function test_update_collections_response(): void
     {
         $this->setupBar();
 
@@ -147,7 +147,7 @@ class CollectionControllerTest extends TestCase
         );
     }
 
-    public function test_delete_collection_response()
+    public function test_delete_collection_response(): void
     {
         $this->setupBar();
 
@@ -164,7 +164,7 @@ class CollectionControllerTest extends TestCase
         $this->assertDatabaseMissing('collections', ['id' => $model->id]);
     }
 
-    public function test_add_cocktail_to_collection()
+    public function test_add_cocktail_to_collection(): void
     {
         $bar = $this->setupBar();
 

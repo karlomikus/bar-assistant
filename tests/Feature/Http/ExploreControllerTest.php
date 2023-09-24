@@ -12,7 +12,7 @@ class ExploreControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_show_cocktail_with_public_link()
+    public function test_show_cocktail_with_public_link(): void
     {
         Cocktail::factory()->create([
             'public_id' => 'TEST123456789'
@@ -23,7 +23,7 @@ class ExploreControllerTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_dont_show_cocktail_without_public_link()
+    public function test_dont_show_cocktail_without_public_link(): void
     {
         Cocktail::factory()->create();
 
@@ -32,7 +32,7 @@ class ExploreControllerTest extends TestCase
         $response->assertNotFound();
     }
 
-    public function test_dont_show_cocktail_with_wrong_public_link()
+    public function test_dont_show_cocktail_with_wrong_public_link(): void
     {
         Cocktail::factory()->create([
             'public_id' => 'TEST123456789'

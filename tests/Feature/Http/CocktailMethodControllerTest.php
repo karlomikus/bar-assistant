@@ -24,7 +24,7 @@ class CocktailMethodControllerTest extends TestCase
         );
     }
 
-    public function test_list_methods_response()
+    public function test_list_methods_response(): void
     {
         $bar = $this->setupBar();
         CocktailMethod::factory()->count(6)->create(['bar_id' => $bar->id]);
@@ -42,7 +42,7 @@ class CocktailMethodControllerTest extends TestCase
         );
     }
 
-    public function test_show_method_response()
+    public function test_show_method_response(): void
     {
         $bar = $this->setupBar();
 
@@ -65,7 +65,7 @@ class CocktailMethodControllerTest extends TestCase
         );
     }
 
-    public function test_create_method_response()
+    public function test_create_method_response(): void
     {
         $this->setupBar();
 
@@ -87,7 +87,7 @@ class CocktailMethodControllerTest extends TestCase
         );
     }
 
-    public function test_update_method_response()
+    public function test_update_method_response(): void
     {
         $bar = $this->setupBar();
 
@@ -114,7 +114,7 @@ class CocktailMethodControllerTest extends TestCase
         );
     }
 
-    public function test_delete_method_response()
+    public function test_delete_method_response(): void
     {
         $bar = $this->setupBar();
 

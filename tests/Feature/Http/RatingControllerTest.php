@@ -23,7 +23,7 @@ class RatingControllerTest extends TestCase
         );
     }
 
-    public function test_rate_cocktail_response()
+    public function test_rate_cocktail_response(): void
     {
         $this->setupBar();
         $cocktail = Cocktail::factory()->create(['bar_id' => 1]);
@@ -44,7 +44,7 @@ class RatingControllerTest extends TestCase
         );
     }
 
-    public function test_rate_cocktail_updates_existing_rating_response()
+    public function test_rate_cocktail_updates_existing_rating_response(): void
     {
         $this->setupBar();
         $cocktail = Cocktail::factory()->create(['bar_id' => 1]);
@@ -67,7 +67,7 @@ class RatingControllerTest extends TestCase
         );
     }
 
-    public function test_delete_cocktail_rating_response()
+    public function test_delete_cocktail_rating_response(): void
     {
         $this->setupBar();
         $cocktail = Cocktail::factory()->create(['bar_id' => 1]);

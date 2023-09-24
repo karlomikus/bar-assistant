@@ -21,7 +21,7 @@ class UtensilControllerTest extends TestCase
         $this->actingAs(User::factory()->create());
     }
 
-    public function test_list_all_utensils_response()
+    public function test_list_all_utensils_response(): void
     {
         $this->setupBar();
         Utensil::factory()->count(10)->create(['bar_id' => 1]);
@@ -36,7 +36,7 @@ class UtensilControllerTest extends TestCase
         );
     }
 
-    public function test_show_utensil_response()
+    public function test_show_utensil_response(): void
     {
         $this->setupBar();
         $utensil = Utensil::factory()->create([
@@ -58,7 +58,7 @@ class UtensilControllerTest extends TestCase
         );
     }
 
-    public function test_save_utensil_response()
+    public function test_save_utensil_response(): void
     {
         $this->setupBar();
         $response = $this->postJson('/api/utensils?bar_id=1', [
@@ -77,7 +77,7 @@ class UtensilControllerTest extends TestCase
         );
     }
 
-    public function test_update_utensil_response()
+    public function test_update_utensil_response(): void
     {
         $this->setupBar();
         $utensil = Utensil::factory()->create([
@@ -102,7 +102,7 @@ class UtensilControllerTest extends TestCase
         );
     }
 
-    public function test_delete_utensil_response()
+    public function test_delete_utensil_response(): void
     {
         $this->setupBar();
         $utensil = Utensil::factory()->create([

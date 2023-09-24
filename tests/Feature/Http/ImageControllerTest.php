@@ -24,7 +24,7 @@ class ImageControllerTest extends TestCase
         );
     }
 
-    public function test_single_image_upload()
+    public function test_single_image_upload(): void
     {
         Storage::fake('bar-assistant');
         $response = $this->post('/api/images', [
@@ -51,7 +51,7 @@ class ImageControllerTest extends TestCase
         Storage::disk('bar-assistant')->assertExists($filename);
     }
 
-    public function test_multiple_image_upload()
+    public function test_multiple_image_upload(): void
     {
         Storage::fake('bar-assistant');
         $response = $this->post('/api/images', [
@@ -88,7 +88,7 @@ class ImageControllerTest extends TestCase
         Storage::disk('bar-assistant')->assertExists($response->json('data.2.file_path'));
     }
 
-    public function test_multiple_image_upload_fails()
+    public function test_multiple_image_upload_fails(): void
     {
         Storage::fake('bar-assistant');
         $response = $this->post('/api/images', [
@@ -104,7 +104,7 @@ class ImageControllerTest extends TestCase
         $response->assertUnprocessable();
     }
 
-    public function test_multiple_image_upload_by_url()
+    public function test_multiple_image_upload_by_url(): void
     {
         $response = $this->post('/api/images', [
             'images' => [
@@ -127,7 +127,7 @@ class ImageControllerTest extends TestCase
         });
     }
 
-    public function test_multiple_image_upload_by_url_fails()
+    public function test_multiple_image_upload_by_url_fails(): void
     {
         $response = $this->post('/api/images', [
             'images' => [
@@ -142,7 +142,7 @@ class ImageControllerTest extends TestCase
         $response->assertUnprocessable();
     }
 
-    public function test_image_thumb()
+    public function test_image_thumb(): void
     {
         Storage::fake('bar-assistant');
         $imageFile = UploadedFile::fake()->image('image1.jpg');
@@ -158,7 +158,7 @@ class ImageControllerTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_image_update()
+    public function test_image_update(): void
     {
         $bar = $this->setupBar();
         Storage::fake('bar-assistant');
@@ -196,7 +196,7 @@ class ImageControllerTest extends TestCase
         $response->assertJsonPath('data.sort', 1);
     }
 
-    public function test_image_update_fails()
+    public function test_image_update_fails(): void
     {
         Storage::fake('bar-assistant');
         $imageFile = UploadedFile::fake()->image('image1.jpg');

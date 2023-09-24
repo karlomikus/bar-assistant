@@ -11,7 +11,7 @@ class ServerControllerTest extends TestCase
         parent::setUp();
     }
 
-    public function test_version_response()
+    public function test_version_response(): void
     {
         $response = $this->getJson('/api/server/version');
 
@@ -22,7 +22,7 @@ class ServerControllerTest extends TestCase
         $this->assertNotNull($response['data']['search_version']);
     }
 
-    public function test_openapi_response()
+    public function test_openapi_response(): void
     {
         $response = $this->getJson('/api/server/openapi');
 
