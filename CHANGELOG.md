@@ -1,10 +1,9 @@
 # v3.0.0
 ## Multiple bars
 - Bar Assistant now supports multiple bars.
-    - With this change a lot of endpoints require to have bar reference, this comes in a form of `bar_id` query parameter
+    - With this change a lot of endpoints now require to have bar reference, this comes in a form of `bar_id` query parameter
     - Please refer to the new schema specification to see what endpoints now require `bar_id` query parameter
-- This update also changed a lot database table schemas, and having automatic data migration would take a lot of time to implement
-    - To migrate your old data you will have an option to upload v2 .zip file when creating a new bar
+- This update also changed a lot database table schemas, so I advise you to create a backup of your data before you update to v3
 - Users can be invited or join with invite code to specific bars
 
 ## Improved user control
@@ -24,6 +23,8 @@
         - Full access to all bar actions
 
 ## Breaking changes
+- Updated a lot of schemas, refer to openapi specification to see the changes
+- Token response is now wrapped with `data` object like the rest of the endpoints endpoint
 - Removed POST `shelf/ingredients` endpoint
 - Removed POST `shelf/ingredients/{ingredientId}` endpoint
     - **Upgrade guide**: Use `shelf/ingredients/batch-store` endpoint
@@ -38,27 +39,43 @@
 - Removed `bar:open` command
 - Removed `bar:refresh-user-search-keys` command
 - Removed `bar:import-zip` command
-- Removed `bar:scrape` command
 - Removed `bar:export-zip` command
-    - You can use `bar:backup {barId}` instead
+- Removed `bar:scrape` command
 - Renamed `/user` endpoint to `/profile`
+- Renamed `user_id` filter on `cocktails` endpoint to `created_user_id`
+- Renamed `user_id` filter on `ingredients` endpoint to `created_user_id`
+- Ingredient category is not required anymore when adding an ingredient
 
 ## New
 - Added `bars/` endpoint
+- Added GET `notes/` endpoint
 - Stats now have users top 5 favorite ingredients, calculated from favorite cocktails
 - Importing cocktails from collection now has actions on how to handle duplicates
 - Added `bar:backup {barId}` command
 - Cocktail ingredient now supports variable amounts, you can add max amount with `amount_max` attribute
-- Cocktail ingredient now supports note, you can add note with `note` attribute
+- Cocktail ingredient now can have a note attached
 - Cocktail substitutes now have the following attributes: `ingredient_id`, `amount`, `amount_max`, `units`
+- Added options on how to handle duplicated recipes when importing collection
+    - Duplicates are matched by recipe name
+    - Possible actions:
+        - Do nothing
+        - Overwrite duplicated
+        - Skip duplicates
+- Added `average_rating_min` filter to `cocktails` endpoint
+- Added `average_rating_max` filter to `cocktails` endpoint
 
 ## Changes
+- Default database filename changed to `database.ba3.sqlite`
 - Optimized base images of cocktails and ingredients
 - Cocktail and ingredient images are now categorized in folders by bar id
 - Merged all migrations to a single one
 - Meilisearch API keys are now generating tenant tokens
-- Changed what data is synced to search servers
-    - TODO
+- Changed the way slugs are generated, they now include bar id
+- Changed what attributes are searchable
+    - Removed from `cocktails` index: `garnish`, `image_hash`, `main_image_id`, `user_id`, `glass`, `average_rating`, `main_ingredient_name`, `calculated_abv`, `method`, `has_public_link`
+    - Added to `cocktails` index: `bar_id`
+    - Removed from `ingredients` index: `strength_abv`, `color`
+    - Added to `ingredients` index: `bar_id`
 
 # v2.6.0
 ## New
