@@ -55,7 +55,13 @@ class IngredientResource extends JsonResource
                         'name' => $c->name,
                     ];
                 })->sortBy('name')->toArray();
-            })
+            }),
+            'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
+            'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
+            'access' => [
+                'can_edit' => $request->user()->can('edit', $this->resource),
+                'can_delete' => $request->user()->can('delete', $this->resource),
+            ],
         ];
     }
 }
