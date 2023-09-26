@@ -25,7 +25,7 @@ class CocktailMethodController extends Controller
     {
         $method = CocktailMethod::withCount('cocktails')->findOrFail($id);
 
-        if (!$request->user()->isBarAdmin($method->bar_id)) {
+        if ($request->user()->cannot('show', $method)) {
             abort(403);
         }
 
@@ -34,7 +34,7 @@ class CocktailMethodController extends Controller
 
     public function store(CocktailMethodRequest $request): JsonResponse
     {
-        if (!$request->user()->isBarAdmin(bar()->id)) {
+        if ($request->user()->cannot('create', CocktailMethod::class)) {
             abort(403);
         }
 
@@ -54,7 +54,7 @@ class CocktailMethodController extends Controller
     {
         $method = CocktailMethod::findOrFail($id);
 
-        if (!$request->user()->isBarAdmin($method->bar_id)) {
+        if ($request->user()->cannot('edit', $method)) {
             abort(403);
         }
 
@@ -70,7 +70,7 @@ class CocktailMethodController extends Controller
     {
         $method = CocktailMethod::findOrFail($id);
 
-        if (!$request->user()->isBarAdmin($method->bar_id)) {
+        if ($request->user()->cannot('delete', $method)) {
             abort(403);
         }
 
