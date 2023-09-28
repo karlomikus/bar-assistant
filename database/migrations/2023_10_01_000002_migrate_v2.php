@@ -22,7 +22,7 @@ return new class extends Migration
                 throw new Exception('Unable to backup old data, stopping...');
             }
 
-            $zip->addFile(storage_path('bar-assistant/database.sqlite'));
+            $zip->addGlob(storage_path('bar-assistant/database.sqlite'), options: ['remove_path' => storage_path('bar-assistant')]);
             $zip->addGlob(storage_path('bar-assistant/uploads/*/*'), options: ['remove_path' => storage_path('bar-assistant')]);
 
             $zip->close();
