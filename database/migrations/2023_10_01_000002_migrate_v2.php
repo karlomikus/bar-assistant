@@ -1,6 +1,5 @@
 <?php
 
-use ZipArchive;
 use Kami\Cocktail\Import\FromVersion2;
 use Illuminate\Database\Migrations\Migration;
 
