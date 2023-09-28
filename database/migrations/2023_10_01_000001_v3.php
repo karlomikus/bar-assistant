@@ -56,7 +56,6 @@ return new class extends Migration
             $table->string('status')->nullable();
             $table->text('subtitle')->nullable();
             $table->text('description')->nullable();
-            $table->text('search_driver_api_key')->nullable();
             $table->foreignId('bar_type_id')->default(1)->constrained()->onDelete('restrict');
             $table->foreignId('created_user_id')->constrained('users')->onDelete('restrict');
             $table->foreignId('updated_user_id')->nullable()->constrained('users')->nullOnDelete();

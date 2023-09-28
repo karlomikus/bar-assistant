@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Kami\Cocktail\Http\Requests\BarRequest;
 use Kami\Cocktail\Http\Resources\BarResource;
-use Kami\Cocktail\Search\SearchActionsAdapter;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BarController extends Controller
@@ -43,7 +42,7 @@ class BarController extends Controller
         return new BarResource($bar);
     }
 
-    public function store(SearchActionsAdapter $search, BarRequest $request): JsonResponse
+    public function store(BarRequest $request): JsonResponse
     {
         if ($request->user()->cannot('create', Bar::class)) {
             abort(403, 'You can not create anymore bars');
@@ -58,9 +57,6 @@ class BarController extends Controller
         $bar->description = $request->post('description');
         $bar->created_user_id = $request->user()->id;
         $bar->invite_code = $inviteEnabled ? (string) new Ulid() : null;
-        $bar->save();
-
-        $bar->search_driver_api_key = $search->getActions()->getBarSearchApiKey($bar->id);
         $bar->save();
 
         $request->user()->joinBarAs($bar, UserRoleEnum::Admin);

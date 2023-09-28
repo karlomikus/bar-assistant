@@ -11,14 +11,9 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\UserRoleEnum;
-use Kami\Cocktail\Search\SearchActionsAdapter;
 
 class FromVersion2
 {
-    public function __construct(private readonly SearchActionsAdapter $search)
-    {
-    }
-
     public function process(): void
     {
         $backupDB = DB::connection('sqlite_import_from_v2');
@@ -57,11 +52,6 @@ class FromVersion2
                 'is_active' => true,
                 'created_at' => now(),
                 'invite_code' => (string) new Ulid(),
-            ]);
-
-            // Add search key to new bar
-            DB::table('bars')->where('id', $barId)->update([
-                'search_driver_api_key' => $this->search->getActions()->getBarSearchApiKey($barId),
             ]);
 
             // Add new users to bar

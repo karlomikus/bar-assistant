@@ -6,7 +6,6 @@ namespace Tests\Feature\Http;
 
 use Tests\TestCase;
 use Kami\Cocktail\Models\User;
-use Kami\Cocktail\Models\CocktailMethod;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ImportControllerTest extends TestCase
