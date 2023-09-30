@@ -137,6 +137,10 @@ class BarController extends Controller
             abort(403);
         }
 
+        if ((int) $request->user()->id === (int) $userId) {
+            abort(400, 'You cannot remove your own bar membership.');
+        }
+
         $bar->memberships()->where('user_id', $userId)->delete();
 
         return response(status: 204);
