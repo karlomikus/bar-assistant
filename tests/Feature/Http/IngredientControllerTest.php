@@ -66,7 +66,7 @@ class IngredientControllerTest extends TestCase
         $user = User::factory()->create();
         $ingredientCategory = IngredientCategory::factory()->create();
         Ingredient::factory()->createMany([
-            ['bar_id' => $bar->id, 'name' => 'Whiskey', 'origin' => 'America', 'strength' => 35.5],
+            ['bar_id' => $bar->id, 'name' => 'Whiskey', 'origin' => 'fix-string', 'strength' => 35.5],
             ['bar_id' => $bar->id, 'name' => 'XXXX', 'strength' => 0],
             ['bar_id' => $bar->id, 'name' => 'Test', 'created_user_id' => $user->id, 'strength' => 40],
             ['bar_id' => $bar->id, 'name' => 'Test 2', 'ingredient_category_id' => $ingredientCategory->id, 'strength' => 0],
@@ -90,7 +90,7 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonCount(1, 'data');
         $response = $this->getJson('/api/ingredients?bar_id=1&filter[category_id]=' . $ingredientCategory->id);
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[origin]=america');
+        $response = $this->getJson('/api/ingredients?bar_id=1&filter[origin]=fix-string');
         $response->assertJsonCount(1, 'data');
         $response = $this->getJson('/api/ingredients?bar_id=1&filter[strength_min]=30');
         $response->assertJsonCount(2, 'data');
