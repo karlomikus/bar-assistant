@@ -2134,32 +2134,38 @@ paths:
           enum:
             - json
             - url
+            - yaml
+            - yml
+            - collection
+      - in: query
+        name: save
+        description: If applicable, saves the cocktail and returns cocktail response
+        schema:
+          type: boolean
     post:
       tags:
         - "Import"
       summary: Import cocktail from a data source
       operationId: importCocktail
       requestBody:
+        description: 'Duplicated actions can be: `0` - Do nothing, `1` - Skip duplicates, `2` - Overwrite duplicates'
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - source
-              properties:
-                source:
-                  type: string
+              $ref: '#/components/schemas/ImportRequest'
       responses:
         '200':
           description: Successful response
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    additionalProperties: true
+                oneOf:
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        additionalProperties: true
+                  - $ref: '#/components/schemas/Cocktail'
   /collections/{id}/share:
     parameters:
       - in: path
@@ -3727,3 +3733,18 @@ components:
           description: 'ULID expiration datetime'
           example: "2023-05-14T21:23:40.000000Z"
           nullable: true
+    ImportRequest:
+      type: object
+      required:
+        - source
+      properties:
+        source:
+          type: string
+          format: url
+          example: "https://source.url"
+        duplicate_actions:
+          type: integer
+          enum:
+            - 0
+            - 1
+            - 2
