@@ -46,18 +46,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Disable login
+    | Max bars per user
     |--------------------------------------------------------------------------
     |
-    | This option will disable the need to authenticate with token to access the api
+    | This will limit how many bars can a single user create
     |
     */
 
-    'disable_login' => env(
-        'DISABLE_LOGIN',
-        false
-    ),
-
-    'max_default_bars' => 100,
+    'max_default_bars' => env('MAX_USER_BARS', 50),
 
 ];

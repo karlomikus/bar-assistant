@@ -37,11 +37,6 @@ use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 |
 */
 
-$authMiddleware = 'auth:sanctum';
-if (config('bar-assistant.disable_login') === true) {
-    $authMiddleware = 'auth:force-login';
-}
-
 Route::get('/', [ServerController::class, 'index']);
 
 Route::post('login', [AuthController::class, 'authenticate'])->name('auth.login');
@@ -60,7 +55,7 @@ Route::prefix('explore')->group(function() {
     Route::get('/cocktails/{ulid}', [ExploreController::class, 'cocktail']);
 });
 
-Route::middleware($authMiddleware)->group(function() {
+Route::middleware('auth:sanctum')->group(function() {
 
     Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
 

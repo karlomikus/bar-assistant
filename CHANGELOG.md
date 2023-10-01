@@ -234,6 +234,7 @@
 - Updated `UserIngredient` schema
 - Updated `Ingredient` schema
     - Moved `parent_ingredient_id` to `parent_ingredient` object, accessible via `parent_ingredient.id`
+- Removed `DISABLE_LOGIN` env variable
 
 ## New
 - Meilisearch is no longer mandatory dependency for API to work
@@ -244,6 +245,8 @@
     - This will remove the need to authenticate with token to access the api
 - Added GET `/images` endpoint
 - `ImageRequest` schema now supports `image_url` parameter to upload image from URL
+- Added `MAX_USER_BARS` env variable, defaults to 50
+    - This limits how many bars can a single user create
 
 ## Fixes
 - Fixed openapi swagger docs url
