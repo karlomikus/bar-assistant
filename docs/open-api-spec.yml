@@ -3309,6 +3309,23 @@ components:
         total_shelf_cocktails:
           type: integer
           example: 43
+        total_favorited_cocktails:
+          type: integer
+          example: 13
+        your_top_ingredients:
+          type: array
+          items:
+            type: object
+            properties:
+              ingredient_id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: "Lime juice"
+              cocktails_count:
+                type: integer
+                example: 12
         total_shelf_ingredients:
           type: integer
           example: 12
