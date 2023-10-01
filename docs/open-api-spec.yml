@@ -2418,6 +2418,13 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /bars/{id}/memberships:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a bar'
+        schema:
+          type: integer
+        required: true
     delete:
       tags:
         - Bars
@@ -2432,6 +2439,12 @@ paths:
           $ref: '#/components/responses/NotFound'
   /bars/{id}/memberships/{userId}:
     parameters:
+      - in: path
+        name: id
+        description: 'Database id of a bar'
+        schema:
+          type: integer
+        required: true
       - in: path
         name: userId
         description: 'Database id of user'
@@ -3440,18 +3453,6 @@ components:
         name:
           type: string
           example: "Bartender"
-    CocktailCollection:
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "My collection"
     CollectionRequest:
       type: object
       required:
