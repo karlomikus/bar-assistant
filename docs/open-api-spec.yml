@@ -3189,32 +3189,19 @@ components:
     UserShoppingList:
       type: object
       required:
-        - id
-        - user_id
-        - ingredient
+        - ingredient_id
+        - ingredient_slug
+        - ingredient_name
       properties:
-        id:
+        ingredient_id:
           type: integer
           example: 1
-        user_id:
-          type: integer
-          example: 1
-        ingredient:
-          type: object
-          required:
-            - id
-            - slug
-            - name
-          properties:
-            id:
-              type: integer
-              example: 1
-            slug:
-              type: string
-              example: 'ingredient-1'
-            name:
-              type: string
-              example: 'Ingredient 1'
+        ingredient_slug:
+          type: string
+          example: 'ingredient-1'
+        ingredient_name:
+          type: string
+          example: 'Ingredient 1'
     ValidationError:
       type: object
       required:

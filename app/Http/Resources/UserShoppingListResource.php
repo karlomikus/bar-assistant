@@ -22,6 +22,7 @@ class UserShoppingListResource extends JsonResource
         return [
             'ingredient_id' => $this->ingredient_id,
             'ingredient_slug' => $this->ingredient->slug,
+            'ingredient_name' => $this->ingredient->name,
         ];
     }
 }
