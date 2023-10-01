@@ -94,7 +94,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Version'
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Version'
   /server/openapi:
     get:
       tags:
@@ -2565,8 +2568,6 @@ components:
       type: object
       required:
         - name
-        - strength
-        - ingredient_category_id
       properties:
         name:
           type: string
@@ -2613,6 +2614,7 @@ components:
         - images
         - color
         - category
+        - access
       properties:
         id:
           type: integer
@@ -2694,6 +2696,17 @@ components:
               name:
                 type: string
                 example: 'Cocktail 1'
+        created_user:
+          $ref: '#/components/schemas/UserBasic'
+        updated_user:
+          $ref: '#/components/schemas/UserBasic'
+        access:
+          type: object
+          properties:
+            can_edit:
+              type: boolean
+            can_delete:
+              type: boolean
     IngredientCategory:
       type: object
       required:
@@ -2711,6 +2724,9 @@ components:
           type: string
           nullable: true
           example: 'A category of base spirits'
+        ingredients_count:
+          type: integer
+          example: 7
     IngredientCategoryRequest:
       type: object
       required:
@@ -2816,7 +2832,7 @@ components:
       required:
         - name
         - email
-        - is_admin
+        - role_id
       properties:
         name:
           type: string
@@ -2827,17 +2843,16 @@ components:
         password:
           type: string
           example: password
-        is_admin:
-          type: boolean
-          example: false
+        role_id:
+          type: integer
+          example: 1
     User:
       type: object
       required:
         - id
         - name
         - email
-        - is_admin
-        - search_api_key
+        - role
       properties:
         id:
           type: integer
@@ -2848,12 +2863,22 @@ components:
         email:
           type: string
           example: admin@example.com
-        is_admin:
-          type: boolean
-          example: false
-        search_api_key:
-          type: string
-          example: 3aab83bbed9bb5e38d00c0c10a006676ed8703a26ffc8c644e2f588a5a574584
+        role:
+          type: object
+          required:
+            - bar_id
+            - role_id
+            - role_name
+          properties:
+            bar_id:
+              type: integer
+              example: 1
+            role_id:
+              type: integer
+              example: 1
+            role_name:
+              type: string
+              example: "General"
     CocktailIngredientSubstitute:
       type: object
       required:
@@ -2888,6 +2913,10 @@ components:
           type: number
           format: float
           example: 30.0
+        amount_max:
+          type: number
+          format: float
+          example: 30.0
         units:
           type: string
           example: ml
@@ -2907,6 +2936,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CocktailIngredientSubstitute'
+        note:
+          type: string
+          example: Prefereby vodka
     Cocktail:
       type: object
       required:
@@ -3099,6 +3131,10 @@ components:
                 type: number
                 format: float
                 example: 30
+              amount_max:
+                type: number
+                format: float
+                example: 30
               units:
                 type: string
                 example: ml
@@ -3108,6 +3144,9 @@ components:
               sort:
                 type: integer
                 example: 0
+              note:
+                type: string
+                example: Ingredient note
     UserIngredient:
       type: object
       required:
