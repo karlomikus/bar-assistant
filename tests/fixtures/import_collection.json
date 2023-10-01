@@ -1,0 +1,32 @@
+{
+    "name": "Test collection",
+    "description": null,
+    "cocktails": [
+        {
+            "name": "Test 1",
+            "instructions": "Lorem ipsum 1",
+            "garnish": "orange twist",
+            "description": null,
+            "source": null,
+            "tags": [],
+            "glass": "Lowball",
+            "method": "Stir",
+            "abv": 29.88,
+            "images": [],
+            "ingredients": []
+        },
+        {
+            "name": "Test 2",
+            "instructions": "Lorem ipsum 2",
+            "garnish": "orange twist",
+            "description": null,
+            "source": null,
+            "tags": [],
+            "glass": "Lowball",
+            "method": "Stir",
+            "abv": 29.88,
+            "images": [],
+            "ingredients": []
+        }
+    ]
+}
