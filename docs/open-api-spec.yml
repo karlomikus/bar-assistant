@@ -1793,6 +1793,53 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /notes:
+    get:
+      parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/PerPageParameter'
+      - in: query
+        name: filter
+        required: false
+        description: Filter by specific attributes
+        explode: true
+        style: deepObject
+        schema:
+          type: object
+          properties:
+            cocktail_id:
+              type: string
+              example: "3"
+      - in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+          example: attribute_name
+        description: "Available attributes: `created_at`."
+      tags:
+        - "Notes"
+      summary: List all current users notes
+      operationId: listNotes
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - links
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Note'
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
     post:
       tags:
         - "Notes"
