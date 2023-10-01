@@ -43,6 +43,7 @@
             "description": "New ingredient description",
             "strength": 40,
             "origin": "Laravel test suite",
+            "note": "Use best one",
             "substitutes": ["Club soda", "H20"]
         }
     ]

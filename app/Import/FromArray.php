@@ -146,6 +146,8 @@ class FromArray
                 $sort,
                 $scrapedIngredient['optional'] ?? false,
                 $substitutes,
+                $scrapedIngredient['amount_max'] ?? null,
+                $scrapedIngredient['note'] ?? null,
             );
 
             $ingredients[] = $ingredient;

@@ -77,6 +77,8 @@ class FromArrayTest extends TestCase
         $this->assertSame(1, $cocktail->ingredients->first()->sort);
         $this->assertSame($existingIngredient->id, $cocktail->ingredients->first()->ingredient_id);
         $this->assertSame(30, $cocktail->ingredients->first()->amount);
+        $this->assertNull($cocktail->ingredients->first()->amount_max);
+        $this->assertNull($cocktail->ingredients->first()->note);
         $this->assertSame('ml', $cocktail->ingredients->first()->units);
         $this->assertFalse((bool) $cocktail->ingredients->first()->optional);
         $this->assertCount(0, $cocktail->ingredients->first()->substitutes);
@@ -89,6 +91,8 @@ class FromArrayTest extends TestCase
         $this->assertSame('New ingredient description', $cocktail->ingredients->last()->ingredient->description);
         $this->assertSame('Laravel test suite', $cocktail->ingredients->last()->ingredient->origin);
         $this->assertSame(2, $cocktail->ingredients->last()->amount);
+        $this->assertSame(4, $cocktail->ingredients->last()->amount_max);
+        $this->assertSame('Use best one', $cocktail->ingredients->last()->note);
         $this->assertSame('dashes', $cocktail->ingredients->last()->units);
         $this->assertTrue((bool) $cocktail->ingredients->last()->optional);
         $this->assertCount(2, $cocktail->ingredients->last()->substitutes);
