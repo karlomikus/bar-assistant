@@ -81,7 +81,7 @@ class UsersController extends Controller
 
         $user->name = $request->post('name');
 
-        if ($request->has('role_id')) {
+        if ($request->has('role_id') && $user->isBarAdmin(bar()->id)) {
             $barMembership = $user->getBarMembership(bar()->id);
             $barMembership->user_role_id = $request->post('role_id');
             $barMembership->save();
