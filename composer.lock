@@ -4722,16 +4722,16 @@
         },
         {
             "name": "spatie/laravel-responsecache",
-            "version": "7.4.8",
+            "version": "7.4.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-responsecache.git",
-                "reference": "51736570a47acc4a82fa1812359bd82f1c8ddce4"
+                "reference": "6bf62468041f80cd51b669fd856829ee87ef10be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-responsecache/zipball/51736570a47acc4a82fa1812359bd82f1c8ddce4",
-                "reference": "51736570a47acc4a82fa1812359bd82f1c8ddce4",
+                "url": "https://api.github.com/repos/spatie/laravel-responsecache/zipball/6bf62468041f80cd51b669fd856829ee87ef10be",
+                "reference": "6bf62468041f80cd51b669fd856829ee87ef10be",
                 "shasum": ""
             },
             "require": {
@@ -4790,7 +4790,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/laravel-responsecache/tree/7.4.8"
+                "source": "https://github.com/spatie/laravel-responsecache/tree/7.4.9"
             },
             "funding": [
                 {
@@ -4802,7 +4802,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-09-27T06:56:45+00:00"
+            "time": "2023-10-02T09:55:32+00:00"
         },
         {
             "name": "spatie/laravel-sluggable",
