@@ -19,7 +19,7 @@ class BarPolicy
 
     public function show(User $user, Bar $bar): bool
     {
-        return $user->isBarAdmin($bar->id) || $user->isBarModerator($bar->id);
+        return $user->hasBarMembership($bar->id);
     }
 
     public function edit(User $user, Bar $bar): bool

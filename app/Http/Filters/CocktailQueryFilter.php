@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Filters;
 
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -43,6 +44,23 @@ final class CocktailQueryFilter extends QueryBuilder
                             $this->request->user()->getShelfIngredients(bar()->id)->pluck('ingredient_id')->toArray()
                         ));
                     }
+                }),
+                AllowedFilter::callback('user_shelves', function ($query, $value) use ($cocktailService) {
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
+
+                    $ingredients = DB::table('bar_memberships')
+                        ->select('user_ingredients.ingredient_id')
+                        ->join('user_ingredients', 'user_ingredients.bar_membership_id', '=', 'bar_memberships.id')
+                        ->whereIn('bar_memberships.user_id', $value)
+                        ->where('bar_memberships.bar_id', bar()->id)
+                        ->where('bar_memberships.is_shelf_public', true)
+                        ->get();
+
+                    $query->whereIn('cocktails.id', $cocktailService->getCocktailsByIngredients(
+                        $ingredients->pluck('ingredient_id')->toArray()
+                    ));
                 }),
                 AllowedFilter::callback('shelf_ingredients', function ($query, $value) use ($cocktailService) {
                     if (!is_array($value)) {

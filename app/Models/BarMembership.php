@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BarMembership extends Model
 {
+    protected $casts = [
+        'is_shelf_public' => 'boolean',
+    ];
+
     /**
      * @return BelongsTo<Bar, BarMembership>
      */

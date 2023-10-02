@@ -193,7 +193,9 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/{id}', [BarController::class, 'show'])->name('bars.show');
         Route::put('/{id}', [BarController::class, 'update']);
         Route::delete('/{id}', [BarController::class, 'delete']);
+        Route::get('/{id}/memberships', [BarController::class, 'memberships']);
         Route::delete('/{id}/memberships', [BarController::class, 'leave']);
+        Route::delete('/{id}/memberships/{userId}', [BarController::class, 'removeMembership']);
         Route::delete('/{id}/memberships/{userId}', [BarController::class, 'removeMembership']);
     });
 });

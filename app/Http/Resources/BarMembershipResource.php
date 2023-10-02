@@ -7,9 +7,9 @@ namespace Kami\Cocktail\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \Kami\Cocktail\Models\User
+ * @mixin \Kami\Cocktail\Models\BarMembership
  */
-class ProfileResource extends JsonResource
+class BarMembershipResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,10 +20,10 @@ class ProfileResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
-            'memberships' => BarMembershipResource::collection($this->memberships),
+            'user_id' => $this->user->id,
+            'user_name' => $this->user->name,
+            'bar_id' => $this->bar_id,
+            'is_shelf_public' => $this->is_shelf_public,
         ];
     }
 }

@@ -19,6 +19,7 @@ class ProfileController extends Controller
 
     public function update(UpdateUserRequest $request): JsonResource
     {
+        $barId = $request->post('bar_id', null);
         $currentUser = $request->user();
         $currentUser->name = $request->post('name');
         $currentUser->email = $request->post('email');
@@ -27,6 +28,15 @@ class ProfileController extends Controller
             $currentUser->password = Hash::make($request->post('password'));
 
             $currentUser->tokens()->delete();
+        }
+
+        // If there is a bar context
+        if ($barId !== null) {
+            $barMembership = $currentUser->getBarMembership((int) $barId);
+            if ($barMembership) {
+                $barMembership->is_shelf_public = (bool) $request->post('is_shelf_public');
+                $barMembership->save();
+            }
         }
 
         $currentUser->save();

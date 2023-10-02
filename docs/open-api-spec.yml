@@ -242,6 +242,9 @@ paths:
             shelf_ingredients:
               type: string
               example: 5,6,7
+            user_shelves:
+              type: string
+              example: "7"
       - in: query
         name: sort
         required: false
@@ -1244,22 +1247,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  example: new@email.com
-                name:
-                  type: string
-                  example: New name
-                password:
-                  type: string
-                  nullable: true
-                  example: "new-password"
-                password_confirmation:
-                  type: string
-                  nullable: true
-                  example: "new-password"
+              $ref: '#/components/schemas/ProfileRequest'
       responses:
         '200':
           description: Successful response
@@ -2425,6 +2413,25 @@ paths:
         schema:
           type: integer
         required: true
+    get:
+      tags:
+        - Bars
+      summary: Get a specific bar members
+      operationId: getBarMemberships
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BarMembership'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
     delete:
       tags:
         - Bars
@@ -2883,6 +2890,7 @@ components:
         - id
         - name
         - email
+        - memberships
       properties:
         id:
           type: integer
@@ -2893,6 +2901,36 @@ components:
         email:
           type: string
           example: 'bar@tender.com'
+        memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/BarMembership'
+    ProfileRequest:
+      type: object
+      required:
+        - email
+        - name
+      properties:
+        email:
+          type: string
+          example: new@email.com
+        name:
+          type: string
+          example: New name
+        password:
+          type: string
+          nullable: true
+          example: "new-password"
+        password_confirmation:
+          type: string
+          nullable: true
+          example: "new-password"
+        bar_id:
+          type: integer
+          example: 1
+        is_shelf_public:
+          type: boolean
+          example: false
     UserRequest:
       type: object
       required:
@@ -3752,3 +3790,22 @@ components:
             - 0
             - 1
             - 2
+    BarMembership:
+      type: object
+      required:
+        - name
+        - bar_id
+        - is_shelf_public
+      properties:
+        user_id:
+          type: integer
+          example: 1
+        user_name:
+          type: string
+          example: Bar Tender
+        bar_id:
+          type: integer
+          example: 1
+        is_shelf_public:
+          type: integer
+          example: false

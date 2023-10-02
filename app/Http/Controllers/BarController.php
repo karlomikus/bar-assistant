@@ -15,6 +15,7 @@ use Kami\Cocktail\Models\UserRoleEnum;
 use Kami\Cocktail\Http\Requests\BarRequest;
 use Kami\Cocktail\Http\Resources\BarResource;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Http\Resources\BarMembershipResource;
 
 class BarController extends Controller
 {
@@ -144,5 +145,18 @@ class BarController extends Controller
         $bar->memberships()->where('user_id', $userId)->delete();
 
         return response(status: 204);
+    }
+
+    public function memberships(Request $request, int $id): JsonResource
+    {
+        $bar = Bar::findOrFail($id);
+
+        if ($request->user()->cannot('show', $bar)) {
+            abort(403);
+        }
+
+        $bar->load('memberships');
+
+        return BarMembershipResource::collection($bar->memberships);
     }
 }
