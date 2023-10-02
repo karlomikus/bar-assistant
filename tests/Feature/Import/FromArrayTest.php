@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Http;
+namespace Tests\Feature\Import;
 
 use Tests\TestCase;
 use Kami\Cocktail\Models\User;

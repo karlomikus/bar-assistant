@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Tests\Contract;
 
 use Tests\ContractTestCase;
 use Kami\Cocktail\Models\User;
