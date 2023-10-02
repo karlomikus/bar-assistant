@@ -3712,6 +3712,9 @@ components:
         enable_invites:
           type: boolean
           example: true
+        options:
+          type: array
+          example: ['cocktails', 'ingredients']
     CocktailPublic:
       type: object
       required:
