@@ -1502,3 +1502,27 @@
             resource_path: ingredients/yellow-chartreuse.png
             copyright: null
             placeholder_hash: nyyGPQI8CWeNdXSKl0iPg/Q3ByeGh3ZneA
+-
+    name: 'Basil'
+    category: 'Fruits and vegetables'
+    strength: 0
+    description: 'Basil is an annual, or sometimes perennial, herb used for its leaves.'
+    color: '#15a905'
+    origin: Worldwide
+    images:
+        -
+            resource_path: ingredients/basil.png
+            copyright: null
+            placeholder_hash: W6qBBQAlpJt1mc8yaVeOcDr3KHaDaGDqVw
+-
+    name: 'Cilantro'
+    category: 'Fruits and vegetables'
+    strength: 0
+    description: 'An annual herb in the family Apiaceae. All parts of the plant are edible, but the fresh leaves and the dried seeds are the parts most traditionally used in cooking. Most people perceive coriander as having a tart, lemon/lime taste, but to some individuals the leaves taste like dish soap. The perception of a soapy taste in certain aldehydes is linked to a specific gene.'
+    color: '#0e630a'
+    origin: Worldwide
+    images:
+        -
+            resource_path: ingredients/cilantro.png
+            copyright: null
+            placeholder_hash: 'lKqBDQA38NeYxN+xJ/G1HAeKWHeodXB4hQ'

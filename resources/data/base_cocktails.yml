@@ -1244,34 +1244,52 @@
             copyright: 'The Spruce / Madhumita Sathishkumar'
             placeholder_hash: rCgKJwb3SIibd4eKhZlXh5h1qFA3B3YE
 -
-    name: 'Dry Martini'
-    description: 'A dry martini is made with little to no vermouth. Ordering a martini "extra dry" will result in even less or no vermouth added.'
-    instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into chilled martini cocktail glass.'
-    garnish: 'Squeeze oil from lemon peel onto the drink, or garnish with green olives if requested.'
+    name: Martini
+    instructions: |-
+        1. Pour all ingredients into mixing glass with ice cubes.
+        2. Stir well.
+        3. Strain into chilled martini cocktail glass.
+        garnish: 'Squeeze oil from lemon peel onto the drink, or garnish with green olives if requested.'
+    description: |-
+        This classic is a contentious and sensitive topic with serious Martini drinkers. The way one drinks a Martini is simply a matter of personal preference.
+
+        **Variations:**
+        - Dry Martini: A dry martini is made with little to no vermouth
+        - 50/50 Martini: Equal parts vermouth and gin
+        - Dirty Martini: A Dirty Martini simply requires a splash of olive juice and a substitution of a good, dry olive (or two) for garnish.
+        - Gibson: Use cocktail onion for garnish
     source: 'https://iba-world.com/dry-martini/'
-    glass: Cocktail
-    method: Stir
-    abv: 30.71
     tags:
         - 'IBA Cocktail'
         - 'The Unforgettables'
-        - Gin
+        - Dry
+    glass: Cocktail
+    method: Stir
+    abv: 27.17
+    images:
+        -
+            resource_path: cocktails/martini.jpg
+            copyright: 'Punch | Lizzie Munro'
+            placeholder_hash: EQgSDwJbd4dgaId5iJiISYZ3Kp+/8PQN
     ingredients:
         -
+            sort: 1
             name: Gin
             amount: 60
             units: ml
             optional: false
         -
+            sort: 2
             name: 'Dry Vermouth'
-            amount: 10
+            amount: 30
             units: ml
             optional: false
-    images:
         -
-            resource_path: cocktails/dry-martini.jpg
-            copyright: 'Getty Images/iStockphoto'
-            placeholder_hash: lBgGDwKgujooSpejaBqomWp5mLB5C5sH
+            sort: 3
+            name: 'Orange bitters'
+            amount: 2
+            units: dashes
+            optional: true
 -
     name: 'El Presidente'
     description: 'The El Presidente earned its acclaim in Havana during the 1920s through the 1940s during the American Prohibition. It quickly became the preferred drink of the Cuban upper class.'
@@ -4281,3 +4299,226 @@
             resource_path: cocktails/strukani-pelin.jpg
             copyright: Tasteatlas
             placeholder_hash: owgOHwbY2YePdpeZhSand1h2R6AZFpcA
+-
+    name: 'Final Ward'
+    instructions: |-
+        1. Combine all the ingredients into your cocktail shaker
+        2. Shake with ice for 12 seconds
+        3. Strain into a chilled cocktail glass
+    garnish: 'Cocktail cherry at the bottom of the glass'
+    description: |-
+        The Final Ward is perhaps the best-know riff on the classic Last Word and was created in 2007 by Phil Ward at Death &amp; Co. NYC. It is still comprised of equal parts with rye whiskey replacing the gin and fresh lemon juice in place of lime.
+
+        The Last Word is a gin-based prohibition-era cocktail which was rediscovered in 2004 and becoming a cult hit in the Seattle area.
+    source: 'https://stevethebartender.com.au/final-ward-cocktail-recipe-last-word-riff/'
+    tags:
+        - Citrusy
+        - Herbacious
+    glass: 'Nick and Nora'
+    method: Shake
+    abv: 25.4
+    images:
+        -
+            resource_path: cocktails/final-ward.jpg
+            copyright: 'The Educated Barfly'
+            placeholder_hash: 'nBgSFwJXmHhzdoh/eKeXWId4iUT4aIIP'
+    ingredients:
+        -
+            sort: 1
+            name: 'Rye whiskey'
+            amount: 22.5
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 2
+            name: 'Green Chartreuse'
+            amount: 22.5
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 3
+            name: Maraschino
+            amount: 22.5
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 4
+            name: 'Lemon juice'
+            amount: 22.5
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+-
+    name: 'Hugo Spritz'
+    instructions: 'Combine everything in wine glass with ice'
+    garnish: 'Mint sprig and lime wedge'
+    description: 'As reported by the magazines Mixology and Der Spiegel, the Hugo was conceived in 2005 by Naturns bar manager Roland Gruber (aka A.K.) at San Zeno Bar, as an alternative to Spritz Veneziano, and quickly spread beyond the borders of South Tyrol. Initially, the recipe provided for the use of lemon balm syrup, then in practice replaced by elderflower syrup, more easily available.'
+    source: 'https://en.wikipedia.org/wiki/Hugo_(cocktail)'
+    tags:
+        - Wine
+        - Spritz
+        - Summer
+    glass: Wine
+    method: Build
+    abv: 11.06
+    images:
+        -
+            resource_path: cocktails/hugo-spritz.jpg
+            copyright: 'sipandfeast'
+            placeholder_hash: '8ugJFwK8fonFg2iNZPiGltN5VYAUncAP'
+    ingredients:
+        -
+            sort: 1
+            name: Prosecco
+            amount: 90
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 2
+            name: St-Germain
+            amount: 60
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+            substitutes:
+                - 'Elderflower Cordial'
+        -
+            sort: 3
+            name: 'Club soda'
+            amount: 30
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+-
+    name: "Gin Basil Smash"
+    instructions: |-
+        1. Muddle basil leaves in a shaker tin.
+        2. Add remaining ingredients and ice and shake until chilled.
+        3. Double strain into a rocks glass filled with ice.
+        4. Garnish with basil leaves."
+    garnish: 'Basil leaves'
+    description: 'At Le Lion where the drink was created in 2008, 300 to 500 have been sold every week since its debut—22,000 a year—and the bar goes through more than 3,100 bottles of gin every twelve months. The drink is served at bars all across Germany—so much so that one bartender, griping about the amount of basil-muddling required to make it, once called it “Meyer’s curse.”'
+    source: 'https://punchdrink.com/recipes/gin-basil-smash/'
+    tags:
+        - Summer
+        - Bright
+        - Smash
+    glass: Lowball
+    method: Shake
+    abv: 17.07
+    images:
+        -
+            resource_path: cocktails/gin-basil-smash.jpg
+            copyright: 'Punch Staff'
+            placeholder_hash: EwkOFwQFeKmhiGdia4h4d3h3iAM85oAK
+    ingredients:
+        -
+            sort: 1
+            name: Gin
+            amount: 60
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 2
+            name: Basil
+            amount: 10
+            amount_max: null
+            note: null
+            units: leaves
+            optional: false
+        -
+            sort: 3
+            name: 'Lemon juice'
+            amount: 30
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 4
+            name: 'Simple Syrup'
+            amount: 22.5
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+-
+    name: 'Picante de la Casa'
+    instructions: |-
+        1. Cut a small piece of chili (about ¼ inch wide) and press with muddler in the shaker tin.
+        2. Hand clap the cilantro (to release the aroma, place the leaves or sprig in one hand and gently smack it with the other – this warms up the garnish slightly and starts to extract the oils before you use it), and drop in.
+        3. Add the rest of the ingredients, shake and fine strain into an ice-filled rocks glass (a short tumbler used for serving spirits).
+        4. Cut off the top end  the chili pepper and place – stem upwards – on top.
+    garnish: 'Top end (stem) of the chilli pepper'
+    description: |-
+        Lovers of the margarita, we have a treat for you here! The Picante de la Casa Cocktail, also called the Soho House Picante or Soho House Tonic, is a creation of the Soho House Club. That is a group of private members&#039; clubs with its origin in Soho in the Londoner West End. The cocktail, however, does not have its roots in England but in West Hollywood, USA. -Although, actually, it looks like it could be straight out of Mexico.
+
+        Soho House have shared the recipe for their picante de la casa. The picante is based on the much-loved margarita, but the picante cocktail ingredients includes chilli and coriander – to add a little extra heat and spice. It is revelatory – and a drink you’ll be coming back to.
+    source: 'https://www.sohohouse.com/en-us/house-notes/issue-4/house-favourites-how-to-make-a-picante'
+    tags:
+        - Spicy
+        - Margarita
+    glass: Lowball
+    method: Shake
+    abv: 17.07
+    images:
+        -
+            resource_path: cocktails/picante-de-la-casa.jpg
+            copyright: SohoHouse
+            placeholder_hash: '1/cJDwJOpoqdiHaKivdot4h5BJS3QGYO'
+    ingredients:
+        -
+            sort: 1
+            name: 'Tequila Reposado'
+            amount: 60
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 2
+            name: 'Agave Syrup'
+            amount: 22.5
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+            substitutes:
+                - 'Honey Syrup'
+        -
+            sort: 3
+            name: 'Lime juice'
+            amount: 30
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 4
+            name: 'Chilli Pepper'
+            amount: 0.25
+            amount_max: null
+            note: null
+            units: inch
+            optional: false
+        -
+            sort: 5
+            name: Cilantro
+            amount: 10
+            amount_max: null
+            note: null
+            units: leaves
+            optional: false
