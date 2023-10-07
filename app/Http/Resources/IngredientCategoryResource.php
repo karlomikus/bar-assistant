@@ -23,6 +23,7 @@ class IngredientCategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'ingredients_count' => $this->whenCounted('ingredients'),
         ];
     }
 }

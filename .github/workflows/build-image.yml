@@ -13,6 +13,19 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            barassistant/server
+          flavor: |
+            latest=false
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern=v{{major}}
+      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       -
@@ -29,9 +42,10 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
+          target: dist
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: barassistant/server:latest, barassistant/server:${{github.ref_name}}
+          tags: ${{ steps.meta.outputs.tags }}
           build-args: BAR_ASSISTANT_VERSION=${{github.ref_name}}
           cache-from: type=gha
           cache-to: type=gha,mode=max

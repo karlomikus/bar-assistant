@@ -17,6 +17,10 @@ class RatingController extends Controller
     {
         $cocktail = Cocktail::findOrFail($cocktailId);
 
+        if ($request->user()->cannot('rate', $cocktail)) {
+            abort(403);
+        }
+
         $rating = $cocktail->rate(
             (int) $request->post('rating'),
             $request->user()->id
@@ -30,6 +34,10 @@ class RatingController extends Controller
     public function deleteCocktailRating(Request $request, int $cocktailId): Response
     {
         $cocktail = Cocktail::findOrFail($cocktailId);
+
+        if ($request->user()->cannot('rate', $cocktail)) {
+            abort(403);
+        }
 
         $cocktail->deleteUserRating($request->user()->id);
 

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Unit\UnitConverter;
 
 use Tests\TestCase;
-use InvalidArgumentException;
 use Kami\Cocktail\UnitConverter\Cl;
 use Kami\Cocktail\UnitConverter\Ml;
 use Kami\Cocktail\UnitConverter\Oz;

@@ -16,27 +16,32 @@ class CocktailMethodController extends Controller
 {
     public function index(): JsonResource
     {
-        $methods = CocktailMethod::orderBy('id')->withCount('cocktails')->get();
+        $methods = CocktailMethod::orderBy('id')->withCount('cocktails')->filterByBar()->get();
 
         return CocktailMethodResource::collection($methods);
     }
 
-    public function show(int $id): JsonResource
+    public function show(Request $request, int $id): JsonResource
     {
         $method = CocktailMethod::withCount('cocktails')->findOrFail($id);
+
+        if ($request->user()->cannot('show', $method)) {
+            abort(403);
+        }
 
         return new CocktailMethodResource($method);
     }
 
     public function store(CocktailMethodRequest $request): JsonResponse
     {
-        if (!$request->user()->isAdmin()) {
+        if ($request->user()->cannot('create', CocktailMethod::class)) {
             abort(403);
         }
 
         $method = new CocktailMethod();
         $method->name = $request->post('name');
         $method->dilution_percentage = (int) $request->post('dilution_percentage');
+        $method->bar_id = bar()->id;
         $method->save();
 
         return (new CocktailMethodResource($method))
@@ -47,27 +52,29 @@ class CocktailMethodController extends Controller
 
     public function update(CocktailMethodRequest $request, int $id): JsonResource
     {
-        if (!$request->user()->isAdmin()) {
+        $method = CocktailMethod::findOrFail($id);
+
+        if ($request->user()->cannot('edit', $method)) {
             abort(403);
         }
 
-        $method = CocktailMethod::findOrFail($id);
         $method->name = $request->post('name');
         $method->dilution_percentage = (int) $request->post('dilution_percentage');
+        $method->updated_at = now();
         $method->save();
-
-        // TODO: Update index abv
 
         return new CocktailMethodResource($method);
     }
 
     public function delete(Request $request, int $id): Response
     {
-        if (!$request->user()->isAdmin()) {
+        $method = CocktailMethod::findOrFail($id);
+
+        if ($request->user()->cannot('delete', $method)) {
             abort(403);
         }
 
-        CocktailMethod::findOrFail($id)->delete();
+        $method->delete();
 
         return response(null, 204);
     }

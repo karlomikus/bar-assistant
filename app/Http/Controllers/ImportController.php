@@ -8,20 +8,22 @@ use Throwable;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Scraper\Manager;
-use Kami\Cocktail\Services\ImportService;
+use Kami\Cocktail\Import\FromArray;
+use Kami\Cocktail\Jobs\ImportCollection;
 use Kami\Cocktail\Http\Requests\ImportRequest;
+use Kami\Cocktail\Import\DuplicateActionsEnum;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CocktailResource;
-use Kami\Cocktail\Http\Resources\CollectionResource;
 
 class ImportController extends Controller
 {
-    public function cocktail(ImportRequest $request, ImportService $importService): JsonResponse|JsonResource
+    public function cocktail(ImportRequest $request, FromArray $arrayImporter): JsonResponse|JsonResource
     {
         $dataToImport = [];
         $type = $request->get('type', 'url');
         $save = $request->get('save', false);
         $source = $request->post('source');
+        $duplicateAction = DuplicateActionsEnum::from((int) $request->post('duplicate_actions', '0'));
 
         if ($type === 'url') {
             $request->validate(['source' => 'url']);
@@ -36,7 +38,7 @@ class ImportController extends Controller
 
         if ($type === 'json') {
             if (!is_array($source)) {
-                if (!$source = json_decode($source)) {
+                if (!$source = json_decode($source, true)) {
                     abort(400, 'Unable to parse the JSON string');
                 }
             }
@@ -63,13 +65,19 @@ class ImportController extends Controller
                 abort(400, sprintf('No cocktails found'));
             }
 
-            $collection = $importService->importCocktailCollection($source, $request->user()->id);
+            ImportCollection::dispatch($source, $request->user()->id, bar()->id, $duplicateAction);
 
-            return new CollectionResource($collection);
+            return response()->json([
+                'data' => ['status' => 'started']
+            ]);
         }
 
         if ($save) {
-            $dataToImport = new CocktailResource($importService->importCocktailFromArray($dataToImport, $request->user()->id));
+            $cocktail = $arrayImporter->process($dataToImport, $request->user()->id, bar()->id);
+            $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
+                $query->orderBy('sort');
+            }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
+            $dataToImport = new CocktailResource($cocktail);
         }
 
         return response()->json([

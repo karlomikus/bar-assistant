@@ -16,27 +16,32 @@ class IngredientCategoryController extends Controller
 {
     public function index(): JsonResource
     {
-        $categories = IngredientCategory::orderBy('name')->get();
+        $categories = IngredientCategory::orderBy('name')->withCount('ingredients')->filterByBar()->get();
 
         return IngredientCategoryResource::collection($categories);
     }
 
-    public function show(int $id): JsonResource
+    public function show(Request $request, int $id): JsonResource
     {
         $category = IngredientCategory::findOrFail($id);
+
+        if ($request->user()->cannot('show', $category)) {
+            abort(403);
+        }
 
         return new IngredientCategoryResource($category);
     }
 
     public function store(IngredientCategoryRequest $request): JsonResponse
     {
-        if (!$request->user()->isAdmin()) {
+        if ($request->user()->cannot('create', IngredientCategory::class)) {
             abort(403);
         }
 
         $category = new IngredientCategory();
         $category->name = $request->post('name');
         $category->description = $request->post('description');
+        $category->bar_id = bar()->id;
         $category->save();
 
         return (new IngredientCategoryResource($category))
@@ -47,13 +52,15 @@ class IngredientCategoryController extends Controller
 
     public function update(IngredientCategoryRequest $request, int $id): JsonResource
     {
-        if (!$request->user()->isAdmin()) {
+        $category = IngredientCategory::findOrFail($id);
+
+        if ($request->user()->cannot('edit', $category)) {
             abort(403);
         }
 
-        $category = IngredientCategory::findOrFail($id);
         $category->name = $request->post('name');
         $category->description = $request->post('description');
+        $category->updated_at = now();
         $category->save();
 
         return new IngredientCategoryResource($category);
@@ -61,11 +68,13 @@ class IngredientCategoryController extends Controller
 
     public function delete(Request $request, int $id): Response
     {
-        if (!$request->user()->isAdmin()) {
+        $category = IngredientCategory::findOrFail($id);
+
+        if ($request->user()->cannot('delete', $category)) {
             abort(403);
         }
 
-        IngredientCategory::findOrFail($id)->delete();
+        $category->delete();
 
         return response(null, 204);
     }

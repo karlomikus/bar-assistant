@@ -36,6 +36,7 @@ class ExploreCocktailResource extends JsonResource
                 return [
                     'name' => $cocktailIngredient->ingredient->name,
                     'amount' => $cocktailIngredient->amount,
+                    'amount_max' => $cocktailIngredient->amount_max,
                     'units' => $cocktailIngredient->units,
                     'optional' => (bool) $cocktailIngredient->optional,
                     'substitutes' => $cocktailIngredient->substitutes->pluck('ingredient.name')

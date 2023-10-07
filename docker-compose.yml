@@ -2,11 +2,11 @@ version: "3.7"
 services:
   app:
     build:
+      target: localdev
       args:
-        user: developer
-        uid: 1000
+        PUID: 1000
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     container_name: app
     restart: unless-stopped
     extra_hosts:
@@ -14,6 +14,30 @@ services:
     volumes:
       - ./:/var/www/cocktails
       - ./resources/php.dev.ini:/usr/local/etc/php/conf.d/local.ini
+
+  queue:
+    build:
+      target: localdev
+      args:
+        PUID: 1000
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    # In dev env use listen instead of work
+    command: php artisan queue:listen
+    volumes:
+      - ./:/var/www/cocktails
+
+  # minio:
+  #   image: 'bitnami/minio:latest'
+  #   ports:
+  #     - '7000:9000'
+  #     - '7001:9001'
+  #   environment:
+  #     - MINIO_ROOT_USER=minio-root-user
+  #     - MINIO_ROOT_PASSWORD=minio-root-password
+  #   volumes:
+  #     - miniiodata:/data
 
   webserver:
     image: nginx:alpine
@@ -32,7 +56,7 @@ services:
     restart: unless-stopped
 
   meilisearch:
-    image: getmeili/meilisearch:latest
+    image: getmeili/meilisearch:v1.3.2
     environment:
       - MEILI_MASTER_KEY=masterKeyThatIsReallyReallyLong4Real
     restart: unless-stopped
@@ -43,3 +67,4 @@ services:
 
 volumes:
   meilidata:
+  miniiodata:

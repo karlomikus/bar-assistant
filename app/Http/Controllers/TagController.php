@@ -18,26 +18,31 @@ class TagController extends Controller
 {
     public function index(): JsonResource
     {
-        $tags = Tag::orderBy('name')->withCount('cocktails')->get();
+        $tags = Tag::orderBy('name')->withCount('cocktails')->filterByBar()->get();
 
         return TagResource::collection($tags);
     }
 
-    public function show(int $id): JsonResource
+    public function show(Request $request, int $id): JsonResource
     {
         $tag = Tag::withCount('cocktails')->findOrFail($id);
+
+        if ($request->user()->cannot('show', $tag)) {
+            abort(403);
+        }
 
         return new TagResource($tag);
     }
 
     public function store(TagRequest $request): JsonResponse
     {
-        if (!$request->user()->isAdmin()) {
+        if ($request->user()->cannot('create', Tag::class)) {
             abort(403);
         }
 
         $tag = new Tag();
         $tag->name = $request->post('name');
+        $tag->bar_id = bar()->id;
         $tag->save();
 
         return (new TagResource($tag))
@@ -48,11 +53,12 @@ class TagController extends Controller
 
     public function update(TagRequest $request, int $id): JsonResource
     {
-        if (!$request->user()->isAdmin()) {
+        $tag = Tag::findOrFail($id);
+
+        if ($request->user()->cannot('edit', $tag)) {
             abort(403);
         }
 
-        $tag = Tag::findOrFail($id);
         $tag->name = $request->post('name');
         $tag->save();
 
@@ -64,12 +70,14 @@ class TagController extends Controller
 
     public function delete(Request $request, int $id): Response
     {
-        if (!$request->user()->isAdmin()) {
+        $tag = Tag::findOrFail($id);
+
+        if ($request->user()->cannot('delete', $tag)) {
             abort(403);
         }
 
         $cocktailIds = DB::table('cocktail_tag')->select('cocktail_id')->where('tag_id', $id)->pluck('cocktail_id');
-        Tag::findOrFail($id)->delete();
+        $tag->delete();
         Cocktail::find($cocktailIds)->each(fn ($cocktail) => $cocktail->searchable());
 
         return response(null, 204);

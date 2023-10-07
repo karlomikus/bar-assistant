@@ -8,19 +8,22 @@ use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\UserIngredient;
+use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\UserShoppingList;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Http\Requests\IngredientsBatchRequest;
 use Kami\Cocktail\Http\Resources\UserIngredientResource;
-use Kami\Cocktail\Http\Requests\UserIngredientBatchRequest;
 
 class ShelfController extends Controller
 {
     public function ingredients(Request $request): JsonResource
     {
-        $userIngredients = $request->user()
-            ->shelfIngredients
+        $barMembership = $request->user()->getBarMembership(bar()->id);
+        $userIngredients = $barMembership
+            ->userIngredients
             ->sortBy('ingredient.name')
             ->load('ingredient');
 
@@ -29,10 +32,11 @@ class ShelfController extends Controller
 
     public function cocktails(CocktailService $cocktailService, Request $request): JsonResponse
     {
+        $barMembership = $request->user()->getBarMembership(bar()->id);
         $limit = $request->has('limit') ? (int) $request->get('limit') : null;
 
-        $cocktailIds = $cocktailService->getCocktailsByUserIngredients(
-            $request->user()->shelfIngredients->pluck('ingredient_id')->toArray(),
+        $cocktailIds = $cocktailService->getCocktailsByIngredients(
+            $barMembership->userIngredients->pluck('ingredient_id')->toArray(),
             $limit
         );
 
@@ -41,48 +45,54 @@ class ShelfController extends Controller
         ]);
     }
 
-    public function save(Request $request, int $ingredientId): JsonResponse
+    public function favorites(Request $request): JsonResponse
     {
-        // Remove ingredient from the shopping list if it exists
-        UserShoppingList::where('ingredient_id', $ingredientId)->delete();
+        $barMembership = $request->user()->getBarMembership(bar()->id);
 
-        // Check if ingredient is already in the shelf, and add it if it's not
-        if (!$request->user()->shelfIngredients->contains('ingredient_id', $ingredientId)) {
-            $userIngredient = new UserIngredient();
-            $userIngredient->ingredient_id = $ingredientId;
-            $shelfIngredient = $request->user()->shelfIngredients()->save($userIngredient);
-        } else {
-            $shelfIngredient = $request->user()->shelfIngredients->where('ingredient_id', $ingredientId)->first();
-        }
+        $cocktailIds = CocktailFavorite::where('bar_membership_id', $barMembership->id)->pluck('cocktail_id');
 
-        return (new UserIngredientResource($shelfIngredient))->response()->setStatusCode(200);
+        return response()->json([
+            'data' => $cocktailIds
+        ]);
     }
 
-    public function batch(UserIngredientBatchRequest $request): JsonResource
+    public function batchStore(IngredientsBatchRequest $request): JsonResource
     {
-        $ingredientIds = $request->post('ingredient_ids');
+        $barMembership = $request->user()->getBarMembership(bar()->id);
+
+        $ingredients = DB::table('ingredients')
+            ->select('id')
+            ->where('bar_id', $barMembership->bar_id)
+            ->whereIn('id', $request->post('ingredient_ids'))
+            ->pluck('id');
 
         // Let's remove ingredients from shopping list since they are on our shelf now
-        UserShoppingList::whereIn('ingredient_id', $ingredientIds)->delete();
+        UserShoppingList::whereIn('ingredient_id', $ingredients)->delete();
 
         $models = [];
-        foreach ($ingredientIds as $ingId) {
+        foreach ($ingredients as $dbIngredientId) {
             $userIngredient = new UserIngredient();
-            $userIngredient->ingredient_id = $ingId;
+            $userIngredient->ingredient_id = $dbIngredientId;
             $models[] = $userIngredient;
         }
 
-        $si = $request->user()->shelfIngredients()->saveMany($models);
+        $shelfIngredients = $barMembership->userIngredients()->saveMany($models);
 
-        return UserIngredientResource::collection($si);
+        return UserIngredientResource::collection($shelfIngredients);
     }
 
-    public function delete(Request $request, int $ingredientId): Response
+    public function batchDelete(Request $request): Response
     {
+        $barMembership = $request->user()->getBarMembership(bar()->id);
+
+        $ingredients = DB::table('ingredients')
+            ->select('id')
+            ->where('bar_id', $barMembership->bar_id)
+            ->whereIn('id', $request->post('ingredient_ids'))
+            ->pluck('id');
+
         try {
-            UserIngredient::where('user_id', $request->user()->id)
-                ->where('ingredient_id', $ingredientId)
-                ->delete();
+            $barMembership->userIngredients()->whereIn('ingredient_id', $ingredients)->delete();
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
         }

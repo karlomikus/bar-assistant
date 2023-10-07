@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Filters;
 
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -19,6 +20,8 @@ final class CocktailQueryFilter extends QueryBuilder
     {
         parent::__construct(Cocktail::query());
 
+        $barMembership = $this->request->user()->getBarMembership(bar()->id);
+
         $this
             ->allowedFilters([
                 AllowedFilter::exact('id'),
@@ -27,27 +30,44 @@ final class CocktailQueryFilter extends QueryBuilder
                 AllowedFilter::exact('ingredient_id', 'ingredients.ingredient.id'),
                 AllowedFilter::exact('tag_id', 'tags.id'),
                 AllowedFilter::exact('collection_id', 'collections.id'),
-                AllowedFilter::exact('user_id'),
+                AllowedFilter::exact('created_user_id'),
                 AllowedFilter::exact('glass_id'),
                 AllowedFilter::exact('cocktail_method_id'),
-                AllowedFilter::callback('favorites', function ($query, $value) {
+                AllowedFilter::callback('favorites', function ($query, $value) use ($barMembership) {
                     if ($value === true) {
-                        $query->userFavorites($this->request->user()->id);
+                        $query->userFavorites($barMembership->id);
                     }
                 }),
                 AllowedFilter::callback('on_shelf', function ($query, $value) use ($cocktailService) {
                     if ($value === true) {
-                        $query->whereIn('cocktails.id', $cocktailService->getCocktailsByUserIngredients(
-                            $this->request->user()->shelfIngredients->pluck('ingredient_id')->toArray()
+                        $query->whereIn('cocktails.id', $cocktailService->getCocktailsByIngredients(
+                            $this->request->user()->getShelfIngredients(bar()->id)->pluck('ingredient_id')->toArray()
                         ));
                     }
+                }),
+                AllowedFilter::callback('user_shelves', function ($query, $value) use ($cocktailService) {
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
+
+                    $ingredients = DB::table('bar_memberships')
+                        ->select('user_ingredients.ingredient_id')
+                        ->join('user_ingredients', 'user_ingredients.bar_membership_id', '=', 'bar_memberships.id')
+                        ->whereIn('bar_memberships.user_id', $value)
+                        ->where('bar_memberships.bar_id', bar()->id)
+                        ->where('bar_memberships.is_shelf_public', true)
+                        ->get();
+
+                    $query->whereIn('cocktails.id', $cocktailService->getCocktailsByIngredients(
+                        $ingredients->pluck('ingredient_id')->toArray()
+                    ));
                 }),
                 AllowedFilter::callback('shelf_ingredients', function ($query, $value) use ($cocktailService) {
                     if (!is_array($value)) {
                         $value = [$value];
                     }
 
-                    $query->whereIn('cocktails.id', $cocktailService->getCocktailsByUserIngredients($value));
+                    $query->whereIn('cocktails.id', $cocktailService->getCocktailsByIngredients($value));
                 }),
                 AllowedFilter::callback('is_public', function ($query, $value) {
                     if ($value === true) {
@@ -59,6 +79,12 @@ final class CocktailQueryFilter extends QueryBuilder
                 }),
                 AllowedFilter::callback('user_rating_max', function ($query, $value) {
                     $query->where('user_rating', '<=', (int) $value);
+                }),
+                AllowedFilter::callback('average_rating_min', function ($query, $value) {
+                    $query->where('average_rating', '>=', (int) $value);
+                }),
+                AllowedFilter::callback('average_rating_max', function ($query, $value) {
+                    $query->where('average_rating', '<=', (int) $value);
                 }),
                 AllowedFilter::callback('abv_min', function ($query, $value) {
                     $query->where('abv', '>=', $value);
@@ -86,22 +112,23 @@ final class CocktailQueryFilter extends QueryBuilder
                 'abv',
                 'total_ingredients',
                 'missing_ingredients',
-                AllowedSort::callback('favorited_at', function ($query, bool $descending) {
+                AllowedSort::callback('favorited_at', function ($query, bool $descending) use ($barMembership) {
                     $direction = $descending ? 'DESC' : 'ASC';
 
                     $query->leftJoin('cocktail_favorites AS cf', 'cf.cocktail_id', '=', 'cocktails.id')
-                        ->where('cf.user_id', $this->request->user()->id)
+                        ->where('cf.bar_membership_id', $barMembership->id)
                         ->orderBy('cf.updated_at', $direction);
                 }),
             ])
-            ->allowedIncludes(['glass', 'method', 'user', 'collections', 'notes', 'navigation'])
-            ->with('ingredients.ingredient', 'images', 'tags')
+            ->allowedIncludes(['glass', 'method', 'user', 'navigation', 'utensils', 'createdUser', 'updatedUser'])
+            ->with('ingredients.ingredient', 'images', 'tags', 'ratings')
             ->selectRaw('cocktails.*, COUNT(ci.cocktail_id) AS total_ingredients, COUNT(ci.ingredient_id) - COUNT(ui.ingredient_id) AS missing_ingredients')
             ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')
-            ->leftJoin('user_ingredients AS ui', function ($query) {
-                $query->on('ui.ingredient_id', '=', 'ci.ingredient_id')->where('ui.user_id', $this->request->user()->id);
+            ->leftJoin('user_ingredients AS ui', function ($query) use ($barMembership) {
+                $query->on('ui.ingredient_id', '=', 'ci.ingredient_id')->where('ui.bar_membership_id', $barMembership->id);
             })
             ->groupBy('cocktails.id')
+            ->filterByBar()
             ->withRatings($this->request->user()->id);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Kami\Cocktail\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -22,7 +24,7 @@ class BarSearchRefresh extends Command
      *
      * @var string
      */
-    protected $description = 'Refresh search index';
+    protected $description = 'Refresh search index.';
 
     public function __construct(private readonly SearchActionsAdapter $searchActions)
     {
@@ -41,8 +43,8 @@ class BarSearchRefresh extends Command
         // Clear indexes
         if ($this->option('clear')) {
             $this->info('Flushing site search, cocktails and ingredients index...');
-            Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Cocktail"]);
-            Artisan::call('scout:flush', ['model' => "Kami\Cocktail\Models\Ingredient"]);
+            Artisan::call('scout:flush', ['model' => Cocktail::class]);
+            Artisan::call('scout:flush', ['model' => Ingredient::class]);
         }
 
         // Update settings

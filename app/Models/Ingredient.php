@@ -9,16 +9,17 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Kami\Cocktail\Models\Concerns\HasImages;
+use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ingredient extends Model
 {
-    use HasFactory, Searchable, HasImages, HasSlug;
-
-    private string $appImagesDir = 'ingredients/';
+    use HasFactory, Searchable, HasImages, HasSlug, HasBarAwareScope, HasAuthors;
 
     protected $fillable = [
         'name',
@@ -31,10 +32,15 @@ class Ingredient extends Model
         'parent_ingredient_id',
     ];
 
+    public function getUploadPath(): string
+    {
+        return 'ingredients/' . $this->bar_id . '/';
+    }
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
-            ->generateSlugsFrom('name')
+            ->generateSlugsFrom(['name', 'bar_id'])
             ->saveSlugsTo('slug');
     }
 
@@ -126,10 +132,9 @@ class Ingredient extends Model
             'name' => $this->name,
             'image_url' => $this->getMainImageUrl(),
             'description' => $this->description,
-            'category' => $this->category->name,
-            'strength_abv' => $this->strength,
-            'color' => $this->color ?? 'No color',
-            'origin' => $this->origin ?? 'No origin',
+            'category' => $this->category?->name ?? null,
+            'origin' => $this->origin,
+            'bar_id' => $this->bar_id,
         ];
     }
 }

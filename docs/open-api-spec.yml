@@ -5,6 +5,35 @@ info:
   description: |-
     Bar Assistant is a self hosted application for managing your home bar.
 
+    ## Content
+
+    You should set `Content-Type: application/json` header for each request.
+
+    ## Authentication
+
+    Add your login token in header for every request, for example: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.
+    For requests that need reference to bar, add your bar id via query string, for example: `/api/example?bar_id=1`
+
+    ## Authorization
+
+    You will get response with error message and status code `403` if you try to access resource that you don't have permissions for.
+
+    ## Sorting
+
+    Some endpoints allow sorting by specific attributes. Prepending `-` defines descending order, and omitting it defines ascending order. Seperate multiple sorts by a comma. For example: `?sort=name` will sort by name attribute in ascending order.
+
+    ## Includes
+
+    Some endpoints allow including extra relationship data on demand. Seperate multiple relations witha a comma. For example: `?include=notes,user` will include extra extra data for notes and user.
+
+    ## Pagination
+
+    Some endpoints allow paginating results. Use `?per_page=30` to limit total results per request. Use `?page=3` to go to a specific page.
+
+    ## Filtering
+
+    Some endpoints allow filtering by a specific attribute. For example: `?filter[attribute_name]=value`.
+
     [Documentation](https://bar-assistant.github.io/docs/) | [Source](https://github.com/karlomikus/bar-assistant)
 servers:
   - url: /api
@@ -13,6 +42,8 @@ tags:
     description: Operations related to server
   - name: Auth
     description: Operations related to user authentication
+  - name: Profile
+    description: Operations related to current user
   - name: Ingredients
     description: Operations related to ingredients
   - name: Cocktails
@@ -25,8 +56,6 @@ tags:
     description: Operations related to ingredient categories
   - name: "User shelf"
     description: Operations related to user shelf
-  - name: User
-    description: Operations related to current user
   - name: Users
     description: Operations related to users
   - name: "Shopping list"
@@ -47,6 +76,8 @@ tags:
     description: Data import operations
   - name: "Utensils"
     description: Operations related to utensils
+  - name: Bars
+    description: Operations related to bars
 security:
   - user_token: []
 paths:
@@ -54,7 +85,7 @@ paths:
     get:
       tags:
         - Server
-      summary: Get server version information
+      summary: Get server information
       operationId: getServerVersion
       security: []
       responses:
@@ -63,7 +94,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Version'
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Version'
   /server/openapi:
     get:
       tags:
@@ -78,7 +112,7 @@ paths:
     post:
       tags:
         - Auth
-      summary: Authenticate and get a token
+      summary: Authenticate user and get a token
       operationId: login
       security: []
       requestBody:
@@ -86,17 +120,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - email
-                - password
-              properties:
-                email:
-                  type: string
-                  example: admin@example.com
-                password:
-                  type: string
-                  example: password
+              $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
           description: Successful response
@@ -105,9 +129,8 @@ paths:
               schema:
                 type: object
                 properties:
-                  token:
-                    type: string
-                    example: 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII
+                  data:
+                    $ref: '#/components/schemas/AuthToken'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /logout:
@@ -116,17 +139,44 @@ paths:
         - Auth
       summary: Logout currently authenticated user
       operationId: logout
-      security: []
       responses:
-        '200':
+        '204':
           description: Successful response
+  /register:
+    post:
+      tags:
+        - Auth
+      security: []
+      summary: "Register a new user"
+      operationId: registerUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Profile'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
   /cocktails:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     get:
       parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/PerPageParameter'
       - in: query
         name: filter
         required: false
-        description: Filter by specific parameters
+        description: Filter by specific attributes
         explode: true
         style: deepObject
         schema:
@@ -134,7 +184,7 @@ paths:
           properties:
             id:
               type: string
-              example: 3,4,5
+              example: "3"
             name:
               type: string
               example: "old"
@@ -142,20 +192,20 @@ paths:
               type: string
               example: "campari"
             ingredient_id:
-              type: integer
-              example: 3
+              type: string
+              example: "3"
             tag_id:
               type: string
-              example: 4
-            user_id:
+              example: "4"
+            created_user_id:
               type: string
-              example: 3
+              example: "3"
             glass_id:
               type: string
-              example: 1
+              example: "1"
             cocktail_method_id:
               type: string
-              example: 1
+              example: "1"
             favorites:
               type: boolean
               example: true
@@ -171,6 +221,12 @@ paths:
             user_rating_max:
               type: integer
               example: 5
+            average_rating_min:
+              type: integer
+              example: 3
+            average_rating_max:
+              type: integer
+              example: 5
             abv_min:
               type: number
               example: 15
@@ -178,42 +234,31 @@ paths:
               type: number
               example: 55.5
             main_ingredient_id:
-              type: integer
-              example: 1
+              type: string
+              example: "1"
             collection_id:
-              type: integer
-              example: 1
+              type: string
+              example: "1"
             shelf_ingredients:
               type: string
               example: 5,6,7
+            user_shelves:
+              type: string
+              example: "7"
       - in: query
         name: sort
         required: false
         schema:
           type: string
-          example: name,-created_at
-        description: "Sort by specific parameters, change order by prepending `-`. Available sorts: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `favorited_at`, `missing_ingredients`. Seperate multiple sorts with a comma `,`."
-      - in: query
-        name: per_page
-        required: false
-        schema:
-          type: integer
-          example: 25
-        description: Total results per page
-      - in: query
-        name: page
-        required: false
-        schema:
-          type: integer
-          example: 1
-        description: Page number
+          example: attribute_name
+        description: "Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `favorited_at`, `missing_ingredients`."
       - in: query
         name: include
         required: false
         schema:
           type: string
-          example: notes,user
-        description: "Comma seperated names of extra data you want to include in response: `notes`, `glass`, `user`, `collections`, `method`, `ingredients`"
+          example: attribute_name
+        description: "Available attributes: `glass`, `createdUser`, `updatedUser`, `method`, `ingredients`, `utensils`."
       tags:
         - "Cocktails"
       summary: 'Show a paginated list of cocktails'
@@ -238,6 +283,8 @@ paths:
                     $ref: '#/components/schemas/PaginationLinks'
                   meta:
                     $ref: '#/components/schemas/PaginationMeta'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
     post:
       tags:
         - "Cocktails"
@@ -264,40 +311,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Cocktail'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-  /register:
-    post:
-      tags:
-        - Auth
-      security: []
-      summary: "Register a new user"
-      operationId: registerUser
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  example: "newuser@domain.com"
-                name:
-                  type: string
-                  example: "New User"
-                password:
-                  type: string
-                  example: "P4SSW0RD"
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Profile'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /cocktails/{id}:
@@ -323,6 +338,8 @@ paths:
                 properties:
                     data:
                       $ref: '#/components/schemas/Cocktail'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
     put:
@@ -395,6 +412,8 @@ paths:
                         type: boolean
                         description: 'Is cocktail favorited'
                         example: true
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
   /cocktails/{id}/public-link:
@@ -419,21 +438,9 @@ paths:
                 type: object
                 properties:
                   data:
-                    type: object
-                    properties:
-                      public_id:
-                        type: string
-                        description: 'Public cocktail ULID'
-                        example: "01ARZ3NDEKTSV4RRFFQ69G5FAV"
-                      public_at:
-                        type: string
-                        description: 'ULID created at datetime'
-                        example: "2023-03-14T20:20:20.000000Z"
-                      public_expires_at:
-                        type: string
-                        description: 'ULID expiration datetime'
-                        example: "2023-05-14T21:23:40.000000Z"
-                        nullable: true
+                    $ref: '#/components/schemas/CocktailPublic'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
     delete:
@@ -496,6 +503,8 @@ paths:
                   message:
                     type: string
                     example: 'Requested type "notype" not supported.'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
   /cocktails/{id}/similar:
@@ -528,9 +537,13 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Cocktail'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
   /shelf/cocktails:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     get:
       parameters:
         - in: query
@@ -557,9 +570,109 @@ paths:
                     items:
                       type: integer
                       example: 1
+  /shelf/cocktail-favorites:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
+    get:
+      tags:
+        - "User shelf"
+      summary: 'Get a list of cocktail ids that you favorited'
+      operationId: getFavoritedCocktailIds
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: integer
+                      example: 1
+  /shelf/ingredients:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
+    get:
+      tags:
+        - "User shelf"
+      summary: "Get all ingredients in user shelf"
+      operationId: getShelfIngredients
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserIngredient'
+  /shelf/ingredients/batch-store:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
+    post:
+      tags:
+        - "User shelf"
+      summary: "Add multiple ingredients to user shelf"
+      operationId: addIngredientsToShelf
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ingredient_ids:
+                  type: array
+                  example: [1]
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserIngredient'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /shelf/ingredients/batch-delete:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
+    post:
+      tags:
+        - "User shelf"
+      summary: "Add a single ingredient to user shelf"
+      operationId: removeIngredientsFromShelf
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ingredient_ids:
+                  type: array
+                  example: [1]
+                  items:
+                    type: integer
+      responses:
+        '204':
+          description: Successfully deleted ingredients
   /ingredients:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     get:
       parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/PerPageParameter'
       - in: query
         name: filter
         required: false
@@ -580,7 +693,10 @@ paths:
              example: "whiskey"
             category_id:
              type: string
-             example: 1
+             example: "1"
+            created_user_id:
+             type: string
+             example: "1"
             origin:
              type: string
              example: "France"
@@ -604,29 +720,15 @@ paths:
         required: false
         schema:
           type: string
-          example: name,-created_at
-        description: "Sort by specific parameters, change order by prepending `-`. Available sorts: `name`, `created_at`, `strength`, `total_cocktails`. Seperate multiple sorts with a comma `,`."
-      - in: query
-        name: per_page
-        required: false
-        schema:
-          type: integer
-          example: 15
-        description: Total results per page
-      - in: query
-        name: page
-        required: false
-        schema:
-          type: integer
-          example: 1
-        description: Page number
+          example: attribute_name
+        description: "Available attributes: `name`, `created_at`, `strength`, `total_cocktails`."
       - in: query
         name: include
         required: false
         schema:
           type: string
-          example: notes,user
-        description: "Comma seperated names of extra data you want to include in response: `parentIngredient`, `varieties`, `cocktails`, `cocktailIngredientSubstitutes`"
+          example: attribute_name
+        description: "Available attributes: `parentIngredient`, `varieties`, `cocktails`, `cocktailIngredientSubstitutes`."
       tags:
         - Ingredients
       summary: 'Get a list of ingredients'
@@ -651,6 +753,8 @@ paths:
                     $ref: '#/components/schemas/PaginationLinks'
                   meta:
                     $ref: '#/components/schemas/PaginationMeta'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
     post:
       tags:
         - Ingredients
@@ -677,6 +781,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Ingredient'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /ingredients/{id}:
@@ -702,6 +808,8 @@ paths:
                 properties:
                     data:
                       $ref: '#/components/schemas/Ingredient'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
     put:
@@ -775,9 +883,13 @@ paths:
                         name:
                           type: string
                           example: Mai Tai
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
   /glasses:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - Glasses
@@ -887,48 +999,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /images:
-    get:
-      tags:
-        - Images
-      summary: Paginated list of images
-      operationId: getImages
-      parameters:
-        - in: query
-          name: per_page
-          required: false
-          schema:
-            type: integer
-            example: 15
-          description: Total results per page
-        - in: query
-          name: page
-          required: false
-          schema:
-            type: integer
-            example: 1
-          description: Page number
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - data
-                  - links
-                  - meta
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Image'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMeta'
-        '403':
-          $ref: '#/components/responses/NotAuthorized'
     post:
       tags:
         - Images
@@ -1041,6 +1111,8 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /ingredient-categories:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - "Ingredient categories"
@@ -1149,95 +1221,10 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
-  /shelf/ingredients:
+  /profile:
     get:
       tags:
-        - "User shelf"
-      summary: "Get all ingredients in user shelf"
-      operationId: getShelfIngredients
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserIngredient'
-    post:
-      tags:
-        - "User shelf"
-      summary: "Add multiple ingredients to user shelf"
-      operationId: addIngredientsToShelf
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                ingredient_ids:
-                  type: array
-                  example: [1]
-                  items:
-                    type: integer
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserIngredient'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-  /shelf/ingredients/{ingredientId}:
-    parameters:
-      - in: path
-        name: ingredientId
-        description: 'Database id of the ingredient'
-        schema:
-          type: integer
-        required: true
-    post:
-      tags:
-        - "User shelf"
-      summary: "Add a single ingredient to user shelf"
-      operationId: addIngredientToShelf
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/UserIngredient'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-    delete:
-      tags:
-        - "User shelf"
-      summary: Delete a single ingredient from user shelf
-      operationId: deleteIngredientFromShelf
-      responses:
-        '204':
-          description: Successfully deleted ingredient
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /user:
-    get:
-      tags:
-        - "User"
+        - "Profile"
       summary: "Get info about currently authenticated user"
       operationId: getProfile
       responses:
@@ -1252,7 +1239,7 @@ paths:
                     $ref: '#/components/schemas/Profile'
     post:
       tags:
-        - "User"
+        - "Profile"
       summary: "Update currently authenticated user"
       operationId: updateProfile
       description: "Updates currently authenticated user with new information. If password field is present also changes the password."
@@ -1260,22 +1247,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  example: new@email.com
-                name:
-                  type: string
-                  example: New name
-                password:
-                  type: string
-                  nullable: true
-                  example: "new-password"
-                password_confirmation:
-                  type: string
-                  nullable: true
-                  example: "new-password"
+              $ref: '#/components/schemas/ProfileRequest'
       responses:
         '200':
           description: Successful response
@@ -1289,6 +1261,8 @@ paths:
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /shopping-list:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - "Shopping list"
@@ -1307,6 +1281,8 @@ paths:
                     items:
                       $ref: '#/components/schemas/UserShoppingList'
   /shopping-list/share:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - "Shopping list"
@@ -1323,6 +1299,8 @@ paths:
                   # Recipe name
                   Description
   /shopping-list/batch-store:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     post:
       tags:
         - "Shopping list"
@@ -1352,6 +1330,8 @@ paths:
                     items:
                       $ref: '#/components/schemas/UserShoppingList'
   /shopping-list/batch-delete:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     post:
       tags:
         - "Shopping list"
@@ -1388,6 +1368,8 @@ paths:
                         items:
                           type: integer
   /tags:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - "Tags"
@@ -1550,6 +1532,8 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /users:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - Users
@@ -1607,6 +1591,13 @@ paths:
         description: Database id of the user
         schema:
           type: integer
+      - in: query
+        name: bar_id
+        required: true
+        schema:
+          type: integer
+          example: 1
+        description: Bar reference
     get:
       tags:
         - Users
@@ -1665,6 +1656,8 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /stats:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - Stats
@@ -1681,6 +1674,8 @@ paths:
                   data:
                     $ref: '#/components/schemas/StatsResponse'
   /cocktail-methods:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - "Cocktail methods"
@@ -1786,6 +1781,53 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /notes:
+    get:
+      parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/PerPageParameter'
+      - in: query
+        name: filter
+        required: false
+        description: Filter by specific attributes
+        explode: true
+        style: deepObject
+        schema:
+          type: object
+          properties:
+            cocktail_id:
+              type: string
+              example: "3"
+      - in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+          example: attribute_name
+        description: "Available attributes: `created_at`."
+      tags:
+        - "Notes"
+      summary: List all current users notes
+      operationId: listNotes
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - links
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Note'
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
     post:
       tags:
         - "Notes"
@@ -1852,6 +1894,8 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /collections:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     get:
       parameters:
       - in: query
@@ -2069,6 +2113,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /import/cocktail:
     parameters:
+      - $ref: '#/components/parameters/BarParameter'
       - in: query
         name: type
         description: Data source type, defaults to URL
@@ -2077,32 +2122,38 @@ paths:
           enum:
             - json
             - url
+            - yaml
+            - yml
+            - collection
+      - in: query
+        name: save
+        description: If applicable, saves the cocktail and returns cocktail response
+        schema:
+          type: boolean
     post:
       tags:
         - "Import"
       summary: Import cocktail from a data source
       operationId: importCocktail
       requestBody:
+        description: 'Duplicated actions can be: `0` - Do nothing, `1` - Skip duplicates, `2` - Overwrite duplicates'
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - source
-              properties:
-                source:
-                  type: string
+              $ref: '#/components/schemas/ImportRequest'
       responses:
         '200':
           description: Successful response
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    additionalProperties: true
+                oneOf:
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        additionalProperties: true
+                  - $ref: '#/components/schemas/Cocktail'
   /collections/{id}/share:
     parameters:
       - in: path
@@ -2139,6 +2190,8 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /utensils:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
     get:
       tags:
         - "Utensils"
@@ -2245,11 +2298,205 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /bars:
+    get:
+      tags:
+        - Bars
+      summary: 'Show a list of bars'
+      operationId: getBars
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Bar'
+    post:
+      tags:
+        - Bars
+      summary: Add bar
+      operationId: addBar
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BarRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Bar'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /bars/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a bar'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - Bars
+      summary: Get a specific bar
+      operationId: getBar
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Bar'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - Bars
+      summary: Update a specific bar
+      operationId: updateBar
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BarRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Bar'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      tags:
+        - Bars
+      summary: Delete specific bar
+      operationId: deleteBar
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /bars/{id}/memberships:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a bar'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - Bars
+      summary: Get a specific bar members
+      operationId: getBarMemberships
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BarMembership'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - Bars
+      summary: Leave the bar if you have membership
+      operationId: leaveBar
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /bars/{id}/memberships/{userId}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a bar'
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: userId
+        description: 'Database id of user'
+        schema:
+          type: integer
+        required: true
+    delete:
+      tags:
+        - Bars
+      summary: Remove user from the bar
+      operationId: deleteMembership
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
       type: http
       scheme: bearer
+  parameters:
+    BarParameter:
+      name: bar_id
+      in: query
+      description: Reference to bar resource
+      required: true
+      schema:
+        type: integer
+    PageParameter:
+      name: page
+      in: query
+      description: Set current page number
+      required: false
+      schema:
+        type: integer
+    PerPageParameter:
+      name: per_page
+      in: query
+      description: Total number of results per page
+      required: false
+      schema:
+        type: integer
   responses:
     UnprocessableEntity:
       description: Request body validation failed
@@ -2394,8 +2641,6 @@ components:
       type: object
       required:
         - name
-        - strength
-        - ingredient_category_id
       properties:
         name:
           type: string
@@ -2442,6 +2687,7 @@ components:
         - images
         - color
         - category
+        - access
       properties:
         id:
           type: integer
@@ -2523,6 +2769,17 @@ components:
               name:
                 type: string
                 example: 'Cocktail 1'
+        created_user:
+          $ref: '#/components/schemas/UserBasic'
+        updated_user:
+          $ref: '#/components/schemas/UserBasic'
+        access:
+          type: object
+          properties:
+            can_edit:
+              type: boolean
+            can_delete:
+              type: boolean
     IngredientCategory:
       type: object
       required:
@@ -2540,6 +2797,9 @@ components:
           type: string
           nullable: true
           example: 'A category of base spirits'
+        ingredients_count:
+          type: integer
+          example: 7
     IngredientCategoryRequest:
       type: object
       required:
@@ -2555,28 +2815,24 @@ components:
     Version:
       type: object
       required:
-        - name
         - version
         - type
         - search_host
         - search_version
       properties:
-        name:
-          type: string
-          example: 'Bar Assistant'
         version:
           type: string
-          example: 'v1.0.0'
+          example: 'v3.0.0'
         type:
           type: string
           example: 'local'
         search_host:
           type: string
           format: hostname
-          example: 'https://my-meilisearch-server.com'
+          example: 'https://search.example.com'
         search_version:
           type: string
-          example: '0.29.0'
+          example: '1.3.0'
     Image:
       type: object
       required:
@@ -2634,12 +2890,7 @@ components:
         - id
         - name
         - email
-        - is_admin
-        - search_host
-        - search_api_key
-        - favorite_cocktails
-        - shelf_ingredients
-        - shopping_lists
+        - memberships
       properties:
         id:
           type: integer
@@ -2650,33 +2901,42 @@ components:
         email:
           type: string
           example: 'bar@tender.com'
-        search_host:
+        memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/BarMembership'
+    ProfileRequest:
+      type: object
+      required:
+        - email
+        - name
+      properties:
+        email:
           type: string
-          example: 'http://meilisearch-server.com'
-        search_api_key:
+          example: new@email.com
+        name:
           type: string
-          example: MEILI_API_KEY
-        favorite_cocktails:
-          type: array
-          example: [1, 2]
-          items:
-            type: integer
-        shelf_ingredients:
-          type: array
-          example: [1, 2]
-          items:
-            type: integer
-        shopping_lists:
-          type: array
-          example: [1, 2]
-          items:
-            type: integer
+          example: New name
+        password:
+          type: string
+          nullable: true
+          example: "new-password"
+        password_confirmation:
+          type: string
+          nullable: true
+          example: "new-password"
+        bar_id:
+          type: integer
+          example: 1
+        is_shelf_public:
+          type: boolean
+          example: false
     UserRequest:
       type: object
       required:
         - name
         - email
-        - is_admin
+        - role_id
       properties:
         name:
           type: string
@@ -2687,17 +2947,16 @@ components:
         password:
           type: string
           example: password
-        is_admin:
-          type: boolean
-          example: false
+        role_id:
+          type: integer
+          example: 1
     User:
       type: object
       required:
         - id
         - name
         - email
-        - is_admin
-        - search_api_key
+        - role
       properties:
         id:
           type: integer
@@ -2708,12 +2967,22 @@ components:
         email:
           type: string
           example: admin@example.com
-        is_admin:
-          type: boolean
-          example: false
-        search_api_key:
-          type: string
-          example: 3aab83bbed9bb5e38d00c0c10a006676ed8703a26ffc8c644e2f588a5a574584
+        role:
+          type: object
+          required:
+            - bar_id
+            - role_id
+            - role_name
+          properties:
+            bar_id:
+              type: integer
+              example: 1
+            role_id:
+              type: integer
+              example: 1
+            role_name:
+              type: string
+              example: "General"
     CocktailIngredientSubstitute:
       type: object
       required:
@@ -2748,6 +3017,10 @@ components:
           type: number
           format: float
           example: 30.0
+        amount_max:
+          type: number
+          format: float
+          example: 30.0
         units:
           type: string
           example: ml
@@ -2767,6 +3040,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CocktailIngredientSubstitute'
+        note:
+          type: string
+          example: Prefereby vodka
     Cocktail:
       type: object
       required:
@@ -2780,12 +3056,12 @@ components:
         - main_image_id
         - images
         - tags
-        - user_rating
-        - average_rating
+        - rating
         - created_at
+        - updated_at
         - abv
-        - has_public_link
         - public_id
+        - access
       properties:
         id:
           type: integer
@@ -2838,42 +3114,69 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CocktailIngredient'
-        user_rating:
-          type: integer
-          nullable: true
-          example: 3
-        average_rating:
-          type: integer
-          nullable: true
-          example: 3
+        rating:
+          type: object
+          properties:
+            user:
+              type: integer
+              nullable: true
+              example: 5
+            average:
+              type: integer
+              example: 5
+            total_votes:
+              type: integer
+              example: 322
         created_at:
           type: string
           format: datetime
-          example: 2023-01-01 12:00:00
-        user:
+          example: 2023-01-01T12:20:25.000000Z
+        updated_at:
+          type: string
+          format: datetime
+          nullable: true
+          example: 2023-01-01T12:20:25.000000Z
+        created_user:
+          $ref: '#/components/schemas/UserBasic'
+        updated_user:
           $ref: '#/components/schemas/UserBasic'
         method:
           $ref: '#/components/schemas/CocktailMethod'
-        collections:
+        utensils:
           type: array
           items:
-            $ref: '#/components/schemas/CocktailCollection'
+            $ref: '#/components/schemas/Utensil'
         abv:
           type: number
           format: float
           nullable: true
           example: 18.12
-        has_public_link:
-          type: boolean
-          example: false
         public_id:
           type: string
           nullable: true
           format: uuid
-        notes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Note'
+        access:
+          type: object
+          properties:
+            can_edit:
+              type: boolean
+            can_delete:
+              type: boolean
+            can_rate:
+              type: boolean
+            can_add_note:
+              type: boolean
+        navigation:
+          type: object
+          properties:
+            prev:
+              type: string
+              example: 'whiskey-sour-1'
+              description: Slug of prev cocktail
+            next:
+              type: string
+              example: 'martini-1'
+              description: Slug of next cocktail
     CocktailRequest:
       type: object
       required:
@@ -2932,6 +3235,10 @@ components:
                 type: number
                 format: float
                 example: 30
+              amount_max:
+                type: number
+                format: float
+                example: 30
               units:
                 type: string
                 example: ml
@@ -2941,6 +3248,9 @@ components:
               sort:
                 type: integer
                 example: 0
+              note:
+                type: string
+                example: Ingredient note
     UserIngredient:
       type: object
       required:
@@ -2983,32 +3293,19 @@ components:
     UserShoppingList:
       type: object
       required:
-        - id
-        - user_id
-        - ingredient
+        - ingredient_id
+        - ingredient_slug
+        - ingredient_name
       properties:
-        id:
+        ingredient_id:
           type: integer
           example: 1
-        user_id:
-          type: integer
-          example: 1
-        ingredient:
-          type: object
-          required:
-            - id
-            - slug
-            - name
-          properties:
-            id:
-              type: integer
-              example: 1
-            slug:
-              type: string
-              example: 'ingredient-1'
-            name:
-              type: string
-              example: 'Ingredient 1'
+        ingredient_slug:
+          type: string
+          example: 'ingredient-1'
+        ingredient_name:
+          type: string
+          example: 'Ingredient 1'
     ValidationError:
       type: object
       required:
@@ -3069,6 +3366,23 @@ components:
         total_shelf_cocktails:
           type: integer
           example: 43
+        total_favorited_cocktails:
+          type: integer
+          example: 13
+        your_top_ingredients:
+          type: array
+          items:
+            type: object
+            properties:
+              ingredient_id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: "Lime juice"
+              cocktails_count:
+                type: integer
+                example: 12
         total_shelf_ingredients:
           type: integer
           example: 12
@@ -3166,6 +3480,7 @@ components:
           example: "2023-01-01 12:00:00"
     UserBasic:
       type: object
+      nullable: true
       required:
         - id
         - name
@@ -3176,18 +3491,6 @@ components:
         name:
           type: string
           example: "Bartender"
-    CocktailCollection:
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "My collection"
     CollectionRequest:
       type: object
       required:
@@ -3337,3 +3640,172 @@ components:
         description:
           type: string
           example: "A recipient in 2 parts to shake cocktails vigorously."
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: admin@example.com
+        password:
+          type: string
+          example: password
+    AuthToken:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - name
+        - password
+      properties:
+        email:
+          type: string
+          example: "newuser@domain.com"
+        name:
+          type: string
+          example: "New User"
+        password:
+          type: string
+          example: "P4SSW0RD"
+    Bar:
+      type: object
+      required:
+        - id
+        - name
+        - subtitle
+        - description
+        - invite_code
+        - search_driver_host
+        - search_driver_api_key
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "My bar"
+        subtitle:
+          type: string
+          nullable: true
+          example: "Bar subtitle"
+        description:
+          type: string
+          nullable: true
+          example: "Lorem ipsum dolor sit amet"
+        invite_code:
+          type: string
+          nullable: true
+          example: 01H8S3VH2HTEB3D893AW8NTBBC
+        search_driver_host:
+          type: string
+          nullable: true
+          example: null
+        search_driver_api_key:
+          type: string
+          nullable: true
+          example: null
+        created_at:
+          type: string
+          format: datetime
+          example: 2023-01-01T12:20:25.000000Z
+        updated_at:
+          nullable: true
+          type: string
+          format: datetime
+          example: 2023-01-01T12:20:25.000000Z
+        created_user:
+          $ref: '#/components/schemas/UserBasic'
+        updated_user:
+          $ref: '#/components/schemas/UserBasic'
+    BarRequest:
+      type: object
+      required:
+        - name
+        - subtitle
+        - description
+        - enable_invites
+      properties:
+        name:
+          type: string
+          example: "My bar name"
+        subtitle:
+          type: string
+          nullable: true
+          example: "The awesome bar"
+        description:
+          type: string
+          nullable: true
+          example: "A bar at the end of the town"
+        enable_invites:
+          type: boolean
+          example: true
+        options:
+          type: array
+          example: ['cocktails', 'ingredients']
+    CocktailPublic:
+      type: object
+      required:
+        - public_id
+        - public_at
+        - public_expires_at
+      properties:
+        public_id:
+          type: string
+          nullable: true
+          description: 'Public cocktail ULID'
+          example: "01ARZ3NDEKTSV4RRFFQ69G5FAV"
+        public_at:
+          type: string
+          nullable: true
+          description: 'ULID created at datetime'
+          example: "2023-03-14T20:20:20.000000Z"
+        public_expires_at:
+          type: string
+          description: 'ULID expiration datetime'
+          example: "2023-05-14T21:23:40.000000Z"
+          nullable: true
+    ImportRequest:
+      type: object
+      required:
+        - source
+      properties:
+        source:
+          type: string
+          format: url
+          example: "https://source.url"
+        duplicate_actions:
+          type: integer
+          enum:
+            - 0
+            - 1
+            - 2
+    BarMembership:
+      type: object
+      required:
+        - name
+        - bar_id
+        - is_shelf_public
+      properties:
+        user_id:
+          type: integer
+          example: 1
+        user_name:
+          type: string
+          example: Bar Tender
+        bar_id:
+          type: integer
+          example: 1
+        is_shelf_public:
+          type: integer
+          example: false

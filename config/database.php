@@ -38,9 +38,16 @@ return [
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DATABASE_URL'),
-            'database' => env('DB_DATABASE', storage_path('bar-assistant/database.sqlite')),
+            'database' => env('DB_DATABASE', storage_path('bar-assistant/database.ba3.sqlite')),
             'prefix' => '',
-            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+            'foreign_key_constraints' => true,
+        ],
+
+        'sqlite_import_from_v2' => [
+            'driver' => 'sqlite',
+            'database' => storage_path('bar-assistant/database.sqlite'),
+            'prefix' => '',
+            'foreign_key_constraints' => false,
         ],
 
         'mysql' => [

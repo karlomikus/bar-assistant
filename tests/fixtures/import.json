@@ -1,28 +1,29 @@
 {
-    "name": "Old Fashioned",
-    "instructions": "Place sugar cube in old fashioned glass and saturate with bitter, add few dashes of plain water. Muddle until dissolved. Fill the glass with ice cubes and add whiskey. Stir gently.",
-    "garnish": "Garnish with an orange slice or zest, and a cocktail cherry.",
-    "description": "Developed during the 19th century and given its name in the 1880s, it is an IBA Official Cocktail. It is also one of six basic drinks listed in David A. Embury&#039;s The Fine Art of Mixing Drinks. ",
-    "source": "https:\/\/iba-world.com\/old-fashioned\/",
+    "name": "Cocktail name",
+    "instructions": "Instruction data",
+    "description": "Description data",
+    "garnish": "Garnish data",
+    "source": "Laravel",
     "tags": [
-        "IBA Cocktail",
-        "The Unforgettables",
-        "Whiskey"
+        "Tag 1",
+        "Tag 2"
     ],
-    "glass": "Lowball",
-    "method": "Build",
+    "abv": 14.2,
+    "glass": "Glass name",
+    "method": "Method name",
     "images": [
         {
-            "url": "http:\/\/localhost:8000\/uploads\/cocktails\/old-fashioned_p1lxM7.jpg",
-            "copyright": "Epicurious",
-            "sort": 0
+            "url": null,
+            "copyright": "Localhost",
+            "sort": 1
         }
     ],
     "ingredients": [
         {
             "sort": 1,
-            "name": "Bourbon Whiskey",
-            "amount": 45,
+            "name": "Ingredient 1",
+            "amount": 30,
+            "amount_max": null,
             "units": "ml",
             "optional": false,
             "category": "Spirits",
@@ -33,39 +34,17 @@
         },
         {
             "sort": 2,
-            "name": "Sugar",
-            "amount": 1,
-            "units": "cube",
-            "optional": false,
-            "category": "Uncategorized",
-            "description": "White sugar",
-            "strength": 0,
-            "origin": null,
-            "substitutes": []
-        },
-        {
-            "sort": 3,
-            "name": "Angostura aromatic bitters",
+            "name": "New ingredient",
             "amount": 2,
+            "amount_max": 4,
             "units": "dashes",
-            "optional": false,
-            "category": "Bitters",
-            "description": "Angostura bitters is a concentrated bitters (herbal alcoholic preparation) based on gentian, herbs, and spices, by House of Angostura in Trinidad and Tobago.",
-            "strength": 44.7,
-            "origin": "Trinidad & Tobago",
-            "substitutes": []
-        },
-        {
-            "sort": 4,
-            "name": "Water",
-            "amount": 2,
-            "units": "dashes",
-            "optional": false,
+            "optional": true,
             "category": "Beverages",
-            "description": "It's water.",
-            "strength": 0,
-            "origin": "Worldwide",
-            "substitutes": []
+            "description": "New ingredient description",
+            "strength": 40,
+            "origin": "Laravel test suite",
+            "note": "Use best one",
+            "substitutes": ["Club soda", "H20"]
         }
     ]
 }

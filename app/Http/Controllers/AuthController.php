@@ -9,13 +9,14 @@ use Kami\Cocktail\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Kami\Cocktail\Search\SearchActionsAdapter;
+use Kami\Cocktail\Http\Resources\TokenResource;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\RegisterRequest;
 use Kami\Cocktail\Http\Resources\ProfileResource;
 
 class AuthController extends Controller
 {
-    public function authenticate(Request $request): JsonResponse
+    public function authenticate(Request $request): JsonResource
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -25,22 +26,22 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $token = $request->user()->createToken('web_app_login');
 
-            return response()->json(['token' => $token->plainTextToken]);
+            return new TokenResource($token);
         }
 
-        abort(404, 'User not found. Check your username and password and try again.');
+        abort(404, 'Unable to authenticate. Check your login credentials and try again.');
     }
 
     public function logout(Request $request): JsonResponse
     {
         $request->user()->tokens()->delete();
 
-        return response()->json(['data' => ['success' => true]]);
+        return response()->json(status: 204);
     }
 
-    public function register(SearchActionsAdapter $search, RegisterRequest $req): JsonResponse
+    public function register(RegisterRequest $req): JsonResource
     {
-        if (config('bar-assistant.allow_registration') == false) {
+        if (config('bar-assistant.allow_registration') === false) {
             abort(404, 'Registrations are closed.');
         }
 
@@ -49,12 +50,8 @@ class AuthController extends Controller
         $user->password = Hash::make($req->post('password'));
         $user->email = $req->post('email');
         $user->email_verified_at = now();
-        $user->search_api_key = $search->getActions()->getPublicApiKey();
         $user->save();
 
-        return (new ProfileResource(
-            $user->load('favorites', 'shelfIngredients', 'shoppingList'),
-            app(SearchActionsAdapter::class),
-        ))->response()->setStatusCode(200);
+        return new ProfileResource($user);
     }
 }

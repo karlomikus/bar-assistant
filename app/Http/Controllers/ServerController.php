@@ -23,7 +23,6 @@ class ServerController extends Controller
 
         return response()->json([
             'data' => [
-                'name' => config('app.name'),
                 'version' => config('bar-assistant.version'),
                 'type' => config('app.env'),
                 'search_host' => $search->getHost(),

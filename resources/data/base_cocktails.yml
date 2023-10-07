@@ -1,0 +1,4524 @@
+-
+    name: '20th Century'
+    description: 'The 20th Century is a cocktail created in 1937 by a British bartender named C.A. Tuck, and named in honor of the celebrated 20th Century Limited train which ran between New York City and Chicago from 1902 until 1967.'
+    instructions: "1. Combine all ingredients with ice and shake\n2. Strain into a coupe, serve up"
+    garnish: 'Lemon twist'
+    source: 'https://en.wikipedia.org/wiki/20th_Century_(cocktail)'
+    glass: 'Nick and Nora'
+    method: Shake
+    abv: 20.91
+    tags:
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'White Crème de Cacao'
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: 'Lillet Blanc'
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 15
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/20th-century.jpg
+            copyright: 'Imbibe Magazine'
+            placeholder_hash: DykODwIIt3iHdnh0i0aniId3dwKIxnYP
+-
+    name: Adonis
+    description: 'The cocktail was created in honor of the 1884 musical Adonis after the show reached the milestone of more than 500 shows on Broadway.'
+    instructions: 'Stir all ingredients with ice and strain into chilled glass.'
+    garnish: 'Orange zest and peel'
+    source: 'https://en.wikipedia.org/wiki/Adonis_(cocktail)'
+    glass: Coupe
+    method: Stir
+    abv: 14.7
+    tags:
+        - Wine
+    ingredients:
+        -
+            name: 'Dry Sherry'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Sweet Vermouth'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Orange bitters'
+            amount: 2
+            units: dashes
+            optional: false
+    images:
+        -
+            resource_path: cocktails/adonis.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: GAgGDwJXeYhFe5Z8lqeHV1atQLCSBl4E
+-
+    name: Airmail
+    description: 'An endlessly drinkable sparkler of debated origin'
+    instructions: "1. Combine all ingredients except for the champagne in a mixer and shake for ten seconds\n2. Strain into a flute and top with champagne"
+    garnish: null
+    source: 'https://en.wikipedia.org/wiki/Airmail_(cocktail)'
+    glass: Cocktail
+    method: Shake
+    abv: 13.87
+    tags:
+        - Wine
+        - Aperitif
+    ingredients:
+        -
+            name: 'White Rum'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Champagne
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Honey Syrup'
+            amount: 15
+            units: ml
+            optional: false
+            substitutes:
+                - 'Simple Syrup'
+    images:
+        -
+            resource_path: cocktails/airmail.jpg
+            copyright: 'Imbibe Magazine'
+            placeholder_hash: ixgKFwAImIeLdnh3iRfHaIh5isB4DbML
+-
+    name: Alaska
+    description: 'One of the great Chartreuse cocktails and a fundamental three-ingredient recipe'
+    instructions: "1. Combine all ingredients with ice in a mixing glass and stir at length, until the sides of the glass are frosty\n2. Strain into a cocktail glass and serve up"
+    garnish: null
+    source: 'https://tuxedono2.com/alaska-cocktail-recipe'
+    glass: 'Nick and Nora'
+    method: Stir
+    abv: 33.23
+    tags:
+        - Herbacious
+    ingredients:
+        -
+            name: Gin
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Yellow Chartreuse'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Orange bitters'
+            amount: 1
+            units: dash
+            optional: false
+    images:
+        -
+            resource_path: cocktails/alaska.jpg
+            copyright: Punch
+            placeholder_hash: 2DgaFwZnh4eAh3iJiGeXZ4eJd2QIh5YA
+-
+    name: Alexander
+    description: "The Alexander cocktail was born in London in 1922 by Hery Mc Elhone, at Ciro’s Club in honor of a famous bride, at the beginning it was called Panama, Gin was used instead of Cognac and light cocoa cream instead of dark.\n\nThroughout its history, Alexander has given rise to many other variations:\n\n**Grasshopper**: This variant is also part of the Iba list and involves the use of crème de menthe verde instead of cognac.\n\n**Alexandra**: Use the light cocoa cream instead of the dark one and replace the nutmeg with cocoa.\n\n**Alexander’s Sister**: Use crème de menthe instead of crème de cacao\n\n**Alejandro**: Replace cognac with rum"
+    instructions: "1. Pour all ingredients into cocktail shaker filled with ice cubes.\n2. Shake and strain into a chilled cocktail glass."
+    garnish: 'Sprinkle ground nutmeg on top.'
+    source: 'https://iba-world.com/alexander/'
+    glass: Coupe
+    method: Shake
+    abv: 17.33
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Savory
+    ingredients:
+        -
+            name: Cognac
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Dark Crème de Cacao'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Cream
+            amount: 30
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/alexander.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: kAcKDwAHqIefdHh6hUioJ7d0pPJGBpkF
+-
+    name: 'Amaretto Sour'
+    description: 'Amaretto is an Italian liqueur that’s typically flavored with almonds or apricot stones. Its distinctive flavor can be incorporated into numerous cocktails, but it’s best known for the Amaretto Sour, a drink that tends to get a bad rap. That’s because, too often, the cocktail is overly sweet and relies on premade sour mix. '
+    instructions: "1. Combine all ingredients and, if using an egg white, dry shake\n2. Add ice and shake for 10 sec\n3. Strain into a coupe, serve up"
+    garnish: 'Spray aromatic bitters over foaming cocktail from atomiser and then garnish with lemon & cherry sail (lemon slice & Luxardo Maraschino cherry on stick)'
+    source: '1974'
+    glass: Lowball
+    method: Shake
+    abv: 11.11
+    tags:
+        - Sour
+        - Sweet
+    ingredients:
+        -
+            name: Amaretto
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 1
+            units: dash
+            optional: false
+        -
+            name: 'Egg White'
+            amount: 15
+            units: ml
+            optional: true
+    images:
+        -
+            resource_path: cocktails/amaretto-sour.jpg
+            copyright: 'The Spruce Eats'
+            placeholder_hash: MCkKLwb1nWmIiHedZpZ4pml5p2BICnUD
+-
+    name: Americano
+    description: "The story of the Americano dates back to the second half of the 1800s in Gaspare Campari’s bar in Milan.  Over the years the cocktail acquires notoriety thanks to some homages from the world of cinema, including James Bond (007 Casino Royale) whose favorite cocktail was, precisely, the Americano.\n\nThe nickname “American” was born when Primo Carnera, a giant Italian boxer, became world heavyweight champion at Madison Square Garden in New York.  When Carnera returned to Italy with the title, he was greeted with this very Italian cocktail which, for the occasion, was called “Americano”.\n\nThe Americano entered the IBA Cocktail List only in 1987 but, in reality, it was a cocktail that spread all over Italy during the 1930s."
+    instructions: "1. Mix the ingredients directly in an old fashioned glass filled with ice cubes.\n2. Add a splash of Soda Water.\n3. Stir gently."
+    garnish: 'Garnish with half orange slice and a lemon zest.'
+    source: 'https://iba-world.com/americano/'
+    glass: Lowball
+    method: Stir
+    abv: 17.92
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Bitter
+    ingredients:
+        -
+            name: Campari
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Sweet Vermouth'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Club soda'
+            amount: 1
+            units: splash
+            optional: false
+    images:
+        -
+            resource_path: cocktails/americano.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: DFkKHwgMqJiIhXmIiVaYiIh2tYBYCYgE
+-
+    name: 'Angel Face'
+    description: "Although the origin of the cocktail is not known, the main hypotheses assume that it was born in the twenties of the twentieth century in France: this thesis would prove the presence of calvados, a liqueur commonly used in France and, in particular, in that period, as an epidemic of phylloxera in European vineyards had limited the production of brandy.\nOn this basis, one of the most frequent hypotheses has it that the cocktail was created by Harry MacElhone, founder of Harry’s New York Bar in Paris on July 19, 1919, in honor of the celebrations for the victory of the First World War.\nThe first reliable evidence, however, dates back to 1930 when Harry Craddock included the Angel Face among the recipes of his book “Savoy cocktail book”. Some sources indicate that the name derives from that of an American gangster active during Prohibition; less likely the dedication to Rick Blaine, the protagonist of Casablanca played by Humphrey Bogart, as the film follows the first testimonies (1942)."
+    instructions: "1. Pour all ingredients into cocktail shaker filled with ice cubes.\n2. Shake and strain into a chilled cocktail glass."
+    garnish: null
+    source: 'https://iba-world.com/angel-face/'
+    glass: 'Nick and Nora'
+    method: Shake
+    abv: 32
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Fruity
+    ingredients:
+        -
+            name: Gin
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Apricot Brandy'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Calvados
+            amount: 30
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/angel-face.jpg
+            copyright: 'Wine Enthusiast / Tyler Zieliniski'
+            placeholder_hash: JEkKLwhjV3lQdYjEiHeLt5WZhPe4aI8K
+-
+    name: Aviation
+    description: "Aviation was created in New York at the Walkick hotel by the head bartender Hugo Ensslin while he was writing his book “Recipes for Mixed Drinks” (1916) one of the last cocktail books published before the start of American Prohibition.\n\nLately David Wondrich found the aviation recipe in a 1911 magazine, so the recipe is thought to have been born earlier then 1916.\n\nIn his book Ensslin also indicates the type of Gin to be used ‘El Bart Gin “and the recipe is made up in addition to gin, with lemon juice, maraschino and Creme di Violette.\n\nThe recipe is found again in Harry Craddock’s 1930 Savoy Cocktail Book but without the Creme de Violette, this probably due to the difficulty of finding the violet cream during the post-war period In the 1960s it was still unavailable and therefore, simply, the basic ingredient of the Aviation cocktail was discontinued and the bartenders definitively gave up the characteristic blue color of the drink.\n\nThe IBA proposes it today in its original version with the creme de violette which is now on the market again.  This fragrant ingredient not only gave the mix a sweetly floral taste, but also gave it a beautiful sky blue color."
+    instructions: "1. Add all ingredients into a cocktail shaker.\n2. Shake with cracked ice and strain into a chilled cocktail glass."
+    garnish: 'Optional Maraschino Cherry.'
+    source: 'https://iba-world.com/692/'
+    glass: Cocktail
+    method: Shake
+    abv: 24.32
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Herbacious
+    ingredients:
+        -
+            name: Gin
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: Maraschino
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Crème de Violette'
+            amount: 1
+            units: barspoon
+            optional: false
+    images:
+        -
+            resource_path: cocktails/aviation.jpg
+            copyright: 'The Spruce Eats / Cara Cormack'
+            placeholder_hash: 7vcFHwJ5OZhQa3aal4eHZlh8SEz+QtkP
+-
+    name: B-52
+    description: 'The origins of the B-52 are not well documented, but one claim is that the B-52 was invented by Peter Fich, a head bartender at the Banff Springs Hotel in Alberta, Canada. Fich named all of his new drinks after favorite bands, albums, and songs, and he supposedly named the drink after the band of the same name, not directly after the US B-52 Stratofortress bomber after which the band was named.'
+    instructions: 'Refrigerate ingredients then layer in chilled glass by carefully pouring in the ingredient order.'
+    garnish: null
+    source: 'https://en.wikipedia.org/wiki/B-52_(cocktail)'
+    glass: Shot
+    method: Layer
+    abv: 25.67
+    tags:
+        - Sweet
+    ingredients:
+        -
+            name: 'Kahlua coffee liqueur'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Baileys Irish Cream'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Grand Marnier'
+            amount: 15
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/b-52.jpg
+            copyright: Alchetron
+            placeholder_hash: VAgOJwRXiJeAhHqHema3iGeFiLAnC30D
+-
+    name: 'Bacardi Cocktail'
+    description: "The Bacardí Cocktail was originally the same as the Daiquiri, containing rum, lime juice, and sugar; The Grenadine version of the Bacardí Cocktail originated in the US, while the original non-red Bacardí company recipe originated from Cuba.\nOn April 28, 1936 the New York Supreme Court ruled that the drink must contain Bacardí rum in order to be called a Bacardí cocktail."
+    instructions: 'Shake together with ice. Strain into glass and serve'
+    garnish: Lime
+    source: 'https://en.wikipedia.org/wiki/Bacardi_cocktail'
+    glass: Coupe
+    method: Shake
+    abv: 23.27
+    tags:
+        - Sweet
+    ingredients:
+        -
+            name: 'White Rum'
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Grenadine Syrup'
+            amount: 7.5
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 1
+            units: barspoon
+            optional: false
+    images:
+        -
+            resource_path: cocktails/bacardi-cocktail.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: SxgGFwYXd4d3d4ZriJaJCKWalNCJCZ4H
+-
+    name: Barracuda
+    description: 'The Barracuda cocktail is a bright yellow Rum cocktail. Its origin lies in Italy, where barkeeper Benito Cuppari created the recipe while working on a cruise ship.'
+    instructions: "1. Pour all ingredients into cocktail shaker except the Prosecco\n2. Shake well with ice\n3. Strain into chilled highball glass filled with ice\n4. Top up with Prosecco"
+    garnish: 'Pineapple and Cherry, optional mint sprig for additional aroma.'
+    source: 'https://iba-world.com/barracuda/'
+    glass: Highball
+    method: Shake
+    abv: 16.11
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Tiki
+    ingredients:
+        -
+            name: 'Gold Rum'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: Galliano
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Pineapple juice'
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 1
+            units: dash
+            optional: false
+        -
+            name: Prosecco
+            amount: 1
+            units: dash
+            optional: false
+    images:
+        -
+            resource_path: cocktails/barracuda.jpg
+            copyright: 'Ape Time'
+            placeholder_hash: bCkKFwILhpmHh4Z4mIeHd4iHJ5COtKAI
+-
+    name: 'Bee’s Knees'
+    description: "The Bee's Knees was invented by Frank Meier, an Austrian-born, part Jewish bartender who was the first head bartender at the Ritz in Paris in 1921, when its Cafe Parisian opened its doors.\n\nThe name comes from prohibition-era slang meaning \"the best\".\n\n**Variations:**\n- Barr Hill Gin is sometimes recommended for its honey infusion, though other gins may be used (including Barr Hill's Tom Cat gin).\n- The honey may be diluted 1:1 with warm water to thin the consistency.\n- The honey may be diluted 1:1 with simple syrup instead of water.\n- A sprig of basil or thyme may be used for garnish instead of lemon peel.\n- Some variations contain orange juice\n- Add 2 dashes of absinthe and 2 dashes of orange bitters to make a variation called \"Oldest Living Confederate Widow\""
+    instructions: "1. Stir honey with lemon and orange juices until it dissolves\n2. Add gin and shake with ice\n3. Strain into a chilled cocktail glass"
+    garnish: 'Optionally garnish with a lemon or orange zest.'
+    source: 'https://iba-world.com/bees-knees/'
+    glass: Coupe
+    method: Shake
+    abv: 17.23
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Sweet
+        - Sour
+    ingredients:
+        -
+            name: Gin
+            amount: 52.5
+            units: ml
+            optional: false
+        -
+            name: 'Honey Syrup'
+            amount: 2
+            units: barspoon
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: 'Orange juice'
+            amount: 22.5
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/bees-knees.jpg
+            copyright: 'Kitchen Swagger'
+            placeholder_hash: lAgKHwIEq5WRlGmSeDiVh4SbR4QJVpgA
+-
+    name: Bellini
+    description: "The Bellini was invented sometime between 1934 and 1948 by Giuseppe Cipriani, founder of Harry's Bar in Venice, Italy. He named the drink the Bellini because its unique pink color reminded him of the toga of a saint in a painting by 15th-century Venetian artist Giovanni Bellini.\n\nVariations:\n\n**PUCCINI** – Fresh Mandarin Orange Juice;\n\n**ROSSINI** – Fresh Strawberry Puree;\n\n**TINTORETTO** – Fresh Pomegranate Juice."
+    instructions: "1. Pour peach puree into the mixing glass with ice\n2. Add the Prosecco wine.\n3. Stir gently and pour in a chilled flute glass."
+    garnish: null
+    source: 'https://iba-world.com/bellini/'
+    glass: Champagne
+    method: Stir
+    abv: 6.11
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Fruity
+    ingredients:
+        -
+            name: Prosecco
+            amount: 100
+            units: ml
+            optional: false
+        -
+            name: 'White Peach Puree'
+            amount: 50
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/bellini.jpg
+            copyright: 'Olive & Mango'
+            placeholder_hash: LjkKHwhiVWN8V3WfhpmXaYd6lyQEZ1MA
+-
+    name: 'Between the Sheets'
+    description: "The origin of the cocktail is usually credited to Harry MacElhone at Harry's New York Bar in Paris in the 1930s as a derivative of the sidecar. However, competing theories exist that claim the cocktail was created at The Berkeley in approximately 1921, or in French brothels as an apéritif for consumption by the prostitutes."
+    instructions: "1. Add all ingredients into a cocktail shaker\n2. Shake with ice and strain into a chilled cocktail glass"
+    garnish: null
+    source: 'https://iba-world.com/between-the-sheets/'
+    glass: Fizzio
+    method: Shake
+    abv: 26.18
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Rum
+    ingredients:
+        -
+            name: 'White Rum'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Cognac
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Triple Sec'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 20
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/between-the-sheets.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: TAgGFwKZiFWxk4gSXAaXuFtvRVAbA8QD
+-
+    name: Bijou
+    description: 'This cocktail was invented by Harry Johnson, "the father of professional bartending", who called it bijou because it combined the colors of three jewels: gin for diamond, vermouth for ruby, and chartreuse for emerald.'
+    instructions: 'Stir in mixing glass with ice and strain'
+    garnish: 'Maraschino cherry'
+    source: 'https://en.wikipedia.org/wiki/Bijou_(cocktail)'
+    glass: 'Nick and Nora'
+    method: Stir
+    abv: 31.28
+    tags:
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Sweet Vermouth'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Green Chartreuse'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Orange bitters'
+            amount: 2
+            units: dashes
+            optional: false
+    images:
+        -
+            resource_path: cocktails/bijou.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: CvgFJwRC9KRodniFiwXWppeVW5ULC6oB
+-
+    name: 'Black Russian'
+    description: "Variations:\n\n**WHITE RUSSIAN** – Float fresh cream on the top and stir in slowly."
+    instructions: 'Pour the ingredients into the old fashioned glass filled with ice cubes. Stir gently.'
+    garnish: null
+    source: 'https://iba-world.com/black-russian/'
+    glass: Lowball
+    method: Stir
+    abv: 28.57
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Vodka
+    ingredients:
+        -
+            name: Vodka
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: 'Kahlua coffee liqueur'
+            amount: 20
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/black-russian.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: SxgKDwIHXMZydoeSSyiol2d4xiYHi4AB
+-
+    name: 'Bloody Mary'
+    description: 'If requested served with ice, pour into highball glass.'
+    instructions: 'Stir gently all the ingredients in a mixing glass with ice, pour into rocks glass.'
+    garnish: 'Celery, Lemon Wedge (Optional)'
+    source: 'https://iba-world.com/bloody-mary/'
+    glass: Highball
+    method: Build
+    abv: 10.78
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Vodka
+    ingredients:
+        -
+            name: Vodka
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Tomato juice'
+            amount: 90
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Worcestershire Sauce'
+            amount: 2
+            units: dashes
+            optional: false
+        -
+            name: Tabasco
+            amount: 1
+            units: dash
+            optional: false
+        -
+            name: Pepper
+            amount: 1
+            units: pinch
+            optional: false
+        -
+            name: Salt
+            amount: 1
+            units: pinch
+            optional: false
+    images:
+        -
+            resource_path: cocktails/bloody-mary.jpg
+            copyright: Ocado
+            placeholder_hash: llgGHwZseIlgdnmuamWHaFeqZ0BYB6gC
+-
+    name: Boulevardier
+    description: 'The boulevardier is similar to a Negroni, sharing two of its three ingredients. It is differentiated by its use of bourbon whiskey or rye whiskey as its principal component instead of gin. Paul Clark, writing for the food blog Serious Eats, says, "This isn''t a Negroni. It is, however, the Negroni''s long-lost autumnal cousin."'
+    instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into a chilled cocktail glass.'
+    garnish: 'Garnish with orange zest, optionally a lemon zest.'
+    source: 'https://iba-world.com/boulevardier/'
+    glass: Lowball
+    method: Stir
+    abv: 24.52
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Whiskey
+    ingredients:
+        -
+            name: 'Bourbon Whiskey'
+            amount: 45
+            units: ml
+            optional: false
+            substitutes:
+                - 'Rye whiskey'
+        -
+            name: Campari
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Sweet Vermouth'
+            amount: 30
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/boulevardier.jpg
+            copyright: Reddit
+            placeholder_hash: TygKFwY4h3e/lJVnaXd3iYZ7mFYJSZYA
+-
+    name: Bramble
+    description: "The Bramble was created in London, in 1984, by Dick Bradsell. At the time, Bradsell worked at a bar in Soho called Fred's Club, and he wanted to create a British cocktail. Memories of going blackberrying in his childhood on the Isle of Wight provided the inspiration for the Bramble."
+    instructions: "If crème de mûre is unavailable, many bartenders will substitute creme de cassis for it.\n\n1. Pour all ingredients into a cocktail shaker except the Crème de Mûre\n2. Shake well with ice\n3. Strain into chilled old fashioned glass filled with crushed ice\n4. Pour the blackberry liqueur (Crème de Mûre) over the top of the drink, in a circular motion."
+    garnish: 'Garnish optionally with a lemon slice and blackberries.'
+    source: 'https://iba-world.com/bramble/'
+    glass: Lowball
+    method: Shake
+    abv: 20.66
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 25
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 12
+            units: ml
+            optional: false
+        -
+            name: 'Crème de mûre (blackberry liqueur)'
+            amount: 15
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/bramble.jpg
+            copyright: Anders
+            placeholder_hash: 00gGFwYQuVdYeJahfRWrpXh5VAm5WIAH
+-
+    name: 'Brandy Crusta'
+    description: "The cocktail, named for the crust of sugar on the rim, was invented by Joseph Santini, a bartender in New Orleans at his bar, Jewel of the South.\n\nJerry Thomas was the first to publish the recipe in his 1862 cocktail manual."
+    instructions: 'Mix together all ingredients with ice cubes in a mixing glass and strain into prepared slim cocktail glass.'
+    garnish: 'Rub a slice of orange (or lemon) around the rim of the glass and dip it in pulverized white sugar, so that the sugar will adhere to the edge of the glass. Carefully curling place the orange/lemon peel around the inside of the glass.'
+    source: 'https://iba-world.com/brandy-crusta/'
+    glass: 'Nick and Nora'
+    method: Stir
+    abv: 26.13
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Brandy
+    ingredients:
+        -
+            name: Brandy
+            amount: 52
+            units: ml
+            optional: false
+        -
+            name: Maraschino
+            amount: 7
+            units: ml
+            optional: false
+        -
+            name: 'Orange Curaçao'
+            amount: 1
+            units: barspoon
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 1
+            units: barspoon
+            optional: false
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 2
+            units: dashes
+            optional: false
+    images:
+        -
+            resource_path: cocktails/brandy-crusta.jpg
+            copyright: Mangosalsa
+            placeholder_hash: WDkKHwQ5d4hviIiId0h6N5l4OfE3BnsB
+-
+    name: Caipirinha
+    description: "Although the origin of the drink is unknown, one account says it came about around 1918 in the region of Alentejo in Portugal, with a popular recipe made with lemon, garlic, and honey, indicated for patients with the Spanish flu. Another account is that Caipirinha is based on Poncha, an alcoholic drink from Madeira, Portugal. The main ingredient is aguardente de cana, which is made from sugar cane. Sugar cane production was switched from Madeira to Brazil by the Portuguese as they needed more land to plant it on. Before this people in Madeira had already created aguardente de cana, which was the ancestor to cachaça.\n\nVariations:\n\n**CAIPIROSKA** – Instead of Cachaça use Vodka;"
+    instructions: "1. Place lime and sugar into a double old fashioned glass and muddle gently.\n2. Fill the glass with cracked ice and add Cachaça.\n3. Stir gently to involve ingredients."
+    garnish: null
+    source: 'https://iba-world.com/caipirinha/'
+    glass: Lowball
+    method: Muddle
+    abv: 36.36
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+    ingredients:
+        -
+            name: Cachaça
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: Lime
+            amount: 4
+            units: wedge
+            optional: false
+        -
+            name: Sugar
+            amount: 4
+            units: barspoon
+            optional: false
+    images:
+        -
+            resource_path: cocktails/caipirinha.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: JxkWJwR3h4d/iYeHh4d4h3d4l1A4ynAH
+-
+    name: Canchànchara
+    description: 'Known as the forerunner of the Daiquiri, and drunk by Cuban revolutionaries fighting off the Spanish at the end of the nineteenth century, the Canchànchara is a simple mix of honey, citrus and rum (originally aguardiente de caña rather than rum).'
+    instructions: 'Mix honey with water and lime juice and spread the mixture on the bottom and sides of the glass. Add cracked ice, and then the rum. End by energetically stirring from bottom to top.'
+    garnish: 'Lime wedge.'
+    source: 'https://iba-world.com/cachanchara/'
+    glass: Lowball
+    method: Build
+    abv: 15.58
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Rum
+    ingredients:
+        -
+            name: 'White Rum'
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Honey Syrup'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: Water
+            amount: 50
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/canchanchara.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: 2RgOHwQoaJdxeXdwiZlniJiJSB+W9nEL
+-
+    name: Cantaritos
+    description: 'Cantaritos are Mexican tequila cocktails served in clay cups! Similar to the Paloma, this drink stars grapefruit soda and citrus.'
+    instructions: "1. If using the traditional clay cup for serving, soak it in cold water for 10 minutes before using. Otherwise, use a highball glass.\n2. Combine the tequila, orange juice, lemon juice and lime juice in the glass with a pinch of salt.\n3. Fill the glass with ice and top with grapefruit soda."
+    garnish: 'Citrus wedges'
+    source: Mexico
+    glass: Highball
+    method: Build
+    abv: 9.7
+    tags:
+        - Tequila
+    ingredients:
+        -
+            name: 'Tequila Reposado'
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Orange juice'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Grapefruit juice'
+            amount: 90
+            units: ml
+            optional: false
+        -
+            name: Salt
+            amount: 2
+            units: pinch
+            optional: true
+    images:
+        -
+            resource_path: cocktails/cantaritos.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: ZwgKLwy3QmeKlnePp2p3t3l1xwFXHYAF
+-
+    name: Casino
+    description: 'This version of the Casino Cocktail first appears in 1909, in The Reminder (3rd edition) by Jacob A. Didier.'
+    instructions: 'Pour all ingredients into cocktails shaker, shake well with ice, strain into chilled rocks glass with ice.'
+    garnish: 'Garnish with lemon zest and a maraschino cherry.'
+    source: 'https://iba-world.com/casino/'
+    glass: Lowball
+    method: Shake
+    abv: 25.54
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 40
+            units: ml
+            optional: false
+            substitutes:
+                - 'Old Tom Gin'
+        -
+            name: Maraschino
+            amount: 10
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 10
+            units: ml
+            optional: false
+        -
+            name: 'Orange bitters'
+            amount: 2
+            units: dashes
+            optional: false
+    images:
+        -
+            resource_path: cocktails/casino.jpg
+            copyright: 'Cocktail Society'
+            placeholder_hash: ZxgKDwIISJqSl4iUe0p4Z4iHt6C7CawJ
+-
+    name: 'Champagne Cocktail'
+    description: 'A recipe for the cocktail appears as early as "Professor" Jerry Thomas'' Bon Vivant''s Companion (1862), which omits the brandy or cognac and is considered to be the "classic" American version.'
+    instructions: 'Place the sugar cube with 2 dashes of bitters in a large Champagne glass, add the cognac. Pour gently chilled Champagne.'
+    garnish: 'Garnish with orange zest and maraschino cherry.'
+    source: 'https://iba-world.com/champagne-cocktail/'
+    glass: Champagne
+    method: Build
+    abv: 13.78
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Wine
+    ingredients:
+        -
+            name: Champagne
+            amount: 90
+            units: ml
+            optional: false
+        -
+            name: Cognac
+            amount: 10
+            units: ml
+            optional: false
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 2
+            units: dashes
+            optional: false
+        -
+            name: 'Grand Marnier'
+            amount: 1
+            units: drops
+            optional: true
+        -
+            name: Sugar
+            amount: 1
+            units: cube
+            optional: false
+    images:
+        -
+            resource_path: cocktails/champagne-cocktail.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: DPgJDwBHqWdxhniOiQeH14hyevEmWW8A
+-
+    name: 'Clover Club'
+    description: "The Clover Club Cocktail is a drink that pre-dates Prohibition in the United States, and is named for the Philadelphia men's club of the same name, which met in the Bellevue-Stratford Hotel at South Broad and Walnut Streets in Center City. The Clover Club was chartered in 1882."
+    instructions: "1. Pour all ingredients into cocktails shaker.\n2. Shake well with ice.\n3. Strain into chilled cocktail glass.\n\nThe egg white is not added for the purpose of giving the drink flavor, but rather acts as an emulsifier. Thus when the drink is shaken a characteristic foamy head is formed. "
+    garnish: 'Fresh raspberries'
+    source: 'https://iba-world.com/clover-club/'
+    glass: Coupe
+    method: Shake
+    abv: 19.2
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Raspberry Syrup'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Egg White'
+            amount: 1
+            units: drops
+            optional: true
+    images:
+        -
+            resource_path: cocktails/clover-club.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: CRgKFwRIiYhndYaKiQend6l0evMmCH4B
+-
+    name: 'Comte de Sureau'
+    description: null
+    instructions: 'Stir with ice and strain into a chilled rocks glass over ice.'
+    garnish: 'Garnish with orange and lemon twists.'
+    source: 'https://www.diffordsguide.com/cocktails/recipe/7257/comte-de-sureau'
+    glass: Lowball
+    method: Stir
+    abv: 26.75
+    tags:
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: St-Germain
+            amount: 25
+            units: ml
+            optional: false
+            substitutes:
+                - 'Elderflower Cordial'
+        -
+            name: Campari
+            amount: 7.5
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/comte-de-sureau.jpg
+            copyright: "Eric's Cocktail Guide"
+            placeholder_hash: I0kKJwirmGePd4eJd5ZoiGeHN2BmBXUF
+-
+    name: 'Corpse Reviver №2'
+    description: 'The Corpse Reviver №2 as described in the Savoy Cocktail Book is the most commonly drunk of the corpse revivers, and consists of equal parts gin, lemon juice, curaçao (commonly Cointreau), Kina Lillet (now usually replaced with Cocchi Americano, as a closer match to Kina Lillet than modern Lillet Blanc), and a dash of absinthe. The dash of absinthe can either be added to the mix before shaking, or added to the cocktail glass and moved around until the glass has been coated with a layer of absinthe to give a subtle absinthe aroma and flavor to the drink.'
+    instructions: 'Pour all ingredients into shaker with ice. Shake well and strain in chilled cocktail glass.'
+    garnish: 'Garnish with orange zest'
+    source: 'https://iba-world.com/corpse-reviver-2/'
+    glass: Fizzio
+    method: Shake
+    abv: 19.46
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Gin
+        - Tiki
+    ingredients:
+        -
+            name: Gin
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Cointreau
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Lillet Blanc'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Absinthe
+            amount: 1
+            units: dash
+            optional: false
+    images:
+        -
+            resource_path: cocktails/corpse-reviver-2.jpg
+            copyright: 'Punch Drink'
+            placeholder_hash: ZQgaFwJKeIdwd3hld3eHd5iHl8BYCJwD
+-
+    name: Cosmopolitan
+    description: "A cosmopolitan, or informally a cosmo, is a relative of cranberry coolers.\n\nThe cosmopolitan gained popularity in the 1990s. It was further popularized among young women by its frequent mention on the television program Sex and the City, where Sarah Jessica Parker's character, Carrie Bradshaw, commonly ordered the drink when out with her girlfriends. The film adaptation made a reference to its popularity when Miranda asks why they stopped drinking them, Carrie replies \"because everyone else started.\""
+    instructions: 'Add all ingredients into a cocktail shaker filled with ice. Shake well and strain into a large cocktail glass.'
+    garnish: 'Garnish with a lemon twist.'
+    source: 'https://iba-world.com/cosmopolitan/'
+    glass: Cocktail
+    method: Shake
+    abv: 17.6
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Vodka
+    ingredients:
+        -
+            name: Vodka
+            amount: 40
+            units: ml
+            optional: false
+            substitutes:
+                - 'Vodka Citron'
+        -
+            name: Cointreau
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Cranberry juice'
+            amount: 30
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/cosmopolitan.jpg
+            copyright: "Amanda's Cookin'"
+            placeholder_hash: cBgKDwRXdodzd3efeseYZ2aVCvZnC58H
+-
+    name: 'Cuba Libre'
+    description: "The cocktail originated in the early 20th century in Cuba, after the country won independence in the Spanish–American War. It subsequently became popular across Cuba, the United States, and other countries. Its simple recipe and inexpensive, ubiquitous ingredients have made it one of the world's most-popular alcoholic drinks. Drink critics often consider the drink mediocre, but it has been noted for its historical significance.\n\nTraditionally, the cola ingredient is Coca-Cola (\"Coke\") and the alcohol is a light rum such as Bacardi; however, the drink may be made with various types of rums and cola brands, and lime juice may or may not be included. "
+    instructions: 'Build all ingredients in a highball glass filled with ice.'
+    garnish: 'Garnish with lime wedge.'
+    source: 'https://iba-world.com/cuba-libre/'
+    glass: Highball
+    method: Build
+    abv: 10.1
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Rum
+    ingredients:
+        -
+            name: 'White Rum'
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: Cola
+            amount: 120
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 10
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/cuba-libre.jpg
+            copyright: 'Jamie Oliver'
+            placeholder_hash: 1SgKHwZbaIdUgHqLiHh4SIeHd2BnBoUF
+-
+    name: Daiquiri
+    description: 'Daiquirí is also the name of a beach and an iron mine near Santiago de Cuba, and is a word of Taíno origin. The drink was supposedly invented by an American mining engineer named Jennings Cox, who was in Cuba (then at the tail-end of the Spanish Captaincy-General government) at the time of the Spanish–American War. It is also possible that William A. Chanler, a US congressman who purchased the Santiago iron mines in 1902, introduced the daiquiri to clubs in New York in that year.'
+    instructions: 'In a cocktail shaker add all ingredients. Stir well to dissolve the sugar. Add ice and shake. Strain into chilled cocktail glass.'
+    garnish: null
+    source: 'https://iba-world.com/daiquiri/'
+    glass: Coupe
+    method: Shake
+    abv: 24
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Rum
+    ingredients:
+        -
+            name: 'White Rum'
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: Sugar
+            amount: 2
+            units: barspoon
+            optional: false
+    images:
+        -
+            resource_path: cocktails/daiquiri.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: p4YJFwRWh4dvdneDiGenV4h4OCf8RJMP
+-
+    name: 'Dark ‘n’ stormy'
+    description: "This drink is very similar to the Moscow mule except that the Dark 'n' Stormy has dark rum instead of vodka. The original Dark 'n' Stormy was made with Gosling Black Seal rum and Barritt's Ginger Beer, but after the partnership between the two failed and the companies parted ways, Gosling Brothers created its own ginger beer.\n\nGosling Brothers claims that the drink was invented in Bermuda just after World War I."
+    instructions: 'In a highball glass filled with ice pour the ginger beer and top floating with the Rum.'
+    garnish: 'Garnish with a lime wedge or slice.'
+    source: 'https://iba-world.com/dark-n-stormy/'
+    glass: Highball
+    method: Build
+    abv: 13.64
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Rum
+    ingredients:
+        -
+            name: 'Dark Rum'
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Ginger beer'
+            amount: 100
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/dark-n-stormy.jpg
+            copyright: 'The Spruce / Madhumita Sathishkumar'
+            placeholder_hash: rCgKJwb3SIibd4eKhZlXh5h1qFA3B3YE
+-
+    name: Martini
+    instructions: |-
+        1. Pour all ingredients into mixing glass with ice cubes.
+        2. Stir well.
+        3. Strain into chilled martini cocktail glass.
+        garnish: 'Squeeze oil from lemon peel onto the drink, or garnish with green olives if requested.'
+    description: |-
+        This classic is a contentious and sensitive topic with serious Martini drinkers. The way one drinks a Martini is simply a matter of personal preference.
+
+        **Variations:**
+        - Dry Martini: A dry martini is made with little to no vermouth
+        - 50/50 Martini: Equal parts vermouth and gin
+        - Dirty Martini: A Dirty Martini simply requires a splash of olive juice and a substitution of a good, dry olive (or two) for garnish.
+        - Gibson: Use cocktail onion for garnish
+    source: 'https://iba-world.com/dry-martini/'
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Dry
+    glass: Cocktail
+    method: Stir
+    abv: 27.17
+    images:
+        -
+            resource_path: cocktails/martini.jpg
+            copyright: 'Punch | Lizzie Munro'
+            placeholder_hash: EQgSDwJbd4dgaId5iJiISYZ3Kp+/8PQN
+    ingredients:
+        -
+            sort: 1
+            name: Gin
+            amount: 60
+            units: ml
+            optional: false
+        -
+            sort: 2
+            name: 'Dry Vermouth'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            sort: 3
+            name: 'Orange bitters'
+            amount: 2
+            units: dashes
+            optional: true
+-
+    name: 'El Presidente'
+    description: 'The El Presidente earned its acclaim in Havana during the 1920s through the 1940s during the American Prohibition. It quickly became the preferred drink of the Cuban upper class.'
+    instructions: 'Add all ingredients to a mixing glass with ice and stir until well-chilled. '
+    garnish: null
+    source: 'https://www.liquor.com/recipes/el-presidente/'
+    glass: Cocktail
+    method: Stir
+    abv: 26.17
+    tags:
+        - Rum
+    ingredients:
+        -
+            name: 'White Rum'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Dry Vermouth'
+            amount: 22.5
+            units: ml
+            optional: false
+            substitutes:
+                - 'Lillet Blanc'
+        -
+            name: 'Orange Curaçao'
+            amount: 7.5
+            units: ml
+            optional: false
+        -
+            name: 'Grenadine Syrup'
+            amount: 1
+            units: teaspoon
+            optional: false
+    images:
+        -
+            resource_path: cocktails/el-presidente.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: 8ecFFwTnd2iHeXeIdvoniHd3RICWBHQJ
+-
+    name: 'Espresso Martini'
+    description: 'It is not a true martini as it contains neither gin nor vermouth, but is one of many drinks that incorporate the term martini into their names.'
+    instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
+    garnish: null
+    source: 'https://iba-world.com/espresso-martini/'
+    glass: Cocktail
+    method: Shake
+    abv: 23.11
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Vodka
+    ingredients:
+        -
+            name: Vodka
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: 'Kahlua coffee liqueur'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 10
+            units: ml
+            optional: false
+        -
+            name: Espresso
+            amount: 1
+            units: strong
+            optional: false
+    images:
+        -
+            resource_path: cocktails/espresso-martini.jpg
+            copyright: "It's Liv B."
+            placeholder_hash: zygGFwJPqId4Zoh0iUfHKLZp+qVJT5kD
+-
+    name: Fernandito
+    description: "The cocktail first became popular among the youth of the college town of Córdoba, in the 1980s and—impulsed by an advertising campaign led by Fratelli Branca—its consumption grew in popularity during the following decades to become widespread throughout the country, surpassed only by that of beer and wine. It is now considered a cultural icon of Argentina and is especially associated with its home province of Córdoba, where the drink is most consumed. The popularity of fernet con coca is such that Argentina consumes more than 75% of all fernet produced globally. The cocktail can also be found in some of its bordering countries, like Uruguay.\n\nAlthough typically made with Fernet-Branca and Coca-Cola, several amaro brands have appeared in Argentina since its popularization, as well as ready-to-drink versions. "
+    instructions: 'Pour the Fernet Branca into a double old fashioned glass with ice, fill the glass up with Cola. Gently stir.'
+    garnish: null
+    source: 'https://iba-world.com/fernandito/'
+    glass: Highball
+    method: Build
+    abv: 10.43
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+    ingredients:
+        -
+            name: 'Fernet Branca'
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: Cola
+            amount: 120
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/fernandito.jpg
+            copyright: 'The daily meal'
+            placeholder_hash: JykGJwT3R3ZchZd1cHvqZnd1der4eJ8P
+-
+    name: 'French 75'
+    description: "The drink dates to World War I, and an early form was created in 1915 at the New York Bar in Paris—later Harry's New York Bar—by barman Harry MacElhone. The combination was said to have such a kick that it felt like being shelled with the powerful French 75mm field gun."
+    instructions: 'Pour all the ingredients, except Champagne, into a shaker. Shake well and strain into a Champagne flute. Top up with Champagne. Stir gently.'
+    garnish: null
+    source: 'https://iba-world.com/french-75/'
+    glass: Champagne
+    method: Shake
+    abv: 12.8
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: Champagne
+            amount: 60
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/french-75.jpg
+            copyright: 'Sip and Feast'
+            placeholder_hash: bggKHwKIiIeeiId9dyd4d3ePxBsGj2IE
+-
+    name: 'French Connection'
+    description: 'The cocktail is named for the Gene Hackman film of the same name.'
+    instructions: 'Pour all ingredients directly into an old fashioned glass filled with ice cubes. Stir gently.'
+    garnish: null
+    source: 'https://iba-world.com/french-connection/'
+    glass: Lowball
+    method: Build
+    abv: 29.09
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Brandy
+    ingredients:
+        -
+            name: Cognac
+            amount: 35
+            units: ml
+            optional: false
+        -
+            name: Amaretto
+            amount: 35
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/french-connection.jpg
+            copyright: 'Punch Drink'
+            placeholder_hash: aUkKLwbZ11l/hnWLhad3hoiKdjB5BpMF
+-
+    name: 'French Martini'
+    description: "It was invented in the 1980s at one of Keith McNally's New York City bars. It next appeared on the drinks menu at McNally's Balthazar in SoHo in 1996. The cocktail was produced during the 1980s–1990s cocktail renaissance.\n\nIt is not a true martini, but is one of many drinks that incorporate the term martini into their names. The key ingredient that makes a martini \"French\" is Chambord, a black raspberry liqueur that has been produced in France since 1685."
+    instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
+    garnish: 'Squeeze oil from lemon peel onto the drink.'
+    source: 'https://iba-world.com/french-martini/'
+    glass: Fizzio
+    method: Shake
+    abv: 21.84
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Vodka
+    ingredients:
+        -
+            name: Vodka
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: Chambord
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Pineapple juice'
+            amount: 15
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/french-martini.jpg
+            copyright: 'Supergolden Bakes'
+            placeholder_hash: yAcGDwIHlpZ5o5eFeTbWCceSucPzHyoN
+-
+    name: 'Gin & Tonic'
+    description: 'Called a “G and T” or gin tonic in some countries, this refreshing drink is made in countries all around the world. The Gin and Tonic was invented in the 1850’s by British soldiers, who mixed gin with their tonic water as a way to drink quinine (which was thought to cure malaria). Tonic water of today no longer has quinine, but the drink stuck around!'
+    instructions: "1. Add lots of ice to a large cocktail or wine glass and stir to chill the glass. Drain any melted water.\n2. Pour in the gin. Add the garnishes. Pour the tonic water onto a bar spoon into the glass (to increase the bubbles). Stir once and serve."
+    garnish: 'Any of the following to spice your cocktail: Lime, lemon, cucumber, mint, orange peel, juniper berries, blood orange slice, rosemary'
+    source: 'https://www.acouplecooks.com/best-gin-and-tonic/'
+    glass: Wine
+    method: Build
+    abv: 12.12
+    tags:
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: Tonic
+            amount: 120
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/gin-tonic.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: mAgOFwRTWmmgeHdmaVdouHiFmACCOUQP
+-
+    name: 'Gin Fizz'
+    description: 'A gin fizz is the best-known cocktail in the fizz family. The drink is similar to a Tom Collins, with a possible distinction being a Tom Collins historically used "Old Tom Gin" (a slightly sweeter precursor to London Dry Gin), whereas the kind of gin historically used in a gin fizz is unknown.'
+    instructions: "1. Shake all ingredients with ice except soda water.\n2. Pour into thin tall Tumbler glass\n3. Top with a splash soda water\n4. Serve without ice"
+    garnish: 'Garnish with a lemon slice, optional lemon zest.'
+    source: 'https://iba-world.com/gin-fizz/'
+    glass: Highball
+    method: Shake
+    abv: 16.94
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 10
+            units: ml
+            optional: false
+        -
+            name: 'Club soda'
+            amount: 1
+            units: splash
+            optional: false
+    images:
+        -
+            resource_path: cocktails/gin-fizz.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: 3OcNLwh5m4enhndwa4eXd3l4VwJoRYAG
+-
+    name: 'Gin Gimlet'
+    description: 'The word "gimlet" used in this sense is first attested in 1928. The most obvious derivation is from the tool for drilling small holes, a word also used figuratively to describe something as sharp or piercing. Thus, the cocktail may have been named for its "penetrating" effects on the drinker.'
+    instructions: "1. Add gin, lime juice, and syrup to a cocktail shaker. Fill with ice and shake until cold.\n2. Strain into glass and top with a splash of soda water, if desired."
+    garnish: 'Garnish with a lime wheel'
+    source: 'https://www.acouplecooks.com/gin-gimlet-cocktail/'
+    glass: Coupe
+    method: Shake
+    abv: 21.33
+    tags:
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Club soda'
+            amount: 1
+            units: splash
+            optional: true
+    images:
+        -
+            resource_path: cocktails/gin-gimlet.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: C/gJDwI0l4jChndYbgaa6FaKVQBEVUAI
+-
+    name: 'Golden Dream'
+    description: "The Golden Dream was popular during the 60s and 70s and originated at the Old King Bar in Miami, mixed by Raimundo Alvarez.\n\nThe cocktail was dedicated to actress Joan Crawford and became quite popular at the end of the 1960s on the east coast of the United States. "
+    instructions: 'Pour all ingredients into shaker filled with ice. Shake briskly for few seconds. Strain into chilled cocktail glass.'
+    garnish: null
+    source: 'https://iba-world.com/golden-dream/'
+    glass: Coupe
+    method: Shake
+    abv: 18.81
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+    ingredients:
+        -
+            name: Galliano
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: 'Triple Sec'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: 'Orange juice'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: Cream
+            amount: 10
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/golden-dream.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: dggGDwD2SLV3hoiIZbo4V3h4pYBmDFUG
+-
+    name: Grasshopper
+    description: "A Grasshopper is a sweet, mint-flavored, after-dinner drink. The name of the drink derives from its green color, which comes from crème de menthe. A bar in the French Quarter of New Orleans, Louisiana, Tujague's, claims the drink was invented in 1918 by its owner, Philip Guichet. The drink gained popularity during the 1950s and 1960s throughout the American South."
+    instructions: "Pour all ingredients into shaker filled with ice.\nShake briskly for few seconds. Strain into chilled cocktail glass."
+    garnish: 'Optional mint leaf'
+    source: 'https://iba-world.com/grasshopper/'
+    glass: Fizzio
+    method: Shake
+    abv: 13.33
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+    ingredients:
+        -
+            name: 'White Crème de Cacao'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: 'Menthe Crème de Cacao'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: Cream
+            amount: 20
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/grasshopper.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: 0SgKDwIIqIiPhnaZdyeYOJd1pvWb+70N
+-
+    name: 'Hanky Panky'
+    description: "The Hanky-Panky was the brainchild of Ada Coleman (known as \"Coley\") who began as a bartender at the Savoy Hotel in 1903. Her benefactor was Rupert D'Oyly Carte, a member of the family that first produced Gilbert and Sullivan operas in London and that built the Savoy Hotel. When Rupert became chairman of the Savoy, Ada was given a position at the hotel's American Bar, where she eventually became the head bartender and made cocktails for the likes of Mark Twain, the Prince of Wales, Prince Wilhelm of Sweden, and Sir Charles Hawtrey.\n\nColeman created the Hanky-Panky for Hawtrey. He was a Victorian and Edwardian actor who mentored Noël Coward. "
+    instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into chilled cocktail glass.'
+    garnish: 'Orange zest.'
+    source: 'https://iba-world.com/hanky-panky/'
+    glass: 'Nick and Nora'
+    method: Stir
+    abv: 24.81
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Sweet Vermouth'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Fernet Branca'
+            amount: 7.5
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/hanky-panky.jpg
+            copyright: 'Punch / Daniel Krieger'
+            placeholder_hash: NQgKDwL0SHeEfIeHZtk4t1iIVrBlB2wF
+-
+    name: 'Hemingway Special'
+    description: 'Ernest Hemingway, who stayed in Cuba, tried the Floridita''s signature drink, the Floridita Daiquiri, and said "That''s good but I prefer it without sugar and double rum," which became a cocktail now known as the Hemingway Daiquiri or the Papa Doble. This recipe was later modified further, adding grapefruit juice to the mix, at which point the drink was dubbed the "Hemingway Special".'
+    instructions: 'Pour all ingredients into a shaker with ice. Shake well and strain into a large cocktail glass.'
+    garnish: null
+    source: 'https://iba-world.com/hemingway-special/'
+    glass: Coupe
+    method: Shake
+    abv: 17.72
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Rum
+    ingredients:
+        -
+            name: 'Dark Rum'
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Grapefruit juice'
+            amount: 40
+            units: ml
+            optional: false
+        -
+            name: Maraschino
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/hemingway-special.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: MggGFwJ1WHdUhnmAl5hmaIh3l/B5CI0E
+-
+    name: 'Horse’s Neck'
+    description: 'Dating back to the 1890s, it was a non-alcoholic mixture of ginger ale, ice and lemon peel. By the 1910s, brandy, or bourbon would be added for a "Horse''s Neck with a Kick" or a "Stiff Horse''s Neck". The non-alcoholic version was still served in upstate New York in the late 1950s and early 60s, but eventually it was phased out.'
+    instructions: "1. Pour Cognac and ginger ale directly into a highball glass with ice cubes.\n2. Stir gently.\n3. If preferred, add dashes of Angostura Bitter."
+    garnish: 'Garnish with a rind of one lemon spiral.'
+    source: 'https://iba-world.com/horses-neck/'
+    glass: Highball
+    method: Build
+    abv: 9.21
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Brandy
+    ingredients:
+        -
+            name: Cognac
+            amount: 40
+            units: ml
+            optional: false
+        -
+            name: 'Ginger beer'
+            amount: 120
+            units: ml
+            optional: false
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 1
+            units: dash
+            optional: false
+    images:
+        -
+            resource_path: cocktails/horses-neck.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: uQgKLwL4N5Z5h4eJdnh4t2aHiJBXCXkG
+-
+    name: Illegal
+    description: null
+    instructions: "Pour all ingredients into the shaker. Shake vigorously with ice.\_ Strain into a chilled cocktail glass, or “on the rocks” in a traditional clay or terracotta mug."
+    garnish: null
+    source: 'https://iba-world.com/illegal/'
+    glass: Fizzio
+    method: Shake
+    abv: 16.12
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Tequila
+    ingredients:
+        -
+            name: Mezcal
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'White Rum'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: Falernum
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: Maraschino
+            amount: 1
+            units: teaspoon
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Egg White'
+            amount: 1
+            units: drops
+            optional: true
+    images:
+        -
+            resource_path: cocktails/illegal.jpg
+            copyright: 'The Shaken Cocktail'
+            placeholder_hash: XvgJFwIraXifhId1h0eHWId1VtEHB58D
+-
+    name: 'Irish Coffee'
+    description: 'Caffeinated alcoholic drink consisting of Irish whiskey, hot coffee, and sugar, stirred, and topped with cream (sometimes cream liqueur) The coffee is drunk through the cream.'
+    instructions: "1. Warm black coffee is poured into a pre-heated Irish coffee glass.\n2. Whiskey and at least one teaspoon of sugar is added and stirred until dissolved.\n3. Fresh thick chilled cream is carefully poured over the back of a spoon held just above the surface of the coffee.\n4. The layer of cream will float on the coffee without mixing.\n5. Plain sugar can be replaced with sugar syrup"
+    garnish: null
+    source: 'https://iba-world.com/irish-coffee/'
+    glass: 'Glass mug'
+    method: Build
+    abv: 8.26
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Whiskey
+    ingredients:
+        -
+            name: 'Irish whiskey'
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: Coffee
+            amount: 120
+            units: ml
+            optional: false
+        -
+            name: Cream
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: Sugar
+            amount: 1
+            units: teaspoon
+            optional: false
+    images:
+        -
+            resource_path: cocktails/irish-coffee.jpg
+            copyright: VinePair
+            placeholder_hash: yPcJDwIIuHeJhXh5d0ioJ8hzlvZ4WJ8I
+-
+    name: 'Japanese cocktail'
+    description: "The Japanese cocktail is notorious for a handful of things: it's a very old cocktail, published in Jerry Thomas’s landmark 1862 book How to Mix Drinks; it was the first mixed drink to be named something other than “Whiskey Cocktail”, “Brandy Cocktail”, or some other similarly obvious epithet; it might be the only cocktail Thomas invented himself; and finally, it was the first cocktail to feature more than a dash of a fancy sweetener, orgeat."
+    instructions: "1. Combine all ingredients in a mixing glass with ice and stir\n2. Strain into a coupe, serve up"
+    garnish: 'Lemon peel'
+    source: null
+    glass: Coupe
+    method: Stir
+    abv: 26.83
+    tags:
+        - Brandy
+    ingredients:
+        -
+            name: Brandy
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Orgeat Syrup'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 2
+            units: dashes
+            optional: false
+    images:
+        -
+            resource_path: cocktails/japanese-cocktail.jpg
+            copyright: 'The Drink Blog'
+            placeholder_hash: HQgWDwJoiHdwh3h6eIeIR4d5OKBnAnoG
+-
+    name: 'John Collins'
+    description: "A John Collins is a cocktail which was attested in 1869, but may be older. It is believed to have originated with a headwaiter of that name who worked at Limmer's Old House in Conduit Street in Mayfair, which was a popular London hotel and coffee house around 1790–1817."
+    instructions: "Pour all ingredients directly into a highball filled with ice. Stir gently.\n\nNOTE:\n\nUse ‘Old Tom’ Gin for Tom Collins."
+    garnish: 'Garnish with a lemon slice and maraschino cherry.'
+    source: 'https://iba-world.com/john-collins/'
+    glass: Highball
+    method: Build
+    abv: 10.91
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Club soda'
+            amount: 60
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/john-collins.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: 0fcNJwQMyHhSeIiXilWHeHeYVzCXBHMJ
+-
+    name: KIR
+    description: 'In France it is usually drunk as an apéritif before a meal or snack. It was originally made with Bourgogne Aligoté, a white wine of Burgundy, but today various white wines are used throughout France, according to the region and the barkeeper. Many prefer a white Chardonnay-based Burgundy, such as Chablis.'
+    instructions: "Pour Crème de cassis into glass, top up with white wine.\n\nNote:\n\nKIR ROYAL – Use Champagne instead of white wine"
+    garnish: null
+    source: 'https://iba-world.com/kir/'
+    glass: Champagne
+    method: Build
+    abv: 11.27
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Wine
+    ingredients:
+        -
+            name: 'White wine'
+            amount: 90
+            units: ml
+            optional: false
+        -
+            name: 'Crème de cassis (blackcurrant liqueur)'
+            amount: 10
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/kir.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: ywcKDwJoh3iQd4h/hyiHyHh1h/NoCI8K
+-
+    name: 'La Louisiane'
+    description: 'The La Louisiane cocktail is an improvement on the Sazerac! Absinthe, rye whiskey and vermouth make this spirit-forward cocktail a stunner.'
+    instructions: 'Add all ingredients to a cocktail mixing glass (or any other type of glass). Fill the mixing glass with 1 handful ice and stir continuously for 30 seconds until very cold.'
+    garnish: 'Garnish with a Luxardo cherry.'
+    source: 'https://www.acouplecooks.com/la-louisiane-cocktail/'
+    glass: Cocktail
+    method: Stir
+    abv: 28.94
+    tags:
+        - Whiskey
+    ingredients:
+        -
+            name: 'Rye whiskey'
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Sweet Vermouth'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Bénédictine
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Absinthe
+            amount: 5
+            units: ml
+            optional: false
+        -
+            name: 'Peychauds Bitters'
+            amount: 3
+            units: dashes
+            optional: false
+    images:
+        -
+            resource_path: cocktails/la-louisiane.jpg
+            copyright: 'A couple cooks'
+            placeholder_hash: mhgWHwSXeIiAdnd0h5iYh3d3dgHICIQL
+-
+    name: 'Last word'
+    description: 'While the drink eventually fell out of favor, it enjoyed a renewed popularity after being rediscovered by the bartender Murray Stenson in 2004 during his tenure at the Zig Zag Café and becoming a cult hit in the Seattle area.'
+    instructions: 'Add all ingredients into a cocktail shaker. Shake with ice and strain into a chilled cocktail glass.'
+    garnish: null
+    source: 'https://iba-world.com/last-word/'
+    glass: 'Nick and Nora'
+    method: Shake
+    abv: 25.4
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: 'Green Chartreuse'
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: Maraschino
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 22.5
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/last-word.jpg
+            copyright: 'A Serious Eats / Vicky Wasik'
+            placeholder_hash: VAgKDwINtoqnd4dziie3eIiItzoNcaAN
+-
+    name: 'Lemon drop Martini'
+    description: "The drink was invented sometime in the 1970s by Norman Jay Hobday, the founder and proprietor of Henry Africa's bar in San Francisco, California. Some variations of the drink exist, such as blueberry and raspberry lemon drops. It is served at some bars and restaurants in the United States, and in such establishments in other areas of the world."
+    instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
+    garnish: 'Garnish with sugar rim around the glass.'
+    source: 'https://iba-world.com/lemon-drop-martini/'
+    glass: Cocktail
+    method: Shake
+    abv: 24.62
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Vodka
+    ingredients:
+        -
+            name: Vodka
+            amount: 30
+            units: ml
+            optional: false
+            substitutes:
+                - 'Vodka Citron'
+        -
+            name: 'Triple Sec'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 15
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/lemon-drop-martini.jpg
+            copyright: 'Basil & Bubbly'
+            placeholder_hash: mxgKDwI5iHhhmIeaiGamB5mZCQC1hXAJ
+-
+    name: 'Long Island Ice Tea'
+    description: 'The cocktail has been criticized for its large number of ingredients, making it cumbersome to prepare in busy bars. It is considered a favorite of university students in the United States and it has thus garnered negative connotations as "an act of mixological atrocity favored by college students and wastrels", in the words of one food critic.'
+    instructions: "Add all ingredients into a highball glass filled with ice.\nStir gently."
+    garnish: 'Lemon Slice (Optional)'
+    source: 'https://iba-world.com/long-island-ice-tea/'
+    glass: Highball
+    method: Build
+    abv: 21.82
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+    ingredients:
+        -
+            name: Vodka
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: Tequila
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'White Rum'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: Gin
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: Cointreau
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: Cola
+            amount: 1
+            units: topup
+            optional: false
+    images:
+        -
+            resource_path: cocktails/long-island-ice-tea.jpg
+            copyright: 'Kitchen Stories'
+            placeholder_hash: TBgGHwQF64asp3mnbmXKdoiJuYA3CWUD
+-
+    name: Mai-Tai
+    description: "Victor J. Bergeron claimed to have invented the Mai Tai in 1944 at his restaurant, Trader Vic's, in Oakland, California, US. Trader Vic's forerunner, Donn Beach, claimed to have instead first created it in 1933, although a longtime colleague said that Beach was actually just alleging that the Mai Tai was based on his Q.B. Cooler cocktail."
+    instructions: "1. Add all ingredients into a shaker with ice.\n2. Shake and pour into a double rocks glass or a highball glass.\n\n*The Martinique molasses rum used by Trader Vic was not an Agricole rum but a type of “rummy” from molasses.*"
+    garnish: 'Garnish with pineapple spear, mint leaves, and lime peel.'
+    source: 'https://iba-world.com/mai-tai/'
+    glass: Lowball
+    method: Shake
+    abv: 18.82
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Rum
+        - Tiki
+    ingredients:
+        -
+            name: 'White Rum'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Rhum agricole'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Orange Curaçao'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Orgeat Syrup'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 7.5
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/mai-tai.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: LgkKVwj1V3mraIdVdbiJeFaKiEBXCHAG
+-
+    name: Manhattan
+    description: 'Popular history suggests that the drink originated at the Manhattan Club in New York City in the mid-1870s, where it was invented by Iain Marshall for a banquet hosted by Jennie Jerome (Lady Randolph Churchill, mother of Winston) in honor of presidential candidate Samuel J. Tilden. The success of the banquet made the drink fashionable, later prompting several people to request the drink by referring to the name of the club where it originated—"the Manhattan cocktail". However, Lady Randolph was in France at the time and pregnant, so the story is likely a fiction.'
+    instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into a chilled cocktail glass.'
+    garnish: 'Garnish with a cocktail cherry.'
+    source: 'https://iba-world.com/manhattan/'
+    glass: Cocktail
+    method: Stir
+    abv: 28.17
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Whiskey
+    ingredients:
+        -
+            name: 'Rye whiskey'
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: 'Sweet Vermouth'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 1
+            units: dash
+            optional: false
+    images:
+        -
+            resource_path: cocktails/manhattan.jpg
+            copyright: "Sainsbury's Magazine / Toby Scott"
+            placeholder_hash: pvcJDwIObYVYiYZoV5lppneHd9A5CJ0D
+-
+    name: Margarita
+    description: 'The drink is served shaken with ice (on the rocks), blended with ice (frozen margarita), or without ice (straight up). The drink is generally served in a stepped-diameter variant of a cocktail glass or champagne coupe called a margarita glass.'
+    instructions: "Add all ingredients into a shaker with ice.\nShake and strain into a chilled cocktail glass"
+    garnish: 'Half salt rim (Optional)'
+    source: 'https://iba-world.com/margarita/'
+    glass: Margarita
+    method: Shake
+    abv: 26.35
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Tequila
+    ingredients:
+        -
+            name: Tequila
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: 'Triple Sec'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/margarita.jpg
+            copyright: 'Jamie Oliver'
+            placeholder_hash: VQgOFwIYh3ePdXaLh2aXeId3R/s2uWkA
+-
+    name: Martinez
+    description: "The Martinez is a classic cocktail that is widely regarded as the direct precursor to the Martini.\nIt serves as the basis for many modern cocktails, and several different versions of the original exist.\nThese are generally distinguished by the accompaniment of either Maraschino or Curacao, as well as differences in gin or bitters. "
+    instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into a chilled cocktail glass.'
+    garnish: 'Lemon zest.'
+    source: 'https://iba-world.com/martinez/'
+    glass: Cocktail
+    method: Stir
+    abv: 24.16
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Sweet Vermouth'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: Maraschino
+            amount: 1
+            units: teaspoon
+            optional: false
+        -
+            name: 'Orange bitters'
+            amount: 2
+            units: dashes
+            optional: false
+    images:
+        -
+            resource_path: cocktails/martinez.jpg
+            copyright: Wikipedia
+            placeholder_hash: n1kWFwZ4eIeAd3d4iId4aIh2qMgJiZ8B
+-
+    name: 'Mary Pickford'
+    description: null
+    instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled cocktail glass.'
+    garnish: null
+    source: 'https://iba-world.com/mary-pickford/'
+    glass: Fizzio
+    method: Shake
+    abv: 15.92
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Rum
+    ingredients:
+        -
+            name: 'White Rum'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Pineapple juice'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: Maraschino
+            amount: 7.5
+            units: ml
+            optional: false
+        -
+            name: 'Grenadine Syrup'
+            amount: 5
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/mary-pickford.jpg
+            copyright: Drinkoteket
+            placeholder_hash: zBcGFwQIqJiMhodxjAbHeIiLeqAHB4sA
+-
+    name: Mimosa
+    description: null
+    instructions: "Pour orange juice into a flute glass and gently pour the sparkling wine. Stir gently.\n\nNote:\nAlso known as Buck’s Fizz."
+    garnish: 'Garnish with an orange twist (optional).'
+    source: 'https://iba-world.com/mimosa/'
+    glass: Champagne
+    method: Build
+    abv: 5
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Wine
+    ingredients:
+        -
+            name: Prosecco
+            amount: 75
+            units: ml
+            optional: false
+        -
+            name: 'Orange juice'
+            amount: 75
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/mimosa.jpg
+            copyright: 'Inspired Taste'
+            placeholder_hash: LyoGPwaGWMcyeIdfiUh7eXeH6PItd/oA
+-
+    name: 'Mint Julep'
+    description: null
+    instructions: 'In Julep Stainless Steel Cup gently muddle the mint with sugar and water. Fill the glass with cracked ice, add the Bourbon and stir well until the cup frosts.'
+    garnish: 'Garnish with a mint sprig.'
+    source: 'https://iba-world.com/mint-julep/'
+    glass: Julep
+    method: Build
+    abv: 36.36
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Whiskey
+    ingredients:
+        -
+            name: 'Bourbon Whiskey'
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: Mint
+            amount: 4
+            units: sprigs
+            optional: false
+        -
+            name: Sugar
+            amount: 1
+            units: tsp
+            optional: false
+        -
+            name: Water
+            amount: 2
+            units: tsp
+            optional: false
+    images:
+        -
+            resource_path: cocktails/mint-julep.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: 0jgKJwRGe8VgZoiaiiiHhpeXd1BYBXED
+-
+    name: Mojito
+    description: null
+    instructions: 'Mix mint springs with sugar and lime juice. Add splash of soda water and fill the glass with ice. Pour the rum and top with soda water. Light stir to involve all ingredients.'
+    garnish: 'Garnish with sprigs of mint and slice of lime.'
+    source: 'https://iba-world.com/mojito/'
+    glass: Highball
+    method: Build
+    abv: 25.17
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Rum
+    ingredients:
+        -
+            name: 'White Rum'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: Mint
+            amount: 6
+            units: sprigs
+            optional: false
+        -
+            name: Sugar
+            amount: 2
+            units: tsp
+            optional: false
+        -
+            name: 'Club soda'
+            amount: 1
+            units: topup
+            optional: false
+    images:
+        -
+            resource_path: cocktails/mojito.jpg
+            copyright: 'Bon Apetite'
+            placeholder_hash: MhkGFwB+WZaZf6RjaURa55hGDYp09hkH
+-
+    name: 'Monkey Gland'
+    description: null
+    instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled cocktail glass.'
+    garnish: null
+    source: 'https://iba-world.com/monkey-gland/'
+    glass: Cocktail
+    method: Shake
+    abv: 16
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Orange juice'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: Absinthe
+            amount: 1
+            units: tablespoon
+            optional: false
+        -
+            name: 'Grenadine Syrup'
+            amount: 1
+            units: tablespoon
+            optional: false
+    images:
+        -
+            resource_path: cocktails/monkey-gland.jpg
+            copyright: 'The Spruce'
+            placeholder_hash: sRgKFwJXiplwaHead2aGeYiIdmYMaLcA
+-
+    name: 'Moscow Mule'
+    description: null
+    instructions: 'In a Mule Cup or rocks glass, combine the vodka and ginger beer. Add lime juice and gently stir to involve all ingredients.'
+    garnish: 'Garnish with a lime slice'
+    source: 'https://iba-world.com/moscow-mule/'
+    glass: 'Copper mug'
+    method: Build
+    abv: 9.35
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Vodka
+    ingredients:
+        -
+            name: Vodka
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Ginger beer'
+            amount: 120
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 10
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/moscow-mule.jpg
+            copyright: 'Bake It With Love'
+            placeholder_hash: JAkGFwigP4bhlYdpiui3pmW3t0EIFpAD
+-
+    name: 'Naked and Famous'
+    description: null
+    instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
+    garnish: null
+    source: 'https://iba-world.com/naked-and-famous/'
+    glass: 'Nick and Nora'
+    method: Shake
+    abv: 18.2
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Tequila
+    ingredients:
+        -
+            name: Mezcal
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: 'Yellow Chartreuse'
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: Aperol
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 22.5
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/naked-and-famous.jpg
+            copyright: Epicurious
+            placeholder_hash: SwgKHwQHtnmIhXiIdoinSJeVh9BoCI4G
+-
+    name: Negroni
+    description: 'A traditionally made Negroni is stirred, not shaken; it is built over ice in an old-fashioned or rocks glass and garnished with a slice of orange. Outside of Italy, an orange peel is often used in place of an orange slice.'
+    instructions: 'Pour all ingredients directly into a chilled old fashioned glass filled with ice, Stir gently.'
+    garnish: 'Garnish with a half orange slice.'
+    source: 'https://iba-world.com/negroni/'
+    glass: Lowball
+    method: Build
+    abv: 25.15
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Campari
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Sweet Vermouth'
+            amount: 30
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/negroni.jpg
+            copyright: 'Kitchen Swagger'
+            placeholder_hash: 4jgGHwa8FpkhYKvMl0vHaSR3TIcHNnIA
+-
+    name: 'New York Sour'
+    description: 'Largely similar to the whiskey sour, the New York sour adds a float of dry red wine to the drink.'
+    instructions: "Pour all ingredients into the shaker. Shake vigorously with ice.\_ Strain into a chilled rocks glass filled with ice. Float the wine on top."
+    garnish: 'Garnish with lemon or orange zest with cherry.'
+    source: 'https://iba-world.com/new-york-sour/'
+    glass: Lowball
+    method: Shake
+    abv: 16.09
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Whiskey
+        - Sour
+    ingredients:
+        -
+            name: Whiskey
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Egg White'
+            amount: 1
+            units: drops
+            optional: true
+        -
+            name: 'Red wine'
+            amount: 15
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/new-york-sour.jpg
+            copyright: 'Kitchen Swagger'
+            placeholder_hash: ZhgOFwJ4hoh/iHeIiJhniIeFaEEIJoUA
+-
+    name: 'Old Cuban'
+    description: null
+    instructions: 'Pour all ingredients into cocktail shaker except the wine, shake well with ice, strain into chilled elegant cocktail glass. Top up with the sparkling wine.'
+    garnish: 'Garnish with mint springs.'
+    source: 'https://iba-world.com/old-cuban/'
+    glass: Coupe
+    method: Shake
+    abv: 12.97
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Rum
+    ingredients:
+        -
+            name: 'Dark Rum'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: Mint
+            amount: 6
+            units: sprigs
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 2
+            units: dashes
+            optional: false
+        -
+            name: Champagne
+            amount: 60
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/old-cuban.jpg
+            copyright: 'NYT Cooking'
+            placeholder_hash: yxgOLwQHiHh9dId2iTiXaId3Z9A3F3sA
+-
+    name: 'Old Fashioned'
+    description: "Developed during the 19th century and given its name in the 1880s, it is an IBA Official Cocktail. It is also one of six basic drinks listed in David A. Embury's The Fine Art of Mixing Drinks. "
+    instructions: 'Place sugar cube in old fashioned glass and saturate with bitter, add few dashes of plain water. Muddle until dissolved. Fill the glass with ice cubes and add whiskey. Stir gently.'
+    garnish: 'Garnish with an orange slice or zest, and a cocktail cherry.'
+    source: 'https://iba-world.com/old-fashioned/'
+    glass: Lowball
+    method: Build
+    abv: 35.55
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Whiskey
+    ingredients:
+        -
+            name: 'Bourbon Whiskey'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: Sugar
+            amount: 1
+            units: cube
+            optional: false
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 2
+            units: dashes
+            optional: false
+        -
+            name: Water
+            amount: 2
+            units: dashes
+            optional: false
+    images:
+        -
+            resource_path: cocktails/old-fashioned.jpg
+            copyright: Epicurious
+            placeholder_hash: bzkGJwbxeBWfd2ZecmibZphotlEIGoUA
+-
+    name: Paloma
+    description: 'The Paloma is a refreshing, easy-to-make cooler that combines tequila, lime juice and grapefruit soda. Its origin story is nebulous, but most reports peg its creation to the 1950s. Blanco tequila is the traditional choice, but lightly aged reposado also makes a fine drink. In this case, it’s best to keep the añejo capped, as the well-aged expression’s oaky profile disrupts that clean, refreshing taste you want in a Paloma. '
+    instructions: 'Poor the tequila into a highball glass, squeeze the lime juice. Add ice and salt, fill up pink grapefruit soda. Stir gently.'
+    garnish: 'Garnish with a slice of lime.'
+    source: 'https://iba-world.com/paloma/'
+    glass: Lowball
+    method: Build
+    abv: 11.73
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Tequila
+    ingredients:
+        -
+            name: Tequila
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 5
+            units: ml
+            optional: false
+        -
+            name: Salt
+            amount: 1
+            units: pinch
+            optional: false
+        -
+            name: 'Grapefruit juice'
+            amount: 100
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/paloma.jpg
+            copyright: 'Love and Lemons'
+            placeholder_hash: rhgGHwRqNHahd5eQeUaYyHmHGXQEQDgB
+-
+    name: 'Paper Plane'
+    description: "Developed around 2007 by Sasha Petraske and Sam Ross of Milk & Honey for their former colleague Toby Maloney's Chicago bar The Violet Hour. The recipe is a riff on a Last Word, which is a riff on the classic Corpse Reviver #2."
+    instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
+    garnish: null
+    source: 'https://iba-world.com/paper-plane/'
+    glass: Coupe
+    method: Shake
+    abv: 17.2
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Whiskey
+    ingredients:
+        -
+            name: 'Bourbon Whiskey'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Amaro Nonino'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Aperol
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 30
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/paper-plane.jpg
+            copyright: 'Bon Apetite'
+            placeholder_hash: ImkKHwpCiql5Z4aPWGhoeWd4tVBYXJAJ
+-
+    name: Paradise
+    description: 'The earliest known in-print recipe for the Paradise Cocktail was written by Harry Craddock in 1930. This cocktail is prepared using gin, apricot brandy (apricot liqueur), and orange juice in a 2:1:1 ratio, with a splash of lemon juice.'
+    instructions: 'Pour all ingredients into cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
+    garnish: null
+    source: 'https://iba-world.com/paradise/'
+    glass: Cocktail
+    method: Shake
+    abv: 24.62
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Apricot Brandy'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: 'Orange juice'
+            amount: 15
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/paradise.jpg
+            copyright: Wikipedia
+            placeholder_hash: eRgGHwL1F5h3fYVzeNg4yDd9aNCHCH4I
+-
+    name: Penicillin
+    description: 'The drink was created in 2005 by Australian bartender Sam Ross living in New York at the time. Its name derives from the drug penicillin, discovered by Scottish scientist Alexander Fleming, hinting to the medicinal properties of some of its ingredients, with suggested effects similar to that of a hot toddy which is said to relieve the symptoms of cold and flu.'
+    instructions: "1. Muddle ginger in a shaker.\n2. Add the remaining ingredients, except for the Islay single malt whiskey.\n3. Fill the shaker with ice and shake.\n4. Double-strain into a chilled old fashioned glass with ice.\n5. Float the single malt whiskey on top."
+    garnish: 'Garnish with candied ginger.'
+    source: 'https://iba-world.com/penicillin/'
+    glass: Lowball
+    method: Shake
+    abv: 19.2
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Whiskey
+    ingredients:
+        -
+            name: 'Scotch whiskey'
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Islay Scotch'
+            amount: 7.5
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: 'Honey Syrup'
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: Ginger
+            amount: 2
+            units: slices
+            optional: false
+    images:
+        -
+            resource_path: cocktails/penicillin.jpg
+            copyright: Unknown
+            placeholder_hash: lAgSJwIIeJhyeIiFe1h3h4h4eDB4CIUJ
+-
+    name: 'Pina Colada'
+    description: 'The name piña colada (Spanish) literally means "strained pineapple", a reference to the freshly pressed and strained pineapple juice used in the drink''s preparation.'
+    instructions: "Blend all the ingredients with ice in an electric blender, pour into a large glass, and serve with straws.\n\n**Note:**\nHistorically a few drops of fresh lime juice were added to taste. 4 slices of fresh pineapple can be used instead of juice"
+    garnish: 'Garnish with a slice of pineapple with a cocktail cherry.'
+    source: 'https://iba-world.com/pina-colada/'
+    glass: Hurricane
+    method: Blend
+    abv: 12.31
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Rum
+        - Tiki
+    ingredients:
+        -
+            name: 'White Rum'
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: 'Coconut Cream'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Pineapple juice'
+            amount: 50
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/pina-colada.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: TQgOHwIIyXdkd3eXe1Z3l4iGmZAYCpYD
+-
+    name: 'Pisco Sour'
+    description: "A pisco sour is an alcoholic cocktail of Peruvian origin that is typical of the cuisines from Peru. The drink's name comes from pisco, which is its base liquor, and the cocktail term sour, in reference to sour citrus juice and sweetener components.\nThe Peruvian pisco sour uses Peruvian pisco as the base liquor and adds freshly squeezed lemon juice, simple syrup, ice, egg white, and Angostura bitters.\nThe Chilean version is similar, but uses Chilean pisco and Pica lime, and excludes the bitters and egg white.\nOther variants of the cocktail include those created with fruits like pineapple or plants such as coca leaves."
+    instructions: "Add all ingredients into a shaker with ice.\nShake and strain into a chilled goblet glass."
+    garnish: 'Few dashes of Amargo or Angostura bitters on top as an aromatic garnish.'
+    source: 'https://iba-world.com/pisco-sour/'
+    glass: 'Nick and Nora'
+    method: Shake
+    abv: 17.45
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Sour
+    ingredients:
+        -
+            name: Pisco
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: 'Egg White'
+            amount: 1
+            units: drops
+            optional: true
+    images:
+        -
+            resource_path: cocktails/pisco-sour.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: YwgSDwBqiHd/iYeJd3d3h4d4V6AnAZkE
+-
+    name: 'Planter’s Punch'
+    description: 'The cocktail has been said to have originated at the Planters Hotel in Charleston, South Carolina, but actually originated in Jamaica.'
+    instructions: "Pour all ingredients directly in a small tumbler or a typical terracotta glass.\nNOTE:\nAdd dilution up to taste, it can be given by water, ice or juices."
+    garnish: 'Garnish with orange zest.'
+    source: 'https://iba-world.com/planters-punch/'
+    glass: Hurricane
+    method: Build
+    abv: 18.18
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Rum
+        - Tiki
+    ingredients:
+        -
+            name: 'Jamaican Rum'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 30
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/planters-punch.jpg
+            copyright: Wikipedia
+            placeholder_hash: DjkKJwaQtEeFeGlXelaXiHloBzZ5FJAH
+-
+    name: 'Porn Star Martini'
+    description: 'This easy passion fruit cocktail is bursting with zingy flavours and is perfect for celebrating with friends.'
+    instructions: "1. Scoop the seeds from one of the passion fruits into the glass of a cocktail shaker\n2. Add the vodka, passoa, lime juice and sugar syrup.\n3. Add a handful of ice and shake well\n4. Strain into a martini glass\n5. Serve with shot of chilled Champagne on the side"
+    garnish: 'Half a passion fruit on top'
+    source: 'Douglas Ankrah, The Townhouse | London'
+    glass: Coupe
+    method: Shake
+    abv: 16.36
+    tags:
+        - Vodka
+    ingredients:
+        -
+            name: 'Vanilla Vodka'
+            amount: 60
+            units: ml
+            optional: false
+            substitutes:
+                - Vodka
+        -
+            name: Passoã
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: Champagne
+            amount: 60
+            units: ml
+            optional: true
+            substitutes:
+                - Prosecco
+    images:
+        -
+            resource_path: cocktails/porn-star-martini.jpg
+            copyright: 'Punch / Jamie Lau'
+            placeholder_hash: 2vcNFwJqWHiCeHd7iAmGmIaXyKQJXYoA
+-
+    name: 'Porto Flip'
+    description: 'The Porto Flip was first recorded by Jerry Thomas in his 1862 book The Bartender’s Guide: How to Mix Drinks; A Bon Vivant’s Companion. albeit under the name "Coffee Cocktail", named for its appearance rather than its ingredients.'
+    instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled cocktail glass.'
+    garnish: 'Sprinkle with ground nutmeg.'
+    source: 'https://iba-world.com/porto-flip/'
+    glass: Coupe
+    method: Shake
+    abv: 12.51
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Brandy
+        - Wine
+    ingredients:
+        -
+            name: Brandy
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Red wine'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Egg Yolk'
+            amount: 10
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/porto-flip.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: b+cJDwJjZ4dwdndldZh4h5iGVrCGBXoN
+-
+    name: "Queen's Park Hotel Super Cocktail"
+    description: null
+    instructions: 'Shake all ingredients with ice and strain into chilled glass.'
+    garnish: 'Lime zest'
+    source: 'https://www.cocktailexplorer.co/cocktails/queens-park-hotel-super-cocktail/anders-erickson/'
+    glass: Coupe
+    method: Shake
+    abv: 18.63
+    tags:
+        - Rum
+    ingredients:
+        -
+            name: 'White Rum'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Sweet Vermouth'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Grenadine Syrup'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 2
+            units: dashes
+            optional: false
+    images:
+        -
+            resource_path: cocktails/queens-park-hotel-super-cocktail.jpg
+            copyright: 'Anders Erickson'
+            placeholder_hash: TTgGFwYHaHd2eIWMhVaXeHdxhpQHOHkA
+-
+    name: 'Ramos Fizz'
+    description: 'The drink was invented by Henry Ramos in 1888, at his bar Meyer’s Table d’Hôtel Internationale in New Orleans. The Ramos Fizz was originally shaken for 12 minutes by a crew of 30 bartenders who passed the shaker from one to another.'
+    instructions: "1. Pour all ingredients except soda water in a cocktail shaker with ice.\n2. Shake for two minutes.\n3. Double strain in a glass.\n4. Pour the drink back in the shaker, and hard shake without ice for one minute.\n5. Strain into a highball glass, top up with soda."
+    garnish: null
+    source: 'https://iba-world.com/ramos-fizz/'
+    glass: Highball
+    method: Shake
+    abv: 7.32
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Cream
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Egg White'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Orange Flower Water'
+            amount: 3
+            units: dashes
+            optional: false
+        -
+            name: 'Vanilla Extract'
+            amount: 2
+            units: drops
+            optional: false
+        -
+            name: 'Club soda'
+            amount: 1
+            units: topup
+            optional: false
+    images:
+        -
+            resource_path: cocktails/ramos-fizz.jpg
+            copyright: 'Punch Drink'
+            placeholder_hash: KQkSFwIwhXqbiHiYiYd3eIh399y8YKYP
+-
+    name: 'Russian Spring Punch'
+    description: 'The Russian Spring Punch was created in London, England by Dick Bradsell in the 1980s. He claims not to remember which bar he was working at at the time, but tells the story of how he created the recipe for personal friends wishing to hold a cocktail party while minimizing the amount of money they had to spend on alcohol. Participants were provided with the vodka, cassis, sugar syrup and lemon juice, and were asked to bring their own sparkling wine. It is named for the russian vodka, and the Tom Collins, which is a spring drink.'
+    instructions: 'Pour all ingredients into a cocktail shaker except the sparkling wine, shake well with ice, strain into a chilled tall tumbler glass filled with ice, and top up with sparkling wine.'
+    garnish: 'Garnish with blackberries and optionally a lemon slice as well.'
+    source: 'https://iba-world.com/russian-spring-punch/'
+    glass: Highball
+    method: Shake
+    abv: 14.67
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Vodka
+    ingredients:
+        -
+            name: Vodka
+            amount: 25
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 25
+            units: ml
+            optional: false
+        -
+            name: 'Crème de cassis (blackcurrant liqueur)'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 10
+            units: ml
+            optional: false
+        -
+            name: Champagne
+            amount: 1
+            units: topup
+            optional: false
+    images:
+        -
+            resource_path: cocktails/russian-spring-punch.jpg
+            copyright: 'Liquido Spirits'
+            placeholder_hash: 1VgKJwwL2oiDloqJfESXV4l5lnBKCIYG
+-
+    name: 'Rusty Nail'
+    description: "A Rusty Nail can be served in an old-fashioned glass on the rocks, or \"up\" in a stemmed glass. It is most commonly served over ice. A Rusty Nail served without ice is sometimes called a Straight Up Nail.\n\n  - **The Rusty Bob**, which substitutes Bourbon whiskey for blended Scotch whisky\n  - **The Rusty Ale**, in which a shot of Drambuie is added to any beer, served without ice.\n  - **The Smoky Nail**, which uses Islay whisky (very smoky in flavor) in place of blended Scotch whisky.\n  - **The Clavo Ahumado** (Spanish for \"smoky nail\"), using mezcal instead of blended Scotch whisky.\n  - **The Railroad Spike**, often served at brunch and made with approximately four parts Cold brewed coffee to one part Drambuie in a tall glass over ice.\n  - **The Donald Sutherland**, which substitutes Canadian rye whisky for blended Scotch whisky."
+    instructions: 'Pour all ingredients directly into an old fashioned glass filled with ice. Stir gently.'
+    garnish: 'Garnish with lemon zest.'
+    source: 'https://iba-world.com/rusty-nail/'
+    glass: Lowball
+    method: Build
+    abv: 36.36
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Whiskey
+    ingredients:
+        -
+            name: 'Scotch whiskey'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: Drambuie
+            amount: 25
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/rusty-nail.jpg
+            copyright: 'Serious Eats'
+            placeholder_hash: aCkGLwSv2YnnsIm0njYcVSuNpgOJSYAI
+-
+    name: Sangria
+    description: "A punch, sangria traditionally consists of red wine and chopped fruit, often with other ingredients or spirits.\n\nSangria is very popular among foreign tourists in Spain even if locals do not consume the beverage that much. It is commonly served in bars, restaurants, and chiringuitos and at festivities throughout Portugal and Spain."
+    instructions: "1. Chop the orange (leaving the peel on) and apple into bite-sized chunks, then add them to the bottom of a pitcher. Sprinkle them with sugar and stir. Let them stand for 20 minutes at room temperature.\n2. After 20 minutes, pour in the red wine, brandy, orange liqueur, and lemon rounds. Stir and refrigerate 1 to 4 hours. (Don’t go beyond 4 hours or the fruit texture starts to degrade.)\n3. Pour the sangria into ice filled glasses and top with a splash of sparkling water (if desired). Add fruit to each glass, preferably on long skewers for easy snacking."
+    garnish: 'Drop fruit chunks into a glass'
+    source: 'https://www.acouplecooks.com/gin-gimlet-cocktail/'
+    glass: Wine
+    method: Build
+    abv: 10.52
+    tags:
+        - Wine
+    ingredients:
+        -
+            name: 'Red wine'
+            amount: 1000
+            units: ml
+            optional: false
+        -
+            name: Orange
+            amount: 1
+            units: whole
+            optional: false
+        -
+            name: Apple
+            amount: 1
+            units: whole
+            optional: false
+        -
+            name: Sugar
+            amount: 3
+            units: tablespoons
+            optional: false
+        -
+            name: Brandy
+            amount: 10
+            units: ml
+            optional: false
+        -
+            name: Cointreau
+            amount: 10
+            units: ml
+            optional: false
+        -
+            name: Lemon
+            amount: 1
+            units: whole
+            optional: false
+    images:
+        -
+            resource_path: cocktails/sangria.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: 8PcJHwaaxKxvpmabiBWYpWZ3qGgJi4YA
+-
+    name: Sazerac
+    description: "The Sazerac is a local variation of a cognac or whiskey cocktail originally from New Orleans, named for the Sazerac de Forge et Fils brand of cognac brandy that served as its original main ingredient.\nThe drink is most traditionally a combination of cognac or rye whiskey, absinthe, Peychaud's Bitters, and sugar, although bourbon whiskey is sometimes substituted for the rye and Herbsaint is sometimes substituted for the absinthe.\nSome claim it is the oldest known American cocktail, with origins in antebellum New Orleans, although drink historian David Wondrich is among those who dispute this, and American instances of published usage of the word cocktail to describe a mixture of spirits, bitters, and sugar can be traced to the dawn of the 19th century."
+    instructions: "1. Rinse a chilled old-fashioned glass with the absinthe.\n2. Add crushed ice and set it aside.\n3. Stir the remaining ingredients over ice in a mixing glass.\n4. Discard the ice and any excess absinthe from the prepared glass.\n5. Strain the mixed drink into the glass."
+    garnish: 'Garnish with lemon zest.'
+    source: 'https://iba-world.com/sazerac/'
+    glass: Lowball
+    method: Stir
+    abv: 33.25
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Brandy
+    ingredients:
+        -
+            name: Cognac
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: Absinthe
+            amount: 10
+            units: ml
+            optional: false
+        -
+            name: Sugar
+            amount: 1
+            units: cube
+            optional: false
+        -
+            name: 'Peychauds Bitters'
+            amount: 2
+            units: dashes
+            optional: false
+    images:
+        -
+            resource_path: cocktails/sazerac.jpg
+            copyright: 'The Spruce Eats'
+            placeholder_hash: l8cJJwzAdnmJhndoloh5Vpd3OGBVBGME
+-
+    name: 'Sea Breeze'
+    description: 'The cocktail is usually consumed during summer months. The drink may be shaken in order to create a foamy surface.'
+    instructions: 'Build all ingredients in a highball glass filled with ice.'
+    garnish: 'Garnish with orange zest and cherry'
+    source: 'https://iba-world.com/sea-breeze/'
+    glass: Highball
+    method: Build
+    abv: 7.66
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Vodka
+    ingredients:
+        -
+            name: Vodka
+            amount: 40
+            units: ml
+            optional: false
+        -
+            name: 'Cranberry juice'
+            amount: 120
+            units: ml
+            optional: false
+        -
+            name: 'Grapefruit juice'
+            amount: 30
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/sea-breeze.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: I0kKRxL7SIZZmIerdVhKuHWoePU4B40B
+-
+    name: Seelbach
+    description: "The Seelbach Cocktail may not be a julep, but it doesn't have to be: it's respectable, powerful, and delicious right down to the bottom of the glass."
+    instructions: "1. Add the bourbon, Cointreau, Angostura bitters and Peychaud’s bitters into a mixing glass with ice and stir until well-chilled.\n2. Strain into a chilled flute.\n3. Top with cold Champagne or other sparkling wine.\n3. Garnish with an orange twist."
+    garnish: 'Orange twist'
+    source: 'https://www.seriouseats.com/seelbach-cocktail-recipe'
+    glass: Champagne
+    method: Stir
+    abv: 18.43
+    tags:
+        - Whiskey
+    ingredients:
+        -
+            name: 'Bourbon Whiskey'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Cointreau
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 5
+            units: dashes
+            optional: false
+        -
+            name: 'Peychauds Bitters'
+            amount: 5
+            units: dashes
+            optional: false
+        -
+            name: Champagne
+            amount: 90
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/seelbach.jpg
+            copyright: 'The Educated Barfly'
+            placeholder_hash: eAgGFwL4J8iGe4R5hqlXqGd4eMBnB3wG
+-
+    name: 'Sex on the Beach'
+    description: "There are two general types of the cocktail:\n\n- The IBA official cocktail is made from vodka, peach schnapps, orange juice, and cranberry juice.\n- The 2008 Mr. Boston Official Bartender's Guide (67th edition) provides an alternative recipe made from vodka, Chambord, Midori Melon Liqueur, pineapple juice, and cranberry juice.\n\nThe drink is built over ice in a highball glass and garnished with an orange slice. Sometimes they are mixed in smaller amounts and served as a shooter."
+    instructions: 'Build all ingredients in a highball glass filled with ice.'
+    garnish: 'Garnish with a half orange slice.'
+    source: 'https://iba-world.com/sex-on-the-beach/'
+    glass: Highball
+    method: Build
+    abv: 15.58
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Vodka
+    ingredients:
+        -
+            name: Vodka
+            amount: 40
+            units: ml
+            optional: false
+        -
+            name: 'Peach Schnapps'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: 'Orange juice'
+            amount: 40
+            units: ml
+            optional: false
+        -
+            name: 'Cranberry juice'
+            amount: 40
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/sex-on-the-beach.jpg
+            copyright: 'Copy Kat Recipes'
+            placeholder_hash: rYkSRxT2aHhplXl4h3h3h3iIl5B6CJYH
+-
+    name: Sidecar
+    description: "The exact origin of the sidecar is unclear, but it is thought to have been invented around the end of World War I in either London or Paris. The drink was directly named for the motorcycle attachment, which was very commonly used back then.\n\nLike the daiquiri, the sidecar evolved from the original sour formula, but sidecars are often drier than sours, combining liqueurs like curaçao with citrus. Sidecars are considered more of a challenge for bartenders because the proportion of ingredients is more difficult to balance for liqueurs of variable sweetness."
+    instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled cocktail glass.'
+    garnish: null
+    source: 'https://iba-world.com/sidecar/'
+    glass: Cocktail
+    method: Shake
+    abv: 24.89
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Brandy
+    ingredients:
+        -
+            name: Cognac
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: 'Triple Sec'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 20
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/sidecar.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: SggKFwJFd3mmhHd8aQiZeKZ1J5B9BKYH
+-
+    name: 'Singapore Sling'
+    description: 'This long drink was developed sometime before 1915 by bartender Ngiam Tong Boon, who was working at the Long Bar in Raffles Hotel, Singapore. It was initially called the gin sling – a sling was originally a North American drink composed of spirit and water, sweetened and flavored.'
+    instructions: 'Pour all ingredients into a cocktail shaker filled with ice cubes. Shake well. Strain into Hurricane glass.'
+    garnish: 'Garnish with pineapple and maraschino cherry'
+    source: 'https://iba-world.com/singapore-sling/'
+    glass: Hurricane
+    method: Shake
+    abv: 8.98
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Gin
+        - Tiki
+    ingredients:
+        -
+            name: Gin
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Maraschino
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: Cointreau
+            amount: 7.5
+            units: ml
+            optional: false
+        -
+            name: Bénédictine
+            amount: 7.5
+            units: ml
+            optional: false
+        -
+            name: 'Pineapple juice'
+            amount: 120
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Grenadine Syrup'
+            amount: 10
+            units: ml
+            optional: false
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 1
+            units: dash
+            optional: false
+    images:
+        -
+            resource_path: cocktails/singapore-sling.jpg
+            copyright: 'The Spruce Eats'
+            placeholder_hash: sSgKFwioRYhveIiqiFmIeFZqODCLBYYF
+-
+    name: Southside
+    description: "Its origins are subject to speculation. It has been proposed that it gets its name from either the South Side district of the city of Chicago, Illinois, or from the Southside Sportsmen's Club on Long Island."
+    instructions: "Pour all ingredients into a cocktail shaker, shake well with ice, double-strain into chilled cocktail glass.\nNote:\nIf egg white is used shake vigorously."
+    garnish: 'Garnish with mint springs.'
+    source: 'https://iba-world.com/southside/'
+    glass: 'Nick and Nora'
+    method: Shake
+    abv: 18.29
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: Mint
+            amount: 5
+            units: sprigs
+            optional: false
+    images:
+        -
+            resource_path: cocktails/southside.jpg
+            copyright: 'Limoncello Kitchen'
+            placeholder_hash: cwgKDwJkdmZgZ3iHeYeIiIiKm/poUmAC
+-
+    name: 'Spicy Fifty'
+    description: null
+    instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, double-strain into chilled cocktail glass.'
+    garnish: 'Garnish with a red chilli pepper'
+    source: 'https://iba-world.com/spicy-fifty/'
+    glass: Cocktail
+    method: Shake
+    abv: 17.78
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Vodka
+    ingredients:
+        -
+            name: Vodka
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: 'Elderflower Cordial'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Honey Syrup'
+            amount: 10
+            units: ml
+            optional: false
+        -
+            name: 'Chilli Pepper'
+            amount: 2
+            units: slices
+            optional: false
+    images:
+        -
+            resource_path: cocktails/spicy-fifty.jpg
+            copyright: MixolopediA
+            placeholder_hash: ThgODwIFeYluhJeFeRepR5iHaPEGOI8G
+-
+    name: Spritz
+    description: "A Spritz is a Venetian wine-based cocktail, commonly served as an aperitif in Northeast Italy. It consists of prosecco, digestive bitters and soda water. The Spritz became widely popular outside of Italy around 2018 and Aperol Spritz was ranked as the world's ninth bestselling cocktail in 2019 by the website Drinks International."
+    instructions: "Build all ingredients into a wine glass filled with ice. Stir gently.\nNOTE:\nThere are other versions of the Spritz that use Campari, Cynar or Select instead of Aperol."
+    garnish: 'Garnish with a slice of orange.'
+    source: 'https://iba-world.com/spritz/'
+    glass: Wine
+    method: Build
+    abv: 10
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Wine
+    ingredients:
+        -
+            name: Prosecco
+            amount: 90
+            units: ml
+            optional: false
+        -
+            name: Aperol
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Club soda'
+            amount: 1
+            units: splash
+            optional: false
+    images:
+        -
+            resource_path: cocktails/spritz.jpg
+            copyright: 'Kitchen Swagger'
+            placeholder_hash: DjkKLwoDhJxPgbdveGiGOYiJN/O0U08I
+-
+    name: Stinger
+    description: "A Stinger is a duo cocktail made by adding crème de menthe to brandy (although recipes vary). The cocktail's origins can be traced to the United States in the 1890s, and the beverage remained widely popular in America until the 1970s. It was seen as a drink of the upper class, and has had a somewhat wide cultural impact."
+    instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into chilled martini cocktail glass.'
+    garnish: 'Optional mint leave.'
+    source: 'https://iba-world.com/stinger/'
+    glass: Cocktail
+    method: Stir
+    abv: 29.76
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Brandy
+    ingredients:
+        -
+            name: Cognac
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: 'Menthe Crème de Cacao'
+            amount: 20
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/stinger.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: 1SgSJwZmV3iAh4d5eSmHl3h4mVAHCYIA
+-
+    name: 'Suffering Bastard'
+    description: 'When ordered in Tiki bars the Suffering Bastard is often served in the uniquely shaped and eponymously named "Suffering Bastard Tiki mug", made to look like a squat fellow with a hangover holding his hands over the top of his head in pain.'
+    instructions: 'Pour all ingredients into a cocktail shaker except the ginger beer, shake well with ice, Pour unstrained into a Collins glass or in the original S. Bastard mug and top up with ginger beer.'
+    garnish: 'Garnish with mint springs and optionally an orange slice as well.'
+    source: 'https://iba-world.com/suffering-bastard/'
+    glass: Tiki
+    method: Shake
+    abv: 25.76
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Brandy
+        - Gin
+        - Tiki
+    ingredients:
+        -
+            name: Cognac
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Gin
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 2
+            units: dashes
+            optional: false
+        -
+            name: 'Ginger beer'
+            amount: 1
+            units: topup
+            optional: false
+    images:
+        -
+            resource_path: cocktails/suffering-bastard.jpg
+            copyright: 'Keg Works'
+            placeholder_hash: qxgKDwK5RZ5vh2etiHh2iHiHhwl6+3AI
+-
+    name: 'Tequila Sunrise'
+    description: 'The original tequila sunrise contained tequila, creme de cassis, lime juice, and soda water, and was served at the Arizona Biltmore Hotel where it was created by Gene Sulit in the 1930s or 1940s.'
+    instructions: 'Pour tequila and orange juice directly into highball glass filled with ice cubes. Add the grenadine syrup to create chromatic effect (sunrise), do not stir.'
+    garnish: 'Garnish with half orange slice or an orange zest'
+    source: 'https://iba-world.com/tequila-sunrise/'
+    glass: Highball
+    method: Build
+    abv: 10.91
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Tequila
+    ingredients:
+        -
+            name: Tequila
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Orange juice'
+            amount: 90
+            units: ml
+            optional: false
+        -
+            name: 'Grenadine Syrup'
+            amount: 15
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/tequila-sunrise.jpg
+            copyright: 'Homemade Hooplah'
+            placeholder_hash: JIsKTwzAqpiKenmaiViJyYZkOqCJBYYK
+-
+    name: Tipperary
+    description: null
+    instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into chilled martini cocktail glass.'
+    garnish: 'Garnish with a slice of orange.'
+    source: 'https://iba-world.com/tipperary/'
+    glass: Cocktail
+    method: Stir
+    abv: 30.42
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Whiskey
+    ingredients:
+        -
+            name: 'Irish whiskey'
+            amount: 50
+            units: ml
+            optional: false
+        -
+            name: 'Sweet Vermouth'
+            amount: 25
+            units: ml
+            optional: false
+        -
+            name: 'Green Chartreuse'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 2
+            units: dashes
+            optional: false
+    images:
+        -
+            resource_path: cocktails/tipperary.jpg
+            copyright: MixolopediA
+            placeholder_hash: TwgKFwI0t3Z/d3eHiHaHWJeImKBJCYsD
+-
+    name: 'Tommy’s Margarita'
+    description: "Tommy's margarita was conceived in San Francisco in 1990 by Julio Bermejo at his parents' restaurant called Tommy's (not to be confused with Tommy's Place in Juárez, Mexico. See Margarita Origin). Bermejo had been recently introduced to agave nectar as an ingredient, and, although it was still expensive at the time, he preferred to use it to enhance the agave flavor of the cocktail instead of using triple sec to highlight the citrus flavor in the original Margarita recipe. In 2008, it became the first venue specific cocktail to be added to the IBA manual."
+    instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled rocks glass filled with ice.'
+    garnish: 'Garnish with a lime slice.'
+    source: 'https://iba-world.com/tommys-margarita/'
+    glass: Lowball
+    method: Shake
+    abv: 16
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Whiskey
+    ingredients:
+        -
+            name: Tequila
+            amount: 60
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Agave Syrup'
+            amount: 30
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/tommys-margarita.jpg
+            copyright: 'Moody Mixologist'
+            placeholder_hash: VAgODwIWhqiEh3eQe2eHd4eJmS+ph4AP
+-
+    name: 'Trinidad Sour'
+    description: 'Unusually for a cocktail, it uses Angostura bitters as a base spirit rather than as a flavoring, the bitters being the single largest component of the drink in its IBA formulation.'
+    instructions: "1. Pour all ingredients into a cocktail shaker\n2. Shake well with ice\n3. Strain into a chilled cocktail glass."
+    garnish: null
+    source: 'https://iba-world.com/trinidad-sour/'
+    glass: Cocktail
+    method: Shake
+    abv: 18.57
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Sour
+    ingredients:
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Orgeat Syrup'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: 'Rye whiskey'
+            amount: 15
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/trinidad-sour.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: 8NcFDwSwBaaKr2WFY8hX6ClpCJDLBIkJ
+-
+    name: Tuxedo
+    description: 'Related to the martini, the Tuxedo has had many variations since its inception in the 1880s. The cocktail is named after the Tuxedo Club in Orange County, New York where it was first mixed. Tuxedo Park, the planned community where the club was built, is itself a derivation of the Lenape word tucseto. The form of menswear by the same name originated at the same country club around the same time.'
+    instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into chilled martini cocktail glass.'
+    garnish: 'Garnish with cherry and lemon zest'
+    source: 'https://iba-world.com/tuxedo/'
+    glass: Cocktail
+    method: Stir
+    abv: 24.14
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Dry Vermouth'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Maraschino
+            amount: 1
+            units: teaspoon
+            optional: false
+        -
+            name: Absinthe
+            amount: 2
+            units: teaspoon
+            optional: false
+        -
+            name: 'Orange bitters'
+            amount: 3
+            units: dashes
+            optional: false
+    images:
+        -
+            resource_path: cocktails/tuxedo.jpg
+            copyright: Punch
+            placeholder_hash: kQgKJwQJaIiLhXVmhkm2h4dohvJ3CG8J
+-
+    name: VE.N.TO
+    description: 'The Ve.n.to is one of the new additions to the IBA (International Bartender Association) cocktail list. And it is a truly unusual one, for it is the first-ever Grappa cocktail that made it into one of the lists of the IBA.'
+    instructions: "1. Pour all ingredients into the shaker.\n2. Shake vigorously with ice.\n3. Strain into a chilled small tumbler glass filled with ice.\n\nNotes:\nIf desired water can be replaced by chamomile infusion in the honey mix."
+    garnish: 'Garnish with lemon zest and white grapes.'
+    source: 'https://iba-world.com/ve-n-to/'
+    glass: Lowball
+    method: Shake
+    abv: 18.46
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+    ingredients:
+        -
+            name: Grappa
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 22.5
+            units: ml
+            optional: false
+        -
+            name: 'Honey Syrup'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Chamomile cordial'
+            amount: 15
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/vento.jpg
+            copyright: 'IBA World'
+            placeholder_hash: e/gFFwD4V2eHeHeKdphnqFd4iKBYao8K
+-
+    name: Vesper
+    description: 'The Vesper or Vesper Martini is a cocktail that was originally made of gin, vodka, and Kina Lillet. The formulations of its ingredients have changed since its original publication in print, and so some modern bartenders have created new versions which attempt to more closely mimic the original taste. The drink was invented and named by Ian Fleming in the 1953 James Bond novel Casino Royale.'
+    instructions: 'Pour all ingredients into a cocktail shaker filled with ice cubes. Shake and strain into a chilled cocktail glass.'
+    garnish: 'Lemon zest'
+    source: 'https://iba-world.com/vesper/'
+    glass: Cocktail
+    method: Shake
+    abv: 29.96
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: Vodka
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Lillet Blanc'
+            amount: 7.5
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/vesper.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: SwgKDwAlWHl+doVkjAa3Z4eICPeCoB4I
+-
+    name: 'Vieux Carrè'
+    description: 'It originated with Walter Bergeron, a bartender at New Orleans’ Carousel Bar in the Hotel Monteleone. The name is French for "old square”, in reference to the city''s French Quarter neighborhood.'
+    instructions: 'Pour all ingredients into mixing glass with ice cubes. Stir well. Strain into a chilled cocktail glass.'
+    garnish: 'Garnish with orange zest and maraschino cherry.'
+    source: 'https://iba-world.com/vieux-carre/'
+    glass: Cocktail
+    method: Stir
+    abv: 27.25
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Whiskey
+        - Brandy
+    ingredients:
+        -
+            name: 'Rye whiskey'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Cognac
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Sweet Vermouth'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Bénédictine
+            amount: 1
+            units: teaspoon
+            optional: false
+        -
+            name: 'Peychauds Bitters'
+            amount: 2
+            units: dashes
+            optional: false
+    images:
+        -
+            resource_path: cocktails/vieux-carre.jpg
+            copyright: 'Liquor.com / Tim Nusog'
+            placeholder_hash: mCgGHwQzepeNhoh5WgaZlYdWt2AoHHMA
+-
+    name: 'Whiskey Sour'
+    description: 'The oldest historical mention of a whiskey sour was published in the Wisconsin newspaper, Waukesha Plain Dealer, in 1870. With egg white included, it is sometimes called a Boston Sour; when the whiskey used is a Scotch, it is called a Scotch Sour. With a few bar spoons of full-bodied red wine floated on top, it is often referred to as a New York Sour. It is shaken and served either straight up or over ice.'
+    instructions: "1. Pour all ingredients into a cocktail shaker filled with ice.\n2. Shake well.\n3. Strain into cobbler glass.\n4. If served “On the rocks”, strain ingredients into an old fashioned glass filled with ice.\n\nNOTE:\nIf egg white is used shake little harder to release and incorporate the foam from the egg white."
+    garnish: 'Garnish with a half orange slice and maraschino cherry, optionally use orange zest.'
+    source: 'https://iba-world.com/whiskey-sour/'
+    glass: Lowball
+    method: Shake
+    abv: 16
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Whiskey
+        - Sour
+    ingredients:
+        -
+            name: 'Bourbon Whiskey'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 25
+            units: ml
+            optional: false
+        -
+            name: 'Simple Syrup'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: 'Egg White'
+            amount: 1
+            units: drops
+            optional: true
+    images:
+        -
+            resource_path: cocktails/whiskey-sour.jpg
+            copyright: VinePair
+            placeholder_hash: ZKcJNxBHiYh0cYeVf5eJeKV3aSAHNnAD
+-
+    name: 'White Lady'
+    description: "The original recipe for the White Lady was devised by Harry MacElhone in 1919 at Ciro's Club in London. He originally used crème de menthe, but replaced it with gin at Harry's New York Bar in Paris in 1929. According to the American Bar at the Savoy Hotel, the drink was created there by Harry Craddock."
+    instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into a chilled cocktail glass.'
+    garnish: null
+    source: 'https://iba-world.com/white-lady/'
+    glass: Coupe
+    method: Shake
+    abv: 24.89
+    tags:
+        - 'IBA Cocktail'
+        - 'The Unforgettables'
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 40
+            units: ml
+            optional: false
+        -
+            name: 'Triple Sec'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 20
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/white-lady.jpg
+            copyright: 'BBC Good Food'
+            placeholder_hash: XAgKBwA2hYdRZ4h6igeXiKd1CytDwDAG
+-
+    name: 'White Negroni'
+    description: "The White Negroni is a fabulous use of the gentian's powers, and a downright brilliant twist on a bonafide classic. All of the flavor components of a classic Negroni are present, but only the gin remains verbatim."
+    instructions: "1. Combine all ingredients with ice and stir\n2. Strain into a lowball glass"
+    garnish: 'Lemon peel'
+    source: 'https://tuxedono2.com/white-negroni-cocktail-recipe'
+    glass: Lowball
+    method: Stir
+    abv: 20
+    tags:
+        - Gin
+    ingredients:
+        -
+            name: Gin
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Suze
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Lillet Blanc'
+            amount: 30
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/white-negroni.jpg
+            copyright: 'A Couple Cooks'
+            placeholder_hash: URkKLwRKSfqAdnmGfRmYqYeJqQJ4aJAJ
+-
+    name: 'Yellow Bird'
+    description: null
+    instructions: 'Pour all ingredients into a cocktail shaker, shake well with ice, strain into chilled cocktail glass.'
+    garnish: null
+    source: 'https://iba-world.com/yellow-bird/'
+    glass: Coupe
+    method: Shake
+    abv: 25.97
+    tags:
+        - 'IBA Cocktail'
+        - 'New Era Drinks'
+        - Rum
+    ingredients:
+        -
+            name: 'White Rum'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: Galliano
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Triple Sec'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 15
+            units: ml
+            optional: false
+    images:
+        -
+            resource_path: cocktails/yellow-bird.jpg
+            copyright: 'Cooking to Entertain'
+            placeholder_hash: GOoJLwJViHiHiXhqigaXuGeFavY2CpMC
+-
+    name: Zombie
+    description: "It first appeared in late 1934, invented by Donn Beach at his Hollywood Don the Beachcomber restaurant. It was popularized on the East coast soon afterwards at the 1939 New York World's Fair."
+    instructions: "1. Add all ingredients into an electric blender with 170 grams of cracked ice.\n2. With pulse bottom blend for a few seconds.\n3. Serve in a tall tumbler glass.\n\nDonn’s Mix: 2 parts of fresh yellow grapefruit and 1 part of cinnamon syrup"
+    garnish: 'Garnish with mint leaves.'
+    source: 'https://iba-world.com/zombie/'
+    glass: Highball
+    method: Blend
+    abv: 23.41
+    tags:
+        - 'Contemporary Classics'
+        - 'IBA Cocktail'
+        - Rum
+        - Tiki
+    ingredients:
+        -
+            name: 'Jamaican Rum'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Gold Rum'
+            amount: 45
+            units: ml
+            optional: false
+        -
+            name: 'Demerara Rum'
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Lime juice'
+            amount: 20
+            units: ml
+            optional: false
+        -
+            name: Falernum
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: "Donn's Mix"
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: 'Grenadine Syrup'
+            amount: 1
+            units: tsp
+            optional: false
+        -
+            name: 'Angostura aromatic bitters'
+            amount: 1
+            units: dash
+            optional: false
+        -
+            name: Pernod
+            amount: 6
+            units: drops
+            optional: false
+    images:
+        -
+            resource_path: cocktails/zombie.jpg
+            copyright: 'Punch Drink'
+            placeholder_hash: rggKJwT2O5R5lnmGeXeIh3iImXB4CHEH
+-
+    name: 'Štrukani Pelin'
+    description: 'Štrukani pelinkovac (or štrukani pelin) is a somewhat novel Croatian drink that combines pelinkovac (traditional herbal liqueur) with lemon juice. In its basic form, the drink is made with pelinkovac that is poured into an ice-filled glass.'
+    instructions: "1. A lemon slice is then squeezed directly into the glass and mixed.\n\nThe amount of lemon juice can vary, sometimes resulting in a drink with equal amounts of both ingredients. More elaborate versions often add orange juice, citrus zest, or spices."
+    garnish: 'Lemon wedge'
+    source: 'https://www.journal.hr/lifestyle/gastro/antique-pelinkovac-strukani-pelin-jesenski-koktel-cool-pice/'
+    glass: Lowball
+    method: Build
+    abv: 9.19
+    tags: {  }
+    ingredients:
+        -
+            name: Pelinkovac
+            amount: 30
+            units: ml
+            optional: false
+        -
+            name: 'Lemon juice'
+            amount: 15
+            units: ml
+            optional: false
+        -
+            name: Tonic
+            amount: 50
+            units: ml
+            optional: true
+    images:
+        -
+            resource_path: cocktails/strukani-pelin.jpg
+            copyright: Tasteatlas
+            placeholder_hash: owgOHwbY2YePdpeZhSand1h2R6AZFpcA
+-
+    name: 'Final Ward'
+    instructions: |-
+        1. Combine all the ingredients into your cocktail shaker
+        2. Shake with ice for 12 seconds
+        3. Strain into a chilled cocktail glass
+    garnish: 'Cocktail cherry at the bottom of the glass'
+    description: |-
+        The Final Ward is perhaps the best-know riff on the classic Last Word and was created in 2007 by Phil Ward at Death &amp; Co. NYC. It is still comprised of equal parts with rye whiskey replacing the gin and fresh lemon juice in place of lime.
+
+        The Last Word is a gin-based prohibition-era cocktail which was rediscovered in 2004 and becoming a cult hit in the Seattle area.
+    source: 'https://stevethebartender.com.au/final-ward-cocktail-recipe-last-word-riff/'
+    tags:
+        - Citrusy
+        - Herbacious
+    glass: 'Nick and Nora'
+    method: Shake
+    abv: 25.4
+    images:
+        -
+            resource_path: cocktails/final-ward.jpg
+            copyright: 'The Educated Barfly'
+            placeholder_hash: 'nBgSFwJXmHhzdoh/eKeXWId4iUT4aIIP'
+    ingredients:
+        -
+            sort: 1
+            name: 'Rye whiskey'
+            amount: 22.5
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 2
+            name: 'Green Chartreuse'
+            amount: 22.5
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 3
+            name: Maraschino
+            amount: 22.5
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 4
+            name: 'Lemon juice'
+            amount: 22.5
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+-
+    name: 'Hugo Spritz'
+    instructions: 'Combine everything in wine glass with ice'
+    garnish: 'Mint sprig and lime wedge'
+    description: 'As reported by the magazines Mixology and Der Spiegel, the Hugo was conceived in 2005 by Naturns bar manager Roland Gruber (aka A.K.) at San Zeno Bar, as an alternative to Spritz Veneziano, and quickly spread beyond the borders of South Tyrol. Initially, the recipe provided for the use of lemon balm syrup, then in practice replaced by elderflower syrup, more easily available.'
+    source: 'https://en.wikipedia.org/wiki/Hugo_(cocktail)'
+    tags:
+        - Wine
+        - Spritz
+        - Summer
+    glass: Wine
+    method: Build
+    abv: 11.06
+    images:
+        -
+            resource_path: cocktails/hugo-spritz.jpg
+            copyright: 'sipandfeast'
+            placeholder_hash: '8ugJFwK8fonFg2iNZPiGltN5VYAUncAP'
+    ingredients:
+        -
+            sort: 1
+            name: Prosecco
+            amount: 90
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 2
+            name: St-Germain
+            amount: 60
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+            substitutes:
+                - 'Elderflower Cordial'
+        -
+            sort: 3
+            name: 'Club soda'
+            amount: 30
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+-
+    name: "Gin Basil Smash"
+    instructions: |-
+        1. Muddle basil leaves in a shaker tin.
+        2. Add remaining ingredients and ice and shake until chilled.
+        3. Double strain into a rocks glass filled with ice.
+        4. Garnish with basil leaves."
+    garnish: 'Basil leaves'
+    description: 'At Le Lion where the drink was created in 2008, 300 to 500 have been sold every week since its debut—22,000 a year—and the bar goes through more than 3,100 bottles of gin every twelve months. The drink is served at bars all across Germany—so much so that one bartender, griping about the amount of basil-muddling required to make it, once called it “Meyer’s curse.”'
+    source: 'https://punchdrink.com/recipes/gin-basil-smash/'
+    tags:
+        - Summer
+        - Bright
+        - Smash
+    glass: Lowball
+    method: Shake
+    abv: 17.07
+    images:
+        -
+            resource_path: cocktails/gin-basil-smash.jpg
+            copyright: 'Punch Staff'
+            placeholder_hash: EwkOFwQFeKmhiGdia4h4d3h3iAM85oAK
+    ingredients:
+        -
+            sort: 1
+            name: Gin
+            amount: 60
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 2
+            name: Basil
+            amount: 10
+            amount_max: null
+            note: null
+            units: leaves
+            optional: false
+        -
+            sort: 3
+            name: 'Lemon juice'
+            amount: 30
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 4
+            name: 'Simple Syrup'
+            amount: 22.5
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+-
+    name: 'Picante de la Casa'
+    instructions: |-
+        1. Cut a small piece of chili (about ¼ inch wide) and press with muddler in the shaker tin.
+        2. Hand clap the cilantro (to release the aroma, place the leaves or sprig in one hand and gently smack it with the other – this warms up the garnish slightly and starts to extract the oils before you use it), and drop in.
+        3. Add the rest of the ingredients, shake and fine strain into an ice-filled rocks glass (a short tumbler used for serving spirits).
+        4. Cut off the top end  the chili pepper and place – stem upwards – on top.
+    garnish: 'Top end (stem) of the chilli pepper'
+    description: |-
+        Lovers of the margarita, we have a treat for you here! The Picante de la Casa Cocktail, also called the Soho House Picante or Soho House Tonic, is a creation of the Soho House Club. That is a group of private members&#039; clubs with its origin in Soho in the Londoner West End. The cocktail, however, does not have its roots in England but in West Hollywood, USA. -Although, actually, it looks like it could be straight out of Mexico.
+
+        Soho House have shared the recipe for their picante de la casa. The picante is based on the much-loved margarita, but the picante cocktail ingredients includes chilli and coriander – to add a little extra heat and spice. It is revelatory – and a drink you’ll be coming back to.
+    source: 'https://www.sohohouse.com/en-us/house-notes/issue-4/house-favourites-how-to-make-a-picante'
+    tags:
+        - Spicy
+        - Margarita
+    glass: Lowball
+    method: Shake
+    abv: 17.07
+    images:
+        -
+            resource_path: cocktails/picante-de-la-casa.jpg
+            copyright: SohoHouse
+            placeholder_hash: '1/cJDwJOpoqdiHaKivdot4h5BJS3QGYO'
+    ingredients:
+        -
+            sort: 1
+            name: 'Tequila Reposado'
+            amount: 60
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 2
+            name: 'Agave Syrup'
+            amount: 22.5
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+            substitutes:
+                - 'Honey Syrup'
+        -
+            sort: 3
+            name: 'Lime juice'
+            amount: 30
+            amount_max: null
+            note: null
+            units: ml
+            optional: false
+        -
+            sort: 4
+            name: 'Chilli Pepper'
+            amount: 0.25
+            amount_max: null
+            note: null
+            units: inch
+            optional: false
+        -
+            sort: 5
+            name: Cilantro
+            amount: 10
+            amount_max: null
+            note: null
+            units: leaves
+            optional: false

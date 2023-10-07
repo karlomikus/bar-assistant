@@ -1,3 +1,82 @@
+# v3.0.0
+## Multiple bars
+- Bar Assistant now supports multiple bars.
+    - With this change a lot of endpoints now require to have bar reference, this comes in a form of `bar_id` query parameter
+    - Please refer to the new schema specification to see what endpoints now require `bar_id` query parameter
+- This update also changed a lot database table schemas, so I advise you to create a backup of your data before you update to v3
+- Users can be invited or join with invite code to specific bars
+
+## Improved user control
+- Users can have one of the following roles in a bar:
+    - Guest
+        - Rate and favorite cocktails
+        - Create personal collections
+    - General
+        - Everything as "Guest"
+        - Can add cocktails and ingredients
+    - Moderator
+        - Everything as "General"
+        - Can not modify bar
+        - Can not change user roles
+    - Admin
+        - Everything as "Moderator"
+        - Full access to all bar actions
+
+## Breaking changes
+- Updated a lot of schemas, refer to openapi specification to see the changes
+- Token response is now wrapped with `data` object like the rest of the endpoints endpoint
+- Removed POST `shelf/ingredients` endpoint
+- Removed POST `shelf/ingredients/{ingredientId}` endpoint
+    - **Upgrade guide**: Use `shelf/ingredients/batch-store` endpoint
+- Removed DELETE `shelf/ingredients/{ingredientId}` endpoint
+    - **Upgrade guide**: Use `shelf/ingredients/batch-delete` endpoint
+- Removed `notes` property from `Cocktail` schema
+    - **Upgrade guide**: Use `notes/` endpoint to get users notes
+- Removed `glasses/find` endpoint
+    - **Upgrade guide**: Use `glasses/` endpoint with `filter[name]` query string
+- Removed GET `/images` endpoint
+- Removed `bar:make-admin` command
+- Removed `bar:open` command
+- Removed `bar:refresh-user-search-keys` command
+- Removed `bar:import-zip` command
+- Removed `bar:export-zip` command
+- Removed `bar:scrape` command
+- Renamed `/user` endpoint to `/profile`
+- Renamed `user_id` filter on `cocktails` endpoint to `created_user_id`
+- Renamed `user_id` filter on `ingredients` endpoint to `created_user_id`
+- Ingredient category is not required anymore when adding an ingredient
+
+## New
+- Added `bars/` endpoint
+- Added GET `notes/` endpoint
+- Stats now have users top 5 favorite ingredients, calculated from favorite cocktails
+- Importing cocktails from collection now has actions on how to handle duplicates
+- Added `bar:backup {barId}` command
+- Cocktail ingredient now supports variable amounts, you can add max amount with `amount_max` attribute
+- Cocktail ingredient now can have a note attached
+- Cocktail substitutes now have the following attributes: `ingredient_id`, `amount`, `amount_max`, `units`
+- Added options on how to handle duplicated recipes when importing collection
+    - Duplicates are matched by recipe name
+    - Possible actions:
+        - Do nothing
+        - Overwrite duplicated
+        - Skip duplicates
+- Added `average_rating_min` filter to `cocktails` endpoint
+- Added `average_rating_max` filter to `cocktails` endpoint
+
+## Changes
+- Default database filename changed to `database.ba3.sqlite`
+- Optimized base images of cocktails and ingredients
+- Cocktail and ingredient images are now categorized in folders by bar id
+- Merged all migrations to a single one
+- Meilisearch API keys are now generating tenant tokens
+- Changed the way slugs are generated, they now include bar id
+- Changed what attributes are searchable
+    - Removed from `cocktails` index: `garnish`, `image_hash`, `main_image_id`, `user_id`, `glass`, `average_rating`, `main_ingredient_name`, `calculated_abv`, `method`, `has_public_link`
+    - Added to `cocktails` index: `bar_id`
+    - Removed from `ingredients` index: `strength_abv`, `color`
+    - Added to `ingredients` index: `bar_id`
+
 # v2.6.0
 ## New
 - Added export options for version 3: `php artisan bar:export-zip --version3`
@@ -155,6 +234,7 @@
 - Updated `UserIngredient` schema
 - Updated `Ingredient` schema
     - Moved `parent_ingredient_id` to `parent_ingredient` object, accessible via `parent_ingredient.id`
+- Removed `DISABLE_LOGIN` env variable
 
 ## New
 - Meilisearch is no longer mandatory dependency for API to work
@@ -165,6 +245,8 @@
     - This will remove the need to authenticate with token to access the api
 - Added GET `/images` endpoint
 - `ImageRequest` schema now supports `image_url` parameter to upload image from URL
+- Added `MAX_USER_BARS` env variable, defaults to 50
+    - This limits how many bars can a single user create
 
 ## Fixes
 - Fixed openapi swagger docs url

@@ -30,6 +30,7 @@ class UpdateUserRequest extends FormRequest
             'email' => ['required', Rule::unique('users')->ignore($this->user()->id)],
             'name' => 'required',
             'password' => 'confirmed|nullable',
+            'is_shelf_public' => 'boolean',
         ];
     }
 }

@@ -18,20 +18,23 @@ class CocktailContractTest extends ContractTestCase
         $this->actingAs(
             User::factory()->create()
         );
+
+        $this->setupBar();
     }
 
-    public function test_contract_cocktails()
+    public function test_contract_cocktails(): void
     {
-        Cocktail::factory()->count(10)->create();
+        Cocktail::factory()->count(10)->create(['bar_id' => 1]);
 
-        $response = $this->getJson('/api/cocktails');
+        $response = $this->getJson('/api/cocktails?bar_id=1');
         $response->assertValidResponse(200);
     }
 
-    public function test_contract_cocktail_show()
+    public function test_contract_cocktail_show(): void
     {
         $cocktail = Cocktail::factory()->create([
-            'name' => 'Test Case'
+            'name' => 'Test Case',
+            'bar_id' => 1
         ]);
 
         $response = $this->getJson('/api/cocktails/' . $cocktail->id);
@@ -44,23 +47,23 @@ class CocktailContractTest extends ContractTestCase
         $response->assertValidResponse(200);
     }
 
-    public function test_contract_cocktail_create()
+    public function test_contract_cocktail_create(): void
     {
-        $response = $this->postJson('/api/cocktails', [
+        $response = $this->postJson('/api/cocktails?bar_id=1', [
             'name' => "Cocktail name",
             'instructions' => "1. Step\n2. Step"
         ]);
         $response->assertValidRequest()->assertValidResponse(201);
 
-        $response = $this->postJson('/api/cocktails', [
+        $response = $this->postJson('/api/cocktails?bar_id=1', [
             'instructions' => "1. Step\n2. Step"
         ]);
         $response->assertValidRequest()->assertValidResponse(422);
     }
 
-    public function test_contract_cocktail_update()
+    public function test_contract_cocktail_update(): void
     {
-        $cocktail = Cocktail::factory()->create();
+        $cocktail = Cocktail::factory()->create(['bar_id' => 1, 'created_user_id' => 1]);
 
         $response = $this->putJson('/api/cocktails/' . $cocktail->id, [
             'name' => "Cocktail name",
@@ -74,9 +77,9 @@ class CocktailContractTest extends ContractTestCase
         $response->assertValidRequest()->assertValidResponse(422);
     }
 
-    public function test_contract_cocktail_delete()
+    public function test_contract_cocktail_delete(): void
     {
-        $cocktail = Cocktail::factory()->create();
+        $cocktail = Cocktail::factory()->create(['bar_id' => 1, 'created_user_id' => 1]);
 
         $response = $this->deleteJson('/api/cocktails/' . $cocktail->id);
         $response->assertValidResponse(204);

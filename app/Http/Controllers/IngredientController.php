@@ -16,13 +16,14 @@ use Kami\Cocktail\Http\Requests\IngredientRequest;
 use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Filters\IngredientQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Kami\Cocktail\DataObjects\Ingredient\Ingredient as IngredientDTO;
 
 class IngredientController extends Controller
 {
     public function index(IngredientService $ingredientService, Request $request): JsonResource
     {
         try {
-            $ingredients = (new IngredientQueryFilter($ingredientService))->paginate($request->get('per_page', 50));
+            $ingredients = (new IngredientQueryFilter($ingredientService))->paginate($request->get('per_page', 50))->withQueryString();
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }
@@ -30,29 +31,41 @@ class IngredientController extends Controller
         return IngredientResource::collection($ingredients);
     }
 
-    public function show(int|string $id): JsonResource
+    public function show(Request $request, int|string $id): JsonResource
     {
-        $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient')
+        $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient', 'createdUser', 'updatedUser')
+            ->withCount('cocktails')
             ->where('id', $id)
             ->orWhere('slug', $id)
             ->firstOrFail();
+
+        if ($request->user()->cannot('show', $ingredient)) {
+            abort(403);
+        }
 
         return new IngredientResource($ingredient);
     }
 
     public function store(IngredientService $ingredientService, IngredientRequest $request): JsonResponse
     {
-        $ingredient = $ingredientService->createIngredient(
+        if ($request->user()->cannot('create', Ingredient::class)) {
+            abort(403);
+        }
+
+        $ingredientDTO = new IngredientDTO(
+            bar()->id,
             $request->post('name'),
-            (int) $request->post('ingredient_category_id'),
             auth()->user()->id,
+            $request->post('ingredient_category_id') ? (int) $request->post('ingredient_category_id') : null,
             floatval($request->post('strength', '0')),
             $request->post('description'),
             $request->post('origin'),
             $request->post('color'),
             $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null,
-            $request->post('images', [])
+            $request->post('images', []),
         );
+
+        $ingredient = $ingredientService->createIngredient($ingredientDTO);
 
         return (new IngredientResource($ingredient))
             ->response()
@@ -68,18 +81,20 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $ingredient = $ingredientService->updateIngredient(
-            $id,
+        $ingredientDTO = new IngredientDTO(
+            $ingredient->bar_id,
             $request->post('name'),
-            (int) $request->post('ingredient_category_id'),
             auth()->user()->id,
+            $request->post('ingredient_category_id') ? (int) $request->post('ingredient_category_id') : null,
             floatval($request->post('strength', '0')),
             $request->post('description'),
             $request->post('origin'),
             $request->post('color'),
             $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null,
-            $request->post('images', [])
+            $request->post('images', []),
         );
+
+        $ingredient = $ingredientService->updateIngredient($id, $ingredientDTO);
 
         return new IngredientResource($ingredient);
     }
@@ -99,15 +114,21 @@ class IngredientController extends Controller
 
     public function extra(Request $request, CocktailService $cocktailService, int $id): JsonResponse
     {
-        $currentShelfIngredients = $request->user()->shelfIngredients->pluck('ingredient_id');
-        $currentShelfCocktails = $cocktailService->getCocktailsByUserIngredients($currentShelfIngredients->toArray())->values();
-        $extraShelfCocktails = $cocktailService->getCocktailsByUserIngredients($currentShelfIngredients->push($id)->toArray())->values();
+        $ingredient = Ingredient::findOrFail($id);
+
+        if ($request->user()->cannot('show', $ingredient)) {
+            abort(403);
+        }
+
+        $currentShelfIngredients = $request->user()->getShelfIngredients($ingredient->bar_id)->pluck('ingredient_id');
+        $currentShelfCocktails = $cocktailService->getCocktailsByIngredients($currentShelfIngredients->toArray())->values();
+        $extraShelfCocktails = $cocktailService->getCocktailsByIngredients($currentShelfIngredients->push($ingredient->id)->toArray())->values();
 
         if ($currentShelfCocktails->count() === $extraShelfCocktails->count()) {
             return response()->json(['data' => []]);
         }
 
-        $extraCocktails = Cocktail::whereIn('id', $extraShelfCocktails->diff($currentShelfCocktails)->values())->get();
+        $extraCocktails = Cocktail::whereIn('id', $extraShelfCocktails->diff($currentShelfCocktails)->values())->where('bar_id', '=', $ingredient->bar_id)->get();
 
         return response()->json([
             'data' => $extraCocktails->map(function (Cocktail $cocktail) {

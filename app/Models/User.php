@@ -6,7 +6,7 @@ namespace Kami\Cocktail\Models;
 
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -45,44 +45,86 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected static function booted(): void
+    /**
+     * @return Collection<int, UserIngredient>
+     */
+    public function getShelfIngredients(int $barId): Collection
     {
-        static::addGlobalScope('realUsers', function (Builder $builder) {
-            $builder->where('id', '>', 1);
-        });
+        return $this->getBarMembership($barId)?->userIngredients ?? new Collection();
     }
 
     /**
-     * @return HasMany<UserIngredient>
+     * @return HasMany<BarMembership>
      */
-    public function shelfIngredients(): HasMany
+    public function memberships(): HasMany
     {
-        return $this->hasMany(UserIngredient::class);
+        return $this->hasMany(BarMembership::class);
+    }
+
+    public function joinBarAs(Bar $bar, UserRoleEnum $role = UserRoleEnum::General): BarMembership
+    {
+        $existingMembership = $this->getBarMembership($bar->id);
+        if ($existingMembership !== null) {
+            return $existingMembership;
+        }
+
+        $barMemberShip = new BarMembership();
+        $barMemberShip->bar_id = $bar->id;
+        $barMemberShip->user_role_id = $role->value;
+
+        $this->memberships()->save($barMemberShip);
+
+        return $barMemberShip;
+    }
+
+    public function leaveBar(Bar $bar): void
+    {
+        $this->getBarMembership($bar->id)->delete();
     }
 
     /**
-     * @return HasMany<CocktailFavorite>
+     * @return HasMany<Bar>
      */
-    public function favorites(): HasMany
+    public function ownedBars(): HasMany
     {
-        return $this->hasMany(CocktailFavorite::class);
+        return $this->hasMany(Bar::class, 'created_user_id');
     }
 
-    /**
-     * @return HasMany<UserShoppingList>
-     */
-    public function shoppingList(): HasMany
+    public function getBarMembership(int $barId): ?BarMembership
     {
-        return $this->hasMany(UserShoppingList::class);
+        return $this->memberships->where('bar_id', $barId)->first();
     }
 
-    public function isAdmin(): bool
+    public function hasBarMembership(int $barId): bool
     {
-        return (bool) $this->is_admin;
+        return $this->getBarMembership($barId)?->id !== null;
     }
 
-    public function isUser(): bool
+    public function isBarAdmin(int $barId): bool
     {
-        return !$this->isAdmin();
+        return $this->hasBarRole($barId, UserRoleEnum::Admin);
+    }
+
+    public function isBarModerator(int $barId): bool
+    {
+        return $this->hasBarRole($barId, UserRoleEnum::Moderator);
+    }
+
+    public function isBarGeneral(int $barId): bool
+    {
+        return $this->hasBarRole($barId, UserRoleEnum::General);
+    }
+
+    public function isBarGuest(int $barId): bool
+    {
+        return $this->hasBarRole($barId, UserRoleEnum::Guest);
+    }
+
+    private function hasBarRole(int $barId, UserRoleEnum $role): bool
+    {
+        return $this->memberships
+            ->where('bar_id', $barId)
+            ->where('user_role_id', $role->value)
+            ->count() > 0;
     }
 }
