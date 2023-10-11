@@ -4,26 +4,26 @@ namespace Kami\Cocktail\Console\Commands;
 
 use Throwable;
 use Illuminate\Console\Command;
+use Kami\Cocktail\Export\BarToZip;
 use Illuminate\Support\Facades\Log;
-use Kami\Cocktail\Export\FullBackupToZip;
 
-class BarFullBackup extends Command
+class BarExport extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'bar:full-backup';
+    protected $signature = 'bar:export {barId*}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a .zip file with the full backup of your files';
+    protected $description = 'Export bar data. Can process multiple bar ids. Exports bar data as .json and all the images.';
 
-    public function __construct(private FullBackupToZip $exporter)
+    public function __construct(private BarToZip $exporter)
     {
         parent::__construct();
     }
@@ -33,8 +33,10 @@ class BarFullBackup extends Command
      */
     public function handle(): int
     {
+        $barIds = $this->argument('barId');
+
         try {
-            $filename = $this->exporter->process();
+            $filename = $this->exporter->process($barIds);
         } catch (Throwable $e) {
             $this->output->error('Unable to create a data export file.');
             Log::error($e->getMessage());
@@ -42,7 +44,7 @@ class BarFullBackup extends Command
             return Command::FAILURE;
         }
 
-        $this->output->success('Backup exported to file: ' . $filename);
+        $this->output->success('Data exported to file: ' . $filename);
 
         return Command::SUCCESS;
     }

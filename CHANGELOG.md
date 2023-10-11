@@ -1,3 +1,9 @@
+# v3.1.0
+## New
+- Added `bar:export` command
+    - You can use this command to export all the data from specific bars
+    - For example: `php artisan bar:export 5 7 9` will export all data from bars with id: 5, 7, 9
+
 # v3.0.0
 ## Multiple bars
 - Bar Assistant now supports multiple bars.
