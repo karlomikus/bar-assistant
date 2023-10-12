@@ -116,7 +116,7 @@ class BarController extends Controller
     {
         $barToJoin = Bar::where('invite_code', $request->post('invite_code'))->firstOrFail();
 
-        $request->user()->joinBarAs($barToJoin, UserRoleEnum::General);
+        $request->user()->joinBarAs($barToJoin, UserRoleEnum::Guest);
 
         return new BarResource($barToJoin);
     }

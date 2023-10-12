@@ -4,6 +4,13 @@
     - You can use this command to export all the data from specific bars
     - For example: `php artisan bar:export 5 7 9` will export all data from bars with id: 5, 7, 9
 
+# v3.0.1
+## Fixes
+- Fixed role not updating on user save
+
+## Changes
+- Joining a bar will default to "Guest" role instead of "General"
+
 # v3.0.0
 ## Multiple bars
 - Bar Assistant now supports multiple bars.
