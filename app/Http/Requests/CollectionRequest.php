@@ -27,7 +27,8 @@ class CollectionRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'cocktails' => 'array'
+            'cocktails' => 'array',
+            'share_in_bar' => 'boolean',
         ];
     }
 }
