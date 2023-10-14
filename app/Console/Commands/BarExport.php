@@ -14,14 +14,14 @@ class BarExport extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:export {barId*}';
+    protected $signature = 'bar:export-zip {barId*}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Export bar data. Can process multiple bar ids. Exports bar data as .json and all the images.';
+    protected $description = 'Exports bar data and compresses them to a zip file. Can process multiple bar ids';
 
     public function __construct(private BarToZip $exporter)
     {

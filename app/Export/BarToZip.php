@@ -57,7 +57,8 @@ class BarToZip
                 ->get()
                 ->toArray(),
             'users' => DB::table('users')
-                ->select('users.id', 'users.email', 'users.email_verified_at', 'users.created_at', 'users.updated_at')
+                ->select('users.*')
+                ->distinct()
                 ->join('bar_memberships', 'bar_memberships.user_id', '=', 'users.id')
                 ->whereIn('bar_memberships.bar_id', $barIds)
                 ->get()
