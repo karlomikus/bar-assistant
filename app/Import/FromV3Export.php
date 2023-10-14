@@ -44,13 +44,17 @@ class FromV3Export
         Log::info(sprintf('Starting import from version "%s"', $importVersion));
 
         // Clean images
-        // $disk = Storage::disk('bar-assistant/uploads');
-        // Clean tokens
-        // Clean password resets
+        File::cleanDirectory(storage_path('bar-assistant/uploads/cocktails'));
+        File::cleanDirectory(storage_path('bar-assistant/uploads/ingredients'));
+        File::cleanDirectory(storage_path('bar-assistant/uploads/temp'));
 
         $importData = json_decode(file_get_contents($disk->path('tables.json')), true);
 
         DB::statement('PRAGMA foreign_keys = OFF');
+
+        DB::table('personal_access_tokens')->truncate();
+        DB::table('password_resets')->truncate();
+
         foreach ($importData as $tableName => $tableData) {
             DB::table($tableName)->truncate();
 
@@ -64,7 +68,16 @@ class FromV3Export
 
             DB::table($tableName)->insert($tableData);
         }
+
         DB::statement('PRAGMA foreign_keys = ON');
+
+        foreach ($disk->directories('uploads/cocktails') as $barIdDir) {
+            File::copyDirectory($disk->path($barIdDir), storage_path('bar-assistant/' . $barIdDir));
+        }
+
+        foreach ($disk->directories('uploads/ingredients') as $barIdDir) {
+            File::copyDirectory($disk->path($barIdDir), storage_path('bar-assistant/' . $barIdDir));
+        }
 
         $disk->deleteDirectory('/');
     }

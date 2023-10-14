@@ -1,8 +1,13 @@
 # v3.1.0
 ## New
-- Added `bar:export` command
+- Added `bar:export-zip` command
     - You can use this command to export all the data from specific bars
     - For example: `php artisan bar:export 5 7 9` will export all data from bars with id: 5, 7, 9
+- Added `bar:import-zip` command
+
+# v3.0.2
+## Fixes
+- Added missing properties to public recipe (ingredient note and substitute amounts)
 
 # v3.0.1
 ## Fixes

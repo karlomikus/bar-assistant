@@ -2,8 +2,10 @@
 
 namespace Kami\Cocktail\Console\Commands;
 
+use Throwable;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Import\FromV3Export;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
 class BarImportFromV3Export extends Command
@@ -53,7 +55,7 @@ class BarImportFromV3Export extends Command
             }
 
             $zipFilePath = $this->choice(
-                'What is the filename that you want to import?',
+                'Select a filename that you want to import?',
                 $existingZipFiles,
             );
 
@@ -72,7 +74,18 @@ class BarImportFromV3Export extends Command
             return Command::SUCCESS;
         }
 
-        $this->exporter->process($zipFilePath);
+        try {
+            $this->exporter->process($zipFilePath);
+        } catch (Throwable $e) {
+            $this->error($e->getMessage());
+
+            return Command::FAILURE;
+        }
+
+        Artisan::call('bar:refresh-search');
+        Artisan::call('cache:clear');
+
+        $this->info('Importing finished!');
 
         return Command::SUCCESS;
     }
