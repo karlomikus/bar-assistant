@@ -59,6 +59,14 @@ class Cocktail extends Model implements UploadableInterface
     }
 
     /**
+     * @return BelongsTo<Bar, Cocktail>
+     */
+    public function bar(): BelongsTo
+    {
+        return $this->belongsTo(Bar::class);
+    }
+
+    /**
      * @return HasMany<CocktailIngredient>
      */
     public function ingredients(): HasMany

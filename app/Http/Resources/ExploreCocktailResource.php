@@ -20,6 +20,10 @@ class ExploreCocktailResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'bar' => [
+                'name' => $this->bar->name,
+                'subtitle' => $this->bar->subtitle,
+            ],
             'name' => $this->name,
             'instructions' => e($this->instructions),
             'garnish' => e($this->garnish),
@@ -39,7 +43,15 @@ class ExploreCocktailResource extends JsonResource
                     'amount_max' => $cocktailIngredient->amount_max,
                     'units' => $cocktailIngredient->units,
                     'optional' => (bool) $cocktailIngredient->optional,
-                    'substitutes' => $cocktailIngredient->substitutes->pluck('ingredient.name')
+                    'note' => $cocktailIngredient->note,
+                    'substitutes' => $cocktailIngredient->substitutes->map(function ($substitute) {
+                        return [
+                            'name' => $substitute->ingredient->name,
+                            'amount' => $substitute->amount,
+                            'amount_max' => $substitute->amount_max,
+                            'units' => $substitute->units,
+                        ];
+                    })
                 ];
             }),
         ];
