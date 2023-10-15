@@ -32,10 +32,10 @@
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^6.1",
+        "nunomaduro/collision": "^7.0",
         "nunomaduro/larastan": "^2.0",
         "phpstan/phpstan": "^1.8",
-        "phpunit/phpunit": "^9.5.10",
+        "phpunit/phpunit": "^10.4.0",
         "spatie/laravel-ignition": "^2.0",
         "symplify/easy-coding-standard": "^11.1"
     },
