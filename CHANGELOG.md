@@ -1,3 +1,11 @@
+# v3.0.3
+## Fixes
+- Fix cocktail share endpoint not working if ingredient does not have category
+
+# v3.0.2
+## Fixes
+- Added missing properties to public recipe (ingredient note and substitute amounts)
+
 # v3.0.1
 ## Fixes
 - Fixed role not updating on user save
