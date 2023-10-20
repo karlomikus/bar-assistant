@@ -29,10 +29,22 @@ final class CocktailQueryFilter extends QueryBuilder
                 AllowedFilter::partial('ingredient_name', 'ingredients.ingredient.name'),
                 AllowedFilter::exact('ingredient_id', 'ingredients.ingredient.id'),
                 AllowedFilter::exact('tag_id', 'tags.id'),
-                AllowedFilter::exact('collection_id', 'collections.id'),
                 AllowedFilter::exact('created_user_id'),
                 AllowedFilter::exact('glass_id'),
                 AllowedFilter::exact('cocktail_method_id'),
+                AllowedFilter::callback('collection_id', function ($query, $value) use ($barMembership) {
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
+
+                    $query->whereHas('collections', function ($query) use ($value, $barMembership) {
+                        $query->whereIn('collections.id', $value)
+                            ->join('bar_memberships', 'bar_memberships.id', '=', 'collections.bar_membership_id')
+                            ->where(function ($query) use ($barMembership) {
+                                $query->where('collections.bar_membership_id', $barMembership->id)->orWhere('is_bar_shared', true);
+                            });
+                    });
+                }),
                 AllowedFilter::callback('favorites', function ($query, $value) use ($barMembership) {
                     if ($value === true) {
                         $query->userFavorites($barMembership->id);

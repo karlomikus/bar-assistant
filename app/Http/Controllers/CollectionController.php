@@ -49,7 +49,7 @@ class CollectionController extends Controller
         $collection->name = $request->post('name');
         $collection->description = $request->post('description');
         $collection->bar_membership_id = $barMembership->id;
-        $collection->is_bar_shared = (bool) $request->post('share_in_bar');
+        $collection->is_bar_shared = (bool) $request->post('is_bar_shared');
         $collection->save();
 
         $cocktailIds = $request->post('cocktails', []);
@@ -79,7 +79,7 @@ class CollectionController extends Controller
         $collection->name = $request->post('name');
         $collection->description = $request->post('description');
         $collection->updated_at = now();
-        $collection->is_bar_shared = (bool) $request->post('share_in_bar');
+        $collection->is_bar_shared = (bool) $request->post('is_bar_shared');
         $collection->save();
 
         return new CollectionResource($collection);

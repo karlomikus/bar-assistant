@@ -13,6 +13,10 @@ class Collection extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'is_bar_shared' => 'boolean',
+    ];
+
     /**
      * @return BelongsTo<User, Collection>
      */
