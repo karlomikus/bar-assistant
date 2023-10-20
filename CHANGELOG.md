@@ -5,6 +5,10 @@
     - For example: `php artisan bar:export 5 7 9` will export all data from bars with id: 5, 7, 9
 - Added `bar:import-zip` command
 
+# v3.0.3
+## Fixes
+- Fix cocktail share endpoint not working if ingredient does not have category
+
 # v3.0.2
 ## Fixes
 - Added missing properties to public recipe (ingredient note and substitute amounts)
