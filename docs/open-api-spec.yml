@@ -1971,6 +1971,26 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+  /collections/shared:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
+    get:
+      tags:
+        - "Collections"
+      summary: List shared collections
+      operationId: getSharedCollections
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CollectionResponse'
   /collections/{id}:
     parameters:
       - in: path

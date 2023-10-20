@@ -26,6 +26,19 @@ class CollectionController extends Controller
         return CollectionResource::collection($collections);
     }
 
+    public function shared(): JsonResource
+    {
+        $collections = CocktailCollection::where('is_bar_shared', true)
+            ->select('collections.*')
+            ->join('bar_memberships', 'bar_memberships.id', '=', 'collections.bar_membership_id')
+            ->where('bar_memberships.bar_id', bar()->id)
+            ->orderBy('name')
+            ->with('cocktails', 'barMembership.user')
+            ->get();
+
+        return CollectionResource::collection($collections);
+    }
+
     public function show(Request $request, int $id): JsonResource
     {
         $collection = CocktailCollection::findOrFail($id);

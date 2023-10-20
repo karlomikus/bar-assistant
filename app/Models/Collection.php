@@ -18,14 +18,6 @@ class Collection extends Model
     ];
 
     /**
-     * @return BelongsTo<User, Collection>
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
      * @return BelongsToMany<Cocktail>
      */
     public function cocktails(): BelongsToMany
