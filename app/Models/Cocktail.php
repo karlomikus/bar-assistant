@@ -261,7 +261,7 @@ class Cocktail extends Model implements UploadableInterface
                     'note' => $cIngredient->note,
                     'units' => $cIngredient->units,
                     'optional' => (bool) $cIngredient->optional,
-                    'category' => $cIngredient->ingredient->category->name,
+                    'category' => $cIngredient->ingredient?->category->name ?? null,
                     'description' => $cIngredient->ingredient->description,
                     'strength' => $cIngredient->ingredient->strength,
                     'origin' => $cIngredient->ingredient->origin,
