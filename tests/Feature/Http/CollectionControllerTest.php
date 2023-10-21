@@ -189,4 +189,27 @@ class CollectionControllerTest extends TestCase
                 ->etc()
         );
     }
+
+    public function test_list_shared_collections_response(): void
+    {
+        $this->setupBar();
+
+        Collection::factory()->count(5)->create([
+            'bar_membership_id' => 1,
+        ]);
+        Collection::factory()->count(3)->create([
+            'bar_membership_id' => 1,
+            'is_bar_shared' => true
+        ]);
+
+        $response = $this->getJson('/api/collections/shared?bar_id=1');
+
+        $response->assertOk();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data', 3)
+                ->etc()
+        );
+    }
 }

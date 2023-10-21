@@ -43,6 +43,7 @@ class FromArrayTest extends TestCase
         $method = CocktailMethod::factory()->create([
             'name' => 'Method name',
             'bar_id' => $bar->id,
+            'dilution_percentage' => 10
         ]);
 
         $glass = Glass::factory()->create([
@@ -68,7 +69,7 @@ class FromArrayTest extends TestCase
         $this->assertSame('Description data', $cocktail->description);
         $this->assertSame('Garnish data', $cocktail->garnish);
         $this->assertSame('Laravel', $cocktail->source);
-        $this->assertSame(31.45, $cocktail->abv);
+        $this->assertSame(41.17, $cocktail->abv);
         $this->assertSame($method->id, $cocktail->cocktail_method_id);
         $this->assertSame($glass->id, $cocktail->glass_id);
         $this->assertSame('Tag 1', $cocktail->tags->first()->name);
