@@ -20,14 +20,14 @@ class BarMaintenance extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:maintenance';
+    protected $signature = 'bar:maintenance {barId}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Optimize application';
+    protected $description = 'This will remove unused images, run image compression to save space, fix ingredient sort and refresh cache.';
 
     /**
      * Execute the console command.
@@ -36,38 +36,42 @@ class BarMaintenance extends Command
      */
     public function handle()
     {
-        Cocktail::with('ingredients.ingredient')->chunk(50, function ($cocktails) {
-            foreach ($cocktails as $cocktail) {
-                $calculatedAbv = $cocktail->getABV();
-                $cocktail->abv = $calculatedAbv;
-                $cocktail->save();
-            }
-        });
+        $barId = (int) $this->argument('barId');
+
+        // Cocktail::with('ingredients.ingredient')->chunk(50, function ($cocktails) {
+        //     foreach ($cocktails as $cocktail) {
+        //         $calculatedAbv = $cocktail->getABV();
+        //         $cocktail->abv = $calculatedAbv;
+        //         $cocktail->save();
+        //     }
+        // });
 
         // Fix sort
         $this->info('Fixing cocktail ingredients sort order...');
-        $this->fixSort();
+        $this->fixSort($barId);
 
         // Clear unused images
-        $this->info('Checking unused images...');
-        // $this->deleteUnusedImages();
+        // $this->info('Checking unused images...');
+        // $this->deleteUnusedImages($barId);
 
         // Optimize images
-        $this->info('Optimizing images...');
+        // $this->info('Optimizing images...');
         // $this->optimizeImages();
 
         // Update indexes
+        $this->info('Updating search indexes...');
         Artisan::call('bar:refresh-search --clear');
 
         // Clear cache
+        $this->info('Clearing cache...');
         Artisan::call('cache:clear');
 
         return Command::SUCCESS;
     }
 
-    private function fixSort(): void
+    private function fixSort(int $barId): void
     {
-        DB::table('cocktails')->orderBy('id')->lazy()->each(function ($cocktail) {
+        DB::table('cocktails')->where('bar_id', $barId)->orderBy('id')->lazy()->each(function ($cocktail) {
             $ingredients = DB::table('cocktail_ingredients')->where('cocktail_id', $cocktail->id)->get();
             $i = 1;
             foreach ($ingredients as $ci) {
@@ -77,7 +81,7 @@ class BarMaintenance extends Command
         });
     }
 
-    // private function deleteUnusedImages(): void
+    // private function deleteUnusedImages(int $barId): void
     // {
     //     $baDisk = Storage::disk('bar-assistant');
     //     $images = Image::whereNull('imageable_id')->get();

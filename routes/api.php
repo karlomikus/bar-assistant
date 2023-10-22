@@ -173,6 +173,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::prefix('collections')->group(function() {
         Route::get('/', [CollectionController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/', [CollectionController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/shared', [CollectionController::class, 'shared'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [CollectionController::class, 'show'])->name('collection.show');
         Route::put('/{id}', [CollectionController::class, 'update']);
         Route::delete('/{id}', [CollectionController::class, 'delete']);

@@ -1,3 +1,13 @@
+# v3.1.0
+## New
+- Added `bar:export-zip` command
+    - You can use this command to export all the data from specific bars
+    - For example: `php artisan bar:export 5 7 9` will export all data from bars with id: 5, 7, 9
+- Added `bar:import-zip` command
+- Now you can share your collections with other bar members
+    - Added `/collections/shared` endpoint
+    - Added `is_bar_shared` property to collection request
+
 # v3.0.3
 ## Fixes
 - Fix cocktail share endpoint not working if ingredient does not have category

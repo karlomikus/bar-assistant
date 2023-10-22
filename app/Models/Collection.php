@@ -13,13 +13,9 @@ class Collection extends Model
 {
     use HasFactory;
 
-    /**
-     * @return BelongsTo<User, Collection>
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+    protected $casts = [
+        'is_bar_shared' => 'boolean',
+    ];
 
     /**
      * @return BelongsToMany<Cocktail>
