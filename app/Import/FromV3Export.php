@@ -39,10 +39,10 @@ class FromV3Export
         $importVersion = null;
         if ($meta = json_decode(file_get_contents($disk->path('_meta.json')))) {
             $importVersion = $meta->version;
-            $versionInt = (int) str_replace('.', '', $importVersion);
-            if ($versionInt < 300) { // TODO
-                throw new Exception('Can not import from this version!');
-            }
+            // $versionInt = (int) str_replace('.', '', $importVersion);
+            // if ($versionInt < 300) { // TODO
+            //     throw new Exception('Can not import from this version!');
+            // }
         }
 
         Log::info(sprintf('Starting import from version "%s"', $importVersion));
