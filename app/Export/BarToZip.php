@@ -46,13 +46,13 @@ class BarToZip
                 ->toArray(),
             'user_ingredients' => DB::table('user_ingredients')
                 ->select('user_ingredients.*')
-                ->join('bar_memberships', 'user_ingredients.bar_membership_id', '=', 'bar_memberships.bar_id')
+                ->join('bar_memberships', 'user_ingredients.bar_membership_id', '=', 'bar_memberships.id')
                 ->whereIn('bar_memberships.bar_id', $barIds)
                 ->get()
                 ->toArray(),
             'user_shopping_lists' => DB::table('user_shopping_lists')
                 ->select('user_shopping_lists.*')
-                ->join('bar_memberships', 'user_shopping_lists.bar_membership_id', '=', 'bar_memberships.bar_id')
+                ->join('bar_memberships', 'user_shopping_lists.bar_membership_id', '=', 'bar_memberships.id')
                 ->whereIn('bar_memberships.bar_id', $barIds)
                 ->get()
                 ->toArray(),
@@ -77,13 +77,13 @@ class BarToZip
                 ->toArray(),
             'cocktail_favorites' => DB::table('cocktail_favorites')
                 ->select('cocktail_favorites.*')
-                ->join('bar_memberships', 'cocktail_favorites.bar_membership_id', '=', 'bar_memberships.bar_id')
+                ->join('bar_memberships', 'cocktail_favorites.bar_membership_id', '=', 'bar_memberships.id')
                 ->whereIn('bar_memberships.bar_id', $barIds)
                 ->get()
                 ->toArray(),
             'collections' => DB::table('collections')
                 ->select('collections.*')
-                ->join('bar_memberships', 'collections.bar_membership_id', '=', 'bar_memberships.bar_id')
+                ->join('bar_memberships', 'collections.bar_membership_id', '=', 'bar_memberships.id')
                 ->whereIn('bar_memberships.bar_id', $barIds)
                 ->get()
                 ->toArray(),
