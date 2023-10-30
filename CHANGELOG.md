@@ -1,3 +1,7 @@
+# v3.1.1
+## Fixes
+- Fix joining wrong columns on bar export leading to import errors #218
+
 # v3.1.0
 ## New
 - Added `bar:export-zip` command
