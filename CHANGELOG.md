@@ -1,3 +1,13 @@
+# v3.2.0
+## New
+- Added `--with-passwords` and `--with-emails` options when exporting bar data via `bar:export-zip` command
+    - This will include emails and hashed passwords from `users` table in export data
+- Added `--recipes` (`-R`) option to export only recipe data
+
+## Changes
+- Passwords and emails are not included by default when exporting data
+- You can only import data from the same version of Bar Assistant that your exported data from
+
 # v3.1.1
 ## Fixes
 - Fix joining wrong columns on bar export leading to import errors #218

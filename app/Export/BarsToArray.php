@@ -4,20 +4,12 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Export;
 
-use ZipArchive;
 use Carbon\Carbon;
-use Illuminate\Log\LogManager;
 use Illuminate\Support\Facades\DB;
-use Kami\Cocktail\Exceptions\ExportException;
 
-class BarToZip
+class BarsToArray
 {
-    public function __construct(
-        private readonly LogManager $log,
-    ) {
-    }
-
-    public function process(array $barIds, ?string $exportPath = null): string
+    public function process(array $barIds, bool $ignorePasswords = true, bool $ignoreEmails = true, bool $onlyRecipeData = false): array
     {
         $version = config('bar-assistant.version');
         $meta = [
@@ -25,8 +17,6 @@ class BarToZip
             'date' => Carbon::now()->toJSON(),
             'called_from' => __CLASS__,
         ];
-
-        $zip = new ZipArchive();
 
         $export = [
             'bars' => DB::table('bars')->whereIn('id', $barIds)->get()->toArray(),
@@ -62,6 +52,17 @@ class BarToZip
                 ->join('bar_memberships', 'bar_memberships.user_id', '=', 'users.id')
                 ->whereIn('bar_memberships.bar_id', $barIds)
                 ->get()
+                ->map(function ($user) use ($ignorePasswords, $ignoreEmails) {
+                    if ($ignorePasswords) {
+                        $user->password = null;
+                    }
+
+                    if ($ignoreEmails) {
+                        $user->email = null;
+                    }
+
+                    return $user;
+                })
                 ->toArray(),
             'cocktail_tag' => DB::table('cocktail_tag')
                 ->select('cocktail_tag.*')
@@ -123,30 +124,17 @@ class BarToZip
             ),
         ];
 
-        $filename = storage_path(sprintf('bar-assistant/backups/%s_%s_%s.zip', Carbon::now()->format('Ymdhi'), 'bass', implode('-', $barIds)));
-        if ($exportPath) {
-            $filename = $exportPath;
+        if ($onlyRecipeData) {
+            unset($export['user_ingredients']);
+            unset($export['user_shopping_lists']);
+            unset($export['users']);
+            unset($export['cocktail_favorites']);
+            unset($export['collections']);
+            unset($export['ratings']);
+            unset($export['notes']);
+            unset($export['bar_memberships']);
         }
 
-        if ($zip->open($filename, ZipArchive::CREATE) !== true) {
-            $message = sprintf('Error creating zip archive with filepath "%s"', $filename);
-            $this->log->error($message);
-
-            throw new ExportException($message);
-        }
-
-        $zip->addGlob(storage_path('bar-assistant/uploads/*/{' . implode(',', $barIds) . '}/*'), GLOB_BRACE, ['remove_path' => storage_path('bar-assistant')]);
-
-        if ($metaContent = json_encode($meta)) {
-            $zip->addFromString('_meta.json', $metaContent);
-        }
-
-        if ($tables = json_encode($export)) {
-            $zip->addFromString('tables.json', $tables);
-        }
-
-        $zip->close();
-
-        return $filename;
+        return [$meta, $export];
     }
 }
