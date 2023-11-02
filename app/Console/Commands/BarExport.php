@@ -43,7 +43,7 @@ class BarExport extends Command
         $this->output->info('Starting export of bars: ' . implode(', ', $barIds));
 
         try {
-            [$meta, $export] = $this->exporter->process($barIds, !$this->option('with-passwords'), !$this->option('with-emails'));
+            [$meta, $export] = $this->exporter->process($barIds, !$this->option('with-passwords'), !$this->option('with-emails'), $this->option('recipes'));
         } catch (Throwable $e) {
             $this->output->error('Unable to create a data export file.');
             Log::error($e->getMessage());
