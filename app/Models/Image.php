@@ -49,4 +49,15 @@ class Image extends Model
 
         return ImageProcessor::make($disk->path($this->file_path));
     }
+
+    public function getPath(): string
+    {
+        $disk = Storage::disk('bar-assistant');
+
+        if ($disk->exists($this->file_path)) {
+            return $disk->path($this->file_path);
+        }
+
+        throw new \Exception('Image not found');
+    }
 }

@@ -8,8 +8,8 @@ use Throwable;
 use ZipArchive;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Kami\Cocktail\Export\BarsToArray;
 use Illuminate\Support\Facades\Log;
+use Kami\Cocktail\Export\BarsToArray;
 use Kami\Cocktail\Exceptions\ExportException;
 
 class BarExport extends Command

@@ -11,12 +11,12 @@ use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
-use Kami\Cocktail\Services\CocktailService;
+use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class StatsController extends Controller
 {
-    public function index(CocktailService $cocktailService, Request $request): JsonResponse
+    public function index(CocktailRepository $cocktailRepo, Request $request): JsonResponse
     {
         $bar = bar();
         $barMembership = $request->user()->getBarMembership(bar()->id);
@@ -57,7 +57,7 @@ class StatsController extends Controller
         $stats['total_cocktails'] = Cocktail::where('bar_id', $bar->id)->count();
         $stats['total_ingredients'] = Ingredient::where('bar_id', $bar->id)->count();
         $stats['total_favorited_cocktails'] = CocktailFavorite::where('bar_membership_id', $barMembership->id)->count();
-        $stats['total_shelf_cocktails'] = $cocktailService->getCocktailsByIngredients(
+        $stats['total_shelf_cocktails'] = $cocktailRepo->getCocktailsByIngredients(
             $barMembership->userIngredients->pluck('ingredient_id')->toArray()
         )->count();
         $stats['total_shelf_ingredients'] = UserIngredient::where('bar_membership_id', $barMembership->id)->count();

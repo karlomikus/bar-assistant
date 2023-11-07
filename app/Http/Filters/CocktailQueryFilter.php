@@ -9,14 +9,14 @@ use Kami\Cocktail\Models\Cocktail;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Kami\Cocktail\Services\CocktailService;
+use Kami\Cocktail\Repository\CocktailRepository;
 
 /**
  * @mixin \Kami\Cocktail\Models\Cocktail
  */
 final class CocktailQueryFilter extends QueryBuilder
 {
-    public function __construct(CocktailService $cocktailService)
+    public function __construct(CocktailRepository $cocktailRepo)
     {
         parent::__construct(Cocktail::query());
 
@@ -50,14 +50,14 @@ final class CocktailQueryFilter extends QueryBuilder
                         $query->userFavorites($barMembership->id);
                     }
                 }),
-                AllowedFilter::callback('on_shelf', function ($query, $value) use ($cocktailService) {
+                AllowedFilter::callback('on_shelf', function ($query, $value) use ($cocktailRepo) {
                     if ($value === true) {
-                        $query->whereIn('cocktails.id', $cocktailService->getCocktailsByIngredients(
+                        $query->whereIn('cocktails.id', $cocktailRepo->getCocktailsByIngredients(
                             $this->request->user()->getShelfIngredients(bar()->id)->pluck('ingredient_id')->toArray()
                         ));
                     }
                 }),
-                AllowedFilter::callback('user_shelves', function ($query, $value) use ($cocktailService) {
+                AllowedFilter::callback('user_shelves', function ($query, $value) use ($cocktailRepo) {
                     if (!is_array($value)) {
                         $value = [$value];
                     }
@@ -70,16 +70,16 @@ final class CocktailQueryFilter extends QueryBuilder
                         ->where('bar_memberships.is_shelf_public', true)
                         ->get();
 
-                    $query->whereIn('cocktails.id', $cocktailService->getCocktailsByIngredients(
+                    $query->whereIn('cocktails.id', $cocktailRepo->getCocktailsByIngredients(
                         $ingredients->pluck('ingredient_id')->toArray()
                     ));
                 }),
-                AllowedFilter::callback('shelf_ingredients', function ($query, $value) use ($cocktailService) {
+                AllowedFilter::callback('shelf_ingredients', function ($query, $value) use ($cocktailRepo) {
                     if (!is_array($value)) {
                         $value = [$value];
                     }
 
-                    $query->whereIn('cocktails.id', $cocktailService->getCocktailsByIngredients($value));
+                    $query->whereIn('cocktails.id', $cocktailRepo->getCocktailsByIngredients($value));
                 }),
                 AllowedFilter::callback('is_public', function ($query, $value) {
                     if ($value === true) {

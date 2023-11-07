@@ -9,6 +9,7 @@ use Illuminate\Console\Command;
 use Kami\Cocktail\Models\Image;
 use Symfony\Component\Yaml\Yaml;
 use Kami\Cocktail\Models\Cocktail;
+use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
@@ -112,7 +113,13 @@ class BarDataFiles extends Command
             })->toArray();
 
             $cocktailYaml = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
-            file_put_contents(storage_path('test/cocktails/' . $cocktailId . '.yml'), $cocktailYaml);
+            file_put_contents(storage_path('bar-assistant/data-dump/cocktails/' . $cocktailId . '.yml'), $cocktailYaml);
+
+            $i = 1;
+            foreach ($cocktail->images as $img) {
+                File::copy($img->getPath(), storage_path('bar-assistant/data-dump/cocktails/images/' . $cocktailId . '-' . $i . '.' . $img->file_extension));
+                $i++;
+            }
         }
     }
 
@@ -151,7 +158,13 @@ class BarDataFiles extends Command
             }
 
             $ingredientYaml = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
-            file_put_contents(storage_path('test/ingredients/' . $ingredientId . '.yml'), $ingredientYaml);
+            file_put_contents(storage_path('bar-assistant/data-dump/ingredients/' . $ingredientId . '.yml'), $ingredientYaml);
+
+            $i = 1;
+            foreach ($ingredient->images as $img) {
+                File::copy($img->getPath(), storage_path('bar-assistant/data-dump/ingredients/images/' . $ingredientId . '-' . $i . '.' . $img->file_extension));
+                $i++;
+            }
         }
     }
 

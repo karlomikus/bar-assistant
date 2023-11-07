@@ -14,6 +14,7 @@ use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
+use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
@@ -24,10 +25,10 @@ use Kami\Cocktail\DataObjects\Cocktail\Substitute as SubstituteDTO;
 
 class CocktailController extends Controller
 {
-    public function index(CocktailService $cocktailService, Request $request): JsonResource
+    public function index(CocktailRepository $cocktailRepo, Request $request): JsonResource
     {
         try {
-            $cocktails = new CocktailQueryFilter($cocktailService);
+            $cocktails = new CocktailQueryFilter($cocktailRepo);
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }

@@ -9,10 +9,11 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Http\Requests\IngredientRequest;
+use Kami\Cocktail\Repository\IngredientRepository;
 use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Filters\IngredientQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
@@ -20,10 +21,10 @@ use Kami\Cocktail\DataObjects\Ingredient\Ingredient as IngredientDTO;
 
 class IngredientController extends Controller
 {
-    public function index(IngredientService $ingredientService, Request $request): JsonResource
+    public function index(IngredientRepository $ingredientQuery, Request $request): JsonResource
     {
         try {
-            $ingredients = (new IngredientQueryFilter($ingredientService))->paginate($request->get('per_page', 50))->withQueryString();
+            $ingredients = (new IngredientQueryFilter($ingredientQuery))->paginate($request->get('per_page', 50))->withQueryString();
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }
@@ -112,7 +113,7 @@ class IngredientController extends Controller
         return response(null, 204);
     }
 
-    public function extra(Request $request, CocktailService $cocktailService, int $id): JsonResponse
+    public function extra(Request $request, CocktailRepository $cocktailRepo, int $id): JsonResponse
     {
         $ingredient = Ingredient::findOrFail($id);
 
@@ -121,8 +122,8 @@ class IngredientController extends Controller
         }
 
         $currentShelfIngredients = $request->user()->getShelfIngredients($ingredient->bar_id)->pluck('ingredient_id');
-        $currentShelfCocktails = $cocktailService->getCocktailsByIngredients($currentShelfIngredients->toArray())->values();
-        $extraShelfCocktails = $cocktailService->getCocktailsByIngredients($currentShelfIngredients->push($ingredient->id)->toArray())->values();
+        $currentShelfCocktails = $cocktailRepo->getCocktailsByIngredients($currentShelfIngredients->toArray())->values();
+        $extraShelfCocktails = $cocktailRepo->getCocktailsByIngredients($currentShelfIngredients->push($ingredient->id)->toArray())->values();
 
         if ($currentShelfCocktails->count() === $extraShelfCocktails->count()) {
             return response()->json(['data' => []]);
