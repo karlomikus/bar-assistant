@@ -9,8 +9,8 @@ use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\Exceptions\ImageException;
-use Kami\Cocktail\Exceptions\IngredientException;
+use Kami\Cocktail\Exceptions\IngredientParentException;
+use Kami\Cocktail\Exceptions\ImagesNotAttachedException;
 use Kami\Cocktail\DataObjects\Ingredient\Ingredient as IngredientDTO;
 
 class IngredientService
@@ -35,7 +35,9 @@ class IngredientService
             $ingredient->created_user_id = $dto->userId;
             $ingredient->save();
         } catch (Throwable $e) {
-            throw new IngredientException('Error occured while creating ingredient!', 0, $e);
+            $this->log->error('[INGREDIENT_SERVICE] ' . $e->getMessage());
+
+            throw $e;
         }
 
         if (count($dto->images) > 0) {
@@ -43,7 +45,7 @@ class IngredientService
                 $imageModels = Image::findOrFail($dto->images);
                 $ingredient->attachImages($imageModels);
             } catch (Throwable $e) {
-                throw new ImageException('Error occured while attaching images to ingredient with id "' . $ingredient->id . '"', 0, $e);
+                throw new ImagesNotAttachedException();
             }
         }
 
@@ -58,7 +60,7 @@ class IngredientService
     public function updateIngredient(int $id, IngredientDTO $dto): Ingredient
     {
         if ($dto->parentIngredientId === $id) {
-            throw new IngredientException('Parent ingredient is the same as the current ingredient!');
+            throw new IngredientParentException('Parent ingredient is the same as the current ingredient!');
         }
 
         try {
@@ -74,7 +76,9 @@ class IngredientService
             $ingredient->updated_at = now();
             $ingredient->save();
         } catch (Throwable $e) {
-            throw new IngredientException('Error occured while updating ingredient!', 0, $e);
+            $this->log->error('[INGREDIENT_SERVICE] ' . $e->getMessage());
+
+            throw $e;
         }
 
         if (count($dto->images) > 0) {
@@ -82,7 +86,7 @@ class IngredientService
                 $imageModels = Image::findOrFail($dto->images);
                 $ingredient->attachImages($imageModels);
             } catch (Throwable $e) {
-                throw new ImageException('Error occured while attaching images to ingredient with id "' . $ingredient->id . '"', 0, $e);
+                throw new ImagesNotAttachedException();
             }
         }
 

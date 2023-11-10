@@ -6,6 +6,6 @@ namespace Kami\Cocktail\Exceptions;
 
 use Exception;
 
-class CocktailException extends Exception
+class ScraperMissingException extends Exception
 {
 }

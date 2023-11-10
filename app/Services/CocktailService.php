@@ -13,8 +13,8 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
-use Kami\Cocktail\Exceptions\CocktailException;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
+use Kami\Cocktail\Exceptions\ImagesNotAttachedException;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
 
 class CocktailService
@@ -91,9 +91,7 @@ class CocktailService
                 $imageModels = Image::findOrFail($cocktailDTO->images);
                 $cocktail->attachImages($imageModels);
             } catch (Throwable $e) {
-                $this->log->error('[COCKTAIL_SERVICE] Image attach error. ' . $e->getMessage());
-
-                throw new CocktailException('Error occured while attaching images to cocktail!', 0, $e);
+                throw new ImagesNotAttachedException();
             }
         }
 
@@ -178,9 +176,7 @@ class CocktailService
                 $imageModels = Image::findOrFail($cocktailDTO->images);
                 $cocktail->attachImages($imageModels);
             } catch (Throwable $e) {
-                $this->log->error('[COCKTAIL_SERVICE] Image attach error. ' . $e->getMessage());
-
-                throw new CocktailException('Error occured while attaching images to cocktail!', 0, $e);
+                throw new ImagesNotAttachedException();
             }
         }
 

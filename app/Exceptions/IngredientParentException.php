@@ -6,6 +6,6 @@ namespace Kami\Cocktail\Exceptions;
 
 use Exception;
 
-class ExportException extends Exception
+class IngredientParentException extends Exception
 {
 }

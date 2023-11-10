@@ -6,6 +6,6 @@ namespace Kami\Cocktail\Exceptions;
 
 use Exception;
 
-class ImportException extends Exception
+class ImagesNotAttachedException extends Exception
 {
 }

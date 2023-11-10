@@ -6,6 +6,6 @@ namespace Kami\Cocktail\Exceptions;
 
 use Exception;
 
-class ImageUploadException extends Exception
+class ExportFileNotCreatedException extends Exception
 {
 }

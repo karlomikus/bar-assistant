@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper;
 
 use Throwable;
-use Kami\Cocktail\Exceptions\ScrapeException;
 use Kami\Cocktail\Scraper\Sites\DefaultScraper;
+use Kami\Cocktail\Exceptions\ScraperMissingException;
 
 final class Manager
 {
@@ -44,7 +44,7 @@ final class Manager
         } catch (Throwable $e) {
         }
 
-        throw new ScrapeException('Scraper could not find any relevant data for the given site.');
+        throw new ScraperMissingException('Scraper could not find any relevant data for the given site.');
     }
 
     public static function scrape(string $url): AbstractSiteExtractor

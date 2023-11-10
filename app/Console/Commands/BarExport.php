@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\Export\BarsToArray;
-use Kami\Cocktail\Exceptions\ExportException;
+use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 
 class BarExport extends Command
 {
@@ -58,7 +58,7 @@ class BarExport extends Command
         if ($zip->open($filename, ZipArchive::CREATE) !== true) {
             $message = sprintf('Error creating zip archive with filepath "%s"', $filename);
 
-            throw new ExportException($message);
+            throw new ExportFileNotCreatedException($message);
         }
 
         $zip->addGlob(storage_path('bar-assistant/uploads/*/{' . implode(',', $barIds) . '}/*'), GLOB_BRACE, ['remove_path' => storage_path('bar-assistant')]);

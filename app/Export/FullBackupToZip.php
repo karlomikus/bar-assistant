@@ -8,7 +8,7 @@ use ZipArchive;
 use Carbon\Carbon;
 use Illuminate\Log\LogManager;
 use Illuminate\Support\Facades\File;
-use Kami\Cocktail\Exceptions\ExportException;
+use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 
 class FullBackupToZip
 {
@@ -39,7 +39,7 @@ class FullBackupToZip
             $message = sprintf('Error creating zip archive with filepath "%s"', $filename);
             $this->log->error($message);
 
-            throw new ExportException($message);
+            throw new ExportFileNotCreatedException($message);
         }
 
         $zip->addGlob(storage_path('bar-assistant/*.sqlite'), options: ['remove_path' => storage_path('bar-assistant')]);
