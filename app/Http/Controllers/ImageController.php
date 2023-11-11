@@ -98,7 +98,11 @@ class ImageController extends Controller
             $dbImage = Image::findOrFail($id);
             $disk = Storage::disk('bar-assistant');
             $responseContent = (string) ImageProcessor::make($disk->get($dbImage->file_path))->fit(400, 400)->encode();
-            $etag = md5($dbImage->id . '-' . $dbImage->updated_at->format('Y-m-d H:i:s'));
+            if ($dbImage->updated_at) {
+                $etag = md5($dbImage->id . '-' . $dbImage->updated_at->format('Y-m-d H:i:s'));
+            } else {
+                $etag = md5($dbImage->id . '-' . $dbImage->created_at->format('Y-m-d H:i:s'));
+            }
 
             return [$responseContent, $etag];
         });

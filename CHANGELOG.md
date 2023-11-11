@@ -1,3 +1,17 @@
+# v3.3.0
+## New
+- Updated base bar cocktails and ingredients
+    - Now includes data from https://github.com/bar-assistant/data
+- data dump cmd
+- new options
+
+## Changes
+- cocktail `updated_at` nullable
+- iamge `updated_at` nullable
+
+## Fixes
+- TODO Invisible `&nbsp;` chars are now stripped when scraping for recipes
+
 # v3.2.0
 ## New
 - Added `--with-passwords` and `--with-emails` options when exporting bar data via `bar:export-zip` command
