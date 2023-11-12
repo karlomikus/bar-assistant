@@ -54,7 +54,7 @@ return [
 
         'data-files' => [
             'driver' => 'local',
-            'root' => resource_path('data'),
+            'root' => resource_path('data/data'),
             'throw' => false,
         ],
 

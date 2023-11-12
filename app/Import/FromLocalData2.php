@@ -11,6 +11,7 @@ use Kami\Cocktail\Models\User;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
+use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -74,6 +75,7 @@ class FromLocalData2
         $ingredientsToInsert = [];
         $imagesToInsert = [];
         $barImagesDir = 'ingredients/' . $bar->id . '/';
+        $uploadsDisk->makeDirectory($barImagesDir);
 
         foreach ($ingredients as $ingredient) {
             $category = $categories->firstWhere('name', $ingredient['category']);
@@ -95,22 +97,15 @@ class FromLocalData2
             // For performance, manually copy the files and create image references
             foreach ($ingredient['images'] ?? [] as $image) {
                 $baseSrcImagePath = 'ingredients/images/' . $image['file_name'];
-                if (!$dataDisk->fileExists($baseSrcImagePath)) {
-                    continue;
-                }
+                $fileExtension = File::extension($dataDisk->path($baseSrcImagePath));
+                $targetImagePath = $barImagesDir . $slug . '_' . Str::random(6) . '.' . $fileExtension;
 
-                $uploadsDisk->makeDirectory($barImagesDir);
-
-                $targetImagePath = $barImagesDir . $slug . '_' . Str::random(6) . '.png';
-                copy(
-                    $dataDisk->path($baseSrcImagePath),
-                    $uploadsDisk->path($targetImagePath)
-                );
+                $this->copyResourceImage($baseSrcImagePath, $targetImagePath);
 
                 $imagesToInsert[$slug] = [
                     'copyright' => $image['copyright'] ?? null,
                     'file_path' => $targetImagePath,
-                    'file_extension' => 'png', // TODO
+                    'file_extension' => $fileExtension,
                     'created_user_id' => $user->id,
                     'sort' => 1,
                     'placeholder_hash' => $image['placeholder_hash'] ?? null,
@@ -157,6 +152,7 @@ class FromLocalData2
         $imagesToInsert = [];
         $tagsToInsert = [];
         $barImagesDir = 'cocktails/' . $bar->id . '/';
+        $uploadsDisk->makeDirectory($barImagesDir);
 
         foreach ($cocktails as $cocktail) {
             $slug = Str::slug($cocktail['name']) . '-' . $bar->id;
@@ -204,19 +200,10 @@ class FromLocalData2
             // For performance, manually copy the files and create image references
             foreach ($cocktail['images'] ?? [] as $image) {
                 $baseSrcImagePath = 'cocktails/images/' . $image['file_name'];
-                if (!$dataDisk->fileExists($baseSrcImagePath)) {
-                    continue;
-                }
-
-                $fileExtension = \Illuminate\Support\Facades\File::extension($dataDisk->path($baseSrcImagePath));
-
-                $uploadsDisk->makeDirectory($barImagesDir);
-
+                $fileExtension = File::extension($dataDisk->path($baseSrcImagePath));
                 $targetImagePath = $barImagesDir . $slug . '_' . Str::random(6) . '.' . $fileExtension;
-                copy(
-                    $dataDisk->path($baseSrcImagePath),
-                    $uploadsDisk->path($targetImagePath)
-                );
+
+                $this->copyResourceImage($baseSrcImagePath, $targetImagePath);
 
                 $imagesToInsert[$slug] = [
                     'imageable_type' => \Kami\Cocktail\Models\Cocktail::class,
@@ -238,25 +225,20 @@ class FromLocalData2
         DB::table('cocktail_tag')->insert($tagsToInsert);
     }
 
-    // public function copyResourceImage(string $baseSrcImagePath, string $barImagesDir, string $newFilename): ?string
-    // {
-    //     /** @var \Illuminate\Support\Facades\Storage */
-    //     $dataDisk = Storage::disk('data-files');
-    //     /** @var \Illuminate\Support\Facades\Storage */
-    //     $uploadsDisk = Storage::disk('uploads');
+    private function copyResourceImage(string $baseSrcImagePath, string $targetImagePath): void
+    {
+        /** @var \Illuminate\Support\Facades\Storage */
+        $dataDisk = Storage::disk('data-files');
+        /** @var \Illuminate\Support\Facades\Storage */
+        $uploadsDisk = Storage::disk('uploads');
 
-    //     if (!$dataDisk->fileExists($baseSrcImagePath)) {
-    //         return null;
-    //     }
+        if (!$dataDisk->fileExists($baseSrcImagePath)) {
+            return;
+        }
 
-    //     $fileExtension = \Illuminate\Support\Facades\File::extension($dataDisk->path($baseSrcImagePath));
-
-    //     $uploadsDisk->makeDirectory($barImagesDir);
-
-    //     $targetImagePath = $barImagesDir . $slug . '_' . Str::random(6) . '.' . $fileExtension;
-    //     copy(
-    //         $dataDisk->path($baseSrcImagePath),
-    //         $uploadsDisk->path($targetImagePath)
-    //     );
-    // }
+        copy(
+            $dataDisk->path($baseSrcImagePath),
+            $uploadsDisk->path($targetImagePath)
+        );
+    }
 }
