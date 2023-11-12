@@ -24,7 +24,7 @@ class BarSearchRefresh extends Command
      *
      * @var string
      */
-    protected $description = 'Refresh search index.';
+    protected $description = 'Sync search engine index with the latest Bar Assistant data';
 
     public function __construct(private readonly SearchActionsAdapter $searchActions)
     {

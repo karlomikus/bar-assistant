@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Collection;
 use Intervention\Image\Image as InterventionImage;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -59,5 +60,23 @@ class Image extends Model
         }
 
         throw new \Exception('Image not found');
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getAllBarImages(int $barId): Collection
+    {
+        $cocktailImages = $this->where('imageable_type', Cocktail::class)
+            ->join('cocktails', 'cocktails.id', '=', 'images.imageable_id')
+            ->where('cocktails.bar_id', $barId)
+            ->get();
+
+        $ingredientImages = $this->where('imageable_type', Ingredient::class)
+            ->join('ingredients', 'ingredients.id', '=', 'images.imageable_id')
+            ->where('ingredients.bar_id', $barId)
+            ->get();
+
+        return $cocktailImages->merge($ingredientImages);
     }
 }

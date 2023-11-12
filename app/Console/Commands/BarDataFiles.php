@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Console\Commands;
 
-use ZipArchive;
-use Carbon\Carbon;
+use Throwable;
+use Kami\Cocktail\Models\Bar;
 use Illuminate\Console\Command;
-use Symfony\Component\Yaml\Yaml;
-use Kami\Cocktail\Models\Cocktail;
-use Illuminate\Support\Facades\File;
-use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
+use Kami\Cocktail\Export\Recipes;
 
 class BarDataFiles extends Command
 {
@@ -27,7 +23,12 @@ class BarDataFiles extends Command
      *
      * @var string
      */
-    protected $description = 'Export all the recipes from a bar';
+    protected $description = 'Export all recipes from a single bar';
+
+    public function __construct(private readonly Recipes $exporter)
+    {
+        parent::__construct();
+    }
 
     /**
      * Execute the console command.
@@ -36,62 +37,20 @@ class BarDataFiles extends Command
     {
         $barId = (int) $this->argument('barId');
 
-        File::ensureDirectoryExists(storage_path('bar-assistant/backups'));
-        $filename = storage_path(sprintf('bar-assistant/backups/%s_%s.zip', Carbon::now()->format('Ymdhi'), 'recipes'));
+        try {
+            $bar = Bar::findOrFail($barId);
+        } catch (Throwable $e) {
+            $this->error($e->getMessage());
 
-        $zip = new ZipArchive();
-
-        if ($zip->open($filename, ZipArchive::CREATE) !== true) {
-            $message = sprintf('Error creating zip archive with filepath "%s"', $filename);
-
-            throw new ExportFileNotCreatedException($message);
+            return Command::FAILURE;
         }
 
-        $this->dumpCocktails($barId, $zip);
-        $this->dumpIngredients($barId, $zip);
+        $this->output->info(sprintf('Starting recipe export from bar: %s - "%s"', $bar->id, $bar->name));
 
-        $zip->close();
+        $filename = $this->exporter->process($barId);
+
+        $this->output->success('Data exported to file: ' . $filename);
 
         return Command::SUCCESS;
-    }
-
-    private function dumpCocktails(int $barId, ZipArchive &$zip): void
-    {
-        $cocktails = Cocktail::with(['ingredients.ingredient', 'ingredients.substitutes', 'images' => function ($query) {
-            $query->orderBy('sort');
-        }, 'glass', 'method', 'tags'])->where('bar_id', $barId)->get();
-
-        foreach ($cocktails as $cocktail) {
-            $data = $cocktail->share();
-
-            $cocktailYaml = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
-            $zip->addFromString('cocktails/' . $data['_id'] . '.yml', $cocktailYaml);
-
-            $i = 1;
-            foreach ($cocktail->images as $img) {
-                $zip->addFile($img->getPath(), 'cocktails/images/' . $data['_id'] . '-' . $i . '.' . $img->file_extension);
-                $i++;
-            }
-        }
-    }
-
-    private function dumpIngredients(int $barId, ZipArchive &$zip): void
-    {
-        $ingredients = Ingredient::with(['images' => function ($query) {
-            $query->orderBy('sort');
-        }])->where('bar_id', $barId)->get();
-
-        foreach ($ingredients as $ingredient) {
-            $data = $ingredient->share();
-
-            $ingredientYaml = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
-            $zip->addFromString('ingredients/' . $data['_id'] . '.yml', $ingredientYaml);
-
-            $i = 1;
-            foreach ($ingredient->images as $img) {
-                $zip->addFile($img->getPath(), 'ingredients/images/' . $data['_id'] . '-' . $i . '.' . $img->file_extension);
-                $i++;
-            }
-        }
     }
 }

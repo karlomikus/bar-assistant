@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class BarsToArray
 {
-    public function process(array $barIds, bool $ignorePasswords = true, bool $ignoreEmails = true, bool $onlyRecipeData = false): array
+    public function process(array $barIds, bool $ignorePasswords = true, bool $ignoreEmails = true): array
     {
         $version = config('bar-assistant.version');
         $meta = [
@@ -123,17 +123,6 @@ class BarsToArray
                     ->toArray(),
             ),
         ];
-
-        if ($onlyRecipeData) {
-            unset($export['user_ingredients']);
-            unset($export['user_shopping_lists']);
-            unset($export['users']);
-            unset($export['cocktail_favorites']);
-            unset($export['collections']);
-            unset($export['ratings']);
-            unset($export['notes']);
-            unset($export['bar_memberships']);
-        }
 
         return [$meta, $export];
     }

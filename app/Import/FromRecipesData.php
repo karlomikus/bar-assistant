@@ -16,7 +16,7 @@ use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
-class FromGitData
+class FromRecipesData
 {
     public function process(Bar $bar, User $user, array $flags = []): bool
     {

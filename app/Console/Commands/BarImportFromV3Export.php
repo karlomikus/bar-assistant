@@ -22,7 +22,7 @@ class BarImportFromV3Export extends Command
      *
      * @var string
      */
-    protected $description = 'Import bars exported from another Bar Assistant instance';
+    protected $description = '[Deprecated] Import bars exported from another Bar Assistant instance';
 
     public function __construct(private FromV3Export $exporter)
     {
