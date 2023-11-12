@@ -16,14 +16,17 @@ use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
-class FromLocalData2
+class FromGitData
 {
     public function process(Bar $bar, User $user, array $flags = []): bool
     {
-        $this->importBaseData('glasses', resource_path('/data/base_glasses.yml'), $bar->id);
-        $this->importBaseData('cocktail_methods', resource_path('/data/base_methods.yml'), $bar->id);
-        $this->importBaseData('utensils', resource_path('/data/base_utensils.yml'), $bar->id);
-        $this->importBaseData('ingredient_categories', resource_path('/data/base_ingredient_categories.yml'), $bar->id);
+        /** @var \Illuminate\Support\Facades\Storage */
+        $dataDisk = Storage::disk('data-files');
+
+        $this->importBaseData('glasses', $dataDisk->path('base_glasses.yml'), $bar->id);
+        $this->importBaseData('cocktail_methods', $dataDisk->path('base_methods.yml'), $bar->id);
+        $this->importBaseData('utensils', $dataDisk->path('base_utensils.yml'), $bar->id);
+        $this->importBaseData('ingredient_categories', $dataDisk->path('base_ingredient_categories.yml'), $bar->id);
 
         if (in_array('ingredients', $flags)) {
             $this->importIngredients($bar, $user);
@@ -65,10 +68,14 @@ class FromLocalData2
         /** @var \Illuminate\Support\Facades\Storage */
         $uploadsDisk = Storage::disk('uploads');
 
-        $ingredients = [];
-        foreach ($dataDisk->files('ingredients') as $ingredientFile) {
-            $ingredients[] = Yaml::parseFile($dataDisk->path($ingredientFile));
-        }
+        $ingredients = Cache::remember('ba:data-import:ingredients', 60 * 60 * 24 * 7, function () use ($dataDisk) {
+            $ingredients = [];
+            foreach ($dataDisk->files('ingredients') as $ingredientFile) {
+                $ingredients[] = Yaml::parseFile($dataDisk->path($ingredientFile));
+            }
+
+            return $ingredients;
+        });
 
         $categories = DB::table('ingredient_categories')->select('id', 'name')->where('bar_id', $bar->id)->get();
 

@@ -18,3 +18,4 @@ yarn-error.log
 notes.sql
 composer.phar
 .phpunit.cache
+/resources/data
