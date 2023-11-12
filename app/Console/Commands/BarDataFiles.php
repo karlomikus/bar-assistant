@@ -23,7 +23,7 @@ class BarDataFiles extends Command
      *
      * @var string
      */
-    protected $description = 'Export all recipes from a single bar';
+    protected $description = 'Export all recipe data (ingredients, cocktails) from a single bar';
 
     public function __construct(private readonly Recipes $exporter)
     {

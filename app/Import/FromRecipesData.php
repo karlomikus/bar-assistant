@@ -15,25 +15,23 @@ use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Filesystem\FilesystemAdapter;
 
 class FromRecipesData
 {
-    public function process(Bar $bar, User $user, array $flags = []): bool
+    public function process(FilesystemAdapter $dataDisk, Bar $bar, User $user, array $flags = []): bool
     {
-        /** @var \Illuminate\Support\Facades\Storage */
-        $dataDisk = Storage::disk('data-files');
-
         $this->importBaseData('glasses', $dataDisk->path('base_glasses.yml'), $bar->id);
         $this->importBaseData('cocktail_methods', $dataDisk->path('base_methods.yml'), $bar->id);
         $this->importBaseData('utensils', $dataDisk->path('base_utensils.yml'), $bar->id);
         $this->importBaseData('ingredient_categories', $dataDisk->path('base_ingredient_categories.yml'), $bar->id);
 
         if (in_array('ingredients', $flags)) {
-            $this->importIngredients($bar, $user);
+            $this->importIngredients($dataDisk, $bar, $user);
         }
 
         if (in_array('ingredients', $flags) && in_array('cocktails', $flags)) {
-            $this->importBaseCocktails($bar, $user);
+            $this->importBaseCocktails($dataDisk, $bar, $user);
         }
 
         /** @phpstan-ignore-next-line */
@@ -61,10 +59,8 @@ class FromRecipesData
         DB::table($tableName)->insert($importData);
     }
 
-    private function importIngredients(Bar $bar, User $user): void
+    private function importIngredients(FilesystemAdapter $dataDisk, Bar $bar, User $user): void
     {
-        /** @var \Illuminate\Support\Facades\Storage */
-        $dataDisk = Storage::disk('data-files');
         /** @var \Illuminate\Support\Facades\Storage */
         $uploadsDisk = Storage::disk('uploads');
 
@@ -107,7 +103,7 @@ class FromRecipesData
                 $fileExtension = File::extension($dataDisk->path($baseSrcImagePath));
                 $targetImagePath = $barImagesDir . $slug . '_' . Str::random(6) . '.' . $fileExtension;
 
-                $this->copyResourceImage($baseSrcImagePath, $targetImagePath);
+                $this->copyResourceImage($dataDisk, $baseSrcImagePath, $targetImagePath);
 
                 $imagesToInsert[$slug] = [
                     'copyright' => $image['copyright'] ?? null,
@@ -127,7 +123,7 @@ class FromRecipesData
         $ingredients = DB::table('ingredients')->where('bar_id', $bar->id)->get();
         foreach ($ingredients as $ingredient) {
             if (array_key_exists($ingredient->slug, $imagesToInsert)) {
-                $imagesToInsert[$ingredient->slug]['imageable_type'] = \Kami\Cocktail\Models\Ingredient::class;
+                $imagesToInsert[$ingredient->slug]['imageable_type'] = Ingredient::class;
                 $imagesToInsert[$ingredient->slug]['imageable_id'] = $ingredient->id;
             }
         }
@@ -135,10 +131,8 @@ class FromRecipesData
         DB::table('images')->insert(array_values($imagesToInsert));
     }
 
-    private function importBaseCocktails(Bar $bar, User $user): void
+    private function importBaseCocktails(FilesystemAdapter $dataDisk, Bar $bar, User $user): void
     {
-        /** @var \Illuminate\Support\Facades\Storage */
-        $dataDisk = Storage::disk('data-files');
         /** @var \Illuminate\Support\Facades\Storage */
         $uploadsDisk = Storage::disk('uploads');
 
@@ -210,10 +204,10 @@ class FromRecipesData
                 $fileExtension = File::extension($dataDisk->path($baseSrcImagePath));
                 $targetImagePath = $barImagesDir . $slug . '_' . Str::random(6) . '.' . $fileExtension;
 
-                $this->copyResourceImage($baseSrcImagePath, $targetImagePath);
+                $this->copyResourceImage($dataDisk, $baseSrcImagePath, $targetImagePath);
 
                 $imagesToInsert[$slug] = [
-                    'imageable_type' => \Kami\Cocktail\Models\Cocktail::class,
+                    'imageable_type' => Cocktail::class,
                     'imageable_id' => $cocktailId,
                     'copyright' => $image['copyright'] ?? null,
                     'file_path' => $targetImagePath,
@@ -232,10 +226,8 @@ class FromRecipesData
         DB::table('cocktail_tag')->insert($tagsToInsert);
     }
 
-    private function copyResourceImage(string $baseSrcImagePath, string $targetImagePath): void
+    private function copyResourceImage(FilesystemAdapter $dataDisk, string $baseSrcImagePath, string $targetImagePath): void
     {
-        /** @var \Illuminate\Support\Facades\Storage */
-        $dataDisk = Storage::disk('data-files');
         /** @var \Illuminate\Support\Facades\Storage */
         $uploadsDisk = Storage::disk('uploads');
 

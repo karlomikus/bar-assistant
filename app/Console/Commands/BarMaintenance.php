@@ -8,6 +8,7 @@ use Throwable;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
@@ -36,13 +37,14 @@ class BarMaintenance extends Command
     {
         $barId = (int) $this->argument('barId');
 
-        // Cocktail::with('ingredients.ingredient')->chunk(50, function ($cocktails) {
-        //     foreach ($cocktails as $cocktail) {
-        //         $calculatedAbv = $cocktail->getABV();
-        //         $cocktail->abv = $calculatedAbv;
-        //         $cocktail->save();
-        //     }
-        // });
+        $this->info('Updating cocktail ABVs...');
+        Cocktail::where('bar_id', $barId)->with('ingredients.ingredient')->chunk(50, function ($cocktails) {
+            foreach ($cocktails as $cocktail) {
+                $calculatedAbv = $cocktail->getABV();
+                $cocktail->abv = $calculatedAbv;
+                $cocktail->save();
+            }
+        });
 
         // Fix sort
         $this->info('Fixing cocktail ingredients sort order...');
@@ -59,6 +61,8 @@ class BarMaintenance extends Command
         // Clear cache
         $this->info('Clearing cache...');
         Artisan::call('cache:clear');
+
+        $this->output->success('Done!');
 
         return Command::SUCCESS;
     }
