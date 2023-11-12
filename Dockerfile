@@ -34,6 +34,8 @@ WORKDIR /var/www/cocktails
 
 COPY . .
 
+ADD https://github.com/bar-assistant/data.git ./resources/data
+
 # Configure nginx
 COPY ./resources/docker/nginx.conf /etc/nginx/sites-enabled/default
 
