@@ -25,7 +25,7 @@ class ImageService
     public function __construct(
         private readonly LogManager $log,
     ) {
-        $this->disk = Storage::disk('bar-assistant');
+        $this->disk = Storage::disk('uploads');
     }
 
     /**

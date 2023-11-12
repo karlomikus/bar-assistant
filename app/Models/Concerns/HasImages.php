@@ -42,7 +42,7 @@ trait HasImages
      */
     public function attachImages(Collection $images): void
     {
-        $disk = Storage::disk('bar-assistant');
+        $disk = Storage::disk('uploads');
 
         foreach ($images as $image) {
             if ($image->imageable_id !== null) {

@@ -83,7 +83,7 @@ class BarMaintenance extends Command
 
     // private function deleteUnusedImages(int $barId): void
     // {
-    //     $baDisk = Storage::disk('bar-assistant');
+    //     $baDisk = Storage::disk('uploads');
     //     $images = Image::whereNull('imageable_id')->get();
 
     //     if ($images->isNotEmpty()) {
@@ -108,7 +108,7 @@ class BarMaintenance extends Command
 
     public function optimizeImages(): void
     {
-        $baDisk = Storage::disk('bar-assistant');
+        $baDisk = Storage::disk('uploads');
 
         $cocktailImages = $baDisk->files('cocktails');
         $ingredientImages = $baDisk->files('ingredients');

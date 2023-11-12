@@ -93,7 +93,7 @@ class FromLocalData
                     continue;
                 }
 
-                $disk = Storage::disk('bar-assistant');
+                $disk = Storage::disk('uploads');
 
                 $disk->makeDirectory($imagesBasePath);
 
@@ -193,7 +193,7 @@ class FromLocalData
                 if (!file_exists($fullImagePath)) {
                     continue;
                 }
-                $disk = Storage::disk('bar-assistant');
+                $disk = Storage::disk('uploads');
 
                 $disk->makeDirectory($imagesBasePath);
 

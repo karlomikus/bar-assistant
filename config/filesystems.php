@@ -44,7 +44,7 @@ return [
             'throw' => false,
         ],
 
-        'bar-assistant' => [
+        'uploads' => [
             'driver' => 'local',
             'root' => storage_path('bar-assistant/uploads'),
             'url' => env('APP_URL').'/uploads',

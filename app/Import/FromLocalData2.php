@@ -62,7 +62,7 @@ class FromLocalData2
         /** @var \Illuminate\Support\Facades\Storage */
         $dataDisk = Storage::disk('data-files');
         /** @var \Illuminate\Support\Facades\Storage */
-        $uploadsDisk = Storage::disk('bar-assistant');
+        $uploadsDisk = Storage::disk('uploads');
 
         $ingredients = [];
         foreach ($dataDisk->files('ingredients') as $ingredientFile) {
@@ -138,7 +138,7 @@ class FromLocalData2
         /** @var \Illuminate\Support\Facades\Storage */
         $dataDisk = Storage::disk('data-files');
         /** @var \Illuminate\Support\Facades\Storage */
-        $uploadsDisk = Storage::disk('bar-assistant');
+        $uploadsDisk = Storage::disk('uploads');
 
         $cocktails = Cache::remember('ba:data-import:cocktails', 60 * 60 * 24 * 7, function () use ($dataDisk) {
             $cocktails = [];
@@ -243,7 +243,7 @@ class FromLocalData2
     //     /** @var \Illuminate\Support\Facades\Storage */
     //     $dataDisk = Storage::disk('data-files');
     //     /** @var \Illuminate\Support\Facades\Storage */
-    //     $uploadsDisk = Storage::disk('bar-assistant');
+    //     $uploadsDisk = Storage::disk('uploads');
 
     //     if (!$dataDisk->fileExists($baseSrcImagePath)) {
     //         return null;
