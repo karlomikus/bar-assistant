@@ -2,8 +2,8 @@
 ## New
 - Updated base bar cocktails and ingredients
     - Now includes data from https://github.com/bar-assistant/data
-- data dump cmd
-- new options
+- Added `php artisan bar:export-recipes {barId}` command
+    - This will export all recipes from a bar in a .yml format, similar to repository mentioned above
 
 ## Changes
 - cocktail `updated_at` nullable

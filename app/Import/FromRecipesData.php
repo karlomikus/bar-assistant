@@ -21,10 +21,21 @@ class FromRecipesData
 {
     public function process(FilesystemAdapter $dataDisk, Bar $bar, User $user, array $flags = []): bool
     {
-        $this->importBaseData('glasses', $dataDisk->path('base_glasses.yml'), $bar->id);
-        $this->importBaseData('cocktail_methods', $dataDisk->path('base_methods.yml'), $bar->id);
-        $this->importBaseData('utensils', $dataDisk->path('base_utensils.yml'), $bar->id);
-        $this->importBaseData('ingredient_categories', $dataDisk->path('base_ingredient_categories.yml'), $bar->id);
+        if ($dataDisk->fileExists('base_glasses.yml')) {
+            $this->importBaseData('glasses', $dataDisk->path('base_glasses.yml'), $bar->id);
+        }
+
+        if ($dataDisk->fileExists('base_methods.yml')) {
+            $this->importBaseData('cocktail_methods', $dataDisk->path('base_methods.yml'), $bar->id);
+        }
+
+        if ($dataDisk->fileExists('base_utensils.yml')) {
+            $this->importBaseData('utensils', $dataDisk->path('base_utensils.yml'), $bar->id);
+        }
+
+        if ($dataDisk->fileExists('base_ingredient_categories.yml')) {
+            $this->importBaseData('ingredient_categories', $dataDisk->path('base_ingredient_categories.yml'), $bar->id);
+        }
 
         if (in_array('ingredients', $flags)) {
             $this->importIngredients($dataDisk, $bar, $user);
@@ -206,14 +217,14 @@ class FromRecipesData
 
                 $this->copyResourceImage($dataDisk, $baseSrcImagePath, $targetImagePath);
 
-                $imagesToInsert[$slug] = [
+                $imagesToInsert[] = [
                     'imageable_type' => Cocktail::class,
                     'imageable_id' => $cocktailId,
                     'copyright' => $image['copyright'] ?? null,
                     'file_path' => $targetImagePath,
                     'file_extension' => $fileExtension,
                     'created_user_id' => $user->id,
-                    'sort' => 1,
+                    'sort' => $image['sort'] ?? 1,
                     'placeholder_hash' => $image['placeholder_hash'] ?? null,
                     'created_at' => now(),
                     'updated_at' => null,

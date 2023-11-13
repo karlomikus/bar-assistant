@@ -38,6 +38,8 @@ class BarExport extends Command
      */
     public function handle(): int
     {
+        $this->alert('This method of exporting is not supported anymore and will be deleted in a future versions. You should use bar:export-recipes command instead.');
+
         $barIds = $this->argument('barId');
 
         $this->output->info('Starting export of bars: ' . implode(', ', $barIds));

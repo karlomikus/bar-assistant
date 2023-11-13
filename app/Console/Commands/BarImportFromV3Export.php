@@ -34,6 +34,8 @@ class BarImportFromV3Export extends Command
      */
     public function handle(): int
     {
+        $this->alert('This method of importing is not supported anymore and will be deleted in a future versions. You should use bar:import-recipes command instead.');
+
         /** @var \Illuminate\Support\Facades\Storage */
         $disk = Storage::build([
             'driver' => 'local',

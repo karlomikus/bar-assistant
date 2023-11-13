@@ -9,7 +9,7 @@ use Kami\Cocktail\Models\Bar;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Export\Recipes;
 
-class BarDataFiles extends Command
+class BarExportRecipes extends Command
 {
     /**
      * The name and signature of the console command.
