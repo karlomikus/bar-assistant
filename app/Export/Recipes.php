@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Export;
 use ZipArchive;
 use Carbon\Carbon;
 use Symfony\Component\Yaml\Yaml;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
@@ -39,6 +40,7 @@ class Recipes
 
         $this->dumpCocktails($barId, $zip);
         $this->dumpIngredients($barId, $zip);
+        $this->dumpBaseData($barId, $zip);
 
         if ($metaContent = json_encode($meta)) {
             $zip->addFromString('_meta.json', $metaContent);
@@ -86,6 +88,21 @@ class Recipes
                 $zip->addFile($img->getPath(), 'ingredients/images/' . $data['_id'] . '-' . $i . '.' . $img->file_extension);
                 $i++;
             }
+        }
+    }
+
+    private function dumpBaseData(int $barId, ZipArchive &$zip): void
+    {
+        $baseDataFiles = [
+            'base_glasses.yml' => DB::table('glasses')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
+            'base_methods.yml' => DB::table('cocktail_methods')->select('name', 'dilution_percentage')->where('bar_id', $barId)->get()->toArray(),
+            'base_utensils.yml' => DB::table('utensils')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
+            'base_ingredient_categories.yml' => DB::table('ingredient_categories')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
+        ];
+
+        foreach ($baseDataFiles as $file => $data) {
+            $dataYaml = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK | Yaml::DUMP_OBJECT_AS_MAP);
+            $zip->addFromString($file, $dataYaml);
         }
     }
 }
