@@ -21,20 +21,17 @@ class FromRecipesData
 {
     public function process(FilesystemAdapter $dataDisk, Bar $bar, User $user, array $flags = []): bool
     {
-        if ($dataDisk->fileExists('base_glasses.yml')) {
-            $this->importBaseData('glasses', $dataDisk->path('base_glasses.yml'), $bar->id);
-        }
+        $baseDataFiles = [
+            'glasses' => 'base_glasses.yml',
+            'cocktail_methods' => 'base_methods.yml',
+            'utensils' => 'base_utensils.yml',
+            'ingredient_categories' => 'base_ingredient_categories.yml',
+        ];
 
-        if ($dataDisk->fileExists('base_methods.yml')) {
-            $this->importBaseData('cocktail_methods', $dataDisk->path('base_methods.yml'), $bar->id);
-        }
-
-        if ($dataDisk->fileExists('base_utensils.yml')) {
-            $this->importBaseData('utensils', $dataDisk->path('base_utensils.yml'), $bar->id);
-        }
-
-        if ($dataDisk->fileExists('base_ingredient_categories.yml')) {
-            $this->importBaseData('ingredient_categories', $dataDisk->path('base_ingredient_categories.yml'), $bar->id);
+        foreach ($baseDataFiles as $table => $file) {
+            if ($dataDisk->fileExists($file)) {
+                $this->importBaseData($table, $dataDisk->path($file), $bar->id);
+            }
         }
 
         if (in_array('ingredients', $flags)) {
@@ -85,6 +82,9 @@ class FromRecipesData
         });
 
         $categories = DB::table('ingredient_categories')->select('id', 'name')->where('bar_id', $bar->id)->get();
+        $existingIngredients = DB::table('ingredients')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(function ($ingredient) {
+            return Str::slug($ingredient->name);
+        });
 
         $ingredientsToInsert = [];
         $imagesToInsert = [];
@@ -92,6 +92,10 @@ class FromRecipesData
         $uploadsDisk->makeDirectory($barImagesDir);
 
         foreach ($ingredients as $ingredient) {
+            if ($existingIngredients->has(Str::slug($ingredient['name']))) {
+                continue;
+            }
+
             $category = $categories->firstWhere('name', $ingredient['category']);
             $slug = Str::slug($ingredient['name']) . '-' . $bar->id;
             $ingredientsToInsert[] = [
@@ -132,14 +136,17 @@ class FromRecipesData
         DB::table('ingredients')->insert($ingredientsToInsert);
 
         $ingredients = DB::table('ingredients')->where('bar_id', $bar->id)->get();
-        foreach ($ingredients as $ingredient) {
-            if (array_key_exists($ingredient->slug, $imagesToInsert)) {
-                $imagesToInsert[$ingredient->slug]['imageable_type'] = Ingredient::class;
-                $imagesToInsert[$ingredient->slug]['imageable_id'] = $ingredient->id;
-            }
-        }
 
-        DB::table('images')->insert(array_values($imagesToInsert));
+        if (count($imagesToInsert) > 0) {
+            foreach ($ingredients as $ingredient) {
+                if (array_key_exists($ingredient->slug, $imagesToInsert)) {
+                    $imagesToInsert[$ingredient->slug]['imageable_type'] = Ingredient::class;
+                    $imagesToInsert[$ingredient->slug]['imageable_id'] = $ingredient->id;
+                }
+            }
+    
+            DB::table('images')->insert(array_values($imagesToInsert));
+        }
     }
 
     private function importBaseCocktails(FilesystemAdapter $dataDisk, Bar $bar, User $user): void
@@ -159,6 +166,9 @@ class FromRecipesData
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
+        $existingCocktails = DB::table('cocktails')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(function ($cocktail) {
+            return Str::slug($cocktail->name);
+        });
 
         $cocktailIngredientsToInsert = [];
         $imagesToInsert = [];
@@ -167,6 +177,10 @@ class FromRecipesData
         $uploadsDisk->makeDirectory($barImagesDir);
 
         foreach ($cocktails as $cocktail) {
+            if ($existingCocktails->has(Str::slug($cocktail['name']))) {
+                continue;
+            }
+
             $slug = Str::slug($cocktail['name']) . '-' . $bar->id;
 
             $cocktailId = DB::table('cocktails')->insertGetId([
