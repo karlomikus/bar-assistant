@@ -4,13 +4,15 @@
     - Now includes data from https://github.com/bar-assistant/data
 - Added `php artisan bar:export-recipes {barId}` command
     - This will export all recipes from a bar in a .yml format, similar to repository mentioned above
+- Added `php artisan bar:import-recipes {filename}` command
+    - This will import recipe data exported via upper method
 
 ## Changes
-- cocktail `updated_at` nullable
-- iamge `updated_at` nullable
+- Command `php artisan bar:export-zip` is now deprecated and will be removed in future versions
+- Command `php artisan bar:import-zip` is now deprecated and will be removed in future versions
 
 ## Fixes
-- TODO Invisible `&nbsp;` chars are now stripped when scraping for recipes
+- Invisible `&nbsp;` chars are now removed when importing data from scrapers
 
 # v3.2.0
 ## New

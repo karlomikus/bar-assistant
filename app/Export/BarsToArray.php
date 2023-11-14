@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class BarsToArray
 {
+    /**
+     * @deprecated Not to be used anymore
+     */
     public function process(array $barIds, bool $ignorePasswords = true, bool $ignoreEmails = true): array
     {
         $version = config('bar-assistant.version');

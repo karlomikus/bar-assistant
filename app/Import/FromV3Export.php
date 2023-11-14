@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Storage;
 
 class FromV3Export
 {
+    /**
+     * @deprecated Not to be used anymore
+     */
     public function process(string $zipFilePath, ?string $defaultPassword = null): void
     {
         $unzipPath = storage_path('bar-assistant/temp/export/import_' . Str::random(8));

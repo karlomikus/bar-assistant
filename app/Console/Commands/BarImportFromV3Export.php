@@ -15,7 +15,7 @@ class BarImportFromV3Export extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:import-zip {filename?} {--password= : Set a new password for all imported users } {--N|new-bar : Import data to new bars} {--user-id= : Existing user ID to assign a new bar to}';
+    protected $signature = 'bar:import-zip {filename?} {--password= : Set a new password for all imported users }';
 
     /**
      * The console command description.
@@ -77,8 +77,6 @@ class BarImportFromV3Export extends Command
         }
 
         try {
-            $userId = $this->option('user-id');
-            // $this->exporter->process($zipFilePath, $this->option('password') ?? null, $this->option('new-bar'), $userId !== null ? (int) $userId : null);
             $this->exporter->process($zipFilePath, $this->option('password') ?? null);
         } catch (Throwable $e) {
             $this->error($e->getMessage());

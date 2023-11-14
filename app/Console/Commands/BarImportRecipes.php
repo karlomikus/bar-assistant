@@ -22,7 +22,7 @@ class BarImportRecipes extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:import-recipes {filename?}';
+    protected $signature = 'bar:import-recipes {filename? : Filename relative to the bar-assistant storage volume}';
 
     /**
      * The console command description.
@@ -57,7 +57,9 @@ class BarImportRecipes extends Command
 
         $zip = new ZipArchive();
         if ($zip->open($filename) !== true) {
-            throw new ExportFileNotCreatedException();
+            $this->error(sprintf('Unable to open zip file: "%s"', $filename));
+
+            return Command::FAILURE;
         }
         $zip->extractTo($tempUnzipDisk->path('/'));
         $zip->close();
@@ -70,10 +72,10 @@ class BarImportRecipes extends Command
             $this->comment(sprintf('Using existing bar: %s - %s', $bar->id, $bar->name));
         } else {
             $barName = $this->ask('Enter new bar name');
-            $userId = $this->ask('Enter the user id of the bar admin');
+            $userId = $this->ask('Enter the id of the user you want to assign this bar to');
             $user = User::findOrFail($userId);
 
-            $this->comment(sprintf('Found user with id: %s - %s', $user->id, $user->email));
+            $this->comment(sprintf('User with id found: %s - %s', $user->id, $user->email));
 
             $bar = new Bar();
             $bar->name = $barName;
@@ -83,6 +85,10 @@ class BarImportRecipes extends Command
             $user->joinBarAs($bar, UserRoleEnum::Admin);
 
             $this->comment('Bar created successfully');
+        }
+
+        if (!$this->confirm('Continue with importing the data?')) {
+            return Command::FAILURE;
         }
 
         $this->comment('Starting recipes import...');
