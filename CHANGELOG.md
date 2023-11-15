@@ -1,4 +1,4 @@
-# v3.3.0
+# v3.2.0
 ## New
 - Updated base bar cocktails and ingredients
     - Now includes data from https://github.com/bar-assistant/data
@@ -11,7 +11,9 @@
 
 ## Changes
 - Command `php artisan bar:export-zip` is now deprecated and will be removed in future versions
+    - You can only import data from the same version of Bar Assistant that your exported data from
 - Command `php artisan bar:import-zip` is now deprecated and will be removed in future versions
+    - Passwords and emails are not included by default when exporting data
 - Users that delete their account will now be "soft" deleted
     - All their user data will be anonymized
     - All bar memberships and related data will be deleted
@@ -19,16 +21,6 @@
 ## Fixes
 - Invisible `&nbsp;` chars are now removed when importing data from scrapers
 - Fix some auth errors when updating images
-
-# v3.2.0
-## New
-- Added `--with-passwords` and `--with-emails` options when exporting bar data via `bar:export-zip` command
-    - This will include emails and hashed passwords from `users` table in export data
-- Added `--recipes` (`-R`) option to export only recipe data
-
-## Changes
-- Passwords and emails are not included by default when exporting data
-- You can only import data from the same version of Bar Assistant that your exported data from
 
 # v3.1.1
 ## Fixes
