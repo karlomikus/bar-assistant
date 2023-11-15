@@ -18,6 +18,7 @@
 
 ## Fixes
 - Invisible `&nbsp;` chars are now removed when importing data from scrapers
+- Fix some auth errors when updating images
 
 # v3.2.0
 ## New
