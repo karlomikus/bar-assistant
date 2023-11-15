@@ -101,7 +101,8 @@ class UsersController extends Controller
         }
 
         $user->tokens()->delete();
-        $user->delete();
+        $user->makeAnonymous();
+        $user->save();
 
         return response(null, 204);
     }

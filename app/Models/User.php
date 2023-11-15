@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Collection;
@@ -118,6 +119,20 @@ class User extends Authenticatable
     public function isBarGuest(int $barId): bool
     {
         return $this->hasBarRole($barId, UserRoleEnum::Guest);
+    }
+
+    public function makeAnonymous(): self
+    {
+        $this->email = 'userdeleted' . Str::random(8);
+        $this->name = 'Deleted User';
+        $this->email_verified_at = null;
+        $this->password = 'deleted';
+        $this->remember_token = null;
+        $this->created_at = now();
+        $this->updated_at = now();
+        $this->memberships()->delete();
+
+        return $this;
     }
 
     private function hasBarRole(int $barId, UserRoleEnum $role): bool

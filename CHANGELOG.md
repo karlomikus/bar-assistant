@@ -6,10 +6,15 @@
     - This will export all recipes from a bar in a .yml format, similar to repository mentioned above
 - Added `php artisan bar:import-recipes {filename}` command
     - This will import recipe data exported via upper method
+- Added `php artisan bar:delete-user {email}` command
+    - This will completely delete user and all his data, including cocktails, bars and ingredients he created.
 
 ## Changes
 - Command `php artisan bar:export-zip` is now deprecated and will be removed in future versions
 - Command `php artisan bar:import-zip` is now deprecated and will be removed in future versions
+- Users that delete their account will now be "soft" deleted
+    - All their user data will be anonymized
+    - All bar memberships and related data will be deleted
 
 ## Fixes
 - Invisible `&nbsp;` chars are now removed when importing data from scrapers
