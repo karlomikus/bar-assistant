@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Import\FromRecipesData;
-use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 
 class BarImportRecipes extends Command
 {
