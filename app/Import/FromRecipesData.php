@@ -64,6 +64,16 @@ class FromRecipesData
             return $item;
         }, $data);
 
+        // Skip duplicates
+        $existing = DB::table($tableName)->select('name')->where('bar_id', $barId)->get()->keyBy(fn ($row) => strtolower($row->name))->toArray();
+        $importData = array_filter($importData, function ($item) use ($existing) {
+            if (array_key_exists(strtolower($item['name']), $existing)) {
+                return false;
+            }
+
+            return true;
+        });
+
         DB::table($tableName)->insert($importData);
     }
 

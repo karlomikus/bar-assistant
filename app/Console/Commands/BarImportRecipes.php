@@ -87,6 +87,8 @@ class BarImportRecipes extends Command
         }
 
         if (!$this->confirm('Continue with importing the data?')) {
+            $tempUnzipDisk->deleteDirectory('/');
+
             return Command::FAILURE;
         }
 
