@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\UserShoppingList;
-use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Http\Requests\IngredientsBatchRequest;
 use Kami\Cocktail\Http\Resources\UserIngredientResource;
 
@@ -30,12 +30,12 @@ class ShelfController extends Controller
         return UserIngredientResource::collection($userIngredients);
     }
 
-    public function cocktails(CocktailService $cocktailService, Request $request): JsonResponse
+    public function cocktails(CocktailRepository $cocktailRepo, Request $request): JsonResponse
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
         $limit = $request->has('limit') ? (int) $request->get('limit') : null;
 
-        $cocktailIds = $cocktailService->getCocktailsByIngredients(
+        $cocktailIds = $cocktailRepo->getCocktailsByIngredients(
             $barMembership->userIngredients->pluck('ingredient_id')->toArray(),
             $limit
         );

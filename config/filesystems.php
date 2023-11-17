@@ -44,11 +44,17 @@ return [
             'throw' => false,
         ],
 
-        'bar-assistant' => [
+        'uploads' => [
             'driver' => 'local',
             'root' => storage_path('bar-assistant/uploads'),
             'url' => env('APP_URL').'/uploads',
             'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'data-files' => [
+            'driver' => 'local',
+            'root' => resource_path('data/data'),
             'throw' => false,
         ],
 

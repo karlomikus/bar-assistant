@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Models;
 
 use Carbon\Carbon;
 use Kami\Cocktail\Utils;
+use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Symfony\Component\Uid\Ulid;
@@ -228,11 +229,14 @@ class Cocktail extends Model implements UploadableInterface
             'image_url' => $this->getMainImageUrl(),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'tags' => $this->tags->pluck('name'),
-            'date' => $this->updated_at->format('Y-m-d H:i:s'),
+            'date' => $this->updated_at ? $this->updated_at->format('Y-m-d H:i:s') : $this->created_at->format('Y-m-d H:i:s'),
             'bar_id' => $this->bar_id,
         ];
     }
 
+    /**
+     * @deprecated Move to share()
+     */
     public function toShareableArray(): array
     {
         return [
@@ -269,6 +273,72 @@ class Cocktail extends Model implements UploadableInterface
                 ];
             })->toArray(),
         ];
+    }
+
+    public function share(bool $expanded = false): array
+    {
+        $data = [];
+        $cocktailId = Str::slug($this->name);
+
+        $data['_id'] = $cocktailId;
+        $data['name'] = $this->name;
+        $data['instructions'] = Utils::cleanSpaces($this->instructions);
+        $data['description'] = $this->description ? Utils::cleanSpaces($this->description) : null;
+        $data['garnish'] = $this->garnish;
+        $data['source'] = $this->source;
+        $data['tags'] = $this->tags->pluck('name')->toArray();
+        $data['abv'] = $this->abv;
+
+        if ($this->glass_id) {
+            $data['glass'] = $this->glass->name;
+        }
+
+        if ($this->cocktail_method_id) {
+            $data['method'] = $this->method->name;
+        }
+
+        $data['ingredients'] = $this->ingredients->map(function (CocktailIngredient $cIngredient) {
+            $ingredient = [];
+            $ingredient['_id'] = Str::slug($cIngredient->ingredient->name);
+            $ingredient['sort'] = $cIngredient->sort ?? 0;
+            $ingredient['name'] = $cIngredient->ingredient->name;
+            $ingredient['amount'] = $cIngredient->amount;
+            if ($cIngredient->amount_max) {
+                $ingredient['amount_max'] = $cIngredient->amount_max;
+            }
+            $ingredient['units'] = $cIngredient->units;
+            if ($cIngredient->note) {
+                $ingredient['note'] = $cIngredient->note;
+            }
+            if ((bool) $cIngredient->optional === true) {
+                $ingredient['optional'] = (bool) $cIngredient->optional;
+            }
+
+            if ($cIngredient->substitutes->isNotEmpty()) {
+                $ingredient['substitutes'] = $cIngredient->substitutes->map(function (CocktailIngredientSubstitute $substitute) {
+                    return [
+                        '_id' => Str::slug($substitute->ingredient->name),
+                        'name' => $substitute->ingredient->name,
+                        'amount' => $substitute->amount,
+                        'amount_max' => $substitute->amount_max,
+                        'units' => $substitute->units,
+                    ];
+                })->toArray();
+            }
+
+            return $ingredient;
+        })->toArray();
+
+        $data['images'] = $this->images->map(function (Image $image, int $key) use ($cocktailId) {
+            return [
+                'sort' => $image->sort,
+                'file_name' => $cocktailId . '-' . ($key + 1) . '.' . $image->file_extension,
+                'placeholder_hash' => $image->placeholder_hash,
+                'copyright' => $image->copyright,
+            ];
+        })->toArray();
+
+        return $data;
     }
 
     public function toText(): string

@@ -8,8 +8,9 @@ use Illuminate\Bus\Queueable;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use Illuminate\Queue\SerializesModels;
-use Kami\Cocktail\Import\FromLocalData;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
+use Kami\Cocktail\Import\FromRecipesData;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\Attributes\WithoutRelations;
@@ -33,8 +34,10 @@ class SetupBar implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(FromLocalData $import): void
+    public function handle(FromRecipesData $import): void
     {
-        $import->process($this->bar, $this->user, $this->barOptions);
+        $dataDisk = Storage::disk('data-files');
+
+        $import->process($dataDisk, $this->bar, $this->user, $this->barOptions);
     }
 }

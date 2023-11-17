@@ -15,14 +15,14 @@ class BarImportFromV3Export extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:import-zip {filename?}';
+    protected $signature = 'bar:import-zip {filename?} {--password= : Set a new password for all imported users }';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Import bars exported from another Bar Assistant instance';
+    protected $description = '[Deprecated] Import bars exported from another Bar Assistant instance';
 
     public function __construct(private FromV3Export $exporter)
     {
@@ -34,6 +34,8 @@ class BarImportFromV3Export extends Command
      */
     public function handle(): int
     {
+        $this->alert('This method of importing is not supported anymore and will be deleted in a future versions. You should use bar:import-recipes command instead.');
+
         /** @var \Illuminate\Support\Facades\Storage */
         $disk = Storage::build([
             'driver' => 'local',
@@ -75,7 +77,7 @@ class BarImportFromV3Export extends Command
         }
 
         try {
-            $this->exporter->process($zipFilePath);
+            $this->exporter->process($zipFilePath, $this->option('password') ?? null);
         } catch (Throwable $e) {
             $this->error($e->getMessage());
 
@@ -85,7 +87,7 @@ class BarImportFromV3Export extends Command
         Artisan::call('bar:refresh-search');
         Artisan::call('cache:clear');
 
-        $this->info('Importing finished!');
+        $this->output->success('Importing finished!');
 
         return Command::SUCCESS;
     }

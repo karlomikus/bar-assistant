@@ -10,7 +10,6 @@ use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 
 class BarMaintenance extends Command
@@ -27,7 +26,7 @@ class BarMaintenance extends Command
      *
      * @var string
      */
-    protected $description = 'This will remove unused images, run image compression to save space, fix ingredient sort and refresh cache.';
+    protected $description = 'This will remove unused images, update missing ABVs, fix ingredient sort and refresh cache';
 
     /**
      * Execute the console command.
@@ -38,25 +37,22 @@ class BarMaintenance extends Command
     {
         $barId = (int) $this->argument('barId');
 
-        // Cocktail::with('ingredients.ingredient')->chunk(50, function ($cocktails) {
-        //     foreach ($cocktails as $cocktail) {
-        //         $calculatedAbv = $cocktail->getABV();
-        //         $cocktail->abv = $calculatedAbv;
-        //         $cocktail->save();
-        //     }
-        // });
+        $this->info('Updating cocktail ABVs...');
+        Cocktail::where('bar_id', $barId)->with('ingredients.ingredient')->chunk(50, function ($cocktails) {
+            foreach ($cocktails as $cocktail) {
+                $calculatedAbv = $cocktail->getABV();
+                $cocktail->abv = $calculatedAbv;
+                $cocktail->save();
+            }
+        });
 
         // Fix sort
         $this->info('Fixing cocktail ingredients sort order...');
         $this->fixSort($barId);
 
         // Clear unused images
-        // $this->info('Checking unused images...');
-        // $this->deleteUnusedImages($barId);
-
-        // Optimize images
-        // $this->info('Optimizing images...');
-        // $this->optimizeImages();
+        $this->info('Clearing unused images...');
+        $this->deleteUnusedImages();
 
         // Update indexes
         $this->info('Updating search indexes...');
@@ -65,6 +61,8 @@ class BarMaintenance extends Command
         // Clear cache
         $this->info('Clearing cache...');
         Artisan::call('cache:clear');
+
+        $this->output->success('Done!');
 
         return Command::SUCCESS;
     }
@@ -81,54 +79,28 @@ class BarMaintenance extends Command
         });
     }
 
-    // private function deleteUnusedImages(int $barId): void
-    // {
-    //     $baDisk = Storage::disk('bar-assistant');
-    //     $images = Image::whereNull('imageable_id')->get();
-
-    //     if ($images->isNotEmpty()) {
-    //         $i = 0;
-    //         foreach ($images as $image) {
-    //             try {
-    //                 $i++;
-    //                 $image->delete();
-    //             } catch (Throwable) {
-    //             }
-    //         }
-    //         $this->info('Deleted ' . $i . ' images.');
-    //     }
-
-    //     $tempFiles = $baDisk->files('temp/');
-
-    //     if (count($tempFiles) > 0) {
-    //         $baDisk->delete($tempFiles);
-    //         $this->info('Deleted ' . count($tempFiles) . ' temporary images.');
-    //     }
-    // }
-
-    public function optimizeImages(): void
+    private function deleteUnusedImages(): void
     {
-        $baDisk = Storage::disk('bar-assistant');
+        $baDisk = Storage::disk('uploads');
+        $images = Image::whereNull('imageable_id')->get();
 
-        $cocktailImages = $baDisk->files('cocktails');
-        $ingredientImages = $baDisk->files('ingredients');
-        $paths = array_merge($cocktailImages, $ingredientImages);
-
-        $bar = $this->output->createProgressBar(count($paths));
-        $bar->start();
-        foreach ($paths as $imagePath) {
-            $fullPath = $baDisk->path($imagePath);
-
-            if (mime_content_type($fullPath) === 'image/jpeg') {
-                Process::quietly()->run('jpegoptim ' . escapeshellarg($fullPath) . ' --max=90 -s --all-progressive');
+        if ($images->isNotEmpty()) {
+            $i = 0;
+            foreach ($images as $image) {
+                try {
+                    $i++;
+                    $image->delete();
+                } catch (Throwable) {
+                }
             }
-
-            if (mime_content_type($fullPath) === 'image/png') {
-                Process::quietly()->run('pngquant --quality=80-95 --force --skip-if-larger ' . escapeshellarg($fullPath) . ' --output=' . escapeshellarg($fullPath));
-            }
-
-            $bar->advance();
+            $this->info('Deleted ' . $i . ' images.');
         }
-        $bar->finish();
+
+        $tempFiles = $baDisk->files('temp/');
+
+        if (count($tempFiles) > 0) {
+            $baDisk->delete($tempFiles);
+            $this->info('Deleted ' . count($tempFiles) . ' temporary images.');
+        }
     }
 }

@@ -65,6 +65,11 @@ $ docker compose exec app php artisan storage:link
 $ docker compose exec app php artisan migrate
 ```
 
+5. (Optional) Add bar data
+``` bash
+$ git clone https://github.com/bar-assistant/data.git resources/data
+```
+
 Xdebug vscode launch config:
 ```json
 {

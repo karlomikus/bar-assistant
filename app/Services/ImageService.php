@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Kami\Cocktail\DataObjects\Image as ImageDTO;
 use Intervention\Image\Image as InterventionImage;
-use Kami\Cocktail\Exceptions\ImageUploadException;
 use function Thumbhash\extract_size_and_pixels_with_imagick;
 
 class ImageService
@@ -26,7 +25,7 @@ class ImageService
     public function __construct(
         private readonly LogManager $log,
     ) {
-        $this->disk = Storage::disk('bar-assistant');
+        $this->disk = Storage::disk('uploads');
     }
 
     /**
@@ -35,7 +34,6 @@ class ImageService
      * @param array<ImageDTO> $requestImages
      * @param int $userId
      * @return array<\Kami\Cocktail\Models\Image>
-     * @throws ImageUploadException
      */
     public function uploadAndSaveImages(array $requestImages, int $userId): array
     {

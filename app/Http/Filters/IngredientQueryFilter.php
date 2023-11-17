@@ -8,14 +8,14 @@ use Kami\Cocktail\Models\Ingredient;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Kami\Cocktail\Services\IngredientService;
+use Kami\Cocktail\Repository\IngredientRepository;
 
 /**
  * @mixin \Kami\Cocktail\Models\Ingredient
  */
 final class IngredientQueryFilter extends QueryBuilder
 {
-    public function __construct(IngredientService $ingredientService)
+    public function __construct(IngredientRepository $ingredientQuery)
     {
         parent::__construct(Ingredient::query());
 
@@ -49,9 +49,10 @@ final class IngredientQueryFilter extends QueryBuilder
                 AllowedFilter::callback('strength_max', function ($query, $value) {
                     $query->where('strength', '<=', $value);
                 }),
-                AllowedFilter::callback('main_ingredients', function ($query, $value) use ($ingredientService) {
+                AllowedFilter::callback('main_ingredients', function ($query, $value) use ($ingredientQuery) {
                     if ($value === true) {
-                        $query->whereIn('ingredients.id', $ingredientService->getMainIngredientsInCocktails(bar()->id)->pluck('ingredient_id'));
+                        $ingredients = $ingredientQuery->getMainIngredientsOfCocktails(bar()->id);
+                        $query->whereIn('ingredients.id', $ingredients->pluck('ingredient_id'));
                     }
                 }),
             ])

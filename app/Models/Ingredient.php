@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -136,5 +137,36 @@ class Ingredient extends Model
             'origin' => $this->origin,
             'bar_id' => $this->bar_id,
         ];
+    }
+
+    public function share(): array
+    {
+        $data = [];
+        $ingredientId = Str::slug($this->name);
+
+        $data['_id'] = $ingredientId;
+        if ($this->parent_ingredient_id) {
+            $data['_parent_id'] = Str::slug($this->parentIngredient->name);
+        }
+
+        $data['name'] = $this->name;
+        $data['description'] = $this->description;
+        $data['strength'] = $this->strength;
+        $data['origin'] = $this->origin;
+        $data['color'] = $this->color;
+        $data['category'] = $this->category?->name ?? null;
+
+        if ($this->images->isNotEmpty()) {
+            $data['images'] = $this->images->map(function (Image $image, int $key) use ($ingredientId) {
+                return [
+                    'sort' => $image->sort,
+                    'file_name' => $ingredientId . '-' . ($key + 1) . '.' . $image->file_extension,
+                    'placeholder_hash' => $image->placeholder_hash,
+                    'copyright' => $image->copyright,
+                ];
+            })->toArray();
+        }
+
+        return $data;
     }
 }

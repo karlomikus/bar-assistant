@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Import;
 
 use Exception;
+use Throwable;
 use ZipArchive;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,10 @@ use Illuminate\Support\Facades\Storage;
 
 class FromV3Export
 {
-    public function process(string $zipFilePath): void
+    /**
+     * @deprecated Not to be used anymore
+     */
+    public function process(string $zipFilePath, ?string $defaultPassword = null): void
     {
         $unzipPath = storage_path('bar-assistant/temp/export/import_' . Str::random(8));
         File::ensureDirectoryExists($unzipPath);
@@ -39,10 +43,10 @@ class FromV3Export
         $importVersion = null;
         if ($meta = json_decode(file_get_contents($disk->path('_meta.json')))) {
             $importVersion = $meta->version;
-            // $versionInt = (int) str_replace('.', '', $importVersion);
-            // if ($versionInt < 300) { // TODO
-            //     throw new Exception('Can not import from this version!');
-            // }
+            $currVersion = config('bar-assistant.version');
+            if ($currVersion !== 'develop' && $importVersion !== $currVersion) {
+                throw new Exception('Can not import from this version. Importing should be done with the same version as the export, in this case you should do import on version: ' . $importVersion);
+            }
         }
 
         Log::info(sprintf('Starting import from version "%s"', $importVersion));
@@ -56,22 +60,43 @@ class FromV3Export
 
         DB::statement('PRAGMA foreign_keys = OFF');
 
+        DB::beginTransaction();
+
         DB::table('personal_access_tokens')->truncate();
         DB::table('password_resets')->truncate();
 
-        foreach ($importData as $tableName => $tableData) {
-            DB::table($tableName)->truncate();
+        try {
+            foreach ($importData as $tableName => $tableData) {
+                DB::table($tableName)->truncate();
 
-            if ($tableName === 'users') {
-                $tableData = array_map(function ($row) {
-                    $row['password'] = Hash::needsRehash($row['password']) ? null : $row['password'];
+                if ($tableName === 'users') {
+                    $tableData = array_map(function ($row) use ($defaultPassword) {
+                        if ($defaultPassword !== null) {
+                            $row['password'] = Hash::make($defaultPassword);
+                        }
 
-                    return $row;
-                }, $tableData);
+                        $row['password'] = Hash::needsRehash($row['password']) ? null : $row['password'];
+
+                        if (!$row['password']) {
+                            $row['password'] = Hash::make('12345');
+                        }
+
+                        if (!$row['email']) {
+                            $row['email'] = Str::random(10) . '@bar.temp';
+                        }
+
+                        return $row;
+                    }, $tableData);
+                }
+
+                DB::table($tableName)->insert($tableData);
             }
-
-            DB::table($tableName)->insert($tableData);
+        } catch (Throwable $e) {
+            Log::error($e->getMessage());
+            DB::rollBack();
         }
+
+        DB::commit();
 
         DB::statement('PRAGMA foreign_keys = ON');
 

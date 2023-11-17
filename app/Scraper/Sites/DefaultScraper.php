@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Scraper\Sites;
 
 use Throwable;
 use Brick\Schema\Base;
+use Kami\Cocktail\Utils;
 use Brick\Schema\SchemaReader;
 use Brick\Schema\Interfaces\Recipe;
 use Kami\Cocktail\Scraper\IngredientParser;
@@ -57,7 +58,7 @@ class DefaultScraper extends AbstractSiteExtractor
             $name = '';
         }
 
-        return trim($name);
+        return e(html_entity_decode(trim($name), ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_HTML5));
     }
 
     public function description(): ?string
@@ -165,6 +166,7 @@ class DefaultScraper extends AbstractSiteExtractor
         }
 
         foreach ($ingredients as $ingredient) {
+            $ingredient = e(html_entity_decode($ingredient, ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_HTML5)); // Convert entities to correct chars
             $ingredient = trim($ingredient, " \n\r\t\v\x00\"\'");
             ['amount' => $amount, 'units' => $units, 'name' => $name] = (new IngredientParser($ingredient))->parse();
 
@@ -175,7 +177,7 @@ class DefaultScraper extends AbstractSiteExtractor
             $result[] = [
                 'amount' => $amount,
                 'units' => $units,
-                'name' => $name,
+                'name' => e(Utils::cleanSpaces($name)),
                 'optional' => false,
             ];
         }
