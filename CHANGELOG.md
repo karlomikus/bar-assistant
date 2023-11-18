@@ -1,3 +1,7 @@
+# v3.2.1
+## Changes
+- Improved tag matching, tags are now matched by their lowercase name, and duplicates are ignored
+
 # v3.2.0
 ## New
 - Updated base bar cocktails and ingredients

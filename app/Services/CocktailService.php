@@ -67,15 +67,17 @@ class CocktailService
 
             $dbTags = [];
             foreach ($cocktailDTO->tags as $tagName) {
-                $tag = Tag::firstOrNew([
-                    'name' => trim($tagName),
-                    'bar_id' => $cocktailDTO->barId,
-                ]);
-                $tag->save();
+                $tag = Tag::whereRaw('LOWER(name) = ?', [mb_strtolower(trim($tagName))])->where('bar_id', $cocktailDTO->barId)->first();
+                if (!$tag) {
+                    $tag = new Tag();
+                    $tag->name = trim($tagName);
+                    $tag->bar_id = $cocktailDTO->barId;
+                    $tag->save();
+                }
                 $dbTags[] = $tag->id;
             }
 
-            $cocktail->tags()->attach($dbTags);
+            $cocktail->tags()->attach(array_unique($dbTags));
             $cocktail->utensils()->attach($cocktailDTO->utensils);
         } catch (Throwable $e) {
             $this->log->error('[COCKTAIL_SERVICE] ' . $e->getMessage());
@@ -151,15 +153,17 @@ class CocktailService
 
             $dbTags = [];
             foreach ($cocktailDTO->tags as $tagName) {
-                $tag = Tag::firstOrNew([
-                    'name' => trim($tagName),
-                    'bar_id' => $cocktail->bar_id,
-                ]);
-                $tag->save();
+                $tag = Tag::whereRaw('LOWER(name) = ?', [mb_strtolower(trim($tagName))])->where('bar_id', $cocktail->bar_id)->first();
+                if (!$tag) {
+                    $tag = new Tag();
+                    $tag->name = trim($tagName);
+                    $tag->bar_id = $cocktail->bar_id;
+                    $tag->save();
+                }
                 $dbTags[] = $tag->id;
             }
 
-            $cocktail->tags()->sync($dbTags);
+            $cocktail->tags()->sync(array_unique($dbTags));
             $cocktail->utensils()->sync($cocktailDTO->utensils);
         } catch (Throwable $e) {
             $this->log->error('[COCKTAIL_SERVICE] ' . $e->getMessage());
