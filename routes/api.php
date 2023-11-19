@@ -41,6 +41,8 @@ Route::get('/', [ServerController::class, 'index']);
 
 Route::post('login', [AuthController::class, 'authenticate'])->name('auth.login');
 Route::post('register', [AuthController::class, 'register']);
+Route::post('forgot-password', [AuthController::class, 'passwordForgot']);
+Route::post('reset-password', [AuthController::class, 'passwordReset']);
 
 Route::prefix('server')->group(function() {
     Route::get('/version', [ServerController::class, 'version']);

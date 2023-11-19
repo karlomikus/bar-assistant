@@ -9,6 +9,9 @@ use Kami\Cocktail\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Kami\Cocktail\Mail\PasswordReset;
+use Illuminate\Support\Facades\Password;
 use Kami\Cocktail\Http\Resources\TokenResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\RegisterRequest;
@@ -53,5 +56,49 @@ class AuthController extends Controller
         $user->save();
 
         return new ProfileResource($user);
+    }
+
+    public function passwordForgot(Request $request): JsonResponse
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $status = Password::sendResetLink($request->only('email'), function (User $user, string $token) {
+            Mail::to($user)->queue(new PasswordReset($token));
+
+            return Password::RESET_LINK_SENT;
+        });
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return response()->json(status: 204);
+        }
+
+        return response()->json([
+            'status' => $status
+        ], 400);
+    }
+
+    public function passwordReset(Request $request): JsonResponse
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password) {
+                $user->password = Hash::make($password);
+                $user->save();
+            }
+        );
+
+        if ($status === Password::PASSWORD_RESET) {
+            return response()->json(status: 204);
+        }
+
+        return response()->json([
+            'status' => $status
+        ], 400);
     }
 }
