@@ -1,5 +1,10 @@
-# v3.2.1
+# vTODO
+## New
+- You can now send emails from Bar Assistant if you have the correct settings
+- Added endpoints for password reset and forgot password
+
 ## Changes
+- From now, passwords can't be shorter than 5 chars
 - Improved tag matching, tags are now matched by their lowercase name, and duplicates are ignored
 
 # v3.2.0
