@@ -2,6 +2,9 @@
 ## New
 - You can now send emails from Bar Assistant if you have the correct settings
 - Added endpoints for password reset and forgot password
+- Added `MAIL_REQUIRE_CONFIRMATION` env variable, (`false` by default)
+    - If you enable this, users will have to verify their accounts via link in a email before authenticating
+    - Added GET `/verify/{id}/{hash}` endpoint
 
 ## Changes
 - From now, passwords can't be shorter than 5 chars

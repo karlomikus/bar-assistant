@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=yes">
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no, url=no">
     <meta name="x-apple-disable-message-reformatting">
-    <meta name="color-scheme" content="light dark">
-    <meta name="supported-color-schemes" content="light dark">
     <title></title>
 </head>
 <body>
+    <h2>Bar Assistant</h2>
+    <small>Your personal bar assistant</small>
+    <hr>
     @yield('content')
 </body>
 </html>

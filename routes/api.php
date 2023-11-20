@@ -37,12 +37,18 @@ use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 |
 */
 
+$apiMiddleware = ['auth:sanctum'];
+if (config('bar-assistant.mail_require_confirmation') === true) {
+    $apiMiddleware[] = 'verified';
+}
+
 Route::get('/', [ServerController::class, 'index']);
 
 Route::post('login', [AuthController::class, 'authenticate'])->name('auth.login');
 Route::post('register', [AuthController::class, 'register']);
 Route::post('forgot-password', [AuthController::class, 'passwordForgot']);
 Route::post('reset-password', [AuthController::class, 'passwordReset']);
+Route::get('verify/{id}/{hash}', [AuthController::class, 'confirmAccount'])->name('verification.verify');
 
 Route::prefix('server')->group(function() {
     Route::get('/version', [ServerController::class, 'version']);
@@ -57,8 +63,7 @@ Route::prefix('explore')->group(function() {
     Route::get('/cocktails/{ulid}', [ExploreController::class, 'cocktail']);
 });
 
-Route::middleware('auth:sanctum')->group(function() {
-
+Route::middleware($apiMiddleware)->group(function() {
     Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
 
     Route::get('/profile', [ProfileController::class, 'show']);

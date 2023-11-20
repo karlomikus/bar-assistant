@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Kami\Cocktail\Mail\PasswordReset;
+use Kami\Cocktail\Mail\ConfirmAccount;
 use Illuminate\Support\Facades\Password;
 use Kami\Cocktail\Http\Resources\TokenResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -48,12 +52,30 @@ class AuthController extends Controller
             abort(404, 'Registrations are closed.');
         }
 
+        $requireConfirmation = config('bar-assistant.mail_require_confirmation');
+
         $user = new User();
         $user->name = $req->post('name');
         $user->password = Hash::make($req->post('password'));
         $user->email = $req->post('email');
-        $user->email_verified_at = now();
+        if ($requireConfirmation === false) {
+            $user->email_verified_at = now();
+        }
         $user->save();
+
+        if ($requireConfirmation === true) {
+            $confirmationURL = URL::temporarySignedRoute(
+                'verification.verify',
+                Carbon::now()->addHours(6),
+                [
+                    'id' => $user->id,
+                    'hash' => sha1($user->email),
+                ],
+                false
+            );
+
+            Mail::to($user)->queue(new ConfirmAccount($confirmationURL));
+        }
 
         return new ProfileResource($user);
     }
@@ -100,5 +122,30 @@ class AuthController extends Controller
         return response()->json([
             'status' => $status
         ], 400);
+    }
+
+    public function confirmAccount(Request $request, string $userId, string $hash): JsonResponse
+    {
+        if (config('bar-assistant.mail_require_confirmation') === false) {
+            abort(404);
+        }
+
+        if (!$request->hasValidSignature(false)) {
+            abort(401);
+        }
+
+        $user = User::findOrFail($userId);
+
+        if (!hash_equals(sha1($user->getEmailForVerification()), $hash)) {
+            abort(403);
+        }
+
+        if (!$user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+
+            event(new Verified($user));
+        }
+
+        return response()->json(status: 204);
     }
 }
