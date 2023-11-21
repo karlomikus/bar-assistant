@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
