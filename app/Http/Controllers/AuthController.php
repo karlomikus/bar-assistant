@@ -94,9 +94,7 @@ class AuthController extends Controller
             return response()->json(status: 204);
         }
 
-        return response()->json([
-            'status' => $status
-        ], 400);
+        abort(400);
     }
 
     public function passwordReset(Request $request): JsonResponse
@@ -119,9 +117,7 @@ class AuthController extends Controller
             return response()->json(status: 204);
         }
 
-        return response()->json([
-            'status' => $status
-        ], 400);
+        abort(400, $status);
     }
 
     public function confirmAccount(Request $request, string $userId, string $hash): JsonResponse
