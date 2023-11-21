@@ -9,6 +9,7 @@ use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Tag;
 use Kami\Cocktail\Models\User;
 use Symfony\Component\Yaml\Yaml;
+use Kami\Cocktail\Models\Utensil;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\File;
@@ -176,6 +177,7 @@ class FromRecipesData
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
+        $dbUtensils = DB::table('utensils')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $existingCocktails = DB::table('cocktails')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(function ($cocktail) {
             return Str::slug($cocktail->name);
         });
@@ -183,6 +185,7 @@ class FromRecipesData
         $cocktailIngredientsToInsert = [];
         $imagesToInsert = [];
         $tagsToInsert = [];
+        $cocktailUtensilsToInsert = [];
         $barImagesDir = 'cocktails/' . $bar->id . '/';
         $uploadsDisk->makeDirectory($barImagesDir);
 
@@ -216,6 +219,17 @@ class FromRecipesData
                 ]);
                 $tagsToInsert[] = [
                     'tag_id' => $tag->id,
+                    'cocktail_id' => $cocktailId,
+                ];
+            }
+
+            foreach ($cocktail['utensils'] as $utensil) {
+                $utensil = Utensil::firstOrCreate([
+                    'name' => trim($utensil),
+                    'bar_id' => $bar->id,
+                ]);
+                $cocktailUtensilsToInsert[] = [
+                    'utensil_id' => $utensil->id,
                     'cocktail_id' => $cocktailId,
                 ];
             }
