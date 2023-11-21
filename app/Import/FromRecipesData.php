@@ -212,7 +212,7 @@ class FromRecipesData
                 'updated_at' => null,
             ]);
 
-            foreach ($cocktail['tags'] as $tag) {
+            foreach ($cocktail['tags'] ?? [] as $tag) {
                 $tag = Tag::firstOrCreate([
                     'name' => trim($tag),
                     'bar_id' => $bar->id,
@@ -223,7 +223,7 @@ class FromRecipesData
                 ];
             }
 
-            foreach ($cocktail['utensils'] as $utensil) {
+            foreach ($cocktail['utensils'] ?? [] as $utensil) {
                 $utensil = Utensil::firstOrCreate([
                     'name' => trim($utensil),
                     'bar_id' => $bar->id,
