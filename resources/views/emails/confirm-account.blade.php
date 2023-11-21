@@ -1,7 +1,11 @@
-@extends('emails.master')
+<x-mail::message>
+# Welcome to Bar Assistant
 
-@section('content')
-<p>Please confirm your email address by clicking the link below.</p>
-<a href="{{ $url }}">Confirm email address</a>
-<p>If you did not create an account, no further action is required.</p>
-@endsection
+Please confirm your email address by clicking the link below.
+
+<x-mail::button :url="$url">
+Confirm email address
+</x-mail::button>
+
+If you did not create an account, no further action is required.
+</x-mail::message>

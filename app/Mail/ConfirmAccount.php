@@ -36,7 +36,7 @@ class ConfirmAccount extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.confirm-account',
+            markdown: 'emails.confirm-account',
         );
     }
 
