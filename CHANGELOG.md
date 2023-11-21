@@ -1,14 +1,31 @@
 # vTODO
 ## New
 - You can now send emails from Bar Assistant if you have the correct settings
-- Added endpoints for password reset and forgot password
+    - To setup SMTP, add the following to your ENV variables:
+        - `MAIL_HOST=`
+        - `MAIL_PORT=`
+        - `MAIL_ENCRYPTION=`
+        - `MAIL_USERNAME=`
+        - `MAIL_PASSWORD=`
+        - `MAIL_EHLO_DOMAIN=`
+    - To request [other drivers that Laravel supports](https://laravel.com/docs/10.x/mail#configuration), open a new github issue
+- Added POST `/forgot-password` endpoint
+    - You can use this endpoint to request a password change email
+- Added POST `/reset-password` endpoint
+    - You can use this endpoint to reset the password with confirmation key from the email
 - Added `MAIL_REQUIRE_CONFIRMATION` env variable, (`false` by default)
     - If you enable this, users will have to verify their accounts via link in a email before authenticating
+    <!-- - To properly generate a URL, you also need to add a new ENV variable that -->
     - Added GET `/verify/{id}/{hash}` endpoint
 
 ## Changes
+- Enabled sqlite WAL mode
 - From now, passwords can't be shorter than 5 chars
 - Improved tag matching, tags are now matched by their lowercase name, and duplicates are ignored
+
+## Fixes
+- Added utensils to exported recipes
+- Fixed cocktail utensil migration from v2
 
 # v3.2.0
 ## New
