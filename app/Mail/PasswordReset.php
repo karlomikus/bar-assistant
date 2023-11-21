@@ -17,7 +17,10 @@ class PasswordReset extends Mailable
      */
     public function __construct(public string $token)
     {
-        //
+        $mailConfirmUrl = config('bar-assistant.mail_confirm_url');
+        if ($mailConfirmUrl) {
+            $this->token = str_replace('[token]', $token, config('bar-assistant.mail_reset_url'));
+        }
     }
 
     /**

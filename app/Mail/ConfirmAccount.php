@@ -12,12 +12,20 @@ class ConfirmAccount extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public string $url;
+
     /**
      * Create a new message instance.
      */
-    public function __construct(public string $url)
+    public function __construct(int $userId, string $hash)
     {
-        //
+        $mailResetUrl = config('bar-assistant.mail_confirm_url');
+        if ($mailResetUrl) {
+            $this->url = str_replace('[id]', (string) $userId, $mailResetUrl);
+            $this->url = str_replace('[hash]', $hash, $this->url);
+        } else {
+            $this->url = '';
+        }
     }
 
     /**

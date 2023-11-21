@@ -64,17 +64,7 @@ class AuthController extends Controller
         $user->save();
 
         if ($requireConfirmation === true) {
-            $confirmationURL = URL::temporarySignedRoute(
-                'verification.verify',
-                Carbon::now()->addHours(6),
-                [
-                    'id' => $user->id,
-                    'hash' => sha1($user->email),
-                ],
-                false
-            );
-
-            Mail::to($user)->queue(new ConfirmAccount($confirmationURL));
+            Mail::to($user)->queue(new ConfirmAccount($user->id, sha1($user->email)));
         }
 
         return new ProfileResource($user);
@@ -120,14 +110,10 @@ class AuthController extends Controller
         abort(400, $status);
     }
 
-    public function confirmAccount(Request $request, string $userId, string $hash): JsonResponse
+    public function confirmAccount(string $userId, string $hash): JsonResponse
     {
         if (config('bar-assistant.mail_require_confirmation') === false) {
             abort(404);
-        }
-
-        if (!$request->hasValidSignature(false)) {
-            abort(401);
         }
 
         $user = User::findOrFail($userId);
