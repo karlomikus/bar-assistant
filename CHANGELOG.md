@@ -22,6 +22,7 @@
 - Enabled sqlite WAL mode
 - From now, passwords can't be shorter than 5 chars
 - Improved tag matching, tags are now matched by their lowercase name, and duplicates are ignored
+- Removed some properties from a public cocktail endpoint response: `main_image_id`, `images.file_path`, `images.id`.
 
 ## Fixes
 - Added utensils to exported recipes

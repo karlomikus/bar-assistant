@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
+use Kami\Cocktail\Models\Image;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -33,8 +34,14 @@ class ExploreCocktailResource extends JsonResource
             'glass' => $this->glass->name ?? null,
             'utensils' => $this->utensils->pluck('name'),
             'method' => $this->method->name ?? null,
-            'main_image_id' => $this->images->sortBy('sort')->first()->id ?? null,
-            'images' => ImageResource::collection($this->images),
+            'images' => $this->images->map(function (Image $image) {
+                return [
+                    'sort' => $image->sort,
+                    'placeholder_hash' => $image->placeholder_hash,
+                    'url' => $image->getImageUrl(),
+                    'copyright' => $image->copyright,
+                ];
+            }),
             'abv' => $this->abv,
             'ingredients' => $this->ingredients->map(function ($cocktailIngredient) {
                 return [
