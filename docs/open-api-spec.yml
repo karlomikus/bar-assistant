@@ -2490,6 +2490,67 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /forgot-password:
+    post:
+      tags:
+        - Auth
+      summary: Request a new user password
+      operationId: forgotPassword
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordForgotRequest'
+      responses:
+        '204':
+          description: Password forgot request successful
+        '400':
+          description: Password forgot request failed
+  /reset-password:
+    post:
+      tags:
+        - Auth
+      summary: Reset user password
+      operationId: resetPassword
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+      responses:
+        '204':
+          description: Password reset successful
+        '400':
+          description: Password reset failed
+  /verify/{id}/{hash}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a user'
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: hash
+        description: 'Hash string sent to user email'
+        schema:
+          type: string
+        required: true
+    get:
+      tags:
+        - Auth
+      summary: Verify user account
+      operationId: verifyAccount
+      security: []
+      responses:
+        '204':
+          description: Account confirmed
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -3778,6 +3839,8 @@ components:
           example: true
         options:
           type: array
+          items:
+            type: string
           example: ['cocktails', 'ingredients']
     CocktailPublic:
       type: object
@@ -3835,3 +3898,31 @@ components:
         is_shelf_public:
           type: integer
           example: false
+    PasswordForgotRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          example: user@bar.com
+    PasswordResetRequest:
+      type: object
+      required:
+        - token
+        - email
+        - password
+        - password_confirmation
+      properties:
+        token:
+          type: string
+          example: Dn8bg6Uy5TyMTlU7B0JV
+        email:
+          type: string
+          example: user@bar.com
+        password:
+          type: string
+          example: mynewpassword
+        password_confirmation:
+          type: string
+          example: mynewpassword
