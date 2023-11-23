@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Import\FromRecipesData;
-use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 
 class BarImportRecipes extends Command
 {
@@ -88,6 +87,8 @@ class BarImportRecipes extends Command
         }
 
         if (!$this->confirm('Continue with importing the data?')) {
+            $tempUnzipDisk->deleteDirectory('/');
+
             return Command::FAILURE;
         }
 

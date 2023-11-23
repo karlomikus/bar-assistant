@@ -216,6 +216,17 @@ class FromVersion2
             }
             DB::table('cocktail_tag')->insert($newCocktailTags);
 
+            // Migrate cocktail utensils
+            $newCocktailUtensils = [];
+            $oldCocktailUtensils = $backupDB->table('cocktail_utensil')->get();
+            foreach ($oldCocktailUtensils as $row) {
+                $newCocktailUtensils[] = [
+                    'cocktail_id' => $newCocktails[$row->cocktail_id],
+                    'utensil_id' => $newTags[$row->utensil_id],
+                ];
+            }
+            DB::table('cocktail_utensil')->insert($newCocktailUtensils);
+
             // Migrate cocktail favorites
             $newCocktailFavorites = [];
             $oldCocktailFavorites = $backupDB->table('cocktail_favorites')->get();

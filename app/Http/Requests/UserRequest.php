@@ -41,7 +41,7 @@ class UserRequest extends FormRequest
         ];
 
         if ($this->isMethod('POST')) {
-            $rules['password'] = 'required';
+            $rules['password'] = 'required|min:5';
             $rules['email'][] = Rule::unique('users', 'email');
         }
 

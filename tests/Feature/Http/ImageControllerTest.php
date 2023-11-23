@@ -26,7 +26,7 @@ class ImageControllerTest extends TestCase
 
     public function test_single_image_upload(): void
     {
-        Storage::fake('bar-assistant');
+        Storage::fake('uploads');
         $response = $this->post('/api/images', [
             'images' => [
                 [
@@ -48,12 +48,12 @@ class ImageControllerTest extends TestCase
 
         $filename = $response->json('data.0.file_path');
 
-        Storage::disk('bar-assistant')->assertExists($filename);
+        Storage::disk('uploads')->assertExists($filename);
     }
 
     public function test_multiple_image_upload(): void
     {
-        Storage::fake('bar-assistant');
+        Storage::fake('uploads');
         $response = $this->post('/api/images', [
             'images' => [
                 [
@@ -83,14 +83,14 @@ class ImageControllerTest extends TestCase
             });
         });
 
-        Storage::disk('bar-assistant')->assertExists($response->json('data.0.file_path'));
-        Storage::disk('bar-assistant')->assertExists($response->json('data.1.file_path'));
-        Storage::disk('bar-assistant')->assertExists($response->json('data.2.file_path'));
+        Storage::disk('uploads')->assertExists($response->json('data.0.file_path'));
+        Storage::disk('uploads')->assertExists($response->json('data.1.file_path'));
+        Storage::disk('uploads')->assertExists($response->json('data.2.file_path'));
     }
 
     public function test_multiple_image_upload_fails(): void
     {
-        Storage::fake('bar-assistant');
+        Storage::fake('uploads');
         $response = $this->post('/api/images', [
             'images' => [
                 [
@@ -144,11 +144,11 @@ class ImageControllerTest extends TestCase
 
     public function test_image_thumb(): void
     {
-        Storage::fake('bar-assistant');
+        Storage::fake('uploads');
         $imageFile = UploadedFile::fake()->image('image1.jpg');
 
         $cocktailImage = Image::factory()->for(Cocktail::factory(), 'imageable')->create([
-            'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'bar-assistant'),
+            'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'uploads'),
             'file_extension' => $imageFile->extension(),
             'created_user_id' => auth()->user()->id
         ]);
@@ -161,10 +161,10 @@ class ImageControllerTest extends TestCase
     public function test_image_update(): void
     {
         $bar = $this->setupBar();
-        Storage::fake('bar-assistant');
+        Storage::fake('uploads');
         $imageFile = UploadedFile::fake()->image('image1.jpg');
         $cocktailImage = Image::factory()->for(Cocktail::factory()->create(['bar_id' => $bar->id]), 'imageable')->create([
-            'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'bar-assistant'),
+            'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'uploads'),
             'file_extension' => $imageFile->extension(),
             'copyright' => 'initial',
             'sort' => 7,
@@ -198,10 +198,10 @@ class ImageControllerTest extends TestCase
 
     public function test_image_update_fails(): void
     {
-        Storage::fake('bar-assistant');
+        Storage::fake('uploads');
         $imageFile = UploadedFile::fake()->image('image1.jpg');
         $cocktailImage = Image::factory()->for(Cocktail::factory(), 'imageable')->create([
-            'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'bar-assistant'),
+            'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'uploads'),
             'file_extension' => $imageFile->extension(),
             'copyright' => 'initial',
             'sort' => 7,

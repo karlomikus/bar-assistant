@@ -91,6 +91,7 @@ class Utils
     {
         $str = mb_convert_encoding($str, 'UTF-8', mb_detect_encoding($str));
         $str = str_replace("&nbsp;", " ", $str);
+        $str = str_replace("&quot;", "", $str);
         $str = str_replace(" ", " ", $str);
 
         return $str;

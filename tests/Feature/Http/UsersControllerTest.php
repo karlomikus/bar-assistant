@@ -69,7 +69,7 @@ class UsersControllerTest extends TestCase
         $response = $this->postJson('/api/users?bar_id=1', [
             'name' => 'Test',
             'email' => 'test@test.com',
-            'password' => 'TEST',
+            'password' => 'TEST1',
             'role_id' => UserRoleEnum::Admin->value,
         ]);
 
@@ -124,6 +124,12 @@ class UsersControllerTest extends TestCase
 
         $response->assertNoContent();
 
-        $this->assertDatabaseMissing('users', ['id' => $user->id]);
+        $this->assertDatabaseMissing('bar_memberships', ['user_id' => $user->id]);
+        $anonUser = DB::table('users')->find($user->id);
+        $this->assertSame('Deleted User', $anonUser->name);
+        $this->assertSame('deleted', $anonUser->password);
+        $this->assertTrue(str_starts_with($anonUser->email, 'userdeleted'));
+        $this->assertNull($anonUser->email_verified_at);
+        $this->assertNull($anonUser->remember_token);
     }
 }

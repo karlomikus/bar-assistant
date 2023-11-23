@@ -55,4 +55,17 @@ return [
 
     'max_default_bars' => env('MAX_USER_BARS', 50),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Mail confirmation
+    |--------------------------------------------------------------------------
+    |
+    | Require user to confirm email before accesing the application
+    |
+    */
+
+    'mail_require_confirmation' => env('MAIL_REQUIRE_CONFIRMATION', false),
+
+    'mail_reset_url' => env('MAIL_RESET_URL', null),
+    'mail_confirm_url' => env('MAIL_CONFIRM_URL', null),
 ];

@@ -329,6 +329,10 @@ class Cocktail extends Model implements UploadableInterface
             return $ingredient;
         })->toArray();
 
+        if ($this->utensils->isNotEmpty()) {
+            $data['utensils'] = $this->utensils->pluck('name')->toArray();
+        }
+
         $data['images'] = $this->images->map(function (Image $image, int $key) use ($cocktailId) {
             return [
                 'sort' => $image->sort,
