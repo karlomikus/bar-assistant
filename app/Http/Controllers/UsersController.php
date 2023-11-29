@@ -104,6 +104,10 @@ class UsersController extends Controller
         $user->makeAnonymous();
         $user->save();
 
+        if ($user->subscription()) {
+            $user->subscription()->cancelNow();
+        }
+
         return response(null, 204);
     }
 }
