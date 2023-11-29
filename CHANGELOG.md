@@ -1,13 +1,12 @@
 # v3.3.0 📧
 ## New
 - You can now send emails from Bar Assistant if you have the correct settings
-    - To setup SMTP, add the following to your ENV variables:
+    - To configure SMTP, set the following ENV variables:
         - `MAIL_HOST=`
         - `MAIL_PORT=`
         - `MAIL_ENCRYPTION=`
         - `MAIL_USERNAME=`
         - `MAIL_PASSWORD=`
-        - `MAIL_EHLO_DOMAIN=`
     - To request [other drivers that Laravel supports](https://laravel.com/docs/10.x/mail#configuration), open a new github issue
 - Added POST `/forgot-password` endpoint
     - You can use this endpoint to request a password change email
