@@ -19,6 +19,7 @@
     - You must set the confirmation URL by setting `MAIL_CONFIRM_URL` env variable
         - For example: `MAIL_CONFIRM_URL="https://bar.local/confirmation/[id]/[hash]"`
     - Added GET `/verify/{id}/{hash}` endpoint
+- More information about email settings will be added to docs
 
 ## Changes
 - Enabled sqlite WAL mode
