@@ -26,6 +26,9 @@ start_system() {
 
     php artisan migrate --force --isolated
 
+    # Enable WAL mode
+    sqlite3 "$DB_DATABASE" 'pragma journal_mode=wal;'
+
     php artisan bar:refresh-search --clear
 
     echo "Adding routes and config to cache..."

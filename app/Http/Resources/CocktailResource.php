@@ -31,7 +31,7 @@ class CocktailResource extends JsonResource
             'source' => $this->source,
             'public_id' => $this->public_id,
             'public_at' => $this->public_at?->toJson() ?? null,
-            'main_image_id' => $this->images->sortBy('sort')->first()->id ?? null,
+            'main_image_id' => $this->images->sortBy('sort')->first()->id ?? null, // deprecate
             'images' => ImageResource::collection($this->images),
             'tags' => $this->tags->map(function ($tag) {
                 return [

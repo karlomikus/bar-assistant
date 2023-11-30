@@ -69,7 +69,7 @@ class UsersControllerTest extends TestCase
         $response = $this->postJson('/api/users?bar_id=1', [
             'name' => 'Test',
             'email' => 'test@test.com',
-            'password' => 'TEST',
+            'password' => 'TEST1',
             'role_id' => UserRoleEnum::Admin->value,
         ]);
 
