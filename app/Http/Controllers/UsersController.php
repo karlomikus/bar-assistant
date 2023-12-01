@@ -9,6 +9,8 @@ use Illuminate\Http\Response;
 use Kami\Cocktail\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Kami\Cocktail\Mail\ConfirmAccount;
 use Kami\Cocktail\Http\Requests\UserRequest;
 use Kami\Cocktail\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -51,6 +53,7 @@ class UsersController extends Controller
             abort(403);
         }
 
+        $requireConfirmation = config('bar-assistant.mail_require_confirmation');
         $roleId = $request->post('role_id');
         $email = $request->post('email');
 
@@ -60,7 +63,14 @@ class UsersController extends Controller
             $user->name = $request->post('name');
             $user->email = $request->post('email');
             $user->password = Hash::make($request->post('password'));
+            if ($requireConfirmation === false) {
+                $user->email_verified_at = now();
+            }
             $user->save();
+        }
+
+        if ($requireConfirmation === true) {
+            Mail::to($user)->queue(new ConfirmAccount($user->id, sha1($user->email)));
         }
 
         bar()->users()->save($user, ['user_role_id' => $roleId]);

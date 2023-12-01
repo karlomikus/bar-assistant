@@ -27,17 +27,17 @@ class DiffordsGuideScraperTest extends TestCase
         $this->assertSame('https://cdn.diffords.com/contrib/stock-images/2019/06/5cfa92d91f3eb.jpg', $result['images'][0]['url']);
         $this->assertSame('Simon Difford', $result['images'][0]['copyright']);
 
-        $this->assertSame(30, $result['ingredients'][0]['amount']);
+        $this->assertSame(30.0, $result['ingredients'][0]['amount']);
         $this->assertSame('ml', $result['ingredients'][0]['units']);
         $this->assertSame('Gin', $result['ingredients'][0]['name']);
         $this->assertSame(false, $result['ingredients'][0]['optional']);
 
-        $this->assertSame(30, $result['ingredients'][1]['amount']);
+        $this->assertSame(30.0, $result['ingredients'][1]['amount']);
         $this->assertSame('ml', $result['ingredients'][1]['units']);
         $this->assertSame('Campari or other red bitter liqueur', $result['ingredients'][1]['name']);
         $this->assertSame(false, $result['ingredients'][1]['optional']);
 
-        $this->assertSame(30, $result['ingredients'][2]['amount']);
+        $this->assertSame(30.0, $result['ingredients'][2]['amount']);
         $this->assertSame('ml', $result['ingredients'][2]['units']);
         $this->assertSame('Vermouth - Rosso/rouge  vermouth', $result['ingredients'][2]['name']);
         $this->assertSame(false, $result['ingredients'][2]['optional']);

@@ -27,12 +27,12 @@ class LiberAndCoScraperTest extends TestCase
         $this->assertSame('https://www.liberandcompany.com/cdn/shop/files/StrawberryNegroni2000_1200x.jpg?v=1690574513', $result['images'][0]['url']);
         $this->assertSame('LiberAndCo', $result['images'][0]['copyright']);
 
-        $this->assertSame(15, $result['ingredients'][0]['amount']);
+        $this->assertSame(15.0, $result['ingredients'][0]['amount']);
         $this->assertSame('ml', $result['ingredients'][0]['units']);
         $this->assertSame('Pacific Strawberry Syrup', $result['ingredients'][0]['name']);
         $this->assertSame(false, $result['ingredients'][0]['optional']);
 
-        $this->assertSame(30, $result['ingredients'][1]['amount']);
+        $this->assertSame(30.0, $result['ingredients'][1]['amount']);
         $this->assertSame('ml', $result['ingredients'][1]['units']);
         $this->assertSame('Gin', $result['ingredients'][1]['name']);
         $this->assertSame(false, $result['ingredients'][1]['optional']);
@@ -42,7 +42,7 @@ class LiberAndCoScraperTest extends TestCase
         $this->assertSame('Campari', $result['ingredients'][2]['name']);
         $this->assertSame(false, $result['ingredients'][2]['optional']);
 
-        $this->assertSame(15, $result['ingredients'][3]['amount']);
+        $this->assertSame(15.0, $result['ingredients'][3]['amount']);
         $this->assertSame('ml', $result['ingredients'][3]['units']);
         $this->assertSame('Vermouth', $result['ingredients'][3]['name']);
         $this->assertSame(false, $result['ingredients'][3]['optional']);

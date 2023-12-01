@@ -27,17 +27,17 @@ class CocktailClubScraperTest extends TestCase
         $this->assertSame('https://embed-ssl.wistia.com/deliveries/7e5f5642fbaf503f1a41bae6957bc77f.jpg?image_crop_resized=1280x800', $result['images'][0]['url']);
         $this->assertSame('Cocktail Club', $result['images'][0]['copyright']);
 
-        $this->assertSame(25, $result['ingredients'][0]['amount']);
+        $this->assertSame(25.0, $result['ingredients'][0]['amount']);
         $this->assertSame('ml', $result['ingredients'][0]['units']);
         $this->assertSame('Gin', $result['ingredients'][0]['name']);
         $this->assertSame(false, $result['ingredients'][0]['optional']);
 
-        $this->assertSame(25, $result['ingredients'][1]['amount']);
+        $this->assertSame(25.0, $result['ingredients'][1]['amount']);
         $this->assertSame('ml', $result['ingredients'][1]['units']);
         $this->assertSame('Aperitivo Bitters', $result['ingredients'][1]['name']);
         $this->assertSame(false, $result['ingredients'][1]['optional']);
 
-        $this->assertSame(25, $result['ingredients'][2]['amount']);
+        $this->assertSame(25.0, $result['ingredients'][2]['amount']);
         $this->assertSame('ml', $result['ingredients'][2]['units']);
         $this->assertSame('Sweet Vermouth', $result['ingredients'][2]['name']);
         $this->assertSame(false, $result['ingredients'][2]['optional']);

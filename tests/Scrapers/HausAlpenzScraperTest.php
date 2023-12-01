@@ -27,17 +27,17 @@ class HausAlpenzScraperTest extends TestCase
         $this->assertSame('https://alpenz-recipes-managed.s3.amazonaws.com/ikfCvvprSL.drink-photo.jpg', $result['images'][0]['url']);
         $this->assertSame('Haus Alpenz', $result['images'][0]['copyright']);
 
-        $this->assertSame(30, $result['ingredients'][0]['amount']);
+        $this->assertSame(30.0, $result['ingredients'][0]['amount']);
         $this->assertSame('ml', $result['ingredients'][0]['units']);
         $this->assertSame('Hayman\'s London Dry Gin', $result['ingredients'][0]['name']);
         $this->assertSame(false, $result['ingredients'][0]['optional']);
 
-        $this->assertSame(30, $result['ingredients'][1]['amount']);
+        $this->assertSame(30.0, $result['ingredients'][1]['amount']);
         $this->assertSame('ml', $result['ingredients'][1]['units']);
         $this->assertSame('Cocchi Americano Rosa', $result['ingredients'][1]['name']);
         $this->assertSame(false, $result['ingredients'][1]['optional']);
 
-        $this->assertSame(30, $result['ingredients'][2]['amount']);
+        $this->assertSame(30.0, $result['ingredients'][2]['amount']);
         $this->assertSame('ml', $result['ingredients'][2]['units']);
         $this->assertSame('Aperitivo Cappelletti', $result['ingredients'][2]['name']);
         $this->assertSame(false, $result['ingredients'][2]['optional']);

@@ -1,3 +1,7 @@
+# v3.3.1
+## Fixes
+- Add missing mail confirmation when creating a user via `users` endpoint
+
 # v3.3.0 📧
 ## New
 - You can now send emails from Bar Assistant if you have the correct settings
