@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
-use Kami\Cocktail\Utils;
-use Kami\Cocktail\Scraper\IngredientParser;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class HausAlpenz extends AbstractSiteExtractor
@@ -79,14 +78,12 @@ class HausAlpenz extends AbstractSiteExtractor
     {
         $result = [];
         $this->crawler->filter("p.measure")->each(function ($node) use (&$result) {
-            $parsedIngredient = (new IngredientParser($node->text()))->parse();
-
-            ['amount' => $amount, 'units' => $units] = Utils::parseIngredientAmount($parsedIngredient['amount'] . ' ' . $parsedIngredient['units']);
+            $recipeIngredient = $this->ingredientParser->parseWithUnits($node->text(), Units::Ml);
 
             $result[] = [
-                'amount' => $amount,
-                'units' => $units,
-                'name' => $parsedIngredient['name'],
+                'amount' => $recipeIngredient->amount,
+                'units' => $recipeIngredient->units,
+                'name' => $recipeIngredient->name,
                 'optional' => false,
             ];
         });

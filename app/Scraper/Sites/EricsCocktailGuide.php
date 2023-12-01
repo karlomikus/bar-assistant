@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
-use Kami\Cocktail\Utils;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class EricsCocktailGuide extends AbstractSiteExtractor
@@ -54,12 +54,11 @@ class EricsCocktailGuide extends AbstractSiteExtractor
             $amount = $node->filter('span')->first()->text();
             $units = trim($node->filterXPath('node()/text()')->text());
             $name = $node->filter('a')->text();
-
-            ['amount' => $amount, 'units' => $units] = Utils::parseIngredientAmount($amount . ' ' . $units);
+            $recipeIngredient = $this->ingredientParser->parseWithUnits($amount . ' ' . $units, Units::Ml);
 
             $result[] = [
-                'amount' => $amount,
-                'units' => $units,
+                'amount' => $recipeIngredient->amount,
+                'units' => $recipeIngredient->units,
                 'name' => ucfirst($name),
                 'optional' => false,
             ];
