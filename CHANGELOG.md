@@ -1,3 +1,7 @@
+# x.x.x
+## Fixes
+- Bars can only be deleted by a bar owner/creator
+
 # v3.3.1
 ## Fixes
 - Add missing mail confirmation when creating a user via `users` endpoint

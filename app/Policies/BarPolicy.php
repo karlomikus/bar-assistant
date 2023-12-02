@@ -29,7 +29,7 @@ class BarPolicy
 
     public function delete(User $user, Bar $bar): bool
     {
-        return $user->isBarAdmin($bar->id);
+        return $user->id === $bar->owner()->id;
     }
 
     public function deleteMembership(User $user, Bar $bar): bool

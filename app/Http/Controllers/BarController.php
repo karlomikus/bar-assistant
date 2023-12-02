@@ -159,4 +159,18 @@ class BarController extends Controller
 
         return BarMembershipResource::collection($bar->memberships);
     }
+
+    public function transfer(Request $request, int $id): JsonResponse
+    {
+        $bar = Bar::findOrFail($id);
+
+        if ((int) $request->user()->id !== (int) $bar->created_user_id) {
+            abort(400);
+        }
+
+        $bar->created_user_id = (int) $request->post('user_id');
+        $bar->save();
+
+        return response()->json(status: 204);
+    }
 }
