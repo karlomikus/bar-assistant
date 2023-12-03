@@ -49,6 +49,11 @@ class Bar extends Model
         return $this->hasMany(Ingredient::class);
     }
 
+    public function owner(): User
+    {
+        return $this->createdUser;
+    }
+
     public function delete(): ?bool
     {
         /** @var ImageService */

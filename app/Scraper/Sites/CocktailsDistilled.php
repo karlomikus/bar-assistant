@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
-use Kami\Cocktail\Scraper\IngredientParser;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class CocktailsDistilled extends AbstractSiteExtractor
@@ -56,7 +56,9 @@ class CocktailsDistilled extends AbstractSiteExtractor
                 $amount = (int) str_replace('ml', '', $measureMl);
                 $units = 'ml';
             } else {
-                ['amount' => $amount, 'units' => $units] = (new IngredientParser($measureMl))->parse();
+                $recipeIngredient = $this->ingredientParser->parseWithUnits($measureMl, Units::Ml);
+                $amount = $recipeIngredient->amount;
+                $units = $recipeIngredient->units;
             }
 
             $result[] = [

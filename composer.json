@@ -9,7 +9,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
         "intervention/image": "^2.7",
-        "karlomikus/recipe-utils": "^0.3.0",
+        "karlomikus/recipe-utils": "^0.7.0",
         "laravel/cashier-paddle": "2.0.0-alpha.3",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",

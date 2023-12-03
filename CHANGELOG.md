@@ -1,13 +1,20 @@
+# x.x.x
+## Fixes
+- Bars can only be deleted by a bar owner/creator
+
+# v3.3.1
+## Fixes
+- Add missing mail confirmation when creating a user via `users` endpoint
+
 # v3.3.0 📧
 ## New
 - You can now send emails from Bar Assistant if you have the correct settings
-    - To setup SMTP, add the following to your ENV variables:
+    - To configure SMTP, set the following ENV variables:
         - `MAIL_HOST=`
         - `MAIL_PORT=`
         - `MAIL_ENCRYPTION=`
         - `MAIL_USERNAME=`
         - `MAIL_PASSWORD=`
-        - `MAIL_EHLO_DOMAIN=`
     - To request [other drivers that Laravel supports](https://laravel.com/docs/10.x/mail#configuration), open a new github issue
 - Added POST `/forgot-password` endpoint
     - You can use this endpoint to request a password change email
@@ -20,6 +27,7 @@
     - You must set the confirmation URL by setting `MAIL_CONFIRM_URL` env variable
         - For example: `MAIL_CONFIRM_URL="https://bar.local/confirmation/[id]/[hash]"`
     - Added GET `/verify/{id}/{hash}` endpoint
+- More information about email settings will be added to docs
 
 ## Changes
 - Enabled sqlite WAL mode

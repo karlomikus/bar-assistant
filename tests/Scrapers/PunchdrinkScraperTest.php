@@ -25,12 +25,12 @@ class PunchdrinkScraperTest extends TestCase
         $this->assertSame('https://assets-prd.punchdrink.com/wp-content/uploads/2018/10/Article-Milano-Torino-Italian-Aperitivo-Negroni-Cocktail-Recipe-Dante-NYC-1000x617.jpg', $result['images'][0]['url']);
         $this->assertSame('Punch Staff | Lizzie Munro', $result['images'][0]['copyright']);
 
-        $this->assertSame(30, $result['ingredients'][0]['amount']);
+        $this->assertSame(30.0, $result['ingredients'][0]['amount']);
         $this->assertSame('ml', $result['ingredients'][0]['units']);
         $this->assertSame('Campari', $result['ingredients'][0]['name']);
         $this->assertSame(false, $result['ingredients'][0]['optional']);
 
-        $this->assertSame(30, $result['ingredients'][1]['amount']);
+        $this->assertSame(30.0, $result['ingredients'][1]['amount']);
         $this->assertSame('ml', $result['ingredients'][1]['units']);
         $this->assertSame('Vermouth di Torino', $result['ingredients'][1]['name']);
         $this->assertSame(false, $result['ingredients'][1]['optional']);
