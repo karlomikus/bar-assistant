@@ -27,7 +27,8 @@ class UsersController extends Controller
             ->select('users.*')
             ->join('bar_memberships', 'bar_memberships.user_id', '=', 'users.id')
             ->where('bar_memberships.bar_id', bar()->id)
-            ->get();
+            ->get()
+            ->load('memberships.role');
 
         return UserResource::collection($users);
     }

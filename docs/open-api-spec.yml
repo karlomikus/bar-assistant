@@ -245,6 +245,9 @@ paths:
             user_shelves:
               type: string
               example: "7"
+            ignore_ingredients:
+              type: string
+              example: "5,7,9"
       - in: query
         name: sort
         required: false
