@@ -650,7 +650,7 @@ paths:
     post:
       tags:
         - "User shelf"
-      summary: "Add a single ingredient to user shelf"
+      summary: "Remove multiple ingredients from user shelf"
       operationId: removeIngredientsFromShelf
       requestBody:
         content:
