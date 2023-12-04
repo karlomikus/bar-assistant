@@ -20,11 +20,11 @@ info:
 
     ## Sorting
 
-    Some endpoints allow sorting by specific attributes. Prepending `-` defines descending order, and omitting it defines ascending order. Seperate multiple sorts by a comma. For example: `?sort=name` will sort by name attribute in ascending order.
+    Some endpoints allow sorting by specific attributes. Prepending `-` defines descending order, and omitting it defines ascending order. Separate multiple sorts by a comma. For example: `?sort=name` will sort by name attribute in ascending order.
 
     ## Includes
 
-    Some endpoints allow including extra relationship data on demand. Seperate multiple relations witha a comma. For example: `?include=notes,user` will include extra extra data for notes and user.
+    Some endpoints allow including extra relationship data on demand. Separate multiple relations witha a comma. For example: `?include=notes,user` will include extra extra data for notes and user.
 
     ## Pagination
 
@@ -1922,7 +1922,7 @@ paths:
         schema:
           type: string
           example: name,-created_at
-        description: "Sort by specific parameters, change order by prepending `-`. Available sorts: `name`, `created_at`. Seperate multiple sorts with a comma `,`."
+        description: "Sort by specific parameters, change order by prepending `-`. Available sorts: `name`, `created_at`. Separate multiple sorts with a comma `,`."
       tags:
         - "Collections"
       summary: List user collections
