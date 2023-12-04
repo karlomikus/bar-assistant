@@ -137,6 +137,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this;
     }
 
+    public function hasActiveSubscription(string $subscriptionName = 'default'): bool
+    {
+        // TODO: Self host check
+        return $this->subscribed($subscriptionName);
+    }
+
     private function hasBarRole(int $barId, UserRoleEnum $role): bool
     {
         return $this->memberships

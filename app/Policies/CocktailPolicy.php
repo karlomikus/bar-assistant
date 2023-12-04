@@ -49,4 +49,9 @@ class CocktailPolicy
     {
         return $user->hasBarMembership($cocktail->bar_id);
     }
+
+    public function sharePublic(User $user, Cocktail $cocktail): bool
+    {
+        return $user->hasActiveSubscription() && $this->edit($user, $cocktail);
+    }
 }

@@ -24,7 +24,7 @@ class SubscriptionController extends Controller
 
         return response()->json([
             'data' => [
-                'prices' => ['pri_01hfadsm6r4n2ga0x3d2gj5h51', 'pri_01hg60tgkgcy440vd7j8m40mb4'],
+                'prices' => ['pri_01hfadsm6r4n2ga0x3d2gj5h51'],
                 'customer' => [
                     'paddle_id' => $customer->paddle_id,
                     'paddle_email' => $user->paddleName(),
