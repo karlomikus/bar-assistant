@@ -13,6 +13,10 @@ class SubscriptionController extends Controller
 {
     public function subscription(Request $request): JsonResponse
     {
+        if (!config('bar-assistant.enable_billing')) {
+            abort(404);
+        }
+
         $user = $request->user();
         $customer = $user->customer;
 
@@ -37,6 +41,10 @@ class SubscriptionController extends Controller
 
     public function updateSubscription(Request $request): JsonResponse
     {
+        if (!config('bar-assistant.enable_billing')) {
+            abort(404);
+        }
+
         $type = $request->post('type');
 
         if ($type === 'resume') {

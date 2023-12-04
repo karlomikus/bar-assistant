@@ -14,7 +14,7 @@ class BarPolicy
 
     public function create(User $user): bool
     {
-        return !$user->hasActiveSubscription() && $user->ownedBars->count() < config('bar-assistant.max_default_bars', 1);
+        return $user->ownedBars->count() < config('bar-assistant.max_default_bars', 1);
     }
 
     public function show(User $user, Bar $bar): bool
