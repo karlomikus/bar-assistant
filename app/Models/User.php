@@ -139,8 +139,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function hasActiveSubscription(string $subscriptionName = 'default'): bool
     {
-        // TODO: Self host check
-        return $this->subscribed($subscriptionName);
+        if (config('bar-assistant.enable_billing') === true) {
+            return $this->subscribed($subscriptionName);
+        }
+
+        return true;
     }
 
     private function hasBarRole(int $barId, UserRoleEnum $role): bool
