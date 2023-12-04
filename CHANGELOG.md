@@ -1,6 +1,11 @@
 # x.x.x
+## New
+- You can now exclude cocktails by specific ingredients #230
+    - Added `filter[ignore_ingredients]=3,7,9` filter to `cocktails` endpoint
+- Improved scraping support for Liquor.com
+
 ## Fixes
-- Bars can only be deleted by a bar owner/creator
+- Bars can only be deleted by a bar owner (creator)
 
 # v3.3.1
 ## Fixes
