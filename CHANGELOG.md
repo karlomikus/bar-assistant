@@ -10,7 +10,7 @@
 - Improved scraping support for Liquor.com
 
 ## Fixes
-- Bars can only be deleted by a bar owner (creator)
+- Bars can only be deleted by a bar owner (user that created the bar)
 
 # v3.3.1
 ## Fixes
