@@ -20,17 +20,13 @@ class SubscriptionController extends Controller
         $user = $request->user();
         $customer = $user->customer;
 
-        if (!$customer) {
-            $customer = $user->createAsCustomer();
-        }
-
         $sub = $user->subscription();
 
         return response()->json([
             'data' => [
                 'prices' => config('bar-assistant.prices'),
                 'customer' => [
-                    'paddle_id' => $customer->paddle_id,
+                    'paddle_id' => $customer->paddle_id ?? null,
                     'paddle_email' => $user->paddleName(),
                     'paddle_name' => $user->paddleEmail(),
                 ],
