@@ -12,6 +12,7 @@
         "karlomikus/recipe-utils": "^0.7.0",
         "laravel/cashier-paddle": "^2.0",
         "laravel/framework": "^10.0",
+        "laravel/horizon": "^5.21",
         "laravel/sanctum": "^3.2",
         "laravel/scout": "^10.4",
         "laravel/tinker": "^2.7",

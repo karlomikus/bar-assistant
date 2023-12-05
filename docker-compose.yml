@@ -15,7 +15,7 @@ services:
       - ./:/var/www/cocktails
       - ./resources/php.dev.ini:/usr/local/etc/php/conf.d/local.ini
 
-  queue:
+  horizon:
     build:
       target: localdev
       args:
@@ -23,8 +23,7 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
-    # In dev env use listen instead of work
-    command: php artisan queue:listen
+    command: php artisan horizon
     volumes:
       - ./:/var/www/cocktails
 
@@ -56,7 +55,7 @@ services:
     restart: unless-stopped
 
   meilisearch:
-    image: getmeili/meilisearch:v1.3.2
+    image: getmeili/meilisearch:v1.5
     environment:
       - MEILI_MASTER_KEY=masterKeyThatIsReallyReallyLong4Real
     restart: unless-stopped
