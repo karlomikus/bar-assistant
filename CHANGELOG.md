@@ -2,6 +2,11 @@
 ## New
 - You can now exclude cocktails by specific ingredients #230
     - Added `filter[ignore_ingredients]=3,7,9` filter to `cocktails` endpoint
+- Added `cron` to docker image and enabled Laravel task scheduler
+
+## Changes
+- Added support for Meilisearch v1.5
+- Default login tokens now expire after 7 days
 - Improved scraping support for Liquor.com
 
 ## Fixes
