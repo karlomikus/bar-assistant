@@ -19,11 +19,13 @@ RUN apt update \
     bash \
     nginx \
     gosu \
+    cron \
+    && chmod +x /usr/local/bin/install-php-extensions \
+    && install-php-extensions imagick opcache redis zip pcntl \
+    && echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf \
     && apt-get autoremove -y \
     && apt-get clean \
-    && chmod +x /usr/local/bin/install-php-extensions && \
-    install-php-extensions imagick opcache redis zip && \
-    echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
@@ -49,7 +51,8 @@ RUN chmod +x /usr/local/bin/entrypoint \
     && chmod +x /var/www/cocktails/resources/docker/run.sh \
     && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/open-api-spec.yml \
     && composer install --optimize-autoloader --no-dev \
-    && mkdir -p /var/www/cocktails/storage/bar-assistant/
+    && mkdir -p /var/www/cocktails/storage/bar-assistant/ \
+    && echo "* * * * * www-data cd /var/www/cocktails && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontab
 
 EXPOSE 3000
 
@@ -62,6 +65,8 @@ FROM php-base as localdev
 RUN useradd -G www-data,root -u $PUID -d /home/developer developer
 RUN mkdir -p /home/developer/.composer && \
     chown -R developer:developer /home/developer
+
+RUN echo "* * * * * developer cd /var/www/cocktails && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontab
 
 USER developer
 
