@@ -11,6 +11,7 @@ use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
@@ -125,31 +126,38 @@ class CocktailService
             $cocktail->updated_at = now();
             $cocktail->save();
 
-            // TODO: Implement upsert and delete
-            $cocktail->ingredients()->delete();
+            Model::unguard();
+            $currentIngredients = [];
             foreach ($cocktailDTO->ingredients as $ingredient) {
-                $cIngredient = new CocktailIngredient();
-                $cIngredient->ingredient_id = $ingredient->id;
-                $cIngredient->amount = $ingredient->amount;
-                $cIngredient->units = $ingredient->units;
-                $cIngredient->optional = $ingredient->optional;
-                $cIngredient->sort = $ingredient->sort;
-                $cIngredient->amount_max = $ingredient->amountMax;
-                $cIngredient->note = $ingredient->note;
-
-                $cocktail->ingredients()->save($cIngredient);
+                $currentIngredients[] = $ingredient->id;
+                $cIngredient = $cocktail->ingredients()->updateOrCreate([
+                    'ingredient_id' => $ingredient->id
+                ], [
+                    'amount' => $ingredient->amount,
+                    'units' => $ingredient->units,
+                    'optional' => $ingredient->optional,
+                    'sort' => $ingredient->sort,
+                    'amount_max' => $ingredient->amountMax,
+                    'note' => $ingredient->note,
+                ]);
 
                 // Substitutes
-                $cIngredient->substitutes()->delete();
+                $currentSubIngredients = [];
                 foreach ($ingredient->substitutes as $substituteDto) {
-                    $substitute = new CocktailIngredientSubstitute();
-                    $substitute->ingredient_id = $substituteDto->ingredientId;
-                    $substitute->amount = $substituteDto->amount;
-                    $substitute->amount_max = $substituteDto->amountMax;
-                    $substitute->units = $substituteDto->units;
-                    $cIngredient->substitutes()->save($substitute);
+                    $currentSubIngredients[] = $substituteDto->ingredientId;
+                    $cIngredient->substitutes()->updateOrCreate([
+                        'ingredient_id' => $substituteDto->ingredientId
+                    ], [
+                        'amount' => $substituteDto->amount,
+                        'amount_max' => $substituteDto->amountMax,
+                        'units' => $substituteDto->units,
+                    ]);
                 }
+                $cIngredient->substitutes()->whereNotIn('ingredient_id', $currentSubIngredients)->delete();
             }
+            Model::reguard();
+
+            $cocktail->ingredients()->whereNotIn('ingredient_id', $currentIngredients)->delete();
 
             $dbTags = [];
             foreach ($cocktailDTO->tags as $tagName) {
@@ -175,7 +183,6 @@ class CocktailService
         $this->db->commit();
 
         if (count($cocktailDTO->images) > 0) {
-            // $cocktail->deleteImages();
             try {
                 $imageModels = Image::findOrFail($cocktailDTO->images);
                 $cocktail->attachImages($imageModels);
