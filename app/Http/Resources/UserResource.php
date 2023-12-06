@@ -26,6 +26,7 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'is_subscribed' => $this->hasActiveSubscription(),
             'role' => $this->memberships->where('bar_id', $bar->id)->map(function (BarMembership $membership) {
                 return [
                     'bar_id' => $membership->bar_id,
