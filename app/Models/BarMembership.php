@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class BarMembership extends Model
 {
@@ -60,5 +61,13 @@ class BarMembership extends Model
     public function cocktailFavorites(): HasMany
     {
         return $this->hasMany(CocktailFavorite::class);
+    }
+
+    /**
+     * @return HasMany<CocktailCollection>
+     */
+    public function cocktailCollections(): HasMany
+    {
+        return $this->hasMany(CocktailCollection::class);
     }
 }
