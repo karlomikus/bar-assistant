@@ -191,7 +191,7 @@ Route::middleware($apiMiddleware)->group(function() {
         Route::get('/{id}/share', [CollectionController::class, 'share'])->name('collection.share');
     });
 
-    Route::prefix('import')->group(function() {
+    Route::prefix('import')->middleware(['throttle:importing'])->group(function() {
         Route::post('/cocktail', [ImportController::class, 'cocktail'])->middleware(EnsureRequestHasBarQuery::class);
     });
 
