@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "80960548a06e49ad7f2d8618c5bcd39a",
+    "content-hash": "4426f5f4b8b6910db7bae1eb2ec543b2",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -1771,16 +1771,16 @@
         },
         {
             "name": "karlomikus/recipe-utils",
-            "version": "0.7.0",
+            "version": "0.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/karlomikus/recipe-utils.git",
-                "reference": "e6f4950564ee2ac518e2f33ae95af4ac06157e5b"
+                "reference": "2144237444c0846c6ab229c83ad456ac2d5061f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/karlomikus/recipe-utils/zipball/e6f4950564ee2ac518e2f33ae95af4ac06157e5b",
-                "reference": "e6f4950564ee2ac518e2f33ae95af4ac06157e5b",
+                "url": "https://api.github.com/repos/karlomikus/recipe-utils/zipball/2144237444c0846c6ab229c83ad456ac2d5061f5",
+                "reference": "2144237444c0846c6ab229c83ad456ac2d5061f5",
                 "shasum": ""
             },
             "require": {
@@ -1812,22 +1812,22 @@
             "description": "Utilities for extracting normalized ingredient data from recipes",
             "support": {
                 "issues": "https://github.com/karlomikus/recipe-utils/issues",
-                "source": "https://github.com/karlomikus/recipe-utils/tree/0.7.0"
+                "source": "https://github.com/karlomikus/recipe-utils/tree/0.8.0"
             },
-            "time": "2023-12-01T19:49:25+00:00"
+            "time": "2023-12-07T18:07:10+00:00"
         },
         {
             "name": "laravel/cashier-paddle",
-            "version": "v2.0.1",
+            "version": "v2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/cashier-paddle.git",
-                "reference": "1d85ba5052521bca79417d8b073c14b2445f1f67"
+                "reference": "7af86f03678fac2734c320db3417472b2a8a5611"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/cashier-paddle/zipball/1d85ba5052521bca79417d8b073c14b2445f1f67",
-                "reference": "1d85ba5052521bca79417d8b073c14b2445f1f67",
+                "url": "https://api.github.com/repos/laravel/cashier-paddle/zipball/7af86f03678fac2734c320db3417472b2a8a5611",
+                "reference": "7af86f03678fac2734c320db3417472b2a8a5611",
                 "shasum": ""
             },
             "require": {
@@ -1896,7 +1896,7 @@
                 "issues": "https://github.com/laravel/cashier-paddle/issues",
                 "source": "https://github.com/laravel/cashier-paddle"
             },
-            "time": "2023-12-05T19:28:08+00:00"
+            "time": "2023-12-07T15:44:41+00:00"
         },
         {
             "name": "laravel/framework",

@@ -66,7 +66,7 @@ class ImbibeMagazine extends AbstractSiteExtractor
         $schemaIngredients = $this->getRecipeSchema()['recipeIngredient'];
 
         foreach ($schemaIngredients as $ingredient) {
-            $recipeIngredient = $this->ingredientParser->parse($ingredient['ingredient']);
+            $recipeIngredient = $this->ingredientParser->parseLine($ingredient['ingredient']);
             $recipeIngredient = Converter::tryConvert($recipeIngredient, Units::Ml);
 
             $result[] = [

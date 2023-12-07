@@ -49,7 +49,7 @@ class LiquorCom extends AbstractSiteExtractor
         $ingredients = [];
 
         foreach ($this->getRecipeSchema()['recipeIngredient'] as $sourceIngredient) {
-            $recipeIngredient = $this->ingredientParser->parseWithUnits($sourceIngredient, Units::Ml);
+            $recipeIngredient = $this->ingredientParser->parseLine($sourceIngredient, Units::Ml);
             $ingredients[] = [
                 'amount' => $recipeIngredient->amount,
                 'units' => $recipeIngredient->units,

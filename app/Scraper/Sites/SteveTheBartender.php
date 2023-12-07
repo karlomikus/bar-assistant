@@ -50,8 +50,7 @@ class SteveTheBartender extends AbstractSiteExtractor
         $ingredients = $this->getRecipeSchema()['recipeIngredient'];
 
         foreach ($ingredients as $ingredient) {
-            $recipeIngredient = $this->ingredientParser->parse($ingredient);
-            $recipeIngredient = Converter::tryConvert($recipeIngredient, Units::Ml);
+            $recipeIngredient = $this->ingredientParser->parseLine($ingredient, Units::Ml);
 
             $result[] = [
                 'amount' => $recipeIngredient->amount,

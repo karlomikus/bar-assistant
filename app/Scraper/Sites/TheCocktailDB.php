@@ -82,7 +82,7 @@ class TheCocktailDB extends AbstractSiteExtractor
                 break;
             }
 
-            $recipeIngredient = $this->ingredientParser->parseWithUnits($this->apiDrinkData[$measureKey], Units::Ml);
+            $recipeIngredient = $this->ingredientParser->parseLine($this->apiDrinkData[$measureKey], Units::Ml);
 
             $result[] = [
                 'amount' => $recipeIngredient->amount,

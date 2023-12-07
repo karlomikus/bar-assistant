@@ -73,10 +73,10 @@ class LiberAndCo extends AbstractSiteExtractor
         $this->crawler->filterXPath('//p/strong[contains(text(), \'Ingredients:\')]/following::ul')->first()->filter('li')->each(function ($node) use (&$result) {
             $ingredientString = $node->text();
 
-            $recipeIngredient = $this->ingredientParser->parseWithUnits($ingredientString, Units::Ml);
+            $recipeIngredient = $this->ingredientParser->parseLine($ingredientString, Units::Ml);
 
             $amount = $recipeIngredient->amount;
-            if ($amount === 0) {
+            if ($amount === 0.0) {
                 $amount++;
             }
 

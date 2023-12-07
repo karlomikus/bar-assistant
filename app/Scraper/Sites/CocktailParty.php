@@ -49,7 +49,7 @@ class CocktailParty extends AbstractSiteExtractor
             $ingredient = $node->filter('.ingredient')->text();
 
             // TODO: Handle parts units
-            $recipeIngredient = $this->ingredientParser->parse($amount);
+            $recipeIngredient = $this->ingredientParser->parseLine($amount);
 
             $result[] = [
                 'amount' => $recipeIngredient->amount,

@@ -54,7 +54,7 @@ class EricsCocktailGuide extends AbstractSiteExtractor
             $amount = $node->filter('span')->first()->text();
             $units = trim($node->filterXPath('node()/text()')->text());
             $name = $node->filter('a')->text();
-            $recipeIngredient = $this->ingredientParser->parseWithUnits($amount . ' ' . $units, Units::Ml);
+            $recipeIngredient = $this->ingredientParser->parseLine($amount . ' ' . $units, Units::Ml);
 
             $result[] = [
                 'amount' => $recipeIngredient->amount,
