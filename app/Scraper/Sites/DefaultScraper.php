@@ -11,6 +11,7 @@ use Brick\Schema\SchemaReader;
 use Brick\Schema\Interfaces\Recipe;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
+use Kami\RecipeUtils\RecipeIngredient;
 
 class DefaultScraper extends AbstractSiteExtractor
 {
@@ -166,7 +167,7 @@ class DefaultScraper extends AbstractSiteExtractor
         }
 
         foreach ($ingredients as $ingredient) {
-            $ingredient = e(html_entity_decode($ingredient, ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_HTML5)); // Convert entities to correct chars
+            $ingredient = e(html_entity_decode($ingredient, ENT_SUBSTITUTE | ENT_HTML5)); // Convert entities to correct chars
             $ingredient = trim($ingredient, " \n\r\t\v\x00\"\'");
             $recipeIngredient = $this->ingredientParser->parseLine($ingredient, Units::Ml);
 
@@ -174,12 +175,15 @@ class DefaultScraper extends AbstractSiteExtractor
                 continue;
             }
 
-            $result[] = [
-                'amount' => $recipeIngredient->amount,
-                'units' => $recipeIngredient->units,
-                'name' => ucfirst(e(Utils::cleanSpaces($recipeIngredient->name))),
-                'optional' => false,
-            ];
+            $result[] = new RecipeIngredient(
+                ucfirst(e(Utils::cleanSpaces($recipeIngredient->name))),
+                $recipeIngredient->amount,
+                $recipeIngredient->units,
+                $recipeIngredient->source,
+                $recipeIngredient->originalAmount,
+                $recipeIngredient->comment,
+                $recipeIngredient->amountMax
+            );
         }
 
         return $result;

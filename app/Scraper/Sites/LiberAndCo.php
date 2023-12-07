@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Throwable;
+use Kami\RecipeUtils\RecipeIngredient;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
@@ -80,12 +81,15 @@ class LiberAndCo extends AbstractSiteExtractor
                 $amount++;
             }
 
-            $result[] = [
-                'amount' => $amount,
-                'units' => $recipeIngredient->units,
-                'name' => ucfirst($recipeIngredient->name),
-                'optional' => false,
-            ];
+            $result[] = new RecipeIngredient(
+                ucfirst($recipeIngredient->name),
+                $amount,
+                $recipeIngredient->units,
+                $recipeIngredient->source,
+                $recipeIngredient->originalAmount,
+                $recipeIngredient->comment,
+                $recipeIngredient->amountMax
+            );
         });
 
         return $result;

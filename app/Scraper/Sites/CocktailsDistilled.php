@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
+use Kami\RecipeUtils\RecipeIngredient;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
@@ -61,12 +62,12 @@ class CocktailsDistilled extends AbstractSiteExtractor
                 $units = $recipeIngredient->units;
             }
 
-            $result[] = [
-                'amount' => $amount,
-                'units' => $units,
-                'name' => $ingredientName,
-                'optional' => false,
-            ];
+            $result[] = new RecipeIngredient(
+                $ingredientName,
+                (float) $amount,
+                $units,
+                $listNode->innerText()
+            );
         });
 
         return $result;

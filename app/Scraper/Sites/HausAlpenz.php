@@ -78,14 +78,7 @@ class HausAlpenz extends AbstractSiteExtractor
     {
         $result = [];
         $this->crawler->filter("p.measure")->each(function ($node) use (&$result) {
-            $recipeIngredient = $this->ingredientParser->parseLine($node->text(), Units::Ml);
-
-            $result[] = [
-                'amount' => $recipeIngredient->amount,
-                'units' => $recipeIngredient->units,
-                'name' => $recipeIngredient->name,
-                'optional' => false,
-            ];
+            $result[] = $this->ingredientParser->parseLine($node->text(), Units::Ml);
         });
 
         return $result;
