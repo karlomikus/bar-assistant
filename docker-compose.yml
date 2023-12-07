@@ -13,7 +13,7 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./:/var/www/cocktails
-      - ./resources/php.dev.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./resources/docker/localdev/php.ini:/usr/local/etc/php/conf.d/local.ini
 
   horizon:
     build:
@@ -46,7 +46,7 @@ services:
       - 8000:80
     volumes:
       - ./:/var/www/cocktails
-      - ./resources/nginx.dev.conf:/etc/nginx/conf.d/default.conf
+      - ./resources/docker/localdev/nginx.conf:/etc/nginx/conf.d/default.conf
 
   redis:
     image: redis

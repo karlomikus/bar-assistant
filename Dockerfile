@@ -39,16 +39,16 @@ COPY . .
 ADD https://github.com/bar-assistant/data.git ./resources/data
 
 # Configure nginx
-COPY ./resources/docker/nginx.conf /etc/nginx/sites-enabled/default
+COPY ./resources/docker/dist/nginx.conf /etc/nginx/sites-enabled/default
 
 # Configure php
-COPY ./resources/docker/php.ini $PHP_INI_DIR/php.ini
+COPY ./resources/docker/dist/php.ini $PHP_INI_DIR/php.ini
 
 # Add container entrypoint script
-COPY ./resources/docker/entrypoint.sh /usr/local/bin/entrypoint
+COPY ./resources/docker/dist/entrypoint.sh /usr/local/bin/entrypoint
 
 RUN chmod +x /usr/local/bin/entrypoint \
-    && chmod +x /var/www/cocktails/resources/docker/run.sh \
+    && chmod +x /var/www/cocktails/resources/docker/dist/run.sh \
     && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/open-api-spec.yml \
     && composer install --optimize-autoloader --no-dev \
     && mkdir -p /var/www/cocktails/storage/bar-assistant/ \
