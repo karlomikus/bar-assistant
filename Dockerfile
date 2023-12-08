@@ -33,6 +33,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 # Configure php
 COPY ./resources/docker/dist/php.ini $PHP_INI_DIR/php.ini
 
+WORKDIR /var/www/cocktails
+
 CMD ["php-fpm"]
 
 FROM php-base as dist
