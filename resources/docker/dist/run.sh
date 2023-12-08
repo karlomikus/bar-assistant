@@ -43,4 +43,4 @@ start_system() {
 
 start_system
 
-exec "$@"
+# exec "$@"
