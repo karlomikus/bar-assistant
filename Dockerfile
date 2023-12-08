@@ -75,3 +75,26 @@ WORKDIR /var/www/cocktails
 EXPOSE 9000
 
 CMD ["php-fpm"]
+
+FROM php-base as fpm
+
+WORKDIR /var/www/cocktails
+
+COPY . .
+COPY ./resources/docker/dist/php.ini $PHP_INI_DIR/php.ini
+COPY ./resources/docker/dist/run.sh /usr/local/bin/run
+
+RUN chmod +x /usr/local/bin/run \
+    && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" /var/www/cocktails/docs/open-api-spec.yml \
+    && composer install --optimize-autoloader --no-dev \
+    && mkdir -p /var/www/cocktails/storage/bar-assistant/ \
+    && echo "* * * * * www-data cd /var/www/cocktails && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontab
+
+RUN cat /usr/local/bin/run
+
+EXPOSE 9000
+
+VOLUME ["/var/www/cocktails/storage/bar-assistant"]
+
+ENTRYPOINT ["run"]
+CMD ["php-fpm"]
