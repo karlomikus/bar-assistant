@@ -9,9 +9,9 @@ use Brick\Schema\Base;
 use Kami\Cocktail\Utils;
 use Brick\Schema\SchemaReader;
 use Brick\Schema\Interfaces\Recipe;
+use Kami\RecipeUtils\RecipeIngredient;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
-use Kami\RecipeUtils\RecipeIngredient;
 
 class DefaultScraper extends AbstractSiteExtractor
 {

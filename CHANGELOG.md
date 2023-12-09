@@ -8,6 +8,8 @@
 - Added support for Meilisearch v1.5
 - Default login tokens now expire after 7 days
 - Improved scraping support for Liquor.com
+- Updated base docker image used as base
+- Removed algolia package
 
 ## Fixes
 - Bars can only be deleted by a bar owner (user that created the bar)

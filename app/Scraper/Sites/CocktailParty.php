@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
-use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 use Kami\RecipeUtils\RecipeIngredient;
+use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class CocktailParty extends AbstractSiteExtractor
 {

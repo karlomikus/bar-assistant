@@ -63,7 +63,8 @@ class Kernel extends HttpKernel
         'guest' => \Kami\Cocktail\Http\Middleware\RedirectIfAuthenticated::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \Kami\Cocktail\Http\Middleware\ValidateSignature::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequestsWithRedis::class,
+        // 'throttle' => \Illuminate\Routing\Middleware\ThrottleRequestsWithRedis::class, // TODO: Fix tests
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'cacheResponse' => \Spatie\ResponseCache\Middlewares\CacheResponse::class,
         'doNotCacheResponse' => \Spatie\ResponseCache\Middlewares\DoNotCacheResponse::class,

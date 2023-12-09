@@ -18,7 +18,7 @@ class CheckUserSubscription
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->user() && ! $request->user()->hasActiveSubscription()) {
+        if ($request->user() && !$request->user()->hasActiveSubscription()) {
             return response()->json([
                 'error' => 'api_error',
                 'message' => 'You can not do that on your current subscription plan!'

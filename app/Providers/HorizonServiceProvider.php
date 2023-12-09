@@ -2,8 +2,8 @@
 
 namespace Kami\Cocktail\Providers;
 
-use Illuminate\Support\Facades\Gate;
 use Laravel\Horizon\Horizon;
+use Illuminate\Support\Facades\Gate;
 use Laravel\Horizon\HorizonApplicationServiceProvider;
 
 class HorizonServiceProvider extends HorizonApplicationServiceProvider

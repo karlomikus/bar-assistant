@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\UnitConverter\Units;
-use Kami\RecipeUtils\UnitConverter\Converter;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class ImbibeMagazine extends AbstractSiteExtractor
