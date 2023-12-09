@@ -18,7 +18,7 @@ groupmod -o -g $PGID www-data
 usermod -o -u $PUID www-data
 chown -R www-data:www-data /var/www/cocktails
 
-gosu www-data ./resources/docker/run.sh
+gosu www-data ./resources/docker/dist/run.sh
 
 php-fpm & nginx -g 'daemon off;'
 
