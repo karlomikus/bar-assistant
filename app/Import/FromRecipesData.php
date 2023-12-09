@@ -284,13 +284,13 @@ class FromRecipesData
             return;
         }
 
-        // if (false) { // Handle S3
-        //     $uploadsDisk->put($targetImagePath, $dataDisk->get($baseSrcImagePath));
-        // } else {
-        copy(
-            $dataDisk->path($baseSrcImagePath),
-            $uploadsDisk->path($targetImagePath)
-        );
-        // }
+        if (config('bar-assistant.use_s3_uploads')) {
+            $uploadsDisk->put($targetImagePath, $dataDisk->get($baseSrcImagePath));
+        } else {
+            copy(
+                $dataDisk->path($baseSrcImagePath),
+                $uploadsDisk->path($targetImagePath)
+            );
+        }
     }
 }

@@ -27,16 +27,16 @@ services:
     volumes:
       - ./:/var/www/cocktails
 
-  # minio:
-  #   image: 'bitnami/minio:latest'
-  #   ports:
-  #     - '7000:9000'
-  #     - '7001:9001'
-  #   environment:
-  #     - MINIO_ROOT_USER=minio-root-user
-  #     - MINIO_ROOT_PASSWORD=minio-root-password
-  #   volumes:
-  #     - miniiodata:/data
+  minio:
+    image: 'bitnami/minio:latest'
+    ports:
+      - '7000:9000'
+      - '7001:9001'
+    environment:
+      - MINIO_ROOT_USER=minio-root-user
+      - MINIO_ROOT_PASSWORD=minio-root-password
+    volumes:
+      - miniiodata:/data
 
   webserver:
     image: nginx:alpine
