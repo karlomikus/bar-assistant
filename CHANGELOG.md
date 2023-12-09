@@ -10,8 +10,11 @@
 - Improved scraping support for Liquor.com
 - Updated base docker image used as base
 - Removed algolia package
+- Removed searchable `date` attribute from `cocktails` index
+- Removed searchable `origin` attribute from `ingredients` index
 
 ## Fixes
+- Fixed typos in OpenAPI spec
 - Bars can only be deleted by a bar owner (user that created the bar)
 
 # v3.3.1
