@@ -14,8 +14,6 @@ RUN apt update \
     unzip \
     sqlite3 \
     bash \
-    nginx \
-    gosu \
     cron \
     && chmod +x /usr/local/bin/install-php-extensions \
     && install-php-extensions imagick opcache redis zip pcntl \
@@ -39,11 +37,20 @@ FROM php-base as dist
 ARG BAR_ASSISTANT_VERSION
 ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-develop}
 
+RUN apt update \
+    && apt-get install -y \
+    nginx \
+    gosu \
+    supervisor \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 WORKDIR /var/www/cocktails
 
 COPY . .
 
-ADD https://github.com/bar-assistant/data.git ./resources/data
+# ADD https://github.com/bar-assistant/data.git ./resources/data
 
 # Configure nginx
 COPY ./resources/docker/dist/nginx.conf /etc/nginx/sites-enabled/default
