@@ -27,6 +27,7 @@ class SubscriptionController extends Controller
             $customerResponse = $customers['data'][0] ?? null;
 
             if ($customerResponse) {
+                /** @var \Laravel\Paddle\Customer */
                 $customer = $user->customer()->make();
                 $customer->paddle_id = $customerResponse['id'];
                 $customer->name = $customerResponse['name'];

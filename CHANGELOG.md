@@ -1,4 +1,4 @@
-# x.x.x
+# v3.4.0
 ## New
 - You can now exclude cocktails by specific ingredients #230
     - Added `filter[ignore_ingredients]=3,7,9` filter to `cocktails` endpoint

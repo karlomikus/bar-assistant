@@ -32,7 +32,10 @@ class SubscriptionResource extends JsonResource
             'is_recurring' => $this->recurring(),
             'next_billed_at' => $this->nextPayment(),
             'update_payment_url' => $this->paymentMethodUpdateUrl(),
-            'transactions' => $this->transactions->map(function (Transaction $tx) {
+            'transactions' => $this->transactions->map(function ($model): array {
+                /** @var Transaction */
+                $tx = $model;
+
                 return [
                     'total' => $tx->total,
                     'tax' => $tx->tax,
