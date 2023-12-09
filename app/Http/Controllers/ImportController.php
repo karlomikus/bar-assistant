@@ -65,6 +65,10 @@ class ImportController extends Controller
                 abort(400, sprintf('No cocktails found'));
             }
 
+            if (count($source['cocktails']) > 100) {
+                abort(400, sprintf('Importing via collection is limited to max 100 cocktails at once'));
+            }
+
             ImportCollection::dispatch($source, $request->user()->id, bar()->id, $duplicateAction);
 
             return response()->json([
