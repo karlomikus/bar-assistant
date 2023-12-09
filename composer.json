@@ -2,7 +2,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.2.0",
-        "algolia/algoliasearch-client-php": "^3.0",
         "brick/schema": "^0.1.1",
         "brick/structured-data": "^0.1.1",
         "doctrine/dbal": "^3.5",
@@ -15,7 +14,6 @@
         "laravel/horizon": "^5.21",
         "laravel/sanctum": "^3.2",
         "laravel/scout": "^10.4",
-        "laravel/tinker": "^2.7",
         "meilisearch/meilisearch-php": "^1.0",
         "spatie/array-to-xml": "^3.1",
         "spatie/laravel-query-builder": "^5.2",
