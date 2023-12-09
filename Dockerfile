@@ -1,8 +1,5 @@
 FROM php:8.2-fpm as php-base
 
-ARG BAR_ASSISTANT_VERSION
-ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-develop}
-
 ARG PGID=1000
 ENV PGID=${PGID}
 ARG PUID=1000
@@ -38,6 +35,9 @@ WORKDIR /var/www/cocktails
 CMD ["php-fpm"]
 
 FROM php-base as dist
+
+ARG BAR_ASSISTANT_VERSION
+ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-develop}
 
 WORKDIR /var/www/cocktails
 
