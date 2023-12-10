@@ -44,9 +44,9 @@ class FromRecipesData
         }
 
         /** @phpstan-ignore-next-line */
-        Ingredient::where('bar_id', $bar->id)->searchable();
+        Ingredient::where('bar_id', $bar->id)->with('category', 'images')->searchable();
         /** @phpstan-ignore-next-line */
-        Cocktail::where('bar_id', $bar->id)->searchable();
+        Cocktail::where('bar_id', $bar->id)->with('ingredients.ingredient', 'tags', 'images')->searchable();
 
         return true;
     }
@@ -189,6 +189,7 @@ class FromRecipesData
         $barImagesDir = 'cocktails/' . $bar->id . '/';
         $uploadsDisk->makeDirectory($barImagesDir);
 
+        DB::beginTransaction();
         foreach ($cocktails as $cocktail) {
             if ($existingCocktails->has(Str::slug($cocktail['name']))) {
                 continue;
@@ -269,6 +270,7 @@ class FromRecipesData
                 ];
             }
         }
+        DB::commit();
 
         DB::table('cocktail_ingredients')->insert($cocktailIngredientsToInsert);
         DB::table('images')->insert($imagesToInsert);
@@ -284,9 +286,13 @@ class FromRecipesData
             return;
         }
 
-        copy(
-            $dataDisk->path($baseSrcImagePath),
-            $uploadsDisk->path($targetImagePath)
-        );
+        if (config('bar-assistant.use_s3_uploads')) {
+            $uploadsDisk->put($targetImagePath, $dataDisk->get($baseSrcImagePath));
+        } else {
+            copy(
+                $dataDisk->path($baseSrcImagePath),
+                $uploadsDisk->path($targetImagePath)
+            );
+        }
     }
 }

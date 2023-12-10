@@ -23,6 +23,7 @@ class ProfileResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'is_subscribed' => $this->hasActiveSubscription(),
             'memberships' => BarMembershipResource::collection($this->memberships),
         ];
     }

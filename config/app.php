@@ -194,6 +194,7 @@ return [
         Kami\Cocktail\Providers\AuthServiceProvider::class,
         // Kami\Cocktail\Providers\BroadcastServiceProvider::class,
         Kami\Cocktail\Providers\EventServiceProvider::class,
+        Kami\Cocktail\Providers\HorizonServiceProvider::class,
         Kami\Cocktail\Providers\RouteServiceProvider::class,
 
     ],

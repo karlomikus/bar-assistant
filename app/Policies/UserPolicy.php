@@ -19,8 +19,8 @@ class UserPolicy
 
     public function create(User $user): bool
     {
-        return $user->isBarAdmin(bar()->id)
-            || $user->isBarModerator(bar()->id);
+        return $user->hasActiveSubscription()
+            && ($user->isBarAdmin(bar()->id) || $user->isBarModerator(bar()->id));
     }
 
     public function show(User $user, User $model): bool

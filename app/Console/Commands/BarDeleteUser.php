@@ -59,6 +59,10 @@ class BarDeleteUser extends Command
                 DB::table('ingredients')->where('created_user_id', $user->id)->delete();
                 DB::table('images')->where('created_user_id', $user->id)->delete();
 
+                if (config('bar-assistant.enable_billing')) {
+                    $user->subscription()->cancel();
+                }
+
                 $user->delete();
             } catch (Throwable $e) {
                 DB::rollBack();

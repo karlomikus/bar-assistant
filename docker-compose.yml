@@ -13,9 +13,9 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./:/var/www/cocktails
-      - ./resources/php.dev.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./resources/docker/localdev/php.ini:/usr/local/etc/php/conf.d/local.ini
 
-  queue:
+  horizon:
     build:
       target: localdev
       args:
@@ -23,21 +23,20 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
-    # In dev env use listen instead of work
-    command: php artisan queue:listen
+    command: php artisan horizon
     volumes:
       - ./:/var/www/cocktails
 
-  # minio:
-  #   image: 'bitnami/minio:latest'
-  #   ports:
-  #     - '7000:9000'
-  #     - '7001:9001'
-  #   environment:
-  #     - MINIO_ROOT_USER=minio-root-user
-  #     - MINIO_ROOT_PASSWORD=minio-root-password
-  #   volumes:
-  #     - miniiodata:/data
+  minio:
+    image: 'bitnami/minio:latest'
+    ports:
+      - '7000:9000'
+      - '7001:9001'
+    environment:
+      - MINIO_ROOT_USER=minio-root-user
+      - MINIO_ROOT_PASSWORD=minio-root-password
+    volumes:
+      - miniiodata:/data
 
   webserver:
     image: nginx:alpine
@@ -47,7 +46,7 @@ services:
       - 8000:80
     volumes:
       - ./:/var/www/cocktails
-      - ./resources/nginx.dev.conf:/etc/nginx/conf.d/default.conf
+      - ./resources/docker/localdev/nginx.conf:/etc/nginx/conf.d/default.conf
 
   redis:
     image: redis
@@ -56,7 +55,7 @@ services:
     restart: unless-stopped
 
   meilisearch:
-    image: getmeili/meilisearch:v1.3.2
+    image: getmeili/meilisearch:v1.5
     environment:
       - MEILI_MASTER_KEY=masterKeyThatIsReallyReallyLong4Real
     restart: unless-stopped

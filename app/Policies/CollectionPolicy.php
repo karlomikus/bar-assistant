@@ -14,7 +14,10 @@ class CollectionPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasBarMembership(bar()->id);
+        $hasMaxCollectionsForSubscription = !$user->hasActiveSubscription() && $user->getBarMembership(bar()->id)->cocktailCollections->count() >= 3;
+
+        return $user->hasBarMembership(bar()->id)
+            && !$hasMaxCollectionsForSubscription;
     }
 
     public function show(User $user, Collection $collection): bool

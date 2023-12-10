@@ -29,7 +29,7 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $token = $request->user()->createToken('web_app_login');
+            $token = $request->user()->createToken('web_app_login', expiresAt: now()->addDays(7));
 
             return new TokenResource($token);
         }

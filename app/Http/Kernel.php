@@ -40,7 +40,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             \Kami\Cocktail\Http\Middleware\DisablePostOnDemoEnv::class,
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \Spatie\ResponseCache\Middlewares\CacheResponse::class,
@@ -63,6 +63,7 @@ class Kernel extends HttpKernel
         'guest' => \Kami\Cocktail\Http\Middleware\RedirectIfAuthenticated::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \Kami\Cocktail\Http\Middleware\ValidateSignature::class,
+        // 'throttle' => \Illuminate\Routing\Middleware\ThrottleRequestsWithRedis::class, // TODO: Fix tests
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'cacheResponse' => \Spatie\ResponseCache\Middlewares\CacheResponse::class,

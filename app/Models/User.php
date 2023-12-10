@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Illuminate\Support\Str;
+use Laravel\Paddle\Billable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Collection;
@@ -15,7 +16,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -134,6 +135,15 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->memberships()->delete();
 
         return $this;
+    }
+
+    public function hasActiveSubscription(string $subscriptionName = 'default'): bool
+    {
+        if (config('bar-assistant.enable_billing') === true) {
+            return $this->subscribed($subscriptionName);
+        }
+
+        return true;
     }
 
     private function hasBarRole(int $barId, UserRoleEnum $role): bool

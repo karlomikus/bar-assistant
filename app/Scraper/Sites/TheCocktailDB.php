@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
+use Kami\RecipeUtils\RecipeIngredient;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
@@ -82,14 +83,17 @@ class TheCocktailDB extends AbstractSiteExtractor
                 break;
             }
 
-            $recipeIngredient = $this->ingredientParser->parseWithUnits($this->apiDrinkData[$measureKey], Units::Ml);
+            $recipeIngredient = $this->ingredientParser->parseLine($this->apiDrinkData[$measureKey], Units::Ml);
 
-            $result[] = [
-                'amount' => $recipeIngredient->amount,
-                'units' => $recipeIngredient->units,
-                'name' => $this->apiDrinkData[$ingKey],
-                'optional' => false,
-            ];
+            $result[] = new RecipeIngredient(
+                $this->apiDrinkData[$ingKey],
+                $recipeIngredient->amount,
+                $recipeIngredient->units,
+                $recipeIngredient->source,
+                $recipeIngredient->originalAmount,
+                $recipeIngredient->comment,
+                $recipeIngredient->amountMax
+            );
         }
 
         return $result;

@@ -1,3 +1,22 @@
+# v3.4.0
+## New
+- You can now exclude cocktails by specific ingredients #230
+    - Added `filter[ignore_ingredients]=3,7,9` filter to `cocktails` endpoint
+- Added `cron` to docker image and enabled Laravel task scheduler
+
+## Changes
+- Added support for Meilisearch v1.5
+- Default login tokens now expire after 7 days
+- Improved scraping support for Liquor.com
+- Updated base docker image used as base
+- Removed algolia package
+- Removed searchable `date` attribute from `cocktails` index
+- Removed searchable `origin` attribute from `ingredients` index
+
+## Fixes
+- Fixed typos in OpenAPI spec
+- Bars can only be deleted by a bar owner (user that created the bar)
+
 # v3.3.1
 ## Fixes
 - Add missing mail confirmation when creating a user via `users` endpoint

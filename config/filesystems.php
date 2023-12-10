@@ -52,6 +52,19 @@ return [
             'throw' => false,
         ],
 
+        'uploads_s3' => [
+            'driver' => 's3',
+            'url' => env('S3_URL'),
+            'use_path_style_endpoint' => env('S3_USE_PATH_STYLE_ENDPOINT', false),
+            'endpoint' => env('S3_ENDPOINT'),
+            'bucket' => env('S3_BUCKET'),
+            'region' => env('S3_REGION'),
+            'key' => env('S3_KEY'),
+            'secret' => env('S3_SECRET'),
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         'data-files' => [
             'driver' => 'local',
             'root' => resource_path('data/data'),

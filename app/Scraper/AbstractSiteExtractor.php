@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper;
 
 use Kami\RecipeUtils\Parser\Parser;
+use Kami\RecipeUtils\RecipeIngredient;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\BrowserKit\HttpBrowser;
@@ -97,7 +98,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
     /**
      * Array containing cocktail ingredients
      *
-     * @return array<int, array{"amount": float|int, "units": string, "name": string, "optional": boolean}>
+     * @return array<RecipeIngredient>
      */
     public function ingredients(): array
     {
@@ -153,7 +154,18 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             'images' => [
                 $this->image()
             ],
-            'ingredients' => $this->ingredients(),
+            'ingredients' => array_map(function (RecipeIngredient $recipeIngredient): array {
+                return [
+                    'name' => ucfirst($recipeIngredient->name),
+                    'amount' => $recipeIngredient->amount,
+                    'amount_max' => $recipeIngredient->amountMax,
+                    'units' => $recipeIngredient->units,
+                    'note' => $recipeIngredient->comment,
+                    'original_amount' => $recipeIngredient->originalAmount,
+                    'source' => $recipeIngredient->source,
+                    'optional' => false,
+                ];
+            }, $this->ingredients()),
         ];
     }
 }

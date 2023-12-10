@@ -2,6 +2,7 @@ vendor
 node_modules
 .vscode
 .github
+.git
 public/storage
 public/uploads
 storage/logs/*

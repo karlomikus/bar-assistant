@@ -27,7 +27,8 @@ class UsersController extends Controller
             ->select('users.*')
             ->join('bar_memberships', 'bar_memberships.user_id', '=', 'users.id')
             ->where('bar_memberships.bar_id', bar()->id)
-            ->get();
+            ->get()
+            ->load('memberships.role');
 
         return UserResource::collection($users);
     }
@@ -113,6 +114,10 @@ class UsersController extends Controller
         $user->tokens()->delete();
         $user->makeAnonymous();
         $user->save();
+
+        if ($user->subscription()) {
+            $user->subscription()->cancelNow();
+        }
 
         return response(null, 204);
     }

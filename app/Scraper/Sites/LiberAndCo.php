@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Throwable;
+use Kami\RecipeUtils\RecipeIngredient;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
@@ -73,19 +74,22 @@ class LiberAndCo extends AbstractSiteExtractor
         $this->crawler->filterXPath('//p/strong[contains(text(), \'Ingredients:\')]/following::ul')->first()->filter('li')->each(function ($node) use (&$result) {
             $ingredientString = $node->text();
 
-            $recipeIngredient = $this->ingredientParser->parseWithUnits($ingredientString, Units::Ml);
+            $recipeIngredient = $this->ingredientParser->parseLine($ingredientString, Units::Ml);
 
             $amount = $recipeIngredient->amount;
-            if ($amount === 0) {
+            if ($amount === 0.0) {
                 $amount++;
             }
 
-            $result[] = [
-                'amount' => $amount,
-                'units' => $recipeIngredient->units,
-                'name' => ucfirst($recipeIngredient->name),
-                'optional' => false,
-            ];
+            $result[] = new RecipeIngredient(
+                ucfirst($recipeIngredient->name),
+                $amount,
+                $recipeIngredient->units,
+                $recipeIngredient->source,
+                $recipeIngredient->originalAmount,
+                $recipeIngredient->comment,
+                $recipeIngredient->amountMax
+            );
         });
 
         return $result;

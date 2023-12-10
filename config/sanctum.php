@@ -60,8 +60,8 @@ return [
     */
 
     'middleware' => [
-        'verify_csrf_token' => Kami\Cocktail\Http\Middleware\VerifyCsrfToken::class,
-        'encrypt_cookies' => Kami\Cocktail\Http\Middleware\EncryptCookies::class,
+        // 'verify_csrf_token' => Kami\Cocktail\Http\Middleware\VerifyCsrfToken::class,
+        // 'encrypt_cookies' => Kami\Cocktail\Http\Middleware\EncryptCookies::class,
     ],
 
 ];

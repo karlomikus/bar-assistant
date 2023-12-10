@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\UnitConverter\Units;
-use Kami\RecipeUtils\UnitConverter\Converter;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class SteveTheBartender extends AbstractSiteExtractor
@@ -50,15 +49,7 @@ class SteveTheBartender extends AbstractSiteExtractor
         $ingredients = $this->getRecipeSchema()['recipeIngredient'];
 
         foreach ($ingredients as $ingredient) {
-            $recipeIngredient = $this->ingredientParser->parse($ingredient);
-            $recipeIngredient = Converter::tryConvert($recipeIngredient, Units::Ml);
-
-            $result[] = [
-                'amount' => $recipeIngredient->amount,
-                'units' => $recipeIngredient->units,
-                'name' => ucfirst($recipeIngredient->name),
-                'optional' => false,
-            ];
+            $result[] = $this->ingredientParser->parseLine($ingredient, Units::Ml);
         }
 
         return $result;

@@ -49,19 +49,8 @@ class EricsCocktailGuide extends AbstractSiteExtractor
     public function ingredients(): array
     {
         $result = [];
-        // TODO: Also possible to scrape substitutes
         $this->crawler->filterXPath("//ol[contains(@class, 'recipe_recipeIngredients__')]")->filter('li')->each(function ($node) use (&$result) {
-            $amount = $node->filter('span')->first()->text();
-            $units = trim($node->filterXPath('node()/text()')->text());
-            $name = $node->filter('a')->text();
-            $recipeIngredient = $this->ingredientParser->parseWithUnits($amount . ' ' . $units, Units::Ml);
-
-            $result[] = [
-                'amount' => $recipeIngredient->amount,
-                'units' => $recipeIngredient->units,
-                'name' => ucfirst($name),
-                'optional' => false,
-            ];
+            $result[] = $this->ingredientParser->parseLine($node->text(), Units::Ml);
         });
 
         return $result;

@@ -210,7 +210,7 @@ class CocktailController extends Controller
             ->orWhere('slug', $idOrSlug)
             ->firstOrFail();
 
-        if ($request->user()->cannot('edit', $cocktail)) {
+        if ($request->user()->cannot('sharePublic', $cocktail)) {
             abort(403);
         }
 

@@ -24,7 +24,7 @@ class BarController extends Controller
         $bars = Bar::select('bars.*')
             ->join('bar_memberships', 'bar_memberships.bar_id', '=', 'bars.id')
             ->where('bar_memberships.user_id', $request->user()->id)
-            ->with('createdUser')
+            ->with('createdUser', 'memberships')
             ->get();
 
         return BarResource::collection($bars);
@@ -158,5 +158,19 @@ class BarController extends Controller
         $bar->load('memberships');
 
         return BarMembershipResource::collection($bar->memberships);
+    }
+
+    public function transfer(Request $request, int $id): JsonResponse
+    {
+        $bar = Bar::findOrFail($id);
+
+        if ((int) $request->user()->id !== (int) $bar->created_user_id) {
+            abort(400);
+        }
+
+        $bar->created_user_id = (int) $request->post('user_id');
+        $bar->save();
+
+        return response()->json(status: 204);
     }
 }

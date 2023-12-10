@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
+use Kami\RecipeUtils\RecipeIngredient;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class CocktailParty extends AbstractSiteExtractor
@@ -48,15 +49,16 @@ class CocktailParty extends AbstractSiteExtractor
             $amount = $node->filter('.amount')->text();
             $ingredient = $node->filter('.ingredient')->text();
 
-            // TODO: Handle parts units
-            $recipeIngredient = $this->ingredientParser->parse($amount);
-
-            $result[] = [
-                'amount' => $recipeIngredient->amount,
-                'units' => $recipeIngredient->units,
-                'name' => $ingredient,
-                'optional' => false,
-            ];
+            $recipeIngredient = $this->ingredientParser->parseLine($amount);
+            $result[] = new RecipeIngredient(
+                $ingredient,
+                $recipeIngredient->amount,
+                $recipeIngredient->units,
+                $recipeIngredient->source,
+                $recipeIngredient->originalAmount,
+                $recipeIngredient->comment,
+                $recipeIngredient->amountMax
+            );
         });
 
         return $result;

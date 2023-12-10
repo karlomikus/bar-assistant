@@ -22,9 +22,10 @@ use Kami\Cocktail\Http\Controllers\UtensilsController;
 use Kami\Cocktail\Http\Controllers\CollectionController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
+use Kami\Cocktail\Http\Controllers\SubscriptionController;
+use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
 use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
-use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 
 /*
 |--------------------------------------------------------------------------
@@ -190,7 +191,7 @@ Route::middleware($apiMiddleware)->group(function() {
         Route::get('/{id}/share', [CollectionController::class, 'share'])->name('collection.share');
     });
 
-    Route::prefix('import')->group(function() {
+    Route::prefix('import')->middleware(['throttle:importing'])->group(function() {
         Route::post('/cocktail', [ImportController::class, 'cocktail'])->middleware(EnsureRequestHasBarQuery::class);
     });
 
@@ -206,7 +207,14 @@ Route::middleware($apiMiddleware)->group(function() {
         Route::delete('/{id}/memberships/{userId}', [BarController::class, 'removeMembership']);
         Route::delete('/{id}/memberships/{userId}', [BarController::class, 'removeMembership']);
     });
+
+    Route::prefix('billing')->group(function() {
+        Route::get('/subscription', [SubscriptionController::class, 'subscription']);
+        Route::post('/subscription', [SubscriptionController::class, 'updateSubscription']);
+    });
 });
+
+Route::post('/billing/webhook', \Laravel\Paddle\Http\Controllers\WebhookController::class);
 
 Route::fallback(function() {
     return response()->json([

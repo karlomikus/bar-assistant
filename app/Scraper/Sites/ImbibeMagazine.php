@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\UnitConverter\Units;
-use Kami\RecipeUtils\UnitConverter\Converter;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class ImbibeMagazine extends AbstractSiteExtractor
@@ -66,15 +65,7 @@ class ImbibeMagazine extends AbstractSiteExtractor
         $schemaIngredients = $this->getRecipeSchema()['recipeIngredient'];
 
         foreach ($schemaIngredients as $ingredient) {
-            $recipeIngredient = $this->ingredientParser->parse($ingredient['ingredient']);
-            $recipeIngredient = Converter::tryConvert($recipeIngredient, Units::Ml);
-
-            $result[] = [
-                'amount' => $recipeIngredient->amount,
-                'units' => $recipeIngredient->units,
-                'name' => ucfirst($recipeIngredient->name),
-                'optional' => false,
-            ];
+            $result[] = $this->ingredientParser->parseLine($ingredient['ingredient'], Units::Ml);
         }
 
         return $result;

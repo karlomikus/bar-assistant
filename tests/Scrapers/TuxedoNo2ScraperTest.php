@@ -29,17 +29,17 @@ class TuxedoNo2ScraperTest extends TestCase
 
         $this->assertSame(30.0, $result['ingredients'][0]['amount']);
         $this->assertSame('ml', $result['ingredients'][0]['units']);
-        $this->assertSame('london dry gin', $result['ingredients'][0]['name']);
+        $this->assertSame('London dry gin', $result['ingredients'][0]['name']);
         $this->assertSame(false, $result['ingredients'][0]['optional']);
 
         $this->assertSame(30.0, $result['ingredients'][1]['amount']);
         $this->assertSame('ml', $result['ingredients'][1]['units']);
-        $this->assertSame('campari', $result['ingredients'][1]['name']);
+        $this->assertSame('Campari', $result['ingredients'][1]['name']);
         $this->assertSame(false, $result['ingredients'][1]['optional']);
 
         $this->assertSame(30.0, $result['ingredients'][2]['amount']);
         $this->assertSame('ml', $result['ingredients'][2]['units']);
-        $this->assertSame('sweet vermouth', $result['ingredients'][2]['name']);
+        $this->assertSame('Sweet vermouth', $result['ingredients'][2]['name']);
         $this->assertSame(false, $result['ingredients'][2]['optional']);
     }
 }

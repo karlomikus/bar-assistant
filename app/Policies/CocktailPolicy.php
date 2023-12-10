@@ -16,9 +16,12 @@ class CocktailPolicy
     {
         $barId = bar()->id;
 
-        return $user->isBarAdmin($barId)
+        $cocktailsLimit = $user->hasActiveSubscription() ? 1000 : 500;
+        $hasReachedCocktailNumberLimit = bar()->cocktails()->count() >= $cocktailsLimit;
+
+        return ($user->isBarAdmin($barId)
             || $user->isBarModerator($barId)
-            || $user->isBarGeneral($barId);
+            || $user->isBarGeneral($barId)) && !$hasReachedCocktailNumberLimit;
     }
 
     public function show(User $user, Cocktail $cocktail): bool
@@ -48,5 +51,10 @@ class CocktailPolicy
     public function rate(User $user, Cocktail $cocktail): bool
     {
         return $user->hasBarMembership($cocktail->bar_id);
+    }
+
+    public function sharePublic(User $user, Cocktail $cocktail): bool
+    {
+        return $user->hasActiveSubscription() && $this->edit($user, $cocktail);
     }
 }

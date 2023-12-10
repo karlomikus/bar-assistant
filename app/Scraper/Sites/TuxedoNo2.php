@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
+use Kami\RecipeUtils\RecipeIngredient;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
@@ -79,7 +80,7 @@ class TuxedoNo2 extends AbstractSiteExtractor
             }
 
             $amountAndUnits = $node->filter('.amount')->text();
-            $recipeIngredient = $this->ingredientParser->parseWithUnits(str_replace($onlyUnits, '', $amountAndUnits) . ' ' . $onlyUnits, Units::Ml);
+            $recipeIngredient = $this->ingredientParser->parseLine(str_replace($onlyUnits, '', $amountAndUnits) . ' ' . $onlyUnits, Units::Ml);
 
             if ($node->filter('.ingredient a')->count() === 0) {
                 return;
@@ -87,12 +88,15 @@ class TuxedoNo2 extends AbstractSiteExtractor
 
             $ingredientName = $this->hintCommonIngredients($node->filter('.ingredient a')->first()->text());
 
-            $result[] = [
-                'amount' => $recipeIngredient->amount,
-                'units' => $recipeIngredient->units,
-                'name' => $ingredientName,
-                'optional' => false,
-            ];
+            $result[] = new RecipeIngredient(
+                $ingredientName,
+                $recipeIngredient->amount,
+                $recipeIngredient->units,
+                $recipeIngredient->source,
+                $recipeIngredient->originalAmount,
+                $recipeIngredient->comment,
+                $recipeIngredient->amountMax
+            );
         });
 
         return $result;
