@@ -24,7 +24,7 @@ class BarController extends Controller
         $bars = Bar::select('bars.*')
             ->join('bar_memberships', 'bar_memberships.bar_id', '=', 'bars.id')
             ->where('bar_memberships.user_id', $request->user()->id)
-            ->with('createdUser')
+            ->with('createdUser', 'memberships')
             ->get();
 
         return BarResource::collection($bars);
