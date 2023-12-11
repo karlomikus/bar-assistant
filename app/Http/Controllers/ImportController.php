@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Scraper\Manager;
 use Kami\Cocktail\Import\FromArray;
 use Kami\Cocktail\Jobs\ImportCollection;
@@ -19,6 +20,10 @@ class ImportController extends Controller
 {
     public function cocktail(ImportRequest $request, FromArray $arrayImporter): JsonResponse|JsonResource
     {
+        if ($request->user()->cannot('create', Cocktail::class)) {
+            abort(403);
+        }
+
         $dataToImport = [];
         $type = $request->get('type', 'url');
         $save = $request->get('save', false);
