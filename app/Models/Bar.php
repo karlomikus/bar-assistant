@@ -62,4 +62,13 @@ class Bar extends Model
 
         return parent::delete();
     }
+
+    public function getStatus(): BarStatusEnum
+    {
+        if ($this->status === null) {
+            return BarStatusEnum::Active;
+        }
+
+        return BarStatusEnum::tryFrom($this->status);
+    }
 }
