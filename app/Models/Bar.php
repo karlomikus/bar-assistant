@@ -71,4 +71,15 @@ class Bar extends Model
 
         return BarStatusEnum::tryFrom($this->status);
     }
+
+    public function setStatus(BarStatusEnum $status): self
+    {
+        if ($status === BarStatusEnum::Active) {
+            $this->status = null;
+        } else {
+            $this->status = $status->value;
+        }
+
+        return $this;
+    }
 }
