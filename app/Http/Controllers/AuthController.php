@@ -39,7 +39,7 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->tokens()->delete();
+        $request->user()->tokens()->where('name', 'web_app_login')->delete();
 
         return response()->json(status: 204);
     }
