@@ -16,12 +16,15 @@ use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Kami\Cocktail\Models\BarStatusEnum;
 use Illuminate\Filesystem\FilesystemAdapter;
 
 class FromRecipesData
 {
     public function process(FilesystemAdapter $dataDisk, Bar $bar, User $user, array $flags = []): bool
     {
+        $bar->setStatus(BarStatusEnum::Provisioning);
+
         $baseDataFiles = [
             'glasses' => 'base_glasses.yml',
             'cocktail_methods' => 'base_methods.yml',
@@ -42,6 +45,8 @@ class FromRecipesData
         if (in_array('ingredients', $flags) && in_array('cocktails', $flags)) {
             $this->importBaseCocktails($dataDisk, $bar, $user);
         }
+
+        $bar->setStatus(BarStatusEnum::Active);
 
         /** @phpstan-ignore-next-line */
         Ingredient::where('bar_id', $bar->id)->with('category', 'images')->searchable();
