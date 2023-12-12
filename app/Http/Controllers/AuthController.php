@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Kami\Cocktail\Mail\PasswordReset;
 use Kami\Cocktail\Mail\ConfirmAccount;
+use Kami\Cocktail\Mail\PasswordChanged;
 use Illuminate\Support\Facades\Password;
 use Kami\Cocktail\Http\Resources\TokenResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -102,6 +103,8 @@ class AuthController extends Controller
         );
 
         if ($status === Password::PASSWORD_RESET) {
+            Mail::to($request->post('email'))->queue(new PasswordChanged());
+
             return response()->json(status: 204);
         }
 

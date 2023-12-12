@@ -1,3 +1,10 @@
+# vx.x.x
+## New
+- Send confirmation email about password change
+
+## Changes
+- Update email styling
+
 # v3.4.0
 ## New
 - You can now exclude cocktails by specific ingredients #230
