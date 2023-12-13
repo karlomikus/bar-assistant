@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Filesystem\Filesystem;
 
 class BarMaintenance extends Command
 {
@@ -27,6 +28,15 @@ class BarMaintenance extends Command
      * @var string
      */
     protected $description = 'This will remove unused images, update missing ABVs, fix ingredient sort and refresh cache';
+
+    private Filesystem $disk;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->disk = config('bar-assistant.use_s3_uploads') ? Storage::disk('uploads_s3') : Storage::disk('uploads');
+    }
 
     /**
      * Execute the console command.
@@ -81,7 +91,6 @@ class BarMaintenance extends Command
 
     private function deleteUnusedImages(): void
     {
-        $baDisk = Storage::disk('uploads');
         $images = Image::whereNull('imageable_id')->get();
 
         if ($images->isNotEmpty()) {
@@ -96,10 +105,10 @@ class BarMaintenance extends Command
             $this->info('Deleted ' . $i . ' images.');
         }
 
-        $tempFiles = $baDisk->files('temp/');
+        $tempFiles = $this->disk->files('temp/');
 
         if (count($tempFiles) > 0) {
-            $baDisk->delete($tempFiles);
+            $this->disk->delete($tempFiles);
             $this->info('Deleted ' . count($tempFiles) . ' temporary images.');
         }
     }
