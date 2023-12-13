@@ -31,7 +31,7 @@ class FromRecipesData
 
     public function process(FilesystemAdapter $dataDisk, Bar $bar, User $user, array $flags = []): bool
     {
-        $bar->setStatus(BarStatusEnum::Provisioning);
+        $bar->setStatus(BarStatusEnum::Provisioning)->save();
 
         $baseDataFiles = [
             'glasses' => 'base_glasses.yml',
@@ -54,7 +54,7 @@ class FromRecipesData
             $this->importBaseCocktails($dataDisk, $bar, $user);
         }
 
-        $bar->setStatus(BarStatusEnum::Active);
+        $bar->setStatus(BarStatusEnum::Active)->save();
 
         /** @phpstan-ignore-next-line */
         Ingredient::where('bar_id', $bar->id)->with('category', 'images')->searchable();
