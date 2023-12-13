@@ -25,7 +25,7 @@ class ImageService
     public function __construct(
         private readonly LogManager $log,
     ) {
-        $this->disk = Storage::disk('uploads');
+        $this->disk = config('bar-assistant.use_s3_uploads') ? Storage::disk('uploads_s3') : Storage::disk('uploads');
     }
 
     /**
@@ -179,7 +179,11 @@ class ImageService
         }
 
         try {
-            $this->disk->put($filepath, (string) $image->encode());
+            $image->resize(null, 1400, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            $this->disk->put($filepath, (string) $image->encode(quality: 85));
         } catch (Throwable $e) {
             $this->log->error('[IMAGE_SERVICE] ' . $e->getMessage());
 

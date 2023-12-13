@@ -18,9 +18,17 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\BarStatusEnum;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Contracts\Filesystem\Filesystem;
 
 class FromRecipesData
 {
+    private Filesystem $uploadsDisk;
+
+    public function __construct()
+    {
+        $this->uploadsDisk = config('bar-assistant.use_s3_uploads') ? Storage::disk('uploads_s3') : Storage::disk('uploads');
+    }
+
     public function process(FilesystemAdapter $dataDisk, Bar $bar, User $user, array $flags = []): bool
     {
         $bar->setStatus(BarStatusEnum::Provisioning);
@@ -85,9 +93,6 @@ class FromRecipesData
 
     private function importIngredients(FilesystemAdapter $dataDisk, Bar $bar, User $user): void
     {
-        /** @var \Illuminate\Support\Facades\Storage */
-        $uploadsDisk = Storage::disk('uploads');
-
         $ingredients = Cache::remember('ba:data-import:ingredients', 60 * 60 * 24 * 7, function () use ($dataDisk) {
             $ingredients = [];
             foreach ($dataDisk->files('ingredients') as $ingredientFile) {
@@ -105,7 +110,7 @@ class FromRecipesData
         $ingredientsToInsert = [];
         $imagesToInsert = [];
         $barImagesDir = 'ingredients/' . $bar->id . '/';
-        $uploadsDisk->makeDirectory($barImagesDir);
+        $this->uploadsDisk->makeDirectory($barImagesDir);
 
         foreach ($ingredients as $ingredient) {
             if ($existingIngredients->has(Str::slug($ingredient['name']))) {
@@ -167,9 +172,6 @@ class FromRecipesData
 
     private function importBaseCocktails(FilesystemAdapter $dataDisk, Bar $bar, User $user): void
     {
-        /** @var \Illuminate\Support\Facades\Storage */
-        $uploadsDisk = Storage::disk('uploads');
-
         $cocktails = Cache::remember('ba:data-import:cocktails', 60 * 60 * 24 * 7, function () use ($dataDisk) {
             $cocktails = [];
             foreach ($dataDisk->files('cocktails') as $cocktailFile) {
@@ -192,7 +194,7 @@ class FromRecipesData
         $tagsToInsert = [];
         $cocktailUtensilsToInsert = [];
         $barImagesDir = 'cocktails/' . $bar->id . '/';
-        $uploadsDisk->makeDirectory($barImagesDir);
+        $this->uploadsDisk->makeDirectory($barImagesDir);
 
         DB::beginTransaction();
         foreach ($cocktails as $cocktail) {
@@ -284,19 +286,16 @@ class FromRecipesData
 
     private function copyResourceImage(FilesystemAdapter $dataDisk, string $baseSrcImagePath, string $targetImagePath): void
     {
-        /** @var \Illuminate\Support\Facades\Storage */
-        $uploadsDisk = Storage::disk('uploads');
-
         if (!$dataDisk->fileExists($baseSrcImagePath)) {
             return;
         }
 
         if (config('bar-assistant.use_s3_uploads')) {
-            $uploadsDisk->put($targetImagePath, $dataDisk->get($baseSrcImagePath));
+            $this->uploadsDisk->put($targetImagePath, $dataDisk->get($baseSrcImagePath));
         } else {
             copy(
                 $dataDisk->path($baseSrcImagePath),
-                $uploadsDisk->path($targetImagePath)
+                $this->uploadsDisk->path($targetImagePath)
             );
         }
     }

@@ -42,7 +42,7 @@ trait HasImages
      */
     public function attachImages(Collection $images): void
     {
-        $disk = Storage::disk('uploads');
+        $disk = config('bar-assistant.use_s3_uploads') ? Storage::disk('uploads_s3') : Storage::disk('uploads');
 
         foreach ($images as $image) {
             if ($image->imageable_id !== null) {
