@@ -18,7 +18,8 @@ class Image extends Model
 
     public function delete(): ?bool
     {
-        $disk = config('bar-assistant.use_s3_uploads') ? Storage::disk('uploads_s3') : Storage::disk('uploads');;
+        $disk = config('bar-assistant.use_s3_uploads') ? Storage::disk('uploads_s3') : Storage::disk('uploads');
+        ;
 
         if ($disk->exists($this->file_path)) {
             $disk->delete($this->file_path);
