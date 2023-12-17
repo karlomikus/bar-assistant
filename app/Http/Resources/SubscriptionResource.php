@@ -42,6 +42,7 @@ class SubscriptionResource extends JsonResource
                     'currency' => $tx->currency,
                     'status' => $tx->status,
                     'invoice_number' => $tx->invoice_number,
+                    'url' => $tx->invoicePdf(),
                     'billed_at' => $tx->billed_at,
                     'created_at' => $tx->created_at,
                     'updated_at' => $tx->updated_at,
