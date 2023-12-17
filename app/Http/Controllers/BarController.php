@@ -12,6 +12,7 @@ use Kami\Cocktail\Jobs\SetupBar;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
+use Kami\Cocktail\Models\BarStatusEnum;
 use Kami\Cocktail\Http\Requests\BarRequest;
 use Kami\Cocktail\Http\Resources\BarResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -87,6 +88,7 @@ class BarController extends Controller
             $bar->invite_code = null;
         }
 
+        $bar->status = $request->post('status') ?? BarStatusEnum::Active->value;
         $bar->name = $request->post('name');
         $bar->description = $request->post('description');
         $bar->subtitle = $request->post('subtitle');
