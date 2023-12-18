@@ -7,7 +7,9 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Mail;
 use Kami\Cocktail\Http\Resources\SubscriptionResource;
+use Kami\Cocktail\Mail\SubscriptionChanged;
 
 class SubscriptionController extends Controller
 {
@@ -50,6 +52,8 @@ class SubscriptionController extends Controller
         if ($type === 'resume') {
             try {
                 $request->user()->subscription()->resume();
+
+                Mail::to($request->user())->queue(new SubscriptionChanged($type));
             } catch (Throwable $e) {
                 return response()->json($e->getMessage());
             }
@@ -60,6 +64,8 @@ class SubscriptionController extends Controller
         if ($type === 'pause') {
             try {
                 $request->user()->subscription()->pause();
+
+                Mail::to($request->user())->queue(new SubscriptionChanged($type));
             } catch (Throwable $e) {
                 return response()->json($e->getMessage());
             }
