@@ -32,9 +32,16 @@ class SubscriptionResource extends JsonResource
             'is_recurring' => $this->recurring(),
             'next_billed_at' => $this->nextPayment(),
             'update_payment_url' => $this->paymentMethodUpdateUrl(),
+            'cancel_url' => $this->cancelUrl(),
             'transactions' => $this->transactions->map(function ($model): array {
                 /** @var Transaction */
                 $tx = $model;
+
+                $invoiceUrl = null;
+                try {
+                    $invoiceUrl = $tx->invoicePdf();
+                } catch (\Throwable) {
+                }
 
                 return [
                     'total' => $tx->total,
@@ -42,6 +49,7 @@ class SubscriptionResource extends JsonResource
                     'currency' => $tx->currency,
                     'status' => $tx->status,
                     'invoice_number' => $tx->invoice_number,
+                    'url' => $invoiceUrl,
                     'billed_at' => $tx->billed_at,
                     'created_at' => $tx->created_at,
                     'updated_at' => $tx->updated_at,

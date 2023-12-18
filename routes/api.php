@@ -19,6 +19,7 @@ use Kami\Cocktail\Http\Controllers\ExploreController;
 use Kami\Cocktail\Http\Controllers\ProfileController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\UtensilsController;
+use Laravel\Paddle\Http\Controllers\WebhookController;
 use Kami\Cocktail\Http\Controllers\CollectionController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
@@ -214,7 +215,7 @@ Route::middleware($apiMiddleware)->group(function() {
     });
 });
 
-Route::post('/billing/webhook', \Laravel\Paddle\Http\Controllers\WebhookController::class);
+Route::post('/billing/webhook', WebhookController::class);
 
 Route::fallback(function() {
     return response()->json([

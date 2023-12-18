@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Throwable;
-use Laravel\Paddle\Cashier;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Mail;
+use Kami\Cocktail\Mail\SubscriptionChanged;
 use Kami\Cocktail\Http\Resources\SubscriptionResource;
 
 class SubscriptionController extends Controller
@@ -21,22 +22,8 @@ class SubscriptionController extends Controller
         $user = $request->user();
         $customer = $user->customer;
 
-        // Customer missing locally, check paddle API
         if (!$customer) {
-            $customers = Cashier::api('GET', 'customers', ['search' => $user->paddleEmail()]);
-            $customerResponse = $customers['data'][0] ?? null;
-
-            if ($customerResponse) {
-                /** @var \Laravel\Paddle\Customer */
-                $customer = $user->customer()->make();
-                $customer->paddle_id = $customerResponse['id'];
-                $customer->name = $customerResponse['name'];
-                $customer->email = $customerResponse['email'];
-                $customer->trial_ends_at = null;
-                $customer->save();
-            } else {
-                $customer = $user->createAsCustomer();
-            }
+            $customer = $user->createAsCustomer();
         }
 
         $sub = $user->subscription();
@@ -65,6 +52,8 @@ class SubscriptionController extends Controller
         if ($type === 'resume') {
             try {
                 $request->user()->subscription()->resume();
+
+                Mail::to($request->user())->queue(new SubscriptionChanged($type));
             } catch (Throwable $e) {
                 return response()->json($e->getMessage());
             }
@@ -75,6 +64,8 @@ class SubscriptionController extends Controller
         if ($type === 'pause') {
             try {
                 $request->user()->subscription()->pause();
+
+                Mail::to($request->user())->queue(new SubscriptionChanged($type));
             } catch (Throwable $e) {
                 return response()->json($e->getMessage());
             }

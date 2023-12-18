@@ -82,4 +82,9 @@ class Bar extends Model
 
         return $this;
     }
+
+    public function isAccessible(): bool
+    {
+        return $this->status !== BarStatusEnum::Deactivated;
+    }
 }

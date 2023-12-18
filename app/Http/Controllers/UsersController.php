@@ -10,6 +10,7 @@ use Kami\Cocktail\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Kami\Cocktail\Mail\AccountDeleted;
 use Kami\Cocktail\Mail\ConfirmAccount;
 use Kami\Cocktail\Http\Requests\UserRequest;
 use Kami\Cocktail\Http\Resources\UserResource;
@@ -111,13 +112,16 @@ class UsersController extends Controller
             abort(403);
         }
 
-        $user->tokens()->delete();
-        $user->makeAnonymous();
-        $user->save();
+        $email = $user->email;
 
         if ($user->subscription()) {
             $user->subscription()->cancelNow();
+            Mail::to($email)->queue(new AccountDeleted());
         }
+
+        $user->tokens()->delete();
+        $user->makeAnonymous();
+        $user->save();
 
         return response(null, 204);
     }
