@@ -8,8 +8,8 @@ use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Mail;
-use Kami\Cocktail\Http\Resources\SubscriptionResource;
 use Kami\Cocktail\Mail\SubscriptionChanged;
+use Kami\Cocktail\Http\Resources\SubscriptionResource;
 
 class SubscriptionController extends Controller
 {

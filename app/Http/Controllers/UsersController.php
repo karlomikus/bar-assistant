@@ -10,11 +10,11 @@ use Kami\Cocktail\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Kami\Cocktail\Mail\AccountDeleted;
 use Kami\Cocktail\Mail\ConfirmAccount;
 use Kami\Cocktail\Http\Requests\UserRequest;
 use Kami\Cocktail\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\Mail\AccountDeleted;
 
 class UsersController extends Controller
 {
