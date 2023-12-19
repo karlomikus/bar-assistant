@@ -18,8 +18,7 @@ class Image extends Model
 
     public function delete(): ?bool
     {
-        $disk = config('bar-assistant.use_s3_uploads') ? Storage::disk('uploads_s3') : Storage::disk('uploads');
-        ;
+        $disk = Storage::disk('uploads');
 
         if ($disk->exists($this->file_path)) {
             $disk->delete($this->file_path);
@@ -34,7 +33,7 @@ class Image extends Model
             return null;
         }
 
-        $disk = config('bar-assistant.use_s3_uploads') ? Storage::disk('uploads_s3') : Storage::disk('uploads');
+        $disk = Storage::disk('uploads');
 
         return $disk->url($this->file_path);
     }
@@ -49,14 +48,14 @@ class Image extends Model
 
     public function asInterventionImage(): InterventionImage
     {
-        $disk = config('bar-assistant.use_s3_uploads') ? Storage::disk('uploads_s3') : Storage::disk('uploads');
+        $disk = Storage::disk('uploads');
 
         return ImageProcessor::make($disk->path($this->file_path));
     }
 
     public function getPath(): string
     {
-        $disk = config('bar-assistant.use_s3_uploads') ? Storage::disk('uploads_s3') : Storage::disk('uploads');
+        $disk = Storage::disk('uploads');
 
         if ($disk->exists($this->file_path)) {
             return $disk->path($this->file_path);

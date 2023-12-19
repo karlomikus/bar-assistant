@@ -26,7 +26,7 @@ class FromRecipesData
 
     public function __construct()
     {
-        $this->uploadsDisk = config('bar-assistant.use_s3_uploads') ? Storage::disk('uploads_s3') : Storage::disk('uploads');
+        $this->uploadsDisk = Storage::disk('uploads');
     }
 
     public function process(FilesystemAdapter $dataDisk, Bar $bar, User $user, array $flags = []): bool
@@ -184,7 +184,6 @@ class FromRecipesData
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
-        $dbUtensils = DB::table('utensils')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $existingCocktails = DB::table('cocktails')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(function ($cocktail) {
             return Str::slug($cocktail->name);
         });
@@ -290,13 +289,9 @@ class FromRecipesData
             return;
         }
 
-        if (config('bar-assistant.use_s3_uploads')) {
-            $this->uploadsDisk->put($targetImagePath, $dataDisk->get($baseSrcImagePath));
-        } else {
-            copy(
-                $dataDisk->path($baseSrcImagePath),
-                $this->uploadsDisk->path($targetImagePath)
-            );
-        }
+        copy(
+            $dataDisk->path($baseSrcImagePath),
+            $this->uploadsDisk->path($targetImagePath)
+        );
     }
 }
