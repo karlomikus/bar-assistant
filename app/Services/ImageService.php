@@ -24,7 +24,7 @@ class ImageService
     public function __construct(
         private readonly LogManager $log,
     ) {
-        $this->disk = config('bar-assistant.use_s3_uploads') ? Storage::disk('uploads_s3') : Storage::disk('uploads');
+        $this->disk = Storage::disk('uploads');
     }
 
     /**

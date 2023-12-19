@@ -80,6 +80,4 @@ return [
 
     'enable_billing' => env('ENABLE_BILLING', false),
     'prices' => explode('|', env('BILLING_PRODUCT_PRICES', '')),
-
-    'use_s3_uploads' => env('USE_S3_UPLOADS', false),
 ];

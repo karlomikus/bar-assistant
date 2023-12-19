@@ -94,7 +94,7 @@ class ImageController extends Controller
 
     public function thumb(int $id): Response
     {
-        $disk = config('bar-assistant.use_s3_uploads') ? Storage::disk('uploads_s3') : Storage::disk('uploads');
+        $disk = Storage::disk('uploads');
 
         [$content, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id, $disk) {
             $dbImage = Image::findOrFail($id);

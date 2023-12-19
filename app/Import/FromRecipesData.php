@@ -26,7 +26,7 @@ class FromRecipesData
 
     public function __construct()
     {
-        $this->uploadsDisk = config('bar-assistant.use_s3_uploads') ? Storage::disk('uploads_s3') : Storage::disk('uploads');
+        $this->uploadsDisk = Storage::disk('uploads');
     }
 
     public function process(FilesystemAdapter $dataDisk, Bar $bar, User $user, array $flags = []): bool
@@ -290,13 +290,9 @@ class FromRecipesData
             return;
         }
 
-        if (config('bar-assistant.use_s3_uploads')) {
-            $this->uploadsDisk->put($targetImagePath, $dataDisk->get($baseSrcImagePath));
-        } else {
-            copy(
-                $dataDisk->path($baseSrcImagePath),
-                $this->uploadsDisk->path($targetImagePath)
-            );
-        }
+        copy(
+            $dataDisk->path($baseSrcImagePath),
+            $this->uploadsDisk->path($targetImagePath)
+        );
     }
 }
