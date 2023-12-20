@@ -14,7 +14,14 @@ class BarPolicy
 
     public function create(User $user): bool
     {
-        return $user->ownedBars->count() < config('bar-assistant.max_default_bars', 1);
+        if (!config('bar-assistant.enable_billing')) {
+            return true;
+        }
+
+        $barCount = $user->ownedBars->count();
+
+        return (!$user->hasActiveSubscription() && $barCount < (int) config('bar-assistant.max_default_bars'))
+            || ($user->hasActiveSubscription() && $barCount < (int) config('bar-assistant.max_premium_bars'));
     }
 
     public function show(User $user, Bar $bar): bool
@@ -24,7 +31,9 @@ class BarPolicy
 
     public function edit(User $user, Bar $bar): bool
     {
-        return $user->isBarAdmin($bar->id) || $user->isBarModerator($bar->id);
+        return $user->id === $bar->owner()->id
+            || $user->isBarAdmin($bar->id)
+            || $user->isBarModerator($bar->id);
     }
 
     public function delete(User $user, Bar $bar): bool
@@ -34,6 +43,21 @@ class BarPolicy
 
     public function deleteMembership(User $user, Bar $bar): bool
     {
-        return $user->isBarAdmin($bar->id);
+        return $user->id === $bar->owner()->id || $user->isBarAdmin($bar->id);
+    }
+
+    public function transfer(User $user, Bar $bar): bool
+    {
+        return $user->id === $bar->owner()->id;
+    }
+
+    public function activate(User $user, Bar $bar): bool
+    {
+        return $user->id === $bar->owner()->id;
+    }
+
+    public function deactivate(User $user, Bar $bar): bool
+    {
+        return $user->id === $bar->owner()->id;
     }
 }

@@ -118,6 +118,10 @@ class BarController extends Controller
     {
         $barToJoin = Bar::where('invite_code', $request->post('invite_code'))->firstOrFail();
 
+        if ($barToJoin->status === BarStatusEnum::Deactivated->value) {
+            abort(403);
+        }
+
         $request->user()->joinBarAs($barToJoin, UserRoleEnum::Guest);
 
         return new BarResource($barToJoin);
@@ -166,13 +170,44 @@ class BarController extends Controller
     {
         $bar = Bar::findOrFail($id);
 
-        if ((int) $request->user()->id !== (int) $bar->created_user_id) {
-            abort(400);
+        if ($request->user()->cannot('transfer', $bar)) {
+            abort(403);
         }
 
         $bar->created_user_id = (int) $request->post('user_id');
         $bar->save();
 
         return response()->json(status: 204);
+    }
+
+    public function toggleBarStatus(Request $request, int $id): JsonResponse
+    {
+        $bar = Bar::findOrFail($id);
+
+        if ($request->user()->cannot('edit', $bar)) {
+            abort(403);
+        }
+
+        $newStatus = $request->post('status');
+
+        // Unsubscribed users can only have 1 active bar
+        $hasMaxActiveBars = !$request->user()->hasActiveSubscription()
+            && $request->user()->ownedBars()->where('status', BarStatusEnum::Active->value)->count() >= 1;
+
+        if ($newStatus === BarStatusEnum::Active->value && $request->user()->can('activate', $bar) && !$hasMaxActiveBars) {
+            $bar->status = $newStatus;
+            $bar->save();
+
+            return response()->json(status: 204);
+        }
+
+        if ($newStatus === BarStatusEnum::Deactivated->value && $request->user()->can('deactivate', $bar)) {
+            $bar->status = $newStatus;
+            $bar->save();
+
+            return response()->json(status: 204);
+        }
+
+        abort(403);
     }
 }

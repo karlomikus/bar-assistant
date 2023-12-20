@@ -53,7 +53,8 @@ return [
     |
     */
 
-    'max_default_bars' => env('MAX_USER_BARS', 50),
+    'max_default_bars' => 1,
+    'max_premium_bars' => 10,
 
     /*
     |--------------------------------------------------------------------------

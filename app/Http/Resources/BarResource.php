@@ -39,6 +39,8 @@ class BarResource extends JsonResource
                 'role_id' => $this->memberships->where('user_id', $request->user()->id)->first()->user_role_id,
                 'can_edit' => $request->user()->can('edit', $this->resource),
                 'can_delete' => $request->user()->can('delete', $this->resource),
+                'can_activate' => $request->user()->can('activate', $this->resource),
+                'can_deactivate' => $request->user()->can('deactivate', $this->resource),
             ]
         ];
     }
