@@ -1,9 +1,20 @@
-# vx.x.x
+# v3.5.0
 ## New
-- Send confirmation email about password change
+- Send transactional email about password change
+- Send transactional email about account deletion
+- Bars can now have different statuses:
+    - `active` - Active bar, default value
+    - `deactivated` - Deactivated bar, no one can access it
+    - `provisioning` - Bar is currently getting populated with data. Usually set at the start of bar setup and removed after all data has been imported.
+- Added new endpoints
+    - POST `/bars/{id}/status` - To update bar status
+- Images now get resized up to 1400px height max
 
 ## Changes
 - Update email styling
+- Added `bcmath` extension
+- Added CORS headers to images
+- Importing cocktails now use the same authorization policy as cocktail creation
 
 # v3.4.0
 ## New

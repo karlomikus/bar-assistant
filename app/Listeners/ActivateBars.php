@@ -19,7 +19,7 @@ class ActivateBars
 
         Log::info('User "' . $user->email . '" created subscription.');
 
-        foreach($user->ownedBars as $bar) {
+        foreach ($user->ownedBars as $bar) {
             Cache::forget('ba:bar:' . $bar->id);
         }
 

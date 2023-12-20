@@ -7,7 +7,6 @@ namespace Kami\Cocktail\Models;
 use Illuminate\Support\Str;
 use Laravel\Paddle\Billable;
 use Laravel\Sanctum\HasApiTokens;
-use Kami\Cocktail\Models\BarStatusEnum;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Auth\MustVerifyEmail;

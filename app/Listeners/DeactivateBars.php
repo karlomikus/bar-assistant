@@ -19,7 +19,7 @@ class DeactivateBars
 
         Log::info('User "' . $user->email . '" canceled subscription.');
 
-        foreach($user->ownedBars as $bar) {
+        foreach ($user->ownedBars as $bar) {
             Cache::forget('ba:bar:' . $bar->id);
         }
 
