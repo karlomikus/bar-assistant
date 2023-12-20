@@ -133,6 +133,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->created_at = now();
         $this->updated_at = now();
         $this->memberships()->delete();
+        $this->deactivateBars();
 
         return $this;
     }
@@ -144,6 +145,16 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return true;
+    }
+
+    public function deactivateBars(): void
+    {
+        $this->ownedBars()->update(['status' => BarStatusEnum::Deactivated->value]);
+    }
+
+    public function activateBars(): void
+    {
+        $this->ownedBars()->update(['status' => BarStatusEnum::Active->value]);
     }
 
     private function hasBarRole(int $barId, UserRoleEnum $role): bool
