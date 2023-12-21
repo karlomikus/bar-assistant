@@ -2493,6 +2493,31 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /bars/{id}/status:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a bar'
+        schema:
+          type: integer
+        required: true
+    post:
+      tags:
+        - Bars
+      summary: Update bar status
+      operationId: updateBarStatus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BarStatusRequest'
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /forgot-password:
     post:
       tags:
@@ -3772,6 +3797,7 @@ components:
         - id
         - name
         - subtitle
+        - status
         - description
         - invite_code
         - search_driver_host
@@ -3785,6 +3811,9 @@ components:
         name:
           type: string
           example: "My bar"
+        status:
+          type: string
+          enum: [active, deactivated, provisioning]
         subtitle:
           type: string
           nullable: true
@@ -3845,6 +3874,14 @@ components:
           items:
             type: string
           example: ['cocktails', 'ingredients']
+    BarStatusRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [active, deactivated, provisioning]
     CocktailPublic:
       type: object
       required:
