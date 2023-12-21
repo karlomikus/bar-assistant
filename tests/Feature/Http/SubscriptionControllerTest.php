@@ -8,7 +8,9 @@ use Tests\TestCase;
 use Laravel\Paddle\Cashier;
 use Kami\Cocktail\Models\User;
 use Laravel\Paddle\Subscription;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
+use Kami\Cocktail\Mail\SubscriptionChanged;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -136,6 +138,7 @@ class SubscriptionControllerTest extends TestCase
 
     public function test_subscription_pause_response(): void
     {
+        Mail::fake();
         $user = auth()->user();
 
         Cashier::fake([
@@ -143,6 +146,7 @@ class SubscriptionControllerTest extends TestCase
                 'data' => [
                     'status' => 'paused',
                     'paused_at' => now(),
+                    'items' => [],
                 ],
             ]
         ]);
@@ -164,11 +168,14 @@ class SubscriptionControllerTest extends TestCase
         $response = $this->postJson('/api/billing/subscription', ['type' => 'pause']);
         $response->assertSuccessful();
 
+        Mail::assertQueued(SubscriptionChanged::class);
+
         $this->assertDatabaseHas('subscriptions', ['paddle_id' => 'sub_12345', 'status' => Subscription::STATUS_PAUSED]);
     }
 
     public function test_subscription_resume_response(): void
     {
+        Mail::fake();
         $user = auth()->user();
 
         Cashier::fake([
@@ -176,6 +183,7 @@ class SubscriptionControllerTest extends TestCase
                 'data' => [
                     'status' => 'active',
                     'paused_at' => null,
+                    'items' => [],
                 ],
             ]
         ]);
@@ -196,6 +204,8 @@ class SubscriptionControllerTest extends TestCase
 
         $response = $this->postJson('/api/billing/subscription', ['type' => 'resume']);
         $response->assertSuccessful();
+
+        Mail::assertQueued(SubscriptionChanged::class);
 
         $this->assertDatabaseHas('subscriptions', ['paddle_id' => 'sub_12345', 'status' => Subscription::STATUS_ACTIVE]);
     }

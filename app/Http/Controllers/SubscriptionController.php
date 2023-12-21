@@ -55,7 +55,7 @@ class SubscriptionController extends Controller
 
                 Mail::to($request->user())->queue(new SubscriptionChanged($type));
             } catch (Throwable $e) {
-                return response()->json($e->getMessage());
+                abort(400, $e->getMessage());
             }
 
             return response()->json(status: 204);
@@ -67,7 +67,7 @@ class SubscriptionController extends Controller
 
                 Mail::to($request->user())->queue(new SubscriptionChanged($type));
             } catch (Throwable $e) {
-                return response()->json($e->getMessage());
+                abort(400, $e->getMessage());
             }
 
             return response()->json(status: 204);
