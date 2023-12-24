@@ -26,6 +26,8 @@
     <env name="QUEUE_CONNECTION" value="sync"/>
     <env name="SESSION_DRIVER" value="array"/>
     <env name="TELESCOPE_ENABLED" value="false"/>
+    <env name="PADDLE_AUTH_CODE" value="fake"/>
+    <env name="PADDLE_SANDBOX" value="true"/>
   </php>
   <source>
     <include>

@@ -143,7 +143,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
     public function toArray(): array
     {
         return [
-            'name' => preg_replace("/\s+/u", " ", $this->name()),
+            'name' => e(html_entity_decode(preg_replace("/\s+/u", " ", $this->name()))),
             'description' => $this->description(),
             'source' => $this->source(),
             'glass' => $this->glass(),
@@ -159,8 +159,8 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
                     'name' => ucfirst($recipeIngredient->name),
                     'amount' => $recipeIngredient->amount,
                     'amount_max' => $recipeIngredient->amountMax,
-                    'units' => $recipeIngredient->units,
-                    'note' => $recipeIngredient->comment,
+                    'units' => $recipeIngredient->units === '' ? null : $recipeIngredient->units,
+                    'note' => $recipeIngredient->comment === '' ? null : $recipeIngredient->comment,
                     'original_amount' => $recipeIngredient->originalAmount,
                     'source' => $recipeIngredient->source,
                     'optional' => false,

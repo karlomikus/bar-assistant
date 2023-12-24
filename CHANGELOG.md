@@ -1,3 +1,8 @@
+# v3.5.1
+## Fixes
+- Add missing endpoints to docs
+- Account deleted mail not getting sent correctly
+
 # v3.5.0
 ## New
 - Send transactional email about password change
