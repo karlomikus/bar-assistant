@@ -116,12 +116,13 @@ class UsersController extends Controller
 
         if ($user->subscription()) {
             $user->subscription()->cancelNow();
-            Mail::to($email)->queue(new AccountDeleted());
         }
 
         $user->tokens()->delete();
         $user->makeAnonymous();
         $user->save();
+
+        Mail::to($email)->queue(new AccountDeleted());
 
         return response(null, 204);
     }
