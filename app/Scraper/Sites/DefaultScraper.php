@@ -59,7 +59,7 @@ class DefaultScraper extends AbstractSiteExtractor
             $name = '';
         }
 
-        return e(html_entity_decode(trim($name), ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_HTML5));
+        return trim($name);
     }
 
     public function description(): ?string
@@ -176,7 +176,7 @@ class DefaultScraper extends AbstractSiteExtractor
             }
 
             $result[] = new RecipeIngredient(
-                ucfirst(e(Utils::cleanSpaces($recipeIngredient->name))),
+                ucfirst(e($recipeIngredient->name)),
                 $recipeIngredient->amount,
                 $recipeIngredient->units,
                 $recipeIngredient->source,

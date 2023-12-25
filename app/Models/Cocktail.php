@@ -281,8 +281,8 @@ class Cocktail extends Model implements UploadableInterface
 
         $data['_id'] = $cocktailId;
         $data['name'] = $this->name;
-        $data['instructions'] = Utils::cleanSpaces($this->instructions);
-        $data['description'] = $this->description ? Utils::cleanSpaces($this->description) : null;
+        $data['instructions'] = $this->instructions;
+        $data['description'] = $this->description ?? null;
         $data['garnish'] = $this->garnish;
         $data['source'] = $this->source;
         $data['tags'] = $this->tags->pluck('name')->toArray();
