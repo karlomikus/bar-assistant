@@ -142,27 +142,38 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
      */
     public function toArray(): array
     {
+        $clean = function (?string $str): ?string {
+            if (!$str) {
+                return null;
+            }
+
+            $str = str_replace(' ', " ", $str);
+            $str = preg_replace("/\s+/u", " ", $str);
+
+            return html_entity_decode($str, encoding: 'UTF-8');
+        };
+
         return [
-            'name' => e(html_entity_decode(preg_replace("/\s+/u", " ", $this->name()))),
-            'description' => $this->description(),
+            'name' => $clean($this->name()),
+            'description' => $clean($this->description()),
             'source' => $this->source(),
             'glass' => $this->glass(),
             'instructions' => $this->instructions(),
-            'garnish' => $this->garnish(),
+            'garnish' => $clean($this->garnish()),
             'tags' => $this->tags(),
             'method' => $this->method(),
             'images' => [
                 $this->image()
             ],
-            'ingredients' => array_map(function (RecipeIngredient $recipeIngredient): array {
+            'ingredients' => array_map(function (RecipeIngredient $recipeIngredient) use ($clean) {
                 return [
-                    'name' => ucfirst($recipeIngredient->name),
+                    'name' => $clean(ucfirst($recipeIngredient->name)),
                     'amount' => $recipeIngredient->amount,
                     'amount_max' => $recipeIngredient->amountMax,
                     'units' => $recipeIngredient->units === '' ? null : $recipeIngredient->units,
                     'note' => $recipeIngredient->comment === '' ? null : $recipeIngredient->comment,
                     'original_amount' => $recipeIngredient->originalAmount,
-                    'source' => $recipeIngredient->source,
+                    'source' => $clean($recipeIngredient->source),
                     'optional' => false,
                 ];
             }, $this->ingredients()),

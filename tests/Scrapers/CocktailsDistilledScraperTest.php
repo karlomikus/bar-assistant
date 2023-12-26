@@ -17,7 +17,7 @@ class CocktailsDistilledScraperTest extends TestCase
         $instructions = "Fill an Old Fashioned glass with a good amount of ice, then add equal parts Rakia, Campari and Sweet Vermouth before stirring well.";
 
         $this->assertSame('Rakia Negroni', $result['name']);
-        $this->assertSame('If you are looking for a variation from Gin in your Negroni then you can’t go past the smooth, delicate flavour with subtle fruit undertones of Rakia. Made with the same proportions as the original, a Rakia Negroni has an absolutely amazing taste.', $result['description']);
+        $this->assertSame('If you are looking for a variation from Gin in your Negroni then you can’t go past the smooth, delicate flavour with subtle fruit undertones of Rakia. Made with the same proportions as the original, a Rakia Negroni has an absolutely amazing taste.', $result['description']);
         $this->assertSame('https://cocktailsdistilled.com/recipe/rakia-negroni/', $result['source']);
         $this->assertSame('Old Fashioned', $result['glass']);
         $this->assertSame($instructions, $result['instructions']);

@@ -1,3 +1,8 @@
+# v3.5.2
+## Fixes
+- Added missing ingredient created and updated timestamps
+- Correctly cleanup user images after deleting a user via cli
+
 # v3.5.1
 ## Fixes
 - Add missing endpoints to docs

@@ -27,7 +27,7 @@ class LiquorCom extends AbstractSiteExtractor
         $i = 1;
 
         foreach ($this->getRecipeSchema()['recipeInstructions'] as $instruction) {
-            $result .= $i . '. ' . e(html_entity_decode($instruction['text'])) . "\n";
+            $result .= $i . '. ' . $instruction['text'] . "\n";
             $i++;
         }
 
@@ -36,7 +36,7 @@ class LiquorCom extends AbstractSiteExtractor
 
     public function description(): ?string
     {
-        return e(html_entity_decode($this->getRecipeSchema()['description'] ?? ''));
+        return $this->getRecipeSchema()['description'] ?? '';
     }
 
     public function source(): ?string

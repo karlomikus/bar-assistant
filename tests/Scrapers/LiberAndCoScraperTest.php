@@ -17,7 +17,7 @@ class LiberAndCoScraperTest extends TestCase
         $instructions = "1. Add all ingredients to a mixing glass\n2. Add ice and stir for 10 seconds\n3. Strain into a rocks glass over a large format ice cube";
 
         $this->assertSame('Strawberry Negroni', $result['name']);
-        $this->assertSame('Strawberry is the perfect complement to the classic Negroni profile. Bitter orange and citrus, along with the spice of sweet vermouth add layers of complexity. This cocktail is a stunner and is a must-try-- you will not be disappointed!', $result['description']);
+        $this->assertSame('Strawberry is the perfect complement to the classic Negroni profile. Bitter orange and citrus, along with the spice of sweet vermouth add layers of complexity. This cocktail is a stunner and is a must-try-- you will not be disappointed!', $result['description']);
         $this->assertSame('https://www.liberandcompany.com/products/strawberry-negroni', $result['source']);
         $this->assertSame('rocks', $result['glass']);
         $this->assertSame($instructions, $result['instructions']);

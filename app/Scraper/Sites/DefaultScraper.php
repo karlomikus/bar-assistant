@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Scraper\Sites;
 
 use Throwable;
 use Brick\Schema\Base;
-use Kami\Cocktail\Utils;
 use Brick\Schema\SchemaReader;
 use Brick\Schema\Interfaces\Recipe;
 use Kami\RecipeUtils\RecipeIngredient;
@@ -59,7 +58,7 @@ class DefaultScraper extends AbstractSiteExtractor
             $name = '';
         }
 
-        return e(html_entity_decode(trim($name), ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_HTML5));
+        return trim($name);
     }
 
     public function description(): ?string
@@ -176,7 +175,7 @@ class DefaultScraper extends AbstractSiteExtractor
             }
 
             $result[] = new RecipeIngredient(
-                ucfirst(e(Utils::cleanSpaces($recipeIngredient->name))),
+                ucfirst(e($recipeIngredient->name)),
                 $recipeIngredient->amount,
                 $recipeIngredient->units,
                 $recipeIngredient->source,

@@ -15,7 +15,7 @@ class SteveTheBartenderScraperTest extends TestCase
         $result = $scraper->toArray();
 
         $this->assertSame('Oaxacanite', $result['name']);
-        $this->assertSame('Sasha Petraske wasn&#39;t a huge fan of mezcal cocktails as he believed it was too dominate in cocktails. Whilst working at the John Dory Oyster Bar, where Sasha was consulting, Ben Long set forth to change this with the Oaxacanite with great success.A tequila and mezcal split base version of a Bees Knees, almost.Featured in Sasha Petraske Regarding Cocktails.', $result['description']);
+        $this->assertSame('Sasha Petraske wasn\'t a huge fan of mezcal cocktails as he believed it was too dominate in cocktails. Whilst working at the John Dory Oyster Bar, where Sasha was consulting, Ben Long set forth to change this with the Oaxacanite with great success.A tequila and mezcal split base version of a Bees Knees, almost.Featured in Sasha Petraske Regarding Cocktails.', $result['description']);
         $this->assertSame('https://stevethebartender.com.au/oaxacanite-cocktail-recipe/', $result['source']);
         $this->assertSame(null, $result['glass']);
         $this->assertSame("1. Combine all the ingredients in your cocktail shaker\n2. Shake with ice for 12-15 seconds\n3. Double strain into a chilled cocktail glass\n4. Garnish with a twist of grapefruit", $result['instructions']);
