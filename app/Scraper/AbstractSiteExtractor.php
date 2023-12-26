@@ -147,7 +147,10 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
                 return null;
             }
 
-            return e(html_entity_decode(preg_replace("/\s+/u", " ", $str)));
+            $str = str_replace(' ', " ", $str);
+            $str = preg_replace("/\s+/u", " ", $str);
+
+            return html_entity_decode($str, encoding: 'UTF-8');
         };
 
         return [
@@ -155,7 +158,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             'description' => $clean($this->description()),
             'source' => $this->source(),
             'glass' => $this->glass(),
-            'instructions' => $clean($this->instructions()),
+            'instructions' => $this->instructions(),
             'garnish' => $clean($this->garnish()),
             'tags' => $this->tags(),
             'method' => $this->method(),
