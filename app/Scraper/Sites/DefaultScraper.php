@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Scraper\Sites;
 
 use Throwable;
 use Brick\Schema\Base;
-use Kami\Cocktail\Utils;
 use Brick\Schema\SchemaReader;
 use Brick\Schema\Interfaces\Recipe;
 use Kami\RecipeUtils\RecipeIngredient;
