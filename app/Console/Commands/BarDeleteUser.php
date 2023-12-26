@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Console\Commands;
 
 use Throwable;
+use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use Illuminate\Console\Command;
+use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\Models\Ingredient;
 
 class BarDeleteUser extends Command
 {
@@ -54,10 +58,25 @@ class BarDeleteUser extends Command
         if ($delete) {
             DB::beginTransaction();
             try {
-                DB::table('bars')->where('created_user_id', $user->id)->delete();
-                DB::table('cocktails')->where('created_user_id', $user->id)->delete();
-                DB::table('ingredients')->where('created_user_id', $user->id)->delete();
-                DB::table('images')->where('created_user_id', $user->id)->delete();
+                $ingredients = Ingredient::where('created_user_id', $user->id)->get();
+                foreach ($ingredients as $ing) {
+                    $ing->delete();
+                }
+
+                $cocktails = Cocktail::where('created_user_id', $user->id)->get();
+                foreach ($cocktails as $cocktail) {
+                    $cocktail->delete();
+                }
+
+                $images = Image::where('created_user_id', $user->id)->get();
+                foreach ($images as $image) {
+                    $image->delete();
+                }
+
+                $bars = Bar::where('created_user_id', $user->id)->get();
+                foreach ($bars as $bar) {
+                    $bar->delete();
+                }
 
                 if (config('bar-assistant.enable_billing') && $user->subscription()) {
                     $user->subscription()->cancel();
