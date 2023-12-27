@@ -45,7 +45,7 @@ trait HasImages
         $disk = Storage::disk('uploads');
 
         foreach ($images as $image) {
-            if ($image->imageable_id !== null) {
+            if (!$image->isTemp()) { // Dont attach already attached images
                 continue;
             }
 
