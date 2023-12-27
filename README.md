@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://karlomikus.com" target="_blank"><img src="resources/art/readme-logo.png" alt="Bar assistant Logo" width="500"></a>
+    <a href="https://barassistant.app" target="_blank"><img src="resources/art/readme-logo.png" alt="Bar assistant Logo" width="500"></a>
 </p>
 
 <p align="center">
@@ -15,9 +15,9 @@ Bar Assistant is a self hosted application for managing your home bar. It allows
 This repository only contains the API server, if you are looking for easy to use web client, take a look at [Salt Rim](https://github.com/karlomikus/vue-salt-rim).
 
 <p align="center">
-    <a href="https://bar.karlomikus.com/bar/docs" target="_blank">Click here to view API demo.</a>
+    <a href="https://demo.barassistant.app/bar/docs" target="_blank">Click here to view API demo.</a>
     <br>
-    <a href="https://bar.karlomikus.com" target="_blank">Click here to view frontend demo.</a>
+    <a href="https://demo.barassistant.app" target="_blank">Click here to view frontend demo.</a>
     <br>
     <strong>Email:</strong> admin@example.com &middot; <strong>Password:</strong> password
 </p>
