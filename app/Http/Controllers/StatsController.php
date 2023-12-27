@@ -65,6 +65,7 @@ class StatsController extends Controller
         $stats['top_rated_cocktails'] = $topRatedCocktailIds;
         $stats['total_collections'] = CocktailCollection::where('bar_membership_id', $barMembership->id)->count();
         $stats['your_top_ingredients'] = $userFavoriteIngredients;
+        $stats['total_bar_members'] = $bar->memberships()->count();
 
         return response()->json(['data' => $stats]);
     }
