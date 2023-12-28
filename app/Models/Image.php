@@ -81,4 +81,9 @@ class Image extends Model
 
         return $cocktailImages->merge($ingredientImages);
     }
+
+    public function isTemp(): bool
+    {
+        return str_starts_with($this->file_path, 'temp/') || $this->imageable_id === null;
+    }
 }

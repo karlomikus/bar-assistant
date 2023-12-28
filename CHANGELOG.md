@@ -1,3 +1,9 @@
+# v3.6.0
+## New
+- Bar Assistant now has a new cloud offering and homepage: [barassistant.app](https://barassistant.app)
+- Added `total_bar_members` count
+- You can now edit existing image
+
 # v3.5.2
 ## Fixes
 - Added missing ingredient created and updated timestamps

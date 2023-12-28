@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://karlomikus.com" target="_blank"><img src="resources/art/readme-logo.png" alt="Bar assistant Logo" width="500"></a>
+    <a href="https://barassistant.app" target="_blank"><img src="resources/art/readme-logo.png" alt="Bar assistant Logo" width="500"></a>
 </p>
 
 <p align="center">
@@ -15,31 +15,32 @@ Bar Assistant is a self hosted application for managing your home bar. It allows
 This repository only contains the API server, if you are looking for easy to use web client, take a look at [Salt Rim](https://github.com/karlomikus/vue-salt-rim).
 
 <p align="center">
-    <a href="https://bar.karlomikus.com/bar/docs" target="_blank">Click here to view API demo.</a>
+    <a href="https://demo.barassistant.app/bar/docs" target="_blank">Click here to view API demo.</a>
     <br>
-    <a href="https://bar.karlomikus.com" target="_blank">Click here to view frontend demo.</a>
+    <a href="https://demo.barassistant.app" target="_blank">Click here to view frontend demo.</a>
     <br>
     <strong>Email:</strong> admin@example.com &middot; <strong>Password:</strong> password
 </p>
 
 ## Features
-- Includes all current IBA cocktails
-- Over 100 ingredients
-- Add and manage multiple bars
-- Fine grained control with user roles
-- Endpoints for managing of ingredients and cocktails
-- Mark ingredients you have and get all cocktails that you can make
+- [Includes over 300 cocktail recipes](https://github.com/bar-assistant/data)
+- Includes over 150 base ingredients
+- Add and manage multiple bars and bar members
+- Fine-grained user control with user roles
+- Endpoints for managing and filtering ingredients and cocktails
+- Filter recipes by ABV, base ingredient, tags and more
+- Filter ingredients by what you have and get all the cocktails that you can make
 - Detailed cocktail and ingredient information
-- Ability to upload and assign images
+- Support for assigning multiple images to resources and image sorting
 - Shopping list for missing ingredients
-- Automatic indexing of data with your prefered search engine
-    - Supports all drivers that Laravel Scout supports: Algoila, Meilisearch, Database
-- Cocktail ingredient substitutes
-- Assign glass types to cocktails
-- Cocktail recipe scraping
-- Cocktail ratings
-- User cocktail collections
-- Cocktail notes
+- Automatic indexing of data with Meilisearch
+- Support for custom cocktail ingredient substitutes
+- Support for glass types, utensils, tags, ingredient categories and more
+- Cocktail recipe importing via URL, JSON, YAML or custom collections
+- Support for cocktail ratings
+- Add user cocktail collections
+- Support for cocktail and ingredient notes
+- Supports sharing recipes by public links, custom recipe images and printing
 
 ## Documentation
 

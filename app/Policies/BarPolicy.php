@@ -32,8 +32,7 @@ class BarPolicy
     public function edit(User $user, Bar $bar): bool
     {
         return $user->id === $bar->owner()->id
-            || $user->isBarAdmin($bar->id)
-            || $user->isBarModerator($bar->id);
+            || $user->isBarAdmin($bar->id);
     }
 
     public function delete(User $user, Bar $bar): bool
