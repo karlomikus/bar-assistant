@@ -114,6 +114,13 @@ final class CocktailQueryFilter extends QueryBuilder
                 AllowedFilter::callback('total_ingredients', function ($query, $value) {
                     $query->having('total_ingredients', '>=', (int) $value);
                 }),
+                AllowedFilter::callback('missing_ingredients', function ($query, $value) {
+                    if ((int) $value >= 3) {
+                        $query->having('missing_ingredients', '>=', (int) $value);
+                    } else {
+                        $query->having('missing_ingredients', (int) $value);
+                    }
+                }),
                 AllowedFilter::callback('ignore_ingredients', function ($query, $value) use ($barMembership) {
                     if (!is_array($value)) {
                         $value = [$value];

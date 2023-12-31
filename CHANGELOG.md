@@ -1,3 +1,7 @@
+# v3.7.0
+## New
+- Added `missing_ingredients` cocktails filter
+
 # v3.6.0
 ## New
 - Bar Assistant now has a new cloud offering and homepage: [barassistant.app](https://barassistant.app)
