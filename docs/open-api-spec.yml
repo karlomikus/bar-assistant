@@ -3040,6 +3040,9 @@ components:
         is_shelf_public:
           type: boolean
           example: false
+        use_parent_as_substitute:
+          type: boolean
+          example: false
     UserRequest:
       type: object
       required:

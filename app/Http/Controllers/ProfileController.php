@@ -35,6 +35,7 @@ class ProfileController extends Controller
             $barMembership = $currentUser->getBarMembership((int) $barId);
             if ($barMembership) {
                 $barMembership->is_shelf_public = (bool) $request->post('is_shelf_public');
+                $barMembership->use_parent_as_substitute = (bool) $request->post('use_parent_as_substitute');
                 $barMembership->save();
             }
         }

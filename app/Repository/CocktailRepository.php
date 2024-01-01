@@ -20,7 +20,7 @@ readonly class CocktailRepository
      * @param array<int> $ingredientIds
      * @return \Illuminate\Support\Collection<string, mixed>
      */
-    public function getCocktailsByIngredients(array $ingredientIds, ?int $limit = null): Collection
+    public function getCocktailsByIngredients(array $ingredientIds, ?int $limit = null, bool $useParentIngredientAsSubstitute = false): Collection
     {
         $query = $this->db->table('cocktails AS c')
             ->select('c.id')
@@ -28,7 +28,7 @@ readonly class CocktailRepository
             ->leftJoin('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')
             ->where('optional', false);
 
-        if (config('bar-assistant.parent_ingredient_as_substitute')) {
+        if ($useParentIngredientAsSubstitute) {
             $query->join('ingredients AS i', function ($join) {
                 $join->on('i.id', '=', 'ci.ingredient_id')->orOn('i.id', '=', 'i.parent_ingredient_id');
             })

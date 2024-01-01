@@ -37,7 +37,8 @@ class ShelfController extends Controller
 
         $cocktailIds = $cocktailRepo->getCocktailsByIngredients(
             $barMembership->userIngredients->pluck('ingredient_id')->toArray(),
-            $limit
+            $limit,
+            $barMembership->use_parent_as_substitute,
         );
 
         return response()->json([

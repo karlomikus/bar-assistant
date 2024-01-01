@@ -22,6 +22,8 @@ final class CocktailQueryFilter extends QueryBuilder
 
         $barMembership = $this->request->user()->getBarMembership(bar()->id);
 
+        $useParentIngredientAsSubstitute = $barMembership->use_parent_as_substitute;
+
         $this
             ->allowedFilters([
                 AllowedFilter::exact('id'),
@@ -50,14 +52,15 @@ final class CocktailQueryFilter extends QueryBuilder
                         $query->userFavorites($barMembership->id);
                     }
                 }),
-                AllowedFilter::callback('on_shelf', function ($query, $value) use ($cocktailRepo) {
+                AllowedFilter::callback('on_shelf', function ($query, $value) use ($cocktailRepo, $useParentIngredientAsSubstitute) {
                     if ($value === true) {
                         $query->whereIn('cocktails.id', $cocktailRepo->getCocktailsByIngredients(
-                            $this->request->user()->getShelfIngredients(bar()->id)->pluck('ingredient_id')->toArray()
+                            $this->request->user()->getShelfIngredients(bar()->id)->pluck('ingredient_id')->toArray(),
+                            useParentIngredientAsSubstitute: $useParentIngredientAsSubstitute,
                         ));
                     }
                 }),
-                AllowedFilter::callback('user_shelves', function ($query, $value) use ($cocktailRepo) {
+                AllowedFilter::callback('user_shelves', function ($query, $value) use ($cocktailRepo, $useParentIngredientAsSubstitute) {
                     if (!is_array($value)) {
                         $value = [$value];
                     }
@@ -71,15 +74,19 @@ final class CocktailQueryFilter extends QueryBuilder
                         ->get();
 
                     $query->whereIn('cocktails.id', $cocktailRepo->getCocktailsByIngredients(
-                        $ingredients->pluck('ingredient_id')->toArray()
+                        $ingredients->pluck('ingredient_id')->toArray(),
+                        useParentIngredientAsSubstitute: $useParentIngredientAsSubstitute,
                     ));
                 }),
-                AllowedFilter::callback('shelf_ingredients', function ($query, $value) use ($cocktailRepo) {
+                AllowedFilter::callback('shelf_ingredients', function ($query, $value) use ($cocktailRepo, $useParentIngredientAsSubstitute) {
                     if (!is_array($value)) {
                         $value = [$value];
                     }
 
-                    $query->whereIn('cocktails.id', $cocktailRepo->getCocktailsByIngredients($value));
+                    $query->whereIn('cocktails.id', $cocktailRepo->getCocktailsByIngredients(
+                        $value,
+                        useParentIngredientAsSubstitute: $useParentIngredientAsSubstitute
+                    ));
                 }),
                 AllowedFilter::callback('is_public', function ($query, $value) {
                     if ($value === true) {
