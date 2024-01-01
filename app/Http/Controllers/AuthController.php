@@ -35,7 +35,11 @@ class AuthController extends Controller
             return new TokenResource($token);
         }
 
-        abort(404, 'Unable to authenticate. Check your login credentials and try again.');
+        if (config('bar-assistant.mail_require_confirmation') === true) {
+            abort(404, 'Unable to authenticate. Make sure you have confirmed your account and your login credentials are correct.');
+        } else {
+            abort(404, 'Unable to authenticate. Check your login credentials and try again.');
+        }
     }
 
     public function logout(Request $request): JsonResponse
@@ -48,7 +52,7 @@ class AuthController extends Controller
     public function register(RegisterRequest $req): JsonResource
     {
         if (config('bar-assistant.allow_registration') === false) {
-            abort(404, 'Registrations are closed.');
+            abort(404, 'Registrations are disabled.');
         }
 
         $requireConfirmation = config('bar-assistant.mail_require_confirmation');
