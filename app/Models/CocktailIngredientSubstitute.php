@@ -27,4 +27,16 @@ class CocktailIngredientSubstitute extends Model
     {
         return $this->belongsTo(Ingredient::class);
     }
+
+    public function printAmount(): string
+    {
+        $units = $this->units ?? '';
+
+        $str = sprintf('%s %s', $this->amount, $units);
+        if ($this->amount_max) {
+            $str .= sprintf(' - %s %s', $this->amount_max, $units);
+        }
+
+        return trim($str);
+    }
 }

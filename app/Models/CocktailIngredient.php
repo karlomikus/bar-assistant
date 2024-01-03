@@ -42,4 +42,19 @@ class CocktailIngredient extends Model
     {
         return $this->hasMany(CocktailIngredientSubstitute::class);
     }
+
+    public function printIngredient(): string
+    {
+        return sprintf('%s %s', $this->printAmount(), $this->ingredient->name);
+    }
+
+    public function printAmount(): string
+    {
+        $str = sprintf('%s %s', $this->amount, $this->units);
+        if ($this->amount_max) {
+            $str .= sprintf(' - %s %s', $this->amount_max, $this->units);
+        }
+
+        return $str;
+    }
 }
