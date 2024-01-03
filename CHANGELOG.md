@@ -4,11 +4,13 @@
 - Added `use_parent_as_substitute` setting to bar memberships
     - With this you can toggle using parent ingredient of a specific ingredient as a substitute in your shelf
     - Before, this was available via experimental `PARENT_INGREDIENT_SUBSTITUTE` env variable
+- Added `csv` export to cocktail collections
 
 ## Changes
 - Removed `PARENT_INGREDIENT_SUBSTITUTE` env variable
 - Update login error message depending on mail confirmation config
 - Update min log level to "warning"
+- Updated cocktail markdown export format
 
 # v3.6.0
 ## New
