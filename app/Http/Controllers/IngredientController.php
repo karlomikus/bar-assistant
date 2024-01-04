@@ -141,4 +141,17 @@ class IngredientController extends Controller
             })
         ]);
     }
+
+    public function recommend(Request $request, IngredientRepository $ingredientRepo): JsonResponse
+    {
+        $barMembership = $request->user()->getBarMembership(bar()->id);
+
+        if (!$barMembership) {
+            abort(404);
+        }
+
+        $possibleIngredients = $ingredientRepo->getIngredientsForPossibleCocktails(bar()->id, $barMembership->id);
+
+        return response()->json(['data' => $possibleIngredients]);
+    }
 }

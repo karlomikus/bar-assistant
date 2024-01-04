@@ -890,6 +890,40 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /ingredients/recommend:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
+    get:
+      tags:
+        - Ingredients
+      summary: 'Recommend next ingredients to buy'
+      operationId: recommendIngredients
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          name:
+                            type: string
+                            example: Vodka
+                          possible_cocktails:
+                            type: integer
+                            example: 20
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /glasses:
     parameters:
       - $ref: '#/components/parameters/BarParameter'

@@ -5,6 +5,8 @@
     - With this you can toggle using parent ingredient of a specific ingredient as a substitute in your shelf
     - Before, this was available via experimental `PARENT_INGREDIENT_SUBSTITUTE` env variable
 - Added `csv` export to cocktail collections
+- Added `/ingredients/recommend` endpoint
+    - This provides recommendations regarding the additional ingredients that may be added to your shelf to expand potential new cocktail recipes.
 
 ## Changes
 - Removed `PARENT_INGREDIENT_SUBSTITUTE` env variable
