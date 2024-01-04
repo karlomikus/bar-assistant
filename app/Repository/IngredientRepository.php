@@ -36,18 +36,21 @@ readonly class IngredientRepository
     {
         $rawQuery = "SELECT
             pi.ingredient_id as id,
+            pi.ingredient_slug as slug,
             pi.ingredient_name as name,
             pi.potential_cocktails
         FROM
             (
                 SELECT
                     mi.ingredient_id,
+                    mi.ingredient_slug,
                     mi.ingredient_name,
                     COUNT(DISTINCT c.id) AS potential_cocktails
                 FROM
                     (
                         SELECT
                             i.id AS ingredient_id,
+                            i.slug AS ingredient_slug,
                             i.name AS ingredient_name
                         FROM
                             ingredients i
@@ -66,6 +69,7 @@ readonly class IngredientRepository
                     JOIN cocktails c ON ci.cocktail_id = c.id
                 GROUP BY
                     mi.ingredient_id,
+                    mi.ingredient_slug,
                     mi.ingredient_name
             ) pi
         ORDER BY
