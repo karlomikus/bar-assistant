@@ -13,6 +13,7 @@
 - Update login error message depending on mail confirmation config
 - Update min log level to "warning"
 - Updated cocktail markdown export format
+- JSON export format is now the same as exported YAML recipes
 
 # v3.6.0
 ## New
