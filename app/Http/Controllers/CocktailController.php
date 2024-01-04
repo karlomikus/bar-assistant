@@ -253,7 +253,7 @@ class CocktailController extends Controller
 
         $type = $request->get('type', 'json');
 
-        $data = $cocktail->toShareableArray();
+        $data = $cocktail->share(true);
 
         if ($type === 'json') {
             return new Response(json_encode($data, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);

@@ -197,7 +197,7 @@ class CollectionController extends Controller
             'name' => $collection->name,
             'description' => $collection->description,
             'cocktails' => $collection->cocktails->map(function (Cocktail $cocktail) {
-                return $cocktail->toShareableArray();
+                return $cocktail->share(true);
             })->toArray(),
         ];
 
