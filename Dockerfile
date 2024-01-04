@@ -77,6 +77,8 @@ RUN useradd -G www-data,root -u $PUID -d /home/developer developer
 RUN mkdir -p /home/developer/.composer && \
     chown -R developer:developer /home/developer
 
+RUN install-php-extensions xdebug
+
 RUN echo "* * * * * developer cd /var/www/cocktails && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontab
 
 USER developer
