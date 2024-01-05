@@ -13,7 +13,7 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./:/var/www/cocktails
-      - ./resources/docker/localdev/php.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./resources/docker/localdev/php.ini:/usr/local/etc/php/php.ini
 
   horizon:
     build:
@@ -23,20 +23,11 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command: php artisan horizon
     volumes:
       - ./:/var/www/cocktails
-
-  minio:
-    image: 'bitnami/minio:latest'
-    ports:
-      - '7000:9000'
-      - '7001:9001'
-    environment:
-      - MINIO_ROOT_USER=minio-root-user
-      - MINIO_ROOT_PASSWORD=minio-root-password
-    volumes:
-      - miniiodata:/data
 
   webserver:
     image: nginx:alpine

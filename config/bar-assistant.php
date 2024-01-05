@@ -30,22 +30,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | [Experimental] Use parent ingredient as substitutes GH#95
-    |--------------------------------------------------------------------------
-    |
-    | This option will modify how ingredients for cocktails you can make are
-    | shown. Enabling this option will use ingredients parent ingredient
-    | as a possible substitute.
-    |
-    */
-
-    'parent_ingredient_as_substitute' => env(
-        'PARENT_INGREDIENT_SUBSTITUTE',
-        false
-    ),
-
-    /*
-    |--------------------------------------------------------------------------
     | Max bars per user
     |--------------------------------------------------------------------------
     |

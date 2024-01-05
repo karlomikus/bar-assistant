@@ -24,6 +24,7 @@ class BarMembershipResource extends JsonResource
             'user_name' => $this->user->name,
             'bar_id' => $this->bar_id,
             'is_shelf_public' => $this->is_shelf_public,
+            'use_parent_as_substitute' => $this->use_parent_as_substitute,
         ];
     }
 }

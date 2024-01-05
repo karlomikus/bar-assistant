@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Throwable;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\Export\CocktailsToCSV;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CollectionRequest;
 use Kami\Cocktail\Http\Resources\CollectionResource;
@@ -195,7 +197,7 @@ class CollectionController extends Controller
             'name' => $collection->name,
             'description' => $collection->description,
             'cocktails' => $collection->cocktails->map(function (Cocktail $cocktail) {
-                return $cocktail->toShareableArray();
+                return $cocktail->share(true);
             })->toArray(),
         ];
 
@@ -205,6 +207,13 @@ class CollectionController extends Controller
 
         if ($type === 'yaml' || $type === 'yml') {
             return new Response(Yaml::dump($data, 4, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK), 200, ['Content-Type' => 'application/yaml']);
+        }
+
+        if ($type === 'csv') {
+            $csv = new CocktailsToCSV();
+            $csvResult = $csv->process($collection->cocktails);
+
+            return new Response($csvResult, 200, ['Content-Type' => 'text/csv', 'Content-Disposition' => 'attachment; filename="' . Str::slug($collection->name) . '.csv"']);
         }
 
         abort(400, 'Requested type "' . $type . '" not supported');

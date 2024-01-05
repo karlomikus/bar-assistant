@@ -82,6 +82,7 @@ Route::middleware($apiMiddleware)->group(function() {
     Route::prefix('ingredients')->group(function() {
         Route::get('/', [IngredientController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/', [IngredientController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/recommend', [IngredientController::class, 'recommend'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show');
         Route::put('/{id}', [IngredientController::class, 'update']);
         Route::delete('/{id}', [IngredientController::class, 'delete']);

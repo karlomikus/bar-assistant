@@ -78,7 +78,7 @@ Xdebug vscode launch config:
     "type": "php",
     "request": "launch",
     "port": 9003,
-    "hostname": "host.docker.internal",
+    "hostname": "localhost",
     "pathMappings": {
         "/var/www/cocktails/": "${workspaceFolder}"
     }

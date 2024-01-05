@@ -67,7 +67,7 @@ class CocktailService
             }
 
             $dbTags = [];
-            foreach ($cocktailDTO->tags as $tagName) {
+            foreach (array_filter($cocktailDTO->tags) as $tagName) {
                 $tag = Tag::whereRaw('LOWER(name) = ?', [mb_strtolower(trim($tagName))])->where('bar_id', $cocktailDTO->barId)->first();
                 if (!$tag) {
                     $tag = new Tag();
@@ -160,7 +160,7 @@ class CocktailService
             $cocktail->ingredients()->whereNotIn('ingredient_id', $currentIngredients)->delete();
 
             $dbTags = [];
-            foreach ($cocktailDTO->tags as $tagName) {
+            foreach (array_filter($cocktailDTO->tags) as $tagName) {
                 $tag = Tag::whereRaw('LOWER(name) = ?', [mb_strtolower(trim($tagName))])->where('bar_id', $cocktail->bar_id)->first();
                 if (!$tag) {
                     $tag = new Tag();

@@ -13,6 +13,7 @@ class BarMembership extends Model
 {
     protected $casts = [
         'is_shelf_public' => 'boolean',
+        'use_parent_as_substitute' => 'boolean',
     ];
 
     /**

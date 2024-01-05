@@ -22,10 +22,10 @@ class ShelfController extends Controller
     public function ingredients(Request $request): JsonResource
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
+        $barMembership->load('userIngredients.ingredient');
         $userIngredients = $barMembership
             ->userIngredients
-            ->sortBy('ingredient.name')
-            ->load('ingredient');
+            ->sortBy('ingredient.name');
 
         return UserIngredientResource::collection($userIngredients);
     }
@@ -37,7 +37,8 @@ class ShelfController extends Controller
 
         $cocktailIds = $cocktailRepo->getCocktailsByIngredients(
             $barMembership->userIngredients->pluck('ingredient_id')->toArray(),
-            $limit
+            $limit,
+            $barMembership->use_parent_as_substitute,
         );
 
         return response()->json([

@@ -23,17 +23,18 @@ class StatsController extends Controller
         $limit = $request->get('limit', 5);
         $stats = [];
 
-        $popularIngredientIds = DB::table('cocktail_ingredients')
-            ->select('ingredient_id', DB::raw('COUNT(ingredient_id) AS cocktails_count'))
+        $popularIngredients = DB::table('cocktail_ingredients')
+            ->select('ingredient_id', 'ingredients.name as name', 'ingredients.slug as ingredient_slug', DB::raw('COUNT(ingredient_id) AS cocktails_count'))
             ->join('cocktails', 'cocktails.id', '=', 'cocktail_ingredients.cocktail_id')
+            ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
             ->where('cocktails.bar_id', $bar->id)
             ->groupBy('ingredient_id')
             ->orderBy('cocktails_count', 'desc')
             ->limit($limit)
             ->get();
 
-        $topRatedCocktailIds = DB::table('ratings')
-            ->select('rateable_id AS cocktail_id', DB::raw('AVG(rating) AS avg_rating'), DB::raw('COUNT(*) AS votes'))
+        $topRatedCocktails = DB::table('ratings')
+            ->select('rateable_id AS cocktail_id', 'cocktails.name as name', 'cocktails.slug as cocktail_slug', DB::raw('AVG(rating) AS avg_rating'), DB::raw('COUNT(*) AS votes'))
             ->join('cocktails', 'cocktails.id', '=', 'ratings.rateable_id')
             ->where('rateable_type', Cocktail::class)
             ->where('cocktails.bar_id', $bar->id)
@@ -58,11 +59,12 @@ class StatsController extends Controller
         $stats['total_ingredients'] = Ingredient::where('bar_id', $bar->id)->count();
         $stats['total_favorited_cocktails'] = CocktailFavorite::where('bar_membership_id', $barMembership->id)->count();
         $stats['total_shelf_cocktails'] = $cocktailRepo->getCocktailsByIngredients(
-            $barMembership->userIngredients->pluck('ingredient_id')->toArray()
+            $barMembership->userIngredients->pluck('ingredient_id')->toArray(),
+            useParentIngredientAsSubstitute: $barMembership->use_parent_as_substitute,
         )->count();
         $stats['total_shelf_ingredients'] = UserIngredient::where('bar_membership_id', $barMembership->id)->count();
-        $stats['most_popular_ingredients'] = $popularIngredientIds;
-        $stats['top_rated_cocktails'] = $topRatedCocktailIds;
+        $stats['most_popular_ingredients'] = $popularIngredients;
+        $stats['top_rated_cocktails'] = $topRatedCocktails;
         $stats['total_collections'] = CocktailCollection::where('bar_membership_id', $barMembership->id)->count();
         $stats['your_top_ingredients'] = $userFavoriteIngredients;
         $stats['total_bar_members'] = $bar->memberships()->count();
