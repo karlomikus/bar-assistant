@@ -30,7 +30,7 @@ class CocktailsToCSV
                 $cocktail->slug,
                 $cocktail->name,
                 $cocktail->instructions,
-                $cocktail->ingredients->map(fn($i) => $i->printIngredient())->implode("\n"),
+                $cocktail->ingredients->map(fn ($i) => $i->printIngredient())->implode("\n"),
                 $cocktail->garnish,
             ];
         }));
