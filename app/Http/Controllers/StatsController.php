@@ -60,7 +60,8 @@ class StatsController extends Controller
         $stats['total_favorited_cocktails'] = CocktailFavorite::where('bar_membership_id', $barMembership->id)->count();
         $stats['total_shelf_cocktails'] = $cocktailRepo->getCocktailsByIngredients(
             $barMembership->userIngredients->pluck('ingredient_id')->toArray(),
-            useParentIngredientAsSubstitute: $barMembership->use_parent_as_substitute,
+            null,
+            $barMembership->use_parent_as_substitute,
         )->count();
         $stats['total_shelf_ingredients'] = UserIngredient::where('bar_membership_id', $barMembership->id)->count();
         $stats['most_popular_ingredients'] = $popularIngredients;
