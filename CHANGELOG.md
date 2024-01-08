@@ -1,3 +1,7 @@
+# v3.7.1
+## Fixes
+- Optimized cocktail shelf query when parent ingredient tracking is on
+
 # v3.7.0
 ## New
 - Added `missing_ingredients` cocktails filter

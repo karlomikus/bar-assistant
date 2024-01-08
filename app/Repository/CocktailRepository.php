@@ -30,18 +30,15 @@ readonly class CocktailRepository
 
         if ($useParentIngredientAsSubstitute) {
             $query->join('ingredients AS i', function ($join) {
-                $join->on('i.id', '=', 'ci.ingredient_id')->orOn('i.id', '=', 'i.parent_ingredient_id');
+                $join->on('i.id', '=', 'ci.ingredient_id');
             })
-            ->where(function ($query) use ($ingredientIds) {
-                $query->whereNull('i.parent_ingredient_id')
-                    ->whereIn('i.id', $ingredientIds);
+            ->leftJoin('ingredients AS pi', function ($join) { // Faster than OR join
+                $join->on('pi.parent_ingredient_id', '=', 'ci.ingredient_id');
             })
-            ->orWhere(function ($query) use ($ingredientIds) {
-                $query->whereNotNull('i.parent_ingredient_id')
-                    ->where(function ($sub) use ($ingredientIds) {
-                        $sub->whereIn('i.id', $ingredientIds)->orWhereIn('i.parent_ingredient_id', $ingredientIds);
-                    });
-            });
+            ->whereIn('i.id', $ingredientIds)
+            ->orWhereIn('i.parent_ingredient_id', $ingredientIds)
+            ->orWhereIn('pi.id', $ingredientIds)
+            ->orWhereIn('pi.parent_ingredient_id', $ingredientIds);
         } else {
             $query->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
             ->whereIn('i.id', $ingredientIds);
