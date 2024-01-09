@@ -1,6 +1,7 @@
 # v3.7.1
 ## Fixes
 - Optimized cocktail shelf query when parent ingredient tracking is on
+- Searching by name now also searches slug
 
 # v3.7.0
 ## New

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Filters;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Spatie\QueryBuilder\AllowedSort;
@@ -27,7 +28,17 @@ final class CocktailQueryFilter extends QueryBuilder
         $this
             ->allowedFilters([
                 AllowedFilter::exact('id'),
-                AllowedFilter::partial('name'),
+                AllowedFilter::callback('name', function ($query, $value) {
+                    $searchTerm = mb_strtolower((string) $value, 'UTF-8');
+                    $searchTerm = str_replace(
+                        ['\\', '_', '%'],
+                        ['\\\\', '\\_', '\\%'],
+                        $searchTerm,
+                    );
+
+                    $query->whereRaw('LOWER(name) LIKE ?', ['%' . $searchTerm . '%'])
+                        ->orWhereRaw('slug LIKE ?', ['%' . Str::slug($searchTerm) . '%']);
+                }),
                 AllowedFilter::partial('ingredient_name', 'ingredients.ingredient.name'),
                 AllowedFilter::exact('ingredient_id', 'ingredients.ingredient.id'),
                 AllowedFilter::exact('tag_id', 'tags.id'),
