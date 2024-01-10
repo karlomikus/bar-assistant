@@ -2,6 +2,9 @@
 ## Fixes
 - Optimized cocktail shelf query when parent ingredient tracking is on
 - Searching by name now also searches slug
+- Fixed missing substitute ingredient data on default recipe data import
+- Fixed missing parent ingredient data on default recipe data import
+- Fixed missing ingredient note data on default recipe data import
 
 # v3.7.0
 ## New
