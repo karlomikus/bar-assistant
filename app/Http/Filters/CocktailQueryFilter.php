@@ -29,15 +29,27 @@ final class CocktailQueryFilter extends QueryBuilder
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::callback('name', function ($query, $value) {
-                    $searchTerm = mb_strtolower((string) $value, 'UTF-8');
-                    $searchTerm = str_replace(
-                        ['\\', '_', '%'],
-                        ['\\\\', '\\_', '\\%'],
-                        $searchTerm,
-                    );
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
 
-                    $query->whereRaw('LOWER(name) LIKE ?', ['%' . $searchTerm . '%'])
-                        ->orWhereRaw('slug LIKE ?', ['%' . Str::slug($searchTerm) . '%']);
+                    $value = array_map(function ($searchTerm) {
+                        $searchTerm = mb_strtolower((string) $searchTerm, 'UTF-8');
+                        $searchTerm = str_replace(
+                            ['\\', '_', '%'],
+                            ['\\\\', '\\_', '\\%'],
+                            $searchTerm,
+                        );
+
+                        return $searchTerm;
+                    }, $value);
+
+                    $query->where(function ($query) use ($value) {
+                        foreach (array_filter($value, 'strlen') as $partialValue) {
+                            $query->whereRaw('LOWER(name) LIKE ?', ['%' . $partialValue . '%'])
+                                ->orWhereRaw('slug LIKE ?', ['%' . Str::slug($partialValue) . '%']);
+                        }
+                    });
                 }),
                 AllowedFilter::partial('ingredient_name', 'ingredients.ingredient.name'),
                 AllowedFilter::exact('ingredient_id', 'ingredients.ingredient.id'),

@@ -65,6 +65,7 @@ class CocktailControllerTest extends TestCase
             ['bar_id' => 1, 'name' => 'XXXX'],
             ['bar_id' => 1, 'name' => 'Test', 'created_user_id' => $user->id],
             ['bar_id' => 1, 'name' => 'public', 'public_id' => 'UUID'],
+            ['bar_id' => 1, 'name' => 'Дикая вишня'],
         ]);
         Cocktail::factory()->hasTags(1)->create(['name' => 'test 1', 'bar_id' => 1]);
         Cocktail::factory()->has(
@@ -110,6 +111,8 @@ class CocktailControllerTest extends TestCase
         $response = $this->getJson('/api/cocktails?bar_id=1&filter[abv_max]=30');
         $response->assertJsonCount(0, 'data');
         $response = $this->getJson('/api/cocktails?bar_id=1&filter[abv_max]=50');
+        $response->assertJsonCount(1, 'data');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[name]=Дикая');
         $response->assertJsonCount(1, 'data');
     }
 
