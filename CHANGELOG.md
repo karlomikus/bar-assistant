@@ -1,4 +1,7 @@
-# v3.7.1
+# v3.8.0
+## New
+- Added `favorite_tags` to stats endpoint
+
 ## Fixes
 - Optimized cocktail shelf query when parent ingredient tracking is on
 - Searching by name now also searches slug
