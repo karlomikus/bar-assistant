@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Filters;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
+use Kami\Cocktail\Http\Filters\FilterNameSearch;
 use Kami\Cocktail\Repository\CocktailRepository;
 
 /**
@@ -28,29 +28,7 @@ final class CocktailQueryFilter extends QueryBuilder
         $this
             ->allowedFilters([
                 AllowedFilter::exact('id'),
-                AllowedFilter::callback('name', function ($query, $value) {
-                    if (!is_array($value)) {
-                        $value = [$value];
-                    }
-
-                    $value = array_map(function ($searchTerm) {
-                        $searchTerm = mb_strtolower((string) $searchTerm, 'UTF-8');
-                        $searchTerm = str_replace(
-                            ['\\', '_', '%'],
-                            ['\\\\', '\\_', '\\%'],
-                            $searchTerm,
-                        );
-
-                        return $searchTerm;
-                    }, $value);
-
-                    $query->where(function ($query) use ($value) {
-                        foreach (array_filter($value, 'strlen') as $partialValue) {
-                            $query->whereRaw('LOWER(name) LIKE ?', ['%' . $partialValue . '%'])
-                                ->orWhereRaw('slug LIKE ?', ['%' . Str::slug($partialValue) . '%']);
-                        }
-                    });
-                }),
+                AllowedFilter::custom('name', new FilterNameSearch()),
                 AllowedFilter::partial('ingredient_name', 'ingredients.ingredient.name'),
                 AllowedFilter::exact('ingredient_id', 'ingredients.ingredient.id'),
                 AllowedFilter::exact('tag_id', 'tags.id'),
