@@ -8,7 +8,6 @@ use Kami\Cocktail\Models\Ingredient;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Kami\Cocktail\Http\Filters\FilterNameSearch;
 use Kami\Cocktail\Repository\IngredientRepository;
 
 /**
