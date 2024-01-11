@@ -55,6 +55,16 @@ class StatsController extends Controller
             ->limit($limit)
             ->get();
 
+        $favoriteTags = DB::table('tags')
+            ->selectRaw('tags.id, tags.name, COUNT(cocktail_favorites.cocktail_id) AS cocktails_count')
+            ->join('cocktail_tag', 'cocktail_tag.tag_id', '=', 'tags.id')
+            ->join('cocktail_favorites', 'cocktail_favorites.cocktail_id', '=', 'cocktail_tag.cocktail_id')
+            ->where('cocktail_favorites.bar_membership_id', $barMembership->id)
+            ->groupBy('tags.id')
+            ->orderBy('cocktails_count', 'DESC')
+            ->limit($limit)
+            ->get();
+
         $stats['total_cocktails'] = Cocktail::where('bar_id', $bar->id)->count();
         $stats['total_ingredients'] = Ingredient::where('bar_id', $bar->id)->count();
         $stats['total_favorited_cocktails'] = CocktailFavorite::where('bar_membership_id', $barMembership->id)->count();
@@ -69,6 +79,7 @@ class StatsController extends Controller
         $stats['total_collections'] = CocktailCollection::where('bar_membership_id', $barMembership->id)->count();
         $stats['your_top_ingredients'] = $userFavoriteIngredients;
         $stats['total_bar_members'] = $bar->memberships()->count();
+        $stats['favorite_tags'] = $favoriteTags;
 
         return response()->json(['data' => $stats]);
     }
