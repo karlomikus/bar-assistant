@@ -6,12 +6,18 @@ namespace Tests\Scrapers;
 
 use Tests\TestCase;
 use Kami\Cocktail\Scraper\Manager;
+use Symfony\Component\HttpClient\Exception\TimeoutException;
 
 class CocktailsDistilledScraperTest extends TestCase
 {
     public function testScrape(): void
     {
-        $scraper = Manager::scrape('https://cocktailsdistilled.com/recipe/rakia-negroni/');
+        try {
+            $scraper = Manager::scrape('https://cocktailsdistilled.com/recipe/rakia-negroni/');
+        } catch (TimeoutException) {
+            $this->markTestSkipped('Scraper timeout reached');
+        }
+
         $result = $scraper->toArray();
 
         $instructions = "Fill an Old Fashioned glass with a good amount of ice, then add equal parts Rakia, Campari and Sweet Vermouth before stirring well.";
