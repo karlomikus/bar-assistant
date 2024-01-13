@@ -8,6 +8,7 @@ use Throwable;
 use Kami\Cocktail\Models\Bar;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Export\Recipes;
+use Kami\Cocktail\ExportTypeEnum;
 
 class BarExportRecipes extends Command
 {
@@ -16,7 +17,7 @@ class BarExportRecipes extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:export-recipes {barId}';
+    protected $signature = 'bar:export-recipes {barId} {--t|type=yml : Export type}';
 
     /**
      * The console command description.
@@ -36,6 +37,9 @@ class BarExportRecipes extends Command
     public function handle(): int
     {
         $barId = (int) $this->argument('barId');
+        $type = $this->option('type') ?? 'yml';
+
+        $type = ExportTypeEnum::tryFrom($type);
 
         try {
             $bar = Bar::findOrFail($barId);
@@ -47,7 +51,7 @@ class BarExportRecipes extends Command
 
         $this->output->info(sprintf('Starting recipe export from bar: %s - "%s"', $bar->id, $bar->name));
 
-        $filename = $this->exporter->process($barId);
+        $filename = $this->exporter->process($barId, null, $type);
 
         $this->output->success('Data exported to file: ' . $filename);
 

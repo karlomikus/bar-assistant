@@ -12,6 +12,7 @@ use Symfony\Component\Yaml\Yaml;
 use Kami\Cocktail\Models\Utensil;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Cache;
@@ -31,6 +32,9 @@ class FromRecipesData
 
     public function process(FilesystemAdapter $dataDisk, Bar $bar, User $user, array $flags = []): bool
     {
+        Log::debug(sprintf('Starting recipe import for "%s"', $bar->name));
+
+        $timerStart = microtime(true);
         $bar->setStatus(BarStatusEnum::Provisioning)->save();
 
         $baseDataFiles = [
@@ -60,6 +64,10 @@ class FromRecipesData
         Ingredient::where('bar_id', $bar->id)->with('category', 'images')->searchable();
         /** @phpstan-ignore-next-line */
         Cocktail::where('bar_id', $bar->id)->with('ingredients.ingredient', 'tags', 'images')->searchable();
+
+        $timerEnd = microtime(true);
+
+        Log::debug(sprintf('Importing recipes done in "%s" seconds', ($timerEnd - $timerStart)));
 
         return true;
     }
@@ -108,10 +116,12 @@ class FromRecipesData
         });
 
         $ingredientsToInsert = [];
+        $parentIngredientsToInsert = [];
         $imagesToInsert = [];
         $barImagesDir = 'ingredients/' . $bar->id . '/';
         $this->uploadsDisk->makeDirectory($barImagesDir);
 
+        DB::beginTransaction();
         foreach ($ingredients as $ingredient) {
             if ($existingIngredients->has(Str::slug($ingredient['name']))) {
                 continue;
@@ -132,6 +142,10 @@ class FromRecipesData
                 'created_at' => now(),
                 'updated_at' => null,
             ];
+
+            if ($ingredient['_parent_id'] ?? null) {
+                $parentIngredientsToInsert[$slug] = $ingredient['_parent_id'] . '-' . $bar->id;
+            }
 
             // For performance, manually copy the files and create image references
             foreach ($ingredient['images'] ?? [] as $image) {
@@ -158,16 +172,26 @@ class FromRecipesData
 
         $ingredients = DB::table('ingredients')->where('bar_id', $bar->id)->get();
 
-        if (count($imagesToInsert) > 0) {
-            foreach ($ingredients as $ingredient) {
-                if (array_key_exists($ingredient->slug, $imagesToInsert)) {
-                    $imagesToInsert[$ingredient->slug]['imageable_type'] = Ingredient::class;
-                    $imagesToInsert[$ingredient->slug]['imageable_id'] = $ingredient->id;
+        foreach ($ingredients as $ingredient) {
+            if (array_key_exists($ingredient->slug, $imagesToInsert)) {
+                $imagesToInsert[$ingredient->slug]['imageable_type'] = Ingredient::class;
+                $imagesToInsert[$ingredient->slug]['imageable_id'] = $ingredient->id;
+            }
+
+            if (array_key_exists($ingredient->slug, $parentIngredientsToInsert)) {
+                $parentSlug = $parentIngredientsToInsert[$ingredient->slug];
+                $parentIngredientId = DB::table('ingredients')->where('slug', $parentSlug)->where('bar_id', $bar->id)->first('id');
+                if (isset($parentIngredientId->id)) {
+                    DB::table('ingredients')->where('slug', $ingredient->slug)->where('bar_id', $bar->id)->update(['parent_ingredient_id' => $parentIngredientId->id]);
                 }
             }
-    
+        }
+
+        if (count($imagesToInsert) > 0) {
             DB::table('images')->insert(array_values($imagesToInsert));
         }
+
+        DB::commit();
     }
 
     private function importBaseCocktails(FilesystemAdapter $dataDisk, Bar $bar, User $user): void
@@ -188,7 +212,6 @@ class FromRecipesData
             return Str::slug($cocktail->name);
         });
 
-        $cocktailIngredientsToInsert = [];
         $imagesToInsert = [];
         $tagsToInsert = [];
         $cocktailUtensilsToInsert = [];
@@ -243,15 +266,31 @@ class FromRecipesData
 
             $sort = 1;
             foreach ($cocktail['ingredients'] as $cocktailIngredient) {
-                $cocktailIngredientsToInsert[] = [
+                $ciId = DB::table('cocktail_ingredients')->insertGetId([
                     'cocktail_id' => $cocktailId,
                     'ingredient_id' => $dbIngredients[strtolower($cocktailIngredient['name'])] ?? null,
                     'amount' => $cocktailIngredient['amount'],
                     'units' => $cocktailIngredient['units'],
                     'optional' => $cocktailIngredient['optional'] ?? false,
+                    'note' => $cocktailIngredient['note'] ?? null,
                     'sort' => $sort,
-                ];
+                ]);
+
                 $sort++;
+
+                if (count($cocktailIngredient['substitutes'] ?? []) > 0) {
+                    foreach ($cocktailIngredient['substitutes'] as $substitute) {
+                        DB::table('cocktail_ingredient_substitutes')->insert([
+                            'cocktail_ingredient_id' => $ciId,
+                            'ingredient_id' => $dbIngredients[strtolower($substitute['name'])] ?? null,
+                            'amount' => $substitute['amount'] ?? null,
+                            'amount_max' => $substitute['amount_max'] ?? null,
+                            'units' => $substitute['units'] ?? null,
+                            'created_at' => now(),
+                            'updated_at' => null,
+                        ]);
+                    }
+                }
             }
 
             // For performance, manually copy the files and create image references
@@ -278,7 +317,6 @@ class FromRecipesData
         }
         DB::commit();
 
-        DB::table('cocktail_ingredients')->insert($cocktailIngredientsToInsert);
         DB::table('images')->insert($imagesToInsert);
         DB::table('cocktail_tag')->insert($tagsToInsert);
     }
