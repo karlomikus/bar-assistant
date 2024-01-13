@@ -12,10 +12,11 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
+use Kami\Cocktail\ExportTypeEnum;
 
 class Recipes
 {
-    public function process(int $barId, ?string $exportPath = null): string
+    public function process(int $barId, ?string $exportPath = null, ExportTypeEnum $exportType = ExportTypeEnum::YAML): string
     {
         $version = config('bar-assistant.version');
         $meta = [
@@ -38,9 +39,9 @@ class Recipes
             throw new ExportFileNotCreatedException($message);
         }
 
-        $this->dumpCocktails($barId, $zip);
-        $this->dumpIngredients($barId, $zip);
-        $this->dumpBaseData($barId, $zip);
+        $this->dumpCocktails($barId, $zip, $exportType);
+        $this->dumpIngredients($barId, $zip, $exportType);
+        $this->dumpBaseData($barId, $zip, $exportType);
 
         if ($metaContent = json_encode($meta)) {
             $zip->addFromString('_meta.json', $metaContent);
@@ -51,7 +52,7 @@ class Recipes
         return $filename;
     }
 
-    private function dumpCocktails(int $barId, ZipArchive &$zip): void
+    private function dumpCocktails(int $barId, ZipArchive &$zip, ExportTypeEnum $type): void
     {
         $cocktails = Cocktail::with(['ingredients.ingredient', 'ingredients.substitutes', 'images' => function ($query) {
             $query->orderBy('sort');
@@ -60,8 +61,13 @@ class Recipes
         foreach ($cocktails as $cocktail) {
             $data = $cocktail->share();
 
-            $cocktailYaml = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
-            $zip->addFromString('cocktails/' . $data['_id'] . '.yml', $cocktailYaml);
+            if ($type === ExportTypeEnum::YAML) {
+                $cocktailExportData = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
+            } else {
+                $cocktailExportData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            }
+
+            $zip->addFromString('cocktails/' . $data['_id'] . '.' . $type->value, $cocktailExportData);
 
             $i = 1;
             foreach ($cocktail->images as $img) {
@@ -71,7 +77,7 @@ class Recipes
         }
     }
 
-    private function dumpIngredients(int $barId, ZipArchive &$zip): void
+    private function dumpIngredients(int $barId, ZipArchive &$zip, ExportTypeEnum $type): void
     {
         $ingredients = Ingredient::with(['images' => function ($query) {
             $query->orderBy('sort');
@@ -80,8 +86,13 @@ class Recipes
         foreach ($ingredients as $ingredient) {
             $data = $ingredient->share();
 
-            $ingredientYaml = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
-            $zip->addFromString('ingredients/' . $data['_id'] . '.yml', $ingredientYaml);
+            if ($type === ExportTypeEnum::YAML) {
+                $ingredientExportData = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
+            } else {
+                $ingredientExportData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            }
+
+            $zip->addFromString('ingredients/' . $data['_id'] . '.' . $type->value, $ingredientExportData);
 
             $i = 1;
             foreach ($ingredient->images as $img) {
@@ -91,18 +102,23 @@ class Recipes
         }
     }
 
-    private function dumpBaseData(int $barId, ZipArchive &$zip): void
+    private function dumpBaseData(int $barId, ZipArchive &$zip, ExportTypeEnum $type): void
     {
         $baseDataFiles = [
-            'base_glasses.yml' => DB::table('glasses')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
-            'base_methods.yml' => DB::table('cocktail_methods')->select('name', 'dilution_percentage')->where('bar_id', $barId)->get()->toArray(),
-            'base_utensils.yml' => DB::table('utensils')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
-            'base_ingredient_categories.yml' => DB::table('ingredient_categories')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
+            'base_glasses' => DB::table('glasses')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
+            'base_methods' => DB::table('cocktail_methods')->select('name', 'dilution_percentage')->where('bar_id', $barId)->get()->toArray(),
+            'base_utensils' => DB::table('utensils')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
+            'base_ingredient_categories' => DB::table('ingredient_categories')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
         ];
 
         foreach ($baseDataFiles as $file => $data) {
-            $dataYaml = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK | Yaml::DUMP_OBJECT_AS_MAP);
-            $zip->addFromString($file, $dataYaml);
+            if ($type === ExportTypeEnum::YAML) {
+                $exportData = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK | Yaml::DUMP_OBJECT_AS_MAP);
+            } else {
+                $exportData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            }
+
+            $zip->addFromString($file . '.' . $type->value, $exportData);
         }
     }
 }
