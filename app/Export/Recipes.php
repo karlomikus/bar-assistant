@@ -7,12 +7,12 @@ namespace Kami\Cocktail\Export;
 use ZipArchive;
 use Carbon\Carbon;
 use Symfony\Component\Yaml\Yaml;
+use Kami\Cocktail\ExportTypeEnum;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
-use Kami\Cocktail\ExportTypeEnum;
 
 class Recipes
 {
