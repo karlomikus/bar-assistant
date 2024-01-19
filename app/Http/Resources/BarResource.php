@@ -24,6 +24,7 @@ class BarResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'slug' => $this->slug,
             'name' => $this->name,
             'subtitle' => $this->subtitle,
             'description' => $this->description,
