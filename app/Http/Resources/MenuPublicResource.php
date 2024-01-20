@@ -21,14 +21,21 @@ class MenuPublicResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'name' => $this->bar->name,
+            'bar' => [
+                'name' => $this->bar->name,
+                'subtitle' => $this->bar->subtitle,
+                'description' => $this->bar->description,
+            ],
             'categories' => $this->menuCocktails->groupBy('category_name')->map(function ($categoryCocktails, $name) {
                 return [
                     'name' => $name,
                     'cocktails' => $categoryCocktails->map(function (MenuCocktail $menuCocktail) {
                         return [
                             'sort' => $menuCocktail->sort,
-                            'price' => number_format($menuCocktail->price / 100, 2),
+                            'price' => [
+                                'full' => $menuCocktail->price,
+                                'formatted' => number_format($menuCocktail->price / 100, 2),
+                            ],
                             'currency' => $menuCocktail->currency,
                             'name' => $menuCocktail->cocktail->name,
                             'short_ingredients' => $menuCocktail->cocktail->getShortIngredients(),
