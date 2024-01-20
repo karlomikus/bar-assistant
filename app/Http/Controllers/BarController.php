@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Bar;
@@ -61,6 +62,9 @@ class BarController extends Controller
         $bar->invite_code = $inviteEnabled ? (string) new Ulid() : null;
         $bar->save();
 
+        $bar->slug = Str::slug($request->post('name')) . '-' . $bar->id;
+        $bar->save();
+
         $request->user()->joinBarAs($bar, UserRoleEnum::Admin);
 
         SetupBar::dispatch($bar, $request->user(), $barOptions);
@@ -94,6 +98,7 @@ class BarController extends Controller
         $bar->subtitle = $request->post('subtitle');
         $bar->updated_user_id = $request->user()->id;
         $bar->updated_at = now();
+        $bar->slug = Str::slug($request->post('name')) . '-' . $bar->id;
         $bar->save();
 
         return new BarResource($bar);

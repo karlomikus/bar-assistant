@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Kami\Cocktail\Http\Controllers\BarController;
 use Kami\Cocktail\Http\Controllers\TagController;
 use Kami\Cocktail\Http\Controllers\AuthController;
+use Kami\Cocktail\Http\Controllers\MenuController;
 use Kami\Cocktail\Http\Controllers\NoteController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
@@ -63,6 +64,7 @@ Route::prefix('images')->group(function() {
 
 Route::prefix('explore')->group(function() {
     Route::get('/cocktails/{ulid}', [ExploreController::class, 'cocktail']);
+    Route::get('/menus/{barSlug}', [MenuController::class, 'show']);
 });
 
 Route::middleware($apiMiddleware)->group(function() {
@@ -214,6 +216,11 @@ Route::middleware($apiMiddleware)->group(function() {
     Route::prefix('billing')->group(function() {
         Route::get('/subscription', [SubscriptionController::class, 'subscription']);
         Route::post('/subscription', [SubscriptionController::class, 'updateSubscription']);
+    });
+
+    Route::prefix('menu')->group(function() {
+        Route::get('/', [MenuController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/', [MenuController::class, 'update'])->middleware(EnsureRequestHasBarQuery::class);
     });
 });
 

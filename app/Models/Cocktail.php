@@ -11,6 +11,7 @@ use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Symfony\Component\Uid\Ulid;
 use Spatie\Sluggable\SlugOptions;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Kami\Cocktail\Models\Concerns\HasNotes;
@@ -217,6 +218,14 @@ class Cocktail extends Model implements UploadableInterface
                 ->whereColumn('rateable_type', Cocktail::class)
                 ->where('user_id', $userId),
         ]);
+    }
+
+    /**
+     * @return Collection<int, string>
+     */
+    public function getShortIngredients(): Collection
+    {
+        return $this->ingredients->pluck('ingredient.name');
     }
 
     public function toSearchableArray(): array
