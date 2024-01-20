@@ -30,8 +30,9 @@ class MenuController extends Controller
 
     public function show(string $barSlug): MenuPublicResource
     {
-        $menu = Menu::where(['slug' => $barSlug])
-            ->select('menus.*')
+        $menu = Menu::select('menus.*')
+            ->where(['slug' => $barSlug])
+            ->where('menus.is_enabled', true)
             ->join('bars', 'bars.id', '=', 'menus.bar_id')
             ->join('menu_cocktails', 'menu_cocktails.menu_id', '=', 'menus.id')
             ->orderBy('menu_cocktails.sort', 'asc')
