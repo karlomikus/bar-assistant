@@ -42,6 +42,12 @@ This repository only contains the API server, if you are looking for easy to use
 - Support for cocktail and ingredient notes
 - Supports sharing recipes by public links, custom recipe images and printing
 
+## Cloud
+
+Visit [barassistant.app](https://barassistant.app/) for more information about our cloud offering.
+
+![Cloud offering screenshot](/resources/art/art1.png)
+
 ## Documentation
 
 [Documentation is available here.](https://bar-assistant.github.io/docs/)
