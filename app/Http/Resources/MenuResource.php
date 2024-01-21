@@ -22,7 +22,7 @@ class MenuResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'is_enabled' => $this->is_enabled,
+            'is_enabled' => (bool) $this->is_enabled,
             'created_at' => $this->created_at->toJson(),
             'updated_at' => $this->updated_at?->toJson(),
             'categories' => $this->menuCocktails->groupBy('category_name')->map(function ($categoryCocktails, $name) {
