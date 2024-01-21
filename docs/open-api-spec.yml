@@ -78,6 +78,8 @@ tags:
     description: Operations related to utensils
   - name: Bars
     description: Operations related to bars
+  - name: Menu
+    description: Operations related to bar menu
 security:
   - user_token: []
 paths:
@@ -2613,6 +2615,74 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /menu:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
+    get:
+      tags:
+        - Menu
+      summary: Show bar menu
+      operationId: showBarMenu
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/MenuResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+    post:
+      tags:
+        - Menu
+      summary: Update bar menu
+      operationId: updateBarMenu
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/MenuResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+  /explore/menus/{slug}:
+    parameters:
+      - in: path
+        name: slug
+        description: 'Bar database slug'
+        schema:
+          type: string
+        required: true
+    get:
+      tags:
+        - Menu
+      summary: Show public bar menu
+      operationId: showPublicBarMenu
+      security: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/MenuPublicResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -4003,3 +4073,155 @@ components:
         password_confirmation:
           type: string
           example: mynewpassword
+    MenuResponse:
+      required:
+        - id
+        - is_enabled
+        - created_at
+        - updated_at
+        - categories
+      type: object
+      properties:
+        id:
+          type: integer
+        is_enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: datetime
+        updated_at:
+          type: string
+          format: datetime
+        categories:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - cocktails
+            properties:
+              name:
+                type: string
+              cocktails:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - id
+                    - slug
+                    - sort
+                    - price
+                    - currency
+                    - name
+                    - short_ingredients
+                  properties:
+                    id:
+                      type: integer
+                    slug:
+                      type: string
+                    sort:
+                      type: integer
+                    price:
+                      type: string
+                    currency:
+                      type: string
+                    name:
+                      type: string
+                    short_ingredients:
+                      type: array
+                      items:
+                        type: string
+    MenuRequest:
+      type: object
+      required:
+        - is_enabled
+        - cocktails
+      properties:
+        is_enabled:
+          type: boolean
+        cocktails:
+          type: array
+          items:
+            type: object
+            required:
+              - cocktail_id
+              - category_name
+              - sort
+            properties:
+              cocktail_id:
+                type: integer
+              category_name:
+                type: string
+              sort:
+                type: integer
+              price:
+                type: string
+                nullable: true
+              currency:
+                type: string
+                nullable: true
+    MenuPublicResponse:
+      required:
+        - bar
+        - categories
+      type: object
+      properties:
+        bar:
+          type: object
+          required:
+            - name
+            - subtitle
+            - description
+          properties:
+            name:
+              type: string
+            subtitle:
+              type: string
+              nullable: true
+            description:
+              type: string
+              nullable: true
+        categories:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - cocktails
+            properties:
+              name:
+                type: string
+              cocktails:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - sort
+                    - price
+                    - currency
+                    - name
+                    - short_ingredients
+                    - image
+                  properties:
+                    sort:
+                      type: integer
+                    price:
+                      type: object
+                      required:
+                        - full
+                        - formatted
+                      properties:
+                        full:
+                          type: integer
+                        formatted:
+                          type: string
+                    currency:
+                      type: string
+                    name:
+                      type: string
+                    short_ingredients:
+                      type: array
+                      items:
+                        type: string
+                    image:
+                      type: string

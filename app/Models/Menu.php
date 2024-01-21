@@ -60,7 +60,7 @@ class Menu extends Model
                 'cocktail_id' => $cocktailMenuItem['cocktail_id']
             ], [
                 'category_name' => $cocktailMenuItem['category_name'],
-                'sort' => $cocktailMenuItem['sort'],
+                'sort' => $cocktailMenuItem['sort'] ?? 0,
                 'price' => $price,
                 'currency' => $cocktailMenuItem['currency'] ?? null,
             ]);

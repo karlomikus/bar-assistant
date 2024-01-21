@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Menu;
+use Kami\Cocktail\Http\Requests\MenuRequest;
 use Kami\Cocktail\Http\Resources\MenuResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\MenuPublicResource;
@@ -44,7 +45,7 @@ class MenuController extends Controller
         return new MenuPublicResource($menu);
     }
 
-    public function update(Request $request): MenuResource
+    public function update(MenuRequest $request): MenuResource
     {
         if ($request->user()->cannot('update', Menu::class)) {
             abort(403);
