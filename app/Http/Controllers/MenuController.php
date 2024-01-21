@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Menu;
-use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Http\Resources\MenuResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\MenuPublicResource;
@@ -19,11 +19,13 @@ class MenuController extends Controller
             abort(403);
         }
 
-        Model::unguard();
+        $bar = bar();
+        if (!$bar->slug) {
+            $bar->slug = Str::slug($bar->name);
+            $bar->save();
+        }
 
-        $menu = Menu::firstOrCreate(['bar_id' => bar()->id])->load('menuCocktails.cocktail');
-
-        Model::reguard();
+        $menu = Menu::with('menuCocktails.cocktail.ingredients.ingredient')->firstOrCreate(['bar_id' => $bar->id]);
 
         return new MenuResource($menu);
     }
@@ -48,8 +50,6 @@ class MenuController extends Controller
             abort(403);
         }
 
-        Model::unguard();
-
         $menu = Menu::firstOrCreate(['bar_id' => bar()->id]);
         $menu->is_enabled = (bool) $request->post('is_enabled');
         if (!$menu->created_at) {
@@ -58,8 +58,6 @@ class MenuController extends Controller
         $menu->updated_at = now();
         $menu->syncCocktails($request->post('cocktails', []));
         $menu->save();
-
-        Model::reguard();
 
         return new MenuResource($menu);
     }

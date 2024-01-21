@@ -18,6 +18,7 @@ class Menu extends Model
         'is_enabled' => 'boolean',
     ];
 
+    protected $fillable = ['bar_id'];
 
     /**
      * @return HasMany<MenuCocktail>
