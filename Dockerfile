@@ -4,6 +4,7 @@ ARG PGID=1000
 ENV PGID=${PGID}
 ARG PUID=1000
 ENV PUID=${PUID}
+ARG SQLITEVERSION="https://www.sqlite.org/2024/sqlite-tools-linux-x64-3450000.zip"
 
 # Add php extension manager
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
@@ -12,7 +13,6 @@ RUN apt update \
     && apt-get install -y \
     git \
     unzip \
-    sqlite3 \
     bash \
     cron \
     && chmod +x /usr/local/bin/install-php-extensions \
@@ -27,6 +27,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Configure php
 COPY ./resources/docker/dist/php.ini $PHP_INI_DIR/php.ini
+
+## Install sqlite from source
+ADD $SQLITEVERSION ./
+RUN unzip *.zip \
+    && cp sqlite3 /usr/local/bin/sqlite3 \
+    && rm sql*
 
 WORKDIR /var/www/cocktails
 

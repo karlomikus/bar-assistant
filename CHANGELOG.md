@@ -1,3 +1,15 @@
+# v3.9.0
+## New
+- Added `slug` column to `bars` table
+- Added a simple bar menu
+    - Added POST and GET `/menu` endpoint
+    - Added GET `/explore/menus/{barSlug}` public endpoint
+    - This is a simple menu implementation, more features are coming in next updates
+
+## Changes
+- Sqlite is now pulled from source in docker image
+- Sqlite bumped to v3.45.0
+
 # v3.8.0
 ## New
 - Added `favorite_tags` to stats endpoint
