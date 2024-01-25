@@ -1,10 +1,22 @@
+FROM alpine:latest AS sqlite
+
+RUN apk add --no-cache gcc make musl-dev
+
+WORKDIR /build
+
+RUN wget https://www.sqlite.org/2024/sqlite-autoconf-3450000.tar.gz && \
+    tar -xvf sqlite-autoconf-3450000.tar.gz && \
+    cd sqlite-autoconf-3450000 && \
+    ./configure && \
+    make && \
+    make install
+
 FROM php:8.2-fpm as php-base
 
 ARG PGID=1000
 ENV PGID=${PGID}
 ARG PUID=1000
 ENV PUID=${PUID}
-ARG SQLITEVERSION="https://www.sqlite.org/2024/sqlite-tools-linux-x64-3450000.zip"
 
 # Add php extension manager
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
@@ -28,11 +40,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 # Configure php
 COPY ./resources/docker/dist/php.ini $PHP_INI_DIR/php.ini
 
-## Install sqlite from source
-ADD $SQLITEVERSION ./
-RUN unzip *.zip \
-    && cp sqlite3 /usr/local/bin/sqlite3 \
-    && rm sql*
+## Install sqlite from build stage
+COPY --from=sqlite /usr/local/bin/sqlite3 /usr/local/bin/sqlite3
 
 WORKDIR /var/www/cocktails
 
