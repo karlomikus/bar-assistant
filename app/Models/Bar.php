@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
@@ -13,7 +15,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Bar extends Model
 {
-    use HasFactory, HasAuthors;
+    use HasFactory, HasAuthors, HasSlug;
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom(['name'])
+            ->saveSlugsTo('slug')
+            ->slugsShouldBeNoLongerThan(100)
+            ->doNotGenerateSlugsOnUpdate();
+    }
 
     /**
      * @return BelongsToMany<User>

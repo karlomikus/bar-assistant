@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Menu;
 use Kami\Cocktail\Http\Requests\MenuRequest;
@@ -22,7 +21,7 @@ class MenuController extends Controller
 
         $bar = bar();
         if (!$bar->slug) {
-            $bar->slug = Str::slug($bar->name);
+            $bar->generateSlug();
             $bar->save();
         }
 
