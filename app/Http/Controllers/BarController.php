@@ -108,9 +108,6 @@ class BarController extends Controller
         $bar->subtitle = $request->post('subtitle');
         $bar->updated_user_id = $request->user()->id;
         $bar->updated_at = now();
-        if ($request->post('slug')) {
-            $bar->slug = Str::slug($request->post('slug'));
-        }
         $bar->save();
 
         return new BarResource($bar);
