@@ -11,6 +11,7 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\HttpKernel\HttpCache\Store;
 use Symfony\Component\HttpClient\CachingHttpClient;
+use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
 
 abstract class AbstractSiteExtractor implements SiteExtractorContract
 {
@@ -22,8 +23,10 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
     ) {
         $store = new Store(storage_path('http_cache/'));
         $client = HttpClient::create([
-            'timeout' => 10
+            'max_redirects' => 0,
+            'timeout' => 10,
         ]);
+        $client = new NoPrivateNetworkHttpClient($client);
         $client = new CachingHttpClient($client, $store);
         $browser = new HttpBrowser($client);
 

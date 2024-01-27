@@ -11,6 +11,7 @@ use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Symfony\Component\Uid\Ulid;
 use Spatie\Sluggable\SlugOptions;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Kami\Cocktail\Models\Concerns\HasNotes;
@@ -219,6 +220,14 @@ class Cocktail extends Model implements UploadableInterface
         ]);
     }
 
+    /**
+     * @return Collection<int, string>
+     */
+    public function getShortIngredients(): Collection
+    {
+        return $this->ingredients->pluck('ingredient.name');
+    }
+
     public function toSearchableArray(): array
     {
         return [
@@ -233,7 +242,7 @@ class Cocktail extends Model implements UploadableInterface
         ];
     }
 
-    public function share(bool $useUrls = false): array
+    public function share(bool $useUrls = false, bool $inlineImages = false): array
     {
         $data = [];
         $cocktailId = Str::slug($this->name);
@@ -246,6 +255,8 @@ class Cocktail extends Model implements UploadableInterface
         $data['source'] = $this->source;
         $data['tags'] = $this->tags->pluck('name')->toArray();
         $data['abv'] = $this->abv;
+        $data['created_at'] = $this->created_at;
+        $data['updated_at'] = $this->updated_at;
 
         if ($this->glass_id) {
             $data['glass'] = $this->glass->name;

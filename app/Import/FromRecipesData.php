@@ -139,8 +139,8 @@ class FromRecipesData
                 'origin' => $ingredient['origin'] ?? null,
                 'color' => $ingredient['color'] ?? null,
                 'created_user_id' => $user->id,
-                'created_at' => now(),
-                'updated_at' => null,
+                'created_at' => $ingredient['created_at'] ?? now(),
+                'updated_at' => $ingredient['updated_at'] ?? null,
             ];
 
             if ($ingredient['_parent_id'] ?? null) {
@@ -238,8 +238,8 @@ class FromRecipesData
                 'glass_id' => $dbGlasses[strtolower($cocktail['glass'] ?? '')] ?? null,
                 'cocktail_method_id' => $dbMethods[strtolower($cocktail['method'] ?? '')] ?? null,
                 'bar_id' => $bar->id,
-                'created_at' => now(),
-                'updated_at' => null,
+                'created_at' => $cocktail['created_at'] ?? now(),
+                'updated_at' => $cocktail['updated_at'] ?? null,
             ]);
 
             foreach ($cocktail['tags'] ?? [] as $tag) {

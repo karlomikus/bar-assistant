@@ -36,12 +36,12 @@ class FilterNameSearch implements Filter
             return $searchTerm;
         }, $value);
 
-        if (count(array_filter($value, 'strlen')) === 0) {
+        if (count(array_filter($value, fn ($val) => strlen($val) > 0)) === 0) {
             return $query;
         }
 
         $query->where(function ($query) use ($value) {
-            foreach (array_filter($value, 'strlen') as $partialValue) {
+            foreach (array_filter($value, fn ($val) => strlen($val) > 0) as $partialValue) {
                 $query->whereRaw('LOWER(name) LIKE ?', ['%' . $partialValue . '%'])
                     ->orWhereRaw('slug LIKE ?', ['%' . Str::slug($partialValue) . '%']);
             }

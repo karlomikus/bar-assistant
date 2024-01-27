@@ -154,6 +154,8 @@ class Ingredient extends Model
         $data['origin'] = $this->origin;
         $data['color'] = $this->color;
         $data['category'] = $this->category?->name ?? null;
+        $data['created_at'] = $this->created_at;
+        $data['updated_at'] = $this->updated_at;
 
         if ($this->images->isNotEmpty()) {
             $data['images'] = $this->images->map(function (Image $image, int $key) use ($ingredientId) {

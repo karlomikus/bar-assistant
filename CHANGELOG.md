@@ -1,3 +1,12 @@
+# v3.9.0
+## New
+- Added `slug` column to `bars` table
+- Added a simple bar menu
+    - Added POST and GET `/menu` endpoints
+    - Added GET `/explore/menus/{barSlug}` public endpoint
+    - This is a simple menu implementation, more features are coming in future
+- When exporting and importing recipe data, timestamps are also imported
+
 # v3.8.0
 ## New
 - Added `favorite_tags` to stats endpoint

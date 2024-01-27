@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Bar;
@@ -50,6 +51,10 @@ class BarController extends Controller
             abort(403, 'You can not create anymore bars');
         }
 
+        $request->validate([
+            'slug' => 'nullable|unique:bars,slug',
+        ]);
+
         $inviteEnabled = (bool) $request->post('enable_invites', '1');
         $barOptions = $request->post('options', []);
 
@@ -59,6 +64,11 @@ class BarController extends Controller
         $bar->description = $request->post('description');
         $bar->created_user_id = $request->user()->id;
         $bar->invite_code = $inviteEnabled ? (string) new Ulid() : null;
+        if ($request->post('slug')) {
+            $bar->slug = Str::slug($request->post('slug'));
+        } else {
+            $bar->generateSlug();
+        }
         $bar->save();
 
         $request->user()->joinBarAs($bar, UserRoleEnum::Admin);
@@ -78,6 +88,10 @@ class BarController extends Controller
         if ($request->user()->cannot('edit', $bar)) {
             abort(403);
         }
+
+        $request->validate([
+            'slug' => 'nullable|unique:bars,slug,' . $bar->id,
+        ]);
 
         Cache::forget('ba:bar:' . $bar->id);
 

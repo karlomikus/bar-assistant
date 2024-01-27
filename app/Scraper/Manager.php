@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper;
 
 use Throwable;
+use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\Scraper\Sites\DefaultScraper;
 use Kami\Cocktail\Exceptions\ScraperMissingException;
 
@@ -43,6 +44,7 @@ final class Manager
         try {
             return resolve(DefaultScraper::class, ['url' => $this->url]);
         } catch (Throwable $e) {
+            Log::debug('Scraping failed: ' . $e->getMessage());
         }
 
         throw new ScraperMissingException('Scraper could not find any relevant data for the given site.');

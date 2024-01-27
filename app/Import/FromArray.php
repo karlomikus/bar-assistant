@@ -75,7 +75,7 @@ class FromArray
 
         // Match glass
         $glassId = null;
-        if ($sourceData['glass']) {
+        if ($sourceData['glass'] ?? null) {
             $glassNameLower = strtolower($sourceData['glass']);
             if ($dbGlasses->has($glassNameLower)) {
                 $glassId = $dbGlasses->get($glassNameLower)->id;
@@ -92,7 +92,7 @@ class FromArray
 
         // Match method
         $methodId = null;
-        if ($sourceData['method']) {
+        if ($sourceData['method'] ?? null) {
             $methodNameLower = strtolower($sourceData['method']);
             if ($dbMethods->has($methodNameLower)) {
                 $methodId = $dbMethods->get($methodNameLower)->id;
@@ -122,17 +122,23 @@ class FromArray
 
             $substitutes = [];
             if (array_key_exists('substitutes', $scrapedIngredient) && !empty($scrapedIngredient['substitutes'])) {
-                foreach ($scrapedIngredient['substitutes'] as $substituteName) {
-                    if ($dbIngredients->has(strtolower($substituteName))) {
-                        $substitutes[] = new SubstituteDTO($dbIngredients->get(strtolower($substituteName))->id);
+                foreach ($scrapedIngredient['substitutes'] as $substituteData) {
+                    if (is_array($substituteData)) {
+                        $substituteIngredientName = mb_strtolower($substituteData['name']);
+                    } else {
+                        $substituteIngredientName = mb_strtolower($substituteData);
+                    }
+
+                    if ($dbIngredients->has($substituteIngredientName)) {
+                        $substitutes[] = new SubstituteDTO($dbIngredients->get($substituteIngredientName)->id);
                     } else {
                         $ingredientDTO = new IngredientDTO(
                             $barId,
-                            ucfirst($substituteName),
+                            ucfirst($substituteData),
                             $userId,
                         );
                         $newIngredient = $this->ingredientService->createIngredient($ingredientDTO);
-                        $dbIngredients->put(strtolower($substituteName), $newIngredient);
+                        $dbIngredients->put($substituteIngredientName, $newIngredient);
                         $substitutes[] = new SubstituteDTO($newIngredient->id);
                     }
                 }
