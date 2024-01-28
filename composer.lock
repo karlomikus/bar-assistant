@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "26554ecdeba531fc6e5fda8578804560",
+    "content-hash": "f634dfa573041c25c2ade97ab22a7311",
     "packages": [
         {
             "name": "brick/math",
@@ -293,6 +293,52 @@
                 }
             ],
             "time": "2023-12-20T15:40:13+00:00"
+        },
+        {
+            "name": "codewithkyrian/chromadb-php",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/CodeWithKyrian/chromadb-php.git",
+                "reference": "c3303acda69401a7f94fcee0fb40188f02920b6c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/CodeWithKyrian/chromadb-php/zipball/c3303acda69401a7f94fcee0fb40188f02920b6c",
+                "reference": "c3303acda69401a7f94fcee0fb40188f02920b6c",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.6",
+                "pestphp/pest": "^2.19",
+                "symfony/var-dumper": "^6.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Codewithkyrian\\ChromaDB\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kyrian Obikwelu",
+                    "email": "kyrianobikwelu@gmail.com"
+                }
+            ],
+            "description": "A PHP client for the Chroma Open Source Embedding Database",
+            "support": {
+                "issues": "https://github.com/CodeWithKyrian/chromadb-php/issues",
+                "source": "https://github.com/CodeWithKyrian/chromadb-php/tree/v0.1.0"
+            },
+            "time": "2023-12-31T19:51:26+00:00"
         },
         {
             "name": "dflydev/dot-access-data",

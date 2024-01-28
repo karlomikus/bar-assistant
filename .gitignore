@@ -19,3 +19,5 @@ notes.sql
 composer.phar
 .phpunit.cache
 /resources/data
+/chroma-data
+/embd
