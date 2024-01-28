@@ -40,6 +40,11 @@ class BarController extends Controller
             abort(403);
         }
 
+        if (!$bar->slug) {
+            $bar->generateSlug();
+            $bar->save();
+        }
+
         $bar->load('createdUser', 'updatedUser');
 
         return new BarResource($bar);
