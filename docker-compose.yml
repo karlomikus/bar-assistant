@@ -55,21 +55,26 @@ services:
     volumes:
       - meilidata:/meili_data
 
-  embeddings:
-    ports:
-      - 8085:80
-    volumes:
-      - ./embd:/data
-    image: ghcr.io/huggingface/text-embeddings-inference:cpu-0.6
-    command: --model-id BAAI/bge-small-en-v1.5
+  # embeddings:
+  #   ports:
+  #     - 8085:80
+  #   volumes:
+  #     - ./embd:/data
+  #   environment:
+  #     - CORS_ALLOW_ORIGIN=http://localhost:5173
+  #   image: ghcr.io/huggingface/text-embeddings-inference:cpu-0.6
+  #   command: --model-id BAAI/bge-small-en-v1.5 --max-client-batch-size 2000
 
   chroma:
     image: chromadb/chroma
+    environment:
+      - CHROMA_SERVER_CORS_ALLOW_ORIGINS=["http://localhost:5173"]
     ports:
       - 8086:8000
     volumes:
-      - ./chroma-data:/chroma/chroma
+      - chromadata:/chroma/chroma
 
 volumes:
   meilidata:
   miniiodata:
+  chromadata:
