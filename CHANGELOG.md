@@ -1,3 +1,10 @@
+# v3.10.0
+## New
+- Added `/tokens` endpoint
+    - You can create and manage custom Personal Access Tokens
+    - Current available scopes are `cocktails.read`, `cocktails.write`, `ingredients.read` and `ingredients.write`
+    - Tokens can have expiration date
+
 # v3.9.0
 ## New
 - Added `slug` column to `bars` table
