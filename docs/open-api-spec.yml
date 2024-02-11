@@ -80,6 +80,8 @@ tags:
     description: Operations related to bars
   - name: Menu
     description: Operations related to bar menu
+  - name: Tokens
+    description: Operations related to PAT
 security:
   - user_token: []
 paths:
@@ -2683,6 +2685,66 @@ paths:
                     $ref: '#/components/schemas/MenuPublicResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+  /tokens:
+    get:
+      tags:
+        - Tokens
+      summary: Show personal access tokens
+      operationId: showTokens
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PersonalAccessTokenResponse'
+    post:
+      tags:
+        - Tokens
+      summary: Create new personal access token
+      operationId: createToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalAccessTokenRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AuthToken'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+  /tokens/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of a token'
+        schema:
+          type: integer
+        required: true
+    delete:
+      tags:
+        - Tokens
+      summary: Revoke personal access token
+      operationId: revokeToken
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -4225,3 +4287,52 @@ components:
                         type: string
                     image:
                       type: string
+    PersonalAccessTokenAbilities:
+      type: array
+      items:
+        type: string
+        enum:
+          - cocktails.read
+          - cocktails.write
+          - ingredients.read
+          - ingredients.write
+    PersonalAccessTokenResponse:
+      type: object
+      required:
+        - id
+        - name
+        - abilities
+        - last_used_at
+        - created_at
+        - expires_at
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Device token"
+        abilities:
+          $ref: '#/components/schemas/PersonalAccessTokenAbilities'
+        last_used_at:
+          type: string
+          format: datetime
+        created_at:
+          type: string
+          format: datetime
+        expires_at:
+          type: string
+          format: datetime
+    PersonalAccessTokenRequest:
+      type: object
+      required:
+        - abilities
+      properties:
+        expires_at:
+          type: string
+          format: datetime
+        abilities:
+          $ref: '#/components/schemas/PersonalAccessTokenAbilities'
+        name:
+          type: string
+          example: "Device token"
