@@ -3631,6 +3631,9 @@ components:
         - total_shelf_ingredients
         - most_popular_ingredients
         - top_rated_cocktails
+        - your_top_ingredients
+        - total_bar_members
+        - favorite_tags
       properties:
         total_cocktails:
           type: integer
@@ -3689,6 +3692,23 @@ components:
               votes:
                 type: integer
                 example: 12
+        total_bar_members:
+          type: integer
+          example: 7
+        favorite_tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: "Tag name"
+              cocktails_count:
+                type: integer
+                example: 5
     CocktailMethod:
       type: object
       nullable: true
