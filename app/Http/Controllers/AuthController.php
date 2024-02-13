@@ -30,7 +30,7 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $token = $request->user()->createToken('Web login', expiresAt: now()->addDays(7));
+            $token = $request->user()->createToken($request->userAgent() ?? 'Unknown device', expiresAt: now()->addDays(7));
 
             return new TokenResource($token);
         }
@@ -44,7 +44,9 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->tokens()->where('name', 'Web login')->delete();
+        /** @var \Laravel\Sanctum\PersonalAccessToken */
+        $currentAccessToken = $request->user()->currentAccessToken();
+        $currentAccessToken->delete();
 
         return response()->json(status: 204);
     }
