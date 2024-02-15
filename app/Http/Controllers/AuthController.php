@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Throwable;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -46,7 +47,10 @@ class AuthController extends Controller
     {
         /** @var \Laravel\Sanctum\PersonalAccessToken */
         $currentAccessToken = $request->user()->currentAccessToken();
-        $currentAccessToken->delete();
+        try {
+            $currentAccessToken->delete();
+        } catch (Throwable) {
+        }
 
         return response()->json(status: 204);
     }
