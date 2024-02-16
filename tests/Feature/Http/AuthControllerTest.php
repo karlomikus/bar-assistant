@@ -6,6 +6,7 @@ namespace Tests\Feature\Http;
 
 use Tests\TestCase;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\Sanctum;
 use Kami\Cocktail\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -47,13 +48,14 @@ class AuthControllerTest extends TestCase
             'password' => 'my-test-password'
         ]);
 
-        $response->assertNotFound();
+        $response->assertBadRequest();
     }
 
     public function test_logout_response(): void
     {
-        $this->actingAs(
-            User::factory()->create()
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['*']
         );
 
         // Logout and check headers

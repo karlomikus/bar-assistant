@@ -23,24 +23,27 @@ This repository only contains the API server, if you are looking for easy to use
 </p>
 
 ## Features
-- [Includes over 300 cocktail recipes](https://github.com/bar-assistant/data)
-- Includes over 150 base ingredients
+- [Includes over 300 cocktail recipes with detailed information](https://github.com/bar-assistant/data)
+- Includes over 150 base ingredients with categories
 - Add and manage multiple bars and bar members
 - Fine-grained user control with user roles
 - Endpoints for managing and filtering ingredients and cocktails
 - Filter recipes by ABV, base ingredient, tags and more
-- Filter ingredients by what you have and get all the cocktails that you can make
+- Filter recipes based on whether you have the right ingredients or not
 - Detailed cocktail and ingredient information
 - Support for assigning multiple images to resources and image sorting
-- Shopping list for missing ingredients
+- Shopping list generation based on missing ingredients in your inventory
 - Automatic indexing of data with Meilisearch
 - Support for custom cocktail ingredient substitutes
 - Support for glass types, utensils, tags, ingredient categories and more
 - Cocktail recipe importing via URL, JSON, YAML or custom collections
 - Support for cocktail ratings
-- Add user cocktail collections
+- Create user-specific cocktail collections for easy referencing and sharing
 - Support for cocktail and ingredient notes
 - Supports sharing recipes by public links, custom recipe images and printing
+- Create public bar menus
+- Manage custom API personal access tokens with custom permissions set by users
+- Detailed statistics about recipes and user tastes
 
 ## Cloud
 
@@ -54,42 +57,9 @@ Visit [barassistant.app](https://barassistant.app/) for more information about o
 
 ## Contributing
 
-Feel free to create a pull request or open a issue with bugs/feature ideas.
+Contributions Welcome!
 
-## Development environment
-
-You can use docker to quick start with the development.
-
-1. Clone the repository
-2. Copy `.env.dev` as `.env`, or setup your own env file
-3. Run `docker compose up -d`
-4. Then run the following commands:
-
-``` bash
-$ docker compose exec app composer install
-$ docker compose exec app php artisan key:generate
-$ docker compose exec app php artisan storage:link
-$ docker compose exec app php artisan migrate
-```
-
-5. (Optional) Add bar data
-``` bash
-$ git clone https://github.com/bar-assistant/data.git resources/data
-```
-
-Xdebug vscode launch config:
-```json
-{
-    "name": "Listen for Xdebug",
-    "type": "php",
-    "request": "launch",
-    "port": 9003,
-    "hostname": "localhost",
-    "pathMappings": {
-        "/var/www/cocktails/": "${workspaceFolder}"
-    }
-}
-```
+For more details, see [CONTRIBUTING.md](/CONTRIBUTING.md).
 
 ## License
 

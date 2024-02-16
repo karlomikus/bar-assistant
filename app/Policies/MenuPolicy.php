@@ -18,7 +18,6 @@ class MenuPolicy
 
     public function update(User $user): bool
     {
-        return ($user->isBarAdmin(bar()->id) || $user->isBarModerator(bar()->id))
-            && $user->hasActiveSubscription();
+        return $user->isBarAdmin(bar()->id) || $user->isBarModerator(bar()->id);
     }
 }
