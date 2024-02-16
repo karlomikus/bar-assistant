@@ -135,6 +135,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/AuthToken'
+        '400':
+          description: Unable to authenticate
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
   /logout:
@@ -3956,6 +3958,9 @@ components:
         password:
           type: string
           example: password
+        token_name:
+          type: string
+          example: My device
     AuthToken:
       type: object
       required:

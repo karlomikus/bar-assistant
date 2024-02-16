@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Throwable;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Kami\Cocktail\Mail\PasswordReset;
@@ -25,32 +23,32 @@ class AuthController extends Controller
 {
     public function authenticate(Request $request): JsonResource
     {
-        $credentials = $request->validate([
+        $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $token = $request->user()->createToken($request->userAgent() ?? 'Unknown device', expiresAt: now()->addDays(7));
+        $user = User::where('email', $request->email)->first();
 
-            return new TokenResource($token);
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            if (config('bar-assistant.mail_require_confirmation') === true) {
+                abort(400, 'Unable to authenticate. Make sure you have confirmed your account and your login credentials are correct.');
+            }
+
+            abort(400, 'Unable to authenticate. Check your login credentials and try again.');
         }
 
-        if (config('bar-assistant.mail_require_confirmation') === true) {
-            abort(404, 'Unable to authenticate. Make sure you have confirmed your account and your login credentials are correct.');
-        } else {
-            abort(404, 'Unable to authenticate. Check your login credentials and try again.');
-        }
+        $tokenName = $request->post('token_name') ?? $request->userAgent() ?? 'Unknown device';
+        $token = $user->createToken($tokenName, expiresAt: now()->addDays(14));
+
+        return new TokenResource($token);
     }
 
     public function logout(Request $request): JsonResponse
     {
         /** @var \Laravel\Sanctum\PersonalAccessToken */
         $currentAccessToken = $request->user()->currentAccessToken();
-        try {
-            $currentAccessToken->delete();
-        } catch (Throwable) {
-        }
+        $currentAccessToken->delete();
 
         return response()->json(status: 204);
     }
