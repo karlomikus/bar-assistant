@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Contract;
 
 use Tests\ContractTestCase;
+use Laravel\Sanctum\Sanctum;
 use Kami\Cocktail\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -30,8 +31,9 @@ class AuthContractTest extends ContractTestCase
 
     public function test_contract_logout(): void
     {
-        $this->actingAs(
-            User::factory()->create()
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['*']
         );
 
         $response = $this->postJson('/api/logout');
