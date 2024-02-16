@@ -48,7 +48,7 @@ class AuthControllerTest extends TestCase
             'password' => 'my-test-password'
         ]);
 
-        $response->assertNotFound();
+        $response->assertBadRequest();
     }
 
     public function test_logout_response(): void
