@@ -463,4 +463,46 @@ class CocktailControllerTest extends TestCase
 
         $response->assertForbidden();
     }
+
+    public function test_token_read_abilities(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs(
+            $user,
+            abilities: ['cocktails.write']
+        );
+        $this->setupBar();
+
+        $response = $this->getJson('/api/cocktails?bar_id=1');
+        $response->assertForbidden();
+
+        $this->actingAs(
+            $user,
+            abilities: ['cocktails.read']
+        );
+
+        $response = $this->getJson('/api/cocktails?bar_id=1');
+        $response->assertOk();
+    }
+
+    public function test_token_write_abilities(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs(
+            $user,
+            abilities: ['cocktails.read']
+        );
+        $this->setupBar();
+
+        $response = $this->postJson('/api/cocktails?bar_id=1', []);
+        $response->assertForbidden();
+
+        $this->actingAs(
+            $user,
+            abilities: ['cocktails.write']
+        );
+
+        $response = $this->postJson('/api/cocktails?bar_id=1', ['name' => 'Test', 'instructions' => 'Test']);
+        $response->assertCreated();
+    }
 }

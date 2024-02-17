@@ -371,4 +371,46 @@ class IngredientControllerTest extends TestCase
                 })
         );
     }
+
+    public function test_token_read_abilities(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs(
+            $user,
+            abilities: ['unknown.read']
+        );
+        $this->setupBar();
+
+        $response = $this->getJson('/api/ingredients?bar_id=1');
+        $response->assertForbidden();
+
+        $this->actingAs(
+            $user,
+            abilities: ['ingredients.read']
+        );
+
+        $response = $this->getJson('/api/ingredients?bar_id=1');
+        $response->assertOk();
+    }
+
+    public function test_token_write_abilities(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs(
+            $user,
+            abilities: ['ingredients.read']
+        );
+        $this->setupBar();
+
+        $response = $this->postJson('/api/ingredients?bar_id=1', []);
+        $response->assertForbidden();
+
+        $this->actingAs(
+            $user,
+            abilities: ['ingredients.write']
+        );
+
+        $response = $this->postJson('/api/ingredients?bar_id=1', ['name' => 'Test']);
+        $response->assertCreated();
+    }
 }
