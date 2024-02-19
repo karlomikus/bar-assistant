@@ -70,6 +70,7 @@ Route::prefix('explore')->group(function() {
 
 Route::middleware($apiMiddleware)->group(function() {
     Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware(['ability:*']);
+    Route::post('password-check', [AuthController::class, 'passwordCheck'])->middleware(['ability:*']);
 
     Route::get('/profile', [ProfileController::class, 'show'])->middleware(['ability:*']);
     Route::post('/profile', [ProfileController::class, 'update'])->middleware(['ability:*']);

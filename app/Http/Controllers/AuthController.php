@@ -139,4 +139,13 @@ class AuthController extends Controller
 
         return response()->json(status: 204);
     }
+
+    public function passwordCheck(Request $request): JsonResponse
+    {
+        $status = Hash::check($request->post('password'), $request->user()->password);
+
+        return response()->json(['data' => [
+            'status' => $status,
+        ]]);
+    }
 }

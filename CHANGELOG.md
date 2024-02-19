@@ -2,7 +2,7 @@
 ## New
 - Added `/tokens` endpoint
     - You can create and manage custom Personal Access Tokens
-    - Current available scopes are `cocktails.read`, `cocktails.write`, `ingredients.read` and `ingredients.write`
+    - Current available token abilities are `cocktails.read`, `cocktails.write`, `ingredients.read` and `ingredients.write`
     - Tokens can have expiration date
 - You can now pass optional `token_name` when requesting a new token via `login` endpoint
 
