@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\ETL;
 
+use JsonSerializable;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Image as ImageModel;
 use Kami\Cocktail\Models\Cocktail as CocktailModel;
 use Kami\Cocktail\Models\CocktailIngredient as CocktailIngredientModel;
 
-class Cocktail
+class Cocktail implements JsonSerializable
 {
     /**
      * @param array<string> $tags
@@ -36,7 +37,7 @@ class Cocktail
     ) {
     }
 
-    public function fromModel(CocktailModel $model): self
+    public static function fromModel(CocktailModel $model): self
     {
         $images = $model->images->map(function (ImageModel $image) {
             return Image::fromModel($image);
@@ -115,5 +116,10 @@ class Cocktail
             'images' => $this->images,
             'ingredients' => $this->ingredients,
         ];
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

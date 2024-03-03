@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\ETL;
 
+use JsonSerializable;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute as CocktailIngredientSubstituteModel;
 
-class CocktailIngredientSubstitute
+class CocktailIngredientSubstitute implements JsonSerializable
 {
     public function __construct(
         public readonly Ingredient $ingredient,
@@ -41,5 +42,20 @@ class CocktailIngredientSubstitute
             $sourceArray['units'] ?? null,
             $sourceArray['amount_max'] ?? null,
         );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            ...$this->ingredient->toArray(),
+            'amount' => $this->amount,
+            'units' => $this->units,
+            'amount_max' => $this->amountMax,
+        ];
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }
