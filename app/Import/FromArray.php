@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Import;
 
 use Throwable;
 use Kami\Cocktail\ETL\Matcher;
-use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\DataObjects\Image;
@@ -39,11 +38,9 @@ class FromArray
     ): Cocktail {
         $cocktailETL = CocktailETL::fromArray($sourceData);
 
-        if ($duplicateAction === DuplicateActionsEnum::Skip) {
-            $existingCocktail = Cocktail::whereRaw('LOWER(name) = ?', [mb_strtolower($cocktailETL->name, 'UTF-8')])->where('bar_id', $barId)->first();
-            if ($existingCocktail !== null) {
-                return $existingCocktail;
-            }
+        $existingCocktail = Cocktail::whereRaw('LOWER(name) = ?', [mb_strtolower($cocktailETL->name, 'UTF-8')])->where('bar_id', $barId)->first();
+        if ($duplicateAction === DuplicateActionsEnum::Skip && $existingCocktail !== null) {
+            return $existingCocktail;
         }
 
         $matcher = new Matcher($userId, $barId, $this->ingredientService);
@@ -60,7 +57,7 @@ class FromArray
 
                     $cocktailImages[] = $this->imageService->uploadAndSaveImages([$imageDTO], 1)[0]->id;
                 } catch (Throwable $e) {
-                    Log::error($e->getMessage());
+                    Log::error('Importing from array error: ' . $e->getMessage());
                 }
             }
         }
@@ -124,11 +121,8 @@ class FromArray
             $cocktailImages,
         );
 
-        if ($duplicateAction === DuplicateActionsEnum::Overwrite) {
-            $existingCocktail = DB::table('cocktails')->select('id')->where('bar_id', $barId)->whereRaw('LOWER(name) = ?', [strtolower($sourceData['name'])])->first();
-            if ($existingCocktail !== null) {
-                return $this->cocktailService->updateCocktail($existingCocktail->id, $cocktailDTO);
-            }
+        if ($duplicateAction === DuplicateActionsEnum::Overwrite && $existingCocktail !== null) {
+            return $this->cocktailService->updateCocktail($existingCocktail->id, $cocktailDTO);
         }
 
         return $this->cocktailService->createCocktail($cocktailDTO);
