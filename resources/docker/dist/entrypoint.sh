@@ -14,8 +14,8 @@ User uid:    $PUID
 User gid:    $PGID
 "
 
-groupmod -o -g $PGID www-data
-usermod -o -u $PUID www-data
+groupmod -o -g "$PGID" www-data
+usermod -o -u "$PUID" www-data
 chown -R www-data:www-data /var/www/cocktails
 
 gosu www-data ./resources/docker/dist/run.sh

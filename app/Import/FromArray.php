@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Import;
 
 use Throwable;
-use Kami\Cocktail\Models\Glass;
+use Kami\Cocktail\ETL\Matcher;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
@@ -13,10 +13,10 @@ use Kami\Cocktail\DataObjects\Image;
 use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
+use Kami\Cocktail\ETL\Cocktail as CocktailETL;
 use Intervention\Image\Facades\Image as ImageProcessor;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\DataObjects\Cocktail\Substitute as SubstituteDTO;
-use Kami\Cocktail\DataObjects\Ingredient\Ingredient as IngredientDTO;
 use Kami\Cocktail\DataObjects\Cocktail\Ingredient as CocktailIngredientDTO;
 
 class FromArray
@@ -29,7 +29,6 @@ class FromArray
     }
 
     /**
-     *
      * @param array<mixed> $sourceData
      */
     public function process(
@@ -38,32 +37,25 @@ class FromArray
         int $barId,
         DuplicateActionsEnum $duplicateAction = DuplicateActionsEnum::None
     ): Cocktail {
+        $cocktailETL = CocktailETL::fromArray($sourceData);
+
         if ($duplicateAction === DuplicateActionsEnum::Skip) {
-            $existingCocktail = Cocktail::whereRaw('LOWER(name) = ?', [strtolower($sourceData['name'])])->first();
+            $existingCocktail = Cocktail::whereRaw('LOWER(name) = ?', [mb_strtolower($cocktailETL->name, 'UTF-8')])->where('bar_id', $barId)->first();
             if ($existingCocktail !== null) {
                 return $existingCocktail;
             }
         }
 
-        $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
-        $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
-        $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $barId)->get()->keyBy('name');
-
-        $defaultDescription = 'Created from "' . $sourceData['source'] . '"';
+        $matcher = new Matcher($userId, $barId, $this->ingredientService);
 
         // Add images
         $cocktailImages = [];
-        foreach ($sourceData['images'] ?? [] as $image) {
-            $imageSource = null;
-            if (array_key_exists('url', $image)) {
-                $imageSource = $image['url'];
-            }
-
-            if ($imageSource) {
+        foreach ($cocktailETL->images as $image) {
+            if ($image->source) {
                 try {
                     $imageDTO = new Image(
-                        ImageProcessor::make($imageSource),
-                        $image['copyright'] ?? null
+                        ImageProcessor::make($image->source),
+                        $image->copyright
                     );
 
                     $cocktailImages[] = $this->imageService->uploadAndSaveImages([$imageDTO], 1)[0]->id;
@@ -75,85 +67,42 @@ class FromArray
 
         // Match glass
         $glassId = null;
-        if ($sourceData['glass'] ?? null) {
-            $glassNameLower = strtolower($sourceData['glass']);
-            if ($dbGlasses->has($glassNameLower)) {
-                $glassId = $dbGlasses->get($glassNameLower)->id;
-            } elseif ($sourceData['glass'] !== null) {
-                $newGlass = new Glass();
-                $newGlass->name = ucfirst($sourceData['glass']);
-                $newGlass->description = $defaultDescription;
-                $newGlass->bar_id = $barId;
-                $newGlass->save();
-                $dbGlasses->put($glassNameLower, $newGlass->id);
-                $glassId = $newGlass->id;
-            }
+        if ($cocktailETL->glass) {
+            $glassId = $matcher->matchGlassByName($cocktailETL->glass);
         }
 
         // Match method
         $methodId = null;
-        if ($sourceData['method'] ?? null) {
-            $methodNameLower = strtolower($sourceData['method']);
-            if ($dbMethods->has($methodNameLower)) {
-                $methodId = $dbMethods->get($methodNameLower)->id;
-            }
+        if ($cocktailETL->method) {
+            $methodId = $matcher->matchMethodByName($cocktailETL->method);
         }
 
         // Match ingredients
         $ingredients = [];
         $sort = 1;
-        foreach ($sourceData['ingredients'] as $scrapedIngredient) {
-            if ($dbIngredients->has(strtolower($scrapedIngredient['name']))) {
-                $ingredientId = $dbIngredients->get(strtolower($scrapedIngredient['name']))->id;
-            } else {
-                $ingredientDTO = new IngredientDTO(
-                    $barId,
-                    ucfirst($scrapedIngredient['name']),
-                    $userId,
-                    null,
-                    $scrapedIngredient['strength'] ?? 0.0,
-                    $scrapedIngredient['description'] ?? $defaultDescription,
-                    $scrapedIngredient['origin'] ?? null
-                );
-                $newIngredient = $this->ingredientService->createIngredient($ingredientDTO);
-                $dbIngredients->put(strtolower($scrapedIngredient['name']), $newIngredient);
-                $ingredientId = $newIngredient->id;
-            }
+        foreach ($cocktailETL->ingredients as $scrapedIngredient) {
+            $ingredientId = $matcher->matchOrCreateIngredientByName($scrapedIngredient->ingredient);
 
             $substitutes = [];
-            if (array_key_exists('substitutes', $scrapedIngredient) && !empty($scrapedIngredient['substitutes'])) {
-                foreach ($scrapedIngredient['substitutes'] as $substituteData) {
-                    if (is_array($substituteData)) {
-                        $substituteIngredientName = mb_strtolower($substituteData['name']);
-                    } else {
-                        $substituteIngredientName = mb_strtolower($substituteData);
-                    }
-
-                    if ($dbIngredients->has($substituteIngredientName)) {
-                        $substitutes[] = new SubstituteDTO($dbIngredients->get($substituteIngredientName)->id);
-                    } else {
-                        $ingredientDTO = new IngredientDTO(
-                            $barId,
-                            ucfirst($substituteData),
-                            $userId,
-                        );
-                        $newIngredient = $this->ingredientService->createIngredient($ingredientDTO);
-                        $dbIngredients->put($substituteIngredientName, $newIngredient);
-                        $substitutes[] = new SubstituteDTO($newIngredient->id);
-                    }
-                }
+            foreach($scrapedIngredient->substitutes as $substitute) {
+                $substitutes[] = new SubstituteDTO(
+                    $matcher->matchOrCreateIngredientByName($substitute->ingredient),
+                    $substitute->amount,
+                    $substitute->amountMax,
+                    $substitute->units,
+                );
             }
 
             $ingredient = new CocktailIngredientDTO(
                 $ingredientId,
-                $scrapedIngredient['name'],
-                $scrapedIngredient['amount'],
-                $scrapedIngredient['units'],
+                $scrapedIngredient->ingredient->name,
+                $scrapedIngredient->amount,
+                $scrapedIngredient->units,
                 $sort,
-                $scrapedIngredient['optional'] ?? false,
+                $scrapedIngredient->optional,
                 $substitutes,
-                $scrapedIngredient['amount_max'] ?? null,
-                $scrapedIngredient['note'] ?? null,
+                $scrapedIngredient->amountMax,
+                $scrapedIngredient->note,
             );
 
             $ingredients[] = $ingredient;
@@ -161,22 +110,22 @@ class FromArray
         }
 
         $cocktailDTO = new CocktailDTO(
-            $sourceData['name'],
-            $sourceData['instructions'],
+            $cocktailETL->name,
+            $cocktailETL->instructions,
             $userId,
             $barId,
-            $sourceData['description'],
-            $sourceData['source'],
-            $sourceData['garnish'],
+            $cocktailETL->description,
+            $cocktailETL->source,
+            $cocktailETL->garnish,
             $glassId,
             $methodId,
-            $sourceData['tags'],
+            $cocktailETL->tags,
             $ingredients,
             $cocktailImages,
         );
 
         if ($duplicateAction === DuplicateActionsEnum::Overwrite) {
-            $existingCocktail = DB::table('cocktails')->select('id')->whereRaw('LOWER(name) = ?', [strtolower($sourceData['name'])])->first();
+            $existingCocktail = DB::table('cocktails')->select('id')->where('bar_id', $barId)->whereRaw('LOWER(name) = ?', [strtolower($sourceData['name'])])->first();
             if ($existingCocktail !== null) {
                 return $this->cocktailService->updateCocktail($existingCocktail->id, $cocktailDTO);
             }
