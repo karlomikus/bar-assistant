@@ -113,8 +113,8 @@ class Cocktail implements JsonSerializable
             'glass' => $this->glass,
             'method' => $this->method,
             'utensils' => $this->utensils,
-            'images' => $this->images,
-            'ingredients' => $this->ingredients,
+            'images' => array_map(fn ($model) => $model->toArray(), $this->images),
+            'ingredients' => array_map(fn ($model) => $model->toArray(), $this->ingredients),
         ];
     }
 

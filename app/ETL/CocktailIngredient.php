@@ -81,7 +81,7 @@ class CocktailIngredient implements JsonSerializable
             'optional' => $this->optional,
             'amount_max' => $this->amountMax,
             'note' => $this->note,
-            'substitutes' => $this->substitutes,
+            'substitutes' => array_map(fn ($model) => $model->toArray(), $this->substitutes),
         ];
     }
 
