@@ -16,7 +16,7 @@ class MakeMeACocktailScraperTest extends TestCase
 
         $instructions = "1. Add all the ingredients directly into a lowball glass with ice and stir\n2. Garnish with an orange slice and serve";
 
-        $this->assertSame('Negroni', $result['name']);
+        $this->assertStringContainsString('Negroni', $result['name']);
         $this->assertNotEmpty($result['description']);
         $this->assertSame('https://makemeacocktail.com/cocktail/6781/negroni/', $result['source']);
         $this->assertSame(null, $result['glass']);

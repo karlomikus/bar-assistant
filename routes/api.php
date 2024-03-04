@@ -60,7 +60,7 @@ Route::prefix('server')->group(function() {
 });
 
 Route::prefix('images')->group(function() {
-    Route::get('/{id}/thumb', [ImageController::class, 'thumb']); // TODO: Move this to auth middleware
+    Route::get('/{id}/thumb', [ImageController::class, 'thumb'])->name('images.thumb'); // TODO: Move this to auth middleware
 });
 
 Route::prefix('explore')->group(function() {

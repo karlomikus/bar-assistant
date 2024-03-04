@@ -7,10 +7,8 @@ namespace Kami\Cocktail\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
-use Intervention\Image\Image as InterventionImage;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Intervention\Image\Facades\Image as ImageProcessor;
 
 class Image extends Model
 {
@@ -44,13 +42,6 @@ class Image extends Model
     public function imageable(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    public function asInterventionImage(): InterventionImage
-    {
-        $disk = Storage::disk('uploads');
-
-        return ImageProcessor::make($disk->path($this->file_path));
     }
 
     public function getPath(): string

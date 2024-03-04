@@ -8,12 +8,12 @@ use Throwable;
 use Kami\Cocktail\ETL\Matcher;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
+use Intervention\Image\ImageManager;
 use Kami\Cocktail\DataObjects\Image;
 use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\ETL\Cocktail as CocktailETL;
-use Intervention\Image\Facades\Image as ImageProcessor;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\DataObjects\Cocktail\Substitute as SubstituteDTO;
 use Kami\Cocktail\DataObjects\Cocktail\Ingredient as CocktailIngredientDTO;
@@ -49,9 +49,11 @@ class FromArray
         $cocktailImages = [];
         foreach ($cocktailETL->images as $image) {
             if ($image->source) {
+                $manager = ImageManager::imagick();
+
                 try {
                     $imageDTO = new Image(
-                        ImageProcessor::make($image->source),
+                        $manager->read($image->source),
                         $image->copyright
                     );
 
@@ -81,7 +83,7 @@ class FromArray
             $ingredientId = $matcher->matchOrCreateIngredientByName($scrapedIngredient->ingredient);
 
             $substitutes = [];
-            foreach($scrapedIngredient->substitutes as $substitute) {
+            foreach ($scrapedIngredient->substitutes as $substitute) {
                 $substitutes[] = new SubstituteDTO(
                     $matcher->matchOrCreateIngredientByName($substitute->ingredient),
                     $substitute->amount,

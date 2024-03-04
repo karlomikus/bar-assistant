@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Kami\Cocktail\ETL;
 
 use Kami\Cocktail\Models\Glass;
+use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 use Kami\Cocktail\DataObjects\Ingredient\Ingredient as IngredientDTO;
-use Kami\Cocktail\Models\CocktailMethod;
 
 class Matcher
 {
