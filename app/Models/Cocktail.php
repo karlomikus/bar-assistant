@@ -6,10 +6,8 @@ namespace Kami\Cocktail\Models;
 
 use Carbon\Carbon;
 use Kami\Cocktail\Utils;
-use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
-use Kami\Cocktail\ETL\Cocktail as CocktailETL;
 use Symfony\Component\Uid\Ulid;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Collection;
@@ -19,6 +17,7 @@ use Kami\Cocktail\Models\Concerns\HasNotes;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasRating;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
+use Kami\Cocktail\ETL\Cocktail as CocktailETL;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -236,7 +235,7 @@ class Cocktail extends Model implements UploadableInterface
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
-            'image_url' => $this->getMainImageUrl(),
+            'image_url' => $this->getMainImageThumbUrl(),
             'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
             'tags' => $this->tags->pluck('name'),
             'bar_id' => $this->bar_id,
