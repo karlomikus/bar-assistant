@@ -13,7 +13,7 @@ use Kami\Cocktail\DataObjects\Image;
 use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
-use Kami\Cocktail\ETL\Cocktail as CocktailETL;
+use Kami\Cocktail\ETL\Cocktail as CocktailExternal;
 use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\DataObjects\Cocktail\Substitute as SubstituteDTO;
 use Kami\Cocktail\DataObjects\Cocktail\Ingredient as CocktailIngredientDTO;
@@ -36,9 +36,9 @@ class FromArray
         int $barId,
         DuplicateActionsEnum $duplicateAction = DuplicateActionsEnum::None
     ): Cocktail {
-        $cocktailETL = CocktailETL::fromArray($sourceData);
+        $cocktailExternal = CocktailExternal::fromArray($sourceData);
 
-        $existingCocktail = Cocktail::whereRaw('LOWER(name) = ?', [mb_strtolower($cocktailETL->name, 'UTF-8')])->where('bar_id', $barId)->first();
+        $existingCocktail = Cocktail::whereRaw('LOWER(name) = ?', [mb_strtolower($cocktailExternal->name, 'UTF-8')])->where('bar_id', $barId)->first();
         if ($duplicateAction === DuplicateActionsEnum::Skip && $existingCocktail !== null) {
             return $existingCocktail;
         }
@@ -47,7 +47,7 @@ class FromArray
 
         // Add images
         $cocktailImages = [];
-        foreach ($cocktailETL->images as $image) {
+        foreach ($cocktailExternal->images as $image) {
             if ($image->source) {
                 $manager = ImageManager::imagick();
 
@@ -66,20 +66,20 @@ class FromArray
 
         // Match glass
         $glassId = null;
-        if ($cocktailETL->glass) {
-            $glassId = $matcher->matchGlassByName($cocktailETL->glass);
+        if ($cocktailExternal->glass) {
+            $glassId = $matcher->matchGlassByName($cocktailExternal->glass);
         }
 
         // Match method
         $methodId = null;
-        if ($cocktailETL->method) {
-            $methodId = $matcher->matchMethodByName($cocktailETL->method);
+        if ($cocktailExternal->method) {
+            $methodId = $matcher->matchMethodByName($cocktailExternal->method);
         }
 
         // Match ingredients
         $ingredients = [];
         $sort = 1;
-        foreach ($cocktailETL->ingredients as $scrapedIngredient) {
+        foreach ($cocktailExternal->ingredients as $scrapedIngredient) {
             $ingredientId = $matcher->matchOrCreateIngredientByName($scrapedIngredient->ingredient);
 
             $substitutes = [];
@@ -109,16 +109,16 @@ class FromArray
         }
 
         $cocktailDTO = new CocktailDTO(
-            $cocktailETL->name,
-            $cocktailETL->instructions,
+            $cocktailExternal->name,
+            $cocktailExternal->instructions,
             $userId,
             $barId,
-            $cocktailETL->description,
-            $cocktailETL->source,
-            $cocktailETL->garnish,
+            $cocktailExternal->description,
+            $cocktailExternal->source,
+            $cocktailExternal->garnish,
             $glassId,
             $methodId,
-            $cocktailETL->tags,
+            $cocktailExternal->tags,
             $ingredients,
             $cocktailImages,
         );
