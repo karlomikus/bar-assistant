@@ -8,13 +8,13 @@ use JsonSerializable;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute as CocktailIngredientSubstituteModel;
 
-class CocktailIngredientSubstitute implements JsonSerializable
+readonly class CocktailIngredientSubstitute implements JsonSerializable
 {
     public function __construct(
-        public readonly Ingredient $ingredient,
-        public readonly ?float $amount = null,
-        public readonly ?string $units = null,
-        public readonly ?float $amountMax = null,
+        public Ingredient $ingredient,
+        public ?float $amount = null,
+        public ?string $units = null,
+        public ?float $amountMax = null,
     ) {
     }
 

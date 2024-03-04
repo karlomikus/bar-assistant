@@ -8,14 +8,14 @@ use JsonSerializable;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 
-class Ingredient implements JsonSerializable
+readonly class Ingredient implements JsonSerializable
 {
     public function __construct(
-        public readonly string $id,
-        public readonly string $name,
-        public readonly float $strength = 0.0,
-        public readonly ?string $description = null,
-        public readonly ?string $origin = null,
+        public string $id,
+        public string $name,
+        public float $strength = 0.0,
+        public ?string $description = null,
+        public ?string $origin = null,
     ) {
     }
 

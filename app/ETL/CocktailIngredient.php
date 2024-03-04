@@ -9,19 +9,20 @@ use Illuminate\Support\Str;
 use Kami\Cocktail\Models\CocktailIngredient as CocktailIngredientModel;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute as CocktailIngredientSubstituteModel;
 
-class CocktailIngredient implements JsonSerializable
+readonly class CocktailIngredient implements JsonSerializable
 {
     /**
      * @param array<CocktailIngredientSubstitute> $substitutes
      */
     public function __construct(
-        public readonly Ingredient $ingredient,
-        public readonly float $amount,
-        public readonly string $units,
-        public readonly bool $optional = false,
-        public readonly ?float $amountMax = null,
-        public readonly ?string $note = null,
-        public readonly array $substitutes = [],
+        public Ingredient $ingredient,
+        public float $amount,
+        public string $units,
+        public bool $optional = false,
+        public ?float $amountMax = null,
+        public ?string $note = null,
+        public array $substitutes = [],
+        public int $sort = 0,
     ) {
     }
 
@@ -39,13 +40,14 @@ class CocktailIngredient implements JsonSerializable
             $model->amount_max,
             $model->note,
             $substitutes,
+            $model->sort,
         );
     }
 
     public static function fromArray(array $sourceArray): self
     {
         $substitutes = [];
-        foreach ($sourceArray['substitutes'] as $sourceSubstitute) {
+        foreach ($sourceArray['substitutes'] ?? [] as $sourceSubstitute) {
             if (is_array($sourceSubstitute)) {
                 $substitutes[] = CocktailIngredientSubstitute::fromArray($sourceSubstitute);
             } else {
@@ -68,7 +70,8 @@ class CocktailIngredient implements JsonSerializable
             $sourceArray['optional'] ?? false,
             $sourceArray['amount_max'] ?? null,
             $sourceArray['note'] ?? null,
-            $substitutes
+            $substitutes,
+            $sourceArray['sort'],
         );
     }
 
@@ -82,6 +85,7 @@ class CocktailIngredient implements JsonSerializable
             'amount_max' => $this->amountMax,
             'note' => $this->note,
             'substitutes' => array_map(fn ($model) => $model->toArray(), $this->substitutes),
+            'sort' => $this->sort,
         ];
     }
 

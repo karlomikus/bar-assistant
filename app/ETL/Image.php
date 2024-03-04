@@ -7,13 +7,13 @@ namespace Kami\Cocktail\ETL;
 use JsonSerializable;
 use Kami\Cocktail\Models\Image as ImageModel;
 
-class Image implements JsonSerializable
+readonly class Image implements JsonSerializable
 {
     public function __construct(
-        public readonly string|object|null $source,
-        public readonly int $sort = 0,
-        public readonly ?string $placeholderHash = null,
-        public readonly ?string $copyright = null,
+        public string|object|null $source,
+        public int $sort = 0,
+        public ?string $placeholderHash = null,
+        public ?string $copyright = null,
     ) {
     }
 

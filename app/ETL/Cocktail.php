@@ -10,7 +10,7 @@ use Kami\Cocktail\Models\Image as ImageModel;
 use Kami\Cocktail\Models\Cocktail as CocktailModel;
 use Kami\Cocktail\Models\CocktailIngredient as CocktailIngredientModel;
 
-class Cocktail implements JsonSerializable
+readonly class Cocktail implements JsonSerializable
 {
     /**
      * @param array<string> $tags
@@ -19,21 +19,21 @@ class Cocktail implements JsonSerializable
      * @param array<CocktailIngredient> $ingredients
      */
     public function __construct(
-        public readonly string $id,
-        public readonly string $name,
-        public readonly string $instructions,
-        public readonly ?string $createdAt = null,
-        public readonly ?string $updatedAt = null,
-        public readonly ?string $description = null,
-        public readonly ?string $source = null,
-        public readonly ?string $garnish = null,
-        public readonly ?float $abv = null,
-        public readonly array $tags = [],
-        public readonly ?string $glass = null,
-        public readonly ?string $method = null,
-        public readonly array $utensils = [],
-        public readonly array $images = [],
-        public readonly array $ingredients = [],
+        public string $id,
+        public string $name,
+        public string $instructions,
+        public ?string $createdAt = null,
+        public ?string $updatedAt = null,
+        public ?string $description = null,
+        public ?string $source = null,
+        public ?string $garnish = null,
+        public ?float $abv = null,
+        public array $tags = [],
+        public ?string $glass = null,
+        public ?string $method = null,
+        public array $utensils = [],
+        public array $images = [],
+        public array $ingredients = [],
     ) {
     }
 
@@ -69,12 +69,12 @@ class Cocktail implements JsonSerializable
     public static function fromArray(array $sourceArray): self
     {
         $images = [];
-        foreach ($sourceArray['images'] as $sourceImage) {
+        foreach ($sourceArray['images'] ?? [] as $sourceImage) {
             $images[] = Image::fromArray($sourceImage);
         }
 
         $ingredients = [];
-        foreach ($sourceArray['ingredients'] as $sourceIngredient) {
+        foreach ($sourceArray['ingredients'] ?? [] as $sourceIngredient) {
             $ingredients[] = CocktailIngredient::fromArray($sourceIngredient);
         }
 
