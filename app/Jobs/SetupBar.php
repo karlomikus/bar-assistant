@@ -10,7 +10,7 @@ use Kami\Cocktail\Models\User;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
-use Kami\Cocktail\Import\FromRecipesData;
+use Kami\Cocktail\External\Import\FromRecipesData;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\Attributes\WithoutRelations;

@@ -1,6 +1,6 @@
 <?php
 
-use Kami\Cocktail\Import\FromVersion2;
+use Kami\Cocktail\External\Import\FromVersion2;
 use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration

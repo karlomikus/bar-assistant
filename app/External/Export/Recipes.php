@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Export;
+namespace Kami\Cocktail\External\Export;
 
 use ZipArchive;
 use Carbon\Carbon;
@@ -12,10 +12,10 @@ use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\ETL\Image as ImageExternal;
-use Kami\Cocktail\ETL\Cocktail as CocktailExternal;
+use Kami\Cocktail\External\Image as ImageExternal;
+use Kami\Cocktail\External\Cocktail as CocktailExternal;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
-use Kami\Cocktail\ETL\IngredientWithImages as IngredientExternal;
+use Kami\Cocktail\External\IngredientWithImages as IngredientExternal;
 
 class Recipes
 {

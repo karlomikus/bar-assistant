@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Import;
+namespace Kami\Cocktail\External\Import;
 
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Bar;
@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\BarStatusEnum;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use Kami\Cocktail\ETL\Cocktail as CocktailExternal;
-use Kami\Cocktail\ETL\IngredientWithImages as IngredientExternal;
+use Kami\Cocktail\External\Cocktail as CocktailExternal;
+use Kami\Cocktail\External\IngredientWithImages as IngredientExternal;
 
 class FromRecipesData
 {

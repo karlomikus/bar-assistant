@@ -7,7 +7,7 @@ namespace Kami\Cocktail\Console\Commands;
 use Throwable;
 use Kami\Cocktail\Models\Bar;
 use Illuminate\Console\Command;
-use Kami\Cocktail\Export\Recipes;
+use Kami\Cocktail\External\Export\Recipes;
 use Kami\Cocktail\ExportTypeEnum;
 
 class BarExportRecipes extends Command

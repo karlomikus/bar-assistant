@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Import;
+namespace Kami\Cocktail\External\Import;
 
 enum DuplicateActionsEnum: int
 {

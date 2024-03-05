@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\ETL;
+namespace Kami\Cocktail\External;
 
 use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\Models\CocktailMethod;

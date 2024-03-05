@@ -5,10 +5,10 @@ namespace Kami\Cocktail\Jobs;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Kami\Cocktail\Import\FromCollection;
+use Kami\Cocktail\External\Import\FromCollection;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Kami\Cocktail\Import\DuplicateActionsEnum;
+use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
 class ImportCollection implements ShouldQueue
 {

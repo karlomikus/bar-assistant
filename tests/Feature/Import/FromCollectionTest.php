@@ -7,8 +7,8 @@ namespace Tests\Feature\Import;
 use Tests\TestCase;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Cocktail;
-use Kami\Cocktail\Import\FromCollection;
-use Kami\Cocktail\Import\DuplicateActionsEnum;
+use Kami\Cocktail\External\Import\FromCollection;
+use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class FromCollectionTest extends TestCase

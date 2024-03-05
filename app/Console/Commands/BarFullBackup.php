@@ -5,7 +5,7 @@ namespace Kami\Cocktail\Console\Commands;
 use Throwable;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Kami\Cocktail\Export\FullBackupToZip;
+use Kami\Cocktail\External\Export\FullBackupToZip;
 
 class BarFullBackup extends Command
 {
