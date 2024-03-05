@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\DataObjects\Ingredient;
+namespace Kami\Cocktail\DTO\Ingredient;
 
 readonly class Ingredient
 {

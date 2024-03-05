@@ -16,7 +16,7 @@ use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Http\Requests\ImageRequest;
 use Kami\Cocktail\Http\Resources\ImageResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\DataObjects\Image as ImageDTO;
+use Kami\Cocktail\DTO\Image as ImageDTO;
 use Kami\Cocktail\Http\Requests\ImageUpdateRequest;
 
 class ImageController extends Controller

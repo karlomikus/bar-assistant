@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Intervention\Image\Encoders\AutoEncoder;
-use Kami\Cocktail\DataObjects\Image as ImageDTO;
+use Kami\Cocktail\DTO\Image as ImageDTO;
 use Intervention\Image\Interfaces\ImageInterface;
 use function Thumbhash\extract_size_and_pixels_with_imagick;
 

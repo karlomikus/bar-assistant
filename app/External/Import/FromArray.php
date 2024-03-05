@@ -9,14 +9,14 @@ use Kami\Cocktail\External\Matcher;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
-use Kami\Cocktail\DataObjects\Image;
+use Kami\Cocktail\DTO\Image;
 use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\External\Cocktail as CocktailExternal;
-use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
-use Kami\Cocktail\DataObjects\Cocktail\Substitute as SubstituteDTO;
-use Kami\Cocktail\DataObjects\Cocktail\Ingredient as CocktailIngredientDTO;
+use Kami\Cocktail\DTO\Cocktail\Cocktail as CocktailDTO;
+use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
+use Kami\Cocktail\DTO\Cocktail\Ingredient as CocktailIngredientDTO;
 
 class FromArray
 {

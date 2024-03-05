@@ -20,9 +20,9 @@ use Kami\Cocktail\External\Cocktail as CocktailExternal;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\CocktailPublicResource;
-use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
-use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDTO;
-use Kami\Cocktail\DataObjects\Cocktail\Substitute as SubstituteDTO;
+use Kami\Cocktail\DTO\Cocktail\Cocktail as CocktailDTO;
+use Kami\Cocktail\DTO\Cocktail\Ingredient as IngredientDTO;
+use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
 
 class CocktailController extends Controller
 {
