@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\DataObjects\Cocktail;
 
-class Ingredient
+readonly class Ingredient
 {
     /**
      * @param array<Substitute> $substitutes
      */
     public function __construct(
-        public readonly int $id,
-        public readonly ?string $name,
-        public readonly float $amount,
-        public readonly string $units,
-        public readonly int $sort = 0,
-        public readonly bool $optional = false,
-        public readonly array $substitutes = [],
-        public readonly ?float $amountMax = null,
-        public readonly ?string $note = null
+        public int $id,
+        public ?string $name,
+        public float $amount,
+        public string $units,
+        public int $sort = 0,
+        public bool $optional = false,
+        public array $substitutes = [],
+        public ?float $amountMax = null,
+        public ?string $note = null
     ) {
     }
 }

@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\DataObjects\Ingredient;
 
-class Ingredient
+readonly class Ingredient
 {
     /**
      * @param array<int> $images
      */
     public function __construct(
-        public readonly int $barId,
-        public readonly string $name,
-        public readonly int $userId,
-        public readonly ?int $ingredientCategoryId = null,
-        public readonly float $strength = 0.0,
-        public readonly ?string $description = null,
-        public readonly ?string $origin = null,
-        public readonly ?string $color = null,
-        public readonly ?int $parentIngredientId = null,
-        public readonly array $images = []
+        public int $barId,
+        public string $name,
+        public int $userId,
+        public ?int $ingredientCategoryId = null,
+        public float $strength = 0.0,
+        public ?string $description = null,
+        public ?string $origin = null,
+        public ?string $color = null,
+        public ?int $parentIngredientId = null,
+        public array $images = []
     ) {
     }
 }

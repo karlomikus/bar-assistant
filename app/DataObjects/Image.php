@@ -6,12 +6,12 @@ namespace Kami\Cocktail\DataObjects;
 
 use Intervention\Image\Interfaces\ImageInterface;
 
-class Image
+readonly class Image
 {
     public function __construct(
-        public readonly ?ImageInterface $file,
-        public readonly ?string $copyright = null,
-        public readonly ?int $sort = 0,
+        public ?ImageInterface $file,
+        public ?string $copyright = null,
+        public ?int $sort = 0,
     ) {
     }
 }
