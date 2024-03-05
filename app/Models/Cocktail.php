@@ -17,7 +17,6 @@ use Kami\Cocktail\Models\Concerns\HasNotes;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasRating;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
-use Kami\Cocktail\ETL\Cocktail as CocktailETL;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -240,13 +239,6 @@ class Cocktail extends Model implements UploadableInterface
             'tags' => $this->tags->pluck('name'),
             'bar_id' => $this->bar_id,
         ];
-    }
-
-    public function share(): array
-    {
-        $etl = CocktailETL::fromModel($this);
-
-        return $etl->toArray();
     }
 
     public function toText(): string

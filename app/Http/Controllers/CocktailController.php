@@ -16,6 +16,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Http\Resources\CocktailResource;
+use Kami\Cocktail\ETL\Cocktail as CocktailExternal;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\CocktailPublicResource;
@@ -253,7 +254,7 @@ class CocktailController extends Controller
 
         $type = $request->get('type', 'json');
 
-        $data = $cocktail->share();
+        $data = CocktailExternal::fromModel($cocktail)->toArray();
 
         if ($type === 'json') {
             return new Response(json_encode($data, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);

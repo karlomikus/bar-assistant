@@ -15,6 +15,7 @@ use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Export\CocktailsToCSV;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CollectionRequest;
+use Kami\Cocktail\ETL\Cocktail as CocktailExternal;
 use Kami\Cocktail\Http\Resources\CollectionResource;
 use Kami\Cocktail\Http\Filters\CollectionQueryFilter;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
@@ -197,7 +198,7 @@ class CollectionController extends Controller
             'name' => $collection->name,
             'description' => $collection->description,
             'cocktails' => $collection->cocktails->map(function (Cocktail $cocktail) {
-                return $cocktail->share();
+                return CocktailExternal::fromModel($cocktail)->toArray();
             })->toArray(),
         ];
 
