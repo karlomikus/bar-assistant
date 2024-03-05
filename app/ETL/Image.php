@@ -20,7 +20,7 @@ readonly class Image implements JsonSerializable
     public static function fromModel(ImageModel $model): self
     {
         return new self(
-            $model->getImageUrl(),
+            $model->getImageUrl(), // TODO: Deprecate, move to data URI
             $model->sort,
             $model->placeholder_hash,
             $model->copyright

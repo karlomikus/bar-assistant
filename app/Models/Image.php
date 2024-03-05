@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Intervention\Image\ImageManager;
 
 class Image extends Model
 {
@@ -34,6 +35,18 @@ class Image extends Model
         $disk = Storage::disk('uploads');
 
         return $disk->url($this->file_path);
+    }
+
+    public function getImageDataURI(): ?string
+    {
+        if (!$this->file_path) {
+            return null;
+        }
+
+        $manager = ImageManager::imagick();
+        $disk = Storage::disk('uploads');
+
+        return $manager->read($disk->path($this->file_path))->encode()->toDataUri();
     }
 
     /**
