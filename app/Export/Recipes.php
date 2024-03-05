@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\ETL\Image as ImageExternal;
+use Kami\Cocktail\ETL\Cocktail as CocktailExternal;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
+use Kami\Cocktail\ETL\IngredientWithImages as IngredientExternal;
 
 class Recipes
 {
@@ -58,8 +61,26 @@ class Recipes
             $query->orderBy('sort');
         }, 'glass', 'method', 'tags'])->where('bar_id', $barId)->get();
 
+        /** @var Cocktail $cocktail */
         foreach ($cocktails as $cocktail) {
-            $data = $cocktail->share();
+            $data = CocktailExternal::fromModel($cocktail)->toArray();
+
+            $i = 1;
+            $externalImages = [];
+            foreach ($cocktail->images as $img) {
+                $externalImages[] = ImageExternal::fromArray([
+                    'source' => $data['_id'] . '-' . $i . '.' . $img->file_extension,
+                    'sort' => $img->sort,
+                    'placeholder_hash' => $img->placeholder_hash,
+                    'copyright' => $img->copyright,
+                ])->toArray();
+
+                $zip->addFile($img->getPath(), 'cocktails/images/' . $data['_id'] . '-' . $i . '.' . $img->file_extension);
+                $i++;
+            }
+
+            // Overwrite images with local filepaths
+            $data['images'] = $externalImages;
 
             if ($type === ExportTypeEnum::YAML) {
                 $cocktailExportData = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
@@ -68,12 +89,6 @@ class Recipes
             }
 
             $zip->addFromString('cocktails/' . $data['_id'] . '.' . $type->value, $cocktailExportData);
-
-            $i = 1;
-            foreach ($cocktail->images as $img) {
-                $zip->addFile($img->getPath(), 'cocktails/images/' . $data['_id'] . '-' . $i . '.' . $img->file_extension);
-                $i++;
-            }
         }
     }
 
@@ -83,8 +98,26 @@ class Recipes
             $query->orderBy('sort');
         }])->where('bar_id', $barId)->get();
 
+        /** @var Ingredient $ingredient */
         foreach ($ingredients as $ingredient) {
-            $data = $ingredient->share();
+            $data = IngredientExternal::fromModel($ingredient)->toArray();
+
+            $i = 1;
+            $externalImages = [];
+            foreach ($ingredient->images as $img) {
+                $externalImages[] = ImageExternal::fromArray([
+                    'source' => $data['_id'] . '-' . $i . '.' . $img->file_extension,
+                    'sort' => $img->sort,
+                    'placeholder_hash' => $img->placeholder_hash,
+                    'copyright' => $img->copyright,
+                ])->toArray();
+
+                $zip->addFile($img->getPath(), 'ingredients/images/' . $data['_id'] . '-' . $i . '.' . $img->file_extension);
+                $i++;
+            }
+
+            // Overwrite images with local filepaths
+            $data['images'] = $externalImages;
 
             if ($type === ExportTypeEnum::YAML) {
                 $ingredientExportData = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
@@ -93,12 +126,6 @@ class Recipes
             }
 
             $zip->addFromString('ingredients/' . $data['_id'] . '.' . $type->value, $ingredientExportData);
-
-            $i = 1;
-            foreach ($ingredient->images as $img) {
-                $zip->addFile($img->getPath(), 'ingredients/images/' . $data['_id'] . '-' . $i . '.' . $img->file_extension);
-                $i++;
-            }
         }
     }
 

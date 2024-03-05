@@ -60,7 +60,7 @@ readonly class IngredientWithImages implements JsonSerializable
         return new self(
             $sourceArray['_id'],
             $sourceArray['name'],
-            $sourceArray['_parent_id'],
+            $sourceArray['_parent_id'] ?? null,
             $sourceArray['strength'] ?? 0.0,
             $sourceArray['description'] ?? null,
             $sourceArray['origin'] ?? null,
