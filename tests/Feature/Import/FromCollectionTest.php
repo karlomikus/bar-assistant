@@ -8,8 +8,8 @@ use Tests\TestCase;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\External\Import\FromCollection;
-use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
 class FromCollectionTest extends TestCase
 {

@@ -9,12 +9,12 @@ use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Scraper\Manager;
-use Kami\Cocktail\External\Import\FromArray;
 use Kami\Cocktail\Jobs\ImportCollection;
+use Kami\Cocktail\External\Import\FromArray;
 use Kami\Cocktail\Http\Requests\ImportRequest;
-use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CocktailResource;
+use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
 class ImportController extends Controller
 {

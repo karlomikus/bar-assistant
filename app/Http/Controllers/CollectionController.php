@@ -12,13 +12,13 @@ use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
-use Kami\Cocktail\External\Export\CocktailsToCSV;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\External\Export\CocktailsToCSV;
 use Kami\Cocktail\Http\Requests\CollectionRequest;
-use Kami\Cocktail\External\Cocktail as CocktailExternal;
 use Kami\Cocktail\Http\Resources\CollectionResource;
 use Kami\Cocktail\Http\Filters\CollectionQueryFilter;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
+use Kami\Cocktail\External\Collection as CollectionExternal;
 
 class CollectionController extends Controller
 {
@@ -194,13 +194,7 @@ class CollectionController extends Controller
 
         $collection->load('cocktails.glass', 'cocktails.method', 'cocktails.images', 'cocktails.tags', 'cocktails.ingredients.ingredient.category', 'cocktails.ingredients.substitutes');
 
-        $data = [
-            'name' => $collection->name,
-            'description' => $collection->description,
-            'cocktails' => $collection->cocktails->map(function (Cocktail $cocktail) {
-                return CocktailExternal::fromModel($cocktail)->toArray();
-            })->toArray(),
-        ];
+        $data = CollectionExternal::fromModel($collection)->toArray();
 
         if ($type === 'json') {
             return new Response(json_encode($data, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);

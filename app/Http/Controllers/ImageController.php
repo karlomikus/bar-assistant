@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Kami\Cocktail\DTO\Image as ImageDTO;
 use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Http\Requests\ImageRequest;
 use Kami\Cocktail\Http\Resources\ImageResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\DTO\Image as ImageDTO;
 use Kami\Cocktail\Http\Requests\ImageUpdateRequest;
 
 class ImageController extends Controller

@@ -8,7 +8,7 @@ readonly class Cocktail
 {
     /**
      * @param array<?string> $tags
-     * @param array<\Kami\Cocktail\DataObjects\Cocktail\Ingredient> $ingredients
+     * @param array<Ingredient> $ingredients
      * @param array<int> $images
      * @param array<int> $utensils
      */

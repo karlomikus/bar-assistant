@@ -8,9 +8,9 @@ use Tests\TestCase;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Glass;
 use Illuminate\Http\UploadedFile;
-use Kami\Cocktail\External\Import\FromArray;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\CocktailMethod;
+use Kami\Cocktail\External\Import\FromArray;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class FromArrayTest extends TestCase

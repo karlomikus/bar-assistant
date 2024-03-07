@@ -15,8 +15,8 @@ use Illuminate\Database\DatabaseManager;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
-use Kami\Cocktail\Exceptions\ImagesNotAttachedException;
 use Kami\Cocktail\DTO\Cocktail\Cocktail as CocktailDTO;
+use Kami\Cocktail\Exceptions\ImagesNotAttachedException;
 
 class CocktailService
 {
