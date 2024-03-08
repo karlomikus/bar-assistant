@@ -18,7 +18,7 @@ readonly class Cocktail implements JsonSerializable
      * @param array<Image> $images
      * @param array<CocktailIngredient> $ingredients
      */
-    public function __construct(
+    private function __construct(
         public string $id,
         public string $name,
         public string $instructions,

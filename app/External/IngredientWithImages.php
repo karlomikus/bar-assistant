@@ -14,7 +14,7 @@ readonly class IngredientWithImages implements JsonSerializable
     /**
      * @param array<Image> $images
      */
-    public function __construct(
+    private function __construct(
         public string $id,
         public string $name,
         public ?string $parentId = null,

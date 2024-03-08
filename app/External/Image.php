@@ -9,7 +9,7 @@ use Kami\Cocktail\Models\Image as ImageModel;
 
 readonly class Image implements JsonSerializable
 {
-    public function __construct(
+    private function __construct(
         public string|object|null $source,
         public int $sort = 0,
         public ?string $placeholderHash = null,

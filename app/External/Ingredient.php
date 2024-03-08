@@ -10,7 +10,7 @@ use Kami\Cocktail\Models\Ingredient as IngredientModel;
 
 readonly class Ingredient implements JsonSerializable
 {
-    public function __construct(
+    private function __construct(
         public string $id,
         public string $name,
         public float $strength = 0.0,

@@ -13,7 +13,7 @@ readonly class Collection implements JsonSerializable
     /**
      * @param array<Cocktail> $cocktails
      */
-    public function __construct(
+    private function __construct(
         public string $name,
         public ?string $description = null,
         public array $cocktails = [],

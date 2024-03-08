@@ -10,7 +10,7 @@ use Kami\Cocktail\Models\CocktailIngredientSubstitute as CocktailIngredientSubst
 
 readonly class CocktailIngredientSubstitute implements JsonSerializable
 {
-    public function __construct(
+    private function __construct(
         public Ingredient $ingredient,
         public ?float $amount = null,
         public ?string $units = null,

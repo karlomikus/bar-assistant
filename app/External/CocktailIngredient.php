@@ -14,7 +14,7 @@ readonly class CocktailIngredient implements JsonSerializable
     /**
      * @param array<CocktailIngredientSubstitute> $substitutes
      */
-    public function __construct(
+    private function __construct(
         public Ingredient $ingredient,
         public float $amount,
         public string $units,
