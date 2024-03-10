@@ -550,6 +550,31 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /cocktails/{id}/copy:
+    parameters:
+    - $ref: '#/components/parameters/BarParameter'
+    - name: id
+      in: path
+      required: true
+      description: Database id of the cocktail
+      schema:
+        type: integer
+    post:
+      tags:
+        - "Cocktails"
+      summary: 'Duplicate a cocktail'
+      operationId: copyCocktail
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cocktail'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /shelf/cocktails:
     parameters:
       - $ref: '#/components/parameters/BarParameter'
