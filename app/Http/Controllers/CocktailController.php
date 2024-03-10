@@ -344,7 +344,8 @@ class CocktailController extends Controller
                     $image->copyright,
                     $image->sort,
                 );
-            } catch (Throwable $e) { }
+            } catch (Throwable $e) {
+            }
         }
 
         $images = array_map(
