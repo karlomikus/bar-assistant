@@ -64,6 +64,7 @@ readonly class CocktailIngredient implements JsonSerializable
                 'strength' => $sourceArray['strength'] ?? 0.0,
                 'description' => $sourceArray['description'] ?? null,
                 'origin' => $sourceArray['origin'] ?? null,
+                'category' => $sourceArray['category'] ?? null,
             ]),
             $sourceArray['amount'] ?? 0.0,
             $sourceArray['units'],

@@ -16,6 +16,7 @@ readonly class Ingredient implements JsonSerializable
         public float $strength = 0.0,
         public ?string $description = null,
         public ?string $origin = null,
+        public ?string $category = null,
     ) {
     }
 
@@ -26,7 +27,8 @@ readonly class Ingredient implements JsonSerializable
             $model->name,
             $model->strength,
             $model->description,
-            $model->origin
+            $model->origin,
+            $model->category?->name
         );
     }
 
@@ -38,6 +40,7 @@ readonly class Ingredient implements JsonSerializable
             $sourceArray['strength'] ?? 0.0,
             $sourceArray['description'] ?? null,
             $sourceArray['origin'] ?? null,
+            $sourceArray['category'] ?? null,
         );
     }
 
@@ -49,6 +52,7 @@ readonly class Ingredient implements JsonSerializable
             'strength' => $this->strength,
             'description' => $this->description,
             'origin' => $this->origin,
+            'category' => $this->category,
         ];
     }
 
