@@ -16,7 +16,7 @@ jobs:
       with:
         php-version: '8.2'
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Meilisearch (latest version) setup with Docker
       run: docker run -d -p 7700:7700 getmeili/meilisearch:latest meilisearch --master-key=masterKeyThatIsReallyReallyLong4Real --no-analytics
