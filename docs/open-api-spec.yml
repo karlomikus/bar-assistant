@@ -139,6 +139,28 @@ paths:
           description: Unable to authenticate
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+  /password-check:
+    post:
+      tags:
+        - Auth
+      summary: Check current users password
+      operationId: passwordCheck
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordCheckRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PasswordCheckResponse'
   /logout:
     post:
       tags:
@@ -4454,3 +4476,17 @@ components:
         name:
           type: string
           example: "Device token"
+    PasswordCheckRequest:
+      type: object
+      required:
+        - password
+      properties:
+        password:
+          type: string
+    PasswordCheckResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: boolean

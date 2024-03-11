@@ -1,12 +1,10 @@
 # v3.11.0
 ## New
-- Added `/cocktails/{id}/copy` endpoint
-    - This will create a duplicate of a cocktail recipe
+- Added POST `/cocktails/{id}/copy` endpoint
+- Added POST `/password-check` endpoint
 
 ## Changes
 - Updated and consolidated cocktail recipe share structure
-    - Now contains more info about specific ingredients
-    - Now contains more info about substitute ingredients
 
 ## Fixes
 - Fixed search sometimes not correctly showing all results, for example, searching for `army` would not show `army & navy`
