@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Import;
+namespace Kami\Cocktail\External\Import;
 
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Bar;
@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\BarStatusEnum;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Kami\Cocktail\External\Cocktail as CocktailExternal;
+use Kami\Cocktail\External\IngredientWithImages as IngredientExternal;
 
 class FromRecipesData
 {
@@ -122,46 +124,47 @@ class FromRecipesData
         $this->uploadsDisk->makeDirectory($barImagesDir);
 
         DB::beginTransaction();
-        foreach ($ingredients as $ingredient) {
-            if ($existingIngredients->has(Str::slug($ingredient['name']))) {
+        foreach ($ingredients as $externalIngredient) {
+            $externalIngredient = IngredientExternal::fromArray($externalIngredient);
+            if ($existingIngredients->has($externalIngredient->id)) {
                 continue;
             }
 
-            $category = $categories->firstWhere('name', $ingredient['category']);
-            $slug = Str::slug($ingredient['name']) . '-' . $bar->id;
+            $category = $categories->firstWhere('name', $externalIngredient->category);
+            $slug = $externalIngredient->id . '-' . $bar->id;
             $ingredientsToInsert[] = [
                 'bar_id' => $bar->id,
                 'slug' => $slug,
-                'name' => $ingredient['name'],
-                'ingredient_category_id' => $category->id ?? null,
-                'strength' => $ingredient['strength'] ?? null,
-                'description' => $ingredient['description'] ?? null,
-                'origin' => $ingredient['origin'] ?? null,
-                'color' => $ingredient['color'] ?? null,
+                'name' => $externalIngredient->name,
+                'ingredient_category_id' => $category->id,
+                'strength' => $externalIngredient->strength,
+                'description' => $externalIngredient->description,
+                'origin' => $externalIngredient->origin,
+                'color' => $externalIngredient->color,
                 'created_user_id' => $user->id,
-                'created_at' => $ingredient['created_at'] ?? now(),
-                'updated_at' => $ingredient['updated_at'] ?? null,
+                'created_at' => $externalIngredient->createdAt ?? now(),
+                'updated_at' => $externalIngredient->updatedAt,
             ];
 
-            if ($ingredient['_parent_id'] ?? null) {
-                $parentIngredientsToInsert[$slug] = $ingredient['_parent_id'] . '-' . $bar->id;
+            if ($externalIngredient->parentId) {
+                $parentIngredientsToInsert[$slug] = $externalIngredient->parentId . '-' . $bar->id;
             }
 
             // For performance, manually copy the files and create image references
-            foreach ($ingredient['images'] ?? [] as $image) {
-                $baseSrcImagePath = 'ingredients/images/' . $image['file_name'];
+            foreach ($externalIngredient->images as $image) {
+                $baseSrcImagePath = 'ingredients/images/' . $image->source;
                 $fileExtension = File::extension($dataDisk->path($baseSrcImagePath));
                 $targetImagePath = $barImagesDir . $slug . '_' . Str::random(6) . '.' . $fileExtension;
 
                 $this->copyResourceImage($dataDisk, $baseSrcImagePath, $targetImagePath);
 
                 $imagesToInsert[$slug] = [
-                    'copyright' => $image['copyright'] ?? null,
+                    'copyright' => $image->copyright,
                     'file_path' => $targetImagePath,
                     'file_extension' => $fileExtension,
                     'created_user_id' => $user->id,
-                    'sort' => 1,
-                    'placeholder_hash' => $image['placeholder_hash'] ?? null,
+                    'sort' => $image->sort,
+                    'placeholder_hash' => $image->placeholderHash,
                     'created_at' => now(),
                     'updated_at' => null,
                 ];
@@ -220,29 +223,31 @@ class FromRecipesData
 
         DB::beginTransaction();
         foreach ($cocktails as $cocktail) {
-            if ($existingCocktails->has(Str::slug($cocktail['name']))) {
+            $externalCocktail = CocktailExternal::fromArray($cocktail);
+
+            if ($existingCocktails->has($externalCocktail->id)) {
                 continue;
             }
 
-            $slug = Str::slug($cocktail['name']) . '-' . $bar->id;
+            $slug = $externalCocktail->id . '-' . $bar->id;
 
             $cocktailId = DB::table('cocktails')->insertGetId([
                 'slug' => $slug,
-                'name' => $cocktail['name'],
-                'instructions' => $cocktail['instructions'],
-                'description' => $cocktail['description'] ?? null,
-                'garnish' => $cocktail['garnish'] ?? null,
-                'source' => $cocktail['source'] ?? null,
-                'abv' => $cocktail['abv'] ?? null,
+                'name' => $externalCocktail->name,
+                'instructions' => $externalCocktail->instructions,
+                'description' => $externalCocktail->description,
+                'garnish' => $externalCocktail->garnish,
+                'source' => $externalCocktail->source,
+                'abv' => $externalCocktail->abv,
                 'created_user_id' => $user->id,
-                'glass_id' => $dbGlasses[strtolower($cocktail['glass'] ?? '')] ?? null,
-                'cocktail_method_id' => $dbMethods[strtolower($cocktail['method'] ?? '')] ?? null,
+                'glass_id' => $dbGlasses[mb_strtolower($externalCocktail->glass ?? '', 'UTF-8')] ?? null,
+                'cocktail_method_id' => $dbMethods[mb_strtolower($externalCocktail->method ?? '', 'UTF-8')] ?? null,
                 'bar_id' => $bar->id,
-                'created_at' => $cocktail['created_at'] ?? now(),
-                'updated_at' => $cocktail['updated_at'] ?? null,
+                'created_at' => $externalCocktail->createdAt ?? now(),
+                'updated_at' => $externalCocktail->updatedAt,
             ]);
 
-            foreach ($cocktail['tags'] ?? [] as $tag) {
+            foreach ($externalCocktail->tags as $tag) {
                 $tag = Tag::firstOrCreate([
                     'name' => trim($tag),
                     'bar_id' => $bar->id,
@@ -253,7 +258,7 @@ class FromRecipesData
                 ];
             }
 
-            foreach ($cocktail['utensils'] ?? [] as $utensil) {
+            foreach ($externalCocktail->utensils as $utensil) {
                 $utensil = Utensil::firstOrCreate([
                     'name' => trim($utensil),
                     'bar_id' => $bar->id,
@@ -265,37 +270,35 @@ class FromRecipesData
             }
 
             $sort = 1;
-            foreach ($cocktail['ingredients'] as $cocktailIngredient) {
+            foreach ($externalCocktail->ingredients as $cocktailIngredient) {
                 $ciId = DB::table('cocktail_ingredients')->insertGetId([
                     'cocktail_id' => $cocktailId,
-                    'ingredient_id' => $dbIngredients[strtolower($cocktailIngredient['name'])] ?? null,
-                    'amount' => $cocktailIngredient['amount'],
-                    'units' => $cocktailIngredient['units'],
-                    'optional' => $cocktailIngredient['optional'] ?? false,
-                    'note' => $cocktailIngredient['note'] ?? null,
+                    'ingredient_id' => $dbIngredients[mb_strtolower($cocktailIngredient->ingredient->name, 'UTF-8')] ?? null,
+                    'amount' => $cocktailIngredient->amount,
+                    'units' => $cocktailIngredient->units,
+                    'optional' => $cocktailIngredient->optional,
+                    'note' => $cocktailIngredient->note,
                     'sort' => $sort,
                 ]);
 
                 $sort++;
 
-                if (count($cocktailIngredient['substitutes'] ?? []) > 0) {
-                    foreach ($cocktailIngredient['substitutes'] as $substitute) {
-                        DB::table('cocktail_ingredient_substitutes')->insert([
-                            'cocktail_ingredient_id' => $ciId,
-                            'ingredient_id' => $dbIngredients[strtolower($substitute['name'])] ?? null,
-                            'amount' => $substitute['amount'] ?? null,
-                            'amount_max' => $substitute['amount_max'] ?? null,
-                            'units' => $substitute['units'] ?? null,
-                            'created_at' => now(),
-                            'updated_at' => null,
-                        ]);
-                    }
+                foreach ($cocktailIngredient->substitutes as $substitute) {
+                    DB::table('cocktail_ingredient_substitutes')->insert([
+                        'cocktail_ingredient_id' => $ciId,
+                        'ingredient_id' => $dbIngredients[mb_strtolower($substitute->ingredient->name, 'UTF-8')] ?? null,
+                        'amount' => $substitute->amount,
+                        'amount_max' => $substitute->amountMax,
+                        'units' => $substitute->units,
+                        'created_at' => now(),
+                        'updated_at' => null,
+                    ]);
                 }
             }
 
             // For performance, manually copy the files and create image references
-            foreach ($cocktail['images'] ?? [] as $image) {
-                $baseSrcImagePath = 'cocktails/images/' . $image['file_name'];
+            foreach ($externalCocktail->images as $image) {
+                $baseSrcImagePath = 'cocktails/images/' . $image->source;
                 $fileExtension = File::extension($dataDisk->path($baseSrcImagePath));
                 $targetImagePath = $barImagesDir . $slug . '_' . Str::random(6) . '.' . $fileExtension;
 
@@ -304,12 +307,12 @@ class FromRecipesData
                 $imagesToInsert[] = [
                     'imageable_type' => Cocktail::class,
                     'imageable_id' => $cocktailId,
-                    'copyright' => $image['copyright'] ?? null,
+                    'copyright' => $image->copyright,
                     'file_path' => $targetImagePath,
                     'file_extension' => $fileExtension,
                     'created_user_id' => $user->id,
-                    'sort' => $image['sort'] ?? 1,
-                    'placeholder_hash' => $image['placeholder_hash'] ?? null,
+                    'sort' => $image->sort,
+                    'placeholder_hash' => $image->placeholderHash,
                     'created_at' => now(),
                     'updated_at' => null,
                 ];

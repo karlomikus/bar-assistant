@@ -21,17 +21,14 @@ class FilterNameSearch implements Filter
             $value = [$value];
         }
 
-        $stemmer = StemmerFactory::create('en');
-
-        $value = array_map(function ($searchTerm) use ($stemmer) {
+        // Cleanup
+        $value = array_map(function ($searchTerm) {
             $searchTerm = mb_strtolower((string) $searchTerm, 'UTF-8');
             $searchTerm = str_replace(
                 ['\\', '_', '%'],
                 ['\\\\', '\\_', '\\%'],
                 $searchTerm,
             );
-
-            $searchTerm = $stemmer->stem($searchTerm);
 
             return $searchTerm;
         }, $value);
@@ -40,9 +37,22 @@ class FilterNameSearch implements Filter
             return $query;
         }
 
-        $query->where(function ($query) use ($value) {
+        $stemmer = StemmerFactory::create('en');
+
+        $stemmedValue = array_map(function ($searchTerm) use ($stemmer) {
+            $searchTerm = $stemmer->stem($searchTerm);
+
+            return $searchTerm;
+        }, $value);
+
+        $query->where(function ($query) use ($stemmedValue, $value) {
+            foreach (array_filter($stemmedValue, fn ($val) => strlen($val) > 0) as $partialValue) {
+                $query->orWhereRaw('LOWER(name) LIKE ?', ['%' . $partialValue . '%'])
+                    ->orWhereRaw('slug LIKE ?', ['%' . Str::slug($partialValue) . '%']);
+            }
+
             foreach (array_filter($value, fn ($val) => strlen($val) > 0) as $partialValue) {
-                $query->whereRaw('LOWER(name) LIKE ?', ['%' . $partialValue . '%'])
+                $query->orWhereRaw('LOWER(name) LIKE ?', ['%' . $partialValue . '%'])
                     ->orWhereRaw('slug LIKE ?', ['%' . Str::slug($partialValue) . '%']);
             }
         });

@@ -60,7 +60,7 @@ Route::prefix('server')->group(function() {
 });
 
 Route::prefix('images')->group(function() {
-    Route::get('/{id}/thumb', [ImageController::class, 'thumb']); // TODO: Move this to auth middleware
+    Route::get('/{id}/thumb', [ImageController::class, 'thumb'])->name('images.thumb'); // TODO: Move this to auth middleware
 });
 
 Route::prefix('explore')->group(function() {
@@ -70,6 +70,7 @@ Route::prefix('explore')->group(function() {
 
 Route::middleware($apiMiddleware)->group(function() {
     Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware(['ability:*']);
+    Route::post('password-check', [AuthController::class, 'passwordCheck'])->middleware(['ability:*']);
 
     Route::get('/profile', [ProfileController::class, 'show'])->middleware(['ability:*']);
     Route::post('/profile', [ProfileController::class, 'update'])->middleware(['ability:*']);
@@ -111,6 +112,7 @@ Route::middleware($apiMiddleware)->group(function() {
         Route::post('/{id}/public-link', [CocktailController::class, 'makePublic'])->name('cocktails.make-public')->middleware(['ability:cocktails.write']);
         Route::delete('/{id}/public-link', [CocktailController::class, 'makePrivate'])->name('cocktails.make-private')->middleware(['ability:cocktails.write']);
         Route::get('/{id}/similar', [CocktailController::class, 'similar'])->name('cocktails.similar')->middleware(['ability:cocktails.read']);
+        Route::post('/{id}/copy', [CocktailController::class, 'copy'])->middleware([EnsureRequestHasBarQuery::class, 'ability:cocktails.write']);
     });
 
     Route::prefix('images')->group(function() {

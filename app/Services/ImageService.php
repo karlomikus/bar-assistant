@@ -12,9 +12,10 @@ use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Kami\Cocktail\DTO\Image as ImageDTO;
 use Illuminate\Filesystem\FilesystemAdapter;
-use Kami\Cocktail\DataObjects\Image as ImageDTO;
-use Intervention\Image\Image as InterventionImage;
+use Intervention\Image\Encoders\AutoEncoder;
+use Intervention\Image\Interfaces\ImageInterface;
 use function Thumbhash\extract_size_and_pixels_with_imagick;
 
 class ImageService
@@ -112,22 +113,14 @@ class ImageService
      * Generates ThumbHash key
      * @see https://evanw.github.io/thumbhash/
      *
-     * @param InterventionImage $image
-     * @param bool $destroyInstance Used for memory management
+     * @param ImageInterface $image
      * @return string
      */
-    public function generateThumbHash(InterventionImage $image, bool $destroyInstance = false): string
+    public function generateThumbHash(ImageInterface $image): string
     {
-        if ($destroyInstance) {
-            $content = $image->fit(100)->encode(null, 20);
-            $image->destroy();
-        } else {
-            $image->backup();
-            $content = $image->fit(100)->encode(null, 20);
-            $image->reset();
-        }
+        $content = $image->resizeDown(100, 100)->toJpeg(20);
 
-        [$width, $height, $pixels] = extract_size_and_pixels_with_imagick($content);
+        [$width, $height, $pixels] = extract_size_and_pixels_with_imagick($content->toString());
         $hash = Thumbhash::RGBAToHash($width, $height, $pixels);
         $key = Thumbhash::convertHashToString($hash);
 
@@ -155,22 +148,15 @@ class ImageService
         $this->disk->deleteDirectory('ingredients/' . $bar->id . '/');
     }
 
-    private function processImageFile(InterventionImage $image, ?string $filename = null): array
+    private function processImageFile(ImageInterface $image, ?string $filename = null): array
     {
         $filename = $filename ?? Str::random(40);
 
-        $fileExtension = match ($image->mime()) {
-            'image/jpeg' => 'jpg',
-            'image/png' => 'png',
-            'image/webp' => 'webp',
-            default => 'jpg'
-        };
-
-        $filepath = 'temp/' . $filename . '.' . $fileExtension;
-
         $thumbHash = null;
         try {
-            $thumbHash = $this->generateThumbHash($image);
+            $thumbHashImage = clone $image;
+            $thumbHash = $this->generateThumbHash($thumbHashImage);
+            unset($thumbHashImage);
         } catch (Throwable $e) {
             $this->log->error('[IMAGE_SERVICE] ThumbHash Error | ' . $e->getMessage());
 
@@ -178,11 +164,29 @@ class ImageService
         }
 
         try {
-            $image->resize(null, 1400, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
-            $this->disk->put($filepath, (string) $image->encode(quality: 85));
+            $image->scaleDown(height: 1400);
+            $encodedImage = $image->encode(new AutoEncoder(quality: 85));
+
+            $fileExtension = match ($encodedImage->mediaType()) {
+                'image/gif' => 'gif',
+                'image/jpeg', 'image/jpg', 'image/pjpeg' => 'jpg',
+                'image/webp', 'image/x-webp' => 'webp',
+                'image/png', 'image/x-png' => 'png',
+                'image/avif', 'image/x-avif' => 'avif',
+                'image/bmp',
+                'image/ms-bmp',
+                'image/x-bitmap',
+                'image/x-bmp',
+                'image/x-ms-bmp',
+                'image/x-win-bitmap',
+                'image/x-windows-bmp',
+                'image/x-xbitmap' => 'bmp',
+                default => 'jpg'
+            };
+
+            $filepath = 'temp/' . $filename . '.' . $fileExtension;
+
+            $this->disk->put($filepath, $encodedImage->toString());
         } catch (Throwable $e) {
             $this->log->error('[IMAGE_SERVICE] ' . $e->getMessage());
 

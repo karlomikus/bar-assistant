@@ -1,8 +1,19 @@
+# v3.11.0
+## New
+- Added POST `/cocktails/{id}/copy` endpoint
+- Added POST `/password-check` endpoint
+
+## Changes
+- Updated and consolidated cocktail recipe share structure
+
+## Fixes
+- Fixed search sometimes not correctly showing all results, for example, searching for `army` would not show `army & navy`
+
 # v3.10.0
 ## New
 - Added `/tokens` endpoint
     - You can create and manage custom Personal Access Tokens
-    - Current available scopes are `cocktails.read`, `cocktails.write`, `ingredients.read` and `ingredients.write`
+    - Current available token abilities are `cocktails.read`, `cocktails.write`, `ingredients.read` and `ingredients.write`
     - Tokens can have expiration date
 - You can now pass optional `token_name` when requesting a new token via `login` endpoint
 

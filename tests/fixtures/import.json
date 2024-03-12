@@ -11,15 +11,17 @@
     "abv": 14.2,
     "glass": "Glass name",
     "method": "Method name",
+    "utensils": [],
     "images": [
         {
-            "url": null,
+            "source": null,
             "copyright": "Localhost",
             "sort": 1
         }
     ],
     "ingredients": [
         {
+            "_id": "ingredient-1",
             "sort": 1,
             "name": "Ingredient 1",
             "amount": 30,
@@ -33,6 +35,7 @@
             "substitutes": []
         },
         {
+            "_id": "new-ingredient",
             "sort": 2,
             "name": "New ingredient",
             "amount": 2,
@@ -45,6 +48,26 @@
             "origin": "Laravel test suite",
             "note": "Use best one",
             "substitutes": ["Club soda", "H20"]
+        },
+        {
+            "_id": "detailed-subs",
+            "sort": 3,
+            "name": "Detailed subs",
+            "amount": 30,
+            "units": "ml",
+            "strength": 35.5,
+            "substitutes": [
+                {
+                    "_id": "overproof-rum",
+                    "name": "Overproof Rum",
+                    "strength": 50,
+                    "description": "Rum much higher than the standard 40% ABV (80 proof), with many as high as 75% (150 proof) to 80% (160 proof) available.",
+                    "origin": "Caribbean",
+                    "amount": 30,
+                    "units": "ml",
+                    "amount_max": 45
+                }
+            ]
         }
     ]
 }

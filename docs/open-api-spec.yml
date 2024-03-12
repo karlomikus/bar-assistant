@@ -139,6 +139,28 @@ paths:
           description: Unable to authenticate
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+  /password-check:
+    post:
+      tags:
+        - Auth
+      summary: Check current users password
+      operationId: passwordCheck
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordCheckRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PasswordCheckResponse'
   /logout:
     post:
       tags:
@@ -546,6 +568,31 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Cocktail'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /cocktails/{id}/copy:
+    parameters:
+    - $ref: '#/components/parameters/BarParameter'
+    - name: id
+      in: path
+      required: true
+      description: Database id of the cocktail
+      schema:
+        type: integer
+    post:
+      tags:
+        - "Cocktails"
+      summary: 'Duplicate a cocktail'
+      operationId: copyCocktail
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cocktail'
         '403':
           $ref: '#/components/responses/NotAuthorized'
         '404':
@@ -3838,9 +3885,22 @@ components:
       xml:
         name: cocktail
       properties:
+        _id:
+          type: string
+          example: 'cocktail-name-1'
         name:
           type: string
           example: 'Cocktail name'
+        created_at:
+          type: string
+          format: datetime
+          example: '2024-01-01 01:00:00'
+          nullable: true
+        updated_at:
+          type: string
+          format: datetime
+          example: '2024-01-01 01:00:00'
+          nullable: true
         instructions:
           type: string
           example: |-
@@ -3876,9 +3936,12 @@ components:
           items:
             type: object
             properties:
-              url:
+              source:
                 type: string
                 example: https://bar-assistant.com/images/image.jpg
+              placeholder_hash:
+                type: string
+                nullable: true
               copyright:
                 type: string
                 nullable: true
@@ -3889,6 +3952,9 @@ components:
           items:
             type: object
             properties:
+              _id:
+                type: string
+                example: vodka
               sort:
                 type: integer
                 example: 1
@@ -3899,6 +3965,11 @@ components:
                 type: integer
                 format: float
                 example: 30
+              amount_max:
+                type: integer
+                format: float
+                example: 30
+                nullable: true
               units:
                 type: string
                 example: ml
@@ -3911,14 +3982,58 @@ components:
               description:
                 type: string
                 example: Spirit made from grain
+                nullable: true
               strength:
                 type: integer
                 format: float
                 example: 45
               origin:
                 type: string
-                nullable: true
                 example: France
+                nullable: true
+              note:
+                type: string
+                example: Freshly squeezed
+                nullable: true
+              substitutes:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: substitute-id
+                    name:
+                      type: string
+                      example: Substitute
+                    strength:
+                      type: integer
+                      format: float
+                      example: 15.5
+                      nullable: true
+                    description:
+                      type: string
+                      nullable: true
+                    origin:
+                      type: string
+                      nullable: true
+                    category:
+                      type: string
+                      nullable: true
+                    amount:
+                      type: integer
+                      format: float
+                      example: 30
+                      nullable: true
+                    amount_max:
+                      type: integer
+                      format: float
+                      example: 30
+                      nullable: true
+                    units:
+                      type: string
+                      example: ml
+                      nullable: true
     Utensil:
       type: object
       required:
@@ -4361,3 +4476,17 @@ components:
         name:
           type: string
           example: "Device token"
+    PasswordCheckRequest:
+      type: object
+      required:
+        - password
+      properties:
+        password:
+          type: string
+    PasswordCheckResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: boolean

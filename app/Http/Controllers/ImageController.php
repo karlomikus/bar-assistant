@@ -9,15 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\Log;
+use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Kami\Cocktail\DTO\Image as ImageDTO;
 use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Http\Requests\ImageRequest;
 use Kami\Cocktail\Http\Resources\ImageResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\DataObjects\Image as ImageDTO;
 use Kami\Cocktail\Http\Requests\ImageUpdateRequest;
-use Intervention\Image\Facades\Image as ImageProcessor;
 
 class ImageController extends Controller
 {
@@ -34,17 +34,19 @@ class ImageController extends Controller
 
     public function store(ImageService $imageservice, ImageRequest $request): JsonResource
     {
+        $manager = ImageManager::imagick();
+
         $images = [];
         foreach ($request->images as $formImage) {
             if (isset($formImage['image'])) {
                 $imageSource = $formImage['image'];
             } else {
-                $imageSource = $formImage['image_url'];
+                $imageSource = file_get_contents((string) $formImage['image_url']);
             }
 
             try {
                 $image = new ImageDTO(
-                    ImageProcessor::make($imageSource),
+                    $manager->read($imageSource),
                     $formImage['copyright'],
                     (int) $formImage['sort'],
                 );
@@ -75,8 +77,10 @@ class ImageController extends Controller
             $imageSource = $request->input('image_url');
         }
 
+        $manager = ImageManager::imagick();
+
         $imageDTO = new ImageDTO(
-            $imageSource ? ImageProcessor::make($imageSource) : null,
+            $imageSource ? $manager->read($imageSource) : null,
             $request->input('copyright') ?? null,
             $request->has('sort') ? (int) $request->input('sort') : null,
         );
@@ -103,11 +107,12 @@ class ImageController extends Controller
 
     public function thumb(int $id): Response
     {
-        $disk = Storage::disk('uploads');
-
-        [$content, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id, $disk) {
+        [$content, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id) {
+            $disk = Storage::disk('uploads');
+            $manager = ImageManager::imagick();
             $dbImage = Image::findOrFail($id);
-            $responseContent = (string) ImageProcessor::make($disk->get($dbImage->file_path))->fit(400, 400)->encode();
+
+            $responseContent = $manager->read($disk->get($dbImage->file_path))->coverDown(400, 400)->toJpeg(50)->toString();
             if ($dbImage->updated_at) {
                 $etag = md5($dbImage->id . '-' . $dbImage->updated_at->format('Y-m-d H:i:s'));
             } else {
@@ -117,12 +122,11 @@ class ImageController extends Controller
             return [$responseContent, $etag];
         });
 
-        $mime = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $content);
-        $notModified = isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag;
+        $notModified = isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag;
         $statusCode = $notModified ? 304 : 200;
 
         return new Response($content, $statusCode, [
-            'Content-Type' => $mime,
+            'Content-Type' => 'image/jpg',
             'Content-Length' => strlen($content),
             'Etag' => $etag
         ]);

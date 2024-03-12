@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Export;
+namespace Kami\Cocktail\External\Export;
 
 use ZipArchive;
 use Carbon\Carbon;

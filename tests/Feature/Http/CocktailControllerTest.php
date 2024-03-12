@@ -66,6 +66,7 @@ class CocktailControllerTest extends TestCase
             ['bar_id' => 1, 'name' => 'Test', 'created_user_id' => $user->id],
             ['bar_id' => 1, 'name' => 'public', 'public_id' => 'UUID'],
             ['bar_id' => 1, 'name' => 'Дикая вишня'],
+            ['bar_id' => 1, 'name' => 'Army & Navy'],
         ]);
         Cocktail::factory()->hasTags(1)->create(['name' => 'test 1', 'bar_id' => 1]);
         Cocktail::factory()->has(
@@ -113,6 +114,8 @@ class CocktailControllerTest extends TestCase
         $response = $this->getJson('/api/cocktails?bar_id=1&filter[abv_max]=50');
         $response->assertJsonCount(1, 'data');
         $response = $this->getJson('/api/cocktails?bar_id=1&filter[name]=Дикая');
+        $response->assertJsonCount(1, 'data');
+        $response = $this->getJson('/api/cocktails?bar_id=1&filter[name]=army');
         $response->assertJsonCount(1, 'data');
     }
 
@@ -462,5 +465,47 @@ class CocktailControllerTest extends TestCase
         $response = $this->getJson('/api/cocktails/' . $cocktail->id . '/share');
 
         $response->assertForbidden();
+    }
+
+    public function test_token_read_abilities(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs(
+            $user,
+            abilities: ['cocktails.write']
+        );
+        $this->setupBar();
+
+        $response = $this->getJson('/api/cocktails?bar_id=1');
+        $response->assertForbidden();
+
+        $this->actingAs(
+            $user,
+            abilities: ['cocktails.read']
+        );
+
+        $response = $this->getJson('/api/cocktails?bar_id=1');
+        $response->assertOk();
+    }
+
+    public function test_token_write_abilities(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs(
+            $user,
+            abilities: ['cocktails.read']
+        );
+        $this->setupBar();
+
+        $response = $this->postJson('/api/cocktails?bar_id=1', []);
+        $response->assertForbidden();
+
+        $this->actingAs(
+            $user,
+            abilities: ['cocktails.write']
+        );
+
+        $response = $this->postJson('/api/cocktails?bar_id=1', ['name' => 'Test', 'instructions' => 'Test']);
+        $response->assertCreated();
     }
 }

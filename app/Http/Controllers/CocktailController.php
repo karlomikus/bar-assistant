@@ -11,6 +11,9 @@ use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
 use Spatie\ArrayToXml\ArrayToXml;
 use Kami\Cocktail\Models\Cocktail;
+use Intervention\Image\ImageManager;
+use Kami\Cocktail\DTO\Image as ImageDTO;
+use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
@@ -18,10 +21,11 @@ use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Kami\Cocktail\DTO\Cocktail\Cocktail as CocktailDTO;
+use Kami\Cocktail\External\Cocktail as CocktailExternal;
 use Kami\Cocktail\Http\Resources\CocktailPublicResource;
-use Kami\Cocktail\DataObjects\Cocktail\Cocktail as CocktailDTO;
-use Kami\Cocktail\DataObjects\Cocktail\Ingredient as IngredientDTO;
-use Kami\Cocktail\DataObjects\Cocktail\Substitute as SubstituteDTO;
+use Kami\Cocktail\DTO\Cocktail\Ingredient as IngredientDTO;
+use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
 
 class CocktailController extends Controller
 {
@@ -253,7 +257,7 @@ class CocktailController extends Controller
 
         $type = $request->get('type', 'json');
 
-        $data = $cocktail->share(true);
+        $data = CocktailExternal::fromModel($cocktail)->toArray();
 
         if ($type === 'json') {
             return new Response(json_encode($data, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
@@ -317,5 +321,94 @@ class CocktailController extends Controller
         }
 
         return CocktailResource::collection($relatedCocktails);
+    }
+
+    public function copy(int|string $idOrSlug, CocktailService $cocktailService, ImageService $imageservice, Request $request): JsonResponse
+    {
+        $cocktail = Cocktail::where('slug', $idOrSlug)
+            ->orWhere('id', $idOrSlug)
+            ->firstOrFail()
+            ->load(['ingredients.ingredient', 'images', 'tags', 'ingredients.substitutes', 'utensils']);
+
+        if ($request->user()->cannot('show', $cocktail) || $request->user()->cannot('create', Cocktail::class)) {
+            abort(403);
+        }
+
+        // Copy images
+        $manager = ImageManager::imagick();
+        $imageDTOs = [];
+        foreach ($cocktail->images as $image) {
+            try {
+                $imageDTOs[] = new ImageDTO(
+                    $manager->read($image->getPath()),
+                    $image->copyright,
+                    $image->sort,
+                );
+            } catch (Throwable $e) {
+            }
+        }
+
+        $images = array_map(
+            fn ($image) => $image->id,
+            $imageservice->uploadAndSaveImages($imageDTOs, $request->user()->id)
+        );
+
+        // Copy ingredients
+        $ingredients = [];
+        foreach ($cocktail->ingredients as $ingredient) {
+            $substitutes = [];
+            foreach ($ingredient->substitutes as $sub) {
+                $substitutes[] = new SubstituteDTO(
+                    $sub->ingredient_id,
+                    $sub->amount,
+                    $sub->amount_max,
+                    $sub->units,
+                );
+            }
+
+            $ingredient = new IngredientDTO(
+                $ingredient->ingredient_id,
+                null,
+                $ingredient->amount,
+                $ingredient->units,
+                $ingredient->sort,
+                $ingredient->optional,
+                $substitutes,
+                $ingredient->amount_max,
+                $ingredient->note
+            );
+            $ingredients[] = $ingredient;
+        }
+
+        $cocktailDTO = new CocktailDTO(
+            $cocktail->name . ' Copy',
+            $cocktail->instructions,
+            $request->user()->id,
+            $cocktail->bar_id,
+            $cocktail->description,
+            $cocktail->source,
+            $cocktail->garnish,
+            $cocktail->glass_id,
+            $cocktail->cocktail_method_id,
+            $cocktail->tags->pluck('name')->toArray(),
+            $ingredients,
+            $images,
+            $cocktail->utensils->pluck('id')->toArray(),
+        );
+
+        try {
+            $cocktail = $cocktailService->createCocktail($cocktailDTO);
+        } catch (Throwable $e) {
+            abort(500, $e->getMessage());
+        }
+
+        $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
+            $query->orderBy('sort');
+        }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
+
+        return (new CocktailResource($cocktail))
+            ->response()
+            ->setStatusCode(201)
+            ->header('Location', route('cocktails.show', $cocktail->id));
     }
 }

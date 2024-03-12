@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Import;
+namespace Kami\Cocktail\External\Import;
 
 use Kami\Cocktail\Models\BarMembership;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
+use Kami\Cocktail\External\Collection as CollectionExternal;
 
 class FromCollection
 {
@@ -17,14 +18,15 @@ class FromCollection
     {
         $barMembership = BarMembership::where('bar_id', $barId)->where('user_id', $userId)->firstOrFail();
 
+        $externalCollection = CollectionExternal::fromArray($sourceData);
         $collection = new CocktailCollection();
-        $collection->name = $sourceData['name'];
-        $collection->description = $sourceData['description'];
+        $collection->name = $externalCollection->name;
+        $collection->description = $externalCollection->description;
         $collection->bar_membership_id = $barMembership->id;
         $collection->save();
 
-        foreach ($sourceData['cocktails'] as $cocktail) {
-            $cocktail = $this->fromArrayImporter->process($cocktail, $userId, $barId, $duplicateAction);
+        foreach ($externalCollection->cocktails as $cocktail) {
+            $cocktail = $this->fromArrayImporter->process($cocktail->toArray(), $userId, $barId, $duplicateAction);
             $cocktail->addToCollection($collection);
         }
 

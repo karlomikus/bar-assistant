@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Import;
+namespace Kami\Cocktail\External\Import;
 
 use Symfony\Component\Uid\Ulid;
 use Illuminate\Support\Facades\DB;
