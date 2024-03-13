@@ -5,6 +5,7 @@
 
 ## Changes
 - Updated and consolidated cocktail recipe share structure
+- Cocktails now sync thumbnail URL to search engine
 
 ## Fixes
 - Fixed search sometimes not correctly showing all results, for example, searching for `army` would not show `army & navy`

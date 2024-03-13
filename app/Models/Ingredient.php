@@ -130,7 +130,7 @@ class Ingredient extends Model
             'id' => $this->id,
             'slug' => $this->slug,
             'name' => $this->name,
-            'image_url' => $this->getMainImageThumbUrl(),
+            'image_url' => $this->getMainImageUrl(),
             'description' => $this->description,
             'category' => $this->category?->name ?? null,
             'bar_id' => $this->bar_id,
