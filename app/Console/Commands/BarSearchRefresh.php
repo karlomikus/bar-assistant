@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Console\Commands;
 
 use Illuminate\Console\Command;
-use Kami\Cocktail\Models\Cocktail;
-use Kami\Cocktail\Models\Ingredient;
-use Illuminate\Support\Facades\Artisan;
-use Kami\Cocktail\Search\SearchActionsAdapter;
+use Kami\Cocktail\Jobs\RefreshSearchIndex;
 
 class BarSearchRefresh extends Command
 {
@@ -26,11 +23,6 @@ class BarSearchRefresh extends Command
      */
     protected $description = 'Sync search engine index with the latest Bar Assistant data';
 
-    public function __construct(private readonly SearchActionsAdapter $searchActions)
-    {
-        parent::__construct();
-    }
-
     /**
      * Execute the console command.
      *
@@ -38,22 +30,13 @@ class BarSearchRefresh extends Command
      */
     public function handle()
     {
-        $searchActions = $this->searchActions->getActions();
-
-        // Clear indexes
         if ($this->option('clear')) {
-            $this->info('Flushing site search, cocktails and ingredients index...');
-            Artisan::call('scout:flush', ['model' => Cocktail::class]);
-            Artisan::call('scout:flush', ['model' => Ingredient::class]);
+            $this->info('Clearing index and syncing...');
+        } else {
+            $this->info('Syncing search index...');
         }
 
-        // Update settings
-        $this->info('Updating search index settings...');
-        $searchActions->updateIndexSettings();
-
-        $this->info('Syncing cocktails and ingredients to meilisearch...');
-        Artisan::call('scout:import', ['model' => Cocktail::class]);
-        Artisan::call('scout:import', ['model' => Ingredient::class]);
+        RefreshSearchIndex::dispatch((bool) $this->option('clear'));
 
         return Command::SUCCESS;
     }
