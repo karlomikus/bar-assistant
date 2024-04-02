@@ -173,10 +173,16 @@ class Cocktail extends Model implements UploadableInterface
 
     public function getCalories(): int
     {
+        if ($this->getABV() === null) {
+            return 0;
+        }
+
         // It's important to note that the calorie content of mixed drinks can vary significantly
         // depending on the type and amount of mixers used. Drinks with sugary mixers or syrups
         // will generally have higher calorie counts.
-        return (int) floor($this->getVolume() * ($this->getABV() / 100) * 7);
+        $averageAlcCalories = 7;
+
+        return (int) floor($this->getVolume() * ($this->getABV() / 100) * $averageAlcCalories);
     }
 
     public function getMainIngredient(): ?CocktailIngredient

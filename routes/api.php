@@ -14,6 +14,7 @@ use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
 use Kami\Cocktail\Http\Controllers\StatsController;
 use Kami\Cocktail\Http\Controllers\UsersController;
+use Kami\Cocktail\Http\Controllers\ExportController;
 use Kami\Cocktail\Http\Controllers\ImportController;
 use Kami\Cocktail\Http\Controllers\RatingController;
 use Kami\Cocktail\Http\Controllers\ServerController;
@@ -230,6 +231,12 @@ Route::middleware($apiMiddleware)->group(function() {
         Route::get('/', [PATController::class, 'index']);
         Route::post('/', [PATController::class, 'store']);
         Route::delete('/{id}', [PATController::class, 'delete']);
+    })->middleware(['ability:*']);
+
+    Route::prefix('exports')->group(function() {
+        Route::get('/', [ExportController::class, 'index']);
+        Route::post('/{barId}', [ExportController::class, 'store']);
+        Route::delete('/{id}', [ExportController::class, 'delete']);
     })->middleware(['ability:*']);
 });
 
