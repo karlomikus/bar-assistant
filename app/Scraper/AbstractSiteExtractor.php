@@ -157,6 +157,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
         };
 
         $ingredients = $this->ingredients();
+
         return [
             'name' => $clean($this->name()),
             'description' => $clean($this->description()),

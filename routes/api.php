@@ -235,8 +235,9 @@ Route::middleware($apiMiddleware)->group(function() {
 
     Route::prefix('exports')->group(function() {
         Route::get('/', [ExportController::class, 'index']);
-        Route::post('/{barId}', [ExportController::class, 'store']);
+        Route::post('/', [ExportController::class, 'store']);
         Route::delete('/{id}', [ExportController::class, 'delete']);
+        Route::get('/{id}/download', [ExportController::class, 'download']);
     })->middleware(['ability:*']);
 });
 

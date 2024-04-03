@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Models;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
@@ -22,6 +23,15 @@ class Export extends Model
     public function bar(): BelongsTo
     {
         return $this->belongsTo(Bar::class);
+    }
+
+    public function delete(): bool
+    {
+        if (File::exists($this->getFullPath())) {
+            File::delete($this->getFullPath());
+        }
+
+        return parent::delete();
     }
 
     public function markAsDone(): self

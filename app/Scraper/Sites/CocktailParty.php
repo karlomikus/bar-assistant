@@ -75,6 +75,7 @@ class CocktailParty extends AbstractSiteExtractor
         $paragraphs = $nodes->each(function ($node): string {
             return $node->text();
         });
+
         return implode("\n\n", $paragraphs);
     }
 

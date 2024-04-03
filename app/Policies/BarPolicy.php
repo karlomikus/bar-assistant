@@ -59,4 +59,9 @@ class BarPolicy
     {
         return $user->id === $bar->owner()->id;
     }
+
+    public function createExport(User $user, Bar $bar): bool
+    {
+        return $user->id === $bar->created_user_id;
+    }
 }
