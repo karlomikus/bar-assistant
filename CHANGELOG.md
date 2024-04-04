@@ -1,3 +1,13 @@
+# v3.12.0
+## New
+- Added `/exports` endpoints
+    - With this endpoint you can now manage recipe exporting for specific bars
+- Added `specific_ingredients` cocktails filter
+    - This will show recipes that always contain specific ingredients
+
+## Fixes
+- Fixed "CocktailParty" scraper
+
 # v3.11.0
 ## New
 - Added POST `/cocktails/{id}/copy` endpoint
