@@ -36,6 +36,8 @@ class MenuPublicResource extends JsonResource
                                 'full' => $menuCocktail->price,
                                 'formatted' => number_format($menuCocktail->price / 100, 2),
                             ],
+                            'public_id' => $menuCocktail->cocktail->public_id,
+                            'slug' => $menuCocktail->cocktail->slug,
                             'currency' => $menuCocktail->currency,
                             'name' => $menuCocktail->cocktail->name,
                             'short_ingredients' => $menuCocktail->cocktail->getShortIngredients(),
