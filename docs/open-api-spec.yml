@@ -82,6 +82,8 @@ tags:
     description: Operations related to bar menu
   - name: Tokens
     description: Operations related to PAT
+  - name: Exports
+    description: Operations related to export files
 security:
   - user_token: []
 paths:
@@ -2794,6 +2796,91 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /exports:
+    get:
+      tags:
+        - Exports
+      summary: Show exports
+      operationId: showExports
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ExportResponse'
+    post:
+      tags:
+        - Exports
+      summary: Create new export
+      operationId: createExport
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ExportResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+  /exports/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of export'
+        schema:
+          type: integer
+        required: true
+    delete:
+      tags:
+        - Exports
+      summary: Delete export
+      operationId: deleteExport
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /exports/{id}/download:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of export'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - Exports
+      summary: Download export
+      operationId: downloadExport
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -4402,6 +4489,8 @@ components:
                     - price
                     - currency
                     - name
+                    - slug
+                    - public_id
                     - short_ingredients
                     - image
                   properties:
@@ -4421,6 +4510,11 @@ components:
                       type: string
                     name:
                       type: string
+                    slug:
+                      type: string
+                    public_id:
+                      nullable: true
+                      type: integer
                     short_ingredients:
                       type: array
                       items:
@@ -4489,4 +4583,31 @@ components:
         - status
       properties:
         status:
+          type: boolean
+    ExportRequest:
+      type: object
+      required:
+        - bar_id
+      properties:
+        bar_id:
+          type: integer
+    ExportResponse:
+      type: object
+      required:
+        - id
+        - filename
+        - created_at
+        - bar_name
+        - is_done
+      properties:
+        id:
+          type: integer
+        filename:
+          type: string
+        created_at:
+          format: datetime
+          type: string
+        bar_name:
+          type: string
+        is_done:
           type: boolean
