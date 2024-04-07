@@ -151,6 +151,40 @@ class Cocktail extends Model implements UploadableInterface
         return Utils::calculateAbv($ingredients, $this->method->dilution_percentage);
     }
 
+    public function getVolume(): float
+    {
+        return (float) $this->ingredients
+            ->filter(function ($cocktailIngredient) {
+                $normalizedUnits = mb_strtolower($cocktailIngredient->units, 'UTF-8');
+
+                return in_array($normalizedUnits, ['ml', 'oz', 'cl']);
+            })
+            ->sum('amount');
+    }
+
+    public function getAlcoholUnits(): float
+    {
+        if ($this->cocktail_method_id === null) {
+            return 0.0;
+        }
+
+        return (float) number_format(($this->getVolume() * $this->getABV()) / 1000, 2);
+    }
+
+    public function getCalories(): int
+    {
+        if ($this->getABV() === null) {
+            return 0;
+        }
+
+        // It's important to note that the calorie content of mixed drinks can vary significantly
+        // depending on the type and amount of mixers used. Drinks with sugary mixers or syrups
+        // will generally have higher calorie counts.
+        $averageAlcCalories = 7;
+
+        return (int) floor($this->getVolume() * ($this->getABV() / 100) * $averageAlcCalories);
+    }
+
     public function getMainIngredient(): ?CocktailIngredient
     {
         return $this->ingredients->first();

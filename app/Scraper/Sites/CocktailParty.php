@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\RecipeIngredient;
+use Symfony\Component\DomCrawler\Crawler;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class CocktailParty extends AbstractSiteExtractor
@@ -18,12 +19,12 @@ class CocktailParty extends AbstractSiteExtractor
 
     public function name(): string
     {
-        return $this->crawler->filter('.recipe-card h1')->first()->text();
+        return $this->findDescriptionContainer()->filter('.elementor-widget-theme-post-title h1')->first()->text();
     }
 
     public function description(): ?string
     {
-        return $this->crawler->filter('.recipe-card .recipe-description')->first()->text();
+        return $this->joinParagraphs($this->findDescriptionContainer()->filter('.elementor-widget-theme-post-content div p'));
     }
 
     public function source(): ?string
@@ -33,7 +34,7 @@ class CocktailParty extends AbstractSiteExtractor
 
     public function instructions(): ?string
     {
-        return $this->crawler->filter('.recipe-card .recipe-instructions')->first()->text();
+        return $this->joinParagraphs($this->findRecipeContainer()->filter('.elementor-widget-text-editor p'));
     }
 
     public function tags(): array
@@ -43,32 +44,52 @@ class CocktailParty extends AbstractSiteExtractor
 
     public function ingredients(): array
     {
-        $result = [];
-
-        $this->crawler->filter('.recipe-card .recipe-ingredients li')->each(function ($node) use (&$result) {
-            $amount = $node->filter('.amount')->text();
-            $ingredient = $node->filter('.ingredient')->text();
-
-            $recipeIngredient = $this->ingredientParser->parseLine($amount);
-            $result[] = new RecipeIngredient(
-                $ingredient,
-                $recipeIngredient->amount,
-                $recipeIngredient->units,
-                $recipeIngredient->source,
-                $recipeIngredient->originalAmount,
-                $recipeIngredient->comment,
-                $recipeIngredient->amountMax
-            );
-        });
-
-        return $result;
+        return $this->findRecipeContainer()
+            ->filter(".elementor-widget-shortcode li")
+            ->each(function ($node): RecipeIngredient {
+                $amount = $node->filter('.amount')->text();
+                $ingredient = $node->filter('.ingredient')->text();
+                $recipeIngredient = $this->ingredientParser->parseLine($amount);
+                return new RecipeIngredient(
+                    $ingredient,
+                    $recipeIngredient->amount,
+                    $recipeIngredient->units,
+                    $recipeIngredient->source,
+                    $recipeIngredient->originalAmount,
+                    $recipeIngredient->comment,
+                    $recipeIngredient->amountMax
+                );
+            });
     }
 
     public function image(): ?array
     {
         return [
-            'url' => $this->crawler->filter('.recipe-card .recipe-thumb img')->first()->attr('src'),
+            'url' => $this->findDescriptionContainer()->filter('.elementor-widget-image img')->first()->attr('src'),
             'copyright' => 'CocktailParty',
         ];
+    }
+
+    private function joinParagraphs(Crawler $nodes): string
+    {
+        $paragraphs = $nodes->each(function ($node): string {
+            return $node->text();
+        });
+
+        return implode("\n\n", $paragraphs);
+    }
+
+    private function findDescriptionContainer(): Crawler
+    {
+        return $this->crawler
+            ->filter('.elementor-widget-heading h1')
+            ->closest('.elementor-element[data-element_type="container"]');
+    }
+
+    private function findRecipeContainer(): Crawler
+    {
+        return $this->crawler
+            ->filter('.elementor-widget-shortcode li .ingredient')
+            ->closest('.elementor-element[data-element_type="container"]');
     }
 }

@@ -156,6 +156,8 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             return html_entity_decode($str, encoding: 'UTF-8');
         };
 
+        $ingredients = $this->ingredients();
+
         return [
             'name' => $clean($this->name()),
             'description' => $clean($this->description()),
@@ -168,7 +170,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             'images' => [
                 $this->image()
             ],
-            'ingredients' => array_map(function (RecipeIngredient $recipeIngredient) use ($clean) {
+            'ingredients' => array_map(function (RecipeIngredient $recipeIngredient, int $sort) use ($clean) {
                 return [
                     'name' => $clean(ucfirst($recipeIngredient->name)),
                     'amount' => $recipeIngredient->amount,
@@ -178,8 +180,9 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
                     'original_amount' => $recipeIngredient->originalAmount,
                     'source' => $clean($recipeIngredient->source),
                     'optional' => false,
+                    'sort' => $sort,
                 ];
-            }, $this->ingredients()),
+            }, $ingredients, array_keys($ingredients)),
         ];
     }
 }

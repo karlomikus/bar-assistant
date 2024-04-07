@@ -128,6 +128,22 @@ final class CocktailQueryFilter extends QueryBuilder
                         $query->having('missing_ingredients', (int) $value);
                     }
                 }),
+                AllowedFilter::callback('specific_ingredients', function ($query, $value) use ($barMembership) {
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
+
+                    $query->whereIn('cocktails.id', function ($query) use ($barMembership, $value) {
+                        $query
+                            ->select('cocktails.id')
+                            ->from('cocktails')
+                            ->where('cocktails.bar_id', $barMembership->bar_id)
+                            ->join('cocktail_ingredients', 'cocktail_ingredients.cocktail_id', '=', 'cocktails.id')
+                            ->whereIn('cocktail_ingredients.ingredient_id', $value)
+                            ->groupBy('cocktails.id')
+                            ->havingRaw('COUNT(DISTINCT cocktail_ingredients.ingredient_id) >= ?', [count($value)]);
+                    });
+                }),
                 AllowedFilter::callback('ignore_ingredients', function ($query, $value) use ($barMembership) {
                     if (!is_array($value)) {
                         $value = [$value];
