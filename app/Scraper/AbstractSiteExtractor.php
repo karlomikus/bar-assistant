@@ -145,44 +145,65 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
      */
     public function toArray(): array
     {
-        $clean = function (?string $str): ?string {
-            if (!$str) {
-                return null;
-            }
-
-            $str = str_replace(' ', " ", $str);
-            $str = preg_replace("/\s+/u", " ", $str);
-
-            return html_entity_decode($str, encoding: 'UTF-8');
-        };
-
         $ingredients = $this->ingredients();
-
         return [
-            'name' => $clean($this->name()),
-            'description' => $clean($this->description()),
+            'name' => $this->clean($this->name()),
+            'description' => $this->cleanDescription($this->description()),
             'source' => $this->source(),
             'glass' => $this->glass(),
             'instructions' => $this->instructions(),
-            'garnish' => $clean($this->garnish()),
+            'garnish' => $this->clean($this->garnish()),
             'tags' => $this->tags(),
             'method' => $this->method(),
             'images' => [
                 $this->image()
             ],
-            'ingredients' => array_map(function (RecipeIngredient $recipeIngredient, int $sort) use ($clean) {
+            'ingredients' => array_map(function (RecipeIngredient $recipeIngredient, int $sort) {
                 return [
-                    'name' => $clean(ucfirst($recipeIngredient->name)),
+                    'name' => $this->clean(ucfirst($recipeIngredient->name)),
                     'amount' => $recipeIngredient->amount,
                     'amount_max' => $recipeIngredient->amountMax,
                     'units' => $recipeIngredient->units === '' ? null : $recipeIngredient->units,
                     'note' => $recipeIngredient->comment === '' ? null : $recipeIngredient->comment,
                     'original_amount' => $recipeIngredient->originalAmount,
-                    'source' => $clean($recipeIngredient->source),
+                    'source' => $this->clean($recipeIngredient->source),
                     'optional' => false,
                     'sort' => $sort,
                 ];
             }, $ingredients, array_keys($ingredients)),
         ];
+    }
+
+    /**
+     * Cleans up white space in a string and decodes HTML entities.
+     *
+     * @param ?string $str The string to clean up.
+     * @return ?string The cleaned up string.
+     */
+    protected function clean(?string $str): ?string
+    {
+        if (!$str) {
+            return null;
+        }
+
+        $str = str_replace(' ', " ", $str);
+        $str = preg_replace("/\s+/u", " ", $str);
+
+        return html_entity_decode($str, encoding: 'UTF-8');
+    }
+
+    /**
+     * Clean up the cocktail description.
+     *
+     * This function will be used to clean up the string produced by {@see AbstractSiteExtractor::description() description()}.
+     * Can be overriden by scrapers that do the clean up internally within {@see AbstractSiteExtractor::description() description()}
+     * so that they can, for example, produce Markdown with properly separated paragraphs.
+     *
+     * @param ?string $description The cocktail description to clean up.
+     * @return ?string The cleaned up description.
+     */
+    protected function cleanDescription(?string $description): ?string
+    {
+        return $this->clean($description);
     }
 }
