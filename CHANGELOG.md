@@ -1,3 +1,5 @@
+# v3.12.1
+
 # v3.12.0
 ## New
 - Added `/exports` endpoints
