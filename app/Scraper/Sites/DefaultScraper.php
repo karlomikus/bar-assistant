@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Throwable;
+use Kami\Cocktail\Scraper\SchemaModel;
 use Kami\RecipeUtils\RecipeIngredient;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\Concerns\ReadsLDJson;
@@ -15,15 +16,25 @@ class DefaultScraper extends AbstractSiteExtractor
 {
     use ReadsLDJson, ReadsHTMLSchema;
 
-    private array $ldSchema = [];
-    private array $htmlSchema = [];
+    protected ?SchemaModel $schemaModel = null;
 
     public function __construct(string $url)
     {
         parent::__construct($url);
 
-        $this->ldSchema = $this->readJSON();
-        $this->htmlSchema = $this->readHTML();
+        $jsonLdNodes = $this->crawler->filterXPath('//script[@type="application/ld+json"]');
+        $htmlSchemaNodes = $this->crawler->filterXPath('//*[@itemtype="http://schema.org/Recipe"]//*[@itemprop]');
+
+        $schema = null;
+        if ($jsonLdNodes->count() > 0) {
+            $schema = $this->readJSON($jsonLdNodes);
+        }
+
+        if ($htmlSchemaNodes->count() > 0) {
+            $schema = $this->readHTML($htmlSchemaNodes);
+        }
+
+        $this->schemaModel = $schema;
     }
 
     public static function getSupportedUrls(): array
@@ -33,11 +44,7 @@ class DefaultScraper extends AbstractSiteExtractor
 
     public function name(): string
     {
-        $name = $this->ldSchema['name'] ?? null;
-
-        if (!$name) {
-            $name = $this->htmlSchema['name'] ?? null;
-        }
+        $name = $this->schemaModel->name;
 
         try {
             if (!$name) {
@@ -59,11 +66,7 @@ class DefaultScraper extends AbstractSiteExtractor
 
     public function description(): ?string
     {
-        $description = $this->ldSchema['description'] ?? null;
-
-        if (!$description) {
-            $description = $this->htmlSchema['description'] ?? null;
-        }
+        $description = $this->schemaModel->description;
 
         try {
             if (!$description) {
@@ -83,7 +86,8 @@ class DefaultScraper extends AbstractSiteExtractor
     public function instructions(): ?string
     {
         // Try with the parsed objects first
-        $instructions = $this->ldSchema['recipeInstructions'] ?? [];
+        $instructions = $this->schemaModel->instructions ?? [];
+
         $instructions = array_map(function ($instructionStep) {
             if (is_string($instructionStep)) {
                 return $instructionStep;
@@ -114,24 +118,7 @@ class DefaultScraper extends AbstractSiteExtractor
 
     public function tags(): array
     {
-        $sourceTags = $this->ldSchema['recipeCategory'] ?? [];
-        if (!$sourceTags) {
-            $sourceTags = $this->htmlSchema['recipeCategory'] ?? [];
-        }
-
-        if (!$sourceTags) {
-            $sourceTags = $this->ldSchema['keywords'] ?? [];
-        }
-
-        if (!$sourceTags) {
-            $sourceTags = $this->htmlSchema['keywords'] ?? [];
-        }
-
-        if (is_string($sourceTags)) {
-            return [$sourceTags];
-        }
-
-        return $sourceTags;
+        return $this->schemaModel->tags;
     }
 
     public function glass(): ?string
@@ -144,22 +131,7 @@ class DefaultScraper extends AbstractSiteExtractor
         $result = [];
 
         // Try "recipeIngredient" schema item
-        $ingredients = $this->ldSchema['recipeIngredient'] ?? [];
-
-        // Try "ingredients" schema item
-        if (empty($ingredients)) {
-            $ingredients = $this->ldSchema['ingredients'] ?? [];
-        }
-
-        // Try microdata directly from html
-        if (empty($ingredients)) {
-            try {
-                $this->crawler->filterXPath('//*[@itemprop="recipeIngredient"]')->each(function ($node) use (&$ingredients) {
-                    $ingredients[] = $node->text();
-                });
-            } catch (Throwable) {
-            }
-        }
+        $ingredients = $this->schemaModel->ingredients;
 
         foreach ($ingredients as $ingredient) {
             $ingredient = html_entity_decode($ingredient, ENT_SUBSTITUTE | ENT_HTML5); // Convert entities to correct chars
@@ -186,37 +158,9 @@ class DefaultScraper extends AbstractSiteExtractor
 
     public function image(): ?array
     {
-        $images = $this->ldSchema['image'] ?? null;
-        if (!$images) {
-            $images = $this->htmlSchema['image'] ?? null;
-        }
-
-        if (is_array($images)) {
-            $image = end($images);
-        } else if ($images === null) {
-            $image = null;
-        } else {
-            $image = $images;
-        }
-
-        $copyright = $this->getCopyrightHolder();
-
         return [
-            'url' => $image,
-            'copyright' => $copyright,
+            'url' => $this->schemaModel->image,
+            'copyright' => $this->schemaModel->author,
         ];
-    }
-
-    private function getCopyrightHolder(): ?string
-    {
-        if (count($this->ldSchema) > 0) {
-            if (is_string($this->ldSchema['author'] ?? null)) {
-                return $this->ldSchema['author'];
-            }
-
-            return $this->ldSchema['author']['name'] ?? null;
-        }
-
-        return null;
     }
 }

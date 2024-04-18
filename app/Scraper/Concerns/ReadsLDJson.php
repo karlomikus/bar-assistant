@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Concerns;
 
+use Kami\Cocktail\Scraper\SchemaModel;
+use Symfony\Component\DomCrawler\Crawler;
+
 trait ReadsLDJson
 {
-    public function readJSON(): array
+    public function readJSON(Crawler $fromNodes): ?SchemaModel
     {
-        $nodes = $this->crawler->filterXPath('//script[@type="application/ld+json"]');
-        $nodes = iterator_to_array($nodes);
+        $nodes = iterator_to_array($fromNodes);
 
         if (!$nodes) {
             return [];
@@ -44,6 +46,49 @@ trait ReadsLDJson
             }
         }
 
-        return $recipeSchema;
+        if (count($recipeSchema) === 0) {
+            return null;
+        }
+
+        $schemaModel = new SchemaModel();
+        $schemaModel->name = $recipeSchema['name'] ?? null;
+        $schemaModel->description = $recipeSchema['description'] ?? null;
+        $schemaModel->instructions = $recipeSchema['recipeInstructions'] ?? [];
+
+        if (isset($recipeSchema['recipeCategory'])) {
+            $schemaModel->tags = is_array($recipeSchema['recipeCategory']) ? $recipeSchema['recipeCategory'] : [(string) $recipeSchema['recipeCategory']];
+        }
+
+        if (count($schemaModel->tags) === 0 && isset($recipeSchema['keywords'])) {
+            $schemaModel->tags = is_array($recipeSchema['keywords']) ? $recipeSchema['keywords'] : [(string) $recipeSchema['keywords']];
+        }
+
+        if (isset($recipeSchema['recipeIngredient']) && is_array($recipeSchema['recipeIngredient'])) {
+            $schemaModel->ingredients = $recipeSchema['recipeIngredient'];
+        }
+
+        if (isset($recipeSchema['ingredients']) && is_array($recipeSchema['ingredients'])) {
+            $schemaModel->ingredients = $recipeSchema['ingredients'];
+        }
+
+        $images = $recipeSchema['image'] ?? null;
+
+        if (is_array($images)) {
+            $image = end($images);
+        } else if ($images === null) {
+            $image = null;
+        } else {
+            $image = $images;
+        }
+
+        $schemaModel->image = $image;
+
+        if (isset($recipeSchema['author']) && is_string($recipeSchema['author'])) {
+            $schemaModel->author = $recipeSchema['author'];
+        } else {
+            $schemaModel->author = $recipeSchema['author']['name'] ?? null;
+        }
+
+        return $schemaModel;
     }
 }

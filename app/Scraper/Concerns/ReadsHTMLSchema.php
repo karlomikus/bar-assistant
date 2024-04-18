@@ -4,62 +4,69 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Concerns;
 
+use Kami\Cocktail\Scraper\SchemaModel;
 use Symfony\Component\DomCrawler\Crawler;
 
 trait ReadsHTMLSchema
 {
-    public function readHTML(): array
+    public function readHTML(Crawler $from): ?SchemaModel
     {
-        $html = [];
-        $this->crawler->filterXPath('//*[@itemtype="http://schema.org/Recipe"]//*[@itemprop]')->each(function (Crawler $node) use (&$html) {
+        $schemaModel = new SchemaModel();
+
+        $from->each(function (Crawler $node) use ($schemaModel) {
             $propName = $node->attr('itemprop');
             $elementName = $node->nodeName();
 
             if ($propName === 'description') {
                 if ($elementName === 'meta') {
-                    $html['description'] = $node->attr('content');
+                    $schemaModel->description = $node->attr('content');
                 } else {
-                    $html['description'] = $node->text();
+                    $schemaModel->description = $node->text();
                 }
             }
 
             if ($propName === 'name' && $elementName !== 'meta') {
-                $html['name'] = $node->text();
+                $schemaModel->name = $node->text();
             }
 
             if ($propName === 'recipeInstructions') {
-                $html['recipeInstructions'][] = $node->text();
+                $schemaModel->instructions[] = $node->text();
             }
 
             if ($propName === 'recipeIngredient') {
-                $html['recipeIngredient'][] = $node->text();
+                $schemaModel->ingredients[] = $node->text();
             }
 
             if ($propName === 'ingredients') {
-                $html['ingredients'][] = $node->text();
+                $schemaModel->ingredients[] = $node->text();
             }
 
             if ($propName === 'recipeCategory') {
-                $html['recipeCategory'] = explode(',', $node->text());
+                $schemaModel->tags = explode(',', $node->text());
             }
 
-            if ($propName === 'keywords') {
-                $html['keywords'] = explode(',', $node->attr('content'));
+            if ($propName === 'keywords' && count($schemaModel->tags) === 0) {
+                $schemaModel->tags = explode(',', $node->attr('content'));
             }
 
             if ($propName === 'image') {
                 if ($elementName === 'img') {
-                    $html['image'] = $node->attr('src');
+                    $schemaModel->image = $node->attr('src');
                 } else {
-                    $html['image'] = $node->text();
+                    $schemaModel->image = $node->text();
                 }
             }
 
-            $node->filterXPath('//*[@itemtype="http://schema.org/Person"]//*[@itemprop]')->each(function (Crawler $node) use (&$html) {
-                $html['author'] = $node->attr('content');
+            $node->filterXPath('//*[@itemtype="http://schema.org/Person"]//*[@itemprop]')->each(function (Crawler $node) use ($schemaModel) {
+                $schemaModel->author = $node->attr('content');
             });
         });
 
-        return $html;
+        // We'll just say scraping failed if no name is extracted...
+        if (!$schemaModel->name) {
+            return null;
+        }
+
+        return $schemaModel;
     }
 }
