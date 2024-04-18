@@ -24,6 +24,7 @@ final class Manager
         \Kami\Cocktail\Scraper\Sites\PunchDrink::class,
         \Kami\Cocktail\Scraper\Sites\SteveTheBartender::class,
         \Kami\Cocktail\Scraper\Sites\LiquorCom::class,
+        \Kami\Cocktail\Scraper\Sites\MakeMeACocktail::class,
     ];
 
     public function __construct(private readonly string $url)
