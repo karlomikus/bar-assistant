@@ -44,7 +44,7 @@ class DefaultScraper extends AbstractSiteExtractor
 
     public function name(): string
     {
-        $name = $this->schemaModel->name;
+        $name = $this->schemaModel?->name ?? null;
 
         try {
             if (!$name) {
@@ -66,7 +66,7 @@ class DefaultScraper extends AbstractSiteExtractor
 
     public function description(): ?string
     {
-        $description = $this->schemaModel->description;
+        $description = $this->schemaModel?->description ?? null;
 
         try {
             if (!$description) {
@@ -86,7 +86,7 @@ class DefaultScraper extends AbstractSiteExtractor
     public function instructions(): ?string
     {
         // Try with the parsed objects first
-        $instructions = $this->schemaModel->instructions ?? [];
+        $instructions = $this->schemaModel?->instructions ?? [];
 
         $instructions = array_map(function ($instructionStep) {
             if (is_string($instructionStep)) {
@@ -118,7 +118,7 @@ class DefaultScraper extends AbstractSiteExtractor
 
     public function tags(): array
     {
-        return $this->schemaModel->tags;
+        return $this->schemaModel?->tags ?? [];
     }
 
     public function glass(): ?string
@@ -131,7 +131,7 @@ class DefaultScraper extends AbstractSiteExtractor
         $result = [];
 
         // Try "recipeIngredient" schema item
-        $ingredients = $this->schemaModel->ingredients;
+        $ingredients = $this->schemaModel?->ingredients ?? [];
 
         foreach ($ingredients as $ingredient) {
             $ingredient = html_entity_decode($ingredient, ENT_SUBSTITUTE | ENT_HTML5); // Convert entities to correct chars
@@ -159,8 +159,8 @@ class DefaultScraper extends AbstractSiteExtractor
     public function image(): ?array
     {
         return [
-            'url' => $this->schemaModel->image,
-            'copyright' => $this->schemaModel->author,
+            'url' => $this->schemaModel?->image ?? null,
+            'copyright' => $this->schemaModel?->author ?? null,
         ];
     }
 }
