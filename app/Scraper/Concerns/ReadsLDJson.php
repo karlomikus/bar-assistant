@@ -73,7 +73,9 @@ trait ReadsLDJson
 
         $images = $recipeSchema['image'] ?? null;
 
-        if (is_array($images)) {
+        if (is_array($images) && isset($images['url'])) {
+            $image = $images['url'];
+        } elseif (is_array($images)) {
             $image = end($images);
         } elseif ($images === null) {
             $image = null;
