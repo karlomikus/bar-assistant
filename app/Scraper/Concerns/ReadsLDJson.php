@@ -17,7 +17,7 @@ trait ReadsLDJson
             return [];
         }
 
-        $items = array_map(function($node) {
+        $items = array_map(function ($node) {
             $result = json_decode($node->textContent, true);
             if (isset($result['@graph'])) {
                 $result = $result['@graph'];
@@ -75,7 +75,7 @@ trait ReadsLDJson
 
         if (is_array($images)) {
             $image = end($images);
-        } else if ($images === null) {
+        } elseif ($images === null) {
             $image = null;
         } else {
             $image = $images;
