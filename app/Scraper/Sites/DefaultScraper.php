@@ -30,7 +30,7 @@ class DefaultScraper extends AbstractSiteExtractor
             $schema = $this->readJSON($jsonLdNodes);
         }
 
-        if ($htmlSchemaNodes->count() > 0) {
+        if (!$schema && $htmlSchemaNodes->count() > 0) {
             $schema = $this->readHTML($htmlSchemaNodes);
         }
 
@@ -130,7 +130,6 @@ class DefaultScraper extends AbstractSiteExtractor
     {
         $result = [];
 
-        // Try "recipeIngredient" schema item
         $ingredients = $this->schemaModel?->ingredients ?? [];
 
         foreach ($ingredients as $ingredient) {
