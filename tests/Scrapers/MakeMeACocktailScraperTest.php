@@ -22,7 +22,7 @@ class MakeMeACocktailScraperTest extends TestCase
         $this->assertSame(null, $result['glass']);
         $this->assertSame($instructions, $result['instructions']);
         $this->assertSame(null, $result['garnish']);
-        $this->assertSame(['cocktail'], $result['tags']);
+        $this->assertSame(['Easy', 'Classic', 'Stirred'], $result['tags']);
         $this->assertSame(null, $result['method']);
         $this->assertNotEmpty($result['images'][0]['url']);
         $this->assertSame('Make Me a Cocktail', $result['images'][0]['copyright']);

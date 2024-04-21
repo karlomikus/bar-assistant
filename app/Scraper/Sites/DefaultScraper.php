@@ -5,29 +5,36 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Throwable;
-use Brick\Schema\Base;
-use Brick\Schema\SchemaReader;
-use Brick\Schema\Interfaces\Recipe;
+use Kami\Cocktail\Scraper\SchemaModel;
 use Kami\RecipeUtils\RecipeIngredient;
 use Kami\RecipeUtils\UnitConverter\Units;
+use Kami\Cocktail\Scraper\Concerns\ReadsLDJson;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
+use Kami\Cocktail\Scraper\Concerns\ReadsHTMLSchema;
 
 class DefaultScraper extends AbstractSiteExtractor
 {
-    private ?Recipe $recipeSchema = null;
+    use ReadsLDJson, ReadsHTMLSchema;
+
+    protected ?SchemaModel $schemaModel = null;
 
     public function __construct(string $url)
     {
         parent::__construct($url);
 
-        $schemaReader = SchemaReader::forAllFormats();
-        $things = $schemaReader->readHtml($this->crawler->html(), $url);
+        $jsonLdNodes = $this->crawler->filterXPath('//script[@type="application/ld+json"]');
+        $htmlSchemaNodes = $this->crawler->filterXPath('//*[@itemtype="http://schema.org/Recipe"]//*[@itemprop]');
 
-        foreach ($things as $thing) {
-            if ($thing instanceof Recipe) {
-                $this->recipeSchema = $thing;
-            }
+        $schema = null;
+        if ($jsonLdNodes->count() > 0) {
+            $schema = $this->readJSON($jsonLdNodes);
         }
+
+        if (!$schema && $htmlSchemaNodes->count() > 0) {
+            $schema = $this->readHTML($htmlSchemaNodes);
+        }
+
+        $this->schemaModel = $schema;
     }
 
     public static function getSupportedUrls(): array
@@ -37,17 +44,13 @@ class DefaultScraper extends AbstractSiteExtractor
 
     public function name(): string
     {
-        $name = null;
-
-        if ($this->recipeSchema) {
-            $name = $this->recipeSchema->name?->getFirstValue() ?? null;
-        }
+        $name = $this->schemaModel?->name ?? null;
 
         try {
             if (!$name) {
                 $name = $this->crawler->filter('meta[property="og:title"]')->first()->attr('content') ?? null;
             }
-    
+
             if (!$name) {
                 $name = $this->crawler->filter('title')->text();
             }
@@ -63,10 +66,13 @@ class DefaultScraper extends AbstractSiteExtractor
 
     public function description(): ?string
     {
-        $description = null;
+        $description = $this->schemaModel?->description ?? null;
 
-        if ($this->recipeSchema) {
-            $description = $this->recipeSchema->description?->getFirstValue() ?? null;
+        try {
+            if (!$description) {
+                $description = $this->crawler->filter('meta[property="og:description"]')->first()->attr('content') ?? null;
+            }
+        } catch (Throwable) {
         }
 
         return $description;
@@ -79,19 +85,16 @@ class DefaultScraper extends AbstractSiteExtractor
 
     public function instructions(): ?string
     {
-        if (!$this->recipeSchema) {
-            return null;
-        }
-
         // Try with the parsed objects first
-        $instructions = $this->recipeSchema->recipeInstructions?->getValues() ?? [];
-        $instructions = array_map(function ($node) {
-            if (is_string($node)) {
-                return $node;
+        $instructions = $this->schemaModel?->instructions ?? [];
+
+        $instructions = array_map(function ($instructionStep) {
+            if (is_string($instructionStep)) {
+                return $instructionStep;
             }
 
-            if ($node->text) {
-                return $node->text->toString();
+            if (isset($instructionStep['text'])) {
+                return $instructionStep['text'];
             }
         }, $instructions);
 
@@ -115,23 +118,7 @@ class DefaultScraper extends AbstractSiteExtractor
 
     public function tags(): array
     {
-        if ($this->recipeSchema) {
-            $keywords = '';
-
-            // Try with recipe category first
-            if ($this->recipeSchema->recipeCategory?->count() ?? 0 > 0) {
-                $keywords = implode(',', $this->recipeSchema->recipeCategory->getValues());
-            }
-
-            // Fallback to keywords
-            if ($keywords === '') {
-                $keywords = $this->recipeSchema->keywords?->toString();
-            }
-
-            return explode(',', $keywords ?? '');
-        }
-
-        return [];
+        return $this->schemaModel?->tags ?? [];
     }
 
     public function glass(): ?string
@@ -141,29 +128,9 @@ class DefaultScraper extends AbstractSiteExtractor
 
     public function ingredients(): array
     {
-        if (!$this->recipeSchema) {
-            return [];
-        }
-
         $result = [];
 
-        // Try "recipeIngredient" schema item
-        $ingredients = $this->recipeSchema->recipeIngredient?->getValues() ?? [];
-
-        // Try "ingredients" schema item
-        if (empty($ingredients)) {
-            $ingredients = $this->recipeSchema->ingredients?->getValues() ?? [];
-        }
-
-        // Try microdata directly from html
-        if (empty($ingredients)) {
-            try {
-                $this->crawler->filterXPath('//*[@itemprop="recipeIngredient"]')->each(function ($node) use (&$ingredients) {
-                    $ingredients[] = $node->text();
-                });
-            } catch (Throwable) {
-            }
-        }
+        $ingredients = $this->schemaModel?->ingredients ?? [];
 
         foreach ($ingredients as $ingredient) {
             $ingredient = html_entity_decode($ingredient, ENT_SUBSTITUTE | ENT_HTML5); // Convert entities to correct chars
@@ -190,79 +157,9 @@ class DefaultScraper extends AbstractSiteExtractor
 
     public function image(): ?array
     {
-        $images = $this->recipeSchema?->image->getValues() ?? [];
-        $mainImage = end($images);
-
-        $image = '';
-
-        if (is_string($mainImage)) {
-            $image = $mainImage ?? null;
-        }
-
-        if ($mainImage instanceof Base && $mainImage->url) {
-            $image = (string) $mainImage->url;
-        }
-
-        $copyright = $this->copyrightHolder();
-
         return [
-            'url' => $image,
-            'copyright' => $copyright,
+            'url' => $this->schemaModel?->image ?? null,
+            'copyright' => $this->schemaModel?->author ?? null,
         ];
     }
-
-    private function copyrightHolder(): ?string
-    {
-        if ($this->recipeSchema) {
-            if (is_string($this->recipeSchema->author->getFirstValue())) {
-                return $this->recipeSchema->author->getFirstValue();
-            }
-
-            return $this->recipeSchema->author->getFirstValue()?->name->toString();
-        }
-
-        return null;
-    }
-
-    // private function readFromJsonLD(): array
-    // {
-    //     $nodes = $this->crawler->filterXPath('//script[@type="application/ld+json"]');
-    //     $nodes = iterator_to_array($nodes);
-
-    //     if (!$nodes) {
-    //         return [];
-    //     }
-
-    //     $items = array_map(function($node) {
-    //         $result = json_decode($node->textContent, true);
-    //         if (isset($result['@graph'])) {
-    //             $result = $result['@graph'];
-    //         }
-
-    //         if (!array_is_list($result)) {
-    //             return [$result];
-    //         }
-
-    //         return $result;
-    //     }, $nodes);
-
-    //     $nodes = array_filter(array_merge(...$items));
-    //     $nodes = array_values($nodes);
-
-    //     $recipeSchema = [];
-    //     foreach ($nodes as $node) {
-    //         if (isset($node['@type']) && is_array($node['@type']) && !in_array('Recipe', $node['@type'])) {
-    //             continue;
-    //         }
-
-    //         if (isset($node['@type']) && $node['@type'] !== 'Recipe') {
-    //             continue;
-    //         }
-
-    //         $recipeSchema = $node;
-    //         break;
-    //     }
-
-    //     return $recipeSchema;
-    // }
 }

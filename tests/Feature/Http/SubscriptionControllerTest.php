@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use Laravel\Paddle\Cashier;
 use Kami\Cocktail\Models\User;
@@ -145,6 +146,9 @@ class SubscriptionControllerTest extends TestCase
             'subscriptions/sub_12345/pause' => [
                 'data' => [
                     'status' => 'paused',
+                    'scheduled_change' => [
+                        'effective_at' => Carbon::now()->toDateTimeString()
+                    ],
                     'paused_at' => now(),
                     'items' => [],
                 ],
