@@ -1,6 +1,7 @@
 # v3.12.1
 ## Fixes
 - "CocktailParty" scraper now correctly parses units
+- Other minor scraping fixes
 
 # v3.12.0
 ## New
