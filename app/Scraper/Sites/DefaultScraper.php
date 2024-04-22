@@ -109,6 +109,10 @@ class DefaultScraper extends AbstractSiteExtractor
         $i = 1;
         $result = "";
         foreach ($instructions as $step) {
+            if (is_null($step)) {
+                continue;
+            }
+
             $result .= $i . ". " . trim($step) . "\n";
             $i++;
         }
