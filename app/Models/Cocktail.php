@@ -129,6 +129,7 @@ class Cocktail extends Model implements UploadableInterface
 
         $this->loadMissing('ingredients.ingredient');
 
+        // TODO: Use getVolume()
         $ingredients = $this->ingredients
             ->filter(function ($cocktailIngredient) {
                 return strtolower($cocktailIngredient->units) === 'ml' || str_starts_with(strtolower($cocktailIngredient->units), 'dash');
@@ -153,13 +154,14 @@ class Cocktail extends Model implements UploadableInterface
 
     public function getVolume(): float
     {
-        return (float) $this->ingredients
-            ->filter(function ($cocktailIngredient) {
-                $normalizedUnits = mb_strtolower($cocktailIngredient->units, 'UTF-8');
+        $ingredients = $this->ingredients->map(function ($i) {
+            return [
+                'amount' => $i->amount,
+                'units' => $i->units,
+            ];
+        })->toArray();
 
-                return in_array($normalizedUnits, ['ml', 'oz', 'cl']);
-            })
-            ->sum('amount');
+        return Utils::calculateVolume($ingredients);
     }
 
     public function getAlcoholUnits(): float

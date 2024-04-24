@@ -51,9 +51,9 @@ class CocktailResource extends JsonResource
             'updated_at' => $this->updated_at?->toJson(),
             'method' => new CocktailMethodResource($this->whenLoaded('method')),
             'abv' => $this->abv,
-            // 'volume' => $this->getVolume(),
-            // 'alcohol_units' => $this->getAlcoholUnits(),
-            // 'calories' => $this->getCalories(),
+            'volume_ml' => $this->when($this->relationLoaded('ingredients'), $this->getVolume()),
+            'alcohol_units' => $this->when($this->relationLoaded('method'), $this->getAlcoholUnits()),
+            'calories' => $this->when($this->relationLoaded('method'), $this->getCalories()),
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
             'access' => [
