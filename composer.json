@@ -7,7 +7,7 @@
         "doctrine/dbal": "^3.5",
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
-        "intervention/image": "3.5.1",
+        "intervention/image": "^3.5.1",
         "karlomikus/recipe-utils": "^0.8.0",
         "laravel/cashier-paddle": "^2.0",
         "laravel/framework": "^10.0",
