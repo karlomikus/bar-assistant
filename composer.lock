@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d46f44596002a7f285f4d7a7ab7f159",
+    "content-hash": "206d0961fc8823d92ac5be8237e2711e",
     "packages": [
         {
             "name": "brick/math",
@@ -1749,16 +1749,16 @@
         },
         {
             "name": "karlomikus/recipe-utils",
-            "version": "0.8.1",
+            "version": "0.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/karlomikus/recipe-utils.git",
-                "reference": "52a88b9aa4265c8c5967187159e75f95f18a111a"
+                "reference": "d6363db94717b796d480bd8db0a895666435f332"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/karlomikus/recipe-utils/zipball/52a88b9aa4265c8c5967187159e75f95f18a111a",
-                "reference": "52a88b9aa4265c8c5967187159e75f95f18a111a",
+                "url": "https://api.github.com/repos/karlomikus/recipe-utils/zipball/d6363db94717b796d480bd8db0a895666435f332",
+                "reference": "d6363db94717b796d480bd8db0a895666435f332",
                 "shasum": ""
             },
             "require": {
@@ -1790,9 +1790,9 @@
             "description": "Utilities for extracting normalized ingredient data from recipes",
             "support": {
                 "issues": "https://github.com/karlomikus/recipe-utils/issues",
-                "source": "https://github.com/karlomikus/recipe-utils/tree/0.8.1"
+                "source": "https://github.com/karlomikus/recipe-utils/tree/0.9.0"
             },
-            "time": "2024-03-14T19:57:40+00:00"
+            "time": "2024-04-24T12:21:14+00:00"
         },
         {
             "name": "laravel/cashier-paddle",

@@ -54,7 +54,7 @@ class KindredCocktails extends AbstractSiteExtractor
             $ingredientString = $node->text();
 
             if (!str_contains($ingredientString, 'as garnish')) {
-                $result[] = $this->ingredientParser->parseLine($ingredientString, Units::Ml);
+                $result[] = $this->ingredientParser->parseLine($ingredientString, Units::Ml, [Units::Dash]);
             }
         });
 

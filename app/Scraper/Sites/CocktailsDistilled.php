@@ -57,7 +57,7 @@ class CocktailsDistilled extends AbstractSiteExtractor
                 $amount = (int) str_replace('ml', '', $measureMl);
                 $units = 'ml';
             } else {
-                $recipeIngredient = $this->ingredientParser->parseLine($measureMl, Units::Ml);
+                $recipeIngredient = $this->ingredientParser->parseLine($measureMl, Units::Ml, [Units::Dash]);
                 $amount = $recipeIngredient->amount;
                 $units = $recipeIngredient->units;
             }
