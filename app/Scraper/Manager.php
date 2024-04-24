@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Scraper;
 
 use Throwable;
 use Illuminate\Support\Facades\Log;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\Sites\DefaultScraper;
 use Kami\Cocktail\Exceptions\ScraperMissingException;
 
@@ -28,7 +29,7 @@ final class Manager
         \Kami\Cocktail\Scraper\Sites\KindredCocktails::class,
     ];
 
-    public function __construct(private readonly string $url)
+    public function __construct(private readonly string $url, private readonly Units $defaultConvertTo = Units::Oz)
     {
     }
 
@@ -37,14 +38,14 @@ final class Manager
         foreach ($this->supportedSites as $siteClass) {
             foreach ($siteClass::getSupportedUrls() as $supportedHostname) {
                 if (str_starts_with($this->url, $supportedHostname)) {
-                    return resolve($siteClass, ['url' => $this->url]);
+                    return resolve($siteClass, ['url' => $this->url, 'defaultConvertTo' => $this->defaultConvertTo]);
                 }
             }
         }
 
         // Fallback to schema scraper
         try {
-            return resolve(DefaultScraper::class, ['url' => $this->url]);
+            return resolve(DefaultScraper::class, ['url' => $this->url, 'defaultConvertTo' => $this->defaultConvertTo]);
         } catch (Throwable $e) {
             Log::debug('Scraping failed: ' . $e->getMessage());
         }

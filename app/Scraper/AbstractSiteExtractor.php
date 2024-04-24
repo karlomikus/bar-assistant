@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Scraper;
 
 use Kami\RecipeUtils\Parser\Parser;
 use Kami\RecipeUtils\RecipeIngredient;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\BrowserKit\HttpBrowser;
@@ -20,6 +21,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
 
     public function __construct(
         protected readonly string $url,
+        protected readonly Units $defaultConvertTo = Units::Ml,
     ) {
         $store = new Store(storage_path('http_cache/'));
         $client = HttpClient::create([

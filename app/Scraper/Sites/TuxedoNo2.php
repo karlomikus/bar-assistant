@@ -80,7 +80,7 @@ class TuxedoNo2 extends AbstractSiteExtractor
             }
 
             $amountAndUnits = $node->filter('.amount')->text();
-            $recipeIngredient = $this->ingredientParser->parseLine(str_replace($onlyUnits, '', $amountAndUnits) . ' ' . $onlyUnits, Units::Ml, [Units::Dash]);
+            $recipeIngredient = $this->ingredientParser->parseLine(str_replace($onlyUnits, '', $amountAndUnits) . ' ' . $onlyUnits, $this->defaultConvertTo, [Units::Dash]);
 
             if ($node->filter('.ingredient a')->count() === 0) {
                 return;
