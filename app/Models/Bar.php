@@ -60,6 +60,14 @@ class Bar extends Model
         return $this->hasMany(Ingredient::class);
     }
 
+    /**
+     * @return HasMany<Export>
+     */
+    public function exports(): HasMany
+    {
+        return $this->hasMany(Export::class);
+    }
+
     public function owner(): User
     {
         return $this->createdUser;
@@ -70,6 +78,11 @@ class Bar extends Model
         /** @var ImageService */
         $imageService = app(ImageService::class);
         $imageService->cleanBarImages($this);
+
+        // Delete export files
+        foreach ($this->exports as $export) {
+            $export->delete();
+        }
 
         return parent::delete();
     }
