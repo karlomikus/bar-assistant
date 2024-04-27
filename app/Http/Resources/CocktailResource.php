@@ -64,8 +64,8 @@ class CocktailResource extends JsonResource
             ],
             'navigation' => $this->when($loadNavigation, function () {
                 return [
-                    'prev' => $this->getPrevSlug(),
-                    'next' => $this->getNextSlug(),
+                    'prev' => $this->getPrevCocktail()?->slug,
+                    'next' => $this->getNextCocktail()?->slug,
                 ];
             })
         ];

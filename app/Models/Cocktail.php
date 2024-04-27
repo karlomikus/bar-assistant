@@ -258,7 +258,7 @@ class Cocktail extends Model implements UploadableInterface
     /**
      * @return Collection<int, string>
      */
-    public function getShortIngredients(): Collection
+    public function getIngredientNames(): Collection
     {
         return $this->ingredients->pluck('ingredient.name');
     }
@@ -271,7 +271,7 @@ class Cocktail extends Model implements UploadableInterface
             'slug' => $this->slug,
             'description' => $this->description,
             'image_url' => $this->getMainImageThumbUrl(),
-            'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
+            'short_ingredients' => $this->getIngredientNames(),
             'tags' => $this->tags->pluck('name'),
             'bar_id' => $this->bar_id,
         ];
@@ -286,13 +286,13 @@ class Cocktail extends Model implements UploadableInterface
         return sprintf("%s\n%s\n\n%s\n\n%s", $this->name, e($this->description), $ingredients, e($this->instructions));
     }
 
-    public function getNextSlug(): ?string
+    public function getNextCocktail(): ?Cocktail
     {
-        return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name')->limit(1)->where('name', '>', $this->name)->first()?->slug;
+        return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name')->limit(1)->where('name', '>', $this->name)->first();
     }
 
-    public function getPrevSlug(): ?string
+    public function getPrevCocktail(): ?Cocktail
     {
-        return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first()?->slug;
+        return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first();
     }
 }

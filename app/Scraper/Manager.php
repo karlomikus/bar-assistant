@@ -29,7 +29,7 @@ final class Manager
         \Kami\Cocktail\Scraper\Sites\KindredCocktails::class,
     ];
 
-    public function __construct(private readonly string $url, private readonly Units $defaultConvertTo = Units::Oz)
+    public function __construct(private readonly string $url, private readonly Units $defaultConvertTo = Units::Ml)
     {
     }
 

@@ -40,7 +40,7 @@ class MenuPublicResource extends JsonResource
                             'slug' => $menuCocktail->cocktail->slug,
                             'currency' => $menuCocktail->currency,
                             'name' => $menuCocktail->cocktail->name,
-                            'short_ingredients' => $menuCocktail->cocktail->getShortIngredients(),
+                            'short_ingredients' => $menuCocktail->cocktail->getIngredientNames(),
                             'image' => $menuCocktail->cocktail->getMainImageUrl(),
                         ];
                     }),

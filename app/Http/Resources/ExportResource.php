@@ -23,7 +23,7 @@ class ExportResource extends JsonResource
             'id' => $this->id,
             'filename' => $this->filename,
             'created_at' => $this->created_at,
-            'bar_name' => $this->bar->name,
+            'bar_name' => $this->bar?->name ?? 'Unknown bar',
             'is_done' => (bool) $this->is_done,
         ];
     }
