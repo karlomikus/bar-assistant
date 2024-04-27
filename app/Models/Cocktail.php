@@ -8,11 +8,13 @@ use Carbon\Carbon;
 use Kami\Cocktail\Utils;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
+use Kami\RecipeUtils\Converter;
 use Symfony\Component\Uid\Ulid;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Models\Concerns\HasNotes;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasRating;
@@ -129,27 +131,23 @@ class Cocktail extends Model implements UploadableInterface
 
         $this->loadMissing('ingredients.ingredient');
 
-        // TODO: Use getVolume()
-        $ingredients = $this->ingredients
-            ->filter(function ($cocktailIngredient) {
-                return strtolower($cocktailIngredient->units) === 'ml' || str_starts_with(strtolower($cocktailIngredient->units), 'dash');
-            })->toArray();
-
-        $ingredients = array_map(function ($item) {
-            if (str_starts_with(strtolower($item['units']), 'dash')) {
-                $item['amount'] = $item['amount'] * 0.02;
-            } else {
-                $item['amount'] = $item['amount'] / 30;
+        $ingredientsForABV = [];
+        foreach ($this->ingredients as $cocktailIngredient) {
+            $unitFrom = Units::tryFrom($cocktailIngredient->units);
+            if (!$unitFrom) {
+                continue;
             }
 
-            return [
-                'amount' => $item['amount'],
-                'units' => $item['units'],
-                'strength' => $item['ingredient']['strength'] ?? 0,
-            ];
-        }, $ingredients);
+            $amount = Converter::fromTo($cocktailIngredient->amount, $unitFrom, Units::Oz);
 
-        return Utils::calculateAbv($ingredients, $this->method->dilution_percentage);
+            $ingredientsForABV[] = [
+                'amount' => $amount,
+                'units' => $unitFrom->value,
+                'strength' => $cocktailIngredient->ingredient->strength ?? 0,
+            ];
+        }
+
+        return Utils::calculateAbv($ingredientsForABV, $this->method->dilution_percentage);
     }
 
     public function getVolume(): float
