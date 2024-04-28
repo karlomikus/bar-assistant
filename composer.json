@@ -2,8 +2,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.2.0",
-        "brick/schema": "^0.1.1",
-        "brick/structured-data": "^0.1.1",
         "doctrine/dbal": "^3.5",
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
