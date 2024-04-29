@@ -55,6 +55,10 @@ ADD https://github.com/bar-assistant/data.git ./resources/data
 # Configure nginx
 COPY ./resources/docker/dist/nginx.conf /etc/nginx/sites-enabled/default
 
+# Setup user
+RUN groupmod -o -g "$PGID" www-data \
+    && usermod -o -u "$PUID" www-data
+
 # Add container entrypoint script
 COPY ./resources/docker/dist/entrypoint.sh /usr/local/bin/entrypoint
 
@@ -63,7 +67,10 @@ RUN chmod +x /usr/local/bin/entrypoint \
     && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/open-api-spec.yml \
     && composer install --optimize-autoloader --no-dev \
     && mkdir -p /var/www/cocktails/storage/bar-assistant/ \
-    && echo "* * * * * www-data cd /var/www/cocktails && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontab
+    && echo "* * * * * www-data cd /var/www/cocktails && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontab \
+    && chown -R $PUID:PGID /var/www/cocktails
+
+USER www-data
 
 EXPOSE 3000
 
