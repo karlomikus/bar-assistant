@@ -12,6 +12,7 @@
 - ABV calculation now supports all standard units
 - "CocktailParty" scraper now correctly shows source ingredient string
 - Bar export files now correctly get cleaned when deleting a bar
+- Fixed recipes failing to import when ingredients where missing a category
 
 # v3.12.1
 ## Fixes
