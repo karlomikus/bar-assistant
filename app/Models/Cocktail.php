@@ -8,11 +8,13 @@ use Carbon\Carbon;
 use Kami\Cocktail\Utils;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
+use Kami\RecipeUtils\Converter;
 use Symfony\Component\Uid\Ulid;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Models\Concerns\HasNotes;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasRating;
@@ -129,37 +131,35 @@ class Cocktail extends Model implements UploadableInterface
 
         $this->loadMissing('ingredients.ingredient');
 
-        $ingredients = $this->ingredients
-            ->filter(function ($cocktailIngredient) {
-                return strtolower($cocktailIngredient->units) === 'ml' || str_starts_with(strtolower($cocktailIngredient->units), 'dash');
-            })->toArray();
-
-        $ingredients = array_map(function ($item) {
-            if (str_starts_with(strtolower($item['units']), 'dash')) {
-                $item['amount'] = $item['amount'] * 0.02;
-            } else {
-                $item['amount'] = $item['amount'] / 30;
+        $ingredientsForABV = [];
+        foreach ($this->ingredients as $cocktailIngredient) {
+            $unitFrom = Units::tryFrom($cocktailIngredient->units);
+            if (!$unitFrom) {
+                continue;
             }
 
-            return [
-                'amount' => $item['amount'],
-                'units' => $item['units'],
-                'strength' => $item['ingredient']['strength'] ?? 0,
-            ];
-        }, $ingredients);
+            $amount = Converter::fromTo($cocktailIngredient->amount, $unitFrom, Units::Oz);
 
-        return Utils::calculateAbv($ingredients, $this->method->dilution_percentage);
+            $ingredientsForABV[] = [
+                'amount' => $amount,
+                'units' => $unitFrom->value,
+                'strength' => $cocktailIngredient->ingredient->strength ?? 0,
+            ];
+        }
+
+        return Utils::calculateAbv($ingredientsForABV, $this->method->dilution_percentage);
     }
 
     public function getVolume(): float
     {
-        return (float) $this->ingredients
-            ->filter(function ($cocktailIngredient) {
-                $normalizedUnits = mb_strtolower($cocktailIngredient->units, 'UTF-8');
+        $ingredients = $this->ingredients->map(function ($i) {
+            return [
+                'amount' => $i->amount,
+                'units' => $i->units,
+            ];
+        })->toArray();
 
-                return in_array($normalizedUnits, ['ml', 'oz', 'cl']);
-            })
-            ->sum('amount');
+        return Utils::calculateVolume($ingredients);
     }
 
     public function getAlcoholUnits(): float
@@ -256,7 +256,7 @@ class Cocktail extends Model implements UploadableInterface
     /**
      * @return Collection<int, string>
      */
-    public function getShortIngredients(): Collection
+    public function getIngredientNames(): Collection
     {
         return $this->ingredients->pluck('ingredient.name');
     }
@@ -269,7 +269,7 @@ class Cocktail extends Model implements UploadableInterface
             'slug' => $this->slug,
             'description' => $this->description,
             'image_url' => $this->getMainImageThumbUrl(),
-            'short_ingredients' => $this->ingredients->pluck('ingredient.name'),
+            'short_ingredients' => $this->getIngredientNames(),
             'tags' => $this->tags->pluck('name'),
             'bar_id' => $this->bar_id,
         ];
@@ -284,13 +284,13 @@ class Cocktail extends Model implements UploadableInterface
         return sprintf("%s\n%s\n\n%s\n\n%s", $this->name, e($this->description), $ingredients, e($this->instructions));
     }
 
-    public function getNextSlug(): ?string
+    public function getNextCocktail(): ?Cocktail
     {
-        return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name')->limit(1)->where('name', '>', $this->name)->first()?->slug;
+        return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name')->limit(1)->where('name', '>', $this->name)->first();
     }
 
-    public function getPrevSlug(): ?string
+    public function getPrevCocktail(): ?Cocktail
     {
-        return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first()?->slug;
+        return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first();
     }
 }

@@ -36,7 +36,7 @@ class MenuResource extends JsonResource
                             'price' => number_format($menuCocktail->price / 100, 2),
                             'currency' => $menuCocktail->currency,
                             'name' => $menuCocktail->cocktail->name,
-                            'short_ingredients' => $menuCocktail->cocktail->getShortIngredients(),
+                            'short_ingredients' => $menuCocktail->cocktail->getIngredientNames(),
                         ];
                     }),
                 ];

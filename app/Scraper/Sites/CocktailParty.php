@@ -62,11 +62,12 @@ class CocktailParty extends AbstractSiteExtractor
                     'part' => 'oz',
                     default => $recipeIngredient->units,
                 };
+
                 return new RecipeIngredient(
                     $ingredient,
                     $recipeIngredient->amount,
                     $unit,
-                    $recipeIngredient->source,
+                    $node->text(''),
                     $recipeIngredient->originalAmount,
                     $recipeIngredient->comment,
                     $recipeIngredient->amountMax

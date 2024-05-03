@@ -136,7 +136,7 @@ class FromRecipesData
                 'bar_id' => $bar->id,
                 'slug' => $slug,
                 'name' => $externalIngredient->name,
-                'ingredient_category_id' => $category->id,
+                'ingredient_category_id' => $category?->id,
                 'strength' => $externalIngredient->strength,
                 'description' => $externalIngredient->description,
                 'origin' => $externalIngredient->origin,
