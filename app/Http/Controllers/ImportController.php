@@ -66,11 +66,11 @@ class ImportController extends Controller
                 }
             }
 
-            if (count($source['cocktails']) === 0) {
+            if (count($source['cocktails'] ?? []) === 0) {
                 abort(400, sprintf('No cocktails found'));
             }
 
-            if (count($source['cocktails']) > 100) {
+            if (count($source['cocktails'] ?? []) > 100) {
                 abort(400, sprintf('Importing via collection is limited to max 100 cocktails at once'));
             }
 
