@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External;
 
 use JsonSerializable;
-use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Image as ImageModel;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 
@@ -36,9 +35,9 @@ readonly class IngredientWithImages implements JsonSerializable
         })->toArray();
 
         return new self(
-            Str::slug($model->name),
+            $model->getExternalId(),
             $model->name,
-            $model->parent_ingredient_id ? Str::slug($model->parentIngredient->name) : null,
+            $model->parent_ingredient_id ? $model->parentIngredient->getExternalId() : null,
             $model->strength,
             $model->description,
             $model->origin,

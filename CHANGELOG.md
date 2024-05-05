@@ -1,6 +1,7 @@
 # v3.13.1
 ## Fixes
 - Fix fatal error while importing unknwon JSON format as a collection
+- Fix missing unique IDs for resources with same name when creating exports
 
 # v3.13.0
 ## New

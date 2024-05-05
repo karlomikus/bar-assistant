@@ -53,6 +53,11 @@ class Cocktail extends Model implements UploadableInterface
             ->saveSlugsTo('slug');
     }
 
+    public function getExternalId(): string
+    {
+        return str_replace('-' . $this->bar_id, '', $this->slug);
+    }
+
     /**
      * @return BelongsTo<Glass, Cocktail>
      */

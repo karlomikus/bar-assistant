@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External;
 
 use JsonSerializable;
-use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 
 readonly class Ingredient implements JsonSerializable
@@ -23,7 +22,7 @@ readonly class Ingredient implements JsonSerializable
     public static function fromModel(IngredientModel $model): self
     {
         return new self(
-            Str::slug($model->name),
+            $model->getExternalId(),
             $model->name,
             $model->strength,
             $model->description,
