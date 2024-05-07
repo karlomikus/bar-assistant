@@ -1,3 +1,8 @@
+# v3.13.1
+## Fixes
+- Fix fatal error while importing unknwon JSON format as a collection
+- Fix missing unique IDs for resources with same name when creating exports
+
 # v3.13.0
 ## New
 - Added `volume_ml` property to cocktail schema
@@ -12,7 +17,7 @@
 - ABV calculation now supports all standard units
 - "CocktailParty" scraper now correctly shows source ingredient string
 - Bar export files now correctly get cleaned when deleting a bar
-- Fixed recipes failing to import when ingredients where missing a category
+- Fixed recipes failing to import when ingredients were missing a category
 
 # v3.12.1
 ## Fixes

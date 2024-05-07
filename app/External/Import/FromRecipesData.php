@@ -103,14 +103,10 @@ class FromRecipesData
 
     private function importIngredients(FilesystemAdapter $dataDisk, Bar $bar, User $user): void
     {
-        $ingredients = Cache::remember('ba:data-import:ingredients', 60 * 60 * 24 * 7, function () use ($dataDisk) {
-            $ingredients = [];
-            foreach ($dataDisk->files('ingredients') as $ingredientFile) {
-                $ingredients[] = Yaml::parseFile($dataDisk->path($ingredientFile));
-            }
-
-            return $ingredients;
-        });
+        $ingredients = [];
+        foreach ($dataDisk->files('ingredients') as $ingredientFile) {
+            $ingredients[] = Yaml::parseFile($dataDisk->path($ingredientFile));
+        }
 
         $categories = DB::table('ingredient_categories')->select('id', 'name')->where('bar_id', $bar->id)->get();
         $existingIngredients = DB::table('ingredients')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(function ($ingredient) {
@@ -199,14 +195,10 @@ class FromRecipesData
 
     private function importBaseCocktails(FilesystemAdapter $dataDisk, Bar $bar, User $user): void
     {
-        $cocktails = Cache::remember('ba:data-import:cocktails', 60 * 60 * 24 * 7, function () use ($dataDisk) {
-            $cocktails = [];
-            foreach ($dataDisk->files('cocktails') as $cocktailFile) {
-                $cocktails[] = Yaml::parseFile($dataDisk->path($cocktailFile));
-            }
-
-            return $cocktails;
-        });
+        $cocktails = [];
+        foreach ($dataDisk->files('cocktails') as $cocktailFile) {
+            $cocktails[] = Yaml::parseFile($dataDisk->path($cocktailFile));
+        }
 
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
@@ -271,9 +263,15 @@ class FromRecipesData
 
             $sort = 1;
             foreach ($externalCocktail->ingredients as $cocktailIngredient) {
+                $matchedIngredientId = $dbIngredients[mb_strtolower($cocktailIngredient->ingredient->name, 'UTF-8')] ?? null;
+                if (!$matchedIngredientId) {
+                    Log::warning(sprintf('Unable to match ingredient "%s" to cocktail "%s"', $cocktailIngredient->ingredient->name, $externalCocktail->name));
+                    continue;
+                }
+
                 $ciId = DB::table('cocktail_ingredients')->insertGetId([
                     'cocktail_id' => $cocktailId,
-                    'ingredient_id' => $dbIngredients[mb_strtolower($cocktailIngredient->ingredient->name, 'UTF-8')] ?? null,
+                    'ingredient_id' => $matchedIngredientId,
                     'amount' => $cocktailIngredient->amount,
                     'units' => $cocktailIngredient->units,
                     'optional' => $cocktailIngredient->optional,
@@ -284,9 +282,15 @@ class FromRecipesData
                 $sort++;
 
                 foreach ($cocktailIngredient->substitutes as $substitute) {
+                    $matchedSubIngredientId = $dbIngredients[mb_strtolower($substitute->ingredient->name, 'UTF-8')] ?? null;
+                    if (!$matchedSubIngredientId) {
+                        Log::warning(sprintf('Unable to match substitute ingredient "%s" to cocktail "%s"', $substitute->ingredient->name, $externalCocktail->name));
+                        continue;
+                    }
+
                     DB::table('cocktail_ingredient_substitutes')->insert([
                         'cocktail_ingredient_id' => $ciId,
-                        'ingredient_id' => $dbIngredients[mb_strtolower($substitute->ingredient->name, 'UTF-8')] ?? null,
+                        'ingredient_id' => $matchedSubIngredientId,
                         'amount' => $substitute->amount,
                         'amount_max' => $substitute->amountMax,
                         'units' => $substitute->units,

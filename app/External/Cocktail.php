@@ -48,7 +48,7 @@ readonly class Cocktail implements JsonSerializable
         })->toArray();
 
         return new self(
-            Str::slug($model->name),
+            $model->getExternalId(),
             $model->name,
             $model->instructions,
             $model->created_at->toDateTimeString(),

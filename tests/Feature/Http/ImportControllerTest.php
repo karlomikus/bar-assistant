@@ -89,4 +89,14 @@ class ImportControllerTest extends TestCase
 
         $response->assertBadRequest();
     }
+
+    public function test_cocktail_scrape_unknown_collection(): void
+    {
+        $this->setupBar();
+        $response = $this->postJson('/api/import/cocktail?type=collection&bar_id=1', [
+            'source' => '{"test": []}'
+        ]);
+
+        $response->assertBadRequest();
+    }
 }
