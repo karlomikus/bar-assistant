@@ -14,7 +14,7 @@ first_time_check() {
 
         if [[ $DB_CONNECTION == "sqlite" && $DB_DATABASE ]]; then
             if [ ! -f "$DB_DATABASE" ]; then
-                echo "SQLite database not found, creating a new one..."
+                echo "[ENTRYPOINT] SQLite database not found, creating a new one..."
                 touch "$DB_DATABASE"
             fi
         fi
@@ -31,14 +31,12 @@ start_system() {
 
     php artisan bar:refresh-search --clear
 
-    echo "Adding routes and config to cache..."
+    echo "[ENTRYPOINT] Adding routes and config to cache..."
 
     php artisan config:cache
     php artisan route:cache
 
-    echo "!***************************!"
-    echo "!    Application ready      !"
-    echo "!***************************!"
+    echo "[ENTRYPOINT] Application ready"
 }
 
 start_system
