@@ -19,13 +19,16 @@ class DisablePostOnDemoEnv
     {
         $allowedDemoPostRoutes = [
             'auth.login',
-            'auth.logout'
+            'auth.logout',
+            'import.cocktail',
+            'ratings.rate-cocktail',
+            'ratings.unrate-cocktail',
         ];
 
         if (App::environment('demo') && !$request->isMethodSafe() && !$request->routeIs($allowedDemoPostRoutes)) {
             return response()->json([
                 'error' => 'api_error',
-                'message' => 'Disabled on current environment.'
+                'message' => 'Some features are disabled in DEMO environment.'
             ], 405);
         }
 

@@ -155,8 +155,8 @@ Route::middleware($apiMiddleware)->group(function() {
     })->middleware(['ability:*']);
 
     Route::prefix('ratings')->group(function() {
-        Route::post('/cocktails/{id}', [RatingController::class, 'rateCocktail']);
-        Route::delete('/cocktails/{id}', [RatingController::class, 'deleteCocktailRating']);
+        Route::post('/cocktails/{id}', [RatingController::class, 'rateCocktail'])->name('ratings.rate-cocktail');
+        Route::delete('/cocktails/{id}', [RatingController::class, 'deleteCocktailRating'])->name('ratings.unrate-cocktail');
     })->middleware(['ability:*']);
 
     Route::prefix('users')->group(function() {
@@ -200,7 +200,7 @@ Route::middleware($apiMiddleware)->group(function() {
     })->middleware(['ability:*']);
 
     Route::prefix('import')->middleware(['throttle:importing'])->group(function() {
-        Route::post('/cocktail', [ImportController::class, 'cocktail'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/cocktail', [ImportController::class, 'cocktail'])->middleware(EnsureRequestHasBarQuery::class)->name('import.cocktail');
     })->middleware(['ability:*']);
 
     Route::prefix('bars')->group(function() {

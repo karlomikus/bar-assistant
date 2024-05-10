@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\App;
 use Kami\Cocktail\Http\Requests\PATRequest;
 use Kami\Cocktail\Http\Resources\PATResource;
 use Kami\Cocktail\Models\PersonalAccessToken;
@@ -17,6 +18,11 @@ class PATController extends Controller
 {
     public function index(Request $request): JsonResource
     {
+        // Shows a ton of tokens in demo which is not really useful
+        if (App::environment('demo')) {
+            return PATResource::collection([]);
+        }
+
         $tokens = $request
             ->user()
             ->tokens()
