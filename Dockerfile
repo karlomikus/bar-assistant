@@ -52,6 +52,8 @@ COPY . .
 
 ADD https://github.com/bar-assistant/data.git ./resources/data
 
+RUN composer install --optimize-autoloader --no-dev
+
 # Configure nginx
 COPY ./resources/docker/dist/nginx.conf /etc/nginx/sites-enabled/default
 
@@ -61,9 +63,9 @@ COPY ./resources/docker/dist/entrypoint.sh /usr/local/bin/entrypoint
 RUN chmod +x /usr/local/bin/entrypoint \
     && chmod +x /var/www/cocktails/resources/docker/dist/run.sh \
     && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/open-api-spec.yml \
-    && composer install --optimize-autoloader --no-dev \
     && mkdir -p /var/www/cocktails/storage/bar-assistant/ \
-    && echo "* * * * * www-data cd /var/www/cocktails && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontab
+    && echo "* * * * * www-data cd /var/www/cocktails && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontab \
+    && chown -R www-data:www-data /var/www/cocktails
 
 EXPOSE 3000
 

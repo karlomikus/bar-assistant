@@ -2,6 +2,8 @@
 
 set -e
 
+db_file=./storage/bar-assistant/database.ba3.sqlite
+
 first_time_check() {
     mkdir -p /var/www/cocktails/storage/bar-assistant/uploads/{cocktails,ingredients,temp}
     mkdir -p /var/www/cocktails/storage/bar-assistant/backups
@@ -12,10 +14,10 @@ first_time_check() {
         php artisan key:generate
         php artisan storage:link
 
-        if [[ $DB_CONNECTION == "sqlite" && $DB_DATABASE ]]; then
-            if [ ! -f "$DB_DATABASE" ]; then
-                echo "SQLite database not found, creating a new one..."
-                touch "$DB_DATABASE"
+        if [[ $DB_CONNECTION == "sqlite" ]]; then
+            if [ ! -f "$db_file" ]; then
+                echo "[ENTRYPOINT] SQLite database not found, creating a new one..."
+                touch "$db_file"
             fi
         fi
     fi
@@ -27,18 +29,17 @@ start_system() {
     php artisan migrate --force --isolated
 
     # Enable WAL mode
-    sqlite3 "$DB_DATABASE" 'pragma journal_mode=wal;'
+    echo "[ENTRYPOINT] Enabling database WAL mode..."
+    sqlite3 "$db_file" 'pragma journal_mode=wal;'
 
     php artisan bar:refresh-search --clear
 
-    echo "Adding routes and config to cache..."
+    echo "[ENTRYPOINT] Adding routes and config to cache..."
 
     php artisan config:cache
     php artisan route:cache
 
-    echo "!***************************!"
-    echo "!    Application ready      !"
-    echo "!***************************!"
+    echo "[ENTRYPOINT] Application ready"
 }
 
 start_system

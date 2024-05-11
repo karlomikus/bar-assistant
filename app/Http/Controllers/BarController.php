@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Bar;
+use Kami\Cocktail\Models\User;
 use Symfony\Component\Uid\Ulid;
 use Kami\Cocktail\Jobs\SetupBar;
 use Illuminate\Http\JsonResponse;
@@ -193,8 +194,14 @@ class BarController extends Controller
             abort(403);
         }
 
-        $bar->created_user_id = (int) $request->post('user_id');
+        $newOwner = User::findOrFail((int) $request->post('user_id'));
+
+        $bar->created_user_id = $newOwner->id;
         $bar->save();
+
+        $barOwnership = $newOwner->joinBarAs($bar, UserRoleEnum::Admin);
+        $barOwnership->user_role_id = UserRoleEnum::Admin->value; // Needed for existing members
+        $barOwnership->save();
 
         return response()->json(status: 204);
     }

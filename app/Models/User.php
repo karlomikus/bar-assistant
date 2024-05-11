@@ -95,7 +95,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getBarMembership(int $barId): ?BarMembership
     {
-        return $this->memberships->where('bar_id', $barId)->first();
+        return $this->memberships()->where('bar_id', $barId)->first();
     }
 
     public function hasBarMembership(int $barId): bool

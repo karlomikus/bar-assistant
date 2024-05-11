@@ -1,3 +1,21 @@
+# v3.14.0
+## New
+- Added more logging to docker runtime
+- Add POST `bars/{id}/transfer` endpoint
+    - This is used to transfer bar ownership to another user
+
+## Changes
+- Updated the way permissions are handled in when bar assistant container starts.
+    - This should improve startup/restart time after the initial setup
+- Allow scraping and ratings in demo environment
+- Hide tokens in demo environment
+
+# v3.13.2
+## Fixes
+- Fix fatal error while importing unknown JSON format as a collection
+- Fix missing unique IDs for resources with same name when creating exports
+- Target master branch
+
 # v3.13.1
 ## Fixes
 - Fix fatal error while importing unknwon JSON format as a collection
