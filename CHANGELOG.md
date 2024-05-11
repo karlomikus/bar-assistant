@@ -10,6 +10,12 @@
 - Allow scraping and ratings in demo environment
 - Hide tokens in demo environment
 
+# v3.13.2
+## Fixes
+- Fix fatal error while importing unknown JSON format as a collection
+- Fix missing unique IDs for resources with same name when creating exports
+- Target master branch
+
 # v3.13.1
 ## Fixes
 - Fix fatal error while importing unknwon JSON format as a collection

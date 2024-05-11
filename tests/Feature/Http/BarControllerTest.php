@@ -7,8 +7,8 @@ namespace Tests\Feature\Http;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Models\UserRoleEnum;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class BarControllerTest extends TestCase
 {
