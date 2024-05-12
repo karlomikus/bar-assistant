@@ -109,4 +109,20 @@ class BarControllerTest extends TestCase
         $bar = Bar::find(1);
         $this->assertNotSame($newOwner->id, $bar->created_user_id);
     }
+
+    public function test_update_bar(): void
+    {
+        $response = $this->putJson('/api/bars/3', [
+            'name' => 'Updated bar',
+            'description' => 'description text',
+            'default_units' => 'oz',
+        ]);
+
+        $response->assertOk();
+
+        $bar = Bar::find(3);
+        $this->assertSame(['default_units' => 'oz'], $bar->settings);
+        $this->assertSame('Updated bar', $bar->name);
+        $this->assertSame('description text', $bar->description);
+    }
 }

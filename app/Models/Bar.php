@@ -17,6 +17,10 @@ class Bar extends Model
 {
     use HasFactory, HasAuthors, HasSlug;
 
+    protected $casts = [
+        'settings' => 'array',
+    ];
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()

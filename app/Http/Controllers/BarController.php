@@ -19,6 +19,7 @@ use Kami\Cocktail\Http\Requests\BarRequest;
 use Kami\Cocktail\Http\Resources\BarResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\BarMembershipResource;
+use Kami\RecipeUtils\UnitConverter\Units;
 
 class BarController extends Controller
 {
@@ -75,6 +76,11 @@ class BarController extends Controller
         } else {
             $bar->generateSlug();
         }
+
+        if ($defaultUnits = $request->post('default_units')) {
+            $bar->settings = ['default_units' => Units::tryFrom($defaultUnits)?->value];
+        }
+
         $bar->save();
 
         $request->user()->joinBarAs($bar, UserRoleEnum::Admin);
@@ -107,6 +113,10 @@ class BarController extends Controller
         } else {
             $bar->invite_code = null;
         }
+
+        $settings = $bar->settings;
+        $settings['default_units'] = Units::tryFrom($request->post('default_units') ?? '')?->value;
+        $bar->settings = $settings;
 
         $bar->status = $request->post('status') ?? BarStatusEnum::Active->value;
         $bar->name = $request->post('name');
