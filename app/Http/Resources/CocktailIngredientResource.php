@@ -23,6 +23,8 @@ class CocktailIngredientResource extends JsonResource
             'sort' => $this->sort,
             'amount' => $this->amount,
             'amount_max' => $this->amount_max,
+            'amount_formatted' => new AmountFormats($this->resource),
+            'amount_max_formatted' => $this->when($this->amount_max !== null, new AmountFormats($this->resource, 'max'), null),
             'units' => $this->units,
             'optional' => (bool) $this->optional,
             'ingredient_id' => $this->ingredient_id,

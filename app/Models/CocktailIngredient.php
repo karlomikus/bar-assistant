@@ -45,26 +45,14 @@ class CocktailIngredient extends Model
         return $this->hasMany(CocktailIngredientSubstitute::class);
     }
 
-    public function getAmountAsUnit(Units $toUnits): float
+    public function getAmountAsUnit(Units $toUnits): ?float
     {
-        if ($fromUnits = Units::tryFrom($this->units)) {
-            return Converter::fromTo($this->amount, $fromUnits, $toUnits);
-        }
-
-        return $this->amount;
+        return $this->convertAttributeToUnits('amount', $toUnits);
     }
 
     public function getMaxAmountAsUnit(Units $toUnits): ?float
     {
-        if (!$this->amount_max) {
-            return null;
-        }
-
-        if ($fromUnits = Units::tryFrom($this->units)) {
-            return Converter::fromTo($this->amount_max, $fromUnits, $toUnits);
-        }
-
-        return $this->amount_max;
+        return $this->convertAttributeToUnits('amount_max', $toUnits);
     }
 
     public function printIngredient(): string
@@ -80,5 +68,22 @@ class CocktailIngredient extends Model
         }
 
         return $str;
+    }
+
+    private function convertAttributeToUnits(string $attribute, Units $toUnits): ?float
+    {
+        if (!$this->{$attribute}) {
+            return null;
+        }
+
+        if ($fromUnits = Units::tryFrom($this->units)) {
+            if ($fromUnits === Units::Dash) {
+                return null;
+            }
+
+            return Converter::fromTo($this->{$attribute}, $fromUnits, $toUnits);
+        }
+
+        return null;
     }
 }
