@@ -42,7 +42,7 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails);
     }
 
-    public function show(int|string $idOrSlug, Request $request): JsonResource
+    public function show(string $idOrSlug, Request $request): JsonResource
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)
@@ -208,7 +208,7 @@ class CocktailController extends Controller
         ]);
     }
 
-    public function makePublic(Request $request, int|string $idOrSlug): JsonResource
+    public function makePublic(Request $request, string $idOrSlug): JsonResource
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
@@ -227,7 +227,7 @@ class CocktailController extends Controller
         return new CocktailPublicResource($cocktail);
     }
 
-    public function makePrivate(Request $request, int|string $idOrSlug): Response
+    public function makePrivate(Request $request, string $idOrSlug): Response
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
@@ -242,7 +242,7 @@ class CocktailController extends Controller
         return response(null, 204);
     }
 
-    public function share(Request $request, int|string $idOrSlug): Response
+    public function share(Request $request, string $idOrSlug): Response
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
@@ -286,7 +286,7 @@ class CocktailController extends Controller
         abort(400, 'Requested type "' . $type . '" not supported');
     }
 
-    public function similar(Request $request, int|string $idOrSlug): JsonResource
+    public function similar(Request $request, string $idOrSlug): JsonResource
     {
         $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->with('ingredients')->firstOrFail();
 
@@ -323,7 +323,7 @@ class CocktailController extends Controller
         return CocktailResource::collection($relatedCocktails);
     }
 
-    public function copy(int|string $idOrSlug, CocktailService $cocktailService, ImageService $imageservice, Request $request): JsonResponse
+    public function copy(string $idOrSlug, CocktailService $cocktailService, ImageService $imageservice, Request $request): JsonResponse
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)

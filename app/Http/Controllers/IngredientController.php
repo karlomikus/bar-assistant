@@ -32,7 +32,7 @@ class IngredientController extends Controller
         return IngredientResource::collection($ingredients);
     }
 
-    public function show(Request $request, int|string $id): JsonResource
+    public function show(Request $request, string $id): JsonResource
     {
         $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient', 'createdUser', 'updatedUser')
             ->withCount('cocktails')

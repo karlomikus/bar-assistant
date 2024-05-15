@@ -77,9 +77,14 @@ class BarController extends Controller
             $bar->generateSlug();
         }
 
+        $settings = [];
         if ($defaultUnits = $request->post('default_units')) {
-            $bar->settings = ['default_units' => Units::tryFrom($defaultUnits)?->value];
+            $settings['default_units'] = Units::tryFrom($defaultUnits)?->value;
         }
+        if ($defaultLanguage = $request->post('default_language')) {
+            $settings['default_lang'] = $defaultLanguage;
+        }
+        $bar->settings = $settings;
 
         $bar->save();
 
