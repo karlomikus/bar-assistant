@@ -26,6 +26,7 @@ use Kami\Cocktail\External\Cocktail as CocktailExternal;
 use Kami\Cocktail\Http\Resources\CocktailPublicResource;
 use Kami\Cocktail\DTO\Cocktail\Ingredient as IngredientDTO;
 use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
+use Kami\RecipeUtils\UnitConverter\Units;
 
 class CocktailController extends Controller
 {
@@ -276,8 +277,10 @@ class CocktailController extends Controller
         }
 
         if ($type === 'markdown' || $type === 'md') {
+            $units = Units::tryFrom($request->get('units', ''));
+
             return new Response(
-                view('md_recipe_template', compact('cocktail'))->render(),
+                view('md_recipe_template', compact('cocktail', 'units'))->render(),
                 200,
                 ['Content-Type' => 'text/markdown']
             );

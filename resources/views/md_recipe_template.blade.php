@@ -7,7 +7,7 @@
 
 ## Ingredients
 @foreach ($cocktail->ingredients as $ci)
-- {{ $ci->printAmount() }} | {{ $ci->ingredient->name }}{{ $ci->optional === true ? ' (Optional)' : '' }}{{ $ci->note ? ' - ' . $ci->note : '' }}
+- {{ $ci->withUnits($units)->printAmount() }} | {{ $ci->ingredient->name }}{{ $ci->optional === true ? ' (Optional)' : '' }}{{ $ci->note ? ' - ' . $ci->note : '' }}
 @foreach ($ci->substitutes as $sub)
     - {{ $sub->ingredient->name }} {{ $sub->printAmount() }}
 @endforeach
@@ -22,6 +22,12 @@
 ---
 @if ($cocktail->getABV())
 - abv: {{ $cocktail->getABV() }}
+@endif
+@if ($cocktail->getVolume())
+- volume: {{ $cocktail->getVolume() }}
+@endif
+@if ($cocktail->getVolume())
+- alcohol units: {{ $cocktail->getAlcoholUnits() }}
 @endif
 @if ($cocktail->tags->isNotEmpty())
 - tags: {{ $cocktail->tags->implode('name', ',') }}
