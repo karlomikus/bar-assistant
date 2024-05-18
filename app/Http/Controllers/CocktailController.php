@@ -257,6 +257,7 @@ class CocktailController extends Controller
         }
 
         $type = $request->get('type', 'json');
+        $units = Units::tryFrom($request->get('units', ''));
 
         $data = CocktailExternal::fromModel($cocktail)->toArray();
 
@@ -273,12 +274,14 @@ class CocktailController extends Controller
         }
 
         if ($type === 'text') {
-            return new Response($cocktail->toText(), 200, ['Content-Type' => 'plain/text']);
+            return new Response(
+                view('recipe_text_template', compact('cocktail', 'units'))->render(),
+                200,
+                ['Content-Type' => 'plain/text']
+            );
         }
 
         if ($type === 'markdown' || $type === 'md') {
-            $units = Units::tryFrom($request->get('units', ''));
-
             return new Response(
                 view('md_recipe_template', compact('cocktail', 'units'))->render(),
                 200,

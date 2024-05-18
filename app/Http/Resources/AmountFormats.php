@@ -21,7 +21,12 @@ class AmountFormats implements JsonSerializable
         $orgAmount = $this->type === 'min' ? $this->cocktailIngredient->amount : $this->cocktailIngredient->amount_max;
 
         foreach ($unitsToConvertTo as $unitTo) {
-            $amount = $this->type === 'min' ? $this->cocktailIngredient->getAmountAsUnit($unitTo) : $this->cocktailIngredient->getMaxAmountAsUnit($unitTo);
+            $convertedModel = $this->cocktailIngredient->getConvertedTo($unitTo);
+            if ($convertedModel->getOriginalUnitsAsEnum() !== $unitTo) {
+                continue;
+            }
+
+            $amount = $this->type === 'min' ? $convertedModel->getAmount() : $convertedModel->getMaxAmount();
 
             $formats[$unitTo->value] = $amount ? [
                 'value' => $amount,

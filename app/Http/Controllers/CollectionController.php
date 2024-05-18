@@ -12,6 +12,7 @@ use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\External\Export\CocktailsToCSV;
 use Kami\Cocktail\Http\Requests\CollectionRequest;
@@ -185,6 +186,7 @@ class CollectionController extends Controller
     public function share(Request $request, int $id): Response
     {
         $type = $request->get('type', 'json');
+        $units = Units::tryFrom($request->get('units', ''));
 
         $collection = CocktailCollection::findOrFail($id);
 
@@ -205,7 +207,7 @@ class CollectionController extends Controller
         }
 
         if ($type === 'csv') {
-            $csv = new CocktailsToCSV();
+            $csv = new CocktailsToCSV($units);
             $csvResult = $csv->process($collection->cocktails);
 
             return new Response($csvResult, 200, ['Content-Type' => 'text/csv', 'Content-Disposition' => 'attachment; filename="' . Str::slug($collection->name) . '.csv"']);
