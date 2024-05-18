@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Models;
 
 use Kami\RecipeUtils\Converter;
 use Kami\RecipeUtils\UnitConverter\Units;
-use Kami\Cocktail\Models\CocktailIngredient;
 
 class CocktailIngredientConverted
 {

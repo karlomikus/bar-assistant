@@ -14,6 +14,7 @@ use Kami\Cocktail\Models\Cocktail;
 use Intervention\Image\ImageManager;
 use Kami\Cocktail\DTO\Image as ImageDTO;
 use Kami\Cocktail\Services\ImageService;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
@@ -26,7 +27,6 @@ use Kami\Cocktail\External\Cocktail as CocktailExternal;
 use Kami\Cocktail\Http\Resources\CocktailPublicResource;
 use Kami\Cocktail\DTO\Cocktail\Ingredient as IngredientDTO;
 use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
-use Kami\RecipeUtils\UnitConverter\Units;
 
 class CocktailController extends Controller
 {
@@ -70,12 +70,7 @@ class CocktailController extends Controller
         foreach ($request->post('ingredients', []) as $formIngredient) {
             $substitutes = [];
             foreach ($formIngredient['substitutes'] ?? [] as $sub) {
-                $substitutes[] = new SubstituteDTO(
-                    $sub['id'],
-                    ($sub['amount'] ?? null) !== null ? (float) $sub['amount'] : null,
-                    ($sub['amount_max'] ?? null) !== null ? (float) $sub['amount_max'] : null,
-                    $sub['units'] ?? null,
-                );
+                $substitutes[] = SubstituteDTO::fromArray($sub);
             }
 
             $ingredient = new IngredientDTO(

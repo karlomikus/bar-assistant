@@ -15,11 +15,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Kami\Cocktail\Models\BarStatusEnum;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Http\Requests\BarRequest;
 use Kami\Cocktail\Http\Resources\BarResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\BarMembershipResource;
-use Kami\RecipeUtils\UnitConverter\Units;
 
 class BarController extends Controller
 {
