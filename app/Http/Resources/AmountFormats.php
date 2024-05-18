@@ -8,9 +8,9 @@ use JsonSerializable;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Models\CocktailIngredient;
 
-class AmountFormats implements JsonSerializable
+final class AmountFormats implements JsonSerializable
 {
-    public function __construct(private readonly CocktailIngredient $cocktailIngredient, private readonly string $type = 'min')
+    public function __construct(private readonly CocktailIngredient $cocktailIngredient)
     {
     }
 
@@ -18,29 +18,18 @@ class AmountFormats implements JsonSerializable
     {
         $unitsToConvertTo = [Units::Ml, Units::Oz, Units::Cl];
         $formats = [];
-        $orgAmount = $this->type === 'min' ? $this->cocktailIngredient->amount : $this->cocktailIngredient->amount_max;
 
         foreach ($unitsToConvertTo as $unitTo) {
             $convertedModel = $this->cocktailIngredient->getConvertedTo($unitTo);
-            if ($convertedModel->getOriginalUnitsAsEnum() !== $unitTo) {
-                continue;
-            }
 
-            $amount = $this->type === 'min' ? $convertedModel->getAmount() : $convertedModel->getMaxAmount();
-
-            $formats[$unitTo->value] = $amount ? [
-                'value' => $amount,
-                'units' => $unitTo->value,
-                'text' => sprintf('%s %s', $amount, $unitTo->value),
-            ] : null;
+            $formats[$unitTo->value] = [
+                'amount' => $convertedModel->getAmount(),
+                'amount_max' => $convertedModel->getMaxAmount(),
+                'units' => $convertedModel->getUnits(),
+                'full_text' => $convertedModel->printIngredient(),
+            ];
         }
 
-        return array_merge([
-            'original' => [
-                'value' => $orgAmount,
-                'units' => $this->cocktailIngredient->units,
-                'text' => sprintf('%s %s', $orgAmount, $this->cocktailIngredient->units),
-            ]
-        ], $formats);
+        return $formats;
     }
 }
