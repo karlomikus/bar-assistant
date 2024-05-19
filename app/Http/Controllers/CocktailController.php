@@ -66,42 +66,7 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $ingredients = [];
-        foreach ($request->post('ingredients', []) as $formIngredient) {
-            $substitutes = [];
-            foreach ($formIngredient['substitutes'] ?? [] as $sub) {
-                $substitutes[] = SubstituteDTO::fromArray($sub);
-            }
-
-            $ingredient = new IngredientDTO(
-                (int) $formIngredient['ingredient_id'],
-                null,
-                (float) $formIngredient['amount'],
-                $formIngredient['units'],
-                (int) $formIngredient['sort'],
-                $formIngredient['optional'] ?? false,
-                $substitutes,
-                ($formIngredient['amount_max'] ?? null) !== null ? (float) $formIngredient['amount_max'] : null,
-                $formIngredient['note'] ?? null
-            );
-            $ingredients[] = $ingredient;
-        }
-
-        $cocktailDTO = new CocktailDTO(
-            $request->post('name'),
-            $request->post('instructions'),
-            $request->user()->id,
-            bar()->id,
-            $request->post('description'),
-            $request->post('source'),
-            $request->post('garnish'),
-            $request->post('glass_id') ? (int) $request->post('glass_id') : null,
-            $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
-            $request->post('tags', []),
-            $ingredients,
-            $request->post('images', []),
-            $request->post('utensils', []),
-        );
+        $cocktailDTO = CocktailDTO::fromIlluminateRequest($request, bar()->id);
 
         try {
             $cocktail = $cocktailService->createCocktail($cocktailDTO);
@@ -127,47 +92,7 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $ingredients = [];
-        foreach ($request->post('ingredients', []) as $formIngredient) {
-            $substitutes = [];
-            foreach ($formIngredient['substitutes'] ?? [] as $sub) {
-                $substitutes[] = new SubstituteDTO(
-                    (int) $sub['id'],
-                    ($sub['amount'] ?? null) !== null ? (float) $sub['amount'] : null,
-                    ($sub['amount_max'] ?? null) !== null ? (float) $sub['amount_max'] : null,
-                    $sub['units'] ?? null,
-                );
-            }
-
-            $ingredient = new IngredientDTO(
-                (int) $formIngredient['ingredient_id'],
-                null,
-                (float) $formIngredient['amount'],
-                $formIngredient['units'],
-                (int) $formIngredient['sort'],
-                $formIngredient['optional'] ?? false,
-                $substitutes,
-                ($formIngredient['amount_max'] ?? null) !== null ? (float) $formIngredient['amount_max'] : null,
-                $formIngredient['note'] ?? null
-            );
-            $ingredients[] = $ingredient;
-        }
-
-        $cocktailDTO = new CocktailDTO(
-            $request->post('name'),
-            $request->post('instructions'),
-            $request->user()->id,
-            $cocktail->bar_id,
-            $request->post('description'),
-            $request->post('source'),
-            $request->post('garnish'),
-            $request->post('glass_id') ? (int) $request->post('glass_id') : null,
-            $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
-            $request->post('tags', []),
-            $ingredients,
-            $request->post('images', []),
-            $request->post('utensils', []),
-        );
+        $cocktailDTO = CocktailDTO::fromIlluminateRequest($request, $cocktail->bar_id);
 
         try {
             $cocktail = $cocktailService->updateCocktail($id, $cocktailDTO);
