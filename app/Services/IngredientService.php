@@ -13,7 +13,7 @@ use Kami\Cocktail\Exceptions\IngredientParentException;
 use Kami\Cocktail\Exceptions\ImagesNotAttachedException;
 use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;
 
-class IngredientService
+final class IngredientService
 {
     public function __construct(
         private readonly LogManager $log,

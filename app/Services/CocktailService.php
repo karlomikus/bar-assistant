@@ -18,7 +18,7 @@ use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 use Kami\Cocktail\DTO\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\Exceptions\ImagesNotAttachedException;
 
-class CocktailService
+final class CocktailService
 {
     public function __construct(
         private readonly DatabaseManager $db,
