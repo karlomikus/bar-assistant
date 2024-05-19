@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Repository;
 
 use Illuminate\Support\Collection;
+use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
 
 readonly class CocktailRepository
@@ -93,5 +94,38 @@ readonly class CocktailRepository
             ->orderBy('missing_ingredients', $direction)
             ->having('missing_ingredients', '>', 0)
             ->get();
+    }
+
+    /**
+     * @return Collection<int, Cocktail>
+     */
+    public function getSimilarCocktails(Cocktail $cocktailReference, int $limitTotal = 5): Collection
+    {
+        $ingredients = $cocktailReference->ingredients->filter(fn ($ci) => $ci->optional === false)->pluck('ingredient_id');
+
+        $relatedCocktails = \collect();
+        while ($ingredients->count() > 0) {
+            $ingredients->pop();
+            $possibleRelatedCocktails = Cocktail::where('cocktails.id', '<>', $cocktailReference->id)
+                ->where('bar_id', $cocktailReference->bar_id)
+                ->with('ingredients')
+                ->whereIn('cocktails.id', function ($query) use ($ingredients) {
+                    $query->select('ci.cocktail_id')
+                        ->from('cocktail_ingredients AS ci')
+                        ->whereIn('ci.ingredient_id', $ingredients)
+                        ->where('optional', false)
+                        ->groupBy('ci.cocktail_id')
+                        ->havingRaw('COUNT(DISTINCT ci.ingredient_id) = ?', [$ingredients->count()]);
+                })
+                ->get();
+
+            $relatedCocktails = $relatedCocktails->merge($possibleRelatedCocktails)->unique('id');
+            if ($relatedCocktails->count() > $limitTotal) {
+                $relatedCocktails = $relatedCocktails->take($limitTotal);
+                break;
+            }
+        }
+
+        return $relatedCocktails;
     }
 }

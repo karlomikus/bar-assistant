@@ -212,7 +212,7 @@ class CocktailController extends Controller
         abort(400, 'Requested type "' . $type . '" not supported');
     }
 
-    public function similar(Request $request, string $idOrSlug): JsonResource
+    public function similar(CocktailRepository $cocktailRepo, Request $request, string $idOrSlug): JsonResource
     {
         $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->with('ingredients')->firstOrFail();
 
@@ -220,31 +220,7 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $limitTotal = $request->get('limit', 5);
-        $ingredients = $cocktail->ingredients->filter(fn ($ci) => $ci->optional === false)->pluck('ingredient_id');
-
-        $relatedCocktails = collect();
-        while ($ingredients->count() > 0) {
-            $ingredients->pop();
-            $possibleRelatedCocktails = Cocktail::where('cocktails.id', '<>', $cocktail->id)
-                ->where('bar_id', $cocktail->bar_id)
-                ->with('ingredients')
-                ->whereIn('cocktails.id', function ($query) use ($ingredients) {
-                    $query->select('ci.cocktail_id')
-                        ->from('cocktail_ingredients AS ci')
-                        ->whereIn('ci.ingredient_id', $ingredients)
-                        ->where('optional', false)
-                        ->groupBy('ci.cocktail_id')
-                        ->havingRaw('COUNT(DISTINCT ci.ingredient_id) = ?', [$ingredients->count()]);
-                })
-                ->get();
-
-            $relatedCocktails = $relatedCocktails->merge($possibleRelatedCocktails)->unique('id');
-            if ($relatedCocktails->count() > $limitTotal) {
-                $relatedCocktails = $relatedCocktails->take($limitTotal);
-                break;
-            }
-        }
+        $relatedCocktails = $cocktailRepo->getSimilarCocktails($cocktail, $request->get('limit', 5));
 
         return CocktailResource::collection($relatedCocktails);
     }
