@@ -32,6 +32,10 @@ class Ingredient extends Model
         'parent_ingredient_id',
     ];
 
+    protected $casts = [
+        'strength' => 'float',
+    ];
+
     public function getUploadPath(): string
     {
         return 'ingredients/' . $this->bar_id . '/';

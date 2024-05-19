@@ -90,7 +90,7 @@ class FromArrayTest extends TestCase
         $this->assertSame(2, $cocktail->ingredients[1]->sort);
         $this->assertSame(2, $cocktail->ingredients[1]->ingredient_id);
         $this->assertSame('New ingredient', $cocktail->ingredients[1]->ingredient->name);
-        $this->assertSame(40, $cocktail->ingredients[1]->ingredient->strength);
+        $this->assertSame(40.0, $cocktail->ingredients[1]->ingredient->strength);
         $this->assertSame('New ingredient description', $cocktail->ingredients[1]->ingredient->description);
         $this->assertSame('Laravel test suite', $cocktail->ingredients[1]->ingredient->origin);
         $this->assertSame(2.0, $cocktail->ingredients[1]->amount);
