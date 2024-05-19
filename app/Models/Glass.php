@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +15,29 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Glass extends Model
 {
     use HasFactory, HasBarAwareScope, HasAuthors;
+
+    /**
+     * @return Attribute<?float, ?float>
+     */
+    protected function volume(): Attribute
+    {
+        return Attribute::make(
+            get: function (?float $value) {
+                if ($value <= 0.0) {
+                    return null;
+                }
+
+                return $value;
+            },
+            set: function (?float $value) {
+                if ($value <= 0.0) {
+                    return null;
+                }
+
+                return $value;
+            },
+        );
+    }
 
     /**
      * @return HasMany<Cocktail>

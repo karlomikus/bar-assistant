@@ -42,6 +42,7 @@ class GlassController extends Controller
         $glass = new Glass();
         $glass->name = $request->post('name');
         $glass->description = $request->post('description');
+        $glass->volume = $request->float('volume');
         $glass->bar_id = bar()->id;
         $glass->save();
 
@@ -61,6 +62,7 @@ class GlassController extends Controller
 
         $glass->name = $request->post('name');
         $glass->description = $request->post('description');
+        $glass->volume = $request->float('volume');
         $glass->updated_at = now();
         $glass->save();
 

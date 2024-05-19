@@ -23,6 +23,7 @@ class GlassResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'volume' => $this->volume,
             'cocktails_count' => $this->whenCounted('cocktails'),
         ];
     }
