@@ -27,6 +27,7 @@ class GlassRequest extends FormRequest
     {
         return [
             'name' => 'required',
+            'volume' => 'numeric',
         ];
     }
 }
