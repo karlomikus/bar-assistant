@@ -3040,6 +3040,15 @@ components:
         cocktails_count:
           type: integer
           example: 50
+        volume:
+          type: number
+          format: float
+          nullable: true
+          example: 30.0
+        volume_units:
+          type: string
+          nullable: true
+          example: oz
     GlassRequest:
       type: object
       required:
@@ -3052,6 +3061,15 @@ components:
           type: string
           nullable: true
           example: 'A stemmed glass'
+        volume:
+          type: number
+          format: float
+          nullable: true
+          example: 30.0
+        volume_units:
+          type: string
+          nullable: true
+          example: oz
     IngredientRequest:
       type: object
       required:

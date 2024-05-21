@@ -43,6 +43,7 @@ class GlassController extends Controller
         $glass->name = $request->post('name');
         $glass->description = $request->post('description');
         $glass->volume = $request->float('volume');
+        $glass->volume_units = $request->post('volume_units');
         $glass->bar_id = bar()->id;
         $glass->save();
 
@@ -63,6 +64,7 @@ class GlassController extends Controller
         $glass->name = $request->post('name');
         $glass->description = $request->post('description');
         $glass->volume = $request->float('volume');
+        $glass->volume_units = $request->post('volume_units');
         $glass->updated_at = now();
         $glass->save();
 

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('glasses', function (Blueprint $table) {
             $table->decimal('volume')->nullable();
+            $table->string('volume_units')->nullable();
         });
     }
 
@@ -23,6 +24,9 @@ return new class extends Migration
     {
         Schema::table('glasses', function (Blueprint $table) {
             $table->dropColumn('volume');
+        });
+        Schema::table('glasses', function (Blueprint $table) {
+            $table->dropColumn('volume_units');
         });
     }
 };
