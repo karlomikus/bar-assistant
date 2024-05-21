@@ -289,4 +289,16 @@ class Cocktail extends Model implements UploadableInterface
     {
         return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first();
     }
+
+    public function canUserMake(User $user): bool
+    {
+        $currentShelf = $user->getShelfIngredients($this->bar_id);
+        foreach ($this->ingredients as $ci) {
+            if (!$currentShelf->contains('ingredient_id', $ci->ingredient_id) && !$ci->optional) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
