@@ -16,7 +16,6 @@
         "meilisearch/meilisearch-php": "^1.0",
         "spatie/array-to-xml": "^3.1",
         "spatie/laravel-query-builder": "^5.2",
-        "spatie/laravel-responsecache": "^7.4",
         "spatie/laravel-sluggable": "^3.4",
         "srwiez/thumbhash": "^1.1",
         "symfony/browser-kit": "^6.2",
