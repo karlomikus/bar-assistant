@@ -90,4 +90,12 @@ class Image extends Model
     {
         return str_starts_with($this->file_path, 'temp/') || $this->imageable_id === null;
     }
+
+    public function getThumb(): string
+    {
+        $disk = Storage::disk('uploads');
+        $manager = ImageManager::imagick();
+
+        return $manager->read($disk->get($this->file_path))->coverDown(400, 400)->toJpeg(50)->toString();
+    }
 }
