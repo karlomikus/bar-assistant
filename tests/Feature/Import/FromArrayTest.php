@@ -108,7 +108,7 @@ class FromArrayTest extends TestCase
         $this->assertSame('ml', $cocktail->ingredients[2]->units);
         $this->assertCount(1, $cocktail->ingredients[2]->substitutes);
         $this->assertSame('Overproof Rum', $cocktail->ingredients[2]->substitutes[0]->ingredient->name);
-        $this->assertSame(50, $cocktail->ingredients[2]->substitutes[0]->ingredient->strength);
+        $this->assertSame(50.0, $cocktail->ingredients[2]->substitutes[0]->ingredient->strength);
         $this->assertSame(30, $cocktail->ingredients[2]->substitutes[0]->amount);
         $this->assertSame(45, $cocktail->ingredients[2]->substitutes[0]->amount_max);
         $this->assertSame('ml', $cocktail->ingredients[2]->substitutes[0]->units);
