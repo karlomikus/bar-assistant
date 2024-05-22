@@ -15,7 +15,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Bar extends Model
 {
-    use HasFactory, HasAuthors, HasSlug;
+    use HasFactory;
+    use HasAuthors;
+    use HasSlug;
 
     protected $casts = [
         'settings' => 'array',

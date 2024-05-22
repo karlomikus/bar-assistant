@@ -15,7 +15,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Export extends Model
 {
-    use HasFactory, HasAuthors, HasBarAwareScope;
+    use HasFactory;
+    use HasAuthors;
+    use HasBarAwareScope;
 
     /**
      * @return BelongsTo<Bar, Export>

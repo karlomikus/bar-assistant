@@ -32,8 +32,7 @@
         "larastan/larastan": "^2.0",
         "phpstan/phpstan": "^1.8",
         "phpunit/phpunit": "^10.4.0",
-        "spatie/laravel-ignition": "^2.0",
-        "symplify/easy-coding-standard": "^11.1"
+        "spatie/laravel-ignition": "^2.0"
     },
     "autoload": {
         "files": [
@@ -65,7 +64,7 @@
             "@php artisan key:generate --ansi"
         ],
         "static": "vendor/bin/phpstan analyse --xdebug",
-        "fix-style": "vendor/bin/ecs check --fix --clear-cache"
+        "fix-style": "vendor/bin/pint"
     },
     "extra": {
         "laravel": {

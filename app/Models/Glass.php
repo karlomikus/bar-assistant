@@ -14,7 +14,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Glass extends Model
 {
-    use HasFactory, HasBarAwareScope, HasAuthors;
+    use HasFactory;
+    use HasBarAwareScope;
+    use HasAuthors;
 
     /**
      * @return Attribute<?float, ?float>

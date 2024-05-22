@@ -14,7 +14,8 @@ use Kami\Cocktail\Scraper\Concerns\ReadsHTMLSchema;
 
 class DefaultScraper extends AbstractSiteExtractor
 {
-    use ReadsLDJson, ReadsHTMLSchema;
+    use ReadsLDJson;
+    use ReadsHTMLSchema;
 
     protected ?SchemaModel $schemaModel = null;
 

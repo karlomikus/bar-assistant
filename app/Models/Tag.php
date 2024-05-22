@@ -12,7 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tag extends Model
 {
-    use HasFactory, HasBarAwareScope;
+    use HasFactory;
+    use HasBarAwareScope;
 
     public $timestamps = false;
 

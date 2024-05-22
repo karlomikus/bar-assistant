@@ -11,7 +11,6 @@ use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\DTO\Image as ImageDTO;
 use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Http\Requests\ImageRequest;

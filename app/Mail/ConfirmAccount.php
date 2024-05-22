@@ -10,7 +10,8 @@ use Illuminate\Mail\Mailables\Envelope;
 
 class ConfirmAccount extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public string $url;
 

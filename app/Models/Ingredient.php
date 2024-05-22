@@ -19,7 +19,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ingredient extends Model
 {
-    use HasFactory, Searchable, HasImages, HasSlug, HasBarAwareScope, HasAuthors;
+    use HasFactory;
+    use Searchable;
+    use HasImages;
+    use HasSlug;
+    use HasBarAwareScope;
+    use HasAuthors;
 
     protected $fillable = [
         'name',
