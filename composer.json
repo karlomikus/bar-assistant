@@ -25,11 +25,12 @@
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
+        "brianium/paratest": "^7.4",
         "fakerphp/faker": "^1.9.1",
+        "larastan/larastan": "^2.0",
         "laravel/pint": "^1.0",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^8.1",
-        "larastan/larastan": "^2.0",
         "phpstan/phpstan": "^1.8",
         "phpunit/phpunit": "^10.4.0",
         "spatie/laravel-ignition": "^2.0"
