@@ -17,8 +17,8 @@
         "spatie/laravel-query-builder": "^5.2",
         "spatie/laravel-sluggable": "^3.4",
         "srwiez/thumbhash": "^1.1",
-        "symfony/browser-kit": "^6.2",
-        "symfony/http-client": "^6.2",
+        "symfony/browser-kit": "^7.0",
+        "symfony/http-client": "^7.0",
         "symfony/uid": "^7.0",
         "symfony/yaml": "^7.0",
         "wamania/php-stemmer": "^3.0"
@@ -26,9 +26,7 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
         "fakerphp/faker": "^1.9.1",
-        "hotmeteor/spectator": "^2.0",
         "laravel/pint": "^1.0",
-        "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^8.1",
         "larastan/larastan": "^2.0",
