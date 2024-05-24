@@ -9,11 +9,10 @@ parameters:
     # Level 9 is the highest level
     level: 6
 
-#    ignoreErrors:
-#        - '#PHPDoc tag @var#'
-#
+    ignoreErrors:
+        -
+            identifier: missingType.iterableValue
+
     excludePaths:
         - ./app/Search # 2much2laravel
         - ./app/Scraper/Sites/DefaultScraper.php # Interface/Base class mapping stuff
-
-    checkMissingIterableValueType: false

@@ -28,7 +28,7 @@ class EnsureRequestHasBarQuery
             return Bar::findOrFail($barId);
         });
 
-        if (!$request->user()->hasBarMembership($bar->id) || !$bar->isAccessible()) {
+        if ($request->user()->cannot('access', $bar)) {
             abort(403);
         }
 

@@ -14,6 +14,7 @@ use Kami\Cocktail\Models\Cocktail;
 use Intervention\Image\ImageManager;
 use Kami\Cocktail\DTO\Image as ImageDTO;
 use Kami\Cocktail\Services\ImageService;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
@@ -42,7 +43,7 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails);
     }
 
-    public function show(int|string $idOrSlug, Request $request): JsonResource
+    public function show(string $idOrSlug, Request $request): JsonResource
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)
@@ -65,47 +66,7 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $ingredients = [];
-        foreach ($request->post('ingredients', []) as $formIngredient) {
-            $substitutes = [];
-            foreach ($formIngredient['substitutes'] ?? [] as $sub) {
-                $substitutes[] = new SubstituteDTO(
-                    $sub['id'],
-                    ($sub['amount'] ?? null) !== null ? (float) $sub['amount'] : null,
-                    ($sub['amount_max'] ?? null) !== null ? (float) $sub['amount_max'] : null,
-                    $sub['units'] ?? null,
-                );
-            }
-
-            $ingredient = new IngredientDTO(
-                (int) $formIngredient['ingredient_id'],
-                null,
-                (float) $formIngredient['amount'],
-                $formIngredient['units'],
-                (int) $formIngredient['sort'],
-                $formIngredient['optional'] ?? false,
-                $substitutes,
-                ($formIngredient['amount_max'] ?? null) !== null ? (float) $formIngredient['amount_max'] : null,
-                $formIngredient['note'] ?? null
-            );
-            $ingredients[] = $ingredient;
-        }
-
-        $cocktailDTO = new CocktailDTO(
-            $request->post('name'),
-            $request->post('instructions'),
-            $request->user()->id,
-            bar()->id,
-            $request->post('description'),
-            $request->post('source'),
-            $request->post('garnish'),
-            $request->post('glass_id') ? (int) $request->post('glass_id') : null,
-            $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
-            $request->post('tags', []),
-            $ingredients,
-            $request->post('images', []),
-            $request->post('utensils', []),
-        );
+        $cocktailDTO = CocktailDTO::fromIlluminateRequest($request, bar()->id);
 
         try {
             $cocktail = $cocktailService->createCocktail($cocktailDTO);
@@ -131,47 +92,7 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $ingredients = [];
-        foreach ($request->post('ingredients', []) as $formIngredient) {
-            $substitutes = [];
-            foreach ($formIngredient['substitutes'] ?? [] as $sub) {
-                $substitutes[] = new SubstituteDTO(
-                    (int) $sub['id'],
-                    ($sub['amount'] ?? null) !== null ? (float) $sub['amount'] : null,
-                    ($sub['amount_max'] ?? null) !== null ? (float) $sub['amount_max'] : null,
-                    $sub['units'] ?? null,
-                );
-            }
-
-            $ingredient = new IngredientDTO(
-                (int) $formIngredient['ingredient_id'],
-                null,
-                (float) $formIngredient['amount'],
-                $formIngredient['units'],
-                (int) $formIngredient['sort'],
-                $formIngredient['optional'] ?? false,
-                $substitutes,
-                ($formIngredient['amount_max'] ?? null) !== null ? (float) $formIngredient['amount_max'] : null,
-                $formIngredient['note'] ?? null
-            );
-            $ingredients[] = $ingredient;
-        }
-
-        $cocktailDTO = new CocktailDTO(
-            $request->post('name'),
-            $request->post('instructions'),
-            $request->user()->id,
-            $cocktail->bar_id,
-            $request->post('description'),
-            $request->post('source'),
-            $request->post('garnish'),
-            $request->post('glass_id') ? (int) $request->post('glass_id') : null,
-            $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
-            $request->post('tags', []),
-            $ingredients,
-            $request->post('images', []),
-            $request->post('utensils', []),
-        );
+        $cocktailDTO = CocktailDTO::fromIlluminateRequest($request, $cocktail->bar_id);
 
         try {
             $cocktail = $cocktailService->updateCocktail($id, $cocktailDTO);
@@ -208,7 +129,7 @@ class CocktailController extends Controller
         ]);
     }
 
-    public function makePublic(Request $request, int|string $idOrSlug): JsonResource
+    public function makePublic(Request $request, string $idOrSlug): JsonResource
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
@@ -227,7 +148,7 @@ class CocktailController extends Controller
         return new CocktailPublicResource($cocktail);
     }
 
-    public function makePrivate(Request $request, int|string $idOrSlug): Response
+    public function makePrivate(Request $request, string $idOrSlug): Response
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
@@ -242,7 +163,7 @@ class CocktailController extends Controller
         return response(null, 204);
     }
 
-    public function share(Request $request, int|string $idOrSlug): Response
+    public function share(Request $request, string $idOrSlug): Response
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
@@ -256,6 +177,7 @@ class CocktailController extends Controller
         }
 
         $type = $request->get('type', 'json');
+        $units = Units::tryFrom($request->get('units', ''));
 
         $data = CocktailExternal::fromModel($cocktail)->toArray();
 
@@ -272,12 +194,16 @@ class CocktailController extends Controller
         }
 
         if ($type === 'text') {
-            return new Response($cocktail->toText(), 200, ['Content-Type' => 'plain/text']);
+            return new Response(
+                view('recipe_text_template', compact('cocktail', 'units'))->render(),
+                200,
+                ['Content-Type' => 'plain/text']
+            );
         }
 
         if ($type === 'markdown' || $type === 'md') {
             return new Response(
-                view('md_recipe_template', compact('cocktail'))->render(),
+                view('md_recipe_template', compact('cocktail', 'units'))->render(),
                 200,
                 ['Content-Type' => 'text/markdown']
             );
@@ -286,7 +212,7 @@ class CocktailController extends Controller
         abort(400, 'Requested type "' . $type . '" not supported');
     }
 
-    public function similar(Request $request, int|string $idOrSlug): JsonResource
+    public function similar(CocktailRepository $cocktailRepo, Request $request, string $idOrSlug): JsonResource
     {
         $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->with('ingredients')->firstOrFail();
 
@@ -294,36 +220,12 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $limitTotal = $request->get('limit', 5);
-        $ingredients = $cocktail->ingredients->filter(fn ($ci) => $ci->optional === false)->pluck('ingredient_id');
-
-        $relatedCocktails = collect();
-        while ($ingredients->count() > 0) {
-            $ingredients->pop();
-            $possibleRelatedCocktails = Cocktail::where('cocktails.id', '<>', $cocktail->id)
-                ->where('bar_id', $cocktail->bar_id)
-                ->with('ingredients')
-                ->whereIn('cocktails.id', function ($query) use ($ingredients) {
-                    $query->select('ci.cocktail_id')
-                        ->from('cocktail_ingredients AS ci')
-                        ->whereIn('ci.ingredient_id', $ingredients)
-                        ->where('optional', false)
-                        ->groupBy('ci.cocktail_id')
-                        ->havingRaw('COUNT(DISTINCT ci.ingredient_id) = ?', [$ingredients->count()]);
-                })
-                ->get();
-
-            $relatedCocktails = $relatedCocktails->merge($possibleRelatedCocktails)->unique('id');
-            if ($relatedCocktails->count() > $limitTotal) {
-                $relatedCocktails = $relatedCocktails->take($limitTotal);
-                break;
-            }
-        }
+        $relatedCocktails = $cocktailRepo->getSimilarCocktails($cocktail, $request->get('limit', 5));
 
         return CocktailResource::collection($relatedCocktails);
     }
 
-    public function copy(int|string $idOrSlug, CocktailService $cocktailService, ImageService $imageservice, Request $request): JsonResponse
+    public function copy(string $idOrSlug, CocktailService $cocktailService, ImageService $imageservice, Request $request): JsonResponse
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)

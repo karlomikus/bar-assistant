@@ -1,3 +1,15 @@
+# v3.15.0
+## New
+- Added bar settings
+    - Currently supports `default_units` and `default_lang`
+- You can change units used in collection CSV, markdown and text share by passing query string `units` with one of the following units: `ml`, `cl`, `oz`
+- CocktailIngredient schema now includes converted and formatted values for: `ml`, `cl`, `oz`
+- Added `volume` to `Glass` schema
+- Added `volume_units` to `Glass` schema
+
+## Changes
+- Updated cocktail text share format
+
 # v3.14.0
 ## New
 - Added more logging to docker runtime

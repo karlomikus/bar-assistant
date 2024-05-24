@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\App;
 use Kami\Cocktail\Search\SearchActionsAdapter;
 
 class ServerController extends Controller
@@ -33,8 +34,13 @@ class ServerController extends Controller
 
     public function openApi(): Response
     {
+        $spec = file_get_contents(base_path('docs/open-api-spec.yml'));
+        if (!App::environment('production')) {
+            $spec = str_replace('{{VERSION}}', 'develop', $spec);
+        }
+
         return response(
-            file_get_contents(base_path('docs/open-api-spec.yml')),
+            $spec,
             200,
             ['Content-Type' => 'application/x-yaml']
         );

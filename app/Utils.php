@@ -6,7 +6,7 @@ namespace Kami\Cocktail;
 
 use Kami\RecipeUtils\UnitConverter\Units;
 
-class Utils
+final class Utils
 {
     /**
      * Calculate approximate cocktail ABV

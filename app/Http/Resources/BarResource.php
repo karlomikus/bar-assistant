@@ -30,6 +30,7 @@ class BarResource extends JsonResource
             'description' => $this->description,
             'invite_code' => $this->invite_code,
             'status' => $this->getStatus()->value,
+            'settings' => $this->settings ?? [],
             'search_driver_host' => $search->getActions()->getHost(),
             'search_driver_api_key' => $search->getActions()->getBarSearchApiKey($this->id),
             'created_at' => $this->created_at->toJson(),

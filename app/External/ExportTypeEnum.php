@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail;
+namespace Kami\Cocktail\External;
 
 enum ExportTypeEnum: string
 {

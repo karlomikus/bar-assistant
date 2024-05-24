@@ -32,7 +32,7 @@ class IngredientController extends Controller
         return IngredientResource::collection($ingredients);
     }
 
-    public function show(Request $request, int|string $id): JsonResource
+    public function show(Request $request, string $id): JsonResource
     {
         $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient', 'createdUser', 'updatedUser')
             ->withCount('cocktails')
@@ -53,20 +53,9 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $ingredientDTO = new IngredientDTO(
-            bar()->id,
-            $request->post('name'),
-            auth()->user()->id,
-            $request->post('ingredient_category_id') ? (int) $request->post('ingredient_category_id') : null,
-            floatval($request->post('strength', '0')),
-            $request->post('description'),
-            $request->post('origin'),
-            $request->post('color'),
-            $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null,
-            $request->post('images', []),
+        $ingredient = $ingredientService->createIngredient(
+            IngredientDTO::fromIlluminateRequest($request, bar()->id)
         );
-
-        $ingredient = $ingredientService->createIngredient($ingredientDTO);
 
         return (new IngredientResource($ingredient))
             ->response()
@@ -82,20 +71,10 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $ingredientDTO = new IngredientDTO(
-            $ingredient->bar_id,
-            $request->post('name'),
-            auth()->user()->id,
-            $request->post('ingredient_category_id') ? (int) $request->post('ingredient_category_id') : null,
-            floatval($request->post('strength', '0')),
-            $request->post('description'),
-            $request->post('origin'),
-            $request->post('color'),
-            $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null,
-            $request->post('images', []),
+        $ingredient = $ingredientService->updateIngredient(
+            $id,
+            IngredientDTO::fromIlluminateRequest($request, $ingredient->bar_id)
         );
-
-        $ingredient = $ingredientService->updateIngredient($id, $ingredientDTO);
 
         return new IngredientResource($ingredient);
     }

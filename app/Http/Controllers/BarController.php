@@ -15,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Kami\Cocktail\Models\BarStatusEnum;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Http\Requests\BarRequest;
 use Kami\Cocktail\Http\Resources\BarResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -75,6 +76,16 @@ class BarController extends Controller
         } else {
             $bar->generateSlug();
         }
+
+        $settings = [];
+        if ($defaultUnits = $request->post('default_units')) {
+            $settings['default_units'] = Units::tryFrom($defaultUnits)?->value;
+        }
+        if ($defaultLanguage = $request->post('default_language')) {
+            $settings['default_lang'] = $defaultLanguage;
+        }
+        $bar->settings = $settings;
+
         $bar->save();
 
         $request->user()->joinBarAs($bar, UserRoleEnum::Admin);
@@ -107,6 +118,10 @@ class BarController extends Controller
         } else {
             $bar->invite_code = null;
         }
+
+        $settings = $bar->settings;
+        $settings['default_units'] = Units::tryFrom($request->post('default_units') ?? '')?->value;
+        $bar->settings = $settings;
 
         $bar->status = $request->post('status') ?? BarStatusEnum::Active->value;
         $bar->name = $request->post('name');

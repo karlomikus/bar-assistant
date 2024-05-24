@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,6 +18,8 @@ class CocktailIngredient extends Model
 
     protected $casts = [
         'optional' => 'boolean',
+        'amount' => 'float',
+        'amount_max' => 'float',
     ];
 
     /**
@@ -43,18 +46,8 @@ class CocktailIngredient extends Model
         return $this->hasMany(CocktailIngredientSubstitute::class);
     }
 
-    public function printIngredient(): string
+    public function getConvertedTo(Units $units): CocktailIngredientConverted
     {
-        return sprintf('%s %s', $this->printAmount(), $this->ingredient->name);
-    }
-
-    public function printAmount(): string
-    {
-        $str = sprintf('%s %s', $this->amount, $this->units);
-        if ($this->amount_max) {
-            $str .= sprintf(' - %s %s', $this->amount_max, $this->units);
-        }
-
-        return $str;
+        return new CocktailIngredientConverted($this, $units);
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\DTO\Ingredient;
 
+use Illuminate\Http\Request;
+
 readonly class Ingredient
 {
     /**
@@ -21,5 +23,21 @@ readonly class Ingredient
         public ?int $parentIngredientId = null,
         public array $images = []
     ) {
+    }
+
+    public static function fromIlluminateRequest(Request $request, int $barId): self
+    {
+        return new self(
+            $barId,
+            $request->post('name'),
+            $request->user()->id,
+            $request->post('ingredient_category_id') ? (int) $request->post('ingredient_category_id') : null,
+            $request->float('strength'),
+            $request->post('description'),
+            $request->post('origin'),
+            $request->post('color'),
+            $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null,
+            $request->post('images', []),
+        );
     }
 }

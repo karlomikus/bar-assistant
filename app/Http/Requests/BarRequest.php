@@ -31,6 +31,8 @@ class BarRequest extends FormRequest
             'name' => 'required',
             'enable_invites' => 'boolean',
             'options' => 'array',
+            'default_units' => 'string',
+            'default_lang' => 'string',
             'status' => [
                 Rule::enum(BarStatusEnum::class),
                 'nullable',

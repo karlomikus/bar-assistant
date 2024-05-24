@@ -8,14 +8,24 @@ use League\Csv\Writer;
 use League\Csv\ColumnConsistency;
 use Illuminate\Support\Collection;
 use Kami\Cocktail\Models\Cocktail;
+use Kami\RecipeUtils\UnitConverter\Units;
 
-class CocktailsToCSV
+final class CocktailsToCSV
 {
+    public function __construct(private readonly ?Units $toUnits)
+    {
+    }
+
     /**
      * @param Collection<int, Cocktail> $cocktails
      */
     public function process(Collection $cocktails): string
     {
+        $units = $this->toUnits;
+        if (!$units) {
+            $units = Units::Ml;
+        }
+
         $header = ['id', 'name', 'instructions', 'ingredients', 'garnish'];
 
         $validator = new ColumnConsistency();
@@ -25,12 +35,12 @@ class CocktailsToCSV
         $csv->setEscape('');
 
         $csv->insertOne($header);
-        $csv->insertAll($cocktails->map(function (Cocktail $cocktail) {
+        $csv->insertAll($cocktails->map(function (Cocktail $cocktail) use ($units) {
             return [
                 $cocktail->slug,
                 $cocktail->name,
                 $cocktail->instructions,
-                $cocktail->ingredients->map(fn ($i) => $i->printIngredient())->implode("\n"),
+                $cocktail->ingredients->map(fn ($i) => $i->getConvertedTo($units)->printIngredient())->implode("\n"),
                 $cocktail->garnish,
             ];
         }));

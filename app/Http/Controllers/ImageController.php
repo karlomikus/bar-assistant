@@ -11,7 +11,6 @@ use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\DTO\Image as ImageDTO;
 use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Http\Requests\ImageRequest;
@@ -108,11 +107,9 @@ class ImageController extends Controller
     public function thumb(int $id): Response
     {
         [$content, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id) {
-            $disk = Storage::disk('uploads');
-            $manager = ImageManager::imagick();
             $dbImage = Image::findOrFail($id);
 
-            $responseContent = $manager->read($disk->get($dbImage->file_path))->coverDown(400, 400)->toJpeg(50)->toString();
+            $responseContent = $dbImage->getThumb();
             if ($dbImage->updated_at) {
                 $etag = md5($dbImage->id . '-' . $dbImage->updated_at->format('Y-m-d H:i:s'));
             } else {

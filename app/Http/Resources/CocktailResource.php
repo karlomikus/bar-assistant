@@ -19,7 +19,8 @@ class CocktailResource extends JsonResource
      */
     public function toArray($request)
     {
-        $loadNavigation = (bool) $request->get('navigation', false);
+        // TODO: Rename all this...
+        $isSingleCocktail = (bool) $request->get('navigation', false);
 
         return [
             'id' => $this->id,
@@ -51,18 +52,21 @@ class CocktailResource extends JsonResource
             'updated_at' => $this->updated_at?->toJson(),
             'method' => new CocktailMethodResource($this->whenLoaded('method')),
             'abv' => $this->abv,
-            'volume_ml' => $this->when($this->relationLoaded('ingredients'), $this->getVolume()),
-            'alcohol_units' => $this->when($this->relationLoaded('method'), $this->getAlcoholUnits()),
-            'calories' => $this->when($this->relationLoaded('method'), $this->getCalories()),
+            'volume_ml' => $this->when($this->relationLoaded('ingredients'), fn () => $this->getVolume()),
+            'alcohol_units' => $this->when($this->relationLoaded('method'), fn () => $this->getAlcoholUnits()),
+            'calories' => $this->when($this->relationLoaded('method'), fn () => $this->getCalories()),
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
-            'access' => [
-                'can_edit' => $request->user()->can('edit', $this->resource),
-                'can_delete' => $request->user()->can('delete', $this->resource),
-                'can_rate' => $request->user()->can('rate', $this->resource),
-                'can_add_note' => $request->user()->can('addNote', $this->resource),
-            ],
-            'navigation' => $this->when($loadNavigation, function () {
+            'in_shelf' => $this->when($isSingleCocktail, fn () => $this->canUserMake(auth()->user())),
+            'access' => $this->when($isSingleCocktail, function () use ($request) {
+                return [
+                    'can_edit' => $request->user()->can('edit', $this->resource),
+                    'can_delete' => $request->user()->can('delete', $this->resource),
+                    'can_rate' => $request->user()->can('rate', $this->resource),
+                    'can_add_note' => $request->user()->can('addNote', $this->resource),
+                ];
+            }),
+            'navigation' => $this->when($isSingleCocktail, function () {
                 return [
                     'prev' => $this->getPrevCocktail()?->slug,
                     'next' => $this->getNextCocktail()?->slug,
