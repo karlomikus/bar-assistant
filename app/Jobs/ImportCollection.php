@@ -12,7 +12,10 @@ use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
 class ImportCollection implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new job instance.
