@@ -377,7 +377,7 @@ class CocktailControllerTest extends TestCase
 
         $cocktail = Cocktail::factory()->create(['created_user_id' => auth()->user()->id, 'bar_id' => 1]);
         $storage = Storage::fake('uploads');
-        $imageFile = UploadedFile::fake()->image('image1.jpg');
+        $imageFile = UploadedFile::fake()->createWithContent('image1.jpg', $this->getFakeImageContent('jpg'));
         $image = Image::factory()->for($cocktail, 'imageable')->create([
             'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'uploads'),
             'file_extension' => $imageFile->extension(),

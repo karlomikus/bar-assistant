@@ -30,7 +30,7 @@ class ImageControllerTest extends TestCase
         $response = $this->post('/api/images', [
             'images' => [
                 [
-                    'image' => UploadedFile::fake()->image('image.jpg'),
+                    'image' => UploadedFile::fake()->createWithContent('image.jpg', $this->getFakeImageContent('jpg')),
                     'copyright' => 'Made with test',
                     'sort' => 1,
                 ]
@@ -57,17 +57,17 @@ class ImageControllerTest extends TestCase
         $response = $this->post('/api/images', [
             'images' => [
                 [
-                    'image' => UploadedFile::fake()->image('image1.jpg'),
+                    'image' => UploadedFile::fake()->createWithContent('image1.jpg', $this->getFakeImageContent('jpg')),
                     'copyright' => 'BA 1',
                     'sort' => 1,
                 ],
                 [
-                    'image' => UploadedFile::fake()->image('image2.jpg'),
+                    'image' => UploadedFile::fake()->createWithContent('image2.jpg', $this->getFakeImageContent('jpg')),
                     'copyright' => 'BA 2',
                     'sort' => 1,
                 ],
                 [
-                    'image' => UploadedFile::fake()->image('image3.jpg'),
+                    'image' => UploadedFile::fake()->createWithContent('image3.jpg', $this->getFakeImageContent('jpg')),
                     'copyright' => 'BA 3',
                     'sort' => 1,
                 ]
@@ -145,7 +145,7 @@ class ImageControllerTest extends TestCase
     public function test_image_thumb(): void
     {
         Storage::fake('uploads');
-        $imageFile = UploadedFile::fake()->image('image1.jpg');
+        $imageFile = UploadedFile::fake()->createWithContent('image1.jpg', $this->getFakeImageContent('jpg'));
 
         $cocktailImage = Image::factory()->for(Cocktail::factory(), 'imageable')->create([
             'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'uploads'),
@@ -162,7 +162,7 @@ class ImageControllerTest extends TestCase
     {
         $bar = $this->setupBar();
         Storage::fake('uploads');
-        $imageFile = UploadedFile::fake()->image('image1.jpg');
+        $imageFile = UploadedFile::fake()->createWithContent('image1.jpg', $this->getFakeImageContent('jpg'));
         $cocktailImage = Image::factory()->for(Cocktail::factory()->create(['bar_id' => $bar->id]), 'imageable')->create([
             'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'uploads'),
             'file_extension' => $imageFile->extension(),
@@ -188,7 +188,7 @@ class ImageControllerTest extends TestCase
         $response->assertJsonPath('data.sort', 1);
 
         $response = $this->postJson('/api/images/' . $cocktailImage->id, [
-            'image' => UploadedFile::fake()->image('new_image.png')
+            'image' => UploadedFile::fake()->createWithContent('new_image.png', $this->getFakeImageContent('png'))
         ]);
         $response->assertJsonPath('data.id', $cocktailImage->id);
         $this->assertNotSame('temp/image1.jpg', $response->json('data.file_path'));
@@ -199,7 +199,7 @@ class ImageControllerTest extends TestCase
     public function test_image_update_fails(): void
     {
         Storage::fake('uploads');
-        $imageFile = UploadedFile::fake()->image('image1.jpg');
+        $imageFile = UploadedFile::fake()->createWithContent('image1.jpg', $this->getFakeImageContent('jpg'));
         $cocktailImage = Image::factory()->for(Cocktail::factory(), 'imageable')->create([
             'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'uploads'),
             'file_extension' => $imageFile->extension(),
