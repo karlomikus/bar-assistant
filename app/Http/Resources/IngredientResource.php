@@ -60,10 +60,10 @@ class IngredientResource extends JsonResource
             }),
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
-            'access' => [
+            'access' => $this->when($this->relationLoaded('createdUser'), fn () => [
                 'can_edit' => $request->user()->can('edit', $this->resource),
                 'can_delete' => $request->user()->can('delete', $this->resource),
-            ],
+            ]),
         ];
     }
 }
