@@ -9,6 +9,7 @@
         "laravel/cashier-paddle": "^2.0",
         "laravel/framework": "^11.0",
         "laravel/horizon": "^5.21",
+        "laravel/prompts": "^0.1.23",
         "laravel/sanctum": "^4.0",
         "laravel/scout": "^10.4",
         "league/csv": "^9.0",
