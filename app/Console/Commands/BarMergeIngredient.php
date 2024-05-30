@@ -3,11 +3,13 @@
 namespace Kami\Cocktail\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Ingredient;
-use function Laravel\Prompts\text;
-use function Laravel\Prompts\multiselect;
+
+use function Laravel\Prompts\confirm;
+use function Laravel\Prompts\spin;
+use function Laravel\Prompts\search;
+use function Laravel\Prompts\multisearch;
 
 class BarMergeIngredient extends Command
 {
@@ -16,7 +18,7 @@ class BarMergeIngredient extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:merge-ingredients {barId} {toIngredientId}';
+    protected $signature = 'bar:merge-ingredients {barId : ID of bar to search ingredients in}';
 
     /**
      * The console command description.
@@ -30,12 +32,16 @@ class BarMergeIngredient extends Command
      */
     public function handle(): int
     {
-        if (App::environment('production')) {
-            throw new \Exception('Not ready yet...');
-        }
-
         $barId = $this->argument('barId');
-        $toIngredientId = $this->argument('toIngredientId');
+
+        $toIngredientId = search(
+            'Search ingredient',
+            fn (string $value) => strlen($value) > 0
+                ? DB::table('ingredients')->where('bar_id', $barId)->where('name', 'like', '%' . $value . '%')->pluck('name', 'id')->toArray()
+                : [],
+            scroll: 10,
+            required: true
+        );
 
         try {
             $mergeToIngredient = Ingredient::findOrFail($toIngredientId);
@@ -45,15 +51,13 @@ class BarMergeIngredient extends Command
             return Command::FAILURE;
         }
 
-        $searchTerm = text('Search for ingredients to merge into "' . $mergeToIngredient->name . '"', required: true);
-
-        $ingredientChoices = DB::table('ingredients')->where('bar_id', $barId)->where('name', 'like', '%' . $searchTerm . '%')->get();
-
-        $listOfIngredientsToMerge = multiselect(
-            label: 'What ingredients do you want to merge?',
-            options: $ingredientChoices->pluck('name', 'id'),
+        $listOfIngredientsToMerge = multisearch(
+            'Search for ingredients to merge into "' . $mergeToIngredient->name . '"',
+            fn (string $value) => strlen($value) > 0
+                ? DB::table('ingredients')->where('bar_id', $barId)->where('name', 'like', '%' . $value . '%')->pluck('name', 'id')->toArray()
+                : [],
             scroll: 15,
-            required: true,
+            required: true
         );
 
         $numberOfChanges = DB::table('cocktail_ingredients')
@@ -62,34 +66,38 @@ class BarMergeIngredient extends Command
             ->unique('cocktail_id')
             ->count();
 
-        $this->line('This will remove the following ingredients:');
         $possibleIngredients = Ingredient::find($listOfIngredientsToMerge);
+        $possibleIngredients = $possibleIngredients->filter(fn ($i) => (int) $i->id !== (int) $toIngredientId);
+
         if ($possibleIngredients->isEmpty()) {
             $this->error('Cannot find find any ingredients to merge.');
 
             return Command::FAILURE;
         }
 
-        $possibleIngredients = $possibleIngredients->filter(fn ($i) => (int) $i->id !== (int) $toIngredientId);
-
+        $this->line('This will remove the following ingredients:');
         foreach ($possibleIngredients as $ing) {
             $this->line('   ・ ' . $ing->name);
         }
-
+        $this->line(sprintf('and merge them into "%s"', $mergeToIngredient->name));
         $this->line(sprintf('This will change %s cocktail recipes', $numberOfChanges));
-        $this->info(sprintf('CHANGE ingredients to "%s"', $mergeToIngredient->name));
-        $this->warn(sprintf('DELETE %s ingredients', count($listOfIngredientsToMerge)));
+        $this->line('');
 
-        if (!$this->confirm('Confirm merge?')) {
+        if (!confirm('Continue with merging?')) {
             return Command::INVALID;
         }
 
-        DB::table('cocktail_ingredients')->whereIn('ingredient_id', $listOfIngredientsToMerge)->update([
-            'ingredient_id' => $mergeToIngredient->id
-        ]);
+        spin(
+            function () use ($listOfIngredientsToMerge, $mergeToIngredient, $possibleIngredients) {
+                DB::table('cocktail_ingredients')->whereIn('ingredient_id', $listOfIngredientsToMerge)->update([
+                    'ingredient_id' => $mergeToIngredient->id
+                ]);
 
-        // Delete orphan ingredients
-        DB::table('ingredients')->whereIn('id', $possibleIngredients->pluck('id'))->delete();
+                // Delete orphan ingredients
+                DB::table('ingredients')->whereIn('id', $possibleIngredients->pluck('id'))->delete();
+            },
+            'Merging ingredients...'
+        );
 
         $this->info('Finished!');
 
