@@ -37,7 +37,7 @@ class BarMergeIngredient extends Command
         $toIngredientId = search(
             'Search ingredient',
             fn (string $value) => strlen($value) > 0
-                ? DB::table('ingredients')->where('bar_id', $barId)->where('name', 'like', '%' . $value . '%')->pluck('name', 'id')->toArray()
+                ? DB::table('ingredients')->orderBy('name')->where('bar_id', $barId)->where('name', 'like', '%' . $value . '%')->pluck('name', 'id')->toArray()
                 : [],
             scroll: 10,
             required: true
@@ -54,7 +54,7 @@ class BarMergeIngredient extends Command
         $listOfIngredientsToMerge = multisearch(
             'Search for ingredients to merge into "' . $mergeToIngredient->name . '"',
             fn (string $value) => strlen($value) > 0
-                ? DB::table('ingredients')->where('bar_id', $barId)->where('name', 'like', '%' . $value . '%')->pluck('name', 'id')->toArray()
+                ? DB::table('ingredients')->orderBy('name')->where('bar_id', $barId)->where('name', 'like', '%' . $value . '%')->pluck('name', 'id')->toArray()
                 : [],
             scroll: 15,
             required: true
