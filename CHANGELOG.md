@@ -1,3 +1,20 @@
+# unreleased
+## New
+- Upgraded to Laravel 11
+- Added `bar:merge-ingredients` command
+    - Used for merging multiple ingredients into one
+
+## Changes
+- Improved ImbibeMagazine scraper, now supports recipes in "older" format
+- Optimized ingredients list endpoint DB queries
+- Optimized similar cocktails list endpoint DB queries
+- [Internal] Moved to Laravel Pint for code style
+- [Internal] Imagick extension is now used int tests
+- [Internal] Tests are now run in parallel in CI
+
+## Fixes
+- Fixed a crash when importing ingredients from array without sort attribute
+
 # v3.15.0
 ## New
 - Added bar settings
