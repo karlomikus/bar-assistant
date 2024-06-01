@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\UnitConverter\Units;
-use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
-class ImbibeMagazine extends AbstractSiteExtractor
+class ImbibeMagazine extends DefaultScraper
 {
     public static function getSupportedUrls(): array
     {
@@ -18,12 +17,14 @@ class ImbibeMagazine extends AbstractSiteExtractor
 
     public function name(): string
     {
-        return $this->getRecipeSchema()['name'];
+        return $this->getRecipeSchema()['name'] ?? parent::name();
     }
 
     public function description(): ?string
     {
-        return trim($this->getRecipeSchema()['articleBody']);
+        $desc = $this->getRecipeSchema()['articleBody'] ?? parent::description();
+
+        return trim($desc);
     }
 
     public function source(): ?string
@@ -35,9 +36,16 @@ class ImbibeMagazine extends AbstractSiteExtractor
     {
         $result = '';
         $i = 1;
-        foreach ($this->getRecipeSchema()['recipeInstructions'] as $step) {
+        foreach ($this->getRecipeSchema()['recipeInstructions'] ?? [] as $step) {
             $result .= $i . '. ' . trim($step['text']) . "\n";
             $i++;
+        }
+
+        if ($result === '') {
+            try {
+                $result = $this->crawler->filterXPath('//div[contains(@class, \'recipe__main-content\')]')->first()->filterXPath('//p[3]')->text();
+            } catch (\Throwable) {
+            }
         }
 
         return trim($result);
@@ -55,6 +63,14 @@ class ImbibeMagazine extends AbstractSiteExtractor
             }
         });
 
+        if ($result === null) {
+            foreach($this->getLegacyRecipeIngredients() as $line) {
+                if (str_starts_with($line, 'Glass:')) {
+                    $result = str_replace('Glass:', '', $line);
+                }
+            }
+        }
+
         return $result;
     }
 
@@ -62,10 +78,19 @@ class ImbibeMagazine extends AbstractSiteExtractor
     {
         $result = [];
 
-        $schemaIngredients = $this->getRecipeSchema()['recipeIngredient'];
+        $schemaIngredients = $this->getRecipeSchema()['recipeIngredient'] ?? [];
 
         foreach ($schemaIngredients as $ingredient) {
             $result[] = $this->ingredientParser->parseLine($ingredient['ingredient'], $this->defaultConvertTo, [Units::Dash]);
+        }
+
+        if (empty($result)) {
+            foreach($this->getLegacyRecipeIngredients() as $line) {
+                if (str_starts_with($line, 'Tools:') || str_starts_with($line, 'Garnish:') || str_starts_with($line, 'Glass:')) {
+                    continue;
+                }
+                $result[] = $this->ingredientParser->parseLine($line, $this->defaultConvertTo, [Units::Dash]);
+            }
         }
 
         return $result;
@@ -83,6 +108,14 @@ class ImbibeMagazine extends AbstractSiteExtractor
             }
         });
 
+        if ($result === null) {
+            foreach($this->getLegacyRecipeIngredients() as $line) {
+                if (str_starts_with($line, 'Garnish:')) {
+                    $result = str_replace('Garnish:', '', $line);
+                }
+            }
+        }
+
         return $result;
     }
 
@@ -90,15 +123,23 @@ class ImbibeMagazine extends AbstractSiteExtractor
     {
         $schema = $this->getRecipeSchema();
 
-        $extra = '';
+        $url = null;
+        $copyright = 'Imbibe Magazine';
+
         $imageCredit = $this->crawler->filter('.recipe__image-credit');
         if ($imageCredit->count() > 0) {
-            $extra .= ' | ' . str_replace('Photo: ', '', $imageCredit->text(''));
+            $copyright .= ' | ' . str_replace('Photo: ', '', $imageCredit->text(''));
+        }
+
+        if (!empty($schema)) {
+            $url = $schema['image'] ?? null;
+        } else {
+            $url = explode(' ', $this->crawler->filter('img.recipe__image')->first()->attr('data-srcset'))[0];
         }
 
         return [
-            'url' => $schema['image'],
-            'copyright' => $schema['publisher'] . $extra,
+            'url' => $url,
+            'copyright' => $copyright,
         ];
     }
 
@@ -114,5 +155,21 @@ class ImbibeMagazine extends AbstractSiteExtractor
         });
 
         return $recipeSchema;
+    }
+
+    private function getLegacyRecipeIngredients(): array
+    {
+        $result = [];
+
+        try {
+            $ingredientsParagraph = $this->crawler->filterXPath('//div[contains(@class, \'recipe__main-content\')]')->first()->filterXPath('//p[2]')->html();
+            $ingredientsParagraphLines = explode('<br>', $ingredientsParagraph);
+            foreach($ingredientsParagraphLines as $line) {
+                $result[] = trim($line);
+            }
+        } catch (\Throwable) {
+        }
+
+        return $result;
     }
 }

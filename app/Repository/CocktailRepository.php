@@ -108,7 +108,7 @@ readonly class CocktailRepository
             $ingredients->pop();
             $possibleRelatedCocktails = Cocktail::where('cocktails.id', '<>', $cocktailReference->id)
                 ->where('bar_id', $cocktailReference->bar_id)
-                ->with('ingredients')
+                ->with('ingredients.ingredient', 'images', 'tags', 'ratings')
                 ->whereIn('cocktails.id', function ($query) use ($ingredients) {
                     $query->select('ci.cocktail_id')
                         ->from('cocktail_ingredients AS ci')

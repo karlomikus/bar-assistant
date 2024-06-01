@@ -214,7 +214,7 @@ class CocktailController extends Controller
 
     public function similar(CocktailRepository $cocktailRepo, Request $request, string $idOrSlug): JsonResource
     {
-        $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->with('ingredients')->firstOrFail();
+        $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->with('ingredients.ingredient')->firstOrFail();
 
         if ($request->user()->cannot('show', $cocktail)) {
             abort(403);

@@ -22,7 +22,7 @@ class ImbibeMagazineScraperTest extends TestCase
         $this->assertSame('Rocks', $result['glass']);
         $this->assertSame($instructions, $result['instructions']);
         $this->assertSame('Orange peel', $result['garnish']);
-        $this->assertSame([], $result['tags']);
+        $this->assertSame(['Dessert'], $result['tags']);
         $this->assertSame(null, $result['method']);
         $this->assertSame('https://imbibemagazine.com/wp-content/uploads/2021/08/chocolate-strawberry-negroni-poka-lola-social-club-crdt-tk.jpg', $result['images'][0]['url']);
         $this->assertSame('Imbibe Magazine', $result['images'][0]['copyright']);

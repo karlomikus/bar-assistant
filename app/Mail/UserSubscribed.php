@@ -10,7 +10,8 @@ use Illuminate\Mail\Mailables\Envelope;
 
 class UserSubscribed extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new message instance.

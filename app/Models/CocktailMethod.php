@@ -13,7 +13,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CocktailMethod extends Model
 {
-    use HasFactory, HasBarAwareScope, HasAuthors;
+    use HasFactory;
+    use HasBarAwareScope;
+    use HasAuthors;
 
     /**
      * @return HasMany<Cocktail>

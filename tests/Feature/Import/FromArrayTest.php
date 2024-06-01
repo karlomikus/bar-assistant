@@ -53,9 +53,9 @@ class FromArrayTest extends TestCase
 
         $importData = json_decode(file_get_contents(base_path('tests/fixtures/import.json')), true);
         $importData['images'] = [
-            ['url' => UploadedFile::fake()->image('image1.jpg'), 'copyright' => 'Image copyright 1'],
+            ['url' => UploadedFile::fake()->createWithContent('image1.jpg', $this->getFakeImageContent('jpg')), 'copyright' => 'Image copyright 1'],
             ['url' => null, 'copyright' => 'Null'],
-            ['url' => UploadedFile::fake()->image('image2.png')],
+            ['url' => UploadedFile::fake()->createWithContent('image2.png', $this->getFakeImageContent('png'))],
         ];
 
         $cocktail = $importer->process(

@@ -72,7 +72,7 @@ readonly class CocktailIngredient implements JsonSerializable
             $sourceArray['amount_max'] ?? null,
             $sourceArray['note'] ?? null,
             $substitutes,
-            $sourceArray['sort'],
+            $sourceArray['sort'] ?? 0,
         );
     }
 

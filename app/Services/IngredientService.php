@@ -9,6 +9,7 @@ use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Exceptions\IngredientException;
 use Kami\Cocktail\Exceptions\IngredientParentException;
 use Kami\Cocktail\Exceptions\ImagesNotAttachedException;
 use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;
@@ -23,6 +24,10 @@ final class IngredientService
     public function createIngredient(IngredientDTO $dto): Ingredient
     {
         try {
+            if ($dto->name === '') {
+                throw new IngredientException('Invalid ingredient name');
+            }
+
             $ingredient = new Ingredient();
             $ingredient->bar_id = $dto->barId;
             $ingredient->name = $dto->name;

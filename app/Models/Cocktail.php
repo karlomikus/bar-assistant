@@ -28,14 +28,14 @@ use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class Cocktail extends Model implements UploadableInterface
 {
-    use HasFactory,
-        Searchable,
-        HasImages,
-        HasSlug,
-        HasRating,
-        HasNotes,
-        HasBarAwareScope,
-        HasAuthors;
+    use HasFactory;
+    use Searchable;
+    use HasImages;
+    use HasSlug;
+    use HasRating;
+    use HasNotes;
+    use HasBarAwareScope;
+    use HasAuthors;
 
     protected $casts = [
         'public_at' => 'datetime',

@@ -32,4 +32,13 @@ abstract class TestCase extends BaseTestCase
 
         return $this;
     }
+
+    public function getFakeImageContent(string $extension = 'png')
+    {
+        $image = new \Imagick();
+        $image->newImage(10, 10, new \ImagickPixel('red'));
+        $image->setImageFormat($extension);
+
+        return $image;
+    }
 }

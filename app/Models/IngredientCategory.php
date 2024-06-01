@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class IngredientCategory extends Model
 {
-    use HasFactory, HasBarAwareScope;
+    use HasFactory;
+    use HasBarAwareScope;
 
     /**
      * @return HasMany<Ingredient>
