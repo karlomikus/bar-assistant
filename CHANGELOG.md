@@ -1,6 +1,6 @@
-# unreleased
+# v3.16.0
 ## New
-- Upgraded to Laravel 11
+- Upgraded framework to Laravel 11
 - Added `bar:merge-ingredients` command
     - Used for merging multiple ingredients into one
 
