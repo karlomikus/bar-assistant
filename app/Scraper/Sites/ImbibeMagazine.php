@@ -44,7 +44,8 @@ class ImbibeMagazine extends DefaultScraper
         if ($result === '') {
             try {
                 $result = $this->crawler->filterXPath('//div[contains(@class, \'recipe__main-content\')]')->first()->filterXPath('//p[3]')->text();
-            } catch (\Throwable) {}
+            } catch (\Throwable) {
+            }
         }
 
         return trim($result);
@@ -166,7 +167,8 @@ class ImbibeMagazine extends DefaultScraper
             foreach($ingredientsParagraphLines as $line) {
                 $result[] = trim($line);
             }
-        } catch (\Throwable) {}
+        } catch (\Throwable) {
+        }
 
         return $result;
     }
