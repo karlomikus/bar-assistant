@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  MEILISEARCH_HOST: http://localhost:7700
+
 jobs:
   laravel-tests:
 
