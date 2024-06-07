@@ -6,6 +6,7 @@
     <a href="https://hub.docker.com/r/barassistant/server"><img src="https://img.shields.io/docker/v/barassistant/server?style=for-the-badge&sort=semver" alt="Docker image"></a>
     <img src="https://img.shields.io/github/license/karlomikus/bar-assistant?style=for-the-badge" alt="Docker image">
     <img src="https://img.shields.io/github/actions/workflow/status/karlomikus/bar-assistant/php.yml?branch=master&style=for-the-badge&label=Tests" alt="Tests">
+    <img src="https://img.shields.io/docker/pulls/barassistant/server?style=for-the-badge" alt="Pulls">
 </p>
 
 ## 🍸 Bar Assistant
