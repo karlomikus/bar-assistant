@@ -64,6 +64,10 @@ class IngredientResource extends JsonResource
                 'can_edit' => $request->user()->can('edit', $this->resource),
                 'can_delete' => $request->user()->can('delete', $this->resource),
             ]),
+            'ingredient_parts' => $this->when($this->relationLoaded('ingredientParts'), fn () => $this->ingredientParts->map(fn ($cip) => [
+                'id' => $cip->ingredient_id,
+                'name' => $cip->ingredient->name,
+            ])),
         ];
     }
 }
