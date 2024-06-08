@@ -225,20 +225,21 @@ class CocktailControllerTest extends TestCase
 
     public function test_cocktail_create_response(): void
     {
-        $this->setupBar();
+        $bar = $this->setupBar();
 
         $gin = Ingredient::factory()
             ->state([
                 'name' => 'Gin',
                 'strength' => 40,
+                'bar_id' => $bar->id,
             ])
             ->create();
-        $ing2 = Ingredient::factory()->create();
-        $ing3 = Ingredient::factory()->create();
-        $method = CocktailMethod::factory()->create();
-        $glass = Glass::factory()->create();
+        $ing2 = Ingredient::factory()->create(['bar_id' => $bar->id]);
+        $ing3 = Ingredient::factory()->create(['bar_id' => $bar->id]);
+        $method = CocktailMethod::factory()->create(['bar_id' => $bar->id]);
+        $glass = Glass::factory()->create(['bar_id' => $bar->id]);
         $image = Image::factory()->create(['created_user_id' => auth()->user()->id]);
-        Utensil::factory()->count(5)->create();
+        Utensil::factory()->count(5)->create(['bar_id' => $bar->id]);
 
         $response = $this->postJson('/api/cocktails?bar_id=1', [
             'name' => "Cocktail name",
@@ -507,5 +508,71 @@ class CocktailControllerTest extends TestCase
 
         $response = $this->postJson('/api/cocktails?bar_id=1', ['name' => 'Test', 'instructions' => 'Test']);
         $response->assertCreated();
+    }
+
+    public function test_cocktail_creation_fails_with_unowned_bar_ingredients(): void
+    {
+        $this->setupBar();
+        $user2 = User::factory()->create();
+        $bar2 = Bar::factory()->create(['created_user_id' => $user2->id]);
+
+        $ingredientFromAnotherBar = Ingredient::factory()->create(['bar_id' => $bar2->id]);
+
+        $response = $this->postJson('/api/cocktails?bar_id=1', [
+            'name' => "Cocktail name",
+            'instructions' => "Test",
+            'description' => null,
+            'garnish' => null,
+            'source' => null,
+            'cocktail_method_id' => null,
+            'glass_id' => null,
+            'images' => [],
+            'tags' => [],
+            'utensils' => [],
+            'ingredients' => [
+                [
+                    'ingredient_id' => $ingredientFromAnotherBar->id,
+                    'amount' => 30,
+                    'units' => 'ml',
+                    'optional' => false,
+                    'sort' => 1,
+                ],
+            ]
+        ]);
+
+        $response->assertStatus(422);
+    }
+
+    public function test_cocktail_update_fails_with_unowned_bar_ingredients(): void
+    {
+        $this->setupBar();
+        $user2 = User::factory()->create();
+        $bar2 = Bar::factory()->create(['created_user_id' => $user2->id]);
+        $cocktail = Cocktail::factory()->create(['bar_id' => 1, 'created_user_id' => 1]);
+        $ingredientFromAnotherBar = Ingredient::factory()->create(['bar_id' => $bar2->id]);
+
+        $response = $this->putJson('/api/cocktails/' . $cocktail->id, [
+            'name' => "Cocktail name",
+            'instructions' => "Test",
+            'description' => null,
+            'garnish' => null,
+            'source' => null,
+            'cocktail_method_id' => null,
+            'glass_id' => null,
+            'images' => [],
+            'tags' => [],
+            'utensils' => [],
+            'ingredients' => [
+                [
+                    'ingredient_id' => $ingredientFromAnotherBar->id,
+                    'amount' => 30,
+                    'units' => 'ml',
+                    'optional' => false,
+                    'sort' => 1,
+                ],
+            ]
+        ]);
+
+        $response->assertStatus(422);
     }
 }

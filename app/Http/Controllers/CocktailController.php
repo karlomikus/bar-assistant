@@ -14,8 +14,10 @@ use Kami\Cocktail\Models\Cocktail;
 use Intervention\Image\ImageManager;
 use Kami\Cocktail\DTO\Image as ImageDTO;
 use Kami\Cocktail\Services\ImageService;
+use Illuminate\Support\Facades\Validator;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Services\CocktailService;
+use Kami\Cocktail\Rules\IngredientBelongsToBar;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Repository\CocktailRepository;
@@ -62,6 +64,10 @@ class CocktailController extends Controller
 
     public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
+        Validator::make($request->post('ingredients', []), [
+            '*.ingredient_id' => [new IngredientBelongsToBar(bar()->id)],
+        ])->validate();
+
         if ($request->user()->cannot('create', Cocktail::class)) {
             abort(403);
         }
@@ -87,6 +93,10 @@ class CocktailController extends Controller
     public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): JsonResource
     {
         $cocktail = Cocktail::findOrFail($id);
+
+        Validator::make($request->post('ingredients', []), [
+            '*.ingredient_id' => [new IngredientBelongsToBar($cocktail->bar_id)],
+        ])->validate();
 
         if ($request->user()->cannot('edit', $cocktail)) {
             abort(403);
