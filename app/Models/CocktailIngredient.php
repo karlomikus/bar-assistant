@@ -70,4 +70,16 @@ class CocktailIngredient extends Model
 
         return false;
     }
+
+    public function userHasInShelfAsComplexIngredient(User $user): bool
+    {
+        $requiredIngredientIds = $this->ingredient->ingredientParts->pluck('ingredient_id');
+        if ($requiredIngredientIds->isEmpty()) {
+            return false;
+        }
+
+        $currentShelf = $user->getShelfIngredients($this->ingredient->bar_id)->pluck('ingredient_id');
+
+        return $requiredIngredientIds->every(fn($id) => $currentShelf->contains($id));
+    }
 }

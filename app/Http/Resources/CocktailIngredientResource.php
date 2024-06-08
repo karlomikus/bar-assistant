@@ -33,6 +33,7 @@ class CocktailIngredientResource extends JsonResource
             'formatted' => new AmountFormats($this->resource),
             'in_shelf' => $this->when($this->relationLoaded('substitutes'), fn () => $this->userHasInShelf($request->user())),
             'in_shelf_as_substitute' => $this->when($this->relationLoaded('substitutes'), fn () => $this->userHasInShelfAsSubstitute($request->user())),
+            'in_shelf_as_complex_ingredient' => $this->when($this->relationLoaded('substitutes'), fn () => $this->userHasInShelfAsComplexIngredient($request->user())),
         ];
     }
 }
