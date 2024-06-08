@@ -9,6 +9,8 @@ use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Illuminate\Database\Eloquent\Model;
+use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\Exceptions\IngredientException;
 use Kami\Cocktail\Exceptions\IngredientParentException;
 use Kami\Cocktail\Exceptions\ImagesNotAttachedException;
@@ -39,6 +41,13 @@ final class IngredientService
             $ingredient->parent_ingredient_id = $dto->parentIngredientId;
             $ingredient->created_user_id = $dto->userId;
             $ingredient->save();
+
+            foreach($dto->complexIngredientParts as $ingredientPartId) {
+                $part = new ComplexIngredient();
+                $part->ingredient_id = $ingredientPartId;
+                $part->main_ingredient_id = $ingredient->id;
+                $part->save();
+            }
         } catch (Throwable $e) {
             $this->log->error('[INGREDIENT_SERVICE] ' . $e->getMessage());
 
@@ -80,6 +89,18 @@ final class IngredientService
             $ingredient->updated_user_id = $dto->userId;
             $ingredient->updated_at = now();
             $ingredient->save();
+
+            Model::unguard();
+            $currentIngredientParts = [];
+            foreach ($dto->complexIngredientParts as $complexPartId) {
+                $currentIngredientParts[] = $complexPartId;
+                $ingredient->ingredientParts()->updateOrCreate([
+                    'ingredient_id' => $complexPartId
+                ]);
+            }
+            $ingredient->ingredientParts()->whereNotIn('ingredient_id', $currentIngredientParts)->delete();
+            Model::reguard();
+
         } catch (Throwable $e) {
             $this->log->error('[INGREDIENT_SERVICE] ' . $e->getMessage());
 
