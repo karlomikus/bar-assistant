@@ -1,3 +1,17 @@
+# v3.17.0
+## New
+- Added support for complex ingredients
+    - Complex ingredient is ingredient that contains other ingredients
+    - If you have all ingredients that are a part of complex ingredient, that complex ingredient will be automatically matched in your shelf
+    - For example: If you have a "Lemon", you should also match "Lemon juice"
+- Ingredients now include `in_shelf`, `in_shelf_as_substitute`, `in_shelf_as_complex_ingredient` attributes to show how are they matched in your shelf
+
+## Fixes
+- Added ingredient bar ownership validation when adding complex and cocktail ingredients
+
+## Changes
+- Punchdrink scraper now scrapes "Editors note" part of the recipe and includes it into description
+
 # v3.16.0
 ## New
 - Upgraded framework to Laravel 11
