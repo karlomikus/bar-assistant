@@ -59,6 +59,9 @@ class PunchDrink extends DefaultScraper
     private function parseEditorsNote(): string
     {
         $editorsNote = $this->crawler->filterXPath('//h5[contains(text(), "Editor\'s Note")]/following::p')->html('');
+        if ($editorsNote === '') {
+            return $editorsNote;
+        }
 
         // Convert <br> to new lines
         $editorsNote = preg_replace('/<br\s?\/?>/ius', "\n\n", str_replace("\n", "", str_replace("\r", "", htmlspecialchars_decode($editorsNote))));
