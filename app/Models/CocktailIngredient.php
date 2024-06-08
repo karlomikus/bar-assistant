@@ -50,4 +50,24 @@ class CocktailIngredient extends Model
     {
         return new CocktailIngredientConverted($this, $units);
     }
+
+    public function userHasInShelf(User $user): bool
+    {
+        $currentShelf = $user->getShelfIngredients($this->ingredient->bar_id);
+
+        return $currentShelf->contains('ingredient_id', $this->ingredient_id);
+    }
+
+    public function userHasInShelfAsSubstitute(User $user): bool
+    {
+        $currentShelf = $user->getShelfIngredients($this->ingredient->bar_id);
+
+        foreach ($this->substitutes as $sub) {
+            if ($currentShelf->contains('ingredient_id', $sub->ingredient_id)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
