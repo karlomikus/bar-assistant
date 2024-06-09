@@ -55,6 +55,11 @@ final class IngredientQueryFilter extends QueryBuilder
                         $query->whereIn('ingredients.id', $ingredients->pluck('ingredient_id'));
                     }
                 }),
+                AllowedFilter::callback('complex', function ($query, $value) {
+                    if ($value === true) {
+                        $query->whereHas('ingredientParts');
+                    }
+                }),
             ])
             ->defaultSort('name')
             ->allowedSorts([
