@@ -67,6 +67,7 @@ class IngredientResource extends JsonResource
             'ingredient_parts' => $this->when($this->relationLoaded('ingredientParts'), fn () => $this->ingredientParts->map(fn ($cip) => [
                 'id' => $cip->ingredient_id,
                 'name' => $cip->ingredient->name,
+                'slug' => $cip->ingredient->slug,
             ])),
         ];
     }
