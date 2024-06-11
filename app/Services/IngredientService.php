@@ -77,8 +77,11 @@ final class IngredientService
             throw new IngredientParentException('Parent ingredient is the same as the current ingredient!');
         }
 
+        $originalStrength = null;
+
         try {
             $ingredient = Ingredient::findOrFail($id);
+            $originalStrength = $ingredient->strength;
             $ingredient->name = $dto->name;
             $ingredient->ingredient_category_id = $dto->ingredientCategoryId;
             $ingredient->strength = $dto->strength;
@@ -122,10 +125,15 @@ final class IngredientService
         $ingredient->refresh();
         // Upsert scout index
         $ingredient->save();
-        $ingredient->cocktails->each(function (Cocktail $cocktail) {
-            $cocktail->abv = $cocktail->getABV();
-            $cocktail->save();
-        });
+
+        if ($originalStrength !== null && $originalStrength !== $ingredient->strength) {
+            $this->log->debug('[INGREDIENT_SERVICE] Updated ingredient strength, updating ' . $ingredient->cocktails->count() . ' cocktails.');
+            $ingredient->cocktails->each(function (Cocktail $cocktail) {
+                $cocktail->abv = $cocktail->getABV();
+                $cocktail->save();
+            });
+        }
+
         $ingredient->cocktails->each(fn ($cocktail) => $cocktail->searchable());
 
         return $ingredient;
