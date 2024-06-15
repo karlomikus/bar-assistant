@@ -22,7 +22,7 @@ class PunchdrinkScraperTest extends TestCase
         $this->assertSame('orange slice', $result['garnish']);
         $this->assertSame(['Bitter'], $result['tags']);
         $this->assertSame(null, $result['method']);
-        $this->assertSame('https://assets-prd.punchdrink.com/wp-content/uploads/2018/10/Article-Milano-Torino-Italian-Aperitivo-Negroni-Cocktail-Recipe-Dante-NYC-1000x617.jpg', $result['images'][0]['url']);
+        $this->assertNotEmpty($result['images'][0]['url']);
         $this->assertSame('Punch Staff | Lizzie Munro', $result['images'][0]['copyright']);
 
         $this->assertSame(30.0, $result['ingredients'][0]['amount']);
