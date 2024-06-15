@@ -80,6 +80,6 @@ class CocktailIngredient extends Model
 
         $currentShelf = $user->getShelfIngredients($this->ingredient->bar_id)->pluck('ingredient_id');
 
-        return $requiredIngredientIds->every(fn($id) => $currentShelf->contains($id));
+        return $requiredIngredientIds->every(fn ($id) => $currentShelf->contains($id));
     }
 }
