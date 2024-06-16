@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Repository;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
+use Kami\Cocktail\Models\ComplexIngredient;
 
 readonly class CocktailRepository
 {
@@ -21,8 +23,26 @@ readonly class CocktailRepository
      * @param array<int> $ingredientIds
      * @return \Illuminate\Support\Collection<string, mixed>
      */
-    public function getCocktailsByIngredients(array $ingredientIds, ?int $limit = null, bool $useParentIngredientAsSubstitute = false): Collection
+    public function getCocktailsByIngredients(array $ingredientIds, ?int $limit = null, bool $useParentIngredientAsSubstitute = false, bool $matchComplexIngredients = true): Collection
     {
+        // Resolve complex ingredients
+        if ($matchComplexIngredients) {
+            $complexIngredientsSubquery = ComplexIngredient::select('main_ingredient_id', DB::raw('COUNT(DISTINCT ingredient_id) as cnt'))
+                ->whereIn('ingredient_id', $ingredientIds)
+                ->groupBy('main_ingredient_id');
+
+            $matchedComplexMainIngredientIds = DB::table(DB::raw("({$complexIngredientsSubquery->toSql()}) as IngredientCount"))
+                ->mergeBindings($complexIngredientsSubquery->getQuery())
+                ->where('cnt', count($ingredientIds))
+                ->pluck('main_ingredient_id');
+
+            foreach ($matchedComplexMainIngredientIds as $additionalId) {
+                if (!in_array($additionalId, $ingredientIds)) {
+                    $ingredientIds[] = $additionalId;
+                }
+            }
+        }
+
         $query = $this->db->table('cocktails AS c')
             ->select('c.id')
             ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id')

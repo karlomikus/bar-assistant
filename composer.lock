@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7001c158ca881b5a862439cb35407ae4",
+    "content-hash": "551fe5748fef3a3cefb6e015efdeb0f2",
     "packages": [
         {
             "name": "brick/math",
@@ -1312,16 +1312,16 @@
         },
         {
             "name": "karlomikus/recipe-utils",
-            "version": "0.9.1",
+            "version": "0.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/karlomikus/recipe-utils.git",
-                "reference": "7b5ab33014b197cf6b598ead7a43a487b6058994"
+                "reference": "b77afccdd52164d1a40cbf25a7a00838c42ad5e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/karlomikus/recipe-utils/zipball/7b5ab33014b197cf6b598ead7a43a487b6058994",
-                "reference": "7b5ab33014b197cf6b598ead7a43a487b6058994",
+                "url": "https://api.github.com/repos/karlomikus/recipe-utils/zipball/b77afccdd52164d1a40cbf25a7a00838c42ad5e1",
+                "reference": "b77afccdd52164d1a40cbf25a7a00838c42ad5e1",
                 "shasum": ""
             },
             "require": {
@@ -1329,7 +1329,9 @@
             },
             "require-dev": {
                 "phpstan/phpstan": "^1.10",
+                "phpunit/php-code-coverage": "^10.1",
                 "phpunit/phpunit": "^10.3",
+                "symfony/var-dumper": "^7.1",
                 "symplify/easy-coding-standard": "^12.0"
             },
             "type": "library",
@@ -1353,9 +1355,9 @@
             "description": "Utilities for extracting normalized ingredient data from recipes",
             "support": {
                 "issues": "https://github.com/karlomikus/recipe-utils/issues",
-                "source": "https://github.com/karlomikus/recipe-utils/tree/0.9.1"
+                "source": "https://github.com/karlomikus/recipe-utils/tree/0.12.0"
             },
-            "time": "2024-05-31T13:16:54+00:00"
+            "time": "2024-06-03T17:07:04+00:00"
         },
         {
             "name": "laravel/cashier-paddle",
@@ -2773,16 +2775,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "3.4.0",
+            "version": "3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "8eab8983c83c30e0bacbef8d311e3f3b8172727f"
+                "reference": "415782b7e48223342f1a616c16c45a95b15b2318"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/8eab8983c83c30e0bacbef8d311e3f3b8172727f",
-                "reference": "8eab8983c83c30e0bacbef8d311e3f3b8172727f",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/415782b7e48223342f1a616c16c45a95b15b2318",
+                "reference": "415782b7e48223342f1a616c16c45a95b15b2318",
                 "shasum": ""
             },
             "require": {
@@ -2800,13 +2802,13 @@
             "require-dev": {
                 "doctrine/dbal": "^3.6.3 || ^4.0",
                 "doctrine/orm": "^2.15.2 || ^3.0",
-                "friendsofphp/php-cs-fixer": "^3.52.1",
+                "friendsofphp/php-cs-fixer": "^3.57.2",
                 "kylekatarnls/multi-tester": "^2.5.3",
                 "ondrejmirtes/better-reflection": "^6.25.0.4",
                 "phpmd/phpmd": "^2.15.0",
                 "phpstan/extension-installer": "^1.3.1",
-                "phpstan/phpstan": "^1.10.65",
-                "phpunit/phpunit": "^10.5.15",
+                "phpstan/phpstan": "^1.11.2",
+                "phpunit/phpunit": "^10.5.20",
                 "squizlabs/php_codesniffer": "^3.9.0"
             },
             "bin": [
@@ -2875,7 +2877,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-05-24T14:26:34+00:00"
+            "time": "2024-06-03T17:25:54+00:00"
         },
         {
             "name": "nette/schema",

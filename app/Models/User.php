@@ -79,6 +79,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $barMemberShip->user_role_id = $role->value;
 
         $this->memberships()->save($barMemberShip);
+        $this->refresh();
 
         return $barMemberShip;
     }
@@ -98,7 +99,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getBarMembership(int $barId): ?BarMembership
     {
-        return $this->memberships()->where('bar_id', $barId)->first();
+        $this->loadMissing('memberships');
+
+        return $this->memberships->where('bar_id', $barId)->first();
     }
 
     public function hasBarMembership(int $barId): bool

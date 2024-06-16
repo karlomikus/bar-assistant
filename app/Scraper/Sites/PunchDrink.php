@@ -27,6 +27,8 @@ class PunchDrink extends DefaultScraper
             $i++;
         });
 
+        $result .= $this->parseEditorsNote();
+
         return trim($result);
     }
 
@@ -52,5 +54,21 @@ class PunchDrink extends DefaultScraper
         $image['copyright'] = 'Punch Staff | ' . $photoAuthorEl->text('');
 
         return $image;
+    }
+
+    private function parseEditorsNote(): string
+    {
+        $editorsNote = $this->crawler->filterXPath('//h5[contains(text(), "Editor\'s Note")]/following::p')->html('');
+        if ($editorsNote === '') {
+            return $editorsNote;
+        }
+
+        // Convert <br> to new lines
+        $editorsNote = preg_replace('/<br\s?\/?>/ius', "\n\n", str_replace("\n", "", str_replace("\r", "", htmlspecialchars_decode($editorsNote))));
+        // Convert bolds to markdown
+        $editorsNote = preg_replace('/<(b|strong)>(.*?)<\/\1>/i', '### $2', $editorsNote);
+        $editorsNote = str_replace('&nbsp;', '', $editorsNote);
+
+        return "\n\n ## Editors note:\n\n" . htmlentities($editorsNote);
     }
 }

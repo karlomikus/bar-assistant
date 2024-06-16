@@ -21,7 +21,8 @@ readonly class Ingredient
         public ?string $origin = null,
         public ?string $color = null,
         public ?int $parentIngredientId = null,
-        public array $images = []
+        public array $images = [],
+        public array $complexIngredientParts = [],
     ) {
     }
 
@@ -38,6 +39,7 @@ readonly class Ingredient
             $request->post('color'),
             $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null,
             $request->post('images', []),
+            $request->post('complex_ingredient_part_ids', []),
         );
     }
 }

@@ -50,4 +50,36 @@ class CocktailIngredient extends Model
     {
         return new CocktailIngredientConverted($this, $units);
     }
+
+    public function userHasInShelf(User $user): bool
+    {
+        $currentShelf = $user->getShelfIngredients($this->ingredient->bar_id);
+
+        return $currentShelf->contains('ingredient_id', $this->ingredient_id);
+    }
+
+    public function userHasInShelfAsSubstitute(User $user): bool
+    {
+        $currentShelf = $user->getShelfIngredients($this->ingredient->bar_id);
+
+        foreach ($this->substitutes as $sub) {
+            if ($currentShelf->contains('ingredient_id', $sub->ingredient_id)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function userHasInShelfAsComplexIngredient(User $user): bool
+    {
+        $requiredIngredientIds = $this->ingredient->ingredientParts->pluck('ingredient_id');
+        if ($requiredIngredientIds->isEmpty()) {
+            return false;
+        }
+
+        $currentShelf = $user->getShelfIngredients($this->ingredient->bar_id)->pluck('ingredient_id');
+
+        return $requiredIngredientIds->every(fn ($id) => $currentShelf->contains($id));
+    }
 }

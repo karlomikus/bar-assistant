@@ -107,6 +107,14 @@ class Ingredient extends Model
     }
 
     /**
+     * @return HasMany<ComplexIngredient>
+     */
+    public function ingredientParts(): HasMany
+    {
+        return $this->hasMany(ComplexIngredient::class, 'main_ingredient_id');
+    }
+
+    /**
      * @return Collection<int, Cocktail>
      */
     public function cocktailsAsSubstituteIngredient(): Collection

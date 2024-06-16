@@ -7,23 +7,24 @@ PGID=${PGID:-1000}
 
 cd /var/www/cocktails
 
-echo "
-                    ██▒▒██▒▒██  
-                      ██▒▒██▒▒  
-    ▒▒▒▒▒▒              ██▒▒██  
-  ▒▒      ▒▒          ▒▒  ██▒▒  
-  ▒▒  ██  ▒▒████████▒▒██    ██  
-  ▒▒  ██          ▒▒  ██        
-    ▒▒██░░░░░░░░▒▒░░░░██        
-        ██░░░░░░░░░░██          
-          ██░░░░░░██            
-            ██████              
-              ██                
-              ██                
-              ██                
-              ██                
-              ██                
-          ████░░████            "
+echo '
+                               
+    __                         
+   |@@@g_                      
+   |@@ <@@g_              ~~,  
+   |@@   @@@@a_           @@|  
+   |@@   @@@@@@@_         @@|  
+   |@@   @@@@@@@@@@@@@@@@@@@|  
+   |@@   @@@@@@@@"        @@|  
+   |@@   @@@@@P           @@|  
+   |@@ _~@@P              @@|  
+   |@@@@P                      
+   '""'                        
+                               
+   ggggggggggggg               
+   BBBBBBBBBBBBN               
+                               
+'
 
 echo "[ENTRYPOINT] Starting Bar Assistant, this can take a few minutes depending on the system..."
 echo "[ENTRYPOINT] User uid: $PUID"

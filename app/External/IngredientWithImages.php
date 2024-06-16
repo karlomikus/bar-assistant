@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External;
 
 use JsonSerializable;
+use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\Models\Image as ImageModel;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 
@@ -25,6 +26,7 @@ readonly class IngredientWithImages implements JsonSerializable
         public ?string $createdAt = null,
         public ?string $updatedAt = null,
         public array $images = [],
+        public array $ingredientParts = [],
     ) {
     }
 
@@ -32,6 +34,10 @@ readonly class IngredientWithImages implements JsonSerializable
     {
         $images = $model->images->map(function (ImageModel $image) {
             return Image::fromModel($image);
+        })->toArray();
+
+        $ingredientParts = $model->ingredientParts->map(function (ComplexIngredient $part) {
+            return Ingredient::fromModel($part->ingredient);
         })->toArray();
 
         return new self(
@@ -46,6 +52,7 @@ readonly class IngredientWithImages implements JsonSerializable
             $model->created_at->toDateTimeString(),
             $model->updated_at?->toDateTimeString(),
             $images,
+            $ingredientParts,
         );
     }
 
@@ -54,6 +61,11 @@ readonly class IngredientWithImages implements JsonSerializable
         $images = [];
         foreach ($sourceArray['images'] ?? [] as $sourceImage) {
             $images[] = Image::fromArray($sourceImage);
+        }
+
+        $ingredientParts = [];
+        foreach ($sourceArray['ingredient_parts'] ?? [] as $ingredient) {
+            $ingredientParts[] = Ingredient::fromArray($ingredient);
         }
 
         return new self(
@@ -68,6 +80,7 @@ readonly class IngredientWithImages implements JsonSerializable
             $sourceArray['created_at'] ?? null,
             $sourceArray['updated_at'] ?? null,
             $images,
+            $ingredientParts,
         );
     }
 
@@ -85,6 +98,7 @@ readonly class IngredientWithImages implements JsonSerializable
             'created_at' => $this->createdAt,
             'updated_at' => $this->updatedAt,
             'images' => array_map(fn ($model) => $model->toArray(), $this->images),
+            'ingredient_parts' => array_map(fn ($model) => $model->toArray(), $this->ingredientParts),
         ];
     }
 

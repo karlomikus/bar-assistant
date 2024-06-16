@@ -9,6 +9,8 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Illuminate\Support\Facades\Validator;
+use Kami\Cocktail\Rules\IngredientBelongsToBar;
 use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Repository\CocktailRepository;
@@ -34,7 +36,7 @@ class IngredientController extends Controller
 
     public function show(Request $request, string $id): JsonResource
     {
-        $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient', 'createdUser', 'updatedUser')
+        $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient', 'createdUser', 'updatedUser', 'ingredientParts.ingredient')
             ->withCount('cocktails')
             ->where('id', $id)
             ->orWhere('slug', $id)
@@ -49,6 +51,10 @@ class IngredientController extends Controller
 
     public function store(IngredientService $ingredientService, IngredientRequest $request): JsonResponse
     {
+        Validator::make($request->all(), [
+            'complex_ingredient_part_ids' => [new IngredientBelongsToBar(bar()->id)],
+        ])->validate();
+
         if ($request->user()->cannot('create', Ingredient::class)) {
             abort(403);
         }
@@ -66,6 +72,10 @@ class IngredientController extends Controller
     public function update(IngredientService $ingredientService, IngredientRequest $request, int $id): JsonResource
     {
         $ingredient = Ingredient::findOrFail($id);
+
+        Validator::make($request->all(), [
+            'complex_ingredient_part_ids' => [new IngredientBelongsToBar($ingredient->bar_id)],
+        ])->validate();
 
         if ($request->user()->cannot('edit', $ingredient)) {
             abort(403);
