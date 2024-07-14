@@ -115,6 +115,14 @@ class Ingredient extends Model
     }
 
     /**
+     * @return HasMany<IngredientPrice>
+     */
+    public function prices(): HasMany
+    {
+        return $this->hasMany(IngredientPrice::class);
+    }
+
+    /**
      * @return Collection<int, Cocktail>
      */
     public function cocktailsAsSubstituteIngredient(): Collection

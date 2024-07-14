@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "551fe5748fef3a3cefb6e015efdeb0f2",
+    "content-hash": "60f40040c2eacfd76a25d3b293f91c7e",
     "packages": [
         {
             "name": "brick/math",
@@ -65,6 +65,64 @@
                 }
             ],
             "time": "2023-11-29T23:19:16+00:00"
+        },
+        {
+            "name": "brick/money",
+            "version": "0.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/brick/money.git",
+                "reference": "60f8b6ceab2e1c9527e625198a76498fa477804a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/brick/money/zipball/60f8b6ceab2e1c9527e625198a76498fa477804a",
+                "reference": "60f8b6ceab2e1c9527e625198a76498fa477804a",
+                "shasum": ""
+            },
+            "require": {
+                "brick/math": "~0.12.0",
+                "ext-json": "*",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "brick/varexporter": "~0.3.0",
+                "ext-dom": "*",
+                "ext-pdo": "*",
+                "php-coveralls/php-coveralls": "^2.2",
+                "phpunit/phpunit": "^10.1",
+                "vimeo/psalm": "5.16.0"
+            },
+            "suggest": {
+                "ext-intl": "Required to format Money objects"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Brick\\Money\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Money and currency library",
+            "keywords": [
+                "brick",
+                "currency",
+                "money"
+            ],
+            "support": {
+                "issues": "https://github.com/brick/money/issues",
+                "source": "https://github.com/brick/money/tree/0.9.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/BenMorel",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-11-26T16:51:39+00:00"
         },
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -3515,6 +3573,111 @@
                 }
             ],
             "time": "2023-11-12T21:59:55+00:00"
+        },
+        {
+            "name": "prinsfrank/enums",
+            "version": "v1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PrinsFrank/enums.git",
+                "reference": "2317cc220875c8e227f75dca0ffd6d392ddeab72"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PrinsFrank/enums/zipball/2317cc220875c8e227f75dca0ffd6d392ddeab72",
+                "reference": "2317cc220875c8e227f75dca0ffd6d392ddeab72",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1 || ^8.2 || ^8.3"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.43",
+                "phpstan/phpstan": "^1.10",
+                "phpstan/phpstan-strict-rules": "^1.5",
+                "phpunit/phpunit": "^10.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PrinsFrank\\Enums\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Adds missing strictly typed methods to work with enums",
+            "support": {
+                "issues": "https://github.com/PrinsFrank/enums/issues",
+                "source": "https://github.com/PrinsFrank/enums/tree/v1.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/PrinsFrank",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-02-01T14:15:16+00:00"
+        },
+        {
+            "name": "prinsfrank/standards",
+            "version": "v3.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PrinsFrank/standards.git",
+                "reference": "02ee8d94d10dd414245fc8ce9cc0d640f2e1f56a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PrinsFrank/standards/zipball/02ee8d94d10dd414245fc8ce9cc0d640f2e1f56a",
+                "reference": "02ee8d94d10dd414245fc8ce9cc0d640f2e1f56a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-intl": "*",
+                "ext-mbstring": "*",
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
+                "prinsfrank/enums": "^1.2"
+            },
+            "require-dev": {
+                "composer/composer": "^2.3",
+                "dbrekelmans/bdi": "^1.0",
+                "ext-dom": "*",
+                "friendsofphp/php-cs-fixer": "^3.8",
+                "phpstan/phpstan": "^1.10.50",
+                "phpstan/phpstan-strict-rules": "^1.5",
+                "phpunit/phpunit": "^9.5",
+                "prinsfrank/transliteration": "^1.0",
+                "symfony/panther": "dev-main"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PrinsFrank\\Standards\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A collection of standards as PHP Enums: ISO3166, ISO4217, ISO639...",
+            "support": {
+                "issues": "https://github.com/PrinsFrank/standards/issues",
+                "source": "https://github.com/PrinsFrank/standards/tree/v3.9.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/PrinsFrank",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-07-03T19:04:54+00:00"
         },
         {
             "name": "psr/clock",
@@ -10891,5 +11054,5 @@
         "php": "^8.2.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }

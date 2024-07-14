@@ -2,6 +2,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2.0",
+        "brick/money": "^0.9.0",
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
         "intervention/image": "^3.5.1",
@@ -14,6 +15,7 @@
         "laravel/scout": "^10.4",
         "league/csv": "^9.0",
         "meilisearch/meilisearch-php": "^1.0",
+        "prinsfrank/standards": "^3.9",
         "spatie/array-to-xml": "^3.1",
         "spatie/laravel-query-builder": "^5.2",
         "spatie/laravel-sluggable": "^3.4",
