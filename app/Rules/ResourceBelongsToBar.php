@@ -8,9 +8,9 @@ use Closure;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class IngredientBelongsToBar implements ValidationRule
+class ResourceBelongsToBar implements ValidationRule
 {
-    public function __construct(private readonly int $barId)
+    public function __construct(private readonly int $barId, private readonly string $table)
     {
     }
 
@@ -25,7 +25,7 @@ class IngredientBelongsToBar implements ValidationRule
             $value = [$value];
         }
 
-        $dbIngredients = DB::table('ingredients')->select('id')->whereIn('id', $value)->where('bar_id', $this->barId)->count();
+        $dbIngredients = DB::table($this->table)->select('id')->whereIn('id', $value)->where('bar_id', $this->barId)->count();
         if ($dbIngredients !== count($value)) {
             $fail('Selected ingredients are not part of the current bar');
         }
