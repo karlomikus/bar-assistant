@@ -10,7 +10,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class ResourceBelongsToBar implements ValidationRule
 {
-    public function __construct(private readonly int $barId, private readonly string $table)
+    public function __construct(private readonly int $barId, private readonly string $table, private readonly string $column = 'id')
     {
     }
 
@@ -25,9 +25,14 @@ class ResourceBelongsToBar implements ValidationRule
             $value = [$value];
         }
 
-        $dbIngredients = DB::table($this->table)->select('id')->whereIn('id', $value)->where('bar_id', $this->barId)->count();
-        if ($dbIngredients !== count($value)) {
-            $fail('Selected ingredients are not part of the current bar');
+        $count = DB::table($this->table)
+            ->select($this->column)
+            ->whereIn($this->column, $value)
+            ->where('bar_id', $this->barId)
+            ->count();
+
+        if ($count !== count($value)) {
+            $fail('Selected resources are not part of the current bar');
         }
     }
 }
