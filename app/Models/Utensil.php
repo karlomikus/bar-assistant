@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Utensil extends Model
 {
+    /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\UtensilFactory> */
     use HasFactory;
     use HasBarAwareScope;
 

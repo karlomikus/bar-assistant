@@ -11,11 +11,9 @@ use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Export extends Model
 {
-    use HasFactory;
     use HasAuthors;
     use HasBarAwareScope;
 

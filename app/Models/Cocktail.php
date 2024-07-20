@@ -28,6 +28,7 @@ use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class Cocktail extends Model implements UploadableInterface
 {
+    /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\CocktailFactory> */
     use HasFactory;
     use Searchable;
     use HasImages;
@@ -199,7 +200,7 @@ class Cocktail extends Model implements UploadableInterface
     {
         $publicUlid = new Ulid();
 
-        $this->public_id = $publicUlid;
+        $this->public_id = (string) $publicUlid;
         $this->public_at = $dateTime;
         $this->public_expires_at = null;
         $this->save();

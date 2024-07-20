@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CocktailMethod extends Model
 {
+    /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\CocktailMethodFactory> */
     use HasFactory;
     use HasBarAwareScope;
     use HasAuthors;

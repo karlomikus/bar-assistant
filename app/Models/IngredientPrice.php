@@ -7,12 +7,9 @@ namespace Kami\Cocktail\Models;
 use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class IngredientPrice extends Model
 {
-    use HasFactory;
-
     /**
      * @return BelongsTo<Ingredient, IngredientPrice>
      */
