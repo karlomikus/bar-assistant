@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ingredient extends Model
 {
+    /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\IngredientFactory> */
     use HasFactory;
     use Searchable;
     use HasImages;
@@ -112,6 +113,14 @@ class Ingredient extends Model
     public function ingredientParts(): HasMany
     {
         return $this->hasMany(ComplexIngredient::class, 'main_ingredient_id');
+    }
+
+    /**
+     * @return HasMany<IngredientPrice>
+     */
+    public function prices(): HasMany
+    {
+        return $this->hasMany(IngredientPrice::class);
     }
 
     /**

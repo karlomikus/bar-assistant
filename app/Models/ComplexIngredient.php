@@ -7,11 +7,9 @@ namespace Kami\Cocktail\Models;
 use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ComplexIngredient extends Model
 {
-    use HasFactory;
     use HasAuthors;
 
     public $timestamps = false;

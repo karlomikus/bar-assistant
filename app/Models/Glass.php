@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Glass extends Model
 {
+    /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\GlassFactory> */
     use HasFactory;
     use HasBarAwareScope;
     use HasAuthors;

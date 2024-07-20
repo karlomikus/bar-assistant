@@ -16,7 +16,7 @@ RUN apt update \
     bash \
     cron \
     && chmod +x /usr/local/bin/install-php-extensions \
-    && install-php-extensions imagick opcache redis zip pcntl bcmath \
+    && install-php-extensions imagick opcache redis zip pcntl bcmath intl \
     && echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf \
     && apt-get autoremove -y \
     && apt-get clean \

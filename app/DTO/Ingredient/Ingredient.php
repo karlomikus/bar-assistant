@@ -10,6 +10,7 @@ readonly class Ingredient
 {
     /**
      * @param array<int> $images
+     * @param array<Price> $prices
      */
     public function __construct(
         public int $barId,
@@ -23,11 +24,17 @@ readonly class Ingredient
         public ?int $parentIngredientId = null,
         public array $images = [],
         public array $complexIngredientParts = [],
+        public array $prices = [],
     ) {
     }
 
     public static function fromIlluminateRequest(Request $request, int $barId): self
     {
+        $prices = [];
+        foreach ($request->post('prices', []) as $price) {
+            $prices[] = Price::fromArray($price);
+        }
+
         return new self(
             $barId,
             $request->post('name'),
@@ -40,6 +47,7 @@ readonly class Ingredient
             $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null,
             $request->post('images', []),
             $request->post('complex_ingredient_part_ids', []),
+            $prices,
         );
     }
 }

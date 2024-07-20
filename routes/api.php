@@ -27,6 +27,7 @@ use Kami\Cocktail\Http\Controllers\CollectionController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
 use Kami\Cocktail\Http\Controllers\SubscriptionController;
+use Kami\Cocktail\Http\Controllers\PriceCategoryController;
 use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
 use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
@@ -239,6 +240,14 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::post('/', [ExportController::class, 'store'])->middleware(['throttle:exports']);
         Route::delete('/{id}', [ExportController::class, 'delete']);
         Route::get('/{id}/download', [ExportController::class, 'download']);
+    })->middleware(['ability:*']);
+
+    Route::prefix('price-categories')->group(function () {
+        Route::get('/', [PriceCategoryController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/', [PriceCategoryController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/{id}', [PriceCategoryController::class, 'show'])->name('price-categories.show');
+        Route::put('/{id}', [PriceCategoryController::class, 'update']);
+        Route::delete('/{id}', [PriceCategoryController::class, 'delete']);
     })->middleware(['ability:*']);
 });
 

@@ -10,6 +10,7 @@ use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Database\Eloquent\Model;
+use Kami\Cocktail\Models\IngredientPrice;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\Exceptions\IngredientException;
 use Kami\Cocktail\Exceptions\IngredientParentException;
@@ -47,6 +48,17 @@ final class IngredientService
                 $part->ingredient_id = $ingredientPartId;
                 $part->main_ingredient_id = $ingredient->id;
                 $part->save();
+            }
+
+            foreach($dto->prices as $ingredientPriceDto) {
+                $price = new IngredientPrice();
+                $price->ingredient_id = $ingredient->id;
+                $price->price_category_id = $ingredientPriceDto->priceCategoryId;
+                $price->price = $ingredientPriceDto->price;
+                $price->amount = $ingredientPriceDto->amount;
+                $price->units = $ingredientPriceDto->units;
+                $price->description = $ingredientPriceDto->description;
+                $price->save();
             }
         } catch (Throwable $e) {
             $this->log->error('[INGREDIENT_SERVICE] ' . $e->getMessage());
@@ -103,6 +115,20 @@ final class IngredientService
             }
             $ingredient->ingredientParts()->whereNotIn('ingredient_id', $currentIngredientParts)->delete();
             Model::reguard();
+
+            if (count($dto->prices) > 0) {
+                $ingredient->prices()->delete();
+                foreach($dto->prices as $ingredientPriceDto) {
+                    $price = new IngredientPrice();
+                    $price->ingredient_id = $ingredient->id;
+                    $price->price_category_id = $ingredientPriceDto->priceCategoryId;
+                    $price->price = $ingredientPriceDto->price;
+                    $price->amount = $ingredientPriceDto->amount;
+                    $price->units = $ingredientPriceDto->units;
+                    $price->description = $ingredientPriceDto->description;
+                    $price->save();
+                }
+            }
 
         } catch (Throwable $e) {
             $this->log->error('[INGREDIENT_SERVICE] ' . $e->getMessage());
