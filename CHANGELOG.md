@@ -1,3 +1,7 @@
+# v3.17.1
+## Fixes
+- Fix glass volume not nullable #301
+
 # v3.17.0
 ## New
 - Added support for complex ingredients
