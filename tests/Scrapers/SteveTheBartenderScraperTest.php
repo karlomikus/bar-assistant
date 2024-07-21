@@ -22,7 +22,7 @@ class SteveTheBartenderScraperTest extends TestCase
         $this->assertSame(null, $result['garnish']);
         $this->assertSame([], $result['tags']);
         $this->assertSame(null, $result['method']);
-        $this->assertSame('https://stevethebartender.com.au/wp-content/uploads/2021/12/oaxacanite-cocktail.jpg', $result['images'][0]['url']);
+        $this->assertSame('https://stevethebartender.com.au/wp-content/uploads/2024/06/oaxacanite-cocktail-2.jpg', $result['images'][0]['url']);
         $this->assertSame('Steve the Bartender', $result['images'][0]['copyright']);
 
         $this->assertSame(30.0, $result['ingredients'][0]['amount']);
