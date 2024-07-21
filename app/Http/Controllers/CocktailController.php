@@ -195,6 +195,10 @@ class CocktailController extends Controller
             return new Response(json_encode($data, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
         }
 
+        if ($type === 'json+ld') {
+            return new Response(json_encode($cocktail->asJsonLDSchema(), JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
+        }
+
         if ($type === 'yaml' || $type === 'yml') {
             return new Response(Yaml::dump($data, 4, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK), 200, ['Content-Type' => 'application/yaml']);
         }

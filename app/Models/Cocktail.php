@@ -302,4 +302,33 @@ class Cocktail extends Model implements UploadableInterface
 
         return true;
     }
+
+    public function asJsonLDSchema(): array
+    {
+        return [
+            "@context" => "https://schema.org",
+            "@type" => "Recipe",
+            "author" => [
+                '@type' => 'Organization',
+                'name' => "Recipe generated from Bar Assistant"
+            ],
+            "name" => e($this->name),
+            "datePublished" => $this->created_at->format('Y-m-d'),
+            "description" => e($this->description),
+            "image" => [
+                "@type" => "ImageObject",
+                "author" => e($this->getMainImage()->copyright),
+                "url" => $this->getMainImage()->getImageUrl(),
+            ],
+            'recipeInstructions' => e($this->instructions),
+            "cookingMethod" => $this->method?->name,
+            "recipeYield" => "1 drink",
+            "recipeCategory" => "Drink",
+            "recipeCuisine" => "Cocktail",
+            "keywords" => $this->tags->pluck('name')->implode(', '),
+            "recipeIngredient" => $this->ingredients->map(function (CocktailIngredient $ci) {
+                return $ci->amount . ' ' . $ci->units . ' ' . $ci->ingredient->name;
+            }),
+        ];
+    }
 }
