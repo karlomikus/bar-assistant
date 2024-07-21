@@ -39,7 +39,7 @@ class DiffordsGuideScraperTest extends TestCase
 
         $this->assertSame(30.0, $result['ingredients'][2]['amount']);
         $this->assertSame('ml', $result['ingredients'][2]['units']);
-        $this->assertSame('Vermouth - Rosso/rouge vermouth', $result['ingredients'][2]['name']);
+        $this->assertSame('Vermouth - Rosso/rouge/sweet vermouth', $result['ingredients'][2]['name']);
         $this->assertSame(false, $result['ingredients'][2]['optional']);
     }
 }
