@@ -1,3 +1,9 @@
+# v3.18.0
+## New
+- Added price categories
+- Added ingredient prices
+- Added `json+ld` cocktail share type
+
 # v3.17.1
 ## Fixes
 - Fix glass volume not nullable #301
