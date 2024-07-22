@@ -46,7 +46,7 @@
     },
     "abv": {
       "description": "Total ABV of made cocktail",
-      "type": "number",
+      "type": ["number", "null"],
       "minimum": 0,
       "examples": [12.5]
     },
@@ -86,8 +86,7 @@
         "properties": {
           "source": {
             "type": "string",
-            "format": "uri",
-            "examples": ["https://example.com/image.jpg"]
+            "examples": ["https://example.com/image.jpg", "/path/to/image.png"]
           },
           "sort": {
             "description": "Control the representation of the image",
