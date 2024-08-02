@@ -1,8 +1,14 @@
 # v3.18.0
 ## New
 - Added price categories
+    - Categorize prices by currency and name
 - Added ingredient prices
+    - Add price per unit
+    - Assign price categories
 - Added `json+ld` cocktail share type
+
+## Changes
+- Added `intl` PHP extension to docker images
 
 # v3.17.1
 ## Fixes
