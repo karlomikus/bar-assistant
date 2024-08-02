@@ -196,7 +196,7 @@ class CocktailController extends Controller
         }
 
         if ($type === 'json+ld') {
-            return new Response(json_encode($cocktail->asJsonLDSchema(), JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
+            return new Response(json_encode($cocktail->asJsonLDSchema(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
         }
 
         if ($type === 'yaml' || $type === 'yml') {
