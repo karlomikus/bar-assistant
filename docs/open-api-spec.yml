@@ -790,7 +790,7 @@ paths:
         schema:
           type: string
           example: attribute_name
-        description: "Available attributes: `parentIngredient`, `varieties`, `cocktails`, `cocktailIngredientSubstitutes`."
+        description: "Available attributes: `parentIngredient`, `varieties`, `cocktails`, `cocktailIngredientSubstitutes`, `prices`."
       tags:
         - Ingredients
       summary: 'Get a list of ingredients'
@@ -3218,6 +3218,10 @@ components:
           type: integer
           example: 1
           nullable: true
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientPriceRequest'
     Ingredient:
       type: object
       required:
@@ -3324,6 +3328,10 @@ components:
               type: boolean
             can_delete:
               type: boolean
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientPrice'
     IngredientCategory:
       type: object
       required:
@@ -4770,10 +4778,64 @@ components:
           type: integer
         name:
           type: string
+          example: "Amazon (DE)"
         description:
           type: string
+          example: "Current price on amazon.de"
         currency:
           type: string
           format: ISO4217
+          example: "EUR"
         currency_symbol:
           type: string
+          example: "€"
+    IngredientPriceRequest:
+      type: object
+      required:
+        - price_category_id
+        - price
+        - amount
+        - units
+      properties:
+        price_category_id:
+          type: integer
+        price:
+          type: integer
+          format: minor
+        amount:
+          type: number
+        units:
+          type: string
+        description:
+          type: string
+    IngredientPrice:
+      type: object
+      properties:
+        price_category:
+          $ref: '#/components/schemas/PriceCategoryResponse'
+        price:
+          type: string
+          example: "23.85"
+        price_minor:
+          type: integer
+          format: minor
+          example: 2385
+        price_formatted:
+          type: string
+          example: "EUR 23.85"
+        amount:
+          type: number
+          example: 750
+        units:
+          type: string
+          example: ml
+        description:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
