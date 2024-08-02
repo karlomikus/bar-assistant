@@ -28,6 +28,7 @@ use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class Cocktail extends Model implements UploadableInterface
 {
+    /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\CocktailFactory> */
     use HasFactory;
     use Searchable;
     use HasImages;
@@ -199,7 +200,7 @@ class Cocktail extends Model implements UploadableInterface
     {
         $publicUlid = new Ulid();
 
-        $this->public_id = $publicUlid;
+        $this->public_id = (string) $publicUlid;
         $this->public_at = $dateTime;
         $this->public_expires_at = null;
         $this->save();
@@ -300,5 +301,34 @@ class Cocktail extends Model implements UploadableInterface
         }
 
         return true;
+    }
+
+    public function asJsonLDSchema(): array
+    {
+        return [
+            "@context" => "https://schema.org",
+            "@type" => "Recipe",
+            "author" => [
+                '@type' => 'Organization',
+                'name' => "Recipe generated from Bar Assistant"
+            ],
+            "name" => e($this->name),
+            "datePublished" => $this->created_at->format('Y-m-d'),
+            "description" => e($this->description),
+            "image" => [
+                "@type" => "ImageObject",
+                "author" => e($this->getMainImage()->copyright),
+                "url" => $this->getMainImage()->getImageUrl(),
+            ],
+            'recipeInstructions' => e($this->instructions),
+            "cookingMethod" => $this->method?->name,
+            "recipeYield" => "1 drink",
+            "recipeCategory" => "Drink",
+            "recipeCuisine" => "Cocktail",
+            "keywords" => $this->tags->pluck('name')->implode(', '),
+            "recipeIngredient" => $this->ingredients->map(function (CocktailIngredient $ci) {
+                return $ci->amount . ' ' . $ci->units . ' ' . $ci->ingredient->name;
+            }),
+        ];
     }
 }

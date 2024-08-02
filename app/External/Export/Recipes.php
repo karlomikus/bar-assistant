@@ -82,11 +82,7 @@ class Recipes
             // Overwrite images with local filepaths
             $data['images'] = $externalImages;
 
-            if ($type === ExportTypeEnum::YAML) {
-                $cocktailExportData = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
-            } else {
-                $cocktailExportData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-            }
+            $cocktailExportData = $this->prepareDataOutput($type, $data);
 
             $zip->addFromString('cocktails/' . $data['_id'] . '.' . $type->value, $cocktailExportData);
         }
@@ -119,11 +115,7 @@ class Recipes
             // Overwrite images with local filepaths
             $data['images'] = $externalImages;
 
-            if ($type === ExportTypeEnum::YAML) {
-                $ingredientExportData = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
-            } else {
-                $ingredientExportData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-            }
+            $ingredientExportData = $this->prepareDataOutput($type, $data);
 
             $zip->addFromString('ingredients/' . $data['_id'] . '.' . $type->value, $ingredientExportData);
         }
@@ -139,13 +131,17 @@ class Recipes
         ];
 
         foreach ($baseDataFiles as $file => $data) {
-            if ($type === ExportTypeEnum::YAML) {
-                $exportData = Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK | Yaml::DUMP_OBJECT_AS_MAP);
-            } else {
-                $exportData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-            }
+            $exportData = $this->prepareDataOutput($type, $data);
 
             $zip->addFromString($file . '.' . $type->value, $exportData);
         }
+    }
+
+    private function prepareDataOutput(ExportTypeEnum $type, array $data): string
+    {
+        return match ($type) {
+            ExportTypeEnum::JSON => json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            ExportTypeEnum::YAML => Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK),
+        };
     }
 }

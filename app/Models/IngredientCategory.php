@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class IngredientCategory extends Model
 {
+    /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\IngredientCategoryFactory> */
     use HasFactory;
     use HasBarAwareScope;
 

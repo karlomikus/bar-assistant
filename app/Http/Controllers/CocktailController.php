@@ -17,7 +17,7 @@ use Kami\Cocktail\Services\ImageService;
 use Illuminate\Support\Facades\Validator;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Services\CocktailService;
-use Kami\Cocktail\Rules\IngredientBelongsToBar;
+use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Repository\CocktailRepository;
@@ -65,7 +65,7 @@ class CocktailController extends Controller
     public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
         Validator::make($request->post('ingredients', []), [
-            '*.ingredient_id' => [new IngredientBelongsToBar(bar()->id)],
+            '*.ingredient_id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
         ])->validate();
 
         if ($request->user()->cannot('create', Cocktail::class)) {
@@ -95,7 +95,7 @@ class CocktailController extends Controller
         $cocktail = Cocktail::findOrFail($id);
 
         Validator::make($request->post('ingredients', []), [
-            '*.ingredient_id' => [new IngredientBelongsToBar($cocktail->bar_id)],
+            '*.ingredient_id' => [new ResourceBelongsToBar($cocktail->bar_id, 'ingredients')],
         ])->validate();
 
         if ($request->user()->cannot('edit', $cocktail)) {
@@ -193,6 +193,10 @@ class CocktailController extends Controller
 
         if ($type === 'json') {
             return new Response(json_encode($data, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
+        }
+
+        if ($type === 'json+ld') {
+            return new Response(json_encode($cocktail->asJsonLDSchema(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
         }
 
         if ($type === 'yaml' || $type === 'yml') {

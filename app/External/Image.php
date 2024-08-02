@@ -29,7 +29,7 @@ readonly class Image implements JsonSerializable
 
     public static function fromArray(array $sourceArray): self
     {
-        $source = $sourceArray['source'] ?? $sourceArray['file_name'] ?? $sourceArray['url'] ?? null;
+        $source = $sourceArray['uri'] ?? $sourceArray['source'] ?? $sourceArray['file_name'] ?? $sourceArray['url'] ?? null;
 
         return new self(
             $source,

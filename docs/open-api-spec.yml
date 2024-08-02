@@ -84,6 +84,8 @@ tags:
     description: Operations related to PAT
   - name: Exports
     description: Operations related to export files
+  - name: Price category
+    description: Operations related to price categories
 security:
   - user_token: []
 paths:
@@ -788,7 +790,7 @@ paths:
         schema:
           type: string
           example: attribute_name
-        description: "Available attributes: `parentIngredient`, `varieties`, `cocktails`, `cocktailIngredientSubstitutes`."
+        description: "Available attributes: `parentIngredient`, `varieties`, `cocktails`, `cocktailIngredientSubstitutes`, `prices`."
       tags:
         - Ingredients
       summary: 'Get a list of ingredients'
@@ -2885,6 +2887,115 @@ paths:
           $ref: '#/components/responses/NotAuthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /price-categories:
+    parameters:
+      - $ref: '#/components/parameters/BarParameter'
+    get:
+      tags:
+        - "Price category"
+      summary: 'Show a list of price categories'
+      operationId: getPriceCategories
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PriceCategoryResponse'
+    post:
+      tags:
+        - "Price category"
+      summary: Add price category
+      operationId: addPriceCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceCategoryRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PriceCategoryResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /price-categories/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: 'Database id of price category'
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - "Price category"
+      summary: Show a single price category
+      operationId: getPriceCategory
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PriceCategoryResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - "Price category"
+      summary: Update a specific price category
+      operationId: updatePriceCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceCategoryRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PriceCategoryResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      tags:
+        - "Price category"
+      summary: Delete specific price category
+      operationId: deletePriceCategory
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          $ref: '#/components/responses/NotAuthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     user_token:
@@ -3107,6 +3218,10 @@ components:
           type: integer
           example: 1
           nullable: true
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientPriceRequest'
     Ingredient:
       type: object
       required:
@@ -3213,6 +3328,10 @@ components:
               type: boolean
             can_delete:
               type: boolean
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientPrice'
     IngredientCategory:
       type: object
       required:
@@ -4633,3 +4752,90 @@ components:
           type: string
         is_done:
           type: boolean
+    PriceCategoryRequest:
+      type: object
+      required:
+        - name
+        - currency
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        currency:
+          type: string
+          format: ISO4217
+    PriceCategoryResponse:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - currency
+        - currency_symbol
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: "Amazon (DE)"
+        description:
+          type: string
+          example: "Current price on amazon.de"
+        currency:
+          type: string
+          format: ISO4217
+          example: "EUR"
+        currency_symbol:
+          type: string
+          example: "€"
+    IngredientPriceRequest:
+      type: object
+      required:
+        - price_category_id
+        - price
+        - amount
+        - units
+      properties:
+        price_category_id:
+          type: integer
+        price:
+          type: integer
+          format: minor
+        amount:
+          type: number
+        units:
+          type: string
+        description:
+          type: string
+    IngredientPrice:
+      type: object
+      properties:
+        price_category:
+          $ref: '#/components/schemas/PriceCategoryResponse'
+        price:
+          type: string
+          example: "23.85"
+        price_minor:
+          type: integer
+          format: minor
+          example: 2385
+        price_formatted:
+          type: string
+          example: "EUR 23.85"
+        amount:
+          type: number
+          example: 750
+        units:
+          type: string
+          example: ml
+        description:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true

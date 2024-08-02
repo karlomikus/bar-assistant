@@ -69,6 +69,9 @@ class IngredientResource extends JsonResource
                 'name' => $cip->ingredient->name,
                 'slug' => $cip->ingredient->slug,
             ])),
+            'prices' => $this->when($this->relationLoaded('prices'), function () {
+                return IngredientPriceResource::collection($this->prices);
+            }),
         ];
     }
 }

@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Bar extends Model
 {
+    /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\BarFactory> */
     use HasFactory;
     use HasAuthors;
     use HasSlug;

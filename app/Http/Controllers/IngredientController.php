@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Validator;
-use Kami\Cocktail\Rules\IngredientBelongsToBar;
+use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Repository\CocktailRepository;
@@ -36,7 +36,7 @@ class IngredientController extends Controller
 
     public function show(Request $request, string $id): JsonResource
     {
-        $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient', 'createdUser', 'updatedUser', 'ingredientParts.ingredient')
+        $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient', 'createdUser', 'updatedUser', 'ingredientParts.ingredient', 'prices.priceCategory')
             ->withCount('cocktails')
             ->where('id', $id)
             ->orWhere('slug', $id)
@@ -52,7 +52,8 @@ class IngredientController extends Controller
     public function store(IngredientService $ingredientService, IngredientRequest $request): JsonResponse
     {
         Validator::make($request->all(), [
-            'complex_ingredient_part_ids' => [new IngredientBelongsToBar(bar()->id)],
+            'complex_ingredient_part_ids' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
+            'prices.*.price_category_id' => [new ResourceBelongsToBar(bar()->id, 'price_categories')],
         ])->validate();
 
         if ($request->user()->cannot('create', Ingredient::class)) {
@@ -74,7 +75,8 @@ class IngredientController extends Controller
         $ingredient = Ingredient::findOrFail($id);
 
         Validator::make($request->all(), [
-            'complex_ingredient_part_ids' => [new IngredientBelongsToBar($ingredient->bar_id)],
+            'complex_ingredient_part_ids' => [new ResourceBelongsToBar($ingredient->bar_id, 'ingredients')],
+            'prices.*.price_category_id' => [new ResourceBelongsToBar($ingredient->bar_id, 'price_categories')],
         ])->validate();
 
         if ($request->user()->cannot('edit', $ingredient)) {

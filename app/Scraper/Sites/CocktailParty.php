@@ -24,7 +24,7 @@ class CocktailParty extends AbstractSiteExtractor
 
     public function description(): ?string
     {
-        return $this->joinParagraphs($this->findDescriptionContainer()->filter('.elementor-widget-theme-post-content div p'));
+        return $this->joinParagraphs($this->crawler->filter('[data-widget_type="theme-post-content.default"] p'));
     }
 
     public function source(): ?string

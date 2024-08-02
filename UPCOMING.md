@@ -1,5 +1,5 @@
 # Breaking
 - Remove collections share
-- Encode images into export file
-    - Compress / compare
+- Change export format
 - Bump php to 8.3
+- Use unprivileged image

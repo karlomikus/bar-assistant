@@ -19,7 +19,7 @@ class StatsController extends Controller
     public function index(CocktailRepository $cocktailRepo, Request $request): JsonResponse
     {
         $bar = bar();
-        $barMembership = $request->user()->getBarMembership(bar()->id);
+        $barMembership = $request->user()->getBarMembership(bar()->id)->load('userIngredients');
         $limit = $request->get('limit', 5);
         $stats = [];
 
