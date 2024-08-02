@@ -1,4 +1,4 @@
-FROM php:8.2-fpm as php-base
+FROM php:8.2-fpm AS php-base
 
 ARG PGID=1000
 ENV PGID=${PGID}
@@ -32,7 +32,7 @@ WORKDIR /var/www/cocktails
 
 CMD ["php-fpm"]
 
-FROM php-base as dist
+FROM php-base AS dist
 
 ARG BAR_ASSISTANT_VERSION
 ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-develop}
@@ -73,7 +73,7 @@ VOLUME ["/var/www/cocktails/storage/bar-assistant"]
 
 ENTRYPOINT ["entrypoint"]
 
-FROM php-base as localdev
+FROM php-base AS localdev
 
 RUN useradd -G www-data,root -u $PUID -d /home/developer developer
 RUN mkdir -p /home/developer/.composer && \
