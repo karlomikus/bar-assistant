@@ -125,9 +125,9 @@ class ProtobufDecoder
                     break;
                 case 2: $value = $this->readStringOrObject();
                     break;
-                // case 3:
-                // case 4:
-                //     continue;
+                    // case 3:
+                    // case 4:
+                    //     continue;
                 default:
                     throw new \Exception("Invalid wiretype received: $type - idx $this->idx");
             }
