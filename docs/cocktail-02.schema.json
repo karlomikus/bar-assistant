@@ -1,0 +1,260 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://barassistant.app/cocktail-02.schema.json",
+  "title": "Cocktail recipe - Draft 02",
+  "description": "Schema for a cocktail recipe including detailed ingredient data. Draft 02 splits ingredients and recipe data.",
+  "type": "object",
+  "properties": {
+    "recipe": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "description": "The unique identifier for a cocktail",
+          "type": "string",
+          "format": "slug",
+          "minLength": 1,
+          "examples": ["margarita"]
+        },
+        "name": {
+          "description": "Name of the recipe",
+          "type": "string",
+          "minLength": 1,
+          "examples": ["Margarita"]
+        },
+        "instructions": {
+          "description": "Recipe instructions",
+          "type": ["string", "null"],
+          "examples": ["Shake all ingredients with ice and strain into a chilled glass."]
+        },
+        "created_at": {
+          "description": "Date of recipe",
+          "type": ["string", "null"],
+          "format": "date-time",
+          "examples": ["2024-07-21T15:30:00Z"]
+        },
+        "description": {
+          "description": "Recipe description",
+          "type": ["string", "null"],
+          "examples": ["A refreshing blend of tequila, lime juice, and triple sec."]
+        },
+        "source": {
+          "description": "Source of the recipe, either URL or Book referece",
+          "type": ["string", "null"],
+          "examples": ["https://example.com/margarita-recipe"]
+        },
+        "garnish": {
+          "description": "Cocktail garnish",
+          "type": ["string", "null"],
+          "examples": ["Lime wheel"]
+        },
+        "abv": {
+          "description": "Total ABV of made cocktail",
+          "type": ["number", "null"],
+          "minimum": 0,
+          "examples": [12.5]
+        },
+        "tags": {
+          "description": "Short keywords to describe cocktail",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "examples": [["refreshing", "citrus", "classic"]]
+        },
+        "glass": {
+          "description": "Glass type",
+          "type": ["string", "null"],
+          "examples": ["Coupe"]
+        },
+        "method": {
+          "description": "Cocktail method",
+          "type": ["string", "null"],
+          "examples": ["Shake"]
+        },
+        "utensils": {
+          "description": "Required utensils",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "examples": [["Shaker", "Strainer"]]
+        },
+        "images": {
+          "description": "List of cocktail images",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "title": "Image",
+            "properties": {
+              "uri": {
+                "type": "string",
+                "format": "uri",
+                "examples": ["https://example.com/image.jpg", "/path/to/image.png"]
+              },
+              "sort": {
+                "description": "Control the representation of the image",
+                "type": "number",
+                "minimum": 0
+              },
+              "placeholder_hash": {
+                "description": "Computed placeholder hash, like thumbhash, blurhash and similar",
+                "type": ["string", "null"]
+              },
+              "copyright": {
+                "description": "Image copyright information",
+                "type": "string",
+                "examples": ["© 2024 Bar Assistant"]
+              }
+            },
+            "required": [
+              "uri",
+              "copyright"
+            ]
+          }
+        },
+        "ingredients": {
+          "description": "List of cocktail ingredients and substitutes",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "title": "Cocktail ingredient",
+            "properties": {
+              "_id": {
+                "description": "The unique reference for an ingredient from `ingredients` property",
+                "type": "string",
+                "minLength": 1,
+                "examples": ["tequila"]
+              },
+              "amount": {
+                "description": "Amount of the ingredient",
+                "type": "number",
+                "minimum": 0,
+                "maximum": 99999,
+                "examples": [50]
+              },
+              "units": {
+                "description": "Units for the amount",
+                "type": "string",
+                "minLength": 1,
+                "examples": ["ml"]
+              },
+              "optional": {
+                "description": "Indicates if the ingredient is optional",
+                "type": "boolean",
+                "examples": [false]
+              },
+              "amount_max": {
+                "description": "Maximum amount of the ingredient",
+                "type": ["number", "null"],
+                "minimum": 0,
+                "maximum": 99999,
+                "examples": [60]
+              },
+              "note": {
+                "description": "Additional note related to the cocktail ingredient",
+                "type": ["string", "null"],
+                "examples": ["Preferebly blanco"]
+              },
+              "substitutes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "title": "Cocktail ingredient substitute",
+                  "properties": {
+                    "_id": {
+                      "description": "The unique reference for an ingredient from `ingredients` property",
+                      "type": "string",
+                      "minLength": 1,
+                      "examples": ["mezcal"]
+                    },
+                    "amount": {
+                      "description": "Amount of the substitute ingredient",
+                      "type": ["number", "null"],
+                      "examples": [50]
+                    },
+                    "units": {
+                      "description": "Units for the amount",
+                      "type": ["string", "null"],
+                      "examples": ["ml"]
+                    },
+                    "amount_max": {
+                      "description": "Maximum amount of the substitute ingredient",
+                      "type": ["number", "null"],
+                      "examples": [60]
+                    }
+                  },
+                  "required": [
+                    "_id"
+                  ]
+                }
+              },
+              "sort": {
+                "description": "Sort order for the ingredient",
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "_id",
+              "amount",
+              "units"
+            ]
+          }
+        }
+      },
+      "required": [
+        "_id",
+        "name",
+        "instructions"
+      ]
+    },
+    "ingredients": {
+      "type": "array",
+      "description": "List of ingredients",
+      "items": {
+        "type": "object",
+        "title": "Ingredient",
+        "properties": {
+          "_id": {
+            "description": "The unique identifier for an ingredient, used as a refrence in cocktail ingredient list",
+            "type": "string",
+            "minLength": 1,
+            "examples": ["tequila"]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "examples": ["Tequila"]
+          },
+          "strength": {
+            "description": "Ingredient ABV",
+            "type": ["number", "null"],
+            "minimum": 0,
+            "examples": [40]
+          },
+          "description": {
+            "description": "Additional ingredient information",
+            "type": ["string", "null"],
+            "examples": ["A Mexican spirit made from the blue agave plant."]
+          },
+          "origin": {
+            "description": "Ingredient origin",
+            "type": ["string", "null"],
+            "examples": ["Mexico"]
+          },
+          "category": {
+            "description": "Category ingredient belongs to",
+            "type": ["string", "null"],
+            "examples": ["Spirit"]
+          }
+        },
+        "required": [
+         "_id",
+         "name"
+        ]
+      }
+    }
+  }
+}
