@@ -12,7 +12,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Illuminate\Support\Facades\Storage;
-use Kami\Cocktail\External\Import\FromRecipesData;
+use Kami\Cocktail\External\Import\FromDataPack;
 
 class BarImportRecipes extends Command
 {
@@ -30,7 +30,7 @@ class BarImportRecipes extends Command
      */
     protected $description = 'Import recipes exported via bar:export-recipes command';
 
-    public function __construct(private readonly FromRecipesData $importer)
+    public function __construct(private readonly FromDataPack $importer)
     {
         parent::__construct();
     }

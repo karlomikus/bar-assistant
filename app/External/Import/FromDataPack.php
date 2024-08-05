@@ -8,14 +8,12 @@ use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Tag;
 use Kami\Cocktail\Models\User;
-use Symfony\Component\Yaml\Yaml;
 use Kami\Cocktail\Models\Utensil;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\BarStatusEnum;
 use Illuminate\Filesystem\FilesystemAdapter;
@@ -23,7 +21,7 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Kami\Cocktail\External\Cocktail as CocktailExternal;
 use Kami\Cocktail\External\IngredientWithImages as IngredientExternal;
 
-class FromRecipesData
+class FromDataPack
 {
     private Filesystem $uploadsDisk;
 
@@ -40,10 +38,11 @@ class FromRecipesData
         $bar->setStatus(BarStatusEnum::Provisioning)->save();
 
         $baseDataFiles = [
-            'glasses' => 'base_glasses.yml',
-            'cocktail_methods' => 'base_methods.yml',
-            'utensils' => 'base_utensils.yml',
-            'ingredient_categories' => 'base_ingredient_categories.yml',
+            'glasses' => 'base_glasses.json',
+            'cocktail_methods' => 'base_methods.json',
+            'utensils' => 'base_utensils.json',
+            'ingredient_categories' => 'base_ingredient_categories.json',
+            'price_categories' => 'base_price_categories.json',
         ];
 
         foreach ($baseDataFiles as $table => $file) {
@@ -76,9 +75,7 @@ class FromRecipesData
 
     private function importBaseData(string $tableName, string $filepath, int $barId): void
     {
-        $data = Cache::remember('ba:data-import:' . $filepath, 60 * 60 * 24 * 7, function () use ($filepath) {
-            return Yaml::parseFile($filepath);
-        });
+        $data = json_decode(file_get_contents($filepath), true);
 
         $importData = array_map(function (array $item) use ($barId) {
             $item['bar_id'] = $barId;
@@ -105,7 +102,7 @@ class FromRecipesData
     {
         $ingredients = [];
         foreach ($dataDisk->files('ingredients') as $ingredientFile) {
-            $ingredients[] = Yaml::parseFile($dataDisk->path($ingredientFile));
+            $ingredients[] = json_decode(file_get_contents($dataDisk->path($ingredientFile)), true);
         }
 
         $categories = DB::table('ingredient_categories')->select('id', 'name')->where('bar_id', $bar->id)->get();
@@ -197,7 +194,7 @@ class FromRecipesData
     {
         $cocktails = [];
         foreach ($dataDisk->files('cocktails') as $cocktailFile) {
-            $cocktails[] = Yaml::parseFile($dataDisk->path($cocktailFile));
+            $cocktails[] = json_decode(file_get_contents($dataDisk->path($cocktailFile)), true);
         }
 
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
