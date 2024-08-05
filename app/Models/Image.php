@@ -38,6 +38,24 @@ class Image extends Model
         return $disk->url($this->file_path);
     }
 
+    public function getImageExteralURI(): ?string
+    {
+        if (!$this->file_path) {
+            return null;
+        }
+
+        return 'file:///' . $this->getFileName();
+    }
+
+    public function getFileName(): ?string
+    {
+        if (!$this->file_path) {
+            return null;
+        }
+
+        return str_replace('cocktails/' . $this->imageable->bar_id . '/', '', $this->file_path);
+    }
+
     public function getImageDataURI(): ?string
     {
         if (!$this->file_path) {

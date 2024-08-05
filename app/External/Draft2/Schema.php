@@ -8,7 +8,10 @@ use JsonSerializable;
 
 readonly class Schema implements JsonSerializable
 {
-    private function __construct(
+    /**
+     * @param array<Ingredient> $ingredients
+     */
+    public function __construct(
         public Cocktail $cocktail,
         public array $ingredients,
     ) {

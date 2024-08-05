@@ -256,5 +256,9 @@
         ]
       }
     }
-  }
+  },
+  "required": [
+    "recipe",
+    "ingredients"
+  ]
 }
