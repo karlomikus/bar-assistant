@@ -53,7 +53,11 @@ class Image extends Model
             return null;
         }
 
-        return str_replace('cocktails/' . $this->imageable->bar_id . '/', '', $this->file_path);
+        return match ($this->imageable_type) {
+            Cocktail::class => str_replace('cocktails/' . $this->imageable->bar_id . '/', '', $this->file_path),
+            Ingredient::class => str_replace('ingredients/' . $this->imageable->bar_id . '/', '', $this->file_path),
+            default => null,
+        };
     }
 
     public function getImageDataURI(): ?string

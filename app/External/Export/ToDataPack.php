@@ -6,16 +6,14 @@ namespace Kami\Cocktail\External\Export;
 
 use ZipArchive;
 use Carbon\Carbon;
-use Symfony\Component\Yaml\Yaml;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\External\ExportTypeEnum;
-use Kami\Cocktail\External\Image as ImageExternal;
-use Kami\Cocktail\External\Cocktail as CocktailExternal;
+use Kami\Cocktail\External\DataPack\Cocktail as CocktailExternal;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
-use Kami\Cocktail\External\IngredientWithImages as IngredientExternal;
+use Kami\Cocktail\External\DataPack\IngredientFull as IngredientExternal;
 
 class ToDataPack
 {
@@ -42,9 +40,9 @@ class ToDataPack
             throw new ExportFileNotCreatedException($message);
         }
 
-        $this->dumpCocktails($barId, $zip, $exportType);
-        $this->dumpIngredients($barId, $zip, $exportType);
-        $this->dumpBaseData($barId, $zip, $exportType);
+        $this->dumpCocktails($barId, $zip);
+        $this->dumpIngredients($barId, $zip);
+        $this->dumpBaseData($barId, $zip);
 
         if ($metaContent = json_encode($meta)) {
             $zip->addFromString('_meta.json', $metaContent);
@@ -55,7 +53,7 @@ class ToDataPack
         return $filename;
     }
 
-    private function dumpCocktails(int $barId, ZipArchive &$zip, ExportTypeEnum $type): void
+    private function dumpCocktails(int $barId, ZipArchive &$zip): void
     {
         $cocktails = Cocktail::with(['ingredients.ingredient', 'ingredients.substitutes', 'images' => function ($query) {
             $query->orderBy('sort');
@@ -63,32 +61,20 @@ class ToDataPack
 
         /** @var Cocktail $cocktail */
         foreach ($cocktails as $cocktail) {
-            $data = CocktailExternal::fromModel($cocktail)->toArray();
+            $data = CocktailExternal::fromModel($cocktail);
 
-            $i = 1;
-            $externalImages = [];
+            /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($cocktail->images as $img) {
-                $externalImages[] = ImageExternal::fromArray([
-                    'source' => $data['_id'] . '-' . $i . '.' . $img->file_extension,
-                    'sort' => $img->sort,
-                    'placeholder_hash' => $img->placeholder_hash,
-                    'copyright' => $img->copyright,
-                ])->toArray();
-
-                $zip->addFile($img->getPath(), 'cocktails/images/' . $data['_id'] . '-' . $i . '.' . $img->file_extension);
-                $i++;
+                $zip->addFile($img->getPath(), 'cocktails/' . $img->getFileName());
             }
 
-            // Overwrite images with local filepaths
-            $data['images'] = $externalImages;
+            $cocktailExportData = $this->prepareDataOutput($data);
 
-            $cocktailExportData = $this->prepareDataOutput($type, $data);
-
-            $zip->addFromString('cocktails/' . $data['_id'] . '.' . $type->value, $cocktailExportData);
+            $zip->addFromString('cocktails/' . $cocktail->getExternalId() . '_recipe.json', $cocktailExportData);
         }
     }
 
-    private function dumpIngredients(int $barId, ZipArchive &$zip, ExportTypeEnum $type): void
+    private function dumpIngredients(int $barId, ZipArchive &$zip): void
     {
         $ingredients = Ingredient::with(['images' => function ($query) {
             $query->orderBy('sort');
@@ -96,52 +82,38 @@ class ToDataPack
 
         /** @var Ingredient $ingredient */
         foreach ($ingredients as $ingredient) {
-            $data = IngredientExternal::fromModel($ingredient)->toArray();
+            $data = IngredientExternal::fromModel($ingredient);
 
-            $i = 1;
-            $externalImages = [];
+            /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($ingredient->images as $img) {
-                $externalImages[] = ImageExternal::fromArray([
-                    'source' => $data['_id'] . '-' . $i . '.' . $img->file_extension,
-                    'sort' => $img->sort,
-                    'placeholder_hash' => $img->placeholder_hash,
-                    'copyright' => $img->copyright,
-                ])->toArray();
-
-                $zip->addFile($img->getPath(), 'ingredients/images/' . $data['_id'] . '-' . $i . '.' . $img->file_extension);
-                $i++;
+                $zip->addFile($img->getPath(), 'ingredients/' . $img->getFileName());
             }
 
-            // Overwrite images with local filepaths
-            $data['images'] = $externalImages;
+            $ingredientExportData = $this->prepareDataOutput($data);
 
-            $ingredientExportData = $this->prepareDataOutput($type, $data);
-
-            $zip->addFromString('ingredients/' . $data['_id'] . '.' . $type->value, $ingredientExportData);
+            $zip->addFromString('ingredients/' . $ingredient->getExternalId() . '.json', $ingredientExportData);
         }
     }
 
-    private function dumpBaseData(int $barId, ZipArchive &$zip, ExportTypeEnum $type): void
+    private function dumpBaseData(int $barId, ZipArchive &$zip): void
     {
         $baseDataFiles = [
             'base_glasses' => DB::table('glasses')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
             'base_methods' => DB::table('cocktail_methods')->select('name', 'dilution_percentage')->where('bar_id', $barId)->get()->toArray(),
             'base_utensils' => DB::table('utensils')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
             'base_ingredient_categories' => DB::table('ingredient_categories')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
+            'base_price_categories' => DB::table('price_categories')->select('name', 'currency', 'description')->where('bar_id', $barId)->get()->toArray(),
         ];
 
         foreach ($baseDataFiles as $file => $data) {
-            $exportData = $this->prepareDataOutput($type, $data);
+            $exportData = $this->prepareDataOutput($data);
 
-            $zip->addFromString($file . '.' . $type->value, $exportData);
+            $zip->addFromString($file . '.json', $exportData);
         }
     }
 
-    private function prepareDataOutput(ExportTypeEnum $type, array $data): string
+    private function prepareDataOutput(mixed $data): string
     {
-        return match ($type) {
-            ExportTypeEnum::JSON => json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
-            ExportTypeEnum::YAML => Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK),
-        };
+        return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 }

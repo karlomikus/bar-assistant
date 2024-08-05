@@ -9,9 +9,7 @@ use Carbon\Carbon;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\External\Draft2\Schema as SchemaExternal;
-use Kami\Cocktail\External\Draft2\Cocktail as CocktailExternal;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
-use Kami\Cocktail\External\Draft2\Ingredient as IngredientExternal;
 
 class ToSchemaDraft2
 {
@@ -58,17 +56,8 @@ class ToSchemaDraft2
 
         /** @var Cocktail $cocktail */
         foreach ($cocktails as $cocktail) {
-            $data = CocktailExternal::fromModel($cocktail);
-
-            $i = 1;
             foreach ($cocktail->images as $img) {
                 $zip->addFile($img->getPath(), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getFileName());
-                $i++;
-            }
-
-            $ingredients = [];
-            foreach ($cocktail->ingredients as $cocktailIngredient) {
-                $ingredients[] = IngredientExternal::fromModel($cocktailIngredient->ingredient);
             }
 
             $cocktailExportData = $this->prepareDataOutput(
