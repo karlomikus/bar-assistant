@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Kami\Cocktail\Models\Export;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Kami\Cocktail\External\Export\Recipes;
+use Kami\Cocktail\External\Export\ToDataPack;
 use Kami\Cocktail\External\ExportTypeEnum;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -27,7 +27,7 @@ class StartRecipesExport implements ShouldQueue
     ) {
     }
 
-    public function handle(Recipes $exporter): void
+    public function handle(ToDataPack $exporter): void
     {
         $type = ExportTypeEnum::tryFrom($this->type) ?? ExportTypeEnum::JSON;
 

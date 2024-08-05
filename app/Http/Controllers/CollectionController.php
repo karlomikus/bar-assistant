@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\External\Export\CocktailsToCSV;
+use Kami\Cocktail\External\Export\ToCocktailsCSV;
 use Kami\Cocktail\Http\Requests\CollectionRequest;
 use Kami\Cocktail\Http\Resources\CollectionResource;
 use Kami\Cocktail\Http\Filters\CollectionQueryFilter;
@@ -207,7 +207,7 @@ class CollectionController extends Controller
         }
 
         if ($type === 'csv') {
-            $csv = new CocktailsToCSV($units);
+            $csv = new ToCocktailsCSV($units);
             $csvResult = $csv->process($collection->cocktails);
 
             return new Response($csvResult, 200, ['Content-Type' => 'text/csv', 'Content-Disposition' => 'attachment; filename="' . Str::slug($collection->name) . '.csv"']);

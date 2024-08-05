@@ -10,7 +10,7 @@ use Illuminate\Log\LogManager;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 
-class FullBackupToZip
+class ToFullBackup
 {
     public function __construct(
         private readonly LogManager $log,
