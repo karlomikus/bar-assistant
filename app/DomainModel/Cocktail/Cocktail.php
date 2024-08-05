@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\DTO\Cocktail;
+namespace Kami\Cocktail\DomainModel\Cocktail;
 
 use Illuminate\Http\Request;
 

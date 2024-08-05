@@ -15,7 +15,7 @@ use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\Exceptions\IngredientException;
 use Kami\Cocktail\Exceptions\IngredientParentException;
 use Kami\Cocktail\Exceptions\ImagesNotAttachedException;
-use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;
+use Kami\Cocktail\DomainModel\Ingredient\Ingredient as IngredientDTO;
 
 final class IngredientService
 {

@@ -12,7 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Spatie\ArrayToXml\ArrayToXml;
 use Kami\Cocktail\Models\Cocktail;
 use Intervention\Image\ImageManager;
-use Kami\Cocktail\DTO\Image\Image as ImageDTO;
+use Kami\Cocktail\DomainModel\Image\Image as ImageDTO;
 use Kami\Cocktail\Services\ImageService;
 use Illuminate\Support\Facades\Validator;
 use Kami\RecipeUtils\UnitConverter\Units;
@@ -24,11 +24,11 @@ use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
-use Kami\Cocktail\DTO\Cocktail\Cocktail as CocktailDTO;
+use Kami\Cocktail\DomainModel\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\External\Cocktail as CocktailExternal;
 use Kami\Cocktail\Http\Resources\CocktailPublicResource;
-use Kami\Cocktail\DTO\Cocktail\Ingredient as IngredientDTO;
-use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
+use Kami\Cocktail\DomainModel\Cocktail\Ingredient as IngredientDTO;
+use Kami\Cocktail\DomainModel\Cocktail\Substitute as SubstituteDTO;
 
 class CocktailController extends Controller
 {

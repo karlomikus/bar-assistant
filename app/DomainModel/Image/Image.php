@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\DTO\Image;
+namespace Kami\Cocktail\DomainModel\Image;
 
 use Intervention\Image\Interfaces\ImageInterface;
 
