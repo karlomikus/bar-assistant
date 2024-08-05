@@ -19,7 +19,7 @@ use Kami\Cocktail\Repository\IngredientRepository;
 use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Filters\IngredientQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
-use Kami\Cocktail\DomainModel\Ingredient\Ingredient as IngredientDTO;
+use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;
 
 class IngredientController extends Controller
 {

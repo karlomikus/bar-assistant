@@ -12,7 +12,7 @@ use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Kami\Cocktail\DomainModel\Image\Image as ImageDTO;
+use Kami\Cocktail\DTO\Image\Image as ImageDTO;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Intervention\Image\Encoders\AutoEncoder;
 use Intervention\Image\Interfaces\ImageInterface;
