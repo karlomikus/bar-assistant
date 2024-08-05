@@ -17,10 +17,10 @@ readonly class Image implements JsonSerializable
     ) {
     }
 
-    public static function fromModel(ImageModel $model): self
+    public static function fromModel(ImageModel $model, bool $useFullURL = false): self
     {
         return new self(
-            $model->getImageExteralURI(),
+            $useFullURL ? $model->getImageUrl() : $model->getImageExteralURI(),
             $model->copyright ?? '',
             $model->sort,
             $model->placeholder_hash,

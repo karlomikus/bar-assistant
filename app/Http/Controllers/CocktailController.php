@@ -25,7 +25,7 @@ use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\DTO\Cocktail\Cocktail as CocktailDTO;
-use Kami\Cocktail\External\Cocktail as CocktailExternal;
+use Kami\Cocktail\External\Draft2\Schema as SchemaDraft2;
 use Kami\Cocktail\Http\Resources\CocktailPublicResource;
 use Kami\Cocktail\DTO\Cocktail\Ingredient as IngredientDTO;
 use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
@@ -189,10 +189,10 @@ class CocktailController extends Controller
         $type = $request->get('type', 'json');
         $units = Units::tryFrom($request->get('units', ''));
 
-        $data = CocktailExternal::fromModel($cocktail)->toArray();
+        $data = SchemaDraft2::fromCocktailModel($cocktail, true)->toArray();
 
         if ($type === 'json') {
-            return new Response(json_encode($data, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
+            return new Response(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
         }
 
         if ($type === 'json+ld') {

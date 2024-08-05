@@ -72,7 +72,7 @@ class ToSchemaDraft2
             }
 
             $cocktailExportData = $this->prepareDataOutput(
-                new SchemaExternal($data, $ingredients)
+                SchemaExternal::fromCocktailModel($cocktail)
             );
 
             $zip->addFromString('cocktails/' . $cocktail->getExternalId() . '/recipe.json', $cocktailExportData);

@@ -1,3 +1,12 @@
+# v4.0.0
+## Breaking changes
+- Removed importing cocktails from collections
+- Removed importing from v2 format
+- [TODO] Removed exporting to CSV
+
+## New
+- Introduced new export recipe schema
+
 # v3.18.0
 ## New
 - Added price categories

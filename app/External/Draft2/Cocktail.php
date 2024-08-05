@@ -36,10 +36,10 @@ readonly class Cocktail implements JsonSerializable
     ) {
     }
 
-    public static function fromModel(CocktailModel $model): self
+    public static function fromModel(CocktailModel $model, bool $useFullURL = false): self
     {
-        $images = $model->images->map(function (ImageModel $image) {
-            return Image::fromModel($image);
+        $images = $model->images->map(function (ImageModel $image) use ($useFullURL) {
+            return Image::fromModel($image, $useFullURL);
         })->toArray();
 
         $ingredients = $model->ingredients->map(function (CocktailIngredientModel $cocktailIngredient) {
