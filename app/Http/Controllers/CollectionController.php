@@ -19,7 +19,6 @@ use Kami\Cocktail\Http\Requests\CollectionRequest;
 use Kami\Cocktail\Http\Resources\CollectionResource;
 use Kami\Cocktail\Http\Filters\CollectionQueryFilter;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
-use Kami\Cocktail\External\Collection as CollectionExternal;
 
 class CollectionController extends Controller
 {
@@ -185,34 +184,35 @@ class CollectionController extends Controller
 
     public function share(Request $request, int $id): Response
     {
-        $type = $request->get('type', 'json');
-        $units = Units::tryFrom($request->get('units', ''));
+        abort(400, 'Not implemented');
+        // $type = $request->get('type', 'json');
+        // $units = Units::tryFrom($request->get('units', ''));
 
-        $collection = CocktailCollection::findOrFail($id);
+        // $collection = CocktailCollection::findOrFail($id);
 
-        if ($request->user()->cannot('show', $collection)) {
-            abort(403);
-        }
+        // if ($request->user()->cannot('show', $collection)) {
+        //     abort(403);
+        // }
 
-        $collection->load('cocktails.glass', 'cocktails.method', 'cocktails.images', 'cocktails.tags', 'cocktails.ingredients.ingredient.category', 'cocktails.ingredients.substitutes');
+        // $collection->load('cocktails.glass', 'cocktails.method', 'cocktails.images', 'cocktails.tags', 'cocktails.ingredients.ingredient.category', 'cocktails.ingredients.substitutes');
 
-        $data = CollectionExternal::fromModel($collection)->toArray();
+        // $data = CollectionExternal::fromModel($collection)->toArray();
 
-        if ($type === 'json') {
-            return new Response(json_encode($data, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
-        }
+        // if ($type === 'json') {
+        //     return new Response(json_encode($data, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
+        // }
 
-        if ($type === 'yaml' || $type === 'yml') {
-            return new Response(Yaml::dump($data, 4, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK), 200, ['Content-Type' => 'application/yaml']);
-        }
+        // if ($type === 'yaml' || $type === 'yml') {
+        //     return new Response(Yaml::dump($data, 4, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK), 200, ['Content-Type' => 'application/yaml']);
+        // }
 
-        if ($type === 'csv') {
-            $csv = new ToCocktailsCSV($units);
-            $csvResult = $csv->process($collection->cocktails);
+        // if ($type === 'csv') {
+        //     $csv = new ToCocktailsCSV($units);
+        //     $csvResult = $csv->process($collection->cocktails);
 
-            return new Response($csvResult, 200, ['Content-Type' => 'text/csv', 'Content-Disposition' => 'attachment; filename="' . Str::slug($collection->name) . '.csv"']);
-        }
+        //     return new Response($csvResult, 200, ['Content-Type' => 'text/csv', 'Content-Disposition' => 'attachment; filename="' . Str::slug($collection->name) . '.csv"']);
+        // }
 
-        abort(400, 'Requested type "' . $type . '" not supported');
+        // abort(400, 'Requested type "' . $type . '" not supported');
     }
 }

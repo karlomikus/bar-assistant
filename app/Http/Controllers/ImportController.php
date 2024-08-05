@@ -59,28 +59,6 @@ class ImportController extends Controller
             }
         }
 
-        if ($type === 'collection') {
-            if (!is_array($source)) {
-                if (!$source = json_decode($source, true)) {
-                    abort(400, 'Unable to parse the JSON string');
-                }
-            }
-
-            if (count($source['cocktails'] ?? []) === 0) {
-                abort(400, sprintf('No cocktails found'));
-            }
-
-            if (count($source['cocktails'] ?? []) > 100) {
-                abort(400, sprintf('Importing via collection is limited to max 100 cocktails at once'));
-            }
-
-            ImportCollection::dispatch($source, $request->user()->id, bar()->id, $duplicateAction);
-
-            return response()->json([
-                'data' => ['status' => 'started']
-            ]);
-        }
-
         if ($save) {
             $cocktail = $arrayImporter->process($dataToImport, $request->user()->id, bar()->id);
             $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
