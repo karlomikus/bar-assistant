@@ -23,7 +23,7 @@
         },
         "instructions": {
           "description": "Recipe instructions",
-          "type": ["string", "null"],
+          "type": "string",
           "examples": ["Shake all ingredients with ice and strain into a chilled glass."]
         },
         "created_at": {
