@@ -136,6 +136,6 @@ class GlassController extends Controller
 
         $glass->delete();
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 }

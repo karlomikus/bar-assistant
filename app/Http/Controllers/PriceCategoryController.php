@@ -126,6 +126,6 @@ class PriceCategoryController extends Controller
 
         $priceCategory->delete();
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 }

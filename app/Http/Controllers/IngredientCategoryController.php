@@ -125,6 +125,6 @@ class IngredientCategoryController extends Controller
 
         $category->delete();
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 }
