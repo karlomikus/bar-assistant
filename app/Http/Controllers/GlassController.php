@@ -73,11 +73,7 @@ class GlassController extends Controller
             abort(403);
         }
 
-        $glass = new Glass();
-        $glass->name = $request->post('name');
-        $glass->description = $request->post('description');
-        $glass->volume = $request->float('volume');
-        $glass->volume_units = $request->post('volume_units');
+        $glass = BAO\Schemas\GlassRequest::fromLaravelRequest($request)->toLaravelModel();
         $glass->bar_id = bar()->id;
         $glass->save();
 
@@ -108,10 +104,7 @@ class GlassController extends Controller
             abort(403);
         }
 
-        $glass->name = $request->post('name');
-        $glass->description = $request->post('description');
-        $glass->volume = $request->float('volume');
-        $glass->volume_units = $request->post('volume_units');
+        $glass = BAO\Schemas\GlassRequest::fromLaravelRequest($request)->toLaravelModel($glass);
         $glass->updated_at = now();
         $glass->save();
 
