@@ -58,6 +58,8 @@ class IngredientCategoryController extends Controller
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
         new BAO\WrapObjectWithData(BAO\Schemas\IngredientCategory::class),
+    ], headers: [
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
     public function store(IngredientCategoryRequest $request): JsonResponse

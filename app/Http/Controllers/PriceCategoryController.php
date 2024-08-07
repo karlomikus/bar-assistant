@@ -58,6 +58,8 @@ class PriceCategoryController extends Controller
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
         new BAO\WrapObjectWithData(BAO\Schemas\PriceCategory::class),
+    ], headers: [
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
     public function store(PriceCategoryRequest $request): JsonResponse

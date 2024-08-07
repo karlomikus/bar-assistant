@@ -49,6 +49,11 @@ paths:
       responses:
         '201':
           description: 'Successful response'
+          headers:
+            Location:
+              description: 'URL of the new resource'
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -223,6 +228,11 @@ paths:
       responses:
         '201':
           description: 'Successful response'
+          headers:
+            Location:
+              description: 'URL of the new resource'
+              schema:
+                type: string
           content:
             application/json:
               schema:
