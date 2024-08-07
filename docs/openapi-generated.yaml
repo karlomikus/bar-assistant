@@ -756,6 +756,160 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/images/{id}':
+    get:
+      tags:
+        - Images
+      summary: 'Show an image'
+      operationId: 02d07ad762ad36175a8b4c2cdf4eef03
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Image' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    post:
+      tags:
+        - Images
+      summary: 'Update image'
+      operationId: 18a765565c4f43cc01167738ab8ff7cd
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImageRequest'
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Image' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    delete:
+      tags:
+        - Images
+      summary: 'Delete an image'
+      operationId: 99a6b84660d0881a68e57435afb2e6ea
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /images:
+    post:
+      tags:
+        - Images
+      summary: 'Upload an image'
+      operationId: d889115b2fa2ccddce23e39df958cc47
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                images:
+                  type: array
+                  items: { $ref: '#/components/schemas/ImageRequest' }
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Image' } }
+                type: object
+  '/images/{id}/thumb':
+    get:
+      tags:
+        - Images
+      summary: 'Get a thumbnail of an image'
+      operationId: f3fac097ef10296417650431b970d7b3
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            image/jpg:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /ingredient-categories:
     get:
       tags:
@@ -1655,7 +1809,7 @@ components:
         - volume_units
       properties:
         id:
-          type: string
+          type: integer
           example: 1
         name:
           type: string
@@ -1696,6 +1850,48 @@ components:
         volume_units:
           type: string
           example: ml
+          nullable: true
+      type: object
+    Image:
+      properties:
+        id:
+          type: integer
+          example: 1
+        file_path:
+          type: string
+          example: cocktails/1/image.jpg
+        url:
+          type: string
+          example: 'http://example.com/uploads/cocktails/1/image.jpg'
+        copyright:
+          type: string
+          example: 'Image copyright'
+          nullable: true
+        sort:
+          type: integer
+          example: 1
+        placeholder_hash:
+          type: string
+          example: 1QcSHQRnh493V4dIh4eXh1h4kJUI
+          nullable: true
+      type: object
+    ImageRequest:
+      required:
+        - image
+      properties:
+        image:
+          type: string
+          format: binary
+        image_url:
+          type: string
+          example: 'http://example.com/cocktail_image.jpg'
+          nullable: true
+        sort:
+          type: integer
+          example: 1
+        copyright:
+          type: string
+          example: 'Image copyright'
           nullable: true
       type: object
     IngredientCategory:
@@ -1853,6 +2049,9 @@ tags:
   -
     name: Glasses
     description: Glasses
+  -
+    name: Images
+    description: Images
   -
     name: 'Ingredient category'
     description: 'Ingredient category'

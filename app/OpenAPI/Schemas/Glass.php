@@ -10,7 +10,7 @@ use OpenApi\Attributes as OAT;
 class Glass
 {
     #[OAT\Property(example: 1)]
-    public string $id;
+    public int $id;
     #[OAT\Property(example: 'Lowball')]
     public string $name;
     #[OAT\Property(example: 'Glass for smaller cocktails')]
