@@ -12,5 +12,5 @@ class IngredientCategoryRequest
     #[OAT\Property(example: 'Spirits')]
     public string $name;
     #[OAT\Property(example: 'Category of base spirits')]
-    public string $description;
+    public ?string $description = null;
 }

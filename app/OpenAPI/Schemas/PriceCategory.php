@@ -14,7 +14,7 @@ class PriceCategory
     #[OAT\Property(example: 'Amazon (DE)')]
     public string $name;
     #[OAT\Property(example: 'Current price on amazon.de')]
-    public string $description;
+    public ?string $description = null;
     #[OAT\Property(example: 'EUR')]
     public string $currency;
     #[OAT\Property(property: 'currency_symbol', example: '€')]

@@ -4,6 +4,202 @@ info:
   description: "Bar Assistant is a self hosted application for managing your home bar.\n\n    ## Content\n\n    You should set `Content-Type: application/json` header for each request.\n\n    ## Authentication\n\n    Add your login token in header for every request, for example: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.\n    For requests that need reference to bar, add your bar id via query string, for example: `/api/example?bar_id=1`\n\n    ## Authorization\n\n    You will get response with error message and status code `403` if you try to access resource that you don't have permissions for.\n\n    ## Sorting\n\n    Some endpoints allow sorting by specific attributes. Prepending `-` defines descending order, and omitting it defines ascending order. Separate multiple sorts by a comma. For example: `?sort=name` will sort by name attribute in ascending order.\n\n    ## Includes\n\n    Some endpoints allow including extra relationship data on demand. Separate multiple relations witha a comma. For example: `?include=notes,user` will include extra extra data for notes and user.\n\n    ## Pagination\n\n    Some endpoints allow paginating results. Use `?per_page=30` to limit total results per request. Use `?page=3` to go to a specific page.\n\n    ## Filtering\n\n    Some endpoints allow filtering by a specific attribute. For example: `?filter[attribute_name]=value`.\n\n    [Documentation](https://bar-assistant.github.io/docs/) | [Source](https://github.com/karlomikus/bar-assistant)"
   version: '{{VERSION}}'
 paths:
+  /glasses:
+    get:
+      tags:
+        - Glasses
+      summary: 'Show a list of glass types'
+      operationId: aa68a5da541be756aa65f07353e63cdf
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+        -
+          name: filter
+          in: query
+          description: 'Filter by attributes'
+          style: deepObject
+          explode: true
+          schema:
+            properties:
+              name:
+                type: string
+            type: object
+        -
+          name: sort
+          in: query
+          description: 'Sort by attributes. Available attributes: `name`, `created_at`.'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Glass' } }
+                type: object
+    post:
+      tags:
+        - Glasses
+      summary: 'Create a new glass'
+      operationId: b81ce1bc5d5988d9221774a715a90950
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GlassRequest'
+      responses:
+        '201':
+          description: 'Successful response'
+          headers:
+            Location:
+              description: 'URL of the new resource'
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Glass' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/glasses/{id}':
+    get:
+      tags:
+        - Glasses
+      summary: 'Show glass'
+      operationId: aca8ea95b45a17cfe2a0442cde2f53ad
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Glass' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    put:
+      tags:
+        - Glasses
+      summary: 'Update glass'
+      operationId: c9c1cb0561aa1222cc78654eaceb9a62
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GlassRequest'
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Glass' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    delete:
+      tags:
+        - Glasses
+      summary: 'Delete glass'
+      operationId: 876925de63d0a9bf6b8d2337661f135a
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /ingredient-categories:
     get:
       tags:
@@ -376,6 +572,59 @@ components:
           type: string
           example: 'Resource record not found.'
       type: object
+    Glass:
+      required:
+        - id
+        - name
+        - description
+        - cocktails_count
+        - volume
+        - volume_units
+      properties:
+        id:
+          type: string
+          example: 1
+        name:
+          type: string
+          example: Lowball
+        description:
+          type: string
+          example: 'Glass for smaller cocktails'
+          nullable: true
+        cocktails_count:
+          type: string
+          example: 32
+        volume:
+          type: number
+          format: float
+          example: 120
+          nullable: true
+        volume_units:
+          type: string
+          example: ml
+          nullable: true
+      type: object
+    GlassRequest:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Lowball
+        description:
+          type: string
+          example: 'Glass for smaller cocktails'
+          nullable: true
+        volume:
+          type: number
+          format: float
+          example: 120
+          nullable: true
+        volume_units:
+          type: string
+          example: ml
+          nullable: true
+      type: object
     IngredientCategory:
       required:
         - id
@@ -392,6 +641,7 @@ components:
         description:
           type: string
           example: 'Category of base spirits'
+          nullable: true
         ingredients_count:
           type: integer
           example: 32
@@ -407,6 +657,7 @@ components:
         description:
           type: string
           example: 'Category of base spirits'
+          nullable: true
       type: object
     PriceCategory:
       required:
@@ -424,6 +675,7 @@ components:
         description:
           type: string
           example: 'Current price on amazon.de'
+          nullable: true
         currency:
           type: string
           example: EUR
@@ -443,6 +695,7 @@ components:
         description:
           type: string
           example: 'Current price on amazon.de'
+          nullable: true
         currency:
           type: string
           example: EUR
@@ -455,6 +708,9 @@ security:
   -
     user_token: []
 tags:
+  -
+    name: Glasses
+    description: Glasses
   -
     name: 'Ingredient category'
     description: 'Ingredient category'

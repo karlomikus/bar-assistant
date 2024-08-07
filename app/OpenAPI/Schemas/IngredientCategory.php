@@ -14,7 +14,7 @@ class IngredientCategory
     #[OAT\Property(example: 'Spirits')]
     public string $name;
     #[OAT\Property(example: 'Category of base spirits')]
-    public string $description;
+    public ?string $description = null;
     #[OAT\Property(property: 'ingredients_count', example: 32)]
     public int $ingredientsCount;
 }
