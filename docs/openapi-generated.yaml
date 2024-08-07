@@ -4,6 +4,383 @@ info:
   description: "Bar Assistant is a self hosted application for managing your home bar.\n\n    ## Content\n\n    You should set `Content-Type: application/json` header for each request.\n\n    ## Authentication\n\n    Add your login token in header for every request, for example: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.\n    For requests that need reference to bar, add your bar id via query string, for example: `/api/example?bar_id=1`\n\n    ## Authorization\n\n    You will get response with error message and status code `403` if you try to access resource that you don't have permissions for.\n\n    ## Sorting\n\n    Some endpoints allow sorting by specific attributes. Prepending `-` defines descending order, and omitting it defines ascending order. Separate multiple sorts by a comma. For example: `?sort=name` will sort by name attribute in ascending order.\n\n    ## Includes\n\n    Some endpoints allow including extra relationship data on demand. Separate multiple relations witha a comma. For example: `?include=notes,user` will include extra extra data for notes and user.\n\n    ## Pagination\n\n    Some endpoints allow paginating results. Use `?per_page=30` to limit total results per request. Use `?page=3` to go to a specific page.\n\n    ## Filtering\n\n    Some endpoints allow filtering by a specific attribute. For example: `?filter[attribute_name]=value`.\n\n    [Documentation](https://bar-assistant.github.io/docs/) | [Source](https://github.com/karlomikus/bar-assistant)"
   version: '{{VERSION}}'
 paths:
+  /bars:
+    get:
+      tags:
+        - Bars
+      summary: 'Show a list of bars user has access to'
+      operationId: 8e4aff1910c2f6b973c0bcff7ac77418
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Bar' } }
+                type: object
+    post:
+      tags:
+        - Bars
+      summary: 'Create a new bar'
+      operationId: af500d926f43cd1cd146adc9c46f8e41
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BarRequest'
+      responses:
+        '201':
+          description: 'Successful response'
+          headers:
+            Location:
+              description: 'URL of the new resource'
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Bar' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/bars/{id}':
+    get:
+      tags:
+        - Bars
+      summary: 'Show a specific bar'
+      operationId: 6e92536f11339d30675019e6e93f9ce4
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Bar' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    put:
+      tags:
+        - Bars
+      summary: 'Update a bar'
+      operationId: 06fb0f42934fc2cd15b00b25027494d1
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BarRequest'
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Bar' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    delete:
+      tags:
+        - Bars
+      summary: 'Delete a bar'
+      operationId: dac7d15bfe40981c358d5a52c8a9e31b
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /bars/join:
+    post:
+      tags:
+        - Bars
+      summary: 'Join a bar via invite code'
+      operationId: 825a1e86cd76f3ca07ad2f11ea45f648
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                invite_code:
+                  type: string
+                  example: 01H8S3VH2HTEB3D893AW8NTBBC
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Bar' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/bars/{id}/memberships':
+    get:
+      tags:
+        - Bars
+      summary: 'List all members of a bar'
+      operationId: 7a49e26fb4754edae7aa107fd1e35205
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/BarMembership' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    delete:
+      tags:
+        - Bars
+      summary: 'Leave a bar you are a member of'
+      operationId: c3986ac9cf5fe6e4090b993e323480ad
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/bars/{id}/memberships/{userId}':
+    delete:
+      tags:
+        - Bars
+      summary: 'Remove a member from a bar'
+      operationId: 74df840e62b14107dd9d65b49ed84b27
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: userId
+          in: path
+          description: 'Database id of a user'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/bars/{id}/transfer':
+    post:
+      tags:
+        - Bars
+      summary: 'Transfer bar ownership'
+      operationId: 208f8a6850027fe0ea9f3b304975fa30
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                user_id:
+                  description: 'Database id of a user you want to transfer ownership to'
+                  type: integer
+                  example: 1
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/bars/{id}/status':
+    post:
+      tags:
+        - Bars
+      summary: 'Update bar status'
+      operationId: 200c1aba9ada2cd66a7d0b7a4ec90a8e
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                status:
+                  $ref: '#/components/schemas/BarStatusEnum'
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /cocktail-methods:
     get:
       tags:
@@ -1097,6 +1474,12 @@ paths:
                 type: object
 components:
   schemas:
+    BarStatusEnum:
+      type: string
+      enum:
+        - provisioning
+        - active
+        - deactivated
     APIError:
       required:
         - type
@@ -1108,6 +1491,127 @@ components:
         message:
           type: string
           example: 'Resource record not found.'
+      type: object
+    Bar:
+      properties:
+        id:
+          type: integer
+          example: 1
+        slug:
+          type: string
+          example: bar-name-1
+        name:
+          type: string
+          example: 'Bar name'
+        subtitle:
+          type: string
+          example: 'A short subtitle of a bar'
+          nullable: true
+        description:
+          type: string
+          example: 'Bar description'
+          nullable: true
+        invite_code:
+          type: string
+          example: 01H8S3VH2HTEB3D893AW8NTBBC
+          nullable: true
+        status:
+          $ref: '#/components/schemas/BarStatusEnum'
+        settings:
+          type: array
+          items:
+            type: string
+        search_driver_host:
+          type: string
+          nullable: true
+        search_driver_api_key:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_user:
+          $ref: '#/components/schemas/UserBasic'
+        updated_user:
+          nullable: true
+          oneOf:
+            -
+              $ref: '#/components/schemas/UserBasic'
+        access:
+          type: array
+          items:
+            properties:
+              role_id:
+                type: integer
+                example: 1
+              can_edit:
+                type: boolean
+                example: true
+              can_delete:
+                type: boolean
+                example: true
+              can_activate:
+                type: boolean
+                example: true
+              can_deactivate:
+                type: boolean
+                example: true
+            type: object
+      type: object
+    BarMembership:
+      properties:
+        user_id:
+          type: integer
+          example: 1
+        user_name:
+          type: string
+          example: Bartender
+        bar_id:
+          type: integer
+          example: 1
+        is_shelf_public:
+          type: boolean
+          example: true
+        use_parent_as_substitute:
+          type: boolean
+          example: true
+      type: object
+    BarRequest:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: 'Bar name'
+        subtitle:
+          type: string
+          example: 'A short subtitle of a bar'
+          nullable: true
+        description:
+          type: string
+          example: 'Bar description'
+          nullable: true
+        slug:
+          type: string
+          example: bar-name-1
+        default_units:
+          type: string
+          example: ml
+          nullable: true
+        default_lang:
+          type: string
+          example: en-US
+          nullable: true
+        enable_invites:
+          type: boolean
+        options:
+          type: array
+          items:
+            type: string
       type: object
     CocktailMethod:
       required:
@@ -1291,6 +1795,18 @@ components:
           type: string
           example: Floral
       type: object
+    UserBasic:
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Bartender
+      type: object
     Utensil:
       required:
         - id
@@ -1328,6 +1844,9 @@ security:
   -
     user_token: []
 tags:
+  -
+    name: Bars
+    description: Bars
   -
     name: 'Cocktail method'
     description: 'Cocktail method'
