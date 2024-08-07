@@ -40,9 +40,10 @@ class CocktailController extends Controller
             abort(400, $e->getMessage());
         }
 
-        $cocktails = $cocktails->paginate($request->get('per_page', 25))->withQueryString();
+        /** @var \Illuminate\Pagination\LengthAwarePaginator<Cocktail> */
+        $cocktails = $cocktails->paginate($request->get('per_page', 25));
 
-        return CocktailResource::collection($cocktails);
+        return CocktailResource::collection($cocktails->withQueryString());
     }
 
     public function show(string $idOrSlug, Request $request): JsonResource
@@ -127,7 +128,7 @@ class CocktailController extends Controller
 
         $cocktail->delete();
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 
     public function toggleFavorite(CocktailService $cocktailService, Request $request, int $id): JsonResponse
@@ -170,7 +171,7 @@ class CocktailController extends Controller
 
         $cocktail = $cocktail->makePrivate();
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 
     public function share(Request $request, string $idOrSlug): Response
