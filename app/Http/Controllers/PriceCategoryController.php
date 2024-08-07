@@ -56,7 +56,7 @@ class PriceCategoryController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\PriceCategoryRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[OAT\Response(response: 201, description: 'Successful response', content: [
         new BAO\WrapObjectWithData(BAO\Schemas\PriceCategory::class),
     ])]
     #[BAO\NotAuthorizedResponse]

@@ -4,6 +4,180 @@ info:
   description: "Bar Assistant is a self hosted application for managing your home bar.\n\n    ## Content\n\n    You should set `Content-Type: application/json` header for each request.\n\n    ## Authentication\n\n    Add your login token in header for every request, for example: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.\n    For requests that need reference to bar, add your bar id via query string, for example: `/api/example?bar_id=1`\n\n    ## Authorization\n\n    You will get response with error message and status code `403` if you try to access resource that you don't have permissions for.\n\n    ## Sorting\n\n    Some endpoints allow sorting by specific attributes. Prepending `-` defines descending order, and omitting it defines ascending order. Separate multiple sorts by a comma. For example: `?sort=name` will sort by name attribute in ascending order.\n\n    ## Includes\n\n    Some endpoints allow including extra relationship data on demand. Separate multiple relations witha a comma. For example: `?include=notes,user` will include extra extra data for notes and user.\n\n    ## Pagination\n\n    Some endpoints allow paginating results. Use `?per_page=30` to limit total results per request. Use `?page=3` to go to a specific page.\n\n    ## Filtering\n\n    Some endpoints allow filtering by a specific attribute. For example: `?filter[attribute_name]=value`.\n\n    [Documentation](https://bar-assistant.github.io/docs/) | [Source](https://github.com/karlomikus/bar-assistant)"
   version: '{{VERSION}}'
 paths:
+  /ingredient-categories:
+    get:
+      tags:
+        - 'Ingredient category'
+      summary: 'Show a list of ingredient categories'
+      operationId: 9c5a332d2fd9a695a6805451249a0c28
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/IngredientCategory' } }
+                type: object
+    post:
+      tags:
+        - 'Ingredient category'
+      summary: 'Create a new ingredient category'
+      operationId: beef561152a333f7c81fec58a7590f37
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngredientCategoryRequest'
+      responses:
+        '201':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/IngredientCategory' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/ingredient-categories/{id}':
+    get:
+      tags:
+        - 'Ingredient category'
+      summary: 'Show ingredient category'
+      operationId: cca43ededebdf742491f0f8eb0dcfab5
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/IngredientCategory' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    put:
+      tags:
+        - 'Ingredient category'
+      summary: 'Update ingredient category'
+      operationId: bdd96c56bc078a0dbdbc9cb71b1bd503
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngredientCategoryRequest'
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/IngredientCategory' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    delete:
+      tags:
+        - 'Ingredient category'
+      summary: 'Delete ingredient category'
+      operationId: 5190ba80efae47305bdbcf1a68de6fd7
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /price-categories:
     get:
       tags:
@@ -47,7 +221,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PriceCategoryRequest'
       responses:
-        '200':
+        '201':
           description: 'Successful response'
           content:
             application/json:
@@ -192,6 +366,38 @@ components:
           type: string
           example: 'Resource record not found.'
       type: object
+    IngredientCategory:
+      required:
+        - id
+        - name
+        - description
+        - ingredients_count
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Spirits
+        description:
+          type: string
+          example: 'Category of base spirits'
+        ingredients_count:
+          type: integer
+          example: 32
+      type: object
+    IngredientCategoryRequest:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: Spirits
+        description:
+          type: string
+          example: 'Category of base spirits'
+      type: object
     PriceCategory:
       required:
         - id
@@ -239,6 +445,9 @@ security:
   -
     user_token: []
 tags:
+  -
+    name: 'Ingredient category'
+    description: 'Ingredient category'
   -
     name: 'Price category'
     description: 'Price category'
