@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema(required: ['name', 'description', 'currency'])]
+#[OAT\Schema(required: ['name', 'currency'])]
 class PriceCategoryRequest
 {
     #[OAT\Property(example: 'Amazon (DE)')]

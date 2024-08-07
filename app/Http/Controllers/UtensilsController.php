@@ -6,6 +6,8 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Utensil;
 use Kami\Cocktail\Http\Requests\UtensilRequest;
@@ -14,6 +16,12 @@ use Kami\Cocktail\Http\Resources\UtensilResource;
 
 class UtensilsController extends Controller
 {
+    #[OAT\Get(path: '/utensils', tags: ['Utensils'], summary: 'Show a list of utensils', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\Utensil::class),
+    ])]
     public function index(): JsonResource
     {
         $utensils = Utensil::orderBy('name')->filterByBar()->get();
@@ -21,6 +29,14 @@ class UtensilsController extends Controller
         return UtensilResource::collection($utensils);
     }
 
+    #[OAT\Get(path: '/utensils/{id}', tags: ['Utensils'], summary: 'Show utensil', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Utensil::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function show(Request $request, int $id): JsonResource
     {
         $utensil = Utensil::findOrFail($id);
@@ -32,6 +48,20 @@ class UtensilsController extends Controller
         return new UtensilResource($utensil);
     }
 
+    #[OAT\Post(path: '/utensils', tags: ['Utensils'], summary: 'Create a new utensil', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\UtensilRequest::class),
+        ]
+    ))]
+    #[OAT\Response(response: 201, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Utensil::class),
+    ], headers: [
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function store(UtensilRequest $request): JsonResponse
     {
         if ($request->user()->cannot('create', Utensil::class)) {
@@ -50,6 +80,19 @@ class UtensilsController extends Controller
             ->header('Location', route('utensils.show', $utensil->id));
     }
 
+    #[OAT\Put(path: '/utensils/{id}', tags: ['Utensils'], summary: 'Update a specific utensil', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\UtensilRequest::class),
+        ]
+    ))]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Utensil::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function update(int $id, UtensilRequest $request): JsonResource
     {
         $utensil = Utensil::findOrFail($id);
@@ -66,6 +109,12 @@ class UtensilsController extends Controller
         return new UtensilResource($utensil);
     }
 
+    #[OAT\Delete(path: '/utensils/{id}', tags: ['Utensils'], summary: 'Delete specific utensil', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function delete(Request $request, int $id): Response
     {
         $utensil = Utensil::findOrFail($id);
@@ -76,6 +125,6 @@ class UtensilsController extends Controller
 
         $utensil->delete();
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 }

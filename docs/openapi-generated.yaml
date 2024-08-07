@@ -558,6 +558,185 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /utensils:
+    get:
+      tags:
+        - Utensils
+      summary: 'Show a list of utensils'
+      operationId: 613e6e2fed96a23278a5036159e9087d
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Utensil' } }
+                type: object
+    post:
+      tags:
+        - Utensils
+      summary: 'Create a new utensil'
+      operationId: eef2f70636f45820b56cc0025448f847
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtensilRequest'
+      responses:
+        '201':
+          description: 'Successful response'
+          headers:
+            Location:
+              description: 'URL of the new resource'
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Utensil' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/utensils/{id}':
+    get:
+      tags:
+        - Utensils
+      summary: 'Show utensil'
+      operationId: 1b9d7fe5ecf4a0271c20ba17654d209a
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Utensil' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    put:
+      tags:
+        - Utensils
+      summary: 'Update a specific utensil'
+      operationId: 0688a6a8648cdad35503bad732bba86f
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtensilRequest'
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Utensil' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    delete:
+      tags:
+        - Utensils
+      summary: 'Delete specific utensil'
+      operationId: 2f216f7ba27dd48b73ea157501c8bc81
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
 components:
   schemas:
     APIError:
@@ -649,7 +828,6 @@ components:
     IngredientCategoryRequest:
       required:
         - name
-        - description
       properties:
         name:
           type: string
@@ -686,7 +864,6 @@ components:
     PriceCategoryRequest:
       required:
         - name
-        - description
         - currency
       properties:
         name:
@@ -699,6 +876,35 @@ components:
         currency:
           type: string
           example: EUR
+      type: object
+    Utensil:
+      required:
+        - id
+        - name
+        - description
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Shaker
+        description:
+          type: string
+          example: 'Used to shake ingredients'
+          nullable: true
+      type: object
+    UtensilRequest:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Shaker
+        description:
+          type: string
+          example: 'Used to shake ingredients'
+          nullable: true
       type: object
   securitySchemes:
     user_token:
@@ -717,3 +923,6 @@ tags:
   -
     name: 'Price category'
     description: 'Price category'
+  -
+    name: Utensils
+    description: Utensils

@@ -7,10 +7,10 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 use OpenApi\Attributes as OAT;
 
 #[OAT\Schema(required: ['name'])]
-class IngredientCategoryRequest
+class UtensilRequest
 {
-    #[OAT\Property(example: 'Spirits')]
+    #[OAT\Property(example: 'Shaker')]
     public string $name;
-    #[OAT\Property(example: 'Category of base spirits')]
+    #[OAT\Property(example: 'Used to shake ingredients')]
     public ?string $description = null;
 }
