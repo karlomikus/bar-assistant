@@ -1089,6 +1089,332 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /ingredients:
+    get:
+      tags:
+        - Ingredients
+      summary: 'Show a list of ingredients'
+      operationId: 1638cf5bb5113e3ca4793347b9ca84ed
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+        -
+          name: filter
+          in: query
+          description: 'Filter by attributes'
+          style: deepObject
+          explode: true
+          schema:
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              name_exact:
+                type: string
+              category_id:
+                type: integer
+              origin:
+                type: string
+              created_user_id:
+                type: integer
+              on_shopping_list:
+                type: boolean
+              on_shelf:
+                type: boolean
+              strength_min:
+                type: number
+                format: float
+              strength_max:
+                type: number
+                format: float
+              main_ingredients:
+                type: string
+              complex:
+                type: boolean
+            type: object
+        -
+          name: sort
+          in: query
+          description: 'Sort by attributes. Available attributes: `name`, `created_at`, `strength`, `total_cocktails`.'
+          schema:
+            type: string
+        -
+          name: includes
+          in: query
+          description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `cocktails`, `cocktailIngredientSubstitutes`, `prices`.'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Ingredient' } }
+                  links: { properties: { first: { type: string, nullable: true }, last: { type: string, nullable: true }, prev: { type: string, nullable: true }, next: { type: string, nullable: true } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    post:
+      tags:
+        - Ingredients
+      summary: 'Create an ingredient'
+      operationId: efa43043e488624a2f3d8e8123a2d9be
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngredientRequest'
+      responses:
+        '201':
+          description: 'Successful response'
+          headers:
+            Location:
+              description: 'URL of the new resource'
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Ingredient' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/ingredients/{id}':
+    get:
+      tags:
+        - Ingredients
+      summary: 'Show an ingredient'
+      operationId: 0ede5ee7aaed9fd2c985386b7a13e005
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id or slug of a resource'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Ingredient' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    put:
+      tags:
+        - Ingredients
+      summary: 'Update an ingredient'
+      operationId: f9433e9c103e95ceebcf99171a11e81d
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngredientRequest'
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Ingredient' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    delete:
+      tags:
+        - Ingredients
+      summary: 'Delete an ingredient'
+      operationId: 31e064558b854ed32ba5f29a76aee385
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/ingredients/{id}/extra':
+    get:
+      tags:
+        - Ingredients
+      summary: 'Show how many extra cocktails you can make if you add this ingredient to your shelf'
+      operationId: ff324ec47870a7091f125afea3f7e664
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /ingredients/recommend:
+    get:
+      tags:
+        - Ingredients
+      summary: 'Recommend next ingredients to buy'
+      operationId: a54487bcba28019a606666105f57f7c3
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /price-categories:
     get:
       tags:
@@ -1894,6 +2220,144 @@ components:
           example: 'Image copyright'
           nullable: true
       type: object
+    Ingredient:
+      properties:
+        id:
+          type: integer
+          example: 1
+        slug:
+          type: string
+          example: gin-1
+        name:
+          type: string
+          example: Gin
+        strength:
+          type: number
+          format: float
+          example: 40
+        description:
+          type: string
+          example: 'Gin is a type of alcoholic spirit'
+          nullable: true
+        origin:
+          type: string
+          example: Worldwide
+          nullable: true
+        main_image_id:
+          type: string
+          example: 1
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+        parent_ingredient:
+          properties:
+            id:
+              type: integer
+              example: 1
+            slug:
+              type: string
+              example: vodka-1
+            name:
+              type: string
+              example: Vodka
+          type: object
+        color:
+          type: string
+          example: '#ffffff'
+        category:
+          nullable: true
+          oneOf:
+            -
+              $ref: '#/components/schemas/IngredientCategory'
+        cocktails_count:
+          type: integer
+          example: 12
+        varieties:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: vodka-1
+              name:
+                type: string
+                example: Vodka
+            type: object
+        cocktails:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: old-fashioned-1
+              name:
+                type: string
+                example: 'Old fashioned'
+            type: object
+        created_user:
+          $ref: '#/components/schemas/UserBasic'
+        updated_user:
+          nullable: true
+          oneOf:
+            -
+              $ref: '#/components/schemas/UserBasic'
+        access:
+          type: array
+          items:
+            properties:
+              can_edit:
+                type: boolean
+                example: true
+              can_delete:
+                type: boolean
+                example: true
+            type: object
+        ingredientParts:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: vodka-1
+              name:
+                type: string
+                example: Vodka
+            type: object
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientPrice'
+      type: object
+    IngredientBasic:
+      properties:
+        id:
+          type: integer
+          example: 1
+        slug:
+          type: string
+          example: gin-1
+        name:
+          type: string
+          example: Gin
+      type: object
     IngredientCategory:
       required:
         - id
@@ -1926,6 +2390,101 @@ components:
           type: string
           example: 'Category of base spirits'
           nullable: true
+      type: object
+    IngredientPrice:
+      properties:
+        price_category:
+          $ref: '#/components/schemas/PriceCategory'
+        price:
+          type: string
+          example: 'EUR 30.00'
+        price_minor:
+          type: integer
+          example: 3000
+        price_formatted:
+          type: string
+          example: €30.00
+        amount:
+          type: number
+          format: float
+          example: 30
+        units:
+          type: string
+          example: ml
+        description:
+          type: string
+          example: 'Updated price'
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+      type: object
+    IngredientRequest:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Gin
+        ingredient_category_id:
+          type: integer
+          example: 1
+          nullable: true
+        strength:
+          type: number
+          format: float
+          example: 40
+          nullable: true
+        description:
+          type: string
+          example: 'Gin is a type of alcoholic spirit'
+          nullable: true
+        origin:
+          type: string
+          example: Worldwide
+          nullable: true
+        color:
+          type: string
+          example: '#ffffff'
+          nullable: true
+        parent_ingredient_id:
+          type: integer
+          example: 1
+        images:
+          description: 'Existing image ids'
+          type: array
+          items:
+            type: integer
+        complex_ingredient_part_ids:
+          description: 'Existing ingredient ids'
+          type: array
+          items:
+            type: integer
+        prices:
+          type: array
+          items:
+            properties:
+              price_category_id:
+                type: integer
+                example: 1
+              price:
+                type: integer
+                example: 2500
+              amount:
+                type: number
+                example: 750
+              units:
+                type: string
+                example: ml
+              description:
+                type: string
+                example: 'Updated price'
+                nullable: true
+            type: object
       type: object
     PriceCategory:
       required:
@@ -2055,6 +2614,9 @@ tags:
   -
     name: 'Ingredient category'
     description: 'Ingredient category'
+  -
+    name: Ingredients
+    description: Ingredients
   -
     name: 'Price category'
     description: 'Price category'
