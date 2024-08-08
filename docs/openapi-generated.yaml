@@ -2377,6 +2377,148 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
+  /notes:
+    get:
+      tags:
+        - Notes
+      summary: 'Show a list of all notes'
+      operationId: 8b1d23cbbf81842599e3e9463477cb58
+      parameters:
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Note' } }
+                  links: { properties: { first: { type: string, nullable: true }, last: { type: string, nullable: true }, prev: { type: string, nullable: true }, next: { type: string, nullable: true } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                type: object
+    post:
+      tags:
+        - Notes
+      summary: 'Create a new note'
+      operationId: a0c90a217efa521e80b3b94c1a4bf3a7
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteRequest'
+      responses:
+        '201':
+          description: 'Successful response'
+          headers:
+            Location:
+              description: 'URL of the new resource'
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Note' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/notes/{id}':
+    get:
+      tags:
+        - Notes
+      summary: 'Show a single note'
+      operationId: c46ec527098402aba4a10b074a7b4047
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Note' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    delete:
+      tags:
+        - Notes
+      summary: 'Delete a specific note'
+      operationId: 075f33453cc8e1e0d26bd8f07b2c5d59
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /tokens:
     get:
       tags:
@@ -2736,6 +2878,165 @@ paths:
           required: true
           schema:
             type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /shelf/ingredients:
+    get:
+      tags:
+        - Shelf
+      summary: 'Show a list of ingredients on the shelf'
+      operationId: 69493b94b4505315ffd519dea3650e0c
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/UserIngredient' } }
+                type: object
+  /shelf/cocktails:
+    get:
+      tags:
+        - Shelf
+      summary: 'Show a list of cocktails on the shelf'
+      operationId: d663f570b3b97976d21894bb6215b00d
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+        -
+          name: limit
+          in: query
+          description: 'Limit the number of results'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { description: 'List of cocktail ids that are on the shelf', type: array, items: { type: integer } }
+                type: object
+  /shelf/cocktail-favorites:
+    get:
+      tags:
+        - Shelf
+      summary: 'Show a list of cocktails on the shelf that the user has favorited'
+      operationId: 034f3c889e4be90c68d26a8e202630c4
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { description: 'List of cocktail ids', type: array, items: { type: integer } }
+                type: object
+  /shelf/ingredients/batch-store:
+    post:
+      tags:
+        - Shelf
+      summary: 'Batch store ingredients'
+      operationId: a9cceabb7c8f192e730ecdf1aee55edd
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ingredient_ids:
+                  type: array
+                  items: { type: integer }
+              type: object
+      responses:
+        '201':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/UserIngredient' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /shelf/ingredients/batch-delete:
+    post:
+      tags:
+        - Shelf
+      summary: 'Delete multiple ingredients from the shelf'
+      operationId: bedc00e895ad5edf650539fb24670b96
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ingredient_ids:
+                  type: array
+                  items: { type: integer }
+              type: object
       responses:
         '204':
           description: 'Successful response'
@@ -4364,6 +4665,38 @@ components:
                   type: object
             type: object
       type: object
+    Note:
+      properties:
+        id:
+          type: integer
+          example: 1
+        note:
+          type: string
+          example: 'Note text'
+        user_id:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00+00:00'
+      type: object
+    NoteRequest:
+      required:
+        - note
+        - resource_id
+        - resource
+      properties:
+        note:
+          type: string
+          example: 'Note text'
+        resource_id:
+          type: integer
+          example: 1
+        resource:
+          type: string
+          example: cocktail
+      type: object
     PersonalAccessToken:
       properties:
         name:
@@ -4587,6 +4920,18 @@ components:
           type: string
           example: Bartender
       type: object
+    UserIngredient:
+      properties:
+        id:
+          type: integer
+          example: 1
+        ingredientId:
+          type: integer
+          example: 1
+        ingredientSlug:
+          type: string
+          example: gin-1
+      type: object
     UserRequest:
       required:
         - role_id
@@ -4675,6 +5020,9 @@ tags:
     name: Ingredients
     description: Ingredients
   -
+    name: Notes
+    description: Notes
+  -
     name: Tokens
     description: Tokens
   -
@@ -4686,6 +5034,9 @@ tags:
   -
     name: Ratings
     description: Ratings
+  -
+    name: Shelf
+    description: Shelf
   -
     name: Tag
     description: Tag

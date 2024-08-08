@@ -7,6 +7,8 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\UserIngredient;
@@ -19,6 +21,12 @@ use Kami\Cocktail\Http\Resources\UserIngredientResource;
 
 class ShelfController extends Controller
 {
+    #[OAT\Get(path: '/shelf/ingredients', tags: ['Shelf'], summary: 'Show a list of ingredients on the shelf', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\UserIngredient::class),
+    ])]
     public function ingredients(Request $request): JsonResource
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
@@ -30,6 +38,13 @@ class ShelfController extends Controller
         return UserIngredientResource::collection($userIngredients);
     }
 
+    #[OAT\Get(path: '/shelf/cocktails', tags: ['Shelf'], summary: 'Show a list of cocktails on the shelf', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+        new OAT\Parameter(name: 'limit', in: 'query', description: 'Limit the number of results', schema: new OAT\Schema(type: 'integer')),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new OAT\JsonContent(properties: [new OAT\Property(property: 'data', type: 'array', description: 'List of cocktail ids that are on the shelf', items: new OAT\Items(type: 'integer'))]),
+    ])]
     public function cocktails(CocktailRepository $cocktailRepo, Request $request): JsonResponse
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
@@ -46,6 +61,12 @@ class ShelfController extends Controller
         ]);
     }
 
+    #[OAT\Get(path: '/shelf/cocktail-favorites', tags: ['Shelf'], summary: 'Show a list of cocktails on the shelf that the user has favorited', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new OAT\JsonContent(properties: [new OAT\Property(property: 'data', type: 'array', description: 'List of cocktail ids', items: new OAT\Items(type: 'integer'))]),
+    ])]
     public function favorites(Request $request): JsonResponse
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
@@ -57,6 +78,19 @@ class ShelfController extends Controller
         ]);
     }
 
+    #[OAT\Post(path: '/shelf/ingredients/batch-store', tags: ['Shelf'], summary: 'Batch store ingredients', requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(type: 'object', properties: [
+                new OAT\Property(property: 'ingredient_ids', type: 'array', items: new OAT\Items(type: 'integer')),
+            ]),
+        ]
+    ))]
+    #[OAT\Response(response: 201, description: 'Successful response', content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\UserIngredient::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function batchStore(IngredientsBatchRequest $request): JsonResource
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
@@ -82,6 +116,19 @@ class ShelfController extends Controller
         return UserIngredientResource::collection($shelfIngredients);
     }
 
+    #[OAT\Post(path: '/shelf/ingredients/batch-delete', tags: ['Shelf'], summary: 'Delete multiple ingredients from the shelf', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(type: 'object', properties: [
+                new OAT\Property(property: 'ingredient_ids', type: 'array', items: new OAT\Items(type: 'integer')),
+            ]),
+        ]
+    ))]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function batchDelete(Request $request): Response
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
