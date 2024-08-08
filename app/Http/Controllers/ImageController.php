@@ -82,7 +82,9 @@ class ImageController extends Controller
         return ImageResource::collection($images);
     }
 
-    #[OAT\Post(path: '/images/{id}', tags: ['Images'], summary: 'Update image', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/images/{id}', tags: ['Images'], summary: 'Update image', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(ref: BAO\Schemas\ImageRequest::class)),

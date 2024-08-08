@@ -62,7 +62,7 @@ class ShoppingListController extends Controller
             abort(500, $e->getMessage());
         }
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 
     public function share(Request $request): Response

@@ -68,6 +68,6 @@ class PATController extends Controller
 
         $token->delete();
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 }

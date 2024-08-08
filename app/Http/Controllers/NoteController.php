@@ -18,9 +18,10 @@ class NoteController extends Controller
 {
     public function index(Request $request): JsonResource
     {
-        $notes = (new NoteQueryFilter())->paginate($request->get('per_page', 100))->withQueryString();
+        /** @var \Illuminate\Pagination\LengthAwarePaginator<Note> */
+        $notes = (new NoteQueryFilter())->paginate($request->get('per_page', 100));
 
-        return NoteResource::collection($notes);
+        return NoteResource::collection($notes->withQueryString());
     }
 
     public function show(Request $request, int $id): JsonResource
@@ -66,6 +67,6 @@ class NoteController extends Controller
 
         $note->delete();
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 }

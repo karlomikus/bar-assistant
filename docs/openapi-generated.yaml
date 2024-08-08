@@ -3,7 +3,173 @@ info:
   title: 'Bar Assistant API'
   description: "Bar Assistant is a self hosted application for managing your home bar.\n\n    ## Content\n\n    You should set `Content-Type: application/json` header for each request.\n\n    ## Authentication\n\n    Add your login token in header for every request, for example: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.\n    For requests that need reference to bar, add your bar id via query string, for example: `/api/example?bar_id=1`\n\n    ## Authorization\n\n    You will get response with error message and status code `403` if you try to access resource that you don't have permissions for.\n\n    ## Sorting\n\n    Some endpoints allow sorting by specific attributes. Prepending `-` defines descending order, and omitting it defines ascending order. Separate multiple sorts by a comma. For example: `?sort=name` will sort by name attribute in ascending order.\n\n    ## Includes\n\n    Some endpoints allow including extra relationship data on demand. Separate multiple relations witha a comma. For example: `?include=notes,user` will include extra extra data for notes and user.\n\n    ## Pagination\n\n    Some endpoints allow paginating results. Use `?per_page=30` to limit total results per request. Use `?page=3` to go to a specific page.\n\n    ## Filtering\n\n    Some endpoints allow filtering by a specific attribute. For example: `?filter[attribute_name]=value`.\n\n    [Documentation](https://bar-assistant.github.io/docs/) | [Source](https://github.com/karlomikus/bar-assistant)"
   version: '{{VERSION}}'
+servers:
+  -
+    url: 'http://localhost:8000/api'
+    description: 'Local docker development'
+  -
+    url: 'https://api.barassistant.app'
+    description: Production
 paths:
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: 'Authenticate user and get a token'
+      operationId: d08b90aaa2cd3c4e803481016726da9b
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Token' }
+                type: object
+        '400':
+          description: 'Unable to authenticate'
+      security: []
+  /logout:
+    post:
+      tags:
+        - Authentication
+      summary: 'Logout currently authenticated user'
+      operationId: 755dbc19ae417c07c2bfd1c45ee919c9
+      responses:
+        '204':
+          description: 'Successful response'
+  /register:
+    post:
+      tags:
+        - Authentication
+      summary: 'Register a new user'
+      operationId: 51662939845b30a86466bbb682cfcd9f
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Profile' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
+  /forgot-password:
+    post:
+      tags:
+        - Authentication
+      summary: 'Request a new user password'
+      operationId: 1aaffc187d2845383cae3f2efb745aac
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  example: admin@example.com
+              type: object
+      responses:
+        '204':
+          description: 'Password reset link sent'
+        '400':
+          description: 'Unable to send password reset link'
+      security: []
+  /reset-password:
+    post:
+      tags:
+        - Authentication
+      summary: 'Reset user password'
+      operationId: e7a0a2a0a5a74f36ef4484228cae9bfb
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                token:
+                  type: string
+                  example: token-from-email
+                email:
+                  type: string
+                  example: admin@example.com
+                password:
+                  type: string
+                  minLength: 5
+                  example: password
+                password_confirmation:
+                  type: string
+                  minLength: 5
+                  example: password
+              type: object
+      responses:
+        '204':
+          description: 'Password succssfully reset'
+        '400':
+          description: 'Unable to reset password'
+      security: []
+  '/verify/{id}/{hash}':
+    post:
+      tags:
+        - Authentication
+      summary: 'Confirm user account'
+      operationId: 69a4e6bdc0f95b6c983f71031d4f17d0
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a user'
+          required: true
+          schema:
+            type: integer
+        -
+          name: hash
+          in: path
+          description: 'Hash string sent to user email'
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'Account confirmed'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
   /bars:
     get:
       tags:
@@ -317,6 +483,14 @@ paths:
         - Bars
       summary: 'Transfer bar ownership'
       operationId: 208f8a6850027fe0ea9f3b304975fa30
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
@@ -353,6 +527,14 @@ paths:
         - Bars
       summary: 'Update bar status'
       operationId: 200c1aba9ada2cd66a7d0b7a4ec90a8e
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
@@ -362,6 +544,386 @@ paths:
                 status:
                   $ref: '#/components/schemas/BarStatusEnum'
               type: object
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /cocktails:
+    get:
+      tags:
+        - Cocktails
+      summary: 'Show a list of cocktails'
+      operationId: 4400982243630124406e8675b4632a32
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+        -
+          name: filter
+          in: query
+          description: 'Filter by attributes'
+          style: deepObject
+          explode: true
+          schema:
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              ingredient_name:
+                type: string
+              tag_id:
+                type: string
+              created_user_id:
+                type: string
+              glass_id:
+                type: string
+              cocktail_method_id:
+                type: string
+              collection_id:
+                type: string
+              favorites:
+                type: boolean
+              on_shelf:
+                type: boolean
+              user_shelves:
+                type: string
+              shelf_ingredients:
+                type: string
+              is_public:
+                type: boolean
+              user_rating_min:
+                type: string
+              user_rating_max:
+                type: string
+              average_rating_min:
+                type: string
+              average_rating_max:
+                type: string
+              abv_min:
+                type: string
+              abv_max:
+                type: string
+              main_ingredient_id:
+                type: string
+              total_ingredients:
+                type: string
+              missing_ingredients:
+                type: string
+              specific_ingredients:
+                type: string
+              ignore_ingredients:
+                type: string
+            type: object
+        -
+          name: sort
+          in: query
+          description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `favorited_at`.'
+          schema:
+            type: string
+        -
+          name: includes
+          in: query
+          description: 'Include additional relationships. Available relations: `glass`, `method`, `user`, `navigation`, `utensils`, `createdUser`, `updatedUser`.'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Cocktail' } }
+                  links: { properties: { first: { type: string, nullable: true }, last: { type: string, nullable: true }, prev: { type: string, nullable: true }, next: { type: string, nullable: true } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    post:
+      tags:
+        - Cocktails
+      summary: 'Create a new cocktail'
+      operationId: cbc4c3f93b89c16a916c7cc574ca118e
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CocktailRequest'
+      responses:
+        '201':
+          description: 'Successful response'
+          headers:
+            Location:
+              description: 'URL of the new resource'
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Cocktail' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/cocktails/{id}':
+    get:
+      tags:
+        - Cocktails
+      summary: 'Show a specific cocktail'
+      operationId: 9286466f1f4b710e7f06c79f947ec7b0
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id or slug of a resource'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Cocktail' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    put:
+      tags:
+        - Cocktails
+      summary: 'Update a specific cocktail'
+      operationId: ca968c657169055c33bc68a1b08b6eaa
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CocktailRequest'
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Cocktail' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    delete:
+      tags:
+        - Cocktails
+      summary: 'Delete a specific cocktail'
+      operationId: c642d725c11d12c781fbfad353ba7bcb
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/cocktails/{id}/toggle-favorite':
+    post:
+      tags:
+        - Cocktails
+      summary: 'Toggle cocktail as favorite'
+      operationId: 89742b5d96b9183518a473d9e640db6e
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { properties: { id: { type: integer, example: 1 }, is_favorited: { type: boolean, example: true } }, type: object }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/cocktails/{id}/public-link':
+    post:
+      tags:
+        - Cocktails
+      summary: 'Create a public ID for cocktail'
+      operationId: 191e2ca5633e6d5f7c25430fddbbd9c8
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/CocktailPublic' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    delete:
+      tags:
+        - Cocktails
+      summary: 'Delete cocktail public link'
+      operationId: a4a90713002827189fef279434f86791
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
       responses:
         '204':
           description: 'Successful response'
@@ -800,6 +1362,14 @@ paths:
         - Images
       summary: 'Update image'
       operationId: 18a765565c4f43cc01167738ab8ff7cd
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
@@ -2093,6 +2663,250 @@ components:
           items:
             type: string
       type: object
+    Cocktail:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Cocktail name'
+        slug:
+          type: string
+          example: cocktail-name-1
+        instructions:
+          type: string
+          example: 'Step by step instructions'
+        garnish:
+          type: string
+          example: Garnish
+          nullable: true
+        description:
+          type: string
+          example: 'Cocktail description'
+          nullable: true
+        source:
+          type: string
+          example: 'Source of the recipe'
+          nullable: true
+        publicId:
+          type: string
+          example: public-id-1
+          nullable: true
+        public_at:
+          type: string
+          format: date-time
+          nullable: true
+        mainImageId:
+          type: integer
+          example: 1
+          nullable: true
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+        tags:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: 'Tag name'
+            type: object
+        rating:
+          properties:
+            user:
+              description: "Current user's rating"
+              type: integer
+              example: 1
+              nullable: true
+            average:
+              description: 'Average rating'
+              type: integer
+              example: 4
+            total_votes:
+              type: integer
+              example: 12
+          type: object
+        glass:
+          nullable: true
+          oneOf:
+            -
+              $ref: '#/components/schemas/Glass'
+        utensils:
+          type: array
+          items:
+            $ref: '#/components/schemas/Utensil'
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/CocktailIngredient'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        method:
+          nullable: true
+          oneOf:
+            -
+              $ref: '#/components/schemas/CocktailMethod'
+        abv:
+          type: number
+          format: float
+          example: 40
+          nullable: true
+        volume_ml:
+          type: number
+          format: float
+          example: 67.5
+          nullable: true
+        alcohol_units:
+          type: number
+          format: float
+          example: 25.5
+          nullable: true
+        calories:
+          type: integer
+          example: 350
+          nullable: true
+        createdUser:
+          $ref: '#/components/schemas/UserBasic'
+        updatedUser:
+          nullable: true
+          oneOf:
+            -
+              $ref: '#/components/schemas/UserBasic'
+        inShelf:
+          type: boolean
+        access:
+          properties:
+            can_edit:
+              type: boolean
+              example: true
+            can_delete:
+              type: boolean
+              example: true
+            can_rate:
+              type: boolean
+              example: true
+            can_add_note:
+              type: boolean
+              example: true
+          type: object
+        navigation:
+          properties:
+            prev:
+              type: string
+              example: old-fashioned-1
+              nullable: true
+            next:
+              type: string
+              example: tom-collins-1
+              nullable: true
+          type: object
+      type: object
+    CocktailIngredient:
+      properties:
+        sort:
+          type: integer
+          example: 0
+        amount:
+          type: number
+          format: float
+          example: 30
+        amount_max:
+          type: number
+          format: float
+          example: 60
+          nullable: true
+        units:
+          type: string
+          example: ml
+        optional:
+          type: boolean
+          example: false
+        ingredientId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Vodka
+        ingredientSlug:
+          type: string
+          example: vodka-1
+        substitutes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CocktailIngredientSubstitute'
+        note:
+          type: string
+          example: 'Additional notes'
+          nullable: true
+        formatted:
+          description: 'Amounts in different units, converted if possible'
+          type: array
+          items:
+            properties:
+              amount:
+                type: number
+                format: float
+                example: 30
+              amount_max:
+                type: number
+                format: float
+                example: 60
+              units:
+                type: string
+                example: ml
+              full_text:
+                type: string
+                example: '30-60 ml'
+            type: object
+        in_shelf:
+          type: boolean
+          example: true
+        in_shelf_as_substitute:
+          type: boolean
+          example: true
+        in_shelf_as_complex_ingredient:
+          type: boolean
+          example: true
+      type: object
+    CocktailIngredientSubstitute:
+      properties:
+        id:
+          type: integer
+          example: 1
+        slug:
+          type: string
+          example: vodka
+        name:
+          type: string
+          example: Vodka
+        amount:
+          type: number
+          format: float
+          example: 30
+          nullable: true
+        amount_max:
+          type: number
+          format: float
+          example: 60
+          nullable: true
+        units:
+          type: string
+          example: ml
+          nullable: true
+        in_shelf:
+          type: boolean
+          example: true
+      type: object
     CocktailMethod:
       required:
         - id
@@ -2124,6 +2938,96 @@ components:
         dilution_percentage:
           type: integer
           example: 20
+      type: object
+    CocktailPublic:
+      properties:
+        public_id:
+          type: string
+          example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+        public_at:
+          type: string
+          format: datetime
+          example: '2023-05-14T21:23:40.000000Z'
+        public_expires_at:
+          type: string
+          format: datetime
+          example: '2023-05-14T21:23:40.000000Z'
+      type: object
+    CocktailRequest:
+      required:
+        - name
+        - instructions
+      properties:
+        name:
+          type: string
+          example: 'Cocktail name'
+        instructions:
+          type: string
+          example: 'Step by step instructions'
+        description:
+          type: string
+          example: 'Cocktail description'
+          nullable: true
+        source:
+          type: string
+          example: 'Source of the recipe'
+          nullable: true
+        garnish:
+          type: string
+          example: Garnish
+          nullable: true
+        glassId:
+          type: integer
+          example: 1
+          nullable: true
+        methodId:
+          type: integer
+          example: 1
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+        ingredients:
+          type: array
+          items:
+            properties:
+              ingredient_id:
+                type: integer
+                example: 1
+              amount:
+                type: number
+                format: float
+                example: 30
+              amount_max:
+                type: number
+                format: float
+                example: 60
+                nullable: true
+              units:
+                type: string
+                example: ml
+              optional:
+                type: boolean
+                example: false
+              note:
+                type: string
+                example: 'Ingredient note'
+                nullable: true
+              substitutes:
+                type: array
+                items:
+                  properties: { id: { type: integer, example: 1 }, amount: { type: number, format: float, example: 30, nullable: true }, amount_max: { type: number, format: float, example: 60, nullable: true }, units: { type: string, example: ml, nullable: true } }
+                  type: object
+            type: object
+        images:
+          type: array
+          items:
+            type: integer
+        utensils:
+          type: array
+          items:
+            type: integer
       type: object
     Glass:
       required:
@@ -2486,6 +3390,22 @@ components:
                 nullable: true
             type: object
       type: object
+    LoginRequest:
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: admin@example.com
+        password:
+          type: string
+          example: password
+        tokenName:
+          type: string
+          example: 'My device'
+          nullable: true
+      type: object
     PriceCategory:
       required:
         - id
@@ -2526,6 +3446,45 @@ components:
           type: string
           example: EUR
       type: object
+    Profile:
+      required:
+        - id
+        - name
+        - cocktails_count
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Floral
+        cocktails_count:
+          type: string
+          example: 12
+        is_subscribed:
+          type: boolean
+        memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/BarMembership'
+      type: object
+    RegisterRequest:
+      required:
+        - email
+        - password
+        - name
+      properties:
+        email:
+          type: string
+          example: admin@example.com
+        name:
+          type: string
+          example: 'Bar Tender'
+        password:
+          type: string
+          minLength: 5
+          example: password
+      type: object
     Tag:
       required:
         - id
@@ -2549,6 +3508,12 @@ components:
         name:
           type: string
           example: Floral
+      type: object
+    Token:
+      properties:
+        token:
+          type: string
+          example: 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII
       type: object
     UserBasic:
       required:
@@ -2600,8 +3565,14 @@ security:
     user_token: []
 tags:
   -
+    name: Authentication
+    description: Authentication
+  -
     name: Bars
     description: Bars
+  -
+    name: Cocktails
+    description: Cocktails
   -
     name: 'Cocktail method'
     description: 'Cocktail method'

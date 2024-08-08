@@ -161,7 +161,7 @@ class CollectionController extends Controller
 
         $collection->delete();
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 
     public function deleteResourceFromCollection(Request $request, int $id, int $cocktailId): Response
@@ -180,7 +180,7 @@ class CollectionController extends Controller
             abort(500, 'Unable to remove cocktail from collection!');
         }
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 
     public function share(Request $request, int $id): Response

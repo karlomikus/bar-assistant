@@ -124,6 +124,6 @@ class UsersController extends Controller
 
         Mail::to($email)->queue(new AccountDeleted());
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 }

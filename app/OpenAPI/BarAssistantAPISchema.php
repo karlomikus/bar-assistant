@@ -8,6 +8,10 @@ use OpenApi\Attributes as OAT;
 
 #[OAT\OpenApi(
     security: [['user_token' => []]],
+    servers: [
+        new OAT\Server(url: 'http://localhost:8000/api', description: 'Local docker development'),
+        new OAT\Server(url: 'https://api.barassistant.app', description: 'Production'),
+    ],
 )]
 #[OAT\Info(
     title: "Bar Assistant API",

@@ -98,6 +98,6 @@ class ShelfController extends Controller
             abort(500, $e->getMessage());
         }
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 }

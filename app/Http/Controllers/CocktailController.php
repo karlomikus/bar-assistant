@@ -7,6 +7,8 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
 use Spatie\ArrayToXml\ArrayToXml;
@@ -32,6 +34,43 @@ use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
 
 class CocktailController extends Controller
 {
+    #[OAT\Get(path: '/cocktails', tags: ['Cocktails'], summary: 'Show a list of cocktails', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\PageParameter(),
+        new BAO\Parameters\PerPageParameter(),
+        new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
+            new OAT\Property(property: 'id', type: 'string'),
+            new OAT\Property(property: 'name', type: 'string'),
+            new OAT\Property(property: 'ingredient_name', type: 'string'),
+            new OAT\Property(property: 'tag_id', type: 'string'),
+            new OAT\Property(property: 'created_user_id', type: 'string'),
+            new OAT\Property(property: 'glass_id', type: 'string'),
+            new OAT\Property(property: 'cocktail_method_id', type: 'string'),
+            new OAT\Property(property: 'collection_id', type: 'string'),
+            new OAT\Property(property: 'favorites', type: 'boolean'),
+            new OAT\Property(property: 'on_shelf', type: 'boolean'),
+            new OAT\Property(property: 'user_shelves', type: 'string'),
+            new OAT\Property(property: 'shelf_ingredients', type: 'string'),
+            new OAT\Property(property: 'is_public', type: 'boolean'),
+            new OAT\Property(property: 'user_rating_min', type: 'string'),
+            new OAT\Property(property: 'user_rating_max', type: 'string'),
+            new OAT\Property(property: 'average_rating_min', type: 'string'),
+            new OAT\Property(property: 'average_rating_max', type: 'string'),
+            new OAT\Property(property: 'abv_min', type: 'string'),
+            new OAT\Property(property: 'abv_max', type: 'string'),
+            new OAT\Property(property: 'main_ingredient_id', type: 'string'),
+            new OAT\Property(property: 'total_ingredients', type: 'string'),
+            new OAT\Property(property: 'missing_ingredients', type: 'string'),
+            new OAT\Property(property: 'specific_ingredients', type: 'string'),
+            new OAT\Property(property: 'ignore_ingredients', type: 'string'),
+        ])),
+        new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `favorited_at`.', schema: new OAT\Schema(type: 'string')),
+        new OAT\Parameter(name: 'includes', in: 'query', description: 'Include additional relationships. Available relations: `glass`, `method`, `user`, `navigation`, `utensils`, `createdUser`, `updatedUser`.', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\PaginateData(BAO\Schemas\Cocktail::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function index(CocktailRepository $cocktailRepo, Request $request): JsonResource
     {
         try {
@@ -46,6 +85,14 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails->withQueryString());
     }
 
+    #[OAT\Get(path: '/cocktails/{id}', tags: ['Cocktails'], summary: 'Show a specific cocktail', parameters: [
+        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function show(string $idOrSlug, Request $request): JsonResource
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)
@@ -63,6 +110,20 @@ class CocktailController extends Controller
         return new CocktailResource($cocktail);
     }
 
+    #[OAT\Post(path: '/cocktails', tags: ['Cocktails'], summary: 'Create a new cocktail', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\CocktailRequest::class),
+        ]
+    ))]
+    #[OAT\Response(response: 201, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
+    ], headers: [
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
         Validator::make($request->post('ingredients', []), [
@@ -91,6 +152,19 @@ class CocktailController extends Controller
             ->header('Location', route('cocktails.show', $cocktail->id));
     }
 
+    #[OAT\Put(path: '/cocktails/{id}', tags: ['Cocktails'], summary: 'Update a specific cocktail', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\CocktailRequest::class),
+        ]
+    ))]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): JsonResource
     {
         $cocktail = Cocktail::findOrFail($id);
@@ -118,6 +192,12 @@ class CocktailController extends Controller
         return new CocktailResource($cocktail);
     }
 
+    #[OAT\Delete(path: '/cocktails/{id}', tags: ['Cocktails'], summary: 'Delete a specific cocktail', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function delete(Request $request, int $id): Response
     {
         $cocktail = Cocktail::findOrFail($id);
@@ -131,6 +211,17 @@ class CocktailController extends Controller
         return new Response(null, 204);
     }
 
+    #[OAT\Post(path: '/cocktails/{id}/toggle-favorite', tags: ['Cocktails'], summary: 'Toggle cocktail as favorite', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new OAT\JsonContent(properties: [new OAT\Property(property: 'data', type: 'object', properties: [
+            new OAT\Property(property: 'id', type: 'integer', example: 1),
+            new OAT\Property(property: 'is_favorited', type: 'boolean', example: true),
+        ])]),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function toggleFavorite(CocktailService $cocktailService, Request $request, int $id): JsonResponse
     {
         $userFavorite = $cocktailService->toggleFavorite($request->user(), $id);
@@ -140,6 +231,14 @@ class CocktailController extends Controller
         ]);
     }
 
+    #[OAT\Post(path: '/cocktails/{id}/public-link', tags: ['Cocktails'], summary: 'Create a public ID for cocktail', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\CocktailPublic::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function makePublic(Request $request, string $idOrSlug): JsonResource
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
@@ -159,6 +258,12 @@ class CocktailController extends Controller
         return new CocktailPublicResource($cocktail);
     }
 
+    #[OAT\Delete(path: '/cocktails/{id}/public-link', tags: ['Cocktails'], summary: 'Delete cocktail public link', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function makePrivate(Request $request, string $idOrSlug): Response
     {
         $cocktail = Cocktail::where('id', $idOrSlug)

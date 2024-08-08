@@ -43,6 +43,6 @@ class RatingController extends Controller
 
         $cocktail->searchable();
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 }

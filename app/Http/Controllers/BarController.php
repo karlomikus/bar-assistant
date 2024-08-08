@@ -279,7 +279,9 @@ class BarController extends Controller
         return BarMembershipResource::collection($bar->memberships);
     }
 
-    #[OAT\Post(path: '/bars/{id}/transfer', tags: ['Bars'], summary: 'Transfer bar ownership', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/bars/{id}/transfer', tags: ['Bars'], summary: 'Transfer bar ownership', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
@@ -310,7 +312,9 @@ class BarController extends Controller
         return response()->json(status: 204);
     }
 
-    #[OAT\Post(path: '/bars/{id}/status', tags: ['Bars'], summary: 'Update bar status', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/bars/{id}/status', tags: ['Bars'], summary: 'Update bar status', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
