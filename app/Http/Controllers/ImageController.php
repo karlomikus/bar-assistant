@@ -145,7 +145,7 @@ class ImageController extends Controller
 
     #[OAT\Get(path: '/images/{id}/thumb', tags: ['Images'], summary: 'Get a thumbnail of an image', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
-    ])]
+    ], security: [])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new OAT\MediaType(mediaType: 'image/jpg', schema: new OAT\Schema(type: 'string', format: 'binary')),
     ])]

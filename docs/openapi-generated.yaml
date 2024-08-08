@@ -1449,6 +1449,38 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/explore/cocktails/{ulid}':
+    get:
+      tags:
+        - Explore
+      summary: 'Show a public cocktail'
+      operationId: 98ae5704f462b0b0647c27532813284b
+      parameters:
+        -
+          name: ulid
+          in: path
+          description: 'Public cocktail ULID'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/CocktailExplore' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
   /glasses:
     get:
       tags:
@@ -1807,6 +1839,7 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+      security: []
   /ingredient-categories:
     get:
       tags:
@@ -2312,6 +2345,38 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/explore/menus/{slug}':
+    get:
+      tags:
+        - Explore
+      summary: 'Show public bar menu'
+      operationId: c2dee2186390212153a41c0527ddb728
+      parameters:
+        -
+          name: slug
+          in: path
+          description: 'Bar database slug'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/MenuExplore' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
   /tokens:
     get:
       tags:
@@ -3537,6 +3602,102 @@ components:
               nullable: true
           type: object
       type: object
+    CocktailExplore:
+      properties:
+        bar:
+          properties:
+            name:
+              type: string
+              example: 'Bar name'
+            subtitle:
+              type: string
+              example: 'Bar subtitle'
+          type: object
+        name:
+          type: string
+          example: 'Cocktail name'
+        instructions:
+          type: string
+          example: 'Step by step instructions'
+        garnish:
+          type: string
+          example: Garnish
+          nullable: true
+        description:
+          type: string
+          example: 'Cocktail description'
+          nullable: true
+        source:
+          type: string
+          example: 'Source of the recipe'
+          nullable: true
+        images:
+          type: array
+          items:
+            properties:
+              sort:
+                type: integer
+                example: 1
+              placeholder_hash:
+                type: string
+                example: a1b2c3d4e5f6g7h8i9j0
+              url:
+                type: string
+                example: 'https://example.com/image.jpg'
+              copyright:
+                type: string
+                example: 'Image copyright'
+            type: object
+        tags:
+          type: array
+          items:
+            type: string
+        glass:
+          type: string
+          nullable: true
+        utensils:
+          type: array
+          items:
+            type: string
+        ingredients:
+          type: array
+          items:
+            properties:
+              name:
+                type: integer
+                example: 'Ingredient name'
+              amount:
+                type: number
+                example: 30
+              amount_max:
+                type: number
+                example: 45
+                nullable: true
+              units:
+                type: string
+                example: ml
+              optional:
+                type: boolean
+                example: true
+              note:
+                type: string
+                example: 'Ingredient note'
+                nullable: true
+              substitutes:
+                type: array
+                items:
+                  properties: { name: { type: string, example: 'Ingredient name' }, amount: { type: number, example: 30, nullable: true }, amount_max: { type: number, example: 45, nullable: true }, units: { type: string, example: ml, nullable: true } }
+                  type: object
+            type: object
+        method:
+          type: string
+          nullable: true
+        abv:
+          type: number
+          format: float
+          example: 40
+          nullable: true
+      type: object
     CocktailIngredient:
       properties:
         sort:
@@ -4175,6 +4336,34 @@ components:
           example: 'My device'
           nullable: true
       type: object
+    MenuExplore:
+      properties:
+        bar:
+          properties:
+            name:
+              type: string
+              example: 'Bar name'
+            subtitle:
+              type: string
+              example: 'Bar subtitle'
+            description:
+              type: string
+              example: 'Bar description'
+          type: object
+        categories:
+          type: array
+          items:
+            properties:
+              name:
+                type: string
+                example: 'Category name'
+              cocktails:
+                type: array
+                items:
+                  properties: { sort: { type: string, example: 1 }, price: { properties: { full: { type: integer, example: 2385 }, formatted: { type: string, example: 'EUR 23.85' } }, type: object }, public_id: { type: string, example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, slug: { type: string, example: cocktail-name-1 }, currency: { type: string, example: EUR }, name: { type: string, example: 'Cocktail name' }, short_ingredients: { type: array, items: { type: string, example: Vodka } }, image: { type: string, example: 'https://example.com/image.jpg' } }
+                  type: object
+            type: object
+      type: object
     PersonalAccessToken:
       properties:
         name:
@@ -4470,6 +4659,9 @@ tags:
   -
     name: Collections
     description: Collections
+  -
+    name: Explore
+    description: Explore
   -
     name: Glasses
     description: Glasses

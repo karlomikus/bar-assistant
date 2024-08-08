@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Menu;
 use Kami\Cocktail\Http\Requests\MenuRequest;
@@ -30,6 +32,13 @@ class MenuController extends Controller
         return new MenuResource($menu);
     }
 
+    #[OAT\Get(path: '/explore/menus/{slug}', tags: ['Explore'], summary: 'Show public bar menu', parameters: [
+        new OAT\Parameter(name: 'slug', in: 'path', required: true, description: 'Bar database slug', schema: new OAT\Schema(type: 'string')),
+    ], security: [])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\MenuExplore::class),
+    ])]
+    #[BAO\NotFoundResponse]
     public function show(string $barSlug): MenuPublicResource
     {
         $menu = Menu::select('menus.*')
