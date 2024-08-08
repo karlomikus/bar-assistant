@@ -1840,6 +1840,68 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
+  /import/cocktail:
+    post:
+      tags:
+        - Import
+      summary: 'Import a cocktail'
+      operationId: f46bb44c14109f5d529b854e81d57150
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+        -
+          name: type
+          in: query
+          description: 'Type of import'
+          required: true
+          schema:
+            type: string
+            enum:
+              - url
+              - json
+              - yaml
+              - yml
+              - collection
+        -
+          name: save
+          in: query
+          description: 'Save imported cocktails to the database'
+          schema:
+            type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                source:
+                  type: string
+                  example: 'https://www.example.com/recipe-url'
+                duplicate_actions:
+                  $ref: '#/components/schemas/DuplicateActionsEnum'
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Cocktail' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /ingredient-categories:
     get:
       tags:
@@ -3609,6 +3671,12 @@ paths:
                 type: object
 components:
   schemas:
+    DuplicateActionsEnum:
+      type: integer
+      enum:
+        - 0
+        - 1
+        - 2
     AbilityEnum:
       type: string
       enum:
@@ -5013,6 +5081,9 @@ tags:
   -
     name: Images
     description: Images
+  -
+    name: Import
+    description: Import
   -
     name: 'Ingredient category'
     description: 'Ingredient category'

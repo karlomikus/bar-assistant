@@ -13,6 +13,7 @@
   router="hash"
   logo="https://barassistant.app/img/favicon.png"
   layout="responsive"
+  hideSchemas="true"
 />
 </body>
 </html>
