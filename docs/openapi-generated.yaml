@@ -1985,6 +1985,82 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /tokens:
+    get:
+      tags:
+        - Tokens
+      summary: 'Show a list of tokens'
+      operationId: 68b9d61d5bd7070a04356cf10d75f151
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/PersonalAccessToken' } }
+                type: object
+    post:
+      tags:
+        - Tokens
+      summary: 'Create new personal access token'
+      operationId: d91a0f74be09f52fd56164e7c58e7795
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalAccessTokenRequest'
+      responses:
+        '201':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/PersonalAccessToken' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/tokens/{id}':
+    delete:
+      tags:
+        - Tokens
+      summary: 'Revoke personal access token'
+      operationId: e3638ffac30ab37a8015b26a88b7bad9
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /price-categories:
     get:
       tags:
@@ -2768,6 +2844,13 @@ paths:
                 type: object
 components:
   schemas:
+    AbilityEnum:
+      type: string
+      enum:
+        - cocktails.read
+        - cocktails.write
+        - ingredients.read
+        - ingredients.write
     BarStatusEnum:
       type: string
       enum:
@@ -3650,6 +3733,47 @@ components:
           example: 'My device'
           nullable: true
       type: object
+    PersonalAccessToken:
+      properties:
+        name:
+          type: string
+          example: user_generated
+        abilities:
+          type: array
+          items:
+            type: string
+          example:
+            - cocktails.read
+            - cocktails.write
+            - ingredients.read
+            - ingredients.write
+        lastUsedAt:
+          type: string
+          example: '2023-05-14T21:23:40.000000Z'
+        createdAt:
+          type: string
+          example: '2023-05-14T21:23:40.000000Z'
+        expiresAt:
+          type: string
+          example: '2023-05-14T21:23:40.000000Z'
+      type: object
+    PersonalAccessTokenRequest:
+      required:
+        - abilities
+      properties:
+        name:
+          type: string
+          example: user_generated
+          nullable: true
+        abilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AbilityEnum'
+        expiresAt:
+          type: string
+          example: '2023-05-14T21:23:40.000000Z'
+          nullable: true
+      type: object
     PriceCategory:
       required:
         - id
@@ -3901,6 +4025,9 @@ tags:
   -
     name: Ingredients
     description: Ingredients
+  -
+    name: Tokens
+    description: Tokens
   -
     name: 'Price category'
     description: 'Price category'
