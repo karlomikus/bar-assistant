@@ -8,6 +8,8 @@ use Throwable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +25,17 @@ use Kami\Cocktail\External\Collection as CollectionExternal;
 
 class CollectionController extends Controller
 {
+    #[OAT\Get(path: '/collections', tags: ['Collections'], summary: 'Show a list of collections', parameters: [
+        new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
+            new OAT\Property(property: 'id', type: 'integer'),
+            new OAT\Property(property: 'name', type: 'string'),
+            new OAT\Property(property: 'cocktail_id', type: 'string'),
+        ])),
+        new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`.', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\Collection::class),
+    ])]
     public function index(): JsonResource
     {
         $collections = (new CollectionQueryFilter())->get();
@@ -30,6 +43,10 @@ class CollectionController extends Controller
         return CollectionResource::collection($collections);
     }
 
+    #[OAT\Get(path: '/collections/shared', tags: ['Collections'], summary: 'Show a list of shared collections')]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\Collection::class),
+    ])]
     public function shared(): JsonResource
     {
         $collections = CocktailCollection::where('is_bar_shared', true)
@@ -43,6 +60,14 @@ class CollectionController extends Controller
         return CollectionResource::collection($collections);
     }
 
+    #[OAT\Get(path: '/collections/{id}', tags: ['Collections'], summary: 'Show a specific collection', parameters: [
+        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Collection::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function show(Request $request, int $id): JsonResource
     {
         $collection = CocktailCollection::findOrFail($id);
@@ -54,6 +79,20 @@ class CollectionController extends Controller
         return new CollectionResource($collection);
     }
 
+    #[OAT\Post(path: '/collections', tags: ['Collections'], summary: 'Create a new collection', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\CollectionRequest::class),
+        ]
+    ))]
+    #[OAT\Response(response: 201, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Collection::class),
+    ], headers: [
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function store(CollectionRequest $request): JsonResponse
     {
         if ($request->user()->cannot('create', CocktailCollection::class)) {
@@ -85,6 +124,19 @@ class CollectionController extends Controller
             ->header('Location', route('collection.show', $collection->id));
     }
 
+    #[OAT\Put(path: '/collections/{id}', tags: ['Collections'], summary: 'Update a specific collection', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\CollectionRequest::class),
+        ]
+    ))]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Collection::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function update(CollectionRequest $request, int $id): JsonResource
     {
         $collection = CocktailCollection::findOrFail($id);
@@ -102,6 +154,20 @@ class CollectionController extends Controller
         return new CollectionResource($collection);
     }
 
+    #[OAT\Post(path: '/collections/{id}/cocktails', tags: ['Collections'], summary: 'Sync multiple cocktails in a collection', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(type: 'object', properties: [
+                new OAT\Property(property: 'cocktails', type: 'array', items: new OAT\Items(type: 'integer')),
+            ]),
+        ]
+    ))]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Collection::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function cocktails(Request $request, int $id): JsonResource
     {
         $collection = CocktailCollection::findOrFail($id);
@@ -130,6 +196,14 @@ class CollectionController extends Controller
         return new CollectionResource($collection);
     }
 
+    #[OAT\Put(path: '/collections/{id}/cocktails/{cocktailId}', tags: ['Collections'], summary: 'Add single cocktail to a collection', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+        new OAT\Parameter(name: 'cocktailId', in: 'path', required: true, description: 'Database id of a cocktail', schema: new OAT\Schema(type: 'integer')),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Collection::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function cocktail(Request $request, int $id, int $cocktailId): JsonResource
     {
         $collection = CocktailCollection::findOrFail($id);
@@ -151,6 +225,12 @@ class CollectionController extends Controller
         return new CollectionResource($collection);
     }
 
+    #[OAT\Delete(path: '/collections/{id}', tags: ['Collections'], summary: 'Delete a specific collection', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function delete(Request $request, int $id): Response
     {
         $collection = CocktailCollection::findOrFail($id);
@@ -164,6 +244,13 @@ class CollectionController extends Controller
         return new Response(null, 204);
     }
 
+    #[OAT\Delete(path: '/ingredients/{id}/cocktails/{cocktailId}', tags: ['Collections'], summary: 'Delete a cocktail from a collection', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+        new OAT\Parameter(name: 'cocktailId', in: 'path', required: true, description: 'Database id of a cocktail', schema: new OAT\Schema(type: 'integer')),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function deleteResourceFromCollection(Request $request, int $id, int $cocktailId): Response
     {
         $collection = CocktailCollection::findOrFail($id);
