@@ -11,6 +11,8 @@
 <elements-api
   apiDescriptionUrl="{{ config('app.url') }}/api/server/openapi"
   router="hash"
+  logo="https://barassistant.app/img/favicon.png"
+  layout="responsive"
 />
 </body>
 </html>

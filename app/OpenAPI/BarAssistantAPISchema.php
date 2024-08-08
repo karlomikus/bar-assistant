@@ -16,38 +16,43 @@ use OpenApi\Attributes as OAT;
 #[OAT\Info(
     title: "Bar Assistant API",
     version: "{{VERSION}}",
-    description: "Bar Assistant is a self hosted application for managing your home bar.
+    description: "**Bar Assistant** is all-in-one solution for managing your home bar. Compared to other recipe management software that usually tries to be more for general use, Bar Assistant is made specifically for managing cocktail recipes. This means that there are a lot of cocktail-oriented features, like ingredient substitutes, first-class ingredients, ABV calculations, unit switching and more.
 
-    ## Content
+[Homepage](https://barassistant.app/) &middot; [Official Documentation](https://bar-assistant.github.io/docs/) &middot; [GitHub Repository](https://github.com/karlomikus/bar-assistant)
 
-    You should set `Content-Type: application/json` header for each request.
+## Rate Limiting
 
-    ## Authentication
+The rate limit is set to 1,000 requests per minute per IP address, or per user ID if authenticated. Certain endpoints have specific rate limits, such as importing and exporting data. Exporting is limited to 1 request per minute, while importing is restricted to 2 requests per minute for users without a subscription (applicable to cloud-hosted instances).
 
-    Add your login token in header for every request, for example: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.
-    For requests that need reference to bar, add your bar id via query string, for example: `/api/example?bar_id=1`
+## Content-Type
 
-    ## Authorization
+Ensure that each request includes the `Content-Type: application/json` header.
 
-    You will get response with error message and status code `403` if you try to access resource that you don't have permissions for.
+## Authentication
 
-    ## Sorting
+Include your login token in the header of every request, using the following format: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.
 
-    Some endpoints allow sorting by specific attributes. Prepending `-` defines descending order, and omitting it defines ascending order. Separate multiple sorts by a comma. For example: `?sort=name` will sort by name attribute in ascending order.
+For requests that require a reference to a specific bar, include the bar ID in the query string, e.g., `/cocktails?bar_id=1`.
 
-    ## Includes
+## Authorization
 
-    Some endpoints allow including extra relationship data on demand. Separate multiple relations witha a comma. For example: `?include=notes,user` will include extra extra data for notes and user.
+A `403 Forbidden` status code will be returned if you attempt to access a resource without the necessary permissions.
 
-    ## Pagination
+## Sorting
 
-    Some endpoints allow paginating results. Use `?per_page=30` to limit total results per request. Use `?page=3` to go to a specific page.
+Certain endpoints support sorting by specific attributes. Prepend `-` to an attribute for descending order, or omit it for ascending order. For example, `?sort=name` sorts by the `name` attribute in ascending order. Multiple sorts can be applied by separating attributes with a comma.
 
-    ## Filtering
+## Includes
 
-    Some endpoints allow filtering by a specific attribute. For example: `?filter[attribute_name]=value`.
+Some endpoints support the inclusion of related data on demand. To include multiple relationships, separate them with a comma. For example, `?include=notes,user` will include additional data for both notes and the user.
 
-    [Documentation](https://bar-assistant.github.io/docs/) | [Source](https://github.com/karlomikus/bar-assistant)",
+## Pagination
+
+To paginate results, use the `?per_page=30` parameter to limit the number of results per request. To navigate to a specific page, use `?page=3`.
+
+## Filtering
+
+Certain endpoints allow filtering by specific attributes. For example, `?filter[attribute_name]=value` filters results based on the given attribute. Multiple filter values can be separated by commas, e.g., `?filter[attribute_name]=value1,value2`."
 )]
 #[OAT\SecurityScheme(securityScheme: 'user_token', type: 'http', scheme: 'bearer')]
 final class BarAssistantAPISchema
