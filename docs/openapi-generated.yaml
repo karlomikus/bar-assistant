@@ -2618,6 +2618,78 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/ratings/cocktails/{id}':
+    post:
+      tags:
+        - Ratings
+      summary: 'Rate a cocktail'
+      operationId: d08a80593bbc130a2d9bf1c3fa09259b
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                rating:
+                  type: integer
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Rating' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    delete:
+      tags:
+        - Ratings
+      summary: "Delete current user's cocktail rating"
+      operationId: 383f4f99d862cbff18251ee0613fdec4
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /tags:
     get:
       tags:
@@ -4229,6 +4301,18 @@ components:
         use_parent_as_substitute:
           type: boolean
       type: object
+    Rating:
+      properties:
+        rateableId:
+          type: integer
+          example: 1
+        userId:
+          type: integer
+          example: 1
+        rating:
+          type: integer
+          example: 3
+      type: object
     RegisterRequest:
       required:
         - email
@@ -4407,6 +4491,9 @@ tags:
   -
     name: Profile
     description: Profile
+  -
+    name: Ratings
+    description: Ratings
   -
     name: Tag
     description: Tag
