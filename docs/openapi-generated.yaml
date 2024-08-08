@@ -2164,6 +2164,57 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /profile:
+    get:
+      tags:
+        - Profile
+      summary: 'Show authenticated user profile'
+      operationId: 73fd658c723e80f927b251628b9a616b
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Profile' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    post:
+      tags:
+        - Profile
+      summary: 'Update authenticated user profile'
+      operationId: c5958eea850b563b057d22dc8258efbf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileRequest'
+      responses:
+        '201':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Profile' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /tags:
     get:
       tags:
@@ -2316,6 +2367,199 @@ paths:
         - Tag
       summary: 'Delete tag'
       operationId: 3093352bf630017b8fcf7705e9b329c4
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /users:
+    get:
+      tags:
+        - Users
+      summary: 'Show a list of users of a bar'
+      operationId: 0d0cb04fffa73faf3be78b1a0b658561
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/User' } }
+                type: object
+    post:
+      tags:
+        - Users
+      summary: 'Create a new user'
+      operationId: a53b4f22b9e0de280870f1e187f6bee3
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '201':
+          description: 'Successful response'
+          headers:
+            Location:
+              description: 'URL of the new resource'
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/User' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/users/{id}':
+    get:
+      tags:
+        - Users
+      summary: 'Show a user'
+      operationId: 89cd377bbebe14aaf4174e3916502852
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/User' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    put:
+      tags:
+        - Users
+      summary: 'Update a user'
+      operationId: 6972a68618aa96af50377dcc8fe79aef
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/User' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    delete:
+      tags:
+        - Users
+      summary: 'Delete a user'
+      operationId: 0c7e7a133a818ac4b30f2d7dd1b04b91
       parameters:
         -
           name: id
@@ -3468,6 +3712,29 @@ components:
           items:
             $ref: '#/components/schemas/BarMembership'
       type: object
+    ProfileRequest:
+      required:
+        - name
+        - email
+      properties:
+        bar_id:
+          type: integer
+          nullable: true
+        name:
+          type: string
+          example: 'Bar Tender'
+        email:
+          type: string
+          example: new@email.com
+        password:
+          type: string
+          example: newpassword
+          nullable: true
+        is_shelf_public:
+          type: boolean
+        use_parent_as_substitute:
+          type: boolean
+      type: object
     RegisterRequest:
       required:
         - email
@@ -3515,6 +3782,32 @@ components:
           type: string
           example: 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII
       type: object
+    User:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Bartender
+        email:
+          type: string
+          example: admin@example.com
+        is_subscribed:
+          type: boolean
+        role:
+          properties:
+            bar_id:
+              type: integer
+              example: 1
+            role_id:
+              type: integer
+              example: 1
+            role_name:
+              type: integer
+              example: Admin
+          type: object
+      type: object
     UserBasic:
       required:
         - id
@@ -3526,6 +3819,26 @@ components:
         name:
           type: string
           example: Bartender
+      type: object
+    UserRequest:
+      required:
+        - role_id
+        - email
+        - name
+        - password
+      properties:
+        role_id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          example: admin@example.com
+        name:
+          type: string
+          example: 'Bar Tender'
+        password:
+          type: string
+          example: password
       type: object
     Utensil:
       required:
@@ -3592,8 +3905,14 @@ tags:
     name: 'Price category'
     description: 'Price category'
   -
+    name: Profile
+    description: Profile
+  -
     name: Tag
     description: Tag
+  -
+    name: Users
+    description: Users
   -
     name: Utensils
     description: Utensils

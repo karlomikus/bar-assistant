@@ -20,3 +20,7 @@ Route::get('/', function () {
 Route::get('/docs', function () {
     return view('swagger');
 });
+
+Route::get('/docs2', function () {
+    return view('elements');
+});

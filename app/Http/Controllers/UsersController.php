@@ -6,6 +6,8 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
@@ -18,6 +20,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UsersController extends Controller
 {
+    #[OAT\Get(path: '/users', tags: ['Users'], summary: 'Show a list of users of a bar', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\User::class),
+    ])]
     public function index(Request $request): JsonResource
     {
         if ($request->user()->cannot('list', User::class)) {
@@ -34,6 +42,15 @@ class UsersController extends Controller
         return UserResource::collection($users);
     }
 
+    #[OAT\Get(path: '/users/{id}', tags: ['Users'], summary: 'Show a user', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\User::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function show(Request $request, int $id): JsonResource
     {
         $user = User::select('users.*')
@@ -49,6 +66,20 @@ class UsersController extends Controller
         return new UserResource($user);
     }
 
+    #[OAT\Post(path: '/users', tags: ['Users'], summary: 'Create a new user', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\UserRequest::class),
+        ]
+    ))]
+    #[OAT\Response(response: 201, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\User::class),
+    ], headers: [
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function store(UserRequest $request): JsonResponse
     {
         if ($request->user()->cannot('create', User::class)) {
@@ -83,6 +114,20 @@ class UsersController extends Controller
             ->header('Location', route('users.show', $user->id));
     }
 
+    #[OAT\Put(path: '/users/{id}', tags: ['Users'], summary: 'Update a user', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\DatabaseIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\UserRequest::class),
+        ]
+    ))]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\User::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function update(int $id, UserRequest $request): JsonResource
     {
         $user = User::findOrFail($id);
@@ -104,6 +149,12 @@ class UsersController extends Controller
         return new UserResource($user);
     }
 
+    #[OAT\Delete(path: '/users/{id}', tags: ['Users'], summary: 'Delete a user', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function delete(Request $request, int $id): Response
     {
         $user = User::findOrFail($id);
