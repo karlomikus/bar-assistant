@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Menu;
 use Kami\Cocktail\Http\Requests\MenuRequest;
@@ -13,6 +15,13 @@ use Kami\Cocktail\Http\Resources\MenuPublicResource;
 
 class MenuController extends Controller
 {
+    #[OAT\Get(path: '/menu', tags: ['Menu'], summary: 'Show menu', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+    ], security: [])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Menu::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function index(Request $request): JsonResource
     {
         if ($request->user()->cannot('view', Menu::class)) {
@@ -30,6 +39,13 @@ class MenuController extends Controller
         return new MenuResource($menu);
     }
 
+    #[OAT\Get(path: '/explore/menus/{slug}', tags: ['Explore'], summary: 'Show public bar menu', parameters: [
+        new OAT\Parameter(name: 'slug', in: 'path', required: true, description: 'Bar database slug', schema: new OAT\Schema(type: 'string')),
+    ], security: [])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\MenuExplore::class),
+    ])]
+    #[BAO\NotFoundResponse]
     public function show(string $barSlug): MenuPublicResource
     {
         $menu = Menu::select('menus.*')
@@ -44,6 +60,18 @@ class MenuController extends Controller
         return new MenuPublicResource($menu);
     }
 
+    #[OAT\Post(path: '/menu', tags: ['Menu'], summary: 'Update menu', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\MenuRequest::class),
+        ]
+    ), security: [])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Menu::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function update(MenuRequest $request): MenuResource
     {
         if ($request->user()->cannot('update', Menu::class)) {

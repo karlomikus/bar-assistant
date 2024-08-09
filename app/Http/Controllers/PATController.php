@@ -7,6 +7,8 @@ namespace Kami\Cocktail\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\App;
 use Kami\Cocktail\Http\Requests\PATRequest;
 use Kami\Cocktail\Http\Resources\PATResource;
@@ -16,6 +18,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class PATController extends Controller
 {
+    #[OAT\Get(path: '/tokens', tags: ['Tokens'], summary: 'Show a list of tokens')]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\PersonalAccessToken::class),
+    ])]
     public function index(Request $request): JsonResource
     {
         // Shows a ton of tokens in demo which is not really useful
@@ -32,6 +38,16 @@ class PATController extends Controller
         return PATResource::collection($tokens);
     }
 
+    #[OAT\Post(path: '/tokens', tags: ['Tokens'], summary: 'Create new personal access token', requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\PersonalAccessTokenRequest::class),
+        ]
+    ))]
+    #[OAT\Response(response: 201, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\PersonalAccessToken::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function store(PATRequest $request): TokenResource
     {
         if ($request->user()->cannot('create', PersonalAccessToken::class)) {
@@ -58,6 +74,12 @@ class PATController extends Controller
         return new TokenResource($token);
     }
 
+    #[OAT\Delete(path: '/tokens/{id}', tags: ['Tokens'], summary: 'Revoke personal access token', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function delete(Request $request, int $id): Response
     {
         $token = PersonalAccessToken::findOrFail($id);
@@ -68,6 +90,6 @@ class PATController extends Controller
 
         $token->delete();
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 }

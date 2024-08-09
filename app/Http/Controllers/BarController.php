@@ -7,6 +7,8 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use Symfony\Component\Uid\Ulid;
@@ -23,6 +25,10 @@ use Kami\Cocktail\Http\Resources\BarMembershipResource;
 
 class BarController extends Controller
 {
+    #[OAT\Get(path: '/bars', tags: ['Bars'], summary: 'Show a list of bars user has access to')]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\Bar::class),
+    ])]
     public function index(Request $request): JsonResource
     {
         $bars = Bar::select('bars.*')
@@ -34,6 +40,14 @@ class BarController extends Controller
         return BarResource::collection($bars);
     }
 
+    #[OAT\Get(path: '/bars/{id}', tags: ['Bars'], summary: 'Show a specific bar', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Bar::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function show(Request $request, int $id): JsonResource
     {
         $bar = Bar::findOrFail($id);
@@ -52,6 +66,18 @@ class BarController extends Controller
         return new BarResource($bar);
     }
 
+    #[OAT\Post(path: '/bars', tags: ['Bars'], summary: 'Create a new bar', requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\BarRequest::class),
+        ]
+    ))]
+    #[OAT\Response(response: 201, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Bar::class),
+    ], headers: [
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function store(BarRequest $request): JsonResponse
     {
         if ($request->user()->cannot('create', Bar::class)) {
@@ -98,6 +124,19 @@ class BarController extends Controller
             ->header('Location', route('bars.show', $bar->id));
     }
 
+    #[OAT\Put(path: '/bars/{id}', tags: ['Bars'], summary: 'Update a bar', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\BarRequest::class),
+        ]
+    ))]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Bar::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function update(int $id, BarRequest $request): JsonResource
     {
         $bar = Bar::findOrFail($id);
@@ -134,6 +173,12 @@ class BarController extends Controller
         return new BarResource($bar);
     }
 
+    #[OAT\Delete(path: '/bars/{id}', tags: ['Bars'], summary: 'Delete a bar', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function delete(Request $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
@@ -146,9 +191,22 @@ class BarController extends Controller
 
         $bar->delete();
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 
+    #[OAT\Post(path: '/bars/join', tags: ['Bars'], summary: 'Join a bar via invite code', requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(type: 'object', properties: [
+                new OAT\Property(type: 'string', property: 'invite_code', example: '01H8S3VH2HTEB3D893AW8NTBBC'),
+            ]),
+        ]
+    ))]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Bar::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function join(Request $request): JsonResource
     {
         $barToJoin = Bar::where('invite_code', $request->post('invite_code'))->firstOrFail();
@@ -162,15 +220,27 @@ class BarController extends Controller
         return new BarResource($barToJoin);
     }
 
+    #[OAT\Delete(path: '/bars/{id}/memberships', tags: ['Bars'], summary: 'Leave a bar you are a member of', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotFoundResponse]
     public function leave(Request $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
 
         $request->user()->leaveBar($bar);
 
-        return response(status: 204);
+        return new Response(null, 204);
     }
 
+    #[OAT\Delete(path: '/bars/{id}/memberships/{userId}', tags: ['Bars'], summary: 'Remove a member from a bar', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+        new OAT\Parameter(name: 'userId', in: 'path', required: true, description: 'Database id of a user', schema: new OAT\Schema(type: 'integer')),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotFoundResponse]
+    #[BAO\NotAuthorizedResponse]
     public function removeMembership(Request $request, int $id, int $userId): Response
     {
         $bar = Bar::findOrFail($id);
@@ -185,9 +255,17 @@ class BarController extends Controller
 
         $bar->memberships()->where('user_id', $userId)->delete();
 
-        return response(status: 204);
+        return new Response(null, 204);
     }
 
+    #[OAT\Get(path: '/bars/{id}/memberships', tags: ['Bars'], summary: 'List all members of a bar', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\BarMembership::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function memberships(Request $request, int $id): JsonResource
     {
         $bar = Bar::findOrFail($id);
@@ -201,6 +279,19 @@ class BarController extends Controller
         return BarMembershipResource::collection($bar->memberships);
     }
 
+    #[OAT\Post(path: '/bars/{id}/transfer', tags: ['Bars'], summary: 'Transfer bar ownership', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(type: 'object', properties: [
+                new OAT\Property(type: 'integer', property: 'user_id', example: 1, description: 'Database id of a user you want to transfer ownership to'),
+            ]),
+        ]
+    ))]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function transfer(Request $request, int $id): JsonResponse
     {
         $bar = Bar::findOrFail($id);
@@ -221,6 +312,19 @@ class BarController extends Controller
         return response()->json(status: 204);
     }
 
+    #[OAT\Post(path: '/bars/{id}/status', tags: ['Bars'], summary: 'Update bar status', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(type: 'object', properties: [
+                new OAT\Property(ref: BarStatusEnum::class, property: 'status', example: BarStatusEnum::Active->value),
+            ]),
+        ]
+    ))]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function toggleBarStatus(Request $request, int $id): JsonResponse
     {
         $bar = Bar::findOrFail($id);

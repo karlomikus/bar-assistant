@@ -55,7 +55,7 @@ class ExportController extends Controller
 
         $export->delete();
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 
     public function download(Request $request, int $id): BinaryFileResponse

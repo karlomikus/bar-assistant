@@ -7,6 +7,8 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\User;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -21,6 +23,16 @@ use Kami\Cocktail\Http\Resources\ProfileResource;
 
 class AuthController extends Controller
 {
+    #[OAT\Post(path: '/login', tags: ['Authentication'], summary: 'Authenticate user and get a token', requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\LoginRequest::class),
+        ]
+        ), security: [])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Token::class),
+    ])]
+    #[OAT\Response(response: 400, description: 'Unable to authenticate')]
     public function authenticate(Request $request): JsonResource
     {
         $request->validate([
@@ -44,6 +56,8 @@ class AuthController extends Controller
         return new TokenResource($token);
     }
 
+    #[OAT\Post(path: '/logout', tags: ['Authentication'], summary: 'Logout currently authenticated user')]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     public function logout(Request $request): JsonResponse
     {
         /** @var \Laravel\Sanctum\PersonalAccessToken */
@@ -53,6 +67,16 @@ class AuthController extends Controller
         return response()->json(status: 204);
     }
 
+    #[OAT\Post(path: '/register', tags: ['Authentication'], summary: 'Register a new user', requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\RegisterRequest::class),
+        ]
+        ), security: [])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Profile::class),
+    ])]
+    #[BAO\NotFoundResponse]
     public function register(RegisterRequest $req): JsonResource
     {
         if (config('bar-assistant.allow_registration') === false) {
@@ -77,6 +101,16 @@ class AuthController extends Controller
         return new ProfileResource($user);
     }
 
+    #[OAT\Post(path: '/forgot-password', tags: ['Authentication'], summary: 'Request a new user password', requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(type: 'object', properties: [
+                new OAT\Property(type: 'string', property: 'email', example: 'admin@example.com'),
+            ]),
+        ]
+    ), security: [])]
+    #[OAT\Response(response: 204, description: 'Password reset link sent')]
+    #[OAT\Response(response: 400, description: 'Unable to send password reset link')]
     public function passwordForgot(Request $request): JsonResponse
     {
         $request->validate(['email' => 'required|email']);
@@ -94,6 +128,19 @@ class AuthController extends Controller
         abort(400);
     }
 
+    #[OAT\Post(path: '/reset-password', tags: ['Authentication'], summary: 'Reset user password', requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(type: 'object', properties: [
+                new OAT\Property(type: 'string', property: 'token', example: 'token-from-email'),
+                new OAT\Property(type: 'string', property: 'email', example: 'admin@example.com'),
+                new OAT\Property(type: 'string', property: 'password', example: 'password', minLength: 5),
+                new OAT\Property(type: 'string', property: 'password_confirmation', example: 'password', minLength: 5),
+            ]),
+        ]
+    ), security: [])]
+    #[OAT\Response(response: 204, description: 'Password succssfully reset')]
+    #[OAT\Response(response: 400, description: 'Unable to reset password')]
     public function passwordReset(Request $request): JsonResponse
     {
         $request->validate([
@@ -119,6 +166,13 @@ class AuthController extends Controller
         abort(400, $status);
     }
 
+    #[OAT\Post(path: '/verify/{id}/{hash}', tags: ['Authentication'], summary: 'Confirm user account', parameters: [
+        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id of a user', schema: new OAT\Schema(type: 'integer')),
+        new OAT\Parameter(name: 'hash', in: 'path', required: true, description: 'Hash string sent to user email', schema: new OAT\Schema(type: 'string')),
+    ], security: [])]
+    #[OAT\Response(response: 204, description: 'Account confirmed')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function confirmAccount(string $userId, string $hash): JsonResponse
     {
         if (config('bar-assistant.mail_require_confirmation') === false) {

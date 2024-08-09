@@ -18,5 +18,6 @@ Route::get('/', function () {
 });
 
 Route::get('/docs', function () {
-    return view('swagger');
+    return view('elements');
 });
+

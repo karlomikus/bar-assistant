@@ -31,23 +31,13 @@ class IngredientResource extends JsonResource
             'updated_at' => $this->updated_at?->toJson(),
             'images' => ImageResource::collection($this->images),
             'parent_ingredient' => $this->when($this->relationLoaded('parentIngredient') && $this->parent_ingredient_id !== null, function () {
-                return [
-                    'id' => $this->parentIngredient->id,
-                    'slug' => $this->parentIngredient->slug,
-                    'name' => $this->parentIngredient->name,
-                ];
+                return new IngredientBasicResource($this->parentIngredient);
             }),
             'color' => $this->color,
             'category' => new IngredientCategoryResource($this->category),
             'cocktails_count' => $this->whenCounted('cocktails'),
             'varieties' => $this->when($this->relationLoaded('varieties') && $this->relationLoaded('parentIngredient'), function () {
-                return $this->getAllRelatedIngredients()->map(function ($v) {
-                    return [
-                        'id' => $v->id,
-                        'slug' => $v->slug,
-                        'name' => $v->name,
-                    ];
-                })->toArray();
+                return IngredientBasicResource::collection($this->getAllRelatedIngredients());
             }),
             'cocktails' => $this->when($this->relationLoaded('cocktails') || $this->relationLoaded('cocktailIngredientSubstitutes'), function () {
                 return $this->cocktails->merge($this->cocktailsAsSubstituteIngredient())->map(function ($c) {
@@ -64,11 +54,10 @@ class IngredientResource extends JsonResource
                 'can_edit' => $request->user()->can('edit', $this->resource),
                 'can_delete' => $request->user()->can('delete', $this->resource),
             ]),
-            'ingredient_parts' => $this->when($this->relationLoaded('ingredientParts'), fn () => $this->ingredientParts->map(fn ($cip) => [
-                'id' => $cip->ingredient_id,
-                'name' => $cip->ingredient->name,
-                'slug' => $cip->ingredient->slug,
-            ])),
+            'ingredient_parts' => $this->when(
+                $this->relationLoaded('ingredientParts'),
+                fn () => $this->ingredientParts->map(fn ($cip) => new IngredientBasicResource($cip->ingredient))
+            ),
             'prices' => $this->when($this->relationLoaded('prices'), function () {
                 return IngredientPriceResource::collection($this->prices);
             }),
