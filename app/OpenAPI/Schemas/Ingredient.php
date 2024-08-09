@@ -40,12 +40,8 @@ class Ingredient
     #[OAT\Property()]
     public array $images = [];
 
-    #[OAT\Property(property: 'parent_ingredient', type: 'object', properties: [
-        new OAT\Property(type: 'integer', property: 'id', example: 1),
-        new OAT\Property(type: 'string', property: 'slug', example: 'vodka-1'),
-        new OAT\Property(type: 'string', property: 'name', example: 'Vodka'),
-    ])]
-    public array $parentIngredient = [];
+    #[OAT\Property(property: 'parent_ingredient')]
+    public ?IngredientBasic $parentIngredient = null;
 
     #[OAT\Property(example: '#ffffff')]
     public string $color;
@@ -56,11 +52,8 @@ class Ingredient
     #[OAT\Property(property: 'cocktails_count', example: 12)]
     public int $cocktailsCount;
 
-    #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
-        new OAT\Property(type: 'integer', property: 'id', example: 1),
-        new OAT\Property(type: 'string', property: 'slug', example: 'vodka-1'),
-        new OAT\Property(type: 'string', property: 'name', example: 'Vodka'),
-    ]))]
+    /** @var IngredientBasic[] */
+    #[OAT\Property()]
     public array $varieties = [];
 
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
@@ -82,11 +75,8 @@ class Ingredient
     ]))]
     public array $access = [];
 
-    #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
-        new OAT\Property(type: 'integer', property: 'id', example: 1),
-        new OAT\Property(type: 'string', property: 'slug', example: 'vodka-1'),
-        new OAT\Property(type: 'string', property: 'name', example: 'Vodka'),
-    ]))]
+    /** @var IngredientBasic[] */
+    #[OAT\Property()]
     public array $ingredientParts = [];
 
     /** @var IngredientPrice[] */

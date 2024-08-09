@@ -15,6 +15,13 @@ use Kami\Cocktail\Http\Resources\MenuPublicResource;
 
 class MenuController extends Controller
 {
+    #[OAT\Get(path: '/menu', tags: ['Menu'], summary: 'Show menu', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+    ], security: [])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Menu::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function index(Request $request): JsonResource
     {
         if ($request->user()->cannot('view', Menu::class)) {
@@ -53,6 +60,18 @@ class MenuController extends Controller
         return new MenuPublicResource($menu);
     }
 
+    #[OAT\Post(path: '/menu', tags: ['Menu'], summary: 'Update menu', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\MenuRequest::class),
+        ]
+    ), security: [])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Menu::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function update(MenuRequest $request): MenuResource
     {
         if ($request->user()->cannot('update', Menu::class)) {

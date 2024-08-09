@@ -16,7 +16,7 @@ class Glass
     #[OAT\Property(example: 'Glass for smaller cocktails')]
     public ?string $description = null;
     #[OAT\Property(property: 'cocktails_count', example: 32)]
-    public string $cocktailsCount;
+    public int $cocktailsCount;
     #[OAT\Property(example: 120.0)]
     public ?float $volume = null;
     #[OAT\Property(property: 'volume_units', example: 'ml')]

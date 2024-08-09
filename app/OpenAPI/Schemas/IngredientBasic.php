@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema()]
+#[OAT\Schema(description: 'Minimal ingredient information')]
 class IngredientBasic
 {
     #[OAT\Property(example: 1)]

@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema()]
+#[OAT\Schema(description: 'Image attached to a specific resource')]
 class Image
 {
     #[OAT\Property(example: 1)]

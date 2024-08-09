@@ -8,7 +8,7 @@ servers:
     url: 'http://localhost:8000/api'
     description: 'Local docker development'
   -
-    url: 'https://api.barassistant.app'
+    url: 'https://api.barassistant.app/api'
     description: Production
 paths:
   /login:
@@ -2407,6 +2407,75 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /menu:
+    get:
+      tags:
+        - Menu
+      summary: 'Show menu'
+      operationId: 15005db445c5ccad445e198729cc4e22
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Menu' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
+    post:
+      tags:
+        - Menu
+      summary: 'Update menu'
+      operationId: 9ac6e03b541a1351a5d691b2aa232283
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuRequest'
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Menu' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
   '/explore/menus/{slug}':
     get:
       tags:
@@ -3118,6 +3187,160 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /shopping-list:
+    get:
+      tags:
+        - 'Shopping list'
+      summary: 'Show shopping list'
+      operationId: 57230d3776679bad7c99fb478fadbdd1
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/ShoppingList' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
+  /shopping-list/batch-store:
+    post:
+      tags:
+        - 'Shopping list'
+      summary: 'Batch add ingredients to shopping list'
+      operationId: a3541b87bafbea2193beff9c9865184d
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ingredient_ids:
+                  type: array
+                  items: { type: integer }
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/ShoppingList' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /shopping-list/batch-delete:
+    post:
+      tags:
+        - 'Shopping list'
+      summary: 'Batch delete ingredients from shopping list'
+      operationId: 5490435654005127044016b3f4d764b5
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ingredient_ids:
+                  type: array
+                  items: { type: integer }
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /shopping-list/share:
+    get:
+      tags:
+        - 'Shopping list'
+      summary: 'Share shopping list'
+      operationId: 2138a55649c305a3c279f64fbd97fca8
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            text/markdown:
+              schema:
+                type: string
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
   /tags:
     get:
       tags:
@@ -4348,7 +4571,7 @@ components:
           example: 'Glass for smaller cocktails'
           nullable: true
         cocktails_count:
-          type: string
+          type: integer
           example: 32
         volume:
           type: number
@@ -4382,6 +4605,7 @@ components:
           nullable: true
       type: object
     Image:
+      description: 'Image attached to a specific resource'
       properties:
         id:
           type: integer
@@ -4462,17 +4686,10 @@ components:
           items:
             $ref: '#/components/schemas/Image'
         parent_ingredient:
-          properties:
-            id:
-              type: integer
-              example: 1
-            slug:
-              type: string
-              example: vodka-1
-            name:
-              type: string
-              example: Vodka
-          type: object
+          nullable: true
+          oneOf:
+            -
+              $ref: '#/components/schemas/IngredientBasic'
         color:
           type: string
           example: '#ffffff'
@@ -4487,17 +4704,7 @@ components:
         varieties:
           type: array
           items:
-            properties:
-              id:
-                type: integer
-                example: 1
-              slug:
-                type: string
-                example: vodka-1
-              name:
-                type: string
-                example: Vodka
-            type: object
+            $ref: '#/components/schemas/IngredientBasic'
         cocktails:
           type: array
           items:
@@ -4533,23 +4740,14 @@ components:
         ingredientParts:
           type: array
           items:
-            properties:
-              id:
-                type: integer
-                example: 1
-              slug:
-                type: string
-                example: vodka-1
-              name:
-                type: string
-                example: Vodka
-            type: object
+            $ref: '#/components/schemas/IngredientBasic'
         prices:
           type: array
           items:
             $ref: '#/components/schemas/IngredientPrice'
       type: object
     IngredientBasic:
+      description: 'Minimal ingredient information'
       properties:
         id:
           type: integer
@@ -4705,6 +4903,34 @@ components:
           example: 'My device'
           nullable: true
       type: object
+    Menu:
+      properties:
+        id:
+          type: integer
+          example: 1
+        is_enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        categories:
+          type: array
+          items:
+            properties:
+              name:
+                type: string
+                example: 'Category name'
+              cocktails:
+                type: array
+                items:
+                  properties: { id: { type: integer, example: 1 }, slug: { type: string, example: cocktail-name-1 }, sort: { type: integer, example: 1 }, price: { type: string, example: 'EUR 23.85' }, currency: { type: string, example: EUR }, name: { type: string, example: 'Cocktail name' }, short_ingredients: { type: array, items: { type: string, example: Vodka } } }
+                  type: object
+            type: object
+      type: object
     MenuExplore:
       properties:
         bar:
@@ -4731,6 +4957,34 @@ components:
                 items:
                   properties: { sort: { type: string, example: 1 }, price: { properties: { full: { type: integer, example: 2385 }, formatted: { type: string, example: 'EUR 23.85' } }, type: object }, public_id: { type: string, example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, slug: { type: string, example: cocktail-name-1 }, currency: { type: string, example: EUR }, name: { type: string, example: 'Cocktail name' }, short_ingredients: { type: array, items: { type: string, example: Vodka } }, image: { type: string, example: 'https://example.com/image.jpg' } }
                   type: object
+            type: object
+      type: object
+    MenuRequest:
+      required:
+        - is_enabled
+        - cocktails
+      properties:
+        is_enabled:
+          type: boolean
+        cocktails:
+          type: array
+          items:
+            properties:
+              cocktail_id:
+                type: integer
+                example: 1
+              price:
+                type: string
+                example: '22.52'
+              category_name:
+                type: string
+                example: 'Category name'
+              sort:
+                type: integer
+                example: 1
+              currency:
+                type: string
+                example: EUR
             type: object
       type: object
     Note:
@@ -4920,6 +5174,18 @@ components:
           minLength: 5
           example: password
       type: object
+    ShoppingList:
+      properties:
+        ingredient_id:
+          type: integer
+          example: 1
+        ingredient_name:
+          type: string
+          example: gin-1
+        ingredient_slug:
+          type: string
+          example: gin-1
+      type: object
     Tag:
       required:
         - id
@@ -4993,10 +5259,10 @@ components:
         id:
           type: integer
           example: 1
-        ingredientId:
+        ingredient_id:
           type: integer
           example: 1
-        ingredientSlug:
+        ingredient_slug:
           type: string
           example: gin-1
       type: object
@@ -5091,6 +5357,9 @@ tags:
     name: Ingredients
     description: Ingredients
   -
+    name: Menu
+    description: Menu
+  -
     name: Notes
     description: Notes
   -
@@ -5108,6 +5377,9 @@ tags:
   -
     name: Shelf
     description: Shelf
+  -
+    name: 'Shopping list'
+    description: 'Shopping list'
   -
     name: Tag
     description: Tag
