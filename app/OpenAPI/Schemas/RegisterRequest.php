@@ -13,6 +13,6 @@ class RegisterRequest
     public string $email;
     #[OAT\Property(example: 'Bar Tender')]
     public string $name;
-    #[OAT\Property(example: 'password', minLength: 5)]
+    #[OAT\Property(example: 'password', minLength: 5, format: 'password')]
     public string $password;
 }

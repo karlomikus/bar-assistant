@@ -19,15 +19,16 @@ class CocktailRequest
     public ?string $source = null;
     #[OAT\Property(example: 'Garnish')]
     public ?string $garnish = null;
-    #[OAT\Property(example: 1)]
+    #[OAT\Property(example: 1, property: 'glass_id')]
     public ?int $glassId = null;
-    #[OAT\Property(example: 1)]
+    #[OAT\Property(example: 1, property: 'method_id')]
     public ?int $methodId = null;
     /** @var string[] */
     #[OAT\Property()]
     public array $tags = [];
     #[OAT\Property(type: 'array', items: new OAT\Items(
         type: 'object',
+        required: ['ingredient_id', 'units', 'amount'],
         properties: [
             new OAT\Property('ingredient_id', type: 'integer', example: 1),
             new OAT\Property('amount', type: 'number', format: 'float', example: 30),
@@ -48,9 +49,9 @@ class CocktailRequest
     ))]
     public array $ingredients = [];
     /** @var int[] */
-    #[OAT\Property()]
+    #[OAT\Property(description: 'List of existing image ids')]
     public array $images = [];
     /** @var int[] */
-    #[OAT\Property()]
+    #[OAT\Property(description: 'List of existing utensil ids')]
     public array $utensils = [];
 }

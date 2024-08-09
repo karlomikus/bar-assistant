@@ -174,7 +174,8 @@ paths:
     get:
       tags:
         - Bars
-      summary: 'Show a list of bars user has access to'
+      summary: 'Show a list of bars'
+      description: 'Show a list of bars user has access to. Includes bars that user has made and bars he is a member of.'
       operationId: 8e4aff1910c2f6b973c0bcff7ac77418
       responses:
         '200':
@@ -4160,23 +4161,46 @@ components:
           type: string
           example: bar-name-1
         default_units:
-          type:
-            - string
-            - 'null'
+          description: 'Used only as a setting for client apps.'
+          type: string
+          enum:
+            - ml
+            - cl
+            - oz
           example: ml
         default_lang:
+          description: 'Locale code, used only as a setting for client apps, does not change language of the API.'
           type:
             - string
             - 'null'
           example: en-US
         enable_invites:
+          description: 'Enable users with invite code to join this bar. Default `false`.'
           type: boolean
         options:
+          description: 'List of data that the bar will start with. Possible values: `ingredients`, `cocktails`. Cocktails cannot be imported without ingredients.'
           type: array
           items:
             type: string
       type: object
     Cocktail:
+      required:
+        - id
+        - name
+        - slug
+        - garnish
+        - description
+        - instructions
+        - source
+        - public_id
+        - public_at
+        - main_image_id
+        - images
+        - tags
+        - rating
+        - created_at
+        - updated_at
+        - abv
       properties:
         id:
           type: integer
@@ -4205,7 +4229,7 @@ components:
             - string
             - 'null'
           example: 'Source of the recipe'
-        publicId:
+        public_id:
           type:
             - string
             - 'null'
@@ -4215,7 +4239,7 @@ components:
             - string
             - 'null'
           format: date-time
-        mainImageId:
+        main_image_id:
           type:
             - integer
             - 'null'
@@ -4302,15 +4326,15 @@ components:
             - integer
             - 'null'
           example: 350
-        createdUser:
+        created_user:
           $ref: '#/components/schemas/UserBasic'
-        updatedUser:
+        updated_user:
           oneOf:
             -
               $ref: '#/components/schemas/UserBasic'
             -
               type: 'null'
-        inShelf:
+        in_shelf:
           type: boolean
         access:
           properties:
@@ -4479,13 +4503,13 @@ components:
         optional:
           type: boolean
           example: false
-        ingredientId:
+        ingredient_id:
           type: integer
           example: 1
         name:
           type: string
           example: Vodka
-        ingredientSlug:
+        ingredient_slug:
           type: string
           example: vodka-1
         substitutes:
@@ -4631,12 +4655,12 @@ components:
             - string
             - 'null'
           example: Garnish
-        glassId:
+        glass_id:
           type:
             - integer
             - 'null'
           example: 1
-        methodId:
+        method_id:
           type:
             - integer
             - 'null'
@@ -4648,6 +4672,10 @@ components:
         ingredients:
           type: array
           items:
+            required:
+              - ingredient_id
+              - units
+              - amount
             properties:
               ingredient_id:
                 type: integer
@@ -4680,10 +4708,12 @@ components:
                   type: object
             type: object
         images:
+          description: 'List of existing image ids'
           type: array
           items:
             type: integer
         utensils:
+          description: 'List of existing utensil ids'
           type: array
           items:
             type: integer
@@ -4703,7 +4733,7 @@ components:
           example: 'Collection description'
         is_bar_shared:
           type: boolean
-        createdAt:
+        created_at:
           type: string
           format: date-time
           example: '2023-05-14T21:23:40.000000Z'
@@ -4955,7 +4985,7 @@ components:
                 type: boolean
                 example: true
             type: object
-        ingredientParts:
+        ingredient_parts:
           type: array
           items:
             $ref: '#/components/schemas/IngredientBasic'
@@ -5125,8 +5155,9 @@ components:
           example: admin@example.com
         password:
           type: string
+          format: password
           example: password
-        tokenName:
+        token_name:
           type:
             - string
             - 'null'
@@ -5263,13 +5294,13 @@ components:
             - cocktails.write
             - ingredients.read
             - ingredients.write
-        lastUsedAt:
+        last_used_at:
           type: string
           example: '2023-05-14T21:23:40.000000Z'
-        createdAt:
+        created_at:
           type: string
           example: '2023-05-14T21:23:40.000000Z'
-        expiresAt:
+        expires_at:
           type: string
           example: '2023-05-14T21:23:40.000000Z'
       type: object
@@ -5286,7 +5317,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AbilityEnum'
-        expiresAt:
+        expires_at:
           type:
             - string
             - 'null'
@@ -5375,6 +5406,7 @@ components:
           type:
             - string
             - 'null'
+          format: password
           example: newpassword
         is_shelf_public:
           type: boolean
@@ -5383,10 +5415,10 @@ components:
       type: object
     Rating:
       properties:
-        rateableId:
+        rateable_id:
           type: integer
           example: 1
-        userId:
+        user_id:
           type: integer
           example: 1
         rating:
@@ -5407,6 +5439,7 @@ components:
           example: 'Bar Tender'
         password:
           type: string
+          format: password
           minLength: 5
           example: password
       type: object
@@ -5520,6 +5553,7 @@ components:
           example: 'Bar Tender'
         password:
           type: string
+          format: password
           example: password
       type: object
     Utensil:

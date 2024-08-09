@@ -15,6 +15,6 @@ class PersonalAccessTokenRequest
     /** @var AbilityEnum[] */
     #[OAT\Property(type: 'array', items: new OAT\Items(ref: AbilityEnum::class))]
     public array $abilities;
-    #[OAT\Property(example: '2023-05-14T21:23:40.000000Z')]
+    #[OAT\Property(example: '2023-05-14T21:23:40.000000Z', property: 'expires_at')]
     public ?string $expiresAt = null;
 }

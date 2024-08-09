@@ -11,8 +11,8 @@ class LoginRequest
 {
     #[OAT\Property(example: 'admin@example.com')]
     public string $email;
-    #[OAT\Property(example: 'password')]
+    #[OAT\Property(example: 'password', format: 'password')]
     public string $password;
-    #[OAT\Property(example: 'My device')]
+    #[OAT\Property(example: 'My device', property: 'token_name')]
     public ?string $tokenName = null;
 }

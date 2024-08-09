@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
-use Brick\Math\RoundingMode;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**

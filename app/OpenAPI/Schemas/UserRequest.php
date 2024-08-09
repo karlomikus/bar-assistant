@@ -15,6 +15,6 @@ class UserRequest
     public string $email;
     #[OAT\Property(example: 'Bar Tender')]
     public string $name;
-    #[OAT\Property(example: 'password')]
+    #[OAT\Property(example: 'password', format: 'password')]
     public string $password;
 }

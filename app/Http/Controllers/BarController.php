@@ -25,7 +25,7 @@ use Kami\Cocktail\Http\Resources\BarMembershipResource;
 
 class BarController extends Controller
 {
-    #[OAT\Get(path: '/bars', tags: ['Bars'], summary: 'Show a list of bars user has access to')]
+    #[OAT\Get(path: '/bars', tags: ['Bars'], summary: 'Show a list of bars', description: 'Show a list of bars user has access to. Includes bars that user has made and bars he is a member of.')]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Bar::class),
     ])]
@@ -88,7 +88,7 @@ class BarController extends Controller
             'slug' => 'nullable|unique:bars,slug',
         ]);
 
-        $inviteEnabled = (bool) $request->post('enable_invites', '1');
+        $inviteEnabled = (bool) $request->post('enable_invites', '0');
         $barOptions = $request->post('options', []);
 
         $bar = new Bar();
@@ -151,7 +151,7 @@ class BarController extends Controller
 
         Cache::forget('ba:bar:' . $bar->id);
 
-        $inviteEnabled = (bool) $request->post('enable_invites', '1');
+        $inviteEnabled = (bool) $request->post('enable_invites', '0');
         if ($inviteEnabled && $bar->invite_code === null) {
             $bar->invite_code = (string) new Ulid();
         } else {

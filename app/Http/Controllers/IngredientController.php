@@ -218,7 +218,7 @@ class IngredientController extends Controller
             new OAT\Property(property: 'id', type: 'integer', example: 1),
             new OAT\Property(property: 'slug', type: 'string', example: 'old-fashioned-1'),
             new OAT\Property(property: 'name', type: 'string', example: 'Old fashioned'),
-            new OAT\Property(property: 'potential_cocktails', type: 'integer', example: 3, description: 'Number of new cocktails that user can make with this ingredient'), 
+            new OAT\Property(property: 'potential_cocktails', type: 'integer', example: 3, description: 'Number of new cocktails that user can make with this ingredient'),
         ]))]),
     ])]
     #[BAO\NotAuthorizedResponse]

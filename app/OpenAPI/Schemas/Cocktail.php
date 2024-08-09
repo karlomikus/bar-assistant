@@ -6,7 +6,24 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema()]
+#[OAT\Schema(required: [
+    'id',
+    'name',
+    'slug',
+    'garnish',
+    'description',
+    'instructions',
+    'source',
+    'public_id',
+    'public_at',
+    'main_image_id',
+    'images',
+    'tags',
+    'rating',
+    'created_at',
+    'updated_at',
+    'abv',
+])]
 class Cocktail
 {
     #[OAT\Property(example: 1)]
@@ -30,13 +47,13 @@ class Cocktail
     #[OAT\Property(example: 'Source of the recipe')]
     public ?string $source = null;
 
-    #[OAT\Property(example: 'public-id-1')]
+    #[OAT\Property(property: 'public_id', example: 'public-id-1')]
     public ?string $publicId = null;
 
     #[OAT\Property(property: 'public_at', format: 'date-time')]
     public ?string $publicAt = null;
 
-    #[OAT\Property(example: 1)]
+    #[OAT\Property(property: 'main_image_id', example: 1)]
     public ?int $mainImageId = null;
 
     /** @var Image[] */
@@ -91,13 +108,13 @@ class Cocktail
     #[OAT\Property(example: 350)]
     public ?int $calories = null;
 
-    #[OAT\Property()]
+    #[OAT\Property(property: 'created_user')]
     public UserBasic $createdUser;
 
-    #[OAT\Property()]
+    #[OAT\Property(property: 'updated_user')]
     public ?UserBasic $updatedUser = null;
 
-    #[OAT\Property()]
+    #[OAT\Property(property: 'in_shelf')]
     public bool $inShelf = false;
 
     #[OAT\Property(type: 'object', properties: [

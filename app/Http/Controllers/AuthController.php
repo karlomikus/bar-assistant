@@ -28,7 +28,7 @@ class AuthController extends Controller
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\LoginRequest::class),
         ]
-        ), security: [])]
+    ), security: [])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Token::class),
     ])]
@@ -72,7 +72,7 @@ class AuthController extends Controller
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\RegisterRequest::class),
         ]
-        ), security: [])]
+    ), security: [])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Profile::class),
     ])]
