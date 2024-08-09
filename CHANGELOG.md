@@ -1,3 +1,10 @@
+# v3.19.0
+## New
+- Updated the way OpenAPI specification is generated
+    - Now generated directly from the code
+    - Should improve sync between docs and implementation
+    - Updated docs rendering
+
 # v3.18.0
 ## New
 - Added price categories
