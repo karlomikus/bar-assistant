@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   title: 'Bar Assistant API'
   description: "**Bar Assistant** is all-in-one solution for managing your home bar. Compared to other recipe management software that usually tries to be more for general use, Bar Assistant is made specifically for managing cocktail recipes. This means that there are a lot of cocktail-oriented features, like ingredient substitutes, first-class ingredients, ABV calculations, unit switching and more.\n\n[Homepage](https://barassistant.app/) &middot; [Official Documentation](https://bar-assistant.github.io/docs/) &middot; [GitHub Repository](https://github.com/karlomikus/bar-assistant)\n\n## Rate Limiting\n\nThe rate limit is set to 1,000 requests per minute per IP address, or per user ID if authenticated. Certain endpoints have specific rate limits, such as importing and exporting data. Exporting is limited to 1 request per minute, while importing is restricted to 2 requests per minute for users without a subscription (applicable to cloud-hosted instances).\n\n## Content-Type\n\nEnsure that each request includes the `Content-Type: application/json` header.\n\n## Authentication\n\nInclude your login token in the header of every request, using the following format: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.\n\nFor requests that require a reference to a specific bar, include the bar ID in the query string, e.g., `/cocktails?bar_id=1`.\n\n## Authorization\n\nA `403 Forbidden` status code will be returned if you attempt to access a resource without the necessary permissions.\n\n## Sorting\n\nCertain endpoints support sorting by specific attributes. Prepend `-` to an attribute for descending order, or omit it for ascending order. For example, `?sort=name` sorts by the `name` attribute in ascending order. Multiple sorts can be applied by separating attributes with a comma.\n\n## Includes\n\nSome endpoints support the inclusion of related data on demand. To include multiple relationships, separate them with a comma. For example, `?include=notes,user` will include additional data for both notes and the user.\n\n## Pagination\n\nTo paginate results, use the `?per_page=30` parameter to limit the number of results per request. To navigate to a specific page, use `?page=3`.\n\n## Filtering\n\nCertain endpoints allow filtering by specific attributes. For example, `?filter[attribute_name]=value` filters results based on the given attribute. Multiple filter values can be separated by commas, e.g., `?filter[attribute_name]=value1,value2`."
@@ -666,7 +666,7 @@ paths:
               schema:
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Cocktail' } }
-                  links: { properties: { first: { type: string, nullable: true }, last: { type: string, nullable: true }, prev: { type: string, nullable: true }, next: { type: string, nullable: true } }, type: object }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
                   meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
                 type: object
         '403':
@@ -1481,6 +1481,125 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
+  /exports:
+    get:
+      tags:
+        - Exports
+      summary: 'Show a list of exports'
+      operationId: 5bc2aea6bb7fb81d2a426faccbb4b4d7
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Export' } }
+                type: object
+    post:
+      tags:
+        - Exports
+      summary: 'Create a new export'
+      operationId: 1bedc78fd0edd24fdcc408977166e8cb
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                type:
+                  type: string
+                  example: json
+                bar_id:
+                  type: integer
+                  example: 1
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Export' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/exports/{id}':
+    delete:
+      tags:
+        - Exports
+      summary: 'Delete export'
+      operationId: 6566cf7c2310f6d0f77d6be65bb36868
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/exports/{id}/Download':
+    get:
+      tags:
+        - Exports
+      summary: 'Download export'
+      operationId: fa4bc1a5118ce21897ba5359cae50c4b
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/octet-stream:
+              example: binary
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /glasses:
     get:
       tags:
@@ -2162,7 +2281,7 @@ paths:
               schema:
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Ingredient' } }
-                  links: { properties: { first: { type: string, nullable: true }, last: { type: string, nullable: true }, prev: { type: string, nullable: true }, next: { type: string, nullable: true } }, type: object }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
                   meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
                 type: object
         '403':
@@ -2350,7 +2469,7 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -2389,7 +2508,7 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                  data: { type: array, items: { properties: { id: { type: integer, example: 1 }, slug: { type: string, example: old-fashioned-1 }, name: { type: string, example: 'Old fashioned' }, potential_cocktails: { description: 'Number of new cocktails that user can make with this ingredient', type: integer, example: 3 } }, type: object } }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -2535,7 +2654,7 @@ paths:
               schema:
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Note' } }
-                  links: { properties: { first: { type: string, nullable: true }, last: { type: string, nullable: true }, prev: { type: string, nullable: true }, next: { type: string, nullable: true } }, type: object }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
                   meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
                 type: object
     post:
@@ -3937,17 +4056,20 @@ components:
           type: string
           example: 'Bar name'
         subtitle:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'A short subtitle of a bar'
-          nullable: true
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Bar description'
-          nullable: true
         invite_code:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 01H8S3VH2HTEB3D893AW8NTBBC
-          nullable: true
         status:
           $ref: '#/components/schemas/BarStatusEnum'
         settings:
@@ -3955,25 +4077,29 @@ components:
           items:
             type: string
         search_driver_host:
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
         search_driver_api_key:
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
         created_at:
           type: string
           format: date-time
         updated_at:
-          type: string
+          type:
+            - string
+            - 'null'
           format: date-time
-          nullable: true
         created_user:
           $ref: '#/components/schemas/UserBasic'
         updated_user:
-          nullable: true
           oneOf:
             -
               $ref: '#/components/schemas/UserBasic'
+            -
+              type: 'null'
         access:
           type: array
           items:
@@ -4021,24 +4147,28 @@ components:
           type: string
           example: 'Bar name'
         subtitle:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'A short subtitle of a bar'
-          nullable: true
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Bar description'
-          nullable: true
         slug:
           type: string
           example: bar-name-1
         default_units:
-          type: string
+          type:
+            - string
+            - 'null'
           example: ml
-          nullable: true
         default_lang:
-          type: string
+          type:
+            - string
+            - 'null'
           example: en-US
-          nullable: true
         enable_invites:
           type: boolean
         options:
@@ -4061,29 +4191,35 @@ components:
           type: string
           example: 'Step by step instructions'
         garnish:
-          type: string
+          type:
+            - string
+            - 'null'
           example: Garnish
-          nullable: true
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Cocktail description'
-          nullable: true
         source:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Source of the recipe'
-          nullable: true
         publicId:
-          type: string
+          type:
+            - string
+            - 'null'
           example: public-id-1
-          nullable: true
         public_at:
-          type: string
+          type:
+            - string
+            - 'null'
           format: date-time
-          nullable: true
         mainImageId:
-          type: integer
+          type:
+            - integer
+            - 'null'
           example: 1
-          nullable: true
         images:
           type: array
           items:
@@ -4103,9 +4239,10 @@ components:
           properties:
             user:
               description: "Current user's rating"
-              type: integer
+              type:
+                - integer
+                - 'null'
               example: 1
-              nullable: true
             average:
               description: 'Average rating'
               type: integer
@@ -4115,10 +4252,11 @@ components:
               example: 12
           type: object
         glass:
-          nullable: true
           oneOf:
             -
               $ref: '#/components/schemas/Glass'
+            -
+              type: 'null'
         utensils:
           type: array
           items:
@@ -4131,40 +4269,47 @@ components:
           type: string
           format: date-time
         updated_at:
-          type: string
+          type:
+            - string
+            - 'null'
           format: date-time
-          nullable: true
         method:
-          nullable: true
           oneOf:
             -
               $ref: '#/components/schemas/CocktailMethod'
+            -
+              type: 'null'
         abv:
-          type: number
+          type:
+            - number
+            - 'null'
           format: float
           example: 40
-          nullable: true
         volume_ml:
-          type: number
+          type:
+            - number
+            - 'null'
           format: float
           example: 67.5
-          nullable: true
         alcohol_units:
-          type: number
+          type:
+            - number
+            - 'null'
           format: float
           example: 25.5
-          nullable: true
         calories:
-          type: integer
+          type:
+            - integer
+            - 'null'
           example: 350
-          nullable: true
         createdUser:
           $ref: '#/components/schemas/UserBasic'
         updatedUser:
-          nullable: true
           oneOf:
             -
               $ref: '#/components/schemas/UserBasic'
+            -
+              type: 'null'
         inShelf:
           type: boolean
         access:
@@ -4185,14 +4330,29 @@ components:
         navigation:
           properties:
             prev:
-              type: string
+              type:
+                - string
+                - 'null'
               example: old-fashioned-1
-              nullable: true
             next:
-              type: string
+              type:
+                - string
+                - 'null'
               example: tom-collins-1
-              nullable: true
           type: object
+      type: object
+    CocktailBasic:
+      description: 'Minimal cocktail information'
+      properties:
+        id:
+          type: integer
+          example: 1
+        slug:
+          type: string
+          example: old-fashioned-1
+        name:
+          type: string
+          example: 'Old fashioned'
       type: object
     CocktailExplore:
       properties:
@@ -4212,17 +4372,20 @@ components:
           type: string
           example: 'Step by step instructions'
         garnish:
-          type: string
+          type:
+            - string
+            - 'null'
           example: Garnish
-          nullable: true
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Cocktail description'
-          nullable: true
         source:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Source of the recipe'
-          nullable: true
         images:
           type: array
           items:
@@ -4245,8 +4408,9 @@ components:
           items:
             type: string
         glass:
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
         utensils:
           type: array
           items:
@@ -4262,9 +4426,10 @@ components:
                 type: number
                 example: 30
               amount_max:
-                type: number
+                type:
+                  - number
+                  - 'null'
                 example: 45
-                nullable: true
               units:
                 type: string
                 example: ml
@@ -4272,23 +4437,26 @@ components:
                 type: boolean
                 example: true
               note:
-                type: string
+                type:
+                  - string
+                  - 'null'
                 example: 'Ingredient note'
-                nullable: true
               substitutes:
                 type: array
                 items:
-                  properties: { name: { type: string, example: 'Ingredient name' }, amount: { type: number, example: 30, nullable: true }, amount_max: { type: number, example: 45, nullable: true }, units: { type: string, example: ml, nullable: true } }
+                  properties: { name: { type: string, example: 'Ingredient name' }, amount: { type: [number, 'null'], example: 30 }, amount_max: { type: [number, 'null'], example: 45 }, units: { type: [string, 'null'], example: ml } }
                   type: object
             type: object
         method:
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
         abv:
-          type: number
+          type:
+            - number
+            - 'null'
           format: float
           example: 40
-          nullable: true
       type: object
     CocktailIngredient:
       properties:
@@ -4300,10 +4468,11 @@ components:
           format: float
           example: 30
         amount_max:
-          type: number
+          type:
+            - number
+            - 'null'
           format: float
           example: 60
-          nullable: true
         units:
           type: string
           example: ml
@@ -4324,9 +4493,10 @@ components:
           items:
             $ref: '#/components/schemas/CocktailIngredientSubstitute'
         note:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Additional notes'
-          nullable: true
         formatted:
           description: 'Amounts in different units, converted if possible'
           type: array
@@ -4369,19 +4539,22 @@ components:
           type: string
           example: Vodka
         amount:
-          type: number
+          type:
+            - number
+            - 'null'
           format: float
           example: 30
-          nullable: true
         amount_max:
-          type: number
+          type:
+            - number
+            - 'null'
           format: float
           example: 60
-          nullable: true
         units:
-          type: string
+          type:
+            - string
+            - 'null'
           example: ml
-          nullable: true
         in_shelf:
           type: boolean
           example: true
@@ -4444,25 +4617,30 @@ components:
           type: string
           example: 'Step by step instructions'
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Cocktail description'
-          nullable: true
         source:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Source of the recipe'
-          nullable: true
         garnish:
-          type: string
+          type:
+            - string
+            - 'null'
           example: Garnish
-          nullable: true
         glassId:
-          type: integer
+          type:
+            - integer
+            - 'null'
           example: 1
-          nullable: true
         methodId:
-          type: integer
+          type:
+            - integer
+            - 'null'
           example: 1
-          nullable: true
         tags:
           type: array
           items:
@@ -4479,10 +4657,11 @@ components:
                 format: float
                 example: 30
               amount_max:
-                type: number
+                type:
+                  - number
+                  - 'null'
                 format: float
                 example: 60
-                nullable: true
               units:
                 type: string
                 example: ml
@@ -4490,13 +4669,14 @@ components:
                 type: boolean
                 example: false
               note:
-                type: string
+                type:
+                  - string
+                  - 'null'
                 example: 'Ingredient note'
-                nullable: true
               substitutes:
                 type: array
                 items:
-                  properties: { id: { type: integer, example: 1 }, amount: { type: number, format: float, example: 30, nullable: true }, amount_max: { type: number, format: float, example: 60, nullable: true }, units: { type: string, example: ml, nullable: true } }
+                  properties: { id: { type: integer, example: 1 }, amount: { type: [number, 'null'], format: float, example: 30 }, amount_max: { type: [number, 'null'], format: float, example: 60 }, units: { type: [string, 'null'], example: ml } }
                   type: object
             type: object
         images:
@@ -4517,9 +4697,10 @@ components:
           type: string
           example: 'Collection name'
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Collection description'
-          nullable: true
         is_bar_shared:
           type: boolean
         createdAt:
@@ -4541,15 +4722,35 @@ components:
           type: string
           example: 'Collection name'
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Collection description'
-          nullable: true
         is_bar_shared:
           type: boolean
         cocktails:
           type: array
           items:
             type: integer
+      type: object
+    Export:
+      properties:
+        id:
+          type: integer
+          example: 1
+        filename:
+          type: string
+          example: cocktails.csv
+        created_at:
+          type: string
+          format: date-time
+          example: '2023-05-14T21:23:40.000000Z'
+        bar_name:
+          type: string
+          example: 'Bar name'
+        is_done:
+          type: boolean
+          example: true
       type: object
     Glass:
       required:
@@ -4567,21 +4768,24 @@ components:
           type: string
           example: Lowball
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Glass for smaller cocktails'
-          nullable: true
         cocktails_count:
           type: integer
           example: 32
         volume:
-          type: number
+          type:
+            - number
+            - 'null'
           format: float
           example: 120
-          nullable: true
         volume_units:
-          type: string
+          type:
+            - string
+            - 'null'
           example: ml
-          nullable: true
       type: object
     GlassRequest:
       required:
@@ -4591,18 +4795,21 @@ components:
           type: string
           example: Lowball
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Glass for smaller cocktails'
-          nullable: true
         volume:
-          type: number
+          type:
+            - number
+            - 'null'
           format: float
           example: 120
-          nullable: true
         volume_units:
-          type: string
+          type:
+            - string
+            - 'null'
           example: ml
-          nullable: true
       type: object
     Image:
       description: 'Image attached to a specific resource'
@@ -4617,16 +4824,18 @@ components:
           type: string
           example: 'http://example.com/uploads/cocktails/1/image.jpg'
         copyright:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Image copyright'
-          nullable: true
         sort:
           type: integer
           example: 1
         placeholder_hash:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 1QcSHQRnh493V4dIh4eXh1h4kJUI
-          nullable: true
       type: object
     ImageRequest:
       required:
@@ -4636,16 +4845,18 @@ components:
           type: string
           format: binary
         image_url:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'http://example.com/cocktail_image.jpg'
-          nullable: true
         sort:
           type: integer
           example: 1
         copyright:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Image copyright'
-          nullable: true
       type: object
     Ingredient:
       properties:
@@ -4663,41 +4874,47 @@ components:
           format: float
           example: 40
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Gin is a type of alcoholic spirit'
-          nullable: true
         origin:
-          type: string
+          type:
+            - string
+            - 'null'
           example: Worldwide
-          nullable: true
         main_image_id:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 1
-          nullable: true
         created_at:
           type: string
           format: date-time
         updated_at:
-          type: string
+          type:
+            - string
+            - 'null'
           format: date-time
-          nullable: true
         images:
           type: array
           items:
             $ref: '#/components/schemas/Image'
         parent_ingredient:
-          nullable: true
           oneOf:
             -
               $ref: '#/components/schemas/IngredientBasic'
+            -
+              type: 'null'
         color:
           type: string
           example: '#ffffff'
         category:
-          nullable: true
           oneOf:
             -
               $ref: '#/components/schemas/IngredientCategory'
+            -
+              type: 'null'
         cocktails_count:
           type: integer
           example: 12
@@ -4722,10 +4939,11 @@ components:
         created_user:
           $ref: '#/components/schemas/UserBasic'
         updated_user:
-          nullable: true
           oneOf:
             -
               $ref: '#/components/schemas/UserBasic'
+            -
+              type: 'null'
         access:
           type: array
           items:
@@ -4773,9 +4991,10 @@ components:
           type: string
           example: Spirits
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Category of base spirits'
-          nullable: true
         ingredients_count:
           type: integer
           example: 32
@@ -4788,9 +5007,10 @@ components:
           type: string
           example: Spirits
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Category of base spirits'
-          nullable: true
       type: object
     IngredientPrice:
       properties:
@@ -4813,16 +5033,18 @@ components:
           type: string
           example: ml
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Updated price'
-          nullable: true
         created_at:
           type: string
           format: date-time
         updated_at:
-          type: string
+          type:
+            - string
+            - 'null'
           format: date-time
-          nullable: true
       type: object
     IngredientRequest:
       required:
@@ -4832,26 +5054,31 @@ components:
           type: string
           example: Gin
         ingredient_category_id:
-          type: integer
+          type:
+            - integer
+            - 'null'
           example: 1
-          nullable: true
         strength:
-          type: number
+          type:
+            - number
+            - 'null'
           format: float
           example: 40
-          nullable: true
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Gin is a type of alcoholic spirit'
-          nullable: true
         origin:
-          type: string
+          type:
+            - string
+            - 'null'
           example: Worldwide
-          nullable: true
         color:
-          type: string
+          type:
+            - string
+            - 'null'
           example: '#ffffff'
-          nullable: true
         parent_ingredient_id:
           type: integer
           example: 1
@@ -4882,9 +5109,10 @@ components:
                 type: string
                 example: ml
               description:
-                type: string
+                type:
+                  - string
+                  - 'null'
                 example: 'Updated price'
-                nullable: true
             type: object
       type: object
     LoginRequest:
@@ -4899,9 +5127,10 @@ components:
           type: string
           example: password
         tokenName:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'My device'
-          nullable: true
       type: object
     Menu:
       properties:
@@ -4914,9 +5143,10 @@ components:
           type: string
           format: date-time
         updated_at:
-          type: string
+          type:
+            - string
+            - 'null'
           format: date-time
-          nullable: true
         categories:
           type: array
           items:
@@ -5048,17 +5278,19 @@ components:
         - abilities
       properties:
         name:
-          type: string
+          type:
+            - string
+            - 'null'
           example: user_generated
-          nullable: true
         abilities:
           type: array
           items:
             $ref: '#/components/schemas/AbilityEnum'
         expiresAt:
-          type: string
+          type:
+            - string
+            - 'null'
           example: '2023-05-14T21:23:40.000000Z'
-          nullable: true
       type: object
     PriceCategory:
       required:
@@ -5074,9 +5306,10 @@ components:
           type: string
           example: 'Amazon (DE)'
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Current price on amazon.de'
-          nullable: true
         currency:
           type: string
           example: EUR
@@ -5093,9 +5326,10 @@ components:
           type: string
           example: 'Amazon (DE)'
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Current price on amazon.de'
-          nullable: true
         currency:
           type: string
           example: EUR
@@ -5128,8 +5362,9 @@ components:
         - email
       properties:
         bar_id:
-          type: integer
-          nullable: true
+          type:
+            - integer
+            - 'null'
         name:
           type: string
           example: 'Bar Tender'
@@ -5137,9 +5372,10 @@ components:
           type: string
           example: new@email.com
         password:
-          type: string
+          type:
+            - string
+            - 'null'
           example: newpassword
-          nullable: true
         is_shelf_public:
           type: boolean
         use_parent_as_substitute:
@@ -5299,9 +5535,10 @@ components:
           type: string
           example: Shaker
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Used to shake ingredients'
-          nullable: true
       type: object
     UtensilRequest:
       required:
@@ -5311,9 +5548,10 @@ components:
           type: string
           example: Shaker
         description:
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'Used to shake ingredients'
-          nullable: true
       type: object
   securitySchemes:
     user_token:
@@ -5341,6 +5579,9 @@ tags:
   -
     name: Explore
     description: Explore
+  -
+    name: Exports
+    description: Exports
   -
     name: Glasses
     description: Glasses

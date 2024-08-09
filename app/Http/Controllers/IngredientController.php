@@ -177,7 +177,7 @@ class IngredientController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\IngredientBasic::class),
+        new BAO\WrapItemsWithData(BAO\Schemas\CocktailBasic::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -214,7 +214,12 @@ class IngredientController extends Controller
         new BAO\Parameters\BarIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\IngredientBasic::class),
+        new OAT\JsonContent(properties: [new OAT\Property(property: 'data', type: 'array', items: new OAT\Items(type: 'object', properties: [
+            new OAT\Property(property: 'id', type: 'integer', example: 1),
+            new OAT\Property(property: 'slug', type: 'string', example: 'old-fashioned-1'),
+            new OAT\Property(property: 'name', type: 'string', example: 'Old fashioned'),
+            new OAT\Property(property: 'potential_cocktails', type: 'integer', example: 3, description: 'Number of new cocktails that user can make with this ingredient'), 
+        ]))]),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
