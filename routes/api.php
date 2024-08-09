@@ -214,7 +214,6 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/{id}/memberships', [BarController::class, 'memberships']);
         Route::delete('/{id}/memberships', [BarController::class, 'leave']);
         Route::delete('/{id}/memberships/{userId}', [BarController::class, 'removeMembership']);
-        Route::delete('/{id}/memberships/{userId}', [BarController::class, 'removeMembership']);
         Route::post('/{id}/status', [BarController::class, 'toggleBarStatus']);
         Route::post('/{id}/transfer', [BarController::class, 'transfer']);
     })->middleware(['ability:*']);

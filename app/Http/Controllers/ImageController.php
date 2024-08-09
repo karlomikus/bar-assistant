@@ -7,11 +7,13 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Cache;
-use Kami\Cocktail\DTO\Image as ImageDTO;
+use Kami\Cocktail\DTO\Image\Image as ImageDTO;
 use Kami\Cocktail\Services\ImageService;
 use Kami\Cocktail\Http\Requests\ImageRequest;
 use Kami\Cocktail\Http\Resources\ImageResource;
@@ -20,6 +22,14 @@ use Kami\Cocktail\Http\Requests\ImageUpdateRequest;
 
 class ImageController extends Controller
 {
+    #[OAT\Get(path: '/images/{id}', tags: ['Images'], summary: 'Show an image', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Image::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function show(Request $request, int $id): JsonResource
     {
         $image = Image::findOrFail($id);
@@ -31,6 +41,17 @@ class ImageController extends Controller
         return new ImageResource($image);
     }
 
+    #[OAT\Post(path: '/images', tags: ['Images'], summary: 'Upload an image', requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(type: 'object', properties: [
+                new OAT\Property(property: 'images', type: 'array', items: new OAT\Items(ref: BAO\Schemas\ImageRequest::class)),
+            ])),
+        ]
+    ))]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\Image::class),
+    ])]
     public function store(ImageService $imageservice, ImageRequest $request): JsonResource
     {
         $manager = ImageManager::imagick();
@@ -61,6 +82,18 @@ class ImageController extends Controller
         return ImageResource::collection($images);
     }
 
+    #[OAT\Post(path: '/images/{id}', tags: ['Images'], summary: 'Update image', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(ref: BAO\Schemas\ImageRequest::class)),
+        ]
+    ))]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Image::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function update(int $id, ImageService $imageservice, ImageUpdateRequest $request): JsonResource
     {
         $image = Image::findOrFail($id);
@@ -91,6 +124,12 @@ class ImageController extends Controller
         return new ImageResource($image);
     }
 
+    #[OAT\Delete(path: '/images/{id}', tags: ['Images'], summary: 'Delete an image', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function delete(Request $request, int $id): Response
     {
         $image = Image::findOrFail($id);
@@ -101,9 +140,16 @@ class ImageController extends Controller
 
         $image->delete();
 
-        return response(null, 204);
+        return new Response(null, 204);
     }
 
+    #[OAT\Get(path: '/images/{id}/thumb', tags: ['Images'], summary: 'Get a thumbnail of an image', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ], security: [])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new OAT\MediaType(mediaType: 'image/jpg', schema: new OAT\Schema(type: 'string', format: 'binary')),
+    ])]
+    #[BAO\NotFoundResponse]
     public function thumb(int $id): Response
     {
         [$content, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id) {

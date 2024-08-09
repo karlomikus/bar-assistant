@@ -17,7 +17,7 @@ use Kami\Cocktail\External\Cocktail as CocktailExternal;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 use Kami\Cocktail\External\IngredientWithImages as IngredientExternal;
 
-class Recipes
+class ToDataPack
 {
     public function process(int $barId, ?string $exportPath = null, ExportTypeEnum $exportType = ExportTypeEnum::YAML): string
     {

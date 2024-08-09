@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\ProfileResource;
@@ -12,11 +14,26 @@ use Kami\Cocktail\Http\Requests\UpdateUserRequest;
 
 class ProfileController extends Controller
 {
+    #[OAT\Get(path: '/profile', tags: ['Profile'], summary: 'Show authenticated user profile')]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Profile::class),
+    ])]
+    #[BAO\NotFoundResponse]
     public function show(Request $request): JsonResource
     {
         return new ProfileResource($request->user());
     }
 
+    #[OAT\Post(path: '/profile', tags: ['Profile'], summary: 'Update authenticated user profile', requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\ProfileRequest::class),
+        ]
+    ))]
+    #[OAT\Response(response: 201, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Profile::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function update(UpdateUserRequest $request): JsonResource
     {
         $barId = $request->post('bar_id', null);

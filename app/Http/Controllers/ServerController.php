@@ -34,9 +34,13 @@ class ServerController extends Controller
 
     public function openApi(): Response
     {
-        $spec = file_get_contents(base_path('docs/open-api-spec.yml'));
+        $spec = file_get_contents(base_path('docs/openapi-generated.yaml'));
         if (!App::environment('production')) {
             $spec = str_replace('{{VERSION}}', 'develop', $spec);
+        }
+
+        if (request()->getHost() === 'barassistant.app') {
+            $spec = str_replace('{{VERSION}}', 'cloud', $spec);
         }
 
         return response(

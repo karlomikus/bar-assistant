@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\RecipeUtils\UnitConverter\Units;
 
-final class CocktailsToCSV
+final class ToCocktailsCSV
 {
     public function __construct(private readonly ?Units $toUnits)
     {

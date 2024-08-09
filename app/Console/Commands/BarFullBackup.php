@@ -5,7 +5,7 @@ namespace Kami\Cocktail\Console\Commands;
 use Throwable;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Kami\Cocktail\External\Export\FullBackupToZip;
+use Kami\Cocktail\External\Export\ToFullBackup;
 
 class BarFullBackup extends Command
 {
@@ -23,7 +23,7 @@ class BarFullBackup extends Command
      */
     protected $description = 'Create a .zip file with the full backup of your Bar Assistant instance data';
 
-    public function __construct(private FullBackupToZip $exporter)
+    public function __construct(private ToFullBackup $exporter)
     {
         parent::__construct();
     }

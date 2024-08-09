@@ -24,7 +24,8 @@
         "symfony/http-client": "^7.0",
         "symfony/uid": "^7.0",
         "symfony/yaml": "^7.0",
-        "wamania/php-stemmer": "^3.0"
+        "wamania/php-stemmer": "^3.0",
+        "zircote/swagger-php": "^4.10"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
@@ -69,7 +70,8 @@
         ],
         "static": "vendor/bin/phpstan analyse --xdebug",
         "fix-style": "vendor/bin/pint",
-        "test": "php artisan test --parallel"
+        "test": "php artisan test --parallel",
+        "openapi": "vendor/bin/openapi app -o docs/openapi-generated.yaml --version 3.1.0"
     },
     "extra": {
         "laravel": {

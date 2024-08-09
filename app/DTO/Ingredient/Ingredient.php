@@ -10,6 +10,7 @@ readonly class Ingredient
 {
     /**
      * @param array<int> $images
+     * @param array<int> $complexIngredientParts
      * @param array<Price> $prices
      */
     public function __construct(

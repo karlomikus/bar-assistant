@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External\Import;
 
 use Throwable;
-use Kami\Cocktail\DTO\Image;
+use Kami\Cocktail\DTO\Image\Image;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\External\Matcher;

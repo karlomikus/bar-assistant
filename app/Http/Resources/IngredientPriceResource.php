@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
-use Brick\Math\RoundingMode;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -25,7 +24,6 @@ class IngredientPriceResource extends JsonResource
             'price' => $this->getMoney()->getAmount(),
             'price_minor' => $this->getMoney()->getMinorAmount(),
             'price_formatted' => (string) $this->getMoney(),
-            // 'price_per_unit' => (string) $this->getMoney()->getAmount()->dividedBy($this->amount, roundingMode: RoundingMode::UP),
             'amount' => $this->amount,
             'units' => $this->units,
             'description' => $this->description,

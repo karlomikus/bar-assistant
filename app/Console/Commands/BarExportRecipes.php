@@ -7,7 +7,7 @@ namespace Kami\Cocktail\Console\Commands;
 use Throwable;
 use Kami\Cocktail\Models\Bar;
 use Illuminate\Console\Command;
-use Kami\Cocktail\External\Export\Recipes;
+use Kami\Cocktail\External\Export\ToDataPack;
 use Kami\Cocktail\External\ExportTypeEnum;
 
 class BarExportRecipes extends Command
@@ -26,7 +26,7 @@ class BarExportRecipes extends Command
      */
     protected $description = 'Export all recipe data (ingredients, cocktails, base data) from a single bar';
 
-    public function __construct(private readonly Recipes $exporter)
+    public function __construct(private readonly ToDataPack $exporter)
     {
         parent::__construct();
     }
