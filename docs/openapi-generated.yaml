@@ -11,12 +11,12 @@ servers:
     url: 'https://api.barassistant.app/api'
     description: Production
 paths:
-  /login:
+  /auth/login:
     post:
       tags:
         - Authentication
       summary: 'Authenticate user and get a token'
-      operationId: d08b90aaa2cd3c4e803481016726da9b
+      operationId: ff0821f3f5e448e9be30bed07cac39a3
       requestBody:
         required: true
         content:
@@ -35,21 +35,21 @@ paths:
         '400':
           description: 'Unable to authenticate'
       security: []
-  /logout:
+  /auth/logout:
     post:
       tags:
         - Authentication
       summary: 'Logout currently authenticated user'
-      operationId: 755dbc19ae417c07c2bfd1c45ee919c9
+      operationId: 7faef09646fa779e3f4eb458d4472c75
       responses:
         '204':
           description: 'Successful response'
-  /register:
+  /auth/register:
     post:
       tags:
         - Authentication
       summary: 'Register a new user'
-      operationId: 51662939845b30a86466bbb682cfcd9f
+      operationId: 26578afaf886b858f56e5e1b8fc3403b
       requestBody:
         required: true
         content:
@@ -74,12 +74,12 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
-  /forgot-password:
+  /auth/forgot-password:
     post:
       tags:
         - Authentication
       summary: 'Request a new user password'
-      operationId: 1aaffc187d2845383cae3f2efb745aac
+      operationId: 7a6f983e087620ddd905bd4925f83983
       requestBody:
         required: true
         content:
@@ -96,12 +96,12 @@ paths:
         '400':
           description: 'Unable to send password reset link'
       security: []
-  /reset-password:
+  /auth/reset-password:
     post:
       tags:
         - Authentication
       summary: 'Reset user password'
-      operationId: e7a0a2a0a5a74f36ef4484228cae9bfb
+      operationId: 5000f083616176e5a4edc804f813aecc
       requestBody:
         required: true
         content:
@@ -129,12 +129,12 @@ paths:
         '400':
           description: 'Unable to reset password'
       security: []
-  '/verify/{id}/{hash}':
+  '/auth/verify/{id}/{hash}':
     post:
       tags:
         - Authentication
       summary: 'Confirm user account'
-      operationId: 69a4e6bdc0f95b6c983f71031d4f17d0
+      operationId: 015719985fb92cfb18e9c6a19c82b1db
       parameters:
         -
           name: id

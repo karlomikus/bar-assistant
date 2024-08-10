@@ -14,7 +14,9 @@
     - Supports pagination
 - Removed `cocktails` property from `Ingredient` schema
     - Use `/ingredients/{id}/cocktails` endpoint instead
+    - Supports pagination
 - Moved `/ingredients/recommend` to `/users/{id}/ingredients/recommend`
+- Grouped `/login`, `/logout`, `/register`, `/forgot-password`, `/reset-password` and `/verify/{id}/{hash}` endpoints into `/auth`
 
 ## New
 - Added `/ingredients/{id}/cocktails` endpoint
