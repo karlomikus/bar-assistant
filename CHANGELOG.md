@@ -12,6 +12,11 @@
 - Moved `/shelf/cocktails/favorites` to `/users/{id}/cocktails/favorites`
     - Changed response schema, now returns `CocktailBasic`
     - Supports pagination
+- Removed `cocktails` property from `Ingredient` schema
+    - Use `/ingredients/{id}/cocktails` endpoint instead
+
+## New
+- Added `/ingredients/{id}/cocktails` endpoint
 
 ## New
 - Introduced new export recipe schema

@@ -90,6 +90,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::put('/{id}', [IngredientController::class, 'update'])->middleware(['ability:ingredients.write']);
         Route::delete('/{id}', [IngredientController::class, 'delete'])->middleware(['ability:ingredients.write']);
         Route::get('/{id}/extra', [IngredientController::class, 'extra'])->middleware(['ability:ingredients.read']);
+        Route::get('/{id}/cocktails', [IngredientController::class, 'cocktails'])->middleware(['ability:ingredients.read']);
     });
 
     Route::prefix('ingredient-categories')->group(function () {

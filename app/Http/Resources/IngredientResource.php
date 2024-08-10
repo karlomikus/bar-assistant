@@ -39,15 +39,6 @@ class IngredientResource extends JsonResource
             'varieties' => $this->when($this->relationLoaded('varieties') && $this->relationLoaded('parentIngredient'), function () {
                 return IngredientBasicResource::collection($this->getAllRelatedIngredients());
             }),
-            'cocktails' => $this->when($this->relationLoaded('cocktails') || $this->relationLoaded('cocktailIngredientSubstitutes'), function () {
-                return $this->cocktails->merge($this->cocktailsAsSubstituteIngredient())->map(function ($c) {
-                    return [
-                        'id' => $c->id,
-                        'slug' => $c->slug,
-                        'name' => $c->name,
-                    ];
-                })->sortBy('name')->toArray();
-            }),
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
             'access' => $this->when($this->relationLoaded('createdUser'), fn () => [

@@ -7,8 +7,8 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Validator;
@@ -21,6 +21,7 @@ use Kami\Cocktail\Repository\IngredientRepository;
 use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Filters\IngredientQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Kami\Cocktail\Http\Resources\CocktailBasicResource;
 use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;
 
 class IngredientController extends Controller
@@ -229,5 +230,32 @@ class IngredientController extends Controller
         $possibleIngredients = $ingredientRepo->getIngredientsForPossibleCocktails(bar()->id, $barMembership->id);
 
         return response()->json(['data' => $possibleIngredients]);
+    }
+
+    #[OAT\Get(path: '/ingredients/{id}/cocktails', tags: ['Ingredients'], summary: 'Show a list of cocktails that use this ingredient', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+        new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\PageParameter(),
+        new BAO\Parameters\PerPageParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function cocktails(Request $request, string $id): JsonResource
+    {
+        $ingredient = Ingredient::with('cocktails')
+            ->where('id', $id)
+            ->orWhere('slug', $id)
+            ->firstOrFail();
+
+        if ($request->user()->cannot('show', $ingredient)) {
+            abort(403);
+        }
+
+        $cocktails = $ingredient->cocktails->toQuery()->orderBy('name')->paginate($request->get('per_page', 100));
+
+        return CocktailBasicResource::collection($cocktails);
     }
 }
