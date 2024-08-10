@@ -76,7 +76,7 @@ class Ingredient
     public array $access = [];
 
     /** @var IngredientBasic[] */
-    #[OAT\Property()]
+    #[OAT\Property(property: 'ingredient_parts')]
     public array $ingredientParts = [];
 
     /** @var IngredientPrice[] */

@@ -15,7 +15,7 @@ class ProfileRequest
     public string $name;
     #[OAT\Property(example: 'new@email.com')]
     public string $email;
-    #[OAT\Property(example: 'newpassword')]
+    #[OAT\Property(example: 'newpassword', format: 'password')]
     public ?string $password = null;
     #[OAT\Property(property: 'is_shelf_public')]
     public bool $isShellfPublic = false;

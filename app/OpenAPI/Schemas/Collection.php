@@ -17,7 +17,7 @@ class Collection
     public ?string $description = null;
     #[OAT\Property(property: 'is_bar_shared')]
     public bool $isBarShared = false;
-    #[OAT\Property(format: 'date-time', example: '2023-05-14T21:23:40.000000Z')]
+    #[OAT\Property(format: 'date-time', example: '2023-05-14T21:23:40.000000Z', property: 'created_at')]
     public string $createdAt;
     #[OAT\Property(property: 'created_user')]
     public UserBasic $createdUser;

@@ -178,7 +178,7 @@ class IngredientController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\IngredientBasic::class),
+        new BAO\WrapItemsWithData(BAO\Schemas\CocktailBasic::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]

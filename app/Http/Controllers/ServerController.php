@@ -39,6 +39,10 @@ class ServerController extends Controller
             $spec = str_replace('{{VERSION}}', 'develop', $spec);
         }
 
+        if (request()->getHost() === 'api.barassistant.app') {
+            $spec = str_replace('{{VERSION}}', 'cloud', $spec);
+        }
+
         return response(
             $spec,
             200,

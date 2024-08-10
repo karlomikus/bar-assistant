@@ -174,7 +174,8 @@ paths:
     get:
       tags:
         - Bars
-      summary: 'Show a list of bars user has access to'
+      summary: 'Show a list of bars'
+      description: 'Show a list of bars user has access to. Includes bars that user has made and bars he is a member of.'
       operationId: 8e4aff1910c2f6b973c0bcff7ac77418
       responses:
         '200':
@@ -1435,6 +1436,125 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
+  /exports:
+    get:
+      tags:
+        - Exports
+      summary: 'Show a list of exports'
+      operationId: 5bc2aea6bb7fb81d2a426faccbb4b4d7
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Export' } }
+                type: object
+    post:
+      tags:
+        - Exports
+      summary: 'Create a new export'
+      operationId: 1bedc78fd0edd24fdcc408977166e8cb
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                type:
+                  type: string
+                  example: json
+                bar_id:
+                  type: integer
+                  example: 1
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Export' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/exports/{id}':
+    delete:
+      tags:
+        - Exports
+      summary: 'Delete export'
+      operationId: 6566cf7c2310f6d0f77d6be65bb36868
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/exports/{id}/Download':
+    get:
+      tags:
+        - Exports
+      summary: 'Download export'
+      operationId: fa4bc1a5118ce21897ba5359cae50c4b
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/octet-stream:
+              example: binary
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /glasses:
     get:
       tags:
@@ -2304,7 +2424,7 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -2362,9 +2482,7 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
-                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                  data: { type: array, items: { properties: { id: { type: integer, example: 1 }, slug: { type: string, example: old-fashioned-1 }, name: { type: string, example: 'Old fashioned' }, potential_cocktails: { description: 'Number of new cocktails that user can make with this ingredient', type: integer, example: 3 } }, type: object } }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -4124,23 +4242,46 @@ components:
           type: string
           example: bar-name-1
         default_units:
-          type:
-            - string
-            - 'null'
+          description: 'Used only as a setting for client apps.'
+          type: string
+          enum:
+            - ml
+            - cl
+            - oz
           example: ml
         default_lang:
+          description: 'Locale code, used only as a setting for client apps, does not change language of the API.'
           type:
             - string
             - 'null'
           example: en-US
         enable_invites:
+          description: 'Enable users with invite code to join this bar. Default `false`.'
           type: boolean
         options:
+          description: 'List of data that the bar will start with. Possible values: `ingredients`, `cocktails`. Cocktails cannot be imported without ingredients.'
           type: array
           items:
             type: string
       type: object
     Cocktail:
+      required:
+        - id
+        - name
+        - slug
+        - garnish
+        - description
+        - instructions
+        - source
+        - public_id
+        - public_at
+        - main_image_id
+        - images
+        - tags
+        - rating
+        - created_at
+        - updated_at
+        - abv
       properties:
         id:
           type: integer
@@ -4169,7 +4310,7 @@ components:
             - string
             - 'null'
           example: 'Source of the recipe'
-        publicId:
+        public_id:
           type:
             - string
             - 'null'
@@ -4179,7 +4320,7 @@ components:
             - string
             - 'null'
           format: date-time
-        mainImageId:
+        main_image_id:
           type:
             - integer
             - 'null'
@@ -4266,15 +4407,15 @@ components:
             - integer
             - 'null'
           example: 350
-        createdUser:
+        created_user:
           $ref: '#/components/schemas/UserBasic'
-        updatedUser:
+        updated_user:
           oneOf:
             -
               $ref: '#/components/schemas/UserBasic'
             -
               type: 'null'
-        inShelf:
+        in_shelf:
           type: boolean
         access:
           properties:
@@ -4316,7 +4457,7 @@ components:
           example: old-fashioned-1
         name:
           type: string
-          example: 'Old Fashioned'
+          example: 'Old fashioned'
       type: object
     CocktailExplore:
       properties:
@@ -4443,13 +4584,13 @@ components:
         optional:
           type: boolean
           example: false
-        ingredientId:
+        ingredient_id:
           type: integer
           example: 1
         name:
           type: string
           example: Vodka
-        ingredientSlug:
+        ingredient_slug:
           type: string
           example: vodka-1
         substitutes:
@@ -4595,12 +4736,12 @@ components:
             - string
             - 'null'
           example: Garnish
-        glassId:
+        glass_id:
           type:
             - integer
             - 'null'
           example: 1
-        methodId:
+        method_id:
           type:
             - integer
             - 'null'
@@ -4612,6 +4753,10 @@ components:
         ingredients:
           type: array
           items:
+            required:
+              - ingredient_id
+              - units
+              - amount
             properties:
               ingredient_id:
                 type: integer
@@ -4644,10 +4789,12 @@ components:
                   type: object
             type: object
         images:
+          description: 'List of existing image ids'
           type: array
           items:
             type: integer
         utensils:
+          description: 'List of existing utensil ids'
           type: array
           items:
             type: integer
@@ -4667,7 +4814,7 @@ components:
           example: 'Collection description'
         is_bar_shared:
           type: boolean
-        createdAt:
+        created_at:
           type: string
           format: date-time
           example: '2023-05-14T21:23:40.000000Z'
@@ -4696,6 +4843,25 @@ components:
           type: array
           items:
             type: integer
+      type: object
+    Export:
+      properties:
+        id:
+          type: integer
+          example: 1
+        filename:
+          type: string
+          example: cocktails.csv
+        created_at:
+          type: string
+          format: date-time
+          example: '2023-05-14T21:23:40.000000Z'
+        bar_name:
+          type: string
+          example: 'Bar name'
+        is_done:
+          type: boolean
+          example: true
       type: object
     Glass:
       required:
@@ -4900,7 +5066,7 @@ components:
                 type: boolean
                 example: true
             type: object
-        ingredientParts:
+        ingredient_parts:
           type: array
           items:
             $ref: '#/components/schemas/IngredientBasic'
@@ -5082,8 +5248,9 @@ components:
           example: admin@example.com
         password:
           type: string
+          format: password
           example: password
-        tokenName:
+        token_name:
           type:
             - string
             - 'null'
@@ -5220,13 +5387,13 @@ components:
             - cocktails.write
             - ingredients.read
             - ingredients.write
-        lastUsedAt:
+        last_used_at:
           type: string
           example: '2023-05-14T21:23:40.000000Z'
-        createdAt:
+        created_at:
           type: string
           example: '2023-05-14T21:23:40.000000Z'
-        expiresAt:
+        expires_at:
           type: string
           example: '2023-05-14T21:23:40.000000Z'
       type: object
@@ -5243,7 +5410,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AbilityEnum'
-        expiresAt:
+        expires_at:
           type:
             - string
             - 'null'
@@ -5332,6 +5499,7 @@ components:
           type:
             - string
             - 'null'
+          format: password
           example: newpassword
         is_shelf_public:
           type: boolean
@@ -5340,10 +5508,10 @@ components:
       type: object
     Rating:
       properties:
-        rateableId:
+        rateable_id:
           type: integer
           example: 1
-        userId:
+        user_id:
           type: integer
           example: 1
         rating:
@@ -5364,6 +5532,7 @@ components:
           example: 'Bar Tender'
         password:
           type: string
+          format: password
           minLength: 5
           example: password
       type: object
@@ -5473,6 +5642,7 @@ components:
           example: 'Bar Tender'
         password:
           type: string
+          format: password
           example: password
       type: object
     Utensil:
@@ -5532,6 +5702,9 @@ tags:
   -
     name: Explore
     description: Explore
+  -
+    name: Exports
+    description: Exports
   -
     name: Glasses
     description: Glasses

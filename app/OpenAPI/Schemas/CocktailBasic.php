@@ -13,6 +13,6 @@ class CocktailBasic
     public int $id;
     #[OAT\Property(example: 'old-fashioned-1')]
     public string $slug;
-    #[OAT\Property(example: 'Old Fashioned')]
+    #[OAT\Property(example: 'Old fashioned')]
     public string $name;
 }

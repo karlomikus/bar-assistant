@@ -19,11 +19,11 @@ class CocktailIngredient
     public string $units;
     #[OAT\Property(example: false)]
     public bool $optional;
-    #[OAT\Property(example: 1)]
+    #[OAT\Property(property: 'ingredient_id', example: 1)]
     public int $ingredientId;
     #[OAT\Property(example: 'Vodka')]
     public string $name;
-    #[OAT\Property(example: 'vodka-1')]
+    #[OAT\Property(property: 'ingredient_slug', example: 'vodka-1')]
     public string $ingredientSlug;
     /** @var CocktailIngredientSubstitute[] */
     #[OAT\Property()]
