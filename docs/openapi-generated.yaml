@@ -3545,6 +3545,48 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/users/{id}/shopping-list/share':
+    get:
+      tags:
+        - 'Users: Shopping list'
+      summary: 'Share shopping list'
+      operationId: 1d4aaec85e00ac2c559f362058f02056
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+        -
+          name: type
+          in: query
+          description: 'Type of share. Available types: `markdown`.'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            text/markdown:
+              schema:
+                type: string
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /tags:
     get:
       tags:

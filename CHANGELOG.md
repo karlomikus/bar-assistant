@@ -18,7 +18,7 @@
     - Supports pagination
 - Moved `/ingredients/recommend` to `/users/{id}/ingredients/recommend`
 - Grouped `/login`, `/logout`, `/register`, `/forgot-password`, `/reset-password` and `/verify/{id}/{hash}` endpoints into `/auth`
-- Shoppin list
+- Shopping list
     - Moved `/shopping-list` to `/users/{id}/shopping-list`
         - Updated `ShoppingList` schema
 - Collections
@@ -37,6 +37,7 @@
 ## New
 - Added `/ingredients/{id}/cocktails` endpoint
 - Introduced new export recipe schema
+- Added `quantity` to shopping list ingredients
 
 # v3.19.0
 ## New

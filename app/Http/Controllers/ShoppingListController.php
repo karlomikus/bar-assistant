@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\DB;
@@ -27,8 +28,13 @@ class ShoppingListController extends Controller
     #[BAO\NotAuthorizedResponse]
     public function index(Request $request, int $id): JsonResource
     {
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
+
         return UserShoppingListResource::collection(
-            $request->user()->getBarMembership(bar()->id)->shoppingListIngredients->load('ingredient')
+            $user->getBarMembership(bar()->id)->shoppingListIngredients->load('ingredient')
         );
     }
 
@@ -49,7 +55,12 @@ class ShoppingListController extends Controller
     #[BAO\NotFoundResponse]
     public function batchStore(IngredientsBatchRequest $request, int $id): Response
     {
-        $barMembership = $request->user()->getBarMembership(bar()->id);
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
+
+        $barMembership = $user->getBarMembership(bar()->id);
 
         $ingredients = DB::table('ingredients')
             ->select('id')
@@ -88,7 +99,12 @@ class ShoppingListController extends Controller
     #[BAO\NotFoundResponse]
     public function batchDelete(IngredientsBatchRequest $request, int $id): Response
     {
-        $barMembership = $request->user()->getBarMembership(bar()->id);
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
+
+        $barMembership = $user->getBarMembership(bar()->id);
 
         $ingredients = DB::table('ingredients')
             ->select('id')
@@ -105,31 +121,38 @@ class ShoppingListController extends Controller
         return new Response(null, 204);
     }
 
-    // #[OAT\Get(path: '/users/{id}/shopping-list/share', tags: ['Users: Shopping list'], summary: 'Share shopping list', parameters: [
-    //     new BAO\Parameters\BarIdParameter(),
-    // ], security: [])]
-    // #[OAT\Response(response: 200, description: 'Successful response', content: [
-    //     new OAT\MediaType(mediaType: 'text/markdown', schema: new OAT\Schema(type: 'string')),
-    // ])]
-    // #[BAO\NotAuthorizedResponse]
-    // public function share(Request $request): Response
-    // {
-    //     $barMembership = $request->user()->getBarMembership(bar()->id);
-    //     $type = $request->get('type', 'markdown');
+    #[OAT\Get(path: '/users/{id}/shopping-list/share', tags: ['Users: Shopping list'], summary: 'Share shopping list', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+        new BAO\Parameters\BarIdParameter(),
+        new OAT\Parameter(name: 'type', in: 'query', description: 'Type of share. Available types: `markdown`.', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new OAT\MediaType(mediaType: 'text/markdown', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    public function share(Request $request, int $id): Response
+    {
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
 
-    //     $shoppingListIngredients = $barMembership
-    //         ->shoppingListIngredients
-    //         ->load('ingredient.category')
-    //         ->groupBy('ingredient.category.name');
+        $barMembership = $user->getBarMembership(bar()->id);
+        $type = $request->get('type', 'markdown');
 
-    //     if ($type === 'markdown' || $type === 'md') {
-    //         return new Response(
-    //             view('md_shopping_list_template', compact('shoppingListIngredients'))->render(),
-    //             200,
-    //             ['Content-Type' => 'text/markdown']
-    //         );
-    //     }
+        $shoppingListIngredients = $barMembership
+            ->shoppingListIngredients
+            ->load('ingredient.category')
+            ->groupBy('ingredient.category.name');
 
-    //     abort(400, 'Requested type "' . $type . '" not supported');
-    // }
+        if ($type === 'markdown' || $type === 'md') {
+            return new Response(
+                view('md_shopping_list_template', compact('shoppingListIngredients'))->render(),
+                200,
+                ['Content-Type' => 'text/markdown']
+            );
+        }
+
+        abort(400, 'Requested type "' . $type . '" not supported');
+    }
 }
