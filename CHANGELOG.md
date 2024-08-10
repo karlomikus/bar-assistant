@@ -1,7 +1,7 @@
 # v4.0.0
 ## Breaking changes
 - Removed importing cocktails from collections
-- Removed importing from v2 format
+- Removed importing data from Bar Assistant v2
 - [TODO] Removed exporting to CSV
 - Moved `/shelf/ingredients` to `/users/{id}/ingredients`
     - Changed response schema, now returns `IngredientBasic`
@@ -14,11 +14,10 @@
     - Supports pagination
 - Removed `cocktails` property from `Ingredient` schema
     - Use `/ingredients/{id}/cocktails` endpoint instead
+- Moved `/ingredients/recommend` to `/users/{id}/ingredients/recommend`
 
 ## New
 - Added `/ingredients/{id}/cocktails` endpoint
-
-## New
 - Introduced new export recipe schema
 
 # v3.18.0

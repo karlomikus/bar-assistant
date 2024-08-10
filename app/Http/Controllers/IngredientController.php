@@ -211,27 +211,6 @@ class IngredientController extends Controller
         ]);
     }
 
-    #[OAT\Get(path: '/ingredients/recommend', tags: ['Ingredients'], summary: 'Recommend next ingredients to buy', parameters: [
-        new BAO\Parameters\BarIdParameter(),
-    ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\IngredientBasic::class),
-    ])]
-    #[BAO\NotAuthorizedResponse]
-    #[BAO\NotFoundResponse]
-    public function recommend(Request $request, IngredientRepository $ingredientRepo): JsonResponse
-    {
-        $barMembership = $request->user()->getBarMembership(bar()->id);
-
-        if (!$barMembership) {
-            abort(404);
-        }
-
-        $possibleIngredients = $ingredientRepo->getIngredientsForPossibleCocktails(bar()->id, $barMembership->id);
-
-        return response()->json(['data' => $possibleIngredients]);
-    }
-
     #[OAT\Get(path: '/ingredients/{id}/cocktails', tags: ['Ingredients'], summary: 'Show a list of cocktails that use this ingredient', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),

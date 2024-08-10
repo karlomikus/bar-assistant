@@ -17,6 +17,7 @@ use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\UserShoppingList;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Repository\CocktailRepository;
+use Kami\Cocktail\Repository\IngredientRepository;
 use Kami\Cocktail\Http\Resources\CocktailBasicResource;
 use Kami\Cocktail\Http\Requests\IngredientsBatchRequest;
 use Kami\Cocktail\Http\Resources\IngredientBasicResource;
@@ -167,5 +168,27 @@ class ShelfController extends Controller
         }
 
         return new Response(null, 204);
+    }
+
+    #[OAT\Get(path: '/users/{id}/ingredients/recommend', tags: ['Users: Shelf'], summary: 'Recommend next ingredients', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+        new BAO\Parameters\BarIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\IngredientRecommend::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function recommend(Request $request, IngredientRepository $ingredientRepo): \Illuminate\Http\JsonResponse
+    {
+        $barMembership = $request->user()->getBarMembership(bar()->id);
+
+        if (!$barMembership) {
+            abort(404);
+        }
+
+        $possibleIngredients = $ingredientRepo->getIngredientsForPossibleCocktails(bar()->id, $barMembership->id);
+
+        return response()->json(['data' => $possibleIngredients]);
     }
 }

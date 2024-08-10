@@ -2368,45 +2368,6 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /ingredients/recommend:
-    get:
-      tags:
-        - Ingredients
-      summary: 'Recommend next ingredients to buy'
-      operationId: a54487bcba28019a606666105f57f7c3
-      parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar'
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
   '/ingredients/{id}/cocktails':
     get:
       tags:
@@ -3306,6 +3267,52 @@ paths:
       responses:
         '204':
           description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/users/{id}/ingredients/recommend':
+    get:
+      tags:
+        - 'Users: Shelf'
+      summary: 'Recommend next ingredients'
+      operationId: f5e680e7f9f44a047888ad4bc8a22ba8
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/IngredientRecommend' } }
+                type: object
         '403':
           description: 'You are not authorized for this action.'
           content:
@@ -4972,6 +4979,18 @@ components:
           format: date-time
           nullable: true
       type: object
+    IngredientRecommend:
+      description: 'Ingredient recommendation with number of potential cocktails'
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/IngredientBasic'
+        -
+          properties:
+            potential_cocktails:
+              type: integer
+              example: 10
+          type: object
     IngredientRequest:
       required:
         - name
