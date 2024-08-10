@@ -9,10 +9,10 @@ class ProtobufDecoder
     private string $data;
     private int $idx;
 
-    const WIRE_VARINT = 0;
-    const WIRE_FIXED64 = 1;
-    const WIRE_LENGTH_DELIMITED = 2;
-    const WIRE_FIXED32 = 5;
+    public const WIRE_VARINT = 0;
+    public const WIRE_FIXED64 = 1;
+    public const WIRE_LENGTH_DELIMITED = 2;
+    public const WIRE_FIXED32 = 5;
 
     public function __construct(string $data)
     {

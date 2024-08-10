@@ -11,7 +11,6 @@ use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Scraper\Manager;
-use Kami\Cocktail\Jobs\ImportCollection;
 use Kami\Cocktail\External\Import\FromArray;
 use Kami\Cocktail\Http\Requests\ImportRequest;
 use Illuminate\Http\Resources\Json\JsonResource;

@@ -1,5 +1,8 @@
 # v4.0.0
+This new major release includes improvements to API specification, new minimal PHP version and big changes to docker image.
+
 ## Breaking changes
+- [TODO] Minimal PHP version is now 8.3
 - Removed importing cocktails from collections
 - Removed importing data from Bar Assistant v2
 - [TODO] Removed exporting to CSV
