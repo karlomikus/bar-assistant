@@ -2533,7 +2533,6 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-      security: []
     post:
       tags:
         - Menu
@@ -2570,7 +2569,6 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-      security: []
   '/explore/menus/{slug}':
     get:
       tags:
@@ -3443,7 +3441,6 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-      security: []
   '/users/{id}/shopping-list/batch-store':
     post:
       tags:
@@ -3470,10 +3467,14 @@ paths:
         content:
           application/json:
             schema:
+              required:
+                - ingredient_ids
               properties:
                 ingredient_ids:
                   type: array
                   items: { type: integer }
+                quantity:
+                  type: integer
               type: object
       responses:
         '204':

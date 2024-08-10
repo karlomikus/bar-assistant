@@ -21,7 +21,7 @@ class UserShoppingListResource extends JsonResource
     {
         return [
             'ingredient' => new IngredientBasicResource($this->ingredient),
-            'quantity' => 50,
+            'quantity' => $this->quantity,
         ];
     }
 }

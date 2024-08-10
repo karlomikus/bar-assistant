@@ -17,7 +17,7 @@ class MenuController extends Controller
 {
     #[OAT\Get(path: '/menu', tags: ['Menu'], summary: 'Show menu', parameters: [
         new BAO\Parameters\BarIdParameter(),
-    ], security: [])]
+    ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Menu::class),
     ])]
@@ -67,7 +67,7 @@ class MenuController extends Controller
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\MenuRequest::class),
         ]
-    ), security: [])]
+    ))]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Menu::class),
     ])]

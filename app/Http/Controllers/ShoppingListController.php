@@ -20,7 +20,7 @@ class ShoppingListController extends Controller
     #[OAT\Get(path: '/users/{id}/shopping-list', tags: ['Users: Shopping list'], summary: 'Show shopping list', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
-    ], security: [])]
+    ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\ShoppingList::class),
     ])]
@@ -40,7 +40,8 @@ class ShoppingListController extends Controller
         content: [
             new OAT\JsonContent(type: 'object', properties: [
                 new OAT\Property(property: 'ingredient_ids', type: 'array', items: new OAT\Items(type: 'integer')),
-            ]),
+                new OAT\Property(property: 'quantity', type: 'integer'),
+            ], required: ['ingredient_ids']),
         ]
     ))]
     #[OAT\Response(response: 204, description: 'Successful response')]
@@ -61,6 +62,7 @@ class ShoppingListController extends Controller
             $usl = new UserShoppingList();
             $usl->ingredient_id = $ingId;
             $usl->bar_membership_id = $barMembership->id;
+            $usl->quantity = $request->integer('quantity', 1);
             try {
                 $models[] = $barMembership->shoppingListIngredients()->save($usl);
             } catch (Throwable) {
