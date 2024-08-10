@@ -2778,7 +2778,7 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { $ref: '#/components/schemas/PersonalAccessToken' }
+                  data: { $ref: '#/components/schemas/Token' }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -5379,6 +5379,9 @@ components:
       type: object
     PersonalAccessToken:
       properties:
+        id:
+          type: integer
+          example: 1
         name:
           type: string
           example: user_generated
