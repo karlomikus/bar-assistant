@@ -114,6 +114,11 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::delete('/{id}/public-link', [CocktailController::class, 'makePrivate'])->name('cocktails.make-private')->middleware(['ability:cocktails.write']);
         Route::get('/{id}/similar', [CocktailController::class, 'similar'])->name('cocktails.similar')->middleware(['ability:cocktails.read']);
         Route::post('/{id}/copy', [CocktailController::class, 'copy'])->middleware([EnsureRequestHasBarQuery::class, 'ability:cocktails.write']);
+
+        Route::prefix('/{id}/ratings')->group(function () {
+            Route::post('/', [RatingController::class, 'rateCocktail'])->name('ratings.rate-cocktail');
+            Route::delete('/', [RatingController::class, 'deleteCocktailRating'])->name('ratings.unrate-cocktail');
+        })->middleware(['ability:cocktails.write']);
     });
 
     Route::prefix('images')->group(function () {
@@ -145,11 +150,6 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/{id}', [TagController::class, 'show'])->name('tags.show');
         Route::put('/{id}', [TagController::class, 'update']);
         Route::delete('/{id}', [TagController::class, 'delete']);
-    })->middleware(['ability:*']);
-
-    Route::prefix('ratings')->group(function () {
-        Route::post('/cocktails/{id}', [RatingController::class, 'rateCocktail'])->name('ratings.rate-cocktail');
-        Route::delete('/cocktails/{id}', [RatingController::class, 'deleteCocktailRating'])->name('ratings.unrate-cocktail');
     })->middleware(['ability:*']);
 
     Route::prefix('users')->group(function () {

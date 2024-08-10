@@ -71,7 +71,7 @@
         "static": "vendor/bin/phpstan analyse --xdebug",
         "fix-style": "vendor/bin/pint",
         "test": "php artisan test --parallel",
-        "openapi": "vendor/bin/openapi app -o docs/openapi-generated.yaml"
+        "openapi": "vendor/bin/openapi app -o docs/openapi-generated.yaml --version 3.1.0"
     },
     "extra": {
         "laravel": {

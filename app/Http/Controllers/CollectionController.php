@@ -39,7 +39,7 @@ class CollectionController extends Controller
         return CollectionResource::collection($collections);
     }
 
-    #[OAT\Get(path: '/bars/{id}/collections', tags: ['Bars'], summary: 'List shared collections', parameters: [ 
+    #[OAT\Get(path: '/bars/{id}/collections', tags: ['Collections'], summary: 'List bar shared collections', parameters: [ 
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [

@@ -28,6 +28,9 @@
     - Removed PUT `/collections/{id}/cocktails/{cocktailId}` endpoint
     - Changed POST `/collections/{id}/cocktails` endpoint to PUT `/collections/{id}/cocktails`
     - Moved GET `/collections/shared` to GET `/bars/{id}/collections`
+- Ratings
+    - Moved `/ratings/cocktails/{id}` to `/cocktails/{id}/ratings`
+    - Changed POST ratings response status code to 201
 
 ## New
 - Added `/ingredients/{id}/cocktails` endpoint

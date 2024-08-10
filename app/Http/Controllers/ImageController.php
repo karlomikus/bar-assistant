@@ -124,7 +124,7 @@ class ImageController extends Controller
         return new ImageResource($image);
     }
 
-    #[OAT\Delete(path: '/images/{id}', tags: ['Images'], summary: 'Delete an image', parameters: [
+    #[OAT\Delete(path: '/images/{id}', tags: ['Images'], summary: 'Delete image', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
