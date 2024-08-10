@@ -123,13 +123,6 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::delete('/{id}', [ImageController::class, 'delete']);
     })->middleware(['ability:*']);
 
-    Route::prefix('shopping-list')->group(function () {
-        Route::get('/', [ShoppingListController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/share', [ShoppingListController::class, 'share'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/batch-store', [ShoppingListController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/batch-delete', [ShoppingListController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
-    })->middleware(['ability:*']);
-
     Route::prefix('glasses')->group(function () {
         Route::get('/', [GlassController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/', [GlassController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
@@ -172,6 +165,13 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::post('/{id}/ingredients/batch-store', [ShelfController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/{id}/ingredients/batch-delete', [ShelfController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}/ingredients/recommend', [ShelfController::class, 'recommend'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.read']);
+
+        Route::prefix('{id}/shopping-list')->group(function () {
+            Route::get('/', [ShoppingListController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+            // Route::get('/share', [ShoppingListController::class, 'share'])->middleware(EnsureRequestHasBarQuery::class);
+            Route::post('/batch-store', [ShoppingListController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
+            Route::post('/batch-delete', [ShoppingListController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
+        })->middleware(['ability:*']);
     })->middleware(['ability:*']);
 
     Route::prefix('stats')->group(function () {

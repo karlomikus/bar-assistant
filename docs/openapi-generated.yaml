@@ -3329,13 +3329,20 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /shopping-list:
+  '/users/{id}/shopping-list':
     get:
       tags:
-        - 'Shopping list'
+        - 'Users: Shopping list'
       summary: 'Show shopping list'
-      operationId: 57230d3776679bad7c99fb478fadbdd1
+      operationId: ea114c1013eabd71064b7b33513d13cd
       parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
         -
           name: bar_id
           in: query
@@ -3361,62 +3368,20 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
-  /shopping-list/batch-store:
+  '/users/{id}/shopping-list/batch-store':
     post:
       tags:
-        - 'Shopping list'
+        - 'Users: Shopping list'
       summary: 'Batch add ingredients to shopping list'
-      operationId: a3541b87bafbea2193beff9c9865184d
+      operationId: c9dbd5fceec4406656e93b94646ea5f6
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar'
+          name: id
+          in: path
+          description: 'Database id of a resource'
           required: true
           schema:
             type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                ingredient_ids:
-                  type: array
-                  items: { type: integer }
-              type: object
-      responses:
-        '200':
-          description: 'Successful response'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/ShoppingList' } }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  /shopping-list/batch-delete:
-    post:
-      tags:
-        - 'Shopping list'
-      summary: 'Batch delete ingredients from shopping list'
-      operationId: 5490435654005127044016b3f4d764b5
-      parameters:
         -
           name: bar_id
           in: query
@@ -3453,13 +3418,20 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /shopping-list/share:
-    get:
+  '/users/{id}/shopping-list/batch-delete':
+    post:
       tags:
-        - 'Shopping list'
-      summary: 'Share shopping list'
-      operationId: 2138a55649c305a3c279f64fbd97fca8
+        - 'Users: Shopping list'
+      summary: 'Batch delete ingredients from shopping list'
+      operationId: cec5d8ca07890aaad3cd264ba62a88bb
       parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
         -
           name: bar_id
           in: query
@@ -3467,13 +3439,19 @@ paths:
           required: true
           schema:
             type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ingredient_ids:
+                  type: array
+                  items: { type: integer }
+              type: object
       responses:
-        '200':
+        '204':
           description: 'Successful response'
-          content:
-            text/markdown:
-              schema:
-                type: string
         '403':
           description: 'You are not authorized for this action.'
           content:
@@ -3482,7 +3460,14 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-      security: []
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /tags:
     get:
       tags:
@@ -5343,15 +5328,11 @@ components:
       type: object
     ShoppingList:
       properties:
-        ingredient_id:
+        ingredient:
+          $ref: '#/components/schemas/IngredientBasic'
+        quantity:
           type: integer
-          example: 1
-        ingredient_name:
-          type: string
-          example: gin-1
-        ingredient_slug:
-          type: string
-          example: gin-1
+          example: 3
       type: object
     Tag:
       required:
@@ -5545,8 +5526,8 @@ tags:
     name: 'Users: Shelf'
     description: 'Users: Shelf'
   -
-    name: 'Shopping list'
-    description: 'Shopping list'
+    name: 'Users: Shopping list'
+    description: 'Users: Shopping list'
   -
     name: Tag
     description: Tag

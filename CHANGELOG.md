@@ -17,6 +17,8 @@
     - Supports pagination
 - Moved `/ingredients/recommend` to `/users/{id}/ingredients/recommend`
 - Grouped `/login`, `/logout`, `/register`, `/forgot-password`, `/reset-password` and `/verify/{id}/{hash}` endpoints into `/auth`
+- Moved `/shopping-list` to `/users/{id}/shopping-list`
+    - Updated `ShoppingList` schema
 
 ## New
 - Added `/ingredients/{id}/cocktails` endpoint

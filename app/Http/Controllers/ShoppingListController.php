@@ -17,21 +17,23 @@ use Kami\Cocktail\Http\Resources\UserShoppingListResource;
 
 class ShoppingListController extends Controller
 {
-    #[OAT\Get(path: '/shopping-list', tags: ['Shopping list'], summary: 'Show shopping list', parameters: [
+    #[OAT\Get(path: '/users/{id}/shopping-list', tags: ['Users: Shopping list'], summary: 'Show shopping list', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
     ], security: [])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\ShoppingList::class),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function index(Request $request): JsonResource
+    public function index(Request $request, int $id): JsonResource
     {
         return UserShoppingListResource::collection(
             $request->user()->getBarMembership(bar()->id)->shoppingListIngredients->load('ingredient')
         );
     }
 
-    #[OAT\Post(path: '/shopping-list/batch-store', tags: ['Shopping list'], summary: 'Batch add ingredients to shopping list', parameters: [
+    #[OAT\Post(path: '/users/{id}/shopping-list/batch-store', tags: ['Users: Shopping list'], summary: 'Batch add ingredients to shopping list', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -41,12 +43,10 @@ class ShoppingListController extends Controller
             ]),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\ShoppingList::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchStore(IngredientsBatchRequest $request): JsonResource
+    public function batchStore(IngredientsBatchRequest $request, int $id): Response
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
 
@@ -67,10 +67,11 @@ class ShoppingListController extends Controller
             }
         }
 
-        return UserShoppingListResource::collection($models);
+        return new Response(null, 204);
     }
 
-    #[OAT\Post(path: '/shopping-list/batch-delete', tags: ['Shopping list'], summary: 'Batch delete ingredients from shopping list', parameters: [
+    #[OAT\Post(path: '/users/{id}/shopping-list/batch-delete', tags: ['Users: Shopping list'], summary: 'Batch delete ingredients from shopping list', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -83,7 +84,7 @@ class ShoppingListController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchDelete(IngredientsBatchRequest $request): Response
+    public function batchDelete(IngredientsBatchRequest $request, int $id): Response
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
 
@@ -102,31 +103,31 @@ class ShoppingListController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/shopping-list/share', tags: ['Shopping list'], summary: 'Share shopping list', parameters: [
-        new BAO\Parameters\BarIdParameter(),
-    ], security: [])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
-        new OAT\MediaType(mediaType: 'text/markdown', schema: new OAT\Schema(type: 'string')),
-    ])]
-    #[BAO\NotAuthorizedResponse]
-    public function share(Request $request): Response
-    {
-        $barMembership = $request->user()->getBarMembership(bar()->id);
-        $type = $request->get('type', 'markdown');
+    // #[OAT\Get(path: '/users/{id}/shopping-list/share', tags: ['Users: Shopping list'], summary: 'Share shopping list', parameters: [
+    //     new BAO\Parameters\BarIdParameter(),
+    // ], security: [])]
+    // #[OAT\Response(response: 200, description: 'Successful response', content: [
+    //     new OAT\MediaType(mediaType: 'text/markdown', schema: new OAT\Schema(type: 'string')),
+    // ])]
+    // #[BAO\NotAuthorizedResponse]
+    // public function share(Request $request): Response
+    // {
+    //     $barMembership = $request->user()->getBarMembership(bar()->id);
+    //     $type = $request->get('type', 'markdown');
 
-        $shoppingListIngredients = $barMembership
-            ->shoppingListIngredients
-            ->load('ingredient.category')
-            ->groupBy('ingredient.category.name');
+    //     $shoppingListIngredients = $barMembership
+    //         ->shoppingListIngredients
+    //         ->load('ingredient.category')
+    //         ->groupBy('ingredient.category.name');
 
-        if ($type === 'markdown' || $type === 'md') {
-            return new Response(
-                view('md_shopping_list_template', compact('shoppingListIngredients'))->render(),
-                200,
-                ['Content-Type' => 'text/markdown']
-            );
-        }
+    //     if ($type === 'markdown' || $type === 'md') {
+    //         return new Response(
+    //             view('md_shopping_list_template', compact('shoppingListIngredients'))->render(),
+    //             200,
+    //             ['Content-Type' => 'text/markdown']
+    //         );
+    //     }
 
-        abort(400, 'Requested type "' . $type . '" not supported');
-    }
+    //     abort(400, 'Requested type "' . $type . '" not supported');
+    // }
 }
