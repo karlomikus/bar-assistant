@@ -31,6 +31,8 @@
 - Ratings
     - Moved `/ratings/cocktails/{id}` to `/cocktails/{id}/ratings`
     - Changed POST ratings response status code to 201
+- Menu
+    - Changed `price` attribute in menu request from `string` to `integer`
 
 ## New
 - Added `/ingredients/{id}/cocktails` endpoint

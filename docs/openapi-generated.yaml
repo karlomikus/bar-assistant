@@ -1829,7 +1829,7 @@ paths:
     delete:
       tags:
         - Images
-      summary: 'Delete an image'
+      summary: 'Delete image'
       operationId: 99a6b84660d0881a68e57435afb2e6ea
       parameters:
         -
@@ -2482,7 +2482,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { properties: { id: { type: integer, example: 1 }, slug: { type: string, example: old-fashioned-1 }, name: { type: string, example: 'Old fashioned' }, potential_cocktails: { description: 'Number of new cocktails that user can make with this ingredient', type: integer, example: 3 } }, type: object } }
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -5328,8 +5330,9 @@ components:
                 type: integer
                 example: 1
               price:
-                type: string
-                example: '22.52'
+                type: integer
+                format: minor
+                example: 2252
               category_name:
                 type: string
                 example: 'Category name'
@@ -5338,6 +5341,7 @@ components:
                 example: 1
               currency:
                 type: string
+                format: 'ISO 4217'
                 example: EUR
             type: object
       type: object
@@ -5436,6 +5440,7 @@ components:
           example: 'Current price on amazon.de'
         currency:
           type: string
+          format: 'ISO 4217'
           example: EUR
         currency_symbol:
           type: string
@@ -5456,6 +5461,7 @@ components:
           example: 'Current price on amazon.de'
         currency:
           type: string
+          format: 'ISO 4217'
           example: EUR
       type: object
     Profile:

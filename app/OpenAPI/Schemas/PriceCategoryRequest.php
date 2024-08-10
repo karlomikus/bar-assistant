@@ -13,6 +13,6 @@ class PriceCategoryRequest
     public string $name;
     #[OAT\Property(example: 'Current price on amazon.de')]
     public ?string $description = null;
-    #[OAT\Property(example: 'EUR')]
+    #[OAT\Property(example: 'EUR', format: 'ISO 4217')]
     public string $currency;
 }
