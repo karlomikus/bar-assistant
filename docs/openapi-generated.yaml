@@ -3028,18 +3028,38 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /shelf/ingredients:
+  '/users/{id}/ingredients':
     get:
       tags:
-        - Shelf
-      summary: 'Show a list of ingredients on the shelf'
-      operationId: 69493b94b4505315ffd519dea3650e0c
+        - 'Users: Shelf'
+      summary: 'Show a list of shelf ingredients'
+      description: 'Ingredients that user saved to their shelf'
+      operationId: b34236369b075eabaacef013be799024
       parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
         -
           name: bar_id
           in: query
           description: 'Database id of a bar'
           required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
           schema:
             type: integer
       responses:
@@ -3049,15 +3069,25 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/UserIngredient' } }
+                  data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                  links: { properties: { first: { type: string, nullable: true }, last: { type: string, nullable: true }, prev: { type: string, nullable: true }, next: { type: string, nullable: true } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
                 type: object
-  /shelf/cocktails:
+  '/users/{id}/cocktails':
     get:
       tags:
-        - Shelf
-      summary: 'Show a list of cocktails on the shelf'
-      operationId: d663f570b3b97976d21894bb6215b00d
+        - 'Users: Shelf'
+      summary: 'Show a list shelf cocktails'
+      description: 'Cocktails that the user can make with ingredients on their shelf'
+      operationId: 5a48f072f2ca1f25807838c8ae331db5
       parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
         -
           name: bar_id
           in: query
@@ -3066,9 +3096,15 @@ paths:
           schema:
             type: integer
         -
-          name: limit
+          name: page
           in: query
-          description: 'Limit the number of results'
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
           schema:
             type: integer
       responses:
@@ -3078,20 +3114,41 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { description: 'List of cocktail ids that are on the shelf', type: array, items: { type: integer } }
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { properties: { first: { type: string, nullable: true }, last: { type: string, nullable: true }, prev: { type: string, nullable: true }, next: { type: string, nullable: true } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
                 type: object
-  /shelf/cocktail-favorites:
+  '/users/{id}/cocktails/favorites':
     get:
       tags:
-        - Shelf
-      summary: 'Show a list of cocktails on the shelf that the user has favorited'
-      operationId: 034f3c889e4be90c68d26a8e202630c4
+        - 'Users: Shelf'
+      summary: 'Show a list of cocktails user has favorited'
+      operationId: 0038cb5730a723a0c58e5605fecb0ccb
       parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
         -
           name: bar_id
           in: query
           description: 'Database id of a bar'
           required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
           schema:
             type: integer
       responses:
@@ -3101,14 +3158,31 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { description: 'List of cocktail ids', type: array, items: { type: integer } }
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { properties: { first: { type: string, nullable: true }, last: { type: string, nullable: true }, prev: { type: string, nullable: true }, next: { type: string, nullable: true } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
                 type: object
-  /shelf/ingredients/batch-store:
+  '/users/{id}/ingredients/batch-store':
     post:
       tags:
-        - Shelf
-      summary: 'Batch store ingredients'
-      operationId: a9cceabb7c8f192e730ecdf1aee55edd
+        - 'Users: Shelf'
+      summary: 'Batch store ingredients to the shelf'
+      operationId: 28c0db334504ef005e3704dcc80154b1
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
@@ -3120,14 +3194,8 @@ paths:
                   items: { type: integer }
               type: object
       responses:
-        '201':
+        '204':
           description: 'Successful response'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/UserIngredient' } }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           content:
@@ -3144,13 +3212,20 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /shelf/ingredients/batch-delete:
+  '/users/{id}/ingredients/batch-delete':
     post:
       tags:
-        - Shelf
+        - 'Users: Shelf'
       summary: 'Delete multiple ingredients from the shelf'
-      operationId: bedc00e895ad5edf650539fb24670b96
+      operationId: 8effce422c8cbe13a9b273a71f9d8afc
       parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
         -
           name: bar_id
           in: query
@@ -4193,6 +4268,19 @@ components:
               example: tom-collins-1
               nullable: true
           type: object
+      type: object
+    CocktailBasic:
+      description: 'Minimal cocktail information'
+      properties:
+        id:
+          type: integer
+          example: 1
+        slug:
+          type: string
+          example: old-fashioned-1
+        name:
+          type: string
+          example: 'Old Fashioned'
       type: object
     CocktailExplore:
       properties:
@@ -5375,8 +5463,8 @@ tags:
     name: Ratings
     description: Ratings
   -
-    name: Shelf
-    description: Shelf
+    name: 'Users: Shelf'
+    description: 'Users: Shelf'
   -
     name: 'Shopping list'
     description: 'Shopping list'

@@ -3,6 +3,15 @@
 - Removed importing cocktails from collections
 - Removed importing from v2 format
 - [TODO] Removed exporting to CSV
+- Moved `/shelf/ingredients` to `/users/{id}/ingredients`
+    - Changed response schema, now returns `IngredientBasic`
+    - Supports pagination
+- Moved `/shelf/cocktails` to `/users/{id}/cocktails`
+    - Changed response schema, now returns `CocktailBasic`
+    - Supports pagination
+- Moved `/shelf/cocktails/favorites` to `/users/{id}/cocktails/favorites`
+    - Changed response schema, now returns `CocktailBasic`
+    - Supports pagination
 
 ## New
 - Introduced new export recipe schema

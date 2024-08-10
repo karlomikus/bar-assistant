@@ -78,9 +78,6 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::post('/profile', [ProfileController::class, 'update'])->middleware(['ability:*']);
 
     Route::prefix('shelf')->group(function () {
-        Route::get('/cocktails', [ShelfController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/cocktail-favorites', [ShelfController::class, 'favorites'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/ingredients', [ShelfController::class, 'ingredients'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/ingredients/batch-store', [ShelfController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/ingredients/batch-delete', [ShelfController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
     })->middleware(['ability:*']);
@@ -166,6 +163,12 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/{id}', [UsersController::class, 'show'])->middleware(EnsureRequestHasBarQuery::class)->name('users.show');
         Route::put('/{id}', [UsersController::class, 'update'])->middleware(EnsureRequestHasBarQuery::class);
         Route::delete('/{id}', [UsersController::class, 'delete']);
+
+        Route::get('/{id}/ingredients', [ShelfController::class, 'ingredients'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/{id}/cocktails', [ShelfController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/{id}/cocktails/favorites', [ShelfController::class, 'favorites'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/{id}/ingredients/batch-store', [ShelfController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/{id}/ingredients/batch-delete', [ShelfController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
     })->middleware(['ability:*']);
 
     Route::prefix('stats')->group(function () {
