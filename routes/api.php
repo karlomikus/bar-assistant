@@ -196,14 +196,10 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::prefix('collections')->group(function () {
         Route::get('/', [CollectionController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/', [CollectionController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/shared', [CollectionController::class, 'shared'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [CollectionController::class, 'show'])->name('collection.show');
         Route::put('/{id}', [CollectionController::class, 'update']);
         Route::delete('/{id}', [CollectionController::class, 'delete']);
-        Route::post('/{id}/cocktails', [CollectionController::class, 'cocktails']);
-        Route::put('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'cocktail']);
-        Route::delete('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'deleteResourceFromCollection']);
-        Route::get('/{id}/share', [CollectionController::class, 'share'])->name('collection.share');
+        Route::put('/{id}/cocktails', [CollectionController::class, 'cocktails']);
     })->middleware(['ability:*']);
 
     Route::prefix('import')->middleware(['throttle:importing'])->group(function () {
@@ -222,6 +218,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::delete('/{id}/memberships/{userId}', [BarController::class, 'removeMembership']);
         Route::post('/{id}/status', [BarController::class, 'toggleBarStatus']);
         Route::post('/{id}/transfer', [BarController::class, 'transfer']);
+        Route::get('/{id}/collections', [CollectionController::class, 'shared']);
     })->middleware(['ability:*']);
 
     Route::prefix('billing')->group(function () {

@@ -21,7 +21,7 @@ class Collection
     public string $createdAt;
     #[OAT\Property(property: 'created_user')]
     public UserBasic $createdUser;
-    /** @var int[] */
+    /** @var CocktailBasic[] */
     #[OAT\Property()]
     public array $cocktails = [];
 }

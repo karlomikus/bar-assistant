@@ -1130,6 +1130,13 @@ paths:
       operationId: 308d0156539f4be8f650f7ed64ed3d7f
       parameters:
         -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+        -
           name: filter
           in: query
           description: 'Filter by attributes'
@@ -1200,12 +1207,20 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /collections/shared:
+  '/bars/{id}/collections':
     get:
       tags:
-        - Collections
-      summary: 'Show a list of shared collections'
-      operationId: 42313a65e610e5fb2a0d851e06c6914d
+        - Bars
+      summary: 'List shared collections'
+      operationId: a15fa7e1679d8b4eafed56112a63da76
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: 'Successful response'
@@ -1214,6 +1229,22 @@ paths:
               schema:
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Collection' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
                 type: object
   '/collections/{id}':
     get:
@@ -1331,16 +1362,17 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
   '/collections/{id}/cocktails':
-    post:
+    put:
       tags:
         - Collections
-      summary: 'Sync multiple cocktails in a collection'
-      operationId: ac25b0f887ef526ef9d11b444bc0aa43
+      summary: 'Sync cocktails in a collection'
+      description: 'Used to updated/add/delete cocktails in a collection. To delete all cocktails pass an empty array.'
+      operationId: 934e63129e4bf90dd91eccc108f51f40
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar'
+          name: id
+          in: path
+          description: 'Database id of a resource'
           required: true
           schema:
             type: integer
@@ -1365,84 +1397,6 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/collections/{id}/cocktails/{cocktailId}':
-    put:
-      tags:
-        - Collections
-      summary: 'Add single cocktail to a collection'
-      operationId: b2cf864d955029e00e713c0f837d36d4
-      parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar'
-          required: true
-          schema:
-            type: integer
-        -
-          name: cocktailId
-          in: path
-          description: 'Database id of a cocktail'
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/Collection' }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/ingredients/{id}/cocktails/{cocktailId}':
-    delete:
-      tags:
-        - Collections
-      summary: 'Delete a cocktail from a collection'
-      operationId: 00fd3daef3dc5cba5dade787e9d227ec
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: cocktailId
-          in: path
-          description: 'Database id of a cocktail'
-          required: true
-          schema:
-            type: integer
-      responses:
-        '204':
-          description: 'Successful response'
-        '403':
-          description: 'You are not authorized for this action.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
           content:
             application/json:
               schema:
@@ -4671,7 +4625,7 @@ components:
         cocktails:
           type: array
           items:
-            type: integer
+            $ref: '#/components/schemas/CocktailBasic'
       type: object
     CollectionRequest:
       required:

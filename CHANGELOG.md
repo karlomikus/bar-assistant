@@ -3,22 +3,31 @@
 - Removed importing cocktails from collections
 - Removed importing data from Bar Assistant v2
 - [TODO] Removed exporting to CSV
-- Moved `/shelf/ingredients` to `/users/{id}/ingredients`
-    - Changed response schema, now returns `IngredientBasic`
-    - Supports pagination
-- Moved `/shelf/cocktails` to `/users/{id}/cocktails`
-    - Changed response schema, now returns `CocktailBasic`
-    - Supports pagination
-- Moved `/shelf/cocktails/favorites` to `/users/{id}/cocktails/favorites`
-    - Changed response schema, now returns `CocktailBasic`
-    - Supports pagination
+- Shelf
+    - Moved `/shelf/ingredients` to `/users/{id}/ingredients`
+        - Changed response schema, now returns `IngredientBasic`
+        - Supports pagination
+    - Moved `/shelf/cocktails` to `/users/{id}/cocktails`
+        - Changed response schema, now returns `CocktailBasic`
+        - Supports pagination
+    - Moved `/shelf/cocktails/favorites` to `/users/{id}/cocktails/favorites`
+        - Changed response schema, now returns `CocktailBasic`
+        - Supports pagination
 - Removed `cocktails` property from `Ingredient` schema
     - Use `/ingredients/{id}/cocktails` endpoint instead
     - Supports pagination
 - Moved `/ingredients/recommend` to `/users/{id}/ingredients/recommend`
 - Grouped `/login`, `/logout`, `/register`, `/forgot-password`, `/reset-password` and `/verify/{id}/{hash}` endpoints into `/auth`
-- Moved `/shopping-list` to `/users/{id}/shopping-list`
-    - Updated `ShoppingList` schema
+- Shoppin list
+    - Moved `/shopping-list` to `/users/{id}/shopping-list`
+        - Updated `ShoppingList` schema
+- Collections
+    - Removed PUT `/collections/{id}/cocktails/{cocktailId}` endpoint
+    - Removed `/collections/{id}/share` endpoint
+    - Removed DELETE `/collections/{id}/cocktails/{cocktailId}` endpoint
+    - Removed PUT `/collections/{id}/cocktails/{cocktailId}` endpoint
+    - Changed POST `/collections/{id}/cocktails` endpoint to PUT `/collections/{id}/cocktails`
+    - Moved GET `/collections/shared` to GET `/bars/{id}/collections`
 
 ## New
 - Added `/ingredients/{id}/cocktails` endpoint
