@@ -1751,6 +1751,80 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /images:
+    get:
+      tags:
+        - Images
+      summary: 'List uploaded images'
+      description: 'List all images uploaded by the authenticated user'
+      operationId: 3ac02bbdafb65e59d8b5c6d5aaf9806d
+      parameters:
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Image' } }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    post:
+      tags:
+        - Images
+      summary: 'Upload an image'
+      description: 'Used to upload multiple images at once. Uploaded images via this endpoint will not be attached to any resource. Images are converted to WebP format with 85% quality of the original image.'
+      operationId: d889115b2fa2ccddce23e39df958cc47
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - images
+              properties:
+                images:
+                  type: array
+                  items: { $ref: '#/components/schemas/ImageRequest' }
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Image' } }
+                type: object
   '/images/{id}':
     get:
       tags:
@@ -1857,31 +1931,6 @@ paths:
               schema:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  /images:
-    post:
-      tags:
-        - Images
-      summary: 'Upload an image'
-      operationId: d889115b2fa2ccddce23e39df958cc47
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              properties:
-                images:
-                  type: array
-                  items: { $ref: '#/components/schemas/ImageRequest' }
-              type: object
-      responses:
-        '200':
-          description: 'Successful response'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/Image' } }
                 type: object
   '/images/{id}/thumb':
     get:
@@ -4994,13 +5043,13 @@ components:
           example: 1QcSHQRnh493V4dIh4eXh1h4kJUI
       type: object
     ImageRequest:
-      required:
-        - image
       properties:
         image:
+          description: 'Image file. Required if `image_url` is not set.'
           type: string
           format: binary
         image_url:
+          description: 'Image URL. Required if `image` is not set.'
           type:
             - string
             - 'null'

@@ -41,6 +41,8 @@ This new major release includes improvements to API specification, new minimal P
 - Added `/ingredients/{id}/cocktails` endpoint
 - Introduced new export recipe schema
 - Added `quantity` to shopping list ingredients
+- Images are now converted to WebP format before saving to disk
+- Added `/images` endpoint, this endpoint is used to list all user uploaded images
 
 # v3.19.0
 ## New

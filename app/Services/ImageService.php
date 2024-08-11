@@ -5,28 +5,24 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Services;
 
 use Throwable;
-use Thumbhash\Thumbhash;
 use Illuminate\Support\Str;
+use Psr\Log\LoggerInterface;
 use Kami\Cocktail\Models\Bar;
-use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Encoders\WebpEncoder;
 use Kami\Cocktail\DTO\Image\Image as ImageDTO;
-use Illuminate\Filesystem\FilesystemAdapter;
-use Intervention\Image\Encoders\AutoEncoder;
 use Intervention\Image\Interfaces\ImageInterface;
+use Kami\Cocktail\Services\Image\ImageHashingService;
+use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
 
-use function Thumbhash\extract_size_and_pixels_with_imagick;
-
-final class ImageService
+final readonly class ImageService
 {
-    protected FilesystemAdapter $disk;
-
     public function __construct(
-        private readonly LogManager $log,
+        private ImageHashingService $imageHashingService,
+        private FileSystemFactory $filesystemManager,
+        private LoggerInterface $log,
     ) {
-        $this->disk = Storage::disk('uploads');
     }
 
     /**
@@ -91,7 +87,7 @@ final class ImageService
             }
 
             try {
-                $this->disk->delete($oldFilePath);
+                $this->filesystemManager->disk('uploads')->delete($oldFilePath);
             } catch (Throwable $e) {
                 $this->log->error('[IMAGE_SERVICE] File delete error | ' . $e->getMessage());
             }
@@ -108,24 +104,6 @@ final class ImageService
         $image->save();
 
         return $image;
-    }
-
-    /**
-     * Generates ThumbHash key
-     * @see https://evanw.github.io/thumbhash/
-     *
-     * @param ImageInterface $image
-     * @return string
-     */
-    public function generateThumbHash(ImageInterface $image): string
-    {
-        $content = $image->resizeDown(100, 100)->toJpeg(20);
-
-        [$width, $height, $pixels] = extract_size_and_pixels_with_imagick($content->toString());
-        $hash = Thumbhash::RGBAToHash($width, $height, $pixels);
-        $key = Thumbhash::convertHashToString($hash);
-
-        return $key;
     }
 
     public function cleanBarImages(Bar $bar): void
@@ -145,8 +123,8 @@ final class ImageService
                 ->delete();
         });
 
-        $this->disk->deleteDirectory('cocktails/' . $bar->id . '/');
-        $this->disk->deleteDirectory('ingredients/' . $bar->id . '/');
+        $this->filesystemManager->disk('uploads')->deleteDirectory('cocktails/' . $bar->id . '/');
+        $this->filesystemManager->disk('uploads')->deleteDirectory('ingredients/' . $bar->id . '/');
     }
 
     private function processImageFile(ImageInterface $image, ?string $filename = null): array
@@ -156,7 +134,7 @@ final class ImageService
         $thumbHash = null;
         try {
             $thumbHashImage = clone $image;
-            $thumbHash = $this->generateThumbHash($thumbHashImage);
+            $thumbHash = $this->imageHashingService->generatePlaceholderHash($thumbHashImage);
             unset($thumbHashImage);
         } catch (Throwable $e) {
             $this->log->error('[IMAGE_SERVICE] ThumbHash Error | ' . $e->getMessage());
@@ -166,28 +144,13 @@ final class ImageService
 
         try {
             $image->scaleDown(height: 1400);
-            $encodedImage = $image->encode(new AutoEncoder(quality: 85));
+            $encodedImage = $image->encode(new WebpEncoder(quality: 85));
 
-            $fileExtension = match ($encodedImage->mediaType()) {
-                'image/gif' => 'gif',
-                'image/jpeg', 'image/jpg', 'image/pjpeg' => 'jpg',
-                'image/webp', 'image/x-webp' => 'webp',
-                'image/png', 'image/x-png' => 'png',
-                'image/avif', 'image/x-avif' => 'avif',
-                'image/bmp',
-                'image/ms-bmp',
-                'image/x-bitmap',
-                'image/x-bmp',
-                'image/x-ms-bmp',
-                'image/x-win-bitmap',
-                'image/x-windows-bmp',
-                'image/x-xbitmap' => 'bmp',
-                default => 'jpg'
-            };
+            $fileExtension = 'webp';
 
             $filepath = 'temp/' . $filename . '.' . $fileExtension;
 
-            $this->disk->put($filepath, $encodedImage->toString());
+            $this->filesystemManager->disk('uploads')->put($filepath, $encodedImage->toString());
         } catch (Throwable $e) {
             $this->log->error('[IMAGE_SERVICE] ' . $e->getMessage());
 
