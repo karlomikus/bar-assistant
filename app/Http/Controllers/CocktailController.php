@@ -15,7 +15,7 @@ use Spatie\ArrayToXml\ArrayToXml;
 use Kami\Cocktail\Models\Cocktail;
 use Intervention\Image\ImageManager;
 use Kami\Cocktail\DTO\Image\Image as ImageDTO;
-use Kami\Cocktail\Services\ImageService;
+use Kami\Cocktail\Services\Image\ImageService;
 use Illuminate\Support\Facades\Validator;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Services\CocktailService;

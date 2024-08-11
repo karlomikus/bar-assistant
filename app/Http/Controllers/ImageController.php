@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\DTO\Image\Image as ImageDTO;
-use Kami\Cocktail\Services\ImageService;
+use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\Http\Requests\ImageRequest;
 use Kami\Cocktail\Http\Resources\ImageResource;
 use Illuminate\Http\Resources\Json\JsonResource;

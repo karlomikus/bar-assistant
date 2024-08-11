@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Services;
+namespace Kami\Cocktail\Services\Image;
 
 use Throwable;
 use Illuminate\Support\Str;
@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\DB;
 use Intervention\Image\Encoders\WebpEncoder;
 use Kami\Cocktail\DTO\Image\Image as ImageDTO;
 use Intervention\Image\Interfaces\ImageInterface;
-use Kami\Cocktail\Services\Image\ImageHashingService;
 use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
 
 final readonly class ImageService

@@ -7,7 +7,7 @@ namespace Tests\Unit\Services;
 use Tests\TestCase;
 use Illuminate\Log\LogManager;
 use Intervention\Image\ImageManager;
-use Kami\Cocktail\Services\ImageService;
+use Kami\Cocktail\Services\Image\ImageService;
 
 class ImageServiceTest extends TestCase
 {

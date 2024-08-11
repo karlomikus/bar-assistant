@@ -7,7 +7,7 @@ namespace Kami\Cocktail\Models;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
-use Kami\Cocktail\Services\ImageService;
+use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

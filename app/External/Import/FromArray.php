@@ -10,7 +10,7 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\External\Matcher;
 use Intervention\Image\ImageManager;
-use Kami\Cocktail\Services\ImageService;
+use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\DTO\Cocktail\Cocktail as CocktailDTO;
