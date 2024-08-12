@@ -45,7 +45,7 @@ services:
     restart: unless-stopped
 
   meilisearch:
-    image: getmeili/meilisearch:v1.6
+    image: getmeili/meilisearch:v1.7
     environment:
       - MEILI_MASTER_KEY=masterKeyThatIsReallyReallyLong4Real
     restart: unless-stopped

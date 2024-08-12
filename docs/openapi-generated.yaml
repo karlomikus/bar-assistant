@@ -4252,11 +4252,11 @@ components:
           type: array
           items:
             type: string
-        search_driver_host:
+        search_host:
           type:
             - string
             - 'null'
-        search_driver_api_key:
+        search_token:
           type:
             - string
             - 'null'

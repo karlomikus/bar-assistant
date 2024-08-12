@@ -7,7 +7,6 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\App;
-use Kami\Cocktail\Search\SearchActionsAdapter;
 
 class ServerController extends Controller
 {
@@ -18,16 +17,14 @@ class ServerController extends Controller
         ]);
     }
 
-    public function version(SearchActionsAdapter $searchAdapter): JsonResponse
+    public function version(): JsonResponse
     {
-        $search = $searchAdapter->getActions();
-
         return response()->json([
             'data' => [
                 'version' => config('bar-assistant.version'),
                 'type' => config('app.env'),
-                'search_host' => $search->getHost(),
-                'search_version' => $search->getVersion(),
+                'search_host' => null,//$search->getHost(),
+                'search_version' => null,//$search->getVersion(),
             ]
         ]);
     }

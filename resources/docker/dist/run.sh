@@ -26,6 +26,10 @@ first_time_check() {
 start_system() {
     first_time_check
 
+    php artisan bar:setup-meilisearch
+
+    php artisan scout:sync-index-settings
+
     php artisan migrate --force --isolated
 
     # Enable WAL mode

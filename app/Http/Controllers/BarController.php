@@ -114,6 +114,8 @@ class BarController extends Controller
 
         $bar->save();
 
+        Bar::updateSearchToken($bar);
+
         $request->user()->joinBarAs($bar, UserRoleEnum::Admin);
 
         SetupBar::dispatch($bar, $request->user(), $barOptions);

@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Spatie\Sluggable\HasSlug;
+use Laravel\Scout\EngineManager;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
-use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
+use Kami\Cocktail\Services\Image\ImageService;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -23,6 +24,43 @@ class Bar extends Model
     protected $casts = [
         'settings' => 'array',
     ];
+
+    protected static function booted(): void
+    {
+        static::retrieved(function (Bar $bar) {
+            if (
+                $bar->search_token ||
+                config('scout.driver') === null ||
+                config('scout.meilisearch.api_key_uid') === null ||
+                config('scout.meilisearch.api_key') === null
+            ) {
+                return;
+            }
+
+            self::updateSearchToken($bar);
+        });
+    }
+
+    public static function updateSearchToken(Bar $bar): void
+    {
+        /** @var \Meilisearch\Client */
+        $meilisearch = resolve(EngineManager::class)->engine();
+
+        $rules = (object) [
+            '*' => (object) [
+                'filter' => 'bar_id = ' . $bar->id,
+            ],
+        ];
+
+        $tenantToken = $meilisearch->generateTenantToken(
+            config('scout.meilisearch.api_key_uid'),
+            $rules,
+            ['apiKey' => config('scout.meilisearch.api_key')]
+        );
+
+        $bar->search_token = $tenantToken;
+        $bar->save();
+    }
 
     public function getSlugOptions(): SlugOptions
     {

@@ -132,6 +132,31 @@ return [
     'meilisearch' => [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY', null),
+        'api_key' => env('MEILISEARCH_API_KEY', null),
+        'api_key_uid' => env('MEILISEARCH_API_KEY_UID', null),
+        'index-settings' => [
+            \Kami\Cocktail\Models\Cocktail::class => [
+                'filterableAttributes' => ['tags', 'bar_id'],
+                'sortableAttributes' => ['name', 'date'],
+                'searchableAttributes' => [
+                    'name',
+                    'tags',
+                    'description',
+                    'date',
+                    'short_ingredients',
+                ],
+            ],
+            \Kami\Cocktail\Models\Ingredient::class => [
+                'filterableAttributes' => ['category', 'origin', 'bar_id'],
+                'sortableAttributes' => ['name', 'category'],
+                'searchableAttributes' => [
+                    'name',
+                    'description',
+                    'category',
+                    'origin',
+                ],
+            ],
+        ],
     ],
 
 ];

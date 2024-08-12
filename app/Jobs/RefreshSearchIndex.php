@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Kami\Cocktail\Search\SearchActionsAdapter;
 
 class RefreshSearchIndex implements ShouldQueue
 {
@@ -33,20 +32,14 @@ class RefreshSearchIndex implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(SearchActionsAdapter $searchActions): void
+    public function handle(): void
     {
-        $searchActions = $searchActions->getActions();
-
         // Clear indexes
         if ($this->shouldClearIndexes) {
             Log::info('Clearing search indexes');
             Artisan::call('scout:flush', ['model' => Cocktail::class]);
             Artisan::call('scout:flush', ['model' => Ingredient::class]);
         }
-
-        // Update settings
-        Log::info('Updating search settings');
-        $searchActions->updateIndexSettings();
 
         Log::info('Building search indexes');
 

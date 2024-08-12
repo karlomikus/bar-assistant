@@ -26,10 +26,10 @@ class Bar
     public BarStatusEnum $status;
     #[OAT\Property(items: new OAT\Items(type: 'string'))]
     public array $settings = [];
-    #[OAT\Property(property: 'search_driver_host')]
-    public ?string $searchDriverHost = null;
-    #[OAT\Property(property: 'search_driver_api_key')]
-    public ?string $searchDriverApiKey = null;
+    #[OAT\Property(property: 'search_host')]
+    public ?string $searchHost = null;
+    #[OAT\Property(property: 'search_token')]
+    public ?string $searchToken = null;
     #[OAT\Property(property: 'created_at', format: 'date-time')]
     public string $createdAt;
     #[OAT\Property(property: 'updated_at', format: 'date-time')]
