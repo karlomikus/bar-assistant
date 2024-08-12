@@ -1519,12 +1519,51 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  '/exports/{id}/Download':
+  '/exports/{id}/download':
     get:
       tags:
         - Exports
       summary: 'Download export'
-      operationId: fa4bc1a5118ce21897ba5359cae50c4b
+      operationId: df14ed9175061d3560c934ca7c89b47a
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: t
+          in: query
+          description: Token
+          required: true
+        -
+          name: e
+          in: query
+          description: Timestamp
+          required: true
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/octet-stream:
+              example: binary
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
+    post:
+      tags:
+        - Exports
+      summary: 'Generate download link'
+      description: 'Generates a publicly accessible download link for the export. The link will be valid for 1 minute by default.'
+      operationId: 48e1c2637c22de5ec50f90272526b454
       parameters:
         -
           name: id
@@ -1537,8 +1576,11 @@ paths:
         '200':
           description: 'Successful response'
           content:
-            application/octet-stream:
-              example: binary
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/FileDownloadLink' }
+                type: object
         '403':
           description: 'You are not authorized for this action.'
           content:
@@ -4956,6 +4998,19 @@ components:
         is_done:
           type: boolean
           example: true
+      type: object
+    FileDownloadLink:
+      properties:
+        url:
+          description: 'Absolute URL to download the export'
+          type: string
+          example: 'http://example.com/api/exports/29/download?t=2053f2e716f2dcddc0a2b767249235750e549af6d459cb1c65d4720e72404d88&e=1723480826'
+        token:
+          type: string
+          example: 2053f2e716f2dcddc0a2b767249235750e549af6d459cb1c65d4720e72404d88
+        expires:
+          type: string
+          example: '2024-08-12T16:40:26+00:00'
       type: object
     Glass:
       required:

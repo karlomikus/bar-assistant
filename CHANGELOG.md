@@ -36,6 +36,13 @@ This new major release includes improvements to API specification, new minimal P
     - Changed POST ratings response status code to 201
 - Menu
     - Changed `price` attribute in menu request from `string` to `integer`
+- Exports
+    - Added POST `/exports/{id}/download` endpoint
+        - Used to generate a download link for an export
+    - Added GET `/exports/{id}/download` endpoint
+        - Now requires a token and an expiration date
+        - Authorization is not required anymore
+        - Used to download an export
 
 ## New
 - Added `/ingredients/{id}/cocktails` endpoint

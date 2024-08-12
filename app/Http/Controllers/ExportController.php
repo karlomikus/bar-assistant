@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use DateTimeImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Bar;
+use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Export;
+use Kami\Cocktail\OpenAPI as BAO;
+use Kami\Cocktail\Models\FileToken;
 use Kami\Cocktail\Jobs\StartRecipesExport;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\ExportResource;
@@ -83,15 +85,40 @@ class ExportController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/exports/{id}/Download', tags: ['Exports'], summary: 'Download export', parameters: [
+    #[OAT\Get(path: '/exports/{id}/download', tags: ['Exports'], summary: 'Download export', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
-    ])]
+        new OAT\Parameter(name: 't', in: 'query', description: 'Token', required: true),
+        new OAT\Parameter(name: 'e', in: 'query', description: 'Timestamp', required: true),
+    ], security: [])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new OAT\MediaType(mediaType: 'application/octet-stream', example: 'binary'),
     ])]
-    #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     public function download(Request $request, int $id): BinaryFileResponse
+    {
+        $export = Export::findOrFail($id);
+
+        if (!FileToken::check(
+            $request->get('t'),
+            $id,
+            $export->filename,
+            DateTimeImmutable::createFromFormat('U', $request->get('e'))
+        )) {
+            abort(404);
+        }
+
+        return response()->download($export->getFullPath());
+    }
+
+    #[OAT\Post(path: '/exports/{id}/download', tags: ['Exports'], summary: 'Generate download link', description: 'Generates a publicly accessible download link for the export. The link will be valid for 1 minute by default.', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\FileDownloadLink::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function generateDownloadLink(Request $request, int $id): \Illuminate\Http\JsonResponse
     {
         $export = Export::findOrFail($id);
 
@@ -99,6 +126,19 @@ class ExportController extends Controller
             abort(403);
         }
 
-        return response()->download($export->getFullPath());
+        if ($export->is_done === false) {
+            abort(400, 'Export still in progress');
+        }
+
+        $expires = new DateTimeImmutable('+1 hour');
+        $token = FileToken::generate($export->id, $export->filename, $expires);
+
+        return response()->json([
+            'data' => [
+                'url' => route('exports.download', ['id' => $export->id, 't' => $token, 'e' => $expires->getTimestamp()]),
+                'token' => $token,
+                'expires' => $expires->format(DateTimeImmutable::ATOM),
+            ]
+        ]);
     }
 }

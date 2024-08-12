@@ -72,6 +72,10 @@ Route::prefix('explore')->group(function () {
     Route::get('/menus/{barSlug}', [MenuController::class, 'show']);
 });
 
+Route::prefix('exports')->group(function () {
+    Route::get('/{id}/download', [ExportController::class, 'download'])->name('exports.download');
+})->middleware(['ability:*']);
+
 Route::middleware($apiMiddleware)->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware(['ability:*']);
     Route::post('password-check', [AuthController::class, 'passwordCheck'])->middleware(['ability:*']);
@@ -242,7 +246,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/', [ExportController::class, 'index']);
         Route::post('/', [ExportController::class, 'store'])->middleware(['throttle:exports']);
         Route::delete('/{id}', [ExportController::class, 'delete']);
-        Route::get('/{id}/download', [ExportController::class, 'download']);
+        Route::post('/{id}/download', [ExportController::class, 'generateDownloadLink']);
     })->middleware(['ability:*']);
 
     Route::prefix('price-categories')->group(function () {
