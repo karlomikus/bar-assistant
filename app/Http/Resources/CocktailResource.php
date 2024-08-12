@@ -31,7 +31,7 @@ class CocktailResource extends JsonResource
             'description' => e($this->description),
             'source' => $this->source,
             'public_id' => $this->public_id,
-            'public_at' => $this->public_at?->toJson() ?? null,
+            'public_at' => $this->public_at?->toAtomString() ?? null,
             'main_image_id' => $this->images->sortBy('sort')->first()->id ?? null, // deprecate
             'images' => ImageResource::collection($this->images),
             'tags' => $this->tags->map(function ($tag) {
@@ -48,8 +48,8 @@ class CocktailResource extends JsonResource
             'glass' => new GlassResource($this->whenLoaded('glass')),
             'utensils' => UtensilResource::collection($this->whenLoaded('utensils')),
             'ingredients' => CocktailIngredientResource::collection($this->whenLoaded('ingredients')),
-            'created_at' => $this->created_at->toJson(),
-            'updated_at' => $this->updated_at?->toJson(),
+            'created_at' => $this->created_at->toAtomString(),
+            'updated_at' => $this->updated_at?->toAtomString(),
             'method' => new CocktailMethodResource($this->whenLoaded('method')),
             'abv' => $this->abv,
             'volume_ml' => $this->when($this->relationLoaded('ingredients'), fn () => $this->getVolume()),

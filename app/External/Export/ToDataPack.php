@@ -22,7 +22,7 @@ class ToDataPack
         $version = config('bar-assistant.version');
         $meta = [
             'version' => $version,
-            'date' => Carbon::now()->toJSON(),
+            'date' => Carbon::now()->toAtomString(),
             'called_from' => __CLASS__,
         ];
 

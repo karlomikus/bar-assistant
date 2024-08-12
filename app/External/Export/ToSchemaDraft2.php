@@ -18,7 +18,7 @@ class ToSchemaDraft2
         $version = config('bar-assistant.version');
         $meta = [
             'version' => $version,
-            'date' => Carbon::now()->toJSON(),
+            'date' => Carbon::now()->toAtomString(),
             'called_from' => __CLASS__,
             'schema_version' => 'https://barassistant.app/cocktail-02.schema.json',
         ];

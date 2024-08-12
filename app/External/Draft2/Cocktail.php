@@ -50,7 +50,7 @@ readonly class Cocktail implements JsonSerializable
             $model->getExternalId(),
             $model->name,
             $model->instructions,
-            $model->created_at->toIso8601String(),
+            $model->created_at->toAtomString(),
             $model->description,
             $model->source,
             $model->garnish,

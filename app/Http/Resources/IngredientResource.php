@@ -27,8 +27,8 @@ class IngredientResource extends JsonResource
             'description' => e($this->description),
             'origin' => $this->origin,
             'main_image_id' => $this->images->first()->id ?? null,
-            'created_at' => $this->created_at->toJson(),
-            'updated_at' => $this->updated_at?->toJson(),
+            'created_at' => $this->created_at->toAtomString(),
+            'updated_at' => $this->updated_at?->toAtomString(),
             'images' => ImageResource::collection($this->images),
             'parent_ingredient' => $this->when($this->relationLoaded('parentIngredient') && $this->parent_ingredient_id !== null, function () {
                 return new IngredientBasicResource($this->parentIngredient);

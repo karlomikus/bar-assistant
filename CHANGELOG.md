@@ -1,5 +1,8 @@
 # v4.0.0
-This new major release includes improvements to API specification, new minimal PHP version and big changes to docker image.
+This is a new major release. Here's a quick summary of the more interesting changes:
+
+- Improved API endpoint naming and structure
+- Added Bar Assistant JSON schema specification for cocktail recipes
 
 ## Breaking changes
 - [TODO] Minimal PHP version is now 8.3
@@ -54,6 +57,7 @@ This new major release includes improvements to API specification, new minimal P
 
 ## Changes
 - Meilisearch client API keys are now generated via artisan command
+- All dates in responses are now in ISO 8601 format
 
 # v3.19.0
 ## New

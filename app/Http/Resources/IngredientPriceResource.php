@@ -27,8 +27,8 @@ class IngredientPriceResource extends JsonResource
             'amount' => $this->amount,
             'units' => $this->units,
             'description' => $this->description,
-            'created_at' => $this->created_at->toJson(),
-            'updated_at' => $this->updated_at?->toJson(),
+            'created_at' => $this->created_at->toAtomString(),
+            'updated_at' => $this->updated_at?->toAtomString(),
         ];
     }
 }

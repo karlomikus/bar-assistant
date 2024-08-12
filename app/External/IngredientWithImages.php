@@ -49,8 +49,8 @@ readonly class IngredientWithImages implements JsonSerializable
             $model->origin,
             $model->color,
             $model->category?->name ?? null,
-            $model->created_at->toIso8601String(),
-            $model->updated_at?->toIso8601String(),
+            $model->created_at->toAtomString(),
+            $model->updated_at?->toAtomString(),
             $images,
             $ingredientParts,
         );

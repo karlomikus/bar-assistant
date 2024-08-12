@@ -30,8 +30,8 @@ class BarResource extends JsonResource
             'settings' => $this->settings ?? [],
             'search_host' => config('scout.meilisearch.host'),
             'search_token' => $this->search_token,
-            'created_at' => $this->created_at->toJson(),
-            'updated_at' => $this->updated_at?->toJson() ?? null,
+            'created_at' => $this->created_at->toAtomString(),
+            'updated_at' => $this->updated_at?->toAtomString() ?? null,
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
             'access' => [
