@@ -28,10 +28,6 @@ class IngredientResource extends JsonResource
             'origin' => $this->origin,
             'created_at' => $this->created_at->toAtomString(),
             'updated_at' => $this->updated_at?->toAtomString(),
-            'main_image_id' => $this->when(
-                $this->relationLoaded('images'),
-                fn () => $this->images->first()->id ?? null
-            ),
             'images' => $this->when(
                 $this->relationLoaded('images'),
                 fn () => ImageResource::collection($this->images)
@@ -47,7 +43,7 @@ class IngredientResource extends JsonResource
             }),
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
-            'access' => $this->when($this->relationLoaded('createdUser'), fn () => [
+            'access' => $this->when(false, fn () => [
                 'can_edit' => $request->user()->can('edit', $this->resource),
                 'can_delete' => $request->user()->can('delete', $this->resource),
             ]),

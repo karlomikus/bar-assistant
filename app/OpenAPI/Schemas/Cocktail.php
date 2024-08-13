@@ -16,10 +16,6 @@ use OpenApi\Attributes as OAT;
     'source',
     'public_id',
     'public_at',
-    'main_image_id',
-    'images',
-    'tags',
-    'rating',
     'created_at',
     'updated_at',
     'abv',
@@ -52,9 +48,6 @@ class Cocktail
 
     #[OAT\Property(property: 'public_at', format: 'date-time')]
     public ?string $publicAt = null;
-
-    #[OAT\Property(property: 'main_image_id', example: 1)]
-    public ?int $mainImageId = null;
 
     /** @var Image[] */
     #[OAT\Property()]

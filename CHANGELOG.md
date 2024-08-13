@@ -9,6 +9,8 @@ This is a new major release. Here's a quick summary of the more interesting chan
 - Removed importing cocktails from collections
 - Removed importing data from Bar Assistant v2
 - [TODO] Removed exporting to CSV
+- List all cocktails and ingredients endpoints don't have default includes anymore
+    - Refer to OpenAPI documentation for a list of available includes
 - Shelf
     - Moved `/shelf/ingredients` to `/users/{id}/ingredients`
         - Changed response schema, now returns `IngredientBasic`

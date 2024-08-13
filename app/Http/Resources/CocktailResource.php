@@ -32,19 +32,27 @@ class CocktailResource extends JsonResource
             'source' => $this->source,
             'public_id' => $this->public_id,
             'public_at' => $this->public_at?->toAtomString() ?? null,
-            'main_image_id' => $this->images->sortBy('sort')->first()->id ?? null, // deprecate
-            'images' => ImageResource::collection($this->images),
-            'tags' => $this->tags->map(function ($tag) {
-                return [
-                    'id' => $tag->id,
-                    'name' => $tag->name,
-                ];
-            }),
-            'rating' => [
-                'user' => $this->user_rating ?? null,
-                'average' => (int) round($this->average_rating ?? 0),
-                'total_votes' => $this->totalRatedCount(),
-            ],
+            'images' => $this->when(
+                $this->relationLoaded('images'),
+                fn () => ImageResource::collection($this->images)
+            ),
+            'tags' => $this->when(
+                $this->relationLoaded('tags'),
+                fn () => $this->tags->map(function ($tag) {
+                    return [
+                        'id' => $tag->id,
+                        'name' => $tag->name,
+                    ];
+                })
+            ),
+            'rating' => $this->when(
+                $this->relationLoaded('ratings'),
+                fn () => [
+                    'user' => $this->user_rating ?? null,
+                    'average' => (int) round($this->average_rating ?? 0),
+                    'total_votes' => $this->totalRatedCount(),
+                ]
+            ),
             'glass' => new GlassResource($this->whenLoaded('glass')),
             'utensils' => UtensilResource::collection($this->whenLoaded('utensils')),
             'ingredients' => CocktailIngredientResource::collection($this->whenLoaded('ingredients')),
@@ -57,8 +65,8 @@ class CocktailResource extends JsonResource
             'calories' => $this->when($this->relationLoaded('method'), fn () => $this->getCalories()),
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
-            'in_shelf' => $this->when($isSingleCocktail, fn () => $this->canUserMake(auth()->user())),
-            'access' => $this->when($isSingleCocktail, function () use ($request) {
+            'in_shelf' => $this->when($this->relationLoaded('ingredients'), fn () => $this->canUserMake($request->user())),
+            'access' => $this->when(false, function () use ($request) {
                 return [
                     'can_edit' => $request->user()->can('edit', $this->resource),
                     'can_delete' => $request->user()->can('delete', $this->resource),

@@ -248,6 +248,10 @@ class Cocktail extends Model implements UploadableInterface
      */
     public function scopeWithRatings(Builder $query, int $userId): Builder
     {
+        if (!$this->relationLoaded('ratings')) {
+            return $query;
+        }
+
         return $query->addSelect([
             'average_rating' => Rating::selectRaw('AVG(rating)')
                 ->whereColumn('rateable_id', 'cocktails.id')

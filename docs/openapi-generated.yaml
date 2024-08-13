@@ -656,7 +656,7 @@ paths:
         -
           name: include
           in: query
-          description: 'Include additional relationships. Available relations: `glass`, `method`, `user`, `navigation`, `utensils`, `createdUser`, `updatedUser`.'
+          description: 'Include additional relationships. Available relations: `glass`, `method`, `user`, `navigation`, `utensils`, `createdUser`, `updatedUser`, `images`, `tags`, `ingredients.ingredient`, `ratings`.'
           schema:
             type: string
       responses:
@@ -4475,10 +4475,6 @@ components:
         - source
         - public_id
         - public_at
-        - main_image_id
-        - images
-        - tags
-        - rating
         - created_at
         - updated_at
         - abv
@@ -4520,11 +4516,6 @@ components:
             - string
             - 'null'
           format: date-time
-        main_image_id:
-          type:
-            - integer
-            - 'null'
-          example: 1
         images:
           type: array
           items:
@@ -5217,11 +5208,6 @@ components:
             - string
             - 'null'
           example: Worldwide
-        main_image_id:
-          type:
-            - string
-            - 'null'
-          example: 1
         created_at:
           type: string
           format: date-time

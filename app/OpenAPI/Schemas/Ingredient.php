@@ -27,9 +27,6 @@ class Ingredient
     #[OAT\Property(example: 'Worldwide')]
     public ?string $origin = null;
 
-    #[OAT\Property(property: 'main_image_id', example: 1)]
-    public ?string $mainImageId = null;
-
     #[OAT\Property(property: 'created_at', format: 'date-time')]
     public string $createdAt;
 
