@@ -26,7 +26,9 @@ class IngredientsBatchRequest extends FormRequest
     public function rules()
     {
         return [
-            'ingredient_ids' => 'required|array',
+            'ingredients' => 'required|array',
+            'ingredients.*.id' => 'integer',
+            'ingredients.*.quantity' => 'integer',
         ];
     }
 }

@@ -3630,15 +3630,7 @@ paths:
         content:
           application/json:
             schema:
-              required:
-                - ingredient_ids
-              properties:
-                ingredient_ids:
-                  type: array
-                  items: { type: integer }
-                quantity:
-                  type: integer
-              type: object
+              $ref: '#/components/schemas/ShoppingListRequest'
       responses:
         '204':
           description: 'Successful response'
@@ -5771,6 +5763,20 @@ components:
         quantity:
           type: integer
           example: 3
+      type: object
+    ShoppingListRequest:
+      required:
+        - ingredients
+      properties:
+        ingredients:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              quantity:
+                type: integer
+            type: object
       type: object
     Tag:
       required:

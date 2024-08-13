@@ -44,10 +44,7 @@ class ShoppingListController extends Controller
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
-            new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(property: 'ingredient_ids', type: 'array', items: new OAT\Items(type: 'integer')),
-                new OAT\Property(property: 'quantity', type: 'integer'),
-            ], required: ['ingredient_ids']),
+            new OAT\JsonContent(ref: BAO\Schemas\ShoppingListRequest::class),
         ]
     ))]
     #[OAT\Response(response: 204, description: 'Successful response')]
@@ -62,21 +59,27 @@ class ShoppingListController extends Controller
 
         $barMembership = $user->getBarMembership(bar()->id);
 
+        $requestIngredients = collect($request->post('ingredients'));
         $ingredients = DB::table('ingredients')
             ->select('id')
             ->where('bar_id', $barMembership->bar_id)
-            ->whereIn('id', $request->post('ingredient_ids'))
+            ->whereIn('id', $requestIngredients->pluck('id'))
             ->pluck('id');
 
         $models = [];
         foreach ($ingredients as $ingId) {
-            $usl = new UserShoppingList();
-            $usl->ingredient_id = $ingId;
-            $usl->bar_membership_id = $barMembership->id;
-            $usl->quantity = $request->integer('quantity', 1);
-            try {
-                $models[] = $barMembership->shoppingListIngredients()->save($usl);
-            } catch (Throwable) {
+            if ($usl = UserShoppingList::where('bar_membership_id', $barMembership->id)->where('ingredient_id', $ingId)->first()) {
+                $usl->quantity = $requestIngredients->where('id', $ingId)->first()['quantity'] ?? 1;
+                $usl->save();
+            } else {
+                $usl = new UserShoppingList();
+                $usl->ingredient_id = $ingId;
+                $usl->bar_membership_id = $barMembership->id;
+                $usl->quantity = $requestIngredients->where('id', $ingId)->first()['quantity'] ?? 1;
+                try {
+                    $models[] = $barMembership->shoppingListIngredients()->save($usl);
+                } catch (Throwable) {
+                }
             }
         }
 
