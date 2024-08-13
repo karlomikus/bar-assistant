@@ -10,11 +10,12 @@ use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Scraper\Manager;
-use Kami\Cocktail\External\Import\FromSchemaDraft2;
+use Kami\Cocktail\External\Draft2\Schema;
 use Kami\Cocktail\Http\Requests\ImportRequest;
 use Kami\Cocktail\Http\Requests\ScrapeRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CocktailResource;
+use Kami\Cocktail\External\Import\FromSchemaDraft2;
 use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
 class ImportController extends Controller
@@ -25,7 +26,7 @@ class ImportController extends Controller
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(property: 'schema', ref: 'https://raw.githubusercontent.com/karlomikus/bar-assistant/v4dev/docs/cocktail-02.schema.json'),
+                new OAT\Property(property: 'schema', ref: Schema::SCHEMA_URL),
                 new OAT\Property(property: 'duplicate_actions', ref: DuplicateActionsEnum::class, example: 'none', description: 'How to handle duplicates. Cocktails are matched by lowercase name.'),
             ]),
         ]
@@ -61,7 +62,7 @@ class ImportController extends Controller
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new OAT\JsonContent(type: 'object', properties: [
             new OAT\Property(property: 'schema_version', type: 'string', example: 'draft2'),
-            new OAT\Property(property: 'schema', ref: 'https://raw.githubusercontent.com/karlomikus/bar-assistant/v4dev/docs/cocktail-02.schema.json'),
+            new OAT\Property(property: 'schema', ref: Schema::SCHEMA_URL),
             new OAT\Property(property: 'scraper_meta', type: 'object', additionalProperties: true),
         ]),
     ])]

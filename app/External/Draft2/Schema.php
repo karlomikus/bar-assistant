@@ -10,6 +10,7 @@ use Kami\Cocktail\Models\Cocktail as CocktailModel;
 readonly class Schema implements JsonSerializable
 {
     const SCHEMA_VERSION = 'draft2';
+    const SCHEMA_URL = 'https://barassistant.app/cocktail-02.schema.json';
 
     /**
      * @param array<Ingredient> $ingredients

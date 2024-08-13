@@ -2026,7 +2026,7 @@ paths:
             schema:
               properties:
                 schema:
-                  $ref: 'https://raw.githubusercontent.com/karlomikus/bar-assistant/v4dev/docs/cocktail-02.schema.json'
+                  $ref: 'https://barassistant.app/cocktail-02.schema.json'
                 duplicate_actions:
                   $ref: '#/components/schemas/DuplicateActionsEnum'
                   description: 'How to handle duplicates. Cocktails are matched by lowercase name.'
@@ -2081,7 +2081,7 @@ paths:
               schema:
                 properties:
                   schema_version: { type: string, example: draft2 }
-                  schema: { $ref: 'https://raw.githubusercontent.com/karlomikus/bar-assistant/v4dev/docs/cocktail-02.schema.json' }
+                  schema: { $ref: 'https://barassistant.app/cocktail-02.schema.json' }
                   scraper_meta: { type: object, additionalProperties: true }
                 type: object
         '403':
