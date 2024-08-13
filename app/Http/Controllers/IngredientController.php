@@ -47,7 +47,7 @@ class IngredientController extends Controller
             new OAT\Property(property: 'complex', type: 'boolean'),
         ])),
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `strength`, `total_cocktails`.', schema: new OAT\Schema(type: 'string')),
-        new OAT\Parameter(name: 'includes', in: 'query', description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `cocktails`, `cocktailIngredientSubstitutes`, `prices`.', schema: new OAT\Schema(type: 'string')),
+        new OAT\Parameter(name: 'include', in: 'query', description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `prices`, `ingredientParts`, `category`, `images`.', schema: new OAT\Schema(type: 'string')),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\PaginateData(BAO\Schemas\Ingredient::class),
@@ -75,7 +75,7 @@ class IngredientController extends Controller
     #[BAO\NotFoundResponse]
     public function show(Request $request, string $id): JsonResource
     {
-        $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient', 'createdUser', 'updatedUser', 'ingredientParts.ingredient', 'prices.priceCategory')
+        $ingredient = Ingredient::with('cocktails', 'images', 'varieties', 'parentIngredient', 'createdUser', 'updatedUser', 'ingredientParts.ingredient', 'prices.priceCategory', 'category')
             ->withCount('cocktails')
             ->where('id', $id)
             ->orWhere('slug', $id)

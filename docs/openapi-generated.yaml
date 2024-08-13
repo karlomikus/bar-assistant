@@ -654,7 +654,7 @@ paths:
           schema:
             type: string
         -
-          name: includes
+          name: include
           in: query
           description: 'Include additional relationships. Available relations: `glass`, `method`, `user`, `navigation`, `utensils`, `createdUser`, `updatedUser`.'
           schema:
@@ -2339,9 +2339,9 @@ paths:
           schema:
             type: string
         -
-          name: includes
+          name: include
           in: query
-          description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `cocktails`, `cocktailIngredientSubstitutes`, `prices`.'
+          description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `prices`, `ingredientParts`, `category`, `images`.'
           schema:
             type: string
       responses:
@@ -5183,6 +5183,16 @@ components:
           example: 'Image copyright'
       type: object
     Ingredient:
+      required:
+        - id
+        - slug
+        - name
+        - description
+        - origin
+        - color
+        - created_at
+        - updated_at
+        - strength
       properties:
         id:
           type: integer

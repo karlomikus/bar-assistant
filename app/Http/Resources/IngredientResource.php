@@ -26,15 +26,21 @@ class IngredientResource extends JsonResource
             'strength' => $this->strength,
             'description' => e($this->description),
             'origin' => $this->origin,
-            'main_image_id' => $this->images->first()->id ?? null,
             'created_at' => $this->created_at->toAtomString(),
             'updated_at' => $this->updated_at?->toAtomString(),
-            'images' => ImageResource::collection($this->images),
+            'main_image_id' => $this->when(
+                $this->relationLoaded('images'),
+                fn () => $this->images->first()->id ?? null
+            ),
+            'images' => $this->when(
+                $this->relationLoaded('images'),
+                fn () => ImageResource::collection($this->images)
+            ),
             'parent_ingredient' => $this->when($this->relationLoaded('parentIngredient') && $this->parent_ingredient_id !== null, function () {
                 return new IngredientBasicResource($this->parentIngredient);
             }),
             'color' => $this->color,
-            'category' => new IngredientCategoryResource($this->category),
+            'category' => new IngredientCategoryResource($this->whenLoaded('category')),
             'cocktails_count' => $this->whenCounted('cocktails'),
             'varieties' => $this->when($this->relationLoaded('varieties') && $this->relationLoaded('parentIngredient'), function () {
                 return IngredientBasicResource::collection($this->getAllRelatedIngredients());
