@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Validator;
@@ -22,6 +23,7 @@ use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Filters\IngredientQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\CocktailBasicResource;
+use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;
 
 class IngredientController extends Controller
@@ -174,7 +176,7 @@ class IngredientController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/ingredients/{id}/extra', tags: ['Ingredients'], summary: 'Show how many extra cocktails you can make if you add this ingredient to your shelf', parameters: [
+    #[OAT\Get(path: '/ingredients/{id}/extra', tags: ['Ingredients'], summary: 'Extra cocktails you can make if you add this ingredient to your shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -211,9 +213,8 @@ class IngredientController extends Controller
         ]);
     }
 
-    #[OAT\Get(path: '/ingredients/{id}/cocktails', tags: ['Ingredients'], summary: 'Show a list of cocktails that use this ingredient', parameters: [
+    #[OAT\Get(path: '/ingredients/{id}/cocktails', tags: ['Ingredients'], summary: 'List of cocktails that use this ingredient', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
@@ -233,8 +234,51 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $cocktails = $ingredient->cocktails->toQuery()->orderBy('name')->paginate($request->get('per_page', 100));
+        $cocktailIds = DB::table('cocktail_ingredients')
+            ->select('cocktail_id')
+            ->where('ingredient_id', $id) // Matches cocktails that use the ingredient directly
+            ->union(
+                DB::table('cocktail_ingredients')
+                    ->select('cocktail_id')
+                    ->join('cocktail_ingredient_substitutes', 'cocktail_ingredient_substitutes.cocktail_ingredient_id', '=', 'cocktail_ingredients.id')
+                    ->where('cocktail_ingredient_substitutes.ingredient_id', $id) // Matches cocktails that use the ingredient as a substitute
+            )
+            ->pluck('cocktail_id');
+
+        $cocktails = Cocktail::whereIn('id', $cocktailIds)->orderBy('name')->paginate($request->get('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails);
+    }
+
+    #[OAT\Get(path: '/ingredients/{id}/substitutes', tags: ['Ingredients'], summary: 'List ingredient substitutes', description: 'Show a list of ingredients that are used as a substitute for this ingredient in cocktail recipes.', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+        new BAO\Parameters\PageParameter(),
+        new BAO\Parameters\PerPageParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\PaginateData(BAO\Schemas\IngredientBasic::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function substitutes(Request $request, string $id): JsonResource
+    {
+        $ingredient = Ingredient::with('cocktails')
+            ->where('id', $id)
+            ->orWhere('slug', $id)
+            ->firstOrFail();
+
+        if ($request->user()->cannot('show', $ingredient)) {
+            abort(403);
+        }
+
+        $ids = DB::table('cocktail_ingredients')
+            ->select('cocktail_ingredient_substitutes.ingredient_id')
+            ->where('cocktail_ingredients.ingredient_id', $id)
+            ->join('cocktail_ingredient_substitutes', 'cocktail_ingredient_substitutes.cocktail_ingredient_id', '=', 'cocktail_ingredients.id')
+            ->pluck('cocktail_ingredient_substitutes.ingredient_id');
+
+        $cocktails = Ingredient::whereIn('id', $ids)->orderBy('name')->paginate($request->get('per_page', 100));
+
+        return IngredientBasicResource::collection($cocktails);
     }
 }

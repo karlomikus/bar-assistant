@@ -48,7 +48,9 @@ This is a new major release. Here's a quick summary of the more interesting chan
         - Used to download an export
 
 ## New
-- Added `/ingredients/{id}/cocktails` endpoint
+- Added `/ingredients/{id}/cocktails` endpoint, lists all cocktails that use this ingredient
+    - Includes cocktails that use this ingredient as a substitute
+- Added `/ingredients/{id}/substitutes` endpoint, lists all ingredients that are used as a substitute for this ingredient in cocktail recipes
 - Introduced new export recipe schema
 - Added `quantity` to shopping list ingredients
 - Images are now converted to WebP format before saving to disk
