@@ -163,7 +163,7 @@ class DefaultScraper extends AbstractSiteExtractor
     public function image(): ?array
     {
         return [
-            'url' => $this->schemaModel?->image ?? null,
+            'uri' => $this->schemaModel?->image ?? null,
             'copyright' => $this->schemaModel?->author ?? null,
         ];
     }

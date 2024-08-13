@@ -6,10 +6,10 @@ namespace Kami\Cocktail\External\Import;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema(type: 'integer')]
-enum DuplicateActionsEnum: int
+#[OAT\Schema(type: 'string')]
+enum DuplicateActionsEnum: string
 {
-    case None = 0;
-    case Skip = 1;
-    case Overwrite = 2;
+    case None = 'none';
+    case Skip = 'skip';
+    case Overwrite = 'overwrite';
 }

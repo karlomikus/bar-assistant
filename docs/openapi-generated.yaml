@@ -2019,36 +2019,17 @@ paths:
           required: true
           schema:
             type: integer
-        -
-          name: type
-          in: query
-          description: 'Type of import'
-          required: true
-          schema:
-            type: string
-            enum:
-              - url
-              - json
-              - yaml
-              - yml
-              - collection
-        -
-          name: save
-          in: query
-          description: 'Save imported cocktails to the database'
-          schema:
-            type: boolean
       requestBody:
         required: true
         content:
           application/json:
             schema:
               properties:
-                source:
-                  type: string
-                  example: 'https://www.example.com/recipe-url'
+                schema:
+                  $ref: 'https://raw.githubusercontent.com/karlomikus/bar-assistant/v4dev/docs/cocktail-02.schema.json'
                 duplicate_actions:
                   $ref: '#/components/schemas/DuplicateActionsEnum'
+                  description: 'How to handle duplicates. Cocktails are matched by lowercase name.'
               type: object
       responses:
         '200':
@@ -2058,6 +2039,50 @@ paths:
               schema:
                 properties:
                   data: { $ref: '#/components/schemas/Cocktail' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /import/scrape:
+    post:
+      tags:
+        - Import
+      summary: 'Scrape a recipe'
+      description: 'Try to scrape a recipe from a website. Most of the well known recipe websites should work. Data returned is a valid JSON schema that you can import using import cocktail endpoint.'
+      operationId: 33b756be1976d85e9b0e8e734beed74f
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                source:
+                  type: string
+                  example: 'https://www.example.com/recipe-url'
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  schema_version: { type: string, example: draft2 }
+                  schema: { $ref: 'https://raw.githubusercontent.com/karlomikus/bar-assistant/v4dev/docs/cocktail-02.schema.json' }
+                  scraper_meta: { type: object, additionalProperties: true }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -4279,11 +4304,11 @@ paths:
 components:
   schemas:
     DuplicateActionsEnum:
-      type: integer
+      type: string
       enum:
-        - 0
-        - 1
-        - 2
+        - none
+        - skip
+        - overwrite
     AbilityEnum:
       type: string
       enum:

@@ -209,6 +209,7 @@ Route::middleware($apiMiddleware)->group(function () {
     })->middleware(['ability:*']);
 
     Route::prefix('import')->middleware(['throttle:importing'])->group(function () {
+        Route::post('/scrape', [ImportController::class, 'scrape'])->middleware(EnsureRequestHasBarQuery::class)->name('import.scrape');
         Route::post('/cocktail', [ImportController::class, 'cocktail'])->middleware(EnsureRequestHasBarQuery::class)->name('import.cocktail');
     })->middleware(['ability:*']);
 

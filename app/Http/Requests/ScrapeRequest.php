@@ -6,7 +6,7 @@ namespace Kami\Cocktail\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ImportRequest extends FormRequest
+class ScrapeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +26,7 @@ class ImportRequest extends FormRequest
     public function rules()
     {
         return [
-            'schema' => 'required',
+            'source' => 'required|url',
         ];
     }
 }

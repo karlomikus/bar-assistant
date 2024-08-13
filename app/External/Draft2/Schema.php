@@ -9,10 +9,12 @@ use Kami\Cocktail\Models\Cocktail as CocktailModel;
 
 readonly class Schema implements JsonSerializable
 {
+    const SCHEMA_VERSION = 'draft2';
+
     /**
      * @param array<Ingredient> $ingredients
      */
-    private function __construct(
+    public function __construct(
         public Cocktail $cocktail,
         public array $ingredients,
     ) {
@@ -28,6 +30,14 @@ readonly class Schema implements JsonSerializable
         return new self(
             Cocktail::fromModel($model, $useFullURL),
             $ingredients,
+        );
+    }
+
+    public static function fromArray(array $source): self
+    {
+        return new self(
+            Cocktail::fromArray($source['recipe']),
+            array_map(fn ($ingredient) => Ingredient::fromArray($ingredient), $source['ingredients']),
         );
     }
 

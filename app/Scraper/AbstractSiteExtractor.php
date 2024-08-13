@@ -6,13 +6,18 @@ namespace Kami\Cocktail\Scraper;
 
 use Kami\RecipeUtils\Parser\Parser;
 use Kami\RecipeUtils\RecipeIngredient;
+use Kami\Cocktail\External\Draft2\Image;
+use Kami\Cocktail\External\Draft2\Schema;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Symfony\Component\DomCrawler\Crawler;
+use Kami\Cocktail\External\Draft2\Cocktail;
 use Symfony\Component\HttpClient\HttpClient;
+use Kami\Cocktail\External\Draft2\Ingredient;
 use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\HttpKernel\HttpCache\Store;
 use Symfony\Component\HttpClient\CachingHttpClient;
 use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
+use Symfony\Component\Uid\Ulid;
 
 abstract class AbstractSiteExtractor implements SiteExtractorContract
 {
@@ -148,31 +153,52 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
     public function toArray(): array
     {
         $ingredients = $this->ingredients();
-        return [
+        $ingredients = array_map(function (RecipeIngredient $recipeIngredient, int $sort) {
+            return [
+                '_id' => Ulid::generate(),
+                'name' => $this->clean(ucfirst($recipeIngredient->name)),
+                'amount' => $recipeIngredient->amount,
+                'amount_max' => $recipeIngredient->amountMax,
+                'units' => $recipeIngredient->units === '' ? null : $recipeIngredient->units,
+                'note' => $recipeIngredient->comment === '' ? null : $recipeIngredient->comment,
+                'original_amount' => $recipeIngredient->originalAmount,
+                'source' => $this->clean($recipeIngredient->source),
+                'optional' => false,
+                'sort' => $sort + 1,
+            ];
+        }, $ingredients, array_keys($ingredients));
+
+        $meta = array_map(function (array $org) {
+            return [
+                '_id' => $org['_id'],
+                'source' => $org['source'],
+            ];
+        }, $ingredients);
+
+        $cocktail = Cocktail::fromArray([
             'name' => $this->clean($this->name()),
+            'instructions' => $this->instructions(),
             'description' => $this->cleanDescription($this->description()),
             'source' => $this->source(),
             'glass' => $this->glass(),
-            'instructions' => $this->instructions(),
             'garnish' => $this->clean($this->garnish()),
             'tags' => $this->tags(),
             'method' => $this->method(),
             'images' => [
                 $this->image()
             ],
-            'ingredients' => array_map(function (RecipeIngredient $recipeIngredient, int $sort) {
-                return [
-                    'name' => $this->clean(ucfirst($recipeIngredient->name)),
-                    'amount' => $recipeIngredient->amount,
-                    'amount_max' => $recipeIngredient->amountMax,
-                    'units' => $recipeIngredient->units === '' ? null : $recipeIngredient->units,
-                    'note' => $recipeIngredient->comment === '' ? null : $recipeIngredient->comment,
-                    'original_amount' => $recipeIngredient->originalAmount,
-                    'source' => $this->clean($recipeIngredient->source),
-                    'optional' => false,
-                    'sort' => $sort,
-                ];
-            }, $ingredients, array_keys($ingredients)),
+            'ingredients' => $ingredients,
+        ]);
+
+        $model = new Schema(
+            $cocktail,
+            array_map(fn ($ingredient) => Ingredient::fromArray($ingredient), $ingredients),
+        );
+
+        return [
+            'schema_version' => $model::SCHEMA_VERSION,
+            'schema' => $model->toArray(),
+            'scraper_meta' => $meta,
         ];
     }
 

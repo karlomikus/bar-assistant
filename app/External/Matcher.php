@@ -6,6 +6,7 @@ namespace Kami\Cocktail\External;
 
 use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\Models\CocktailMethod;
+use Kami\Cocktail\External\Draft2\Ingredient;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;

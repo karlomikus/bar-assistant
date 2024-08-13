@@ -46,6 +46,9 @@ This is a new major release. Here's a quick summary of the more interesting chan
         - Now requires a token and an expiration date
         - Authorization is not required anymore
         - Used to download an export
+- Import
+    - Importing now requires a valid JSON schema
+    - Removed `save` parameter from `/import/cocktail` endpoint
 
 ## New
 - Added `/ingredients/{id}/cocktails` endpoint, lists all cocktails that use this ingredient
@@ -56,6 +59,9 @@ This is a new major release. Here's a quick summary of the more interesting chan
 - Images are now converted to WebP format before saving to disk
 - Added `/images` endpoint, this endpoint is used to list all user uploaded images
 - Bar search tokens are now saved in database
+- Added `/import/scrape` endpoint
+    - This endpoint is used to extract recipe data from a website
+    - Result is a JSON schema that can be imported via `/import/cocktail` endpoint
 
 ## Changes
 - Meilisearch client API keys are now generated via artisan command
