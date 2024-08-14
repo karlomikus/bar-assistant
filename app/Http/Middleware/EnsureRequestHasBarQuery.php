@@ -18,8 +18,8 @@ class EnsureRequestHasBarQuery
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // $barId = $request->header('Bar-Assistant-Bar-Id', null) ?? $request->get('bar_id', null);
-        $barId = $request->get('bar_id', null);
+        $barId = $request->header('Bar-Assistant-Bar-Id', null) ?? $request->get('bar_id', null);
+        // $barId = $request->get('bar_id', null);
 
         if (!$barId) {
             abort(400, sprintf("Missing required '%s' parameter while requesting '%s'", 'bar_id', $request->path()));

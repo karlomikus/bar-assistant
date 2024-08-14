@@ -56,6 +56,9 @@ This is a new major release. Here's a quick summary of the more interesting chan
     - Use `images.sort` instead
 
 ## New
+- Introduced `Bar-Assistant-Bar-Id` header to specify bar id
+    - Used for all endpoints that require bar id
+    - You can still send `bar_id` query parameter when needed, but it is considered deprecated
 - Added `/ingredients/{id}/cocktails` endpoint, lists all cocktails that use this ingredient
     - Includes cocktails that use this ingredient as a substitute
 - Added `/ingredients/{id}/substitutes` endpoint, lists all ingredients that are used as a substitute for this ingredient in cocktail recipes

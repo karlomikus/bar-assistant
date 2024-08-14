@@ -190,6 +190,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Bar' } }
                 type: object
@@ -581,8 +583,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
         -
@@ -694,8 +696,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -961,8 +963,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       responses:
@@ -971,6 +973,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/CocktailMethod' } }
                 type: object
@@ -983,8 +987,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -1140,8 +1144,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
         -
@@ -1171,6 +1175,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Collection' } }
                 type: object
@@ -1183,8 +1189,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -1235,6 +1241,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Collection' } }
                 type: object
@@ -1455,6 +1463,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Export' } }
                 type: object
@@ -1617,8 +1627,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
         -
@@ -1644,6 +1654,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Glass' } }
                 type: object
@@ -1656,8 +1668,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -1874,6 +1886,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Image' } }
                 type: object
@@ -2025,8 +2039,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -2069,8 +2083,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -2147,8 +2161,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       responses:
@@ -2157,6 +2171,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/IngredientCategory' } }
                 type: object
@@ -2169,8 +2185,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -2326,8 +2342,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
         -
@@ -2417,8 +2433,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -2584,6 +2600,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
                 type: object
@@ -2720,8 +2738,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       responses:
@@ -2750,8 +2768,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -2963,6 +2981,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/PersonalAccessToken' } }
                 type: object
@@ -3037,8 +3057,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       responses:
@@ -3047,6 +3067,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/PriceCategory' } }
                 type: object
@@ -3059,8 +3081,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -3210,7 +3232,7 @@ paths:
     get:
       tags:
         - Profile
-      summary: 'Show authenticated user profile'
+      summary: 'Show profile'
       operationId: 73fd658c723e80f927b251628b9a616b
       responses:
         '200':
@@ -3232,7 +3254,7 @@ paths:
     post:
       tags:
         - Profile
-      summary: 'Update authenticated user profile'
+      summary: 'Update profile'
       operationId: c5958eea850b563b057d22dc8258efbf
       requestBody:
         required: true
@@ -3349,8 +3371,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
         -
@@ -3394,8 +3416,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
         -
@@ -3438,8 +3460,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
         -
@@ -3482,8 +3504,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -3532,8 +3554,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -3582,8 +3604,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       responses:
@@ -3592,6 +3614,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/IngredientRecommend' } }
                 type: object
@@ -3628,8 +3652,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       responses:
@@ -3638,6 +3662,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/ShoppingList' } }
                 type: object
@@ -3666,8 +3692,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -3712,8 +3738,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -3762,8 +3788,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
         -
@@ -3797,8 +3823,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       responses:
@@ -3807,6 +3833,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Tag' } }
                 type: object
@@ -3819,8 +3847,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -3976,8 +4004,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       responses:
@@ -3986,6 +4014,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/User' } }
                 type: object
@@ -3998,8 +4028,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -4040,8 +4070,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
         -
@@ -4085,8 +4115,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
         -
@@ -4169,8 +4199,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       responses:
@@ -4179,6 +4209,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Utensil' } }
                 type: object
@@ -4191,8 +4223,8 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using headers.'
+          required: false
           schema:
             type: integer
       requestBody:
