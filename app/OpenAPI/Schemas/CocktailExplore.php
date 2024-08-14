@@ -50,7 +50,7 @@ class CocktailExplore
     public array $utensils = [];
 
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
-        new OAT\Property(type: 'integer', property: 'name', example: 'Ingredient name'),
+        new OAT\Property(type: 'string', property: 'name', example: 'Ingredient name'),
         new OAT\Property(type: 'number', property: 'amount', example: 30.0),
         new OAT\Property(type: 'number', property: 'amount_max', example: 45.0, nullable: true),
         new OAT\Property(type: 'string', property: 'units', example: 'ml'),

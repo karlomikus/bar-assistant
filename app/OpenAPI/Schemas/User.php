@@ -20,7 +20,7 @@ class User
     #[OAT\Property(type: 'object', properties: [
         new OAT\Property(type: 'integer', property: 'bar_id', example: 1),
         new OAT\Property(type: 'integer', property: 'role_id', example: 1),
-        new OAT\Property(type: 'integer', property: 'role_name', example: 'Admin'),
+        new OAT\Property(type: 'string', property: 'role_name', example: 'Admin'),
     ])]
     public array $role;
 }

@@ -66,7 +66,7 @@ class CocktailResource extends JsonResource
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
             'in_shelf' => $this->when($this->relationLoaded('ingredients'), fn () => $this->canUserMake($request->user())),
-            'access' => $this->when(false, function () use ($request) {
+            'access' => $this->when(true, function () use ($request) {
                 return [
                     'can_edit' => $request->user()->can('edit', $this->resource),
                     'can_delete' => $request->user()->can('delete', $this->resource),

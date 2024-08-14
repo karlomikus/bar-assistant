@@ -8,7 +8,6 @@ This is a new major release. Here's a quick summary of the more interesting chan
 - [TODO] Minimal PHP version is now 8.3
 - Removed importing cocktails from collections
 - Removed importing data from Bar Assistant v2
-- [TODO] Removed exporting to CSV
 - List all cocktails and ingredients endpoints don't have default includes anymore
     - Refer to OpenAPI documentation for a list of available includes
 - Shelf
@@ -51,6 +50,10 @@ This is a new major release. Here's a quick summary of the more interesting chan
 - Import
     - Importing now requires a valid JSON schema
     - Removed `save` parameter from `/import/cocktail` endpoint
+- Removed `main_image_id` from cocktail model
+    - Use `images.sort` instead
+- Removed `main_image_id` from ingredient model
+    - Use `images.sort` instead
 
 ## New
 - Added `/ingredients/{id}/cocktails` endpoint, lists all cocktails that use this ingredient

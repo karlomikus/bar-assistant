@@ -91,8 +91,8 @@ class ExportController extends Controller
 
     #[OAT\Get(path: '/exports/{id}/download', tags: ['Exports'], summary: 'Download export', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
-        new OAT\Parameter(name: 't', in: 'query', description: 'Token', required: true),
-        new OAT\Parameter(name: 'e', in: 'query', description: 'Timestamp', required: true),
+        new OAT\Parameter(name: 't', in: 'query', description: 'Token', required: true, schema: new OAT\Schema(type: 'string')),
+        new OAT\Parameter(name: 'e', in: 'query', description: 'Timestamp', required: true, schema: new OAT\Schema(type: 'string')),
     ], security: [])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new OAT\MediaType(mediaType: 'application/octet-stream', example: 'binary'),
