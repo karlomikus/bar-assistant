@@ -7,12 +7,13 @@ use Kami\Cocktail\Models\Export;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Kami\Cocktail\External\Export\ToDataPack;
-use Kami\Cocktail\External\ExportTypeEnum;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\Attributes\WithoutRelations;
+use Kami\Cocktail\External\Export\ToSchemaDraft2;
+use Kami\Cocktail\External\ExportTypeEnum;
 
-class StartRecipesExport implements ShouldQueue
+class StartTypedExport implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -21,17 +22,22 @@ class StartRecipesExport implements ShouldQueue
 
     public function __construct(
         private readonly int $barId,
-        private readonly string $type,
+        private readonly ExportTypeEnum $type,
         #[WithoutRelations]
         private readonly Export $export,
     ) {
     }
 
-    public function handle(ToDataPack $exporter): void
+    public function handle(): void
     {
-        $type = ExportTypeEnum::tryFrom($this->type) ?? ExportTypeEnum::JSON;
+        if ($this->type === ExportTypeEnum::Datapack) {
+            resolve(ToDataPack::class)->process($this->barId, $this->export->filename);
+        }
 
-        $exporter->process($this->barId, $this->export->getFullPath(), $type);
+        if ($this->type === ExportTypeEnum::Schema) {
+            resolve(ToSchemaDraft2::class)->process($this->barId, $this->export->filename);
+        }
+
 
         $this->export->markAsDone();
     }

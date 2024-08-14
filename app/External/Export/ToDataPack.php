@@ -8,17 +8,32 @@ use ZipArchive;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\External\ExportTypeEnum;
-use Kami\Cocktail\External\DataPack\Cocktail as CocktailExternal;
+use Kami\Cocktail\External\Draft2\Schema;
+use Kami\Cocktail\External\ProcessesBarExport;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
+use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
 use Kami\Cocktail\External\DataPack\IngredientFull as IngredientExternal;
 
-class ToDataPack
+/**
+ * Datapack is a zip archive containing all data required to move to another Bar Assistant instance.
+ *
+ * @package Kami\Cocktail\External\Export
+ */
+class ToDataPack implements ProcessesBarExport
 {
-    public function process(int $barId, ?string $exportPath = null, ExportTypeEnum $exportType = ExportTypeEnum::YAML): string
+    public function __construct(private readonly FileSystemFactory $file)
     {
+    }
+
+    public function process(int $barId, ?string $filename = null): string
+    {
+        if (!$filename) {
+            throw new \Exception('Export filename is required');
+        }
+
         $version = config('bar-assistant.version');
         $meta = [
             'version' => $version,
@@ -26,11 +41,10 @@ class ToDataPack
             'called_from' => __CLASS__,
         ];
 
-        File::ensureDirectoryExists(storage_path('bar-assistant/backups'));
-        $filename = storage_path(sprintf('bar-assistant/backups/%s_%s.zip', Carbon::now()->format('Ymdhi'), 'recipes'));
-        if ($exportPath) {
-            $filename = $exportPath;
-        }
+        File::ensureDirectoryExists($this->file->disk('export-datapacks')->path((string) $barId));
+        $filename = $this->file->disk('export-datapacks')->path($barId . '/' . $filename);
+
+        Log::debug(sprintf('Exporting datapack to "%s"', $filename));
 
         $zip = new ZipArchive();
 
@@ -61,16 +75,16 @@ class ToDataPack
 
         /** @var Cocktail $cocktail */
         foreach ($cocktails as $cocktail) {
-            $data = CocktailExternal::fromModel($cocktail);
+            $data = Schema::fromCocktailModel($cocktail);
 
             /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($cocktail->images as $img) {
-                $zip->addFile($img->getPath(), 'cocktails/' . $img->getFileName());
+                $zip->addFile($img->getPath(), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getFileName());
             }
 
             $cocktailExportData = $this->prepareDataOutput($data);
 
-            $zip->addFromString('cocktails/' . $cocktail->getExternalId() . '_recipe.json', $cocktailExportData);
+            $zip->addFromString('cocktails/' . $cocktail->getExternalId() . '/recipe.json', $cocktailExportData);
         }
     }
 
@@ -86,12 +100,12 @@ class ToDataPack
 
             /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($ingredient->images as $img) {
-                $zip->addFile($img->getPath(), 'ingredients/' . $img->getFileName());
+                $zip->addFile($img->getPath(), 'ingredients/' . $ingredient->getExternalId() . '/' . $img->getFileName());
             }
 
             $ingredientExportData = $this->prepareDataOutput($data);
 
-            $zip->addFromString('ingredients/' . $ingredient->getExternalId() . '.json', $ingredientExportData);
+            $zip->addFromString('ingredients/' . $ingredient->getExternalId() . '/ingredient.json', $ingredientExportData);
         }
     }
 

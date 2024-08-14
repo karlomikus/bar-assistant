@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Throwable;
+use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
@@ -13,14 +14,16 @@ use Kami\Cocktail\Scraper\Manager;
 use Kami\Cocktail\External\Draft2\Schema;
 use Kami\Cocktail\Http\Requests\ImportRequest;
 use Kami\Cocktail\Http\Requests\ScrapeRequest;
+use Kami\Cocktail\External\Import\FromDataPack;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\External\Import\FromSchemaDraft2;
+use Kami\Cocktail\Http\Requests\ImportDatapackRequest;
 use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
 class ImportController extends Controller
 {
-    #[OAT\Post(path: '/import/cocktail', tags: ['Import'], summary: 'Import a cocktail', parameters: [
+    #[OAT\Post(path: '/import/cocktail', tags: ['Import'], summary: 'Import from recipe schema', parameters: [
         new BAO\Parameters\BarIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -84,5 +87,33 @@ class ImportController extends Controller
         return response()->json([
             'data' => $dataToImport,
         ]);
+    }
+
+    #[OAT\Post(path: '/import/datapack', tags: ['Import'], summary: 'Import from datapack', requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(type: 'object', required: ['file'], properties: [
+                new OAT\Property(property: 'file', type: 'string', format: 'binary'),
+                new OAT\Property(property: 'bar_id', type: 'integer', example: 1),
+                new OAT\Property(property: 'duplicate_actions', ref: DuplicateActionsEnum::class, example: 'none', description: 'How to handle duplicates. Cocktails are matched by lowercase name.'),
+            ])),
+        ]
+    ))]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    public function datapack(ImportDatapackRequest $request, FromDataPack $importer): Response
+    {
+        if ($request->user()->cannot('create', Cocktail::class)) {
+            abort(403);
+        }
+
+        $datapackFile = $request->file('file');
+        $barId = $request->post('bar_id');
+        $duplicateAction = DuplicateActionsEnum::from($request->post('duplicate_actions', 'none'));
+
+        // Extract, send disk
+        // $importer->process($datapackFile, bar()->id, $request->user()->id);
+
+        return new Response(null, 204);
     }
 }

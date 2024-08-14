@@ -8,13 +8,23 @@ use ZipArchive;
 use Carbon\Carbon;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\File;
-use Kami\Cocktail\External\Draft2\Schema as SchemaExternal;
+use Kami\Cocktail\External\ProcessesBarExport;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
+use Kami\Cocktail\External\Draft2\Schema as SchemaExternal;
+use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
 
-class ToSchemaDraft2
+class ToSchemaDraft2 implements ProcessesBarExport
 {
-    public function process(int $barId, ?string $exportPath = null): string
+    public function __construct(private readonly FileSystemFactory $file)
     {
+    }
+
+    public function process(int $barId, ?string $filename = null): string
+    {
+        if (!$filename) {
+            throw new \Exception('Export filename is required');
+        }
+
         $version = config('bar-assistant.version');
         $meta = [
             'version' => $version,
@@ -23,11 +33,8 @@ class ToSchemaDraft2
             'schema_version' => 'https://barassistant.app/cocktail-02.schema.json',
         ];
 
-        File::ensureDirectoryExists(storage_path('bar-assistant/backups'));
-        $filename = storage_path(sprintf('bar-assistant/backups/%s_%s.zip', Carbon::now()->format('Ymdhi'), 'recipes'));
-        if ($exportPath) {
-            $filename = $exportPath;
-        }
+        File::ensureDirectoryExists($this->file->disk('export-datapacks')->path((string) $barId));
+        $filename = $this->file->disk('export-datapacks')->path($barId . '/' . $filename);
 
         $zip = new ZipArchive();
 

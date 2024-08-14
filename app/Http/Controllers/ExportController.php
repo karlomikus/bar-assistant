@@ -12,8 +12,9 @@ use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Export;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\FileToken;
-use Kami\Cocktail\Jobs\StartRecipesExport;
+use Kami\Cocktail\Jobs\StartTypedExport;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\External\ExportTypeEnum;
 use Kami\Cocktail\Http\Resources\ExportResource;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -36,7 +37,7 @@ class ExportController extends Controller
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(property: 'type', type: 'string', example: 'json'),
+                new OAT\Property(property: 'type', ref: ExportTypeEnum::class),
                 new OAT\Property(property: 'bar_id', type: 'integer', example: 1),
             ]),
         ]
@@ -47,21 +48,24 @@ class ExportController extends Controller
     #[BAO\NotAuthorizedResponse]
     public function store(Request $request): ExportResource
     {
-        $type = $request->post('type', 'json');
         $bar = Bar::findOrFail($request->post('bar_id'));
 
         if ($request->user()->cannot('createExport', $bar)) {
             abort(403);
         }
 
+        $type = ExportTypeEnum::tryFrom($request->post('type', 'schema'));
+
         $export = new Export();
-        $export->withFilename();
         $export->bar_id = $bar->id;
+        $export->filename = Export::generateFilename($type->getFilenameContext());
         $export->is_done = false;
         $export->created_user_id = $request->user()->id;
         $export->save();
 
-        StartRecipesExport::dispatch($bar->id, $type, $export);
+        StartTypedExport::dispatch($bar->id, $type, $export);
+
+        $export->refresh();
 
         return new ExportResource($export);
     }

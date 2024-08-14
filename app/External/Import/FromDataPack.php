@@ -32,7 +32,7 @@ class FromDataPack
 
     public function process(FilesystemAdapter $dataDisk, Bar $bar, User $user, array $flags = []): bool
     {
-        Log::debug(sprintf('Starting recipe import for "%s"', $bar->name));
+        Log::debug(sprintf('Starting datapack import for "%s"', $bar->name));
 
         $timerStart = microtime(true);
         $bar->setStatus(BarStatusEnum::Provisioning)->save();
@@ -68,7 +68,7 @@ class FromDataPack
 
         $timerEnd = microtime(true);
 
-        Log::debug(sprintf('Importing recipes done in "%s" seconds', ($timerEnd - $timerStart)));
+        Log::debug(sprintf('Importing datapack done in "%s" seconds', ($timerEnd - $timerStart)));
 
         return true;
     }

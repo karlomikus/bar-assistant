@@ -1463,8 +1463,7 @@ paths:
             schema:
               properties:
                 type:
-                  type: string
-                  example: json
+                  $ref: '#/components/schemas/ExportTypeEnum'
                 bar_id:
                   type: integer
                   example: 1
@@ -2009,7 +2008,7 @@ paths:
     post:
       tags:
         - Import
-      summary: 'Import a cocktail'
+      summary: 'Import from recipe schema'
       operationId: f46bb44c14109f5d529b854e81d57150
       parameters:
         -
@@ -2084,6 +2083,41 @@ paths:
                   schema: { $ref: 'https://barassistant.app/cocktail-02.schema.json' }
                   scraper_meta: { type: object, additionalProperties: true }
                 type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /import/datapack:
+    post:
+      tags:
+        - Import
+      summary: 'Import from datapack'
+      operationId: 21099c1e89b22f8b85568fa26df220e8
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                bar_id:
+                  type: integer
+                  example: 1
+                duplicate_actions:
+                  $ref: '#/components/schemas/DuplicateActionsEnum'
+                  description: 'How to handle duplicates. Cocktails are matched by lowercase name.'
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
           content:
@@ -4295,6 +4329,14 @@ paths:
                 type: object
 components:
   schemas:
+    ExportTypeEnum:
+      type: string
+      enum:
+        - datapack
+        - schema
+        - md
+        - json+ld
+        - xml
     DuplicateActionsEnum:
       type: string
       enum:

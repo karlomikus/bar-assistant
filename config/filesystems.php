@@ -52,6 +52,13 @@ return [
             'throw' => false,
         ],
 
+        'export-datapacks' => [
+            'driver' => 'local',
+            'root' => storage_path('bar-assistant/exports'),
+            'url' => env('APP_URL').'/uploads',
+            'throw' => false,
+        ],
+
         'uploads_s3' => [
             'driver' => 's3',
             'url' => env('S3_URL'),
