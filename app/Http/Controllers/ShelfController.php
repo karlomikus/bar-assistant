@@ -27,6 +27,7 @@ class ShelfController extends Controller
     #[OAT\Get(path: '/users/{id}/ingredients', tags: ['Users: Shelf'], summary: 'Show a list of shelf ingredients', description: 'Ingredients that user saved to their shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
@@ -55,6 +56,7 @@ class ShelfController extends Controller
     #[OAT\Get(path: '/users/{id}/cocktails', tags: ['Users: Shelf'], summary: 'Show a list shelf cocktails', description: 'Cocktails that the user can make with ingredients on their shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
@@ -80,6 +82,7 @@ class ShelfController extends Controller
     #[OAT\Get(path: '/users/{id}/cocktails/favorites', tags: ['Users: Shelf'], summary: 'Show a list of cocktails user has favorited', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
@@ -101,6 +104,7 @@ class ShelfController extends Controller
     #[OAT\Post(path: '/users/{id}/ingredients/batch-store', tags: ['Users: Shelf'], summary: 'Batch store ingredients to the shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -140,6 +144,7 @@ class ShelfController extends Controller
     #[OAT\Post(path: '/users/{id}/ingredients/batch-delete', tags: ['Users: Shelf'], summary: 'Delete multiple ingredients from the shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -173,6 +178,7 @@ class ShelfController extends Controller
     #[OAT\Get(path: '/users/{id}/ingredients/recommend', tags: ['Users: Shelf'], summary: 'Recommend next ingredients', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\IngredientRecommend::class),

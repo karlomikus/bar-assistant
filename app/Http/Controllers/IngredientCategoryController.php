@@ -18,6 +18,7 @@ class IngredientCategoryController extends Controller
 {
     #[OAT\Get(path: '/ingredient-categories', tags: ['Ingredient category'], summary: 'Show a list of ingredient categories', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\IngredientCategory::class),
@@ -50,6 +51,7 @@ class IngredientCategoryController extends Controller
 
     #[OAT\Post(path: '/ingredient-categories', tags: ['Ingredient category'], summary: 'Create a new ingredient category', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [

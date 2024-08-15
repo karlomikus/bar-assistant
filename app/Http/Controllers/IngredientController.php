@@ -30,6 +30,7 @@ class IngredientController extends Controller
 {
     #[OAT\Get(path: '/ingredients', tags: ['Ingredients'], summary: 'Show a list of ingredients', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
@@ -90,6 +91,7 @@ class IngredientController extends Controller
 
     #[OAT\Post(path: '/ingredients', tags: ['Ingredients'], summary: 'Create an ingredient', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [

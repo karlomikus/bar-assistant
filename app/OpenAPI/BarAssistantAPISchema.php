@@ -30,11 +30,13 @@ The rate limit is set to 1,000 requests per minute per IP address, or per user I
 
 Ensure that each request includes the `Content-Type: application/json` header.
 
-## Authentication
+## Auth
 
 Include your login token in the header of every request, using the following format: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.
 
-For requests that require a reference to a specific bar, include the bar ID in the query string, e.g., `/cocktails?bar_id=1`.
+## Bar context
+
+For requests that require a reference to a specific bar, include the `bar_id` in the query string, e.g., `/cocktails?bar_id=1`, or use `Bar-Assistant-Bar-Id` header in your request.
 
 ## Authorization
 

@@ -74,7 +74,7 @@ class CocktailResource extends JsonResource
                     'can_add_note' => $request->user()->can('addNote', $this->resource),
                 ];
             }),
-            'navigation' => $this->when($isSingleCocktail, function () {
+            'navigation' => $this->when(true, function () {
                 return [
                     'prev' => $this->getPrevCocktail()?->slug,
                     'next' => $this->getNextCocktail()?->slug,

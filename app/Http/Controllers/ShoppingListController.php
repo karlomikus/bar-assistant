@@ -21,6 +21,7 @@ class ShoppingListController extends Controller
     #[OAT\Get(path: '/users/{id}/shopping-list', tags: ['Users: Shopping list'], summary: 'Show shopping list', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\ShoppingList::class),
@@ -41,6 +42,7 @@ class ShoppingListController extends Controller
     #[OAT\Post(path: '/users/{id}/shopping-list/batch-store', tags: ['Users: Shopping list'], summary: 'Batch add ingredients to shopping list', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -89,6 +91,7 @@ class ShoppingListController extends Controller
     #[OAT\Post(path: '/users/{id}/shopping-list/batch-delete', tags: ['Users: Shopping list'], summary: 'Batch delete ingredients from shopping list', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -127,6 +130,7 @@ class ShoppingListController extends Controller
     #[OAT\Get(path: '/users/{id}/shopping-list/share', tags: ['Users: Shopping list'], summary: 'Share shopping list', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
         new OAT\Parameter(name: 'type', in: 'query', description: 'Type of share. Available types: `markdown`.', schema: new OAT\Schema(type: 'string')),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [

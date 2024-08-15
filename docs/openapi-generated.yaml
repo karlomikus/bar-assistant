@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'Bar Assistant API'
-  description: "**Bar Assistant** is all-in-one solution for managing your home bar. Compared to other recipe management software that usually tries to be more for general use, Bar Assistant is made specifically for managing cocktail recipes. This means that there are a lot of cocktail-oriented features, like ingredient substitutes, first-class ingredients, ABV calculations, unit switching and more.\n\n[Homepage](https://barassistant.app/) &middot; [Official Documentation](https://bar-assistant.github.io/docs/) &middot; [GitHub Repository](https://github.com/karlomikus/bar-assistant)\n\n## Rate Limiting\n\nThe rate limit is set to 1,000 requests per minute per IP address, or per user ID if authenticated. Certain endpoints have specific rate limits, such as importing and exporting data. Exporting is limited to 1 request per minute, while importing is restricted to 2 requests per minute for users without a subscription (applicable to cloud-hosted instances).\n\n## Content-Type\n\nEnsure that each request includes the `Content-Type: application/json` header.\n\n## Authentication\n\nInclude your login token in the header of every request, using the following format: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.\n\nFor requests that require a reference to a specific bar, include the bar ID in the query string, e.g., `/cocktails?bar_id=1`.\n\n## Authorization\n\nA `403 Forbidden` status code will be returned if you attempt to access a resource without the necessary permissions.\n\n## Sorting\n\nCertain endpoints support sorting by specific attributes. Prepend `-` to an attribute for descending order, or omit it for ascending order. For example, `?sort=name` sorts by the `name` attribute in ascending order. Multiple sorts can be applied by separating attributes with a comma.\n\n## Includes\n\nSome endpoints support the inclusion of related data on demand. To include multiple relationships, separate them with a comma. For example, `?include=notes,user` will include additional data for both notes and the user.\n\n## Pagination\n\nTo paginate results, use the `?per_page=30` parameter to limit the number of results per request. To navigate to a specific page, use `?page=3`.\n\n## Filtering\n\nCertain endpoints allow filtering by specific attributes. For example, `?filter[attribute_name]=value` filters results based on the given attribute. Multiple filter values can be separated by commas, e.g., `?filter[attribute_name]=value1,value2`."
+  description: "**Bar Assistant** is all-in-one solution for managing your home bar. Compared to other recipe management software that usually tries to be more for general use, Bar Assistant is made specifically for managing cocktail recipes. This means that there are a lot of cocktail-oriented features, like ingredient substitutes, first-class ingredients, ABV calculations, unit switching and more.\n\n[Homepage](https://barassistant.app/) &middot; [Official Documentation](https://bar-assistant.github.io/docs/) &middot; [GitHub Repository](https://github.com/karlomikus/bar-assistant)\n\n## Rate Limiting\n\nThe rate limit is set to 1,000 requests per minute per IP address, or per user ID if authenticated. Certain endpoints have specific rate limits, such as importing and exporting data. Exporting is limited to 1 request per minute, while importing is restricted to 2 requests per minute for users without a subscription (applicable to cloud-hosted instances).\n\n## Content-Type\n\nEnsure that each request includes the `Content-Type: application/json` header.\n\n## Auth\n\nInclude your login token in the header of every request, using the following format: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.\n\n## Bar context\n\nFor requests that require a reference to a specific bar, include the `bar_id` in the query string, e.g., `/cocktails?bar_id=1`, or use `Bar-Assistant-Bar-Id` header in your request.\n\n## Authorization\n\nA `403 Forbidden` status code will be returned if you attempt to access a resource without the necessary permissions.\n\n## Sorting\n\nCertain endpoints support sorting by specific attributes. Prepend `-` to an attribute for descending order, or omit it for ascending order. For example, `?sort=name` sorts by the `name` attribute in ascending order. Multiple sorts can be applied by separating attributes with a comma.\n\n## Includes\n\nSome endpoints support the inclusion of related data on demand. To include multiple relationships, separate them with a comma. For example, `?include=notes,user` will include additional data for both notes and the user.\n\n## Pagination\n\nTo paginate results, use the `?per_page=30` parameter to limit the number of results per request. To navigate to a specific page, use `?page=3`.\n\n## Filtering\n\nCertain endpoints allow filtering by specific attributes. For example, `?filter[attribute_name]=value` filters results based on the given attribute. Multiple filter values can be separated by commas, e.g., `?filter[attribute_name]=value1,value2`."
   contact:
     name: 'Bar Assistant'
     url: 'https://barassistant.app'
@@ -583,7 +583,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -696,7 +703,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -991,6 +1005,14 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { required: [type, content], properties: { type: { type: string, example: json }, content: { type: string, example: '<content in requested format>' } }, type: object }
+                type: object
         '403':
           description: 'You are not authorized for this action.'
           content:
@@ -1053,7 +1075,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -1077,7 +1106,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -1234,7 +1270,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -1279,7 +1322,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -1717,7 +1767,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -1758,7 +1815,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -2129,7 +2193,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -2173,7 +2244,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -2251,7 +2329,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -2275,7 +2360,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -2432,7 +2524,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -2523,7 +2622,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -2828,7 +2934,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -2858,7 +2971,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -3147,7 +3267,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -3171,7 +3298,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -3461,7 +3595,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -3506,7 +3647,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -3550,7 +3698,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -3594,7 +3749,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -3644,7 +3806,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -3694,7 +3863,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -3742,7 +3918,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -3782,7 +3965,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -3828,7 +4018,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -3878,7 +4075,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -3913,7 +4117,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -3937,7 +4148,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -4094,7 +4312,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -4118,7 +4343,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -4160,7 +4392,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -4205,7 +4444,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -4289,7 +4535,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -4313,7 +4566,14 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar. Required if you are not using headers.'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
           required: false
           schema:
             type: integer
@@ -4502,6 +4762,21 @@ components:
           example: 'Resource record not found.'
       type: object
     Bar:
+      required:
+        - id
+        - slug
+        - name
+        - subtitle
+        - description
+        - status
+        - access
+        - invite_code
+        - active
+        - settings
+        - search_host
+        - search_token
+        - created_at
+        - updated_at
       properties:
         id:
           type: integer
@@ -4532,7 +4807,8 @@ components:
         settings:
           type: array
           items:
-            type: string
+            type: object
+            additionalProperties: true
         search_host:
           type:
             - string
@@ -4947,6 +5223,7 @@ components:
         - sort
         - amount
         - units
+        - formatted
       properties:
         ingredient:
           $ref: '#/components/schemas/IngredientBasic'
@@ -4980,24 +5257,79 @@ components:
           example: 'Additional notes'
         formatted:
           description: 'Amounts in different units, converted if possible'
-          type: array
-          items:
-            properties:
-              amount:
-                type: number
-                format: float
-                example: 30
-              amount_max:
-                type: number
-                format: float
-                example: 60
-              units:
-                type: string
-                example: ml
-              full_text:
-                type: string
-                example: '30-60 ml'
-            type: object
+          required:
+            - ml
+            - oz
+            - cl
+          properties:
+            ml:
+              required:
+                - amount
+                - amount_max
+                - units
+                - full_text
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  example: 30
+                amount_max:
+                  type: number
+                  format: float
+                  example: 60
+                units:
+                  type: string
+                  example: ml
+                full_text:
+                  type: string
+                  example: '30-60 ml'
+              type: object
+            oz:
+              required:
+                - amount
+                - amount_max
+                - units
+                - full_text
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  example: 1
+                amount_max:
+                  type: number
+                  format: float
+                  example: 2
+                units:
+                  type: string
+                  example: oz
+                full_text:
+                  type: string
+                  example: '1-2 oz'
+              type: object
+            cl:
+              required:
+                - amount
+                - amount_max
+                - units
+                - full_text
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  example: 3
+                amount_max:
+                  type: number
+                  format: float
+                  example: 6
+                units:
+                  type: string
+                  example: cl
+                full_text:
+                  type: string
+                  example: '3-6 cl'
+              type: object
+          type: object
+          additionalProperties: true
         in_shelf:
           type: boolean
           example: true

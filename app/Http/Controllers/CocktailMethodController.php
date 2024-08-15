@@ -18,6 +18,7 @@ class CocktailMethodController extends Controller
 {
     #[OAT\Get(path: '/cocktail-methods', tags: ['Cocktail method'], summary: 'Show a list of all methods', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\CocktailMethod::class),
@@ -50,6 +51,7 @@ class CocktailMethodController extends Controller
 
     #[OAT\Post(path: '/cocktail-methods', tags: ['Cocktail method'], summary: 'Create a new method', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [

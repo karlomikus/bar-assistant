@@ -18,6 +18,7 @@ class PriceCategoryController extends Controller
 {
     #[OAT\Get(path: '/price-categories', tags: ['Price category'], summary: 'Show a list of price categories', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\PriceCategory::class),
@@ -50,6 +51,7 @@ class PriceCategoryController extends Controller
 
     #[OAT\Post(path: '/price-categories', tags: ['Price category'], summary: 'Create a new price category', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [

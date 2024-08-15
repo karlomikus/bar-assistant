@@ -36,6 +36,7 @@ class CocktailController extends Controller
 {
     #[OAT\Get(path: '/cocktails', tags: ['Cocktails'], summary: 'Show a list of cocktails', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
@@ -110,6 +111,7 @@ class CocktailController extends Controller
 
     #[OAT\Post(path: '/cocktails', tags: ['Cocktails'], summary: 'Create a new cocktail', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -282,10 +284,17 @@ class CocktailController extends Controller
         new OAT\Parameter(name: 'type', in: 'query', description: 'Share format', schema: new OAT\Schema(type: 'string', enum: ['json', 'json+ld', 'yaml', 'yml', 'xml', 'text', 'markdown', 'md'])),
         new OAT\Parameter(name: 'units', in: 'query', description: 'Units of measurement', schema: new OAT\Schema(type: 'string')),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response')]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new OAT\JsonContent(required: ['data'], properties: [
+            new OAT\Property(property: 'data', type: 'object', required: ['type', 'content'], properties: [
+                new OAT\Property(property: 'type', type: 'string', example: 'json'),
+                new OAT\Property(property: 'content', type: 'string', example: '<content in requested format>'),
+            ]),
+        ]),
+    ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function share(Request $request, string $idOrSlug): Response
+    public function share(Request $request, string $idOrSlug): JsonResponse
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
@@ -303,39 +312,42 @@ class CocktailController extends Controller
 
         $data = SchemaDraft2::fromCocktailModel($cocktail, true)->toArray();
 
+        $shareContent = null;
+
         if ($type === 'json') {
-            return new Response(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
+            $shareContent = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
         if ($type === 'json+ld') {
-            return new Response(json_encode($cocktail->asJsonLDSchema(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
+            $shareContent = json_encode($cocktail->asJsonLDSchema(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
         if ($type === 'yaml' || $type === 'yml') {
-            return new Response(Yaml::dump($data, 4, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK), 200, ['Content-Type' => 'application/yaml']);
+            $shareContent = Yaml::dump($data, 4, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
         }
 
         if ($type === 'xml') {
-            return new Response(ArrayToXml::convert($data, 'cocktail', xmlEncoding: 'UTF-8'), 200, ['Content-Type' => 'application/xml']);
+            $shareContent = ArrayToXml::convert($data, 'cocktail', xmlEncoding: 'UTF-8');
         }
 
         if ($type === 'text') {
-            return new Response(
-                view('recipe_text_template', compact('cocktail', 'units'))->render(),
-                200,
-                ['Content-Type' => 'plain/text']
-            );
+            $shareContent = view('recipe_text_template', compact('cocktail', 'units'))->render();
         }
 
         if ($type === 'markdown' || $type === 'md') {
-            return new Response(
-                view('md_recipe_template', compact('cocktail', 'units'))->render(),
-                200,
-                ['Content-Type' => 'text/markdown']
-            );
+            $shareContent = view('md_recipe_template', compact('cocktail', 'units'))->render();
         }
 
-        abort(400, 'Requested type "' . $type . '" not supported');
+        if ($shareContent === null) {
+            abort(400, 'Requested type "' . $type . '" not supported');
+        }
+
+        return response()->json([
+            'data' => [
+                'type' => $type,
+                'content' => $shareContent,
+            ]
+        ]);
     }
 
     public function similar(CocktailRepository $cocktailRepo, Request $request, string $idOrSlug): JsonResource

@@ -22,6 +22,7 @@ class UsersController extends Controller
 {
     #[OAT\Get(path: '/users', tags: ['Users'], summary: 'Show a list of users of a bar', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\User::class),
@@ -44,6 +45,7 @@ class UsersController extends Controller
 
     #[OAT\Get(path: '/users/{id}', tags: ['Users'], summary: 'Show a user', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -68,6 +70,7 @@ class UsersController extends Controller
 
     #[OAT\Post(path: '/users', tags: ['Users'], summary: 'Create a new user', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -116,6 +119,7 @@ class UsersController extends Controller
 
     #[OAT\Put(path: '/users/{id}', tags: ['Users'], summary: 'Update a user', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,

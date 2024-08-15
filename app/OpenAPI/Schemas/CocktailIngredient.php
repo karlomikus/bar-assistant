@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema(required: ['ingredient', 'sort', 'amount', 'units'])]
+#[OAT\Schema(required: ['ingredient', 'sort', 'amount', 'units', 'formatted'])]
 class CocktailIngredient
 {
     #[OAT\Property()]
@@ -26,16 +26,32 @@ class CocktailIngredient
     public array $substitutes = [];
     #[OAT\Property(example: 'Additional notes')]
     public ?string $note = null;
-    // TODO: Key-value pair definition
-    #[OAT\Property(type: 'array', items: new OAT\Items(
+    #[OAT\Property(
         type: 'object',
+        required: ['ml', 'oz', 'cl'],
         properties: [
-            new OAT\Property('amount', type: 'number', format: 'float', example: 30),
-            new OAT\Property('amount_max', type: 'number', format: 'float', example: 60),
-            new OAT\Property('units', type: 'string', example: 'ml'),
-            new OAT\Property('full_text', type: 'string', example: '30-60 ml'),
+            new OAT\Property('ml', type: 'object', required: ['amount', 'amount_max', 'units', 'full_text'], properties: [
+                new OAT\Property('amount', type: 'number', format: 'float', example: 30),
+                new OAT\Property('amount_max', type: 'number', format: 'float', example: 60),
+                new OAT\Property('units', type: 'string', example: 'ml'),
+                new OAT\Property('full_text', type: 'string', example: '30-60 ml'),
+            ]),
+            new OAT\Property('oz', type: 'object', required: ['amount', 'amount_max', 'units', 'full_text'], properties: [
+                new OAT\Property('amount', type: 'number', format: 'float', example: 1),
+                new OAT\Property('amount_max', type: 'number', format: 'float', example: 2),
+                new OAT\Property('units', type: 'string', example: 'oz'),
+                new OAT\Property('full_text', type: 'string', example: '1-2 oz'),
+            ]),
+            new OAT\Property('cl', type: 'object', required: ['amount', 'amount_max', 'units', 'full_text'], properties: [
+                new OAT\Property('amount', type: 'number', format: 'float', example: 3),
+                new OAT\Property('amount_max', type: 'number', format: 'float', example: 6),
+                new OAT\Property('units', type: 'string', example: 'cl'),
+                new OAT\Property('full_text', type: 'string', example: '3-6 cl'),
+            ]),
         ],
-    ), description: 'Amounts in different units, converted if possible')]
+        additionalProperties: true,
+        description: 'Amounts in different units, converted if possible'
+    )]
     public array $formatted = [];
     #[OAT\Property(property: 'in_shelf', example: true)]
     public bool $inShelf = false;

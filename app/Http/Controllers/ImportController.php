@@ -25,6 +25,7 @@ class ImportController extends Controller
 {
     #[OAT\Post(path: '/import/cocktail', tags: ['Import'], summary: 'Import from recipe schema', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -54,6 +55,7 @@ class ImportController extends Controller
 
     #[OAT\Post(path: '/import/scrape', tags: ['Import'], summary: 'Scrape a recipe', description: 'Try to scrape a recipe from a website. Most of the well known recipe websites should work. Data returned is a valid JSON schema that you can import using import cocktail endpoint.', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [

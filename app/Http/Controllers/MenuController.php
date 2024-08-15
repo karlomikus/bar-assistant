@@ -17,6 +17,7 @@ class MenuController extends Controller
 {
     #[OAT\Get(path: '/menu', tags: ['Menu'], summary: 'Show menu', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Menu::class),
@@ -62,6 +63,7 @@ class MenuController extends Controller
 
     #[OAT\Post(path: '/menu', tags: ['Menu'], summary: 'Update menu', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [

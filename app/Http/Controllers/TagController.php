@@ -20,6 +20,7 @@ class TagController extends Controller
 {
     #[OAT\Get(path: '/tags', tags: ['Tag'], summary: 'Show a list of all tags', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Tag::class),
@@ -52,6 +53,7 @@ class TagController extends Controller
 
     #[OAT\Post(path: '/tags', tags: ['Tag'], summary: 'Create a new tag', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [

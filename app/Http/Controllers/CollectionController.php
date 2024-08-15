@@ -22,6 +22,7 @@ class CollectionController extends Controller
 {
     #[OAT\Get(path: '/collections', tags: ['Collections'], summary: 'Show a list of collections', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
             new OAT\Property(property: 'id', type: 'integer'),
             new OAT\Property(property: 'name', type: 'string'),
@@ -87,6 +88,7 @@ class CollectionController extends Controller
 
     #[OAT\Post(path: '/collections', tags: ['Collections'], summary: 'Create a new collection', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [

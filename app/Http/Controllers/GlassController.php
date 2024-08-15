@@ -19,6 +19,7 @@ class GlassController extends Controller
 {
     #[OAT\Get(path: '/glasses', tags: ['Glasses'], summary: 'Show a list of glass types', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
             new OAT\Property(property: 'name', type: 'string'),
         ])),
@@ -55,6 +56,7 @@ class GlassController extends Controller
 
     #[OAT\Post(path: '/glasses', tags: ['Glasses'], summary: 'Create a new glass', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
