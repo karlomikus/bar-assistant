@@ -99,9 +99,7 @@ class CocktailController extends Controller
             ->orWhere('id', $idOrSlug)
             ->withRatings($request->user()->id)
             ->firstOrFail()
-            ->load(['ingredients.ingredient', 'images' => function ($query) {
-                $query->orderBy('sort');
-            }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings']);
+            ->load(['ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings']);
 
         if ($request->user()->cannot('show', $cocktail)) {
             abort(403);
@@ -279,6 +277,14 @@ class CocktailController extends Controller
         return new Response(null, 204);
     }
 
+    #[OAT\Get(path: '/cocktails/{id}/share', tags: ['Cocktails'], summary: 'Share a cocktail', parameters: [
+        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
+        new OAT\Parameter(name: 'type', in: 'query', description: 'Share format', schema: new OAT\Schema(type: 'string', enum: ['json', 'json+ld', 'yaml', 'yml', 'xml', 'text', 'markdown', 'md'])),
+        new OAT\Parameter(name: 'units', in: 'query', description: 'Units of measurement', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function share(Request $request, string $idOrSlug): Response
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
@@ -345,6 +351,15 @@ class CocktailController extends Controller
         return CocktailResource::collection($relatedCocktails);
     }
 
+    #[OAT\Post(path: '/cocktails/{id}/copy', tags: ['Cocktails'], summary: 'Copy cocktail', parameters: [
+        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[OAT\Response(response: 201, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
+    ], headers: [
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function copy(string $idOrSlug, CocktailService $cocktailService, ImageService $imageservice, Request $request): JsonResponse
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)

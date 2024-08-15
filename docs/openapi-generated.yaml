@@ -953,6 +953,96 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/cocktails/{id}/share':
+    get:
+      tags:
+        - Cocktails
+      summary: 'Share a cocktail'
+      operationId: c2af4839cdc102afb67b7be674895e8c
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id or slug of a resource'
+          required: true
+          schema:
+            type: string
+        -
+          name: type
+          in: query
+          description: 'Share format'
+          schema:
+            type: string
+            enum:
+              - json
+              - json+ld
+              - yaml
+              - yml
+              - xml
+              - text
+              - markdown
+              - md
+        -
+          name: units
+          in: query
+          description: 'Units of measurement'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/cocktails/{id}/copy':
+    post:
+      tags:
+        - Cocktails
+      summary: 'Copy cocktail'
+      operationId: d7c826954ef1111d8a897c62e27df861
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id or slug of a resource'
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: 'Successful response'
+          headers:
+            Location:
+              description: 'URL of the new resource'
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/Cocktail' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /cocktail-methods:
     get:
       tags:
@@ -3303,7 +3393,7 @@ paths:
                   type: integer
               type: object
       responses:
-        '201':
+        '204':
           description: 'Successful response'
         '404':
           description: 'Resource record not found.'
@@ -4617,6 +4707,10 @@ components:
                 example: 'Tag name'
             type: object
         rating:
+          required:
+            - user
+            - average
+            - total_votes
           properties:
             user:
               description: "Current user's rating"
@@ -4694,6 +4788,11 @@ components:
         in_shelf:
           type: boolean
         access:
+          required:
+            - can_edit
+            - can_delete
+            - can_rate
+            - can_add_note
           properties:
             can_edit:
               type: boolean
@@ -4709,6 +4808,9 @@ components:
               example: true
           type: object
         navigation:
+          required:
+            - prev
+            - next
           properties:
             prev:
               type:
@@ -4840,7 +4942,14 @@ components:
           example: 40
       type: object
     CocktailIngredient:
+      required:
+        - ingredient
+        - sort
+        - amount
+        - units
       properties:
+        ingredient:
+          $ref: '#/components/schemas/IngredientBasic'
         sort:
           type: integer
           example: 0
@@ -4860,15 +4969,6 @@ components:
         optional:
           type: boolean
           example: false
-        ingredient_id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: Vodka
-        ingredient_slug:
-          type: string
-          example: vodka-1
         substitutes:
           type: array
           items:
@@ -5371,6 +5471,10 @@ components:
       type: object
     IngredientBasic:
       description: 'Minimal ingredient information'
+      required:
+        - id
+        - slug
+        - name
       properties:
         id:
           type: integer
@@ -5838,6 +5942,9 @@ components:
           example: password
       type: object
     ShoppingList:
+      required:
+        - ingredient
+        - quantity
       properties:
         ingredient:
           $ref: '#/components/schemas/IngredientBasic'

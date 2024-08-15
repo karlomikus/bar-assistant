@@ -23,7 +23,7 @@ class RatingController extends Controller
             ]),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response')]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotFoundResponse]
     #[BAO\NotAuthorizedResponse]
     public function rateCocktail(RatingRequest $request, int $id): Response
@@ -41,7 +41,7 @@ class RatingController extends Controller
 
         $cocktail->searchable();
 
-        return new Response(null, 201);
+        return new Response(null, 204);
     }
 
     #[OAT\Delete(path: '/cocktails/{id}/ratings', tags: ['Ratings'], summary: 'Delete current user\'s cocktail rating', parameters: [
