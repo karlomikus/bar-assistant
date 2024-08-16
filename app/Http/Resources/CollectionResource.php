@@ -28,7 +28,7 @@ class CollectionResource extends JsonResource
             'created_user' => $this->whenLoaded('barMembership', function () {
                 return new UserBasicResource($this->barMembership->user);
             }),
-            'cocktails' => CocktailBasicResource::collection($this->cocktails->sortBy('name')),
+            'cocktails' => CocktailBasicResource::collection($this->whenLoaded('cocktails')),
         ];
     }
 }

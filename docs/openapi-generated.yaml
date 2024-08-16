@@ -5383,16 +5383,15 @@ components:
           example: true
       type: object
     CocktailIngredientSubstitute:
+      required:
+        - ingredient
+        - amount
+        - amount_max
+        - units
+        - in_shelf
       properties:
-        id:
-          type: integer
-          example: 1
-        slug:
-          type: string
-          example: vodka
-        name:
-          type: string
-          example: Vodka
+        ingredient:
+          $ref: '#/components/schemas/IngredientBasic'
         amount:
           type:
             - number
@@ -6046,7 +6045,7 @@ components:
               cocktails:
                 type: array
                 items:
-                  properties: { id: { type: integer, example: 1 }, slug: { type: string, example: cocktail-name-1 }, sort: { type: integer, example: 1 }, price: { type: string, example: 'EUR 23.85' }, currency: { type: string, example: EUR }, name: { type: string, example: 'Cocktail name' }, short_ingredients: { type: array, items: { type: string, example: Vodka } } }
+                  properties: { id: { type: integer, example: 1 }, slug: { type: string, example: cocktail-name-1 }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, currency: { type: string, example: EUR }, name: { type: string, example: 'Cocktail name' }, short_ingredients: { type: array, items: { type: string, example: Vodka } } }
                   type: object
             type: object
       type: object
@@ -6202,10 +6201,10 @@ components:
           example: 1339
         formatted_price:
           type: string
-          example: 'USD 13.39'
+          example: 'EUR 13.39'
         currency:
           type: string
-          example: USD
+          example: EUR
       type: object
     PriceCategory:
       required:

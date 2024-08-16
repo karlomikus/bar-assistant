@@ -35,7 +35,6 @@ class MenuPublicResource extends JsonResource
                             'sort' => $menuCocktail->sort,
                             'price' => new PriceResource(new Price($menuCocktail->getMoney())),
                             'public_id' => $menuCocktail->cocktail->public_id,
-                            'slug' => $menuCocktail->cocktail->slug,
                             'name' => $menuCocktail->cocktail->name,
                             'short_ingredients' => $menuCocktail->cocktail->getIngredientNames(),
                             'image' => $menuCocktail->cocktail->getMainImageUrl(),

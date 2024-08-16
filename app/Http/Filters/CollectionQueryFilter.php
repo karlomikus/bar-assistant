@@ -24,7 +24,7 @@ final class CollectionQueryFilter extends QueryBuilder
             ])
             ->defaultSort('name')
             ->allowedSorts('name', 'created_at')
-            ->with('cocktails')
+            ->allowedIncludes('cocktails')
             ->where('bar_membership_id', $barMembership->id);
     }
 }

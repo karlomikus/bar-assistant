@@ -28,6 +28,7 @@ class CollectionController extends Controller
             new OAT\Property(property: 'name', type: 'string'),
             new OAT\Property(property: 'cocktail_id', type: 'string'),
         ])),
+        new OAT\Parameter(name: 'include', in: 'query', description: 'Include additional relationships. Available relations: `cocktails`.', schema: new OAT\Schema(type: 'string')),
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`.', schema: new OAT\Schema(type: 'string')),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -77,7 +78,7 @@ class CollectionController extends Controller
     #[BAO\NotFoundResponse]
     public function show(Request $request, int $id): JsonResource
     {
-        $collection = CocktailCollection::findOrFail($id)->load('barMembership');
+        $collection = CocktailCollection::findOrFail($id)->load('barMembership', 'cocktails');
 
         if ($request->user()->cannot('show', $collection)) {
             abort(403);

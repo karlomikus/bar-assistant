@@ -20,9 +20,7 @@ class CocktailIngredientSubstituteResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->ingredient_id,
-            'slug' => $this->ingredient->slug,
-            'name' => $this->ingredient->name,
+            'ingredient' => new IngredientBasicResource($this->ingredient),
             'amount' => $this->amount,
             'amount_max' => $this->amount_max,
             'units' => $this->units,
