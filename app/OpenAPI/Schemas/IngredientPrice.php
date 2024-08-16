@@ -11,12 +11,8 @@ class IngredientPrice
 {
     #[OAT\Property(property: 'price_category')]
     public PriceCategory $priceCategory;
-    #[OAT\Property(property: 'price', example: 'EUR 30.00')]
-    public string $price;
-    #[OAT\Property(property: 'price_minor', example: 3000)]
-    public int $priceMinor;
-    #[OAT\Property(property: 'price_formatted', example: '€30.00')]
-    public string $priceFormatted;
+    #[OAT\Property()]
+    public Price $price;
     #[OAT\Property(example: 30.0)]
     public float $amount;
     #[OAT\Property(example: 'ml')]

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
+use Kami\Cocktail\Models\Price;
 use Kami\Cocktail\Models\MenuCocktail;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -32,13 +33,9 @@ class MenuPublicResource extends JsonResource
                     'cocktails' => $categoryCocktails->map(function (MenuCocktail $menuCocktail) {
                         return [
                             'sort' => $menuCocktail->sort,
-                            'price' => [
-                                'full' => $menuCocktail->price,
-                                'formatted' => number_format($menuCocktail->price / 100, 2),
-                            ],
+                            'price' => new PriceResource(new Price($menuCocktail->getMoney())),
                             'public_id' => $menuCocktail->cocktail->public_id,
                             'slug' => $menuCocktail->cocktail->slug,
-                            'currency' => $menuCocktail->currency,
                             'name' => $menuCocktail->cocktail->name,
                             'short_ingredients' => $menuCocktail->cocktail->getIngredientNames(),
                             'image' => $menuCocktail->cocktail->getMainImageUrl(),

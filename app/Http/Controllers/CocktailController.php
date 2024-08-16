@@ -124,6 +124,7 @@ class CocktailController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
+    #[BAO\ValidationFailedResponse]
     public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
         Validator::make($request->post('ingredients', []), [
@@ -165,6 +166,7 @@ class CocktailController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
+    #[BAO\ValidationFailedResponse]
     public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): JsonResource
     {
         $cocktail = Cocktail::findOrFail($id);

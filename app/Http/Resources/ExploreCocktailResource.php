@@ -21,10 +21,7 @@ class ExploreCocktailResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'bar' => [
-                'name' => $this->bar->name,
-                'subtitle' => $this->bar->subtitle,
-            ],
+            'bar' => new BarBasicResource($this->bar),
             'name' => $this->name,
             'instructions' => e($this->instructions),
             'garnish' => e($this->garnish),

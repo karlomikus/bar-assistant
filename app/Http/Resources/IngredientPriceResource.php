@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
+use Kami\Cocktail\Models\Price;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -21,10 +22,7 @@ class IngredientPriceResource extends JsonResource
     {
         return [
             'price_category' => new PriceCategoryResource($this->priceCategory),
-            'price' => $this->getMoney()->getAmount(),
-            'price_minor' => $this->getMoney()->getMinorAmount(),
-            'price_formatted' => (string) $this->getMoney(),
-            'amount' => $this->amount,
+            'price' => new PriceResource(new Price($this->getMoney())),
             'units' => $this->units,
             'description' => $this->description,
             'created_at' => $this->created_at->toAtomString(),

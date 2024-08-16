@@ -9,11 +9,8 @@ use OpenApi\Attributes as OAT;
 #[OAT\Schema()]
 class CocktailExplore
 {
-    #[OAT\Property(type: 'object', properties: [
-        new OAT\Property(type: 'string', property: 'name', example: 'Bar name'),
-        new OAT\Property(type: 'string', property: 'subtitle', example: 'Bar subtitle'),
-    ])]
-    public array $bar;
+    #[OAT\Property()]
+    public BarBasic $bar;
 
     #[OAT\Property(example: 'Cocktail name')]
     public string $name;

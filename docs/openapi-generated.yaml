@@ -228,6 +228,12 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
   '/bars/{id}':
     get:
       tags:
@@ -311,6 +317,12 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
     delete:
       tags:
         - Bars
@@ -742,6 +754,12 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
   '/cocktails/{id}':
     get:
       tags:
@@ -825,6 +843,12 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
     delete:
       tags:
         - Cocktails
@@ -1559,20 +1583,21 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  '/explore/cocktails/{ulid}':
+  '/explore/cocktails/{public_id}':
     get:
       tags:
         - Explore
       summary: 'Show a public cocktail'
-      operationId: 98ae5704f462b0b0647c27532813284b
+      operationId: 83841be3da52f7694d8382c5f5b13d8e
       parameters:
         -
-          name: ulid
+          name: public_id
           in: path
-          description: 'Public cocktail ULID'
+          description: 'Public cocktail id'
           required: true
           schema:
             type: string
+            format: ulid
       responses:
         '200':
           description: 'Successful response'
@@ -4854,6 +4879,26 @@ components:
                 example: true
             type: object
       type: object
+    BarBasic:
+      required:
+        - id
+        - slug
+        - name
+        - subtitle
+      properties:
+        id:
+          type: integer
+          example: 1
+        slug:
+          type: string
+          example: bar-name-1
+        name:
+          type: string
+          example: 'Bar name'
+        subtitle:
+          type: string
+          example: 'Bar subtitle'
+      type: object
     BarMembership:
       properties:
         user_id:
@@ -5102,6 +5147,10 @@ components:
       type: object
     CocktailBasic:
       description: 'Minimal cocktail information'
+      required:
+        - id
+        - slug
+        - name
       properties:
         id:
           type: integer
@@ -5116,14 +5165,7 @@ components:
     CocktailExplore:
       properties:
         bar:
-          properties:
-            name:
-              type: string
-              example: 'Bar name'
-            subtitle:
-              type: string
-              example: 'Bar subtitle'
-          type: object
+          $ref: '#/components/schemas/BarBasic'
         name:
           type: string
           example: 'Cocktail name'
@@ -5858,14 +5900,7 @@ components:
         price_category:
           $ref: '#/components/schemas/PriceCategory'
         price:
-          type: string
-          example: 'EUR 30.00'
-        price_minor:
-          type: integer
-          example: 3000
-        price_formatted:
-          type: string
-          example: €30.00
+          $ref: '#/components/schemas/Price'
         amount:
           type: number
           format: float
@@ -6039,7 +6074,7 @@ components:
               cocktails:
                 type: array
                 items:
-                  properties: { sort: { type: integer, example: 1 }, price: { properties: { full: { type: integer, example: 2385 }, formatted: { type: string, example: 'EUR 23.85' } }, type: object }, public_id: { type: string, example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, slug: { type: string, example: cocktail-name-1 }, currency: { type: string, example: EUR }, name: { type: string, example: 'Cocktail name' }, short_ingredients: { type: array, items: { type: string, example: Vodka } }, image: { type: string, example: 'https://example.com/image.jpg' } }
+                  properties: { sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, public_id: { type: string, example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, slug: { type: string, example: cocktail-name-1 }, currency: { type: string, example: EUR }, name: { type: string, example: 'Cocktail name' }, short_ingredients: { type: array, items: { type: string, example: Vodka } }, image: { type: string, example: 'https://example.com/image.jpg' } }
                   type: object
             type: object
       type: object
@@ -6150,6 +6185,27 @@ components:
             - string
             - 'null'
           example: '2023-05-14T21:23:40.000000Z'
+      type: object
+    Price:
+      required:
+        - price
+        - price_minor
+        - formatted_price
+        - currency
+      properties:
+        price:
+          type: number
+          format: float
+          example: 13.39
+        price_minor:
+          type: integer
+          example: 1339
+        formatted_price:
+          type: string
+          example: 'USD 13.39'
+        currency:
+          type: string
+          example: USD
       type: object
     PriceCategory:
       required:
@@ -6417,6 +6473,21 @@ components:
             - string
             - 'null'
           example: 'Used to shake ingredients'
+      type: object
+    ValidationError:
+      required:
+        - errors
+        - message
+      properties:
+        message:
+          type: string
+          example: 'The cocktail name must be a string. (and 2 more errors)'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
       type: object
   securitySchemes:
     user_token:

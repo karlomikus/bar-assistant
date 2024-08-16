@@ -51,7 +51,7 @@ class BarExportRecipes extends Command
 
         $this->output->info(sprintf('Starting recipe export from bar: %s - "%s"', $bar->id, $bar->name));
 
-        $filename = $this->exporter->process($barId, null, $type);
+        $filename = $this->exporter->process($barId, null);
 
         $this->output->success('Data exported to file: ' . $filename);
 

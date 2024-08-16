@@ -50,11 +50,14 @@ class Menu extends Model
                 continue;
             }
 
-            $price = Money::of(
-                $cocktailMenuItem['price'],
-                $cocktailMenuItem['currency'],
-                roundingMode: RoundingMode::UP
-            )->getMinorAmount()->toInt();
+            $price = 0;
+            if ($cocktailMenuItem['price'] ?? false) {
+                $price = Money::of(
+                    $cocktailMenuItem['price'],
+                    $cocktailMenuItem['currency'],
+                    roundingMode: RoundingMode::UP
+                )->getMinorAmount()->toInt();
+            }
 
             $currentMenuItems[] = $cocktailMenuItem['cocktail_id'];
             $this->menuCocktails()->updateOrCreate([
