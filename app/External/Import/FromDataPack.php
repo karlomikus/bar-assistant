@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\External\Import;
 
+use Generator;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Tag;
@@ -18,8 +19,8 @@ use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\BarStatusEnum;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use Kami\Cocktail\External\Cocktail as CocktailExternal;
-use Kami\Cocktail\External\IngredientWithImages as IngredientExternal;
+use Kami\Cocktail\External\DataPack\Cocktail as CocktailExternal;
+use Kami\Cocktail\External\DataPack\IngredientFull as IngredientExternal;
 
 class FromDataPack
 {
@@ -100,11 +101,6 @@ class FromDataPack
 
     private function importIngredients(FilesystemAdapter $dataDisk, Bar $bar, User $user): void
     {
-        $ingredients = [];
-        foreach ($dataDisk->files('ingredients') as $ingredientFile) {
-            $ingredients[] = json_decode(file_get_contents($dataDisk->path($ingredientFile)), true);
-        }
-
         $categories = DB::table('ingredient_categories')->select('id', 'name')->where('bar_id', $bar->id)->get();
         $existingIngredients = DB::table('ingredients')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(function ($ingredient) {
             return Str::slug($ingredient->name);
@@ -113,11 +109,12 @@ class FromDataPack
         $ingredientsToInsert = [];
         $parentIngredientsToInsert = [];
         $imagesToInsert = [];
-        $barImagesDir = 'ingredients/' . $bar->id . '/';
+        $barImagesDir = $bar->getIngredientsDirectory();
         $this->uploadsDisk->makeDirectory($barImagesDir);
 
         DB::beginTransaction();
-        foreach ($ingredients as $externalIngredient) {
+        foreach ($this->getDataFromDir('ingredients', $dataDisk) as $fromYield) {
+            [$externalIngredient, $filePath] = $fromYield;
             $externalIngredient = IngredientExternal::fromArray($externalIngredient);
             if ($existingIngredients->has($externalIngredient->id)) {
                 continue;
@@ -145,7 +142,7 @@ class FromDataPack
 
             // For performance, manually copy the files and create image references
             foreach ($externalIngredient->images as $image) {
-                $baseSrcImagePath = 'ingredients/images/' . $image->source;
+                $baseSrcImagePath = $filePath . $image->getLocalFilePath();
                 $fileExtension = File::extension($dataDisk->path($baseSrcImagePath));
                 $targetImagePath = $barImagesDir . $slug . '_' . Str::random(6) . '.' . $fileExtension;
 
@@ -192,11 +189,6 @@ class FromDataPack
 
     private function importBaseCocktails(FilesystemAdapter $dataDisk, Bar $bar, User $user): void
     {
-        $cocktails = [];
-        foreach ($dataDisk->files('cocktails') as $cocktailFile) {
-            $cocktails[] = json_decode(file_get_contents($dataDisk->path($cocktailFile)), true);
-        }
-
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
@@ -211,7 +203,9 @@ class FromDataPack
         $this->uploadsDisk->makeDirectory($barImagesDir);
 
         DB::beginTransaction();
-        foreach ($cocktails as $cocktail) {
+        foreach ($this->getDataFromDir('cocktails', $dataDisk) as $fromYield) {
+            [$cocktail, $filePath] = $fromYield;
+
             $externalCocktail = CocktailExternal::fromArray($cocktail);
 
             if ($existingCocktails->has($externalCocktail->id)) {
@@ -299,7 +293,7 @@ class FromDataPack
 
             // For performance, manually copy the files and create image references
             foreach ($externalCocktail->images as $image) {
-                $baseSrcImagePath = 'cocktails/images/' . $image->source;
+                $baseSrcImagePath = $filePath . $image->getLocalFilePath();
                 $fileExtension = File::extension($dataDisk->path($baseSrcImagePath));
                 $targetImagePath = $barImagesDir . $slug . '_' . Str::random(6) . '.' . $fileExtension;
 
@@ -335,5 +329,15 @@ class FromDataPack
             $dataDisk->path($baseSrcImagePath),
             $this->uploadsDisk->path($targetImagePath)
         );
+    }
+
+    private function getDataFromDir(string $dir, FilesystemAdapter $dataDisk): Generator
+    {
+        foreach ($dataDisk->directories($dir) as $diskDirPath) {
+            yield [
+                json_decode(file_get_contents($dataDisk->path($diskDirPath . '/data.json')), true),
+                $diskDirPath,
+            ];
+        }
     }
 }

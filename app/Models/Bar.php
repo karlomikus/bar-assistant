@@ -156,4 +156,9 @@ class Bar extends Model
     {
         return $this->status !== BarStatusEnum::Deactivated->value;
     }
+
+    public function getIngredientsDirectory(): string
+    {
+        return 'ingredients/' . $this->id . '/';
+    }
 }

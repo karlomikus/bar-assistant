@@ -19,9 +19,6 @@ class CocktailResource extends JsonResource
      */
     public function toArray($request)
     {
-        // TODO: Rename all this...
-        $isSingleCocktail = (bool) $request->get('navigation', false);
-
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -76,8 +73,8 @@ class CocktailResource extends JsonResource
             }),
             'navigation' => $this->when(true, function () {
                 return [
-                    'prev' => $this->getPrevCocktail()?->slug,
-                    'next' => $this->getNextCocktail()?->slug,
+                    'prev' => new CocktailBasicResource($this->getPrevCocktail()),
+                    'next' => new CocktailBasicResource($this->getNextCocktail()),
                 ];
             })
         ];

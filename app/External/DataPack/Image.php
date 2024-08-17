@@ -29,10 +29,8 @@ readonly class Image implements JsonSerializable
 
     public static function fromArray(array $sourceArray): self
     {
-        $source = $sourceArray['uri'] ?? '';
-
         return new self(
-            $source,
+            $sourceArray['uri'] ?? '',
             $sourceArray['copyright'] ?? '',
             $sourceArray['sort'] ?? 0,
             $sourceArray['placeholder_hash'] ?? null,
@@ -47,6 +45,17 @@ readonly class Image implements JsonSerializable
             'placeholder_hash' => $this->placeholderHash,
             'copyright' => $this->copyright,
         ];
+    }
+
+    public function getLocalFilePath(): string
+    {
+        $parts = parse_url($this->uri);
+
+        if ($parts['scheme'] === 'file') {
+            return $parts['path'] ?? '';
+        }
+
+        return $this->uri;
     }
 
     public function jsonSerialize(): array

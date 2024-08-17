@@ -10,6 +10,7 @@ use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Kami\Cocktail\Repository\CocktailRepository;
+use Spatie\QueryBuilder\AllowedInclude;
 
 /**
  * @mixin \Kami\Cocktail\Models\Cocktail
@@ -176,7 +177,19 @@ final class CocktailQueryFilter extends QueryBuilder
                         ->orderBy('cf.updated_at', $direction);
                 }),
             ])
-            ->allowedIncludes(['glass', 'method', 'user', 'navigation', 'utensils', 'createdUser', 'updatedUser', 'images', 'tags', 'ingredients.ingredient', 'ratings'])
+            ->allowedIncludes([
+                'glass',
+                'method',
+                'user',
+                'utensils',
+                'createdUser',
+                'updatedUser',
+                'images',
+                'tags',
+                'ingredients.ingredient',
+                'ratings',
+                AllowedInclude::callback('navigation', fn ($q) => $q),
+            ])
             ->selectRaw('cocktails.*, COUNT(ci.cocktail_id) AS total_ingredients, COUNT(ci.ingredient_id) - COUNT(ui.ingredient_id) AS missing_ingredients')
             ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')
             ->leftJoin('user_ingredients AS ui', function ($query) use ($barMembership) {

@@ -11,10 +11,10 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\External\Draft2\Schema;
 use Kami\Cocktail\External\ProcessesBarExport;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
+use Kami\Cocktail\External\DataPack\Cocktail as CocktailExternal;
 use Kami\Cocktail\External\DataPack\IngredientFull as IngredientExternal;
 
 /**
@@ -75,7 +75,7 @@ class ToDataPack implements ProcessesBarExport
 
         /** @var Cocktail $cocktail */
         foreach ($cocktails as $cocktail) {
-            $data = Schema::fromCocktailModel($cocktail);
+            $data = CocktailExternal::fromModel($cocktail);
 
             /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($cocktail->images as $img) {
@@ -84,7 +84,7 @@ class ToDataPack implements ProcessesBarExport
 
             $cocktailExportData = $this->prepareDataOutput($data);
 
-            $zip->addFromString('cocktails/' . $cocktail->getExternalId() . '/recipe.json', $cocktailExportData);
+            $zip->addFromString('cocktails/' . $cocktail->getExternalId() . '/data.json', $cocktailExportData);
         }
     }
 
@@ -105,7 +105,7 @@ class ToDataPack implements ProcessesBarExport
 
             $ingredientExportData = $this->prepareDataOutput($data);
 
-            $zip->addFromString('ingredients/' . $ingredient->getExternalId() . '/ingredient.json', $ingredientExportData);
+            $zip->addFromString('ingredients/' . $ingredient->getExternalId() . '/data.json', $ingredientExportData);
         }
     }
 
