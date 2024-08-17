@@ -6,6 +6,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
         "intervention/image": "^3.5.1",
+        "kalnoy/nestedset": "^6.0",
         "karlomikus/recipe-utils": "^0.12.0",
         "laravel/cashier-paddle": "^2.0",
         "laravel/framework": "^11.0",
