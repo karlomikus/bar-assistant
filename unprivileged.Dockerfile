@@ -29,7 +29,7 @@ RUN docker-php-serversideup-s6-init
 
 USER www-data
 
-ADD --chown=www-data:www-data https://github.com/karlomikus/bar-assistant.git .
+ADD --chown=www-data:www-data . .
 
 ADD --chown=www-data:www-data https://github.com/bar-assistant/data.git ./resources/data
 
