@@ -1,11 +1,13 @@
 # v4.0.0
 This is a new major release. Here's a quick summary of the more interesting changes:
 
+- Docker image is now run as an unprivileged user by default
 - Improved API endpoint naming and structure
 - Added Bar Assistant JSON schema specification for cocktail recipes
+- Improved exporting and importing of data
 
 ## Breaking changes
-- [TODO] Minimal PHP version is now 8.3
+- Minimal PHP version is now 8.3
 - Removed importing cocktails from collections
 - Removed importing data from Bar Assistant v2
 - List all cocktails and ingredients endpoints don't have default includes anymore

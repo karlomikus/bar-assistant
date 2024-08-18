@@ -1,15 +1,8 @@
-FROM serversideup/php:8.3-fpm-nginx
+FROM serversideup/php:8.3-fpm-nginx as php-base
 
 ENV S6_CMD_WAIT_FOR_SERVICES=1
 ENV PHP_OPCACHE_ENABLE=1
 ENV COMPOSER_NO_DEV=1
-
-ARG USER_ID=1000
-ARG GROUP_ID=1000
-
-COPY --chmod=755 ./resources/docker/dist/run-new.sh /etc/entrypoint.d/99-bass.sh
-
-COPY ./resources/docker/dist/php.ini /usr/local/etc/php/conf.d/zzz-bass-php.ini
 
 USER root
 
@@ -22,14 +15,18 @@ RUN apt update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN docker-php-serversideup-set-id www-data $USER_ID:$GROUP_ID && \
-    docker-php-serversideup-set-file-permissions --owner $USER_ID:$GROUP_ID --service nginx
-
-RUN docker-php-serversideup-s6-init
-
 USER www-data
 
-ADD --chown=www-data:www-data . .
+FROM php-base as dist
+
+ARG BAR_ASSISTANT_VERSION
+ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-develop}
+
+COPY --chmod=755 ./resources/docker/dist/run-new.sh /etc/entrypoint.d/99-bass.sh
+
+COPY ./resources/docker/dist/php.ini /usr/local/etc/php/conf.d/zzz-bass-php.ini
+
+COPY --chown=www-data:www-data . .
 
 ADD --chown=www-data:www-data https://github.com/bar-assistant/data.git ./resources/data
 
@@ -42,3 +39,21 @@ RUN composer install --optimize-autoloader --no-dev \
     && php artisan route:cache
 
 VOLUME ["/var/www/html/storage/bar-assistant"]
+
+FROM php-base as dev
+
+USER root
+
+ARG USER_ID=1000
+ARG GROUP_ID=1000
+
+RUN install-php-extensions xdebug
+
+# RUN echo "* * * * * developer cd /var/www/cocktails && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontab
+
+RUN docker-php-serversideup-set-id www-data $USER_ID:$GROUP_ID && \
+    docker-php-serversideup-set-file-permissions --owner $USER_ID:$GROUP_ID --service nginx
+
+RUN docker-php-serversideup-s6-init
+
+USER www-data
