@@ -10,7 +10,7 @@ use Kami\Cocktail\External\Export\ToDataPack;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\Attributes\WithoutRelations;
-use Kami\Cocktail\External\Export\ToSchemaDraft2;
+use Kami\Cocktail\External\Export\ToRecipeType;
 use Kami\Cocktail\External\ExportTypeEnum;
 
 class StartTypedExport implements ShouldQueue
@@ -32,10 +32,8 @@ class StartTypedExport implements ShouldQueue
     {
         if ($this->type === ExportTypeEnum::Datapack) {
             resolve(ToDataPack::class)->process($this->barId, $this->export->filename);
-        }
-
-        if ($this->type === ExportTypeEnum::Schema) {
-            resolve(ToSchemaDraft2::class)->process($this->barId, $this->export->filename);
+        } else {
+            resolve(ToRecipeType::class)->process($this->barId, $this->export->filename, $this->type);
         }
 
 

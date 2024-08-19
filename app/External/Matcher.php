@@ -6,7 +6,6 @@ namespace Kami\Cocktail\External;
 
 use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\Models\CocktailMethod;
-use Kami\Cocktail\External\Draft2\Ingredient;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;
@@ -22,11 +21,11 @@ class Matcher
     /** @var array<string, int> */
     private array $matchedMethods = [];
 
-    public function __construct(private readonly int $userId, private readonly int $barId, private readonly IngredientService $ingredientService)
+    public function __construct(private readonly int $barId, private readonly IngredientService $ingredientService)
     {
     }
 
-    public function matchOrCreateIngredientByName(Ingredient $ingredient): int
+    public function matchOrCreateIngredientByName(IngredientDTO $ingredient): int
     {
         $matchName = mb_strtolower($ingredient->name, 'UTF-8');
 
@@ -41,15 +40,7 @@ class Matcher
             return $existingIngredient->id;
         }
 
-        $newIngredient = $this->ingredientService->createIngredient(new IngredientDTO(
-            $this->barId,
-            $ingredient->name,
-            $this->userId,
-            null,
-            $ingredient->strength,
-            $ingredient->description,
-            $ingredient->origin
-        ));
+        $newIngredient = $this->ingredientService->createIngredient($ingredient);
 
         $this->matchedIngredients[$matchName] = $newIngredient->id;
 

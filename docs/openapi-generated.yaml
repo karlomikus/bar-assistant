@@ -1321,6 +1321,12 @@ paths:
                 type: string
             type: object
         -
+          name: include
+          in: query
+          description: 'Include additional relationships. Available relations: `cocktails`.'
+          schema:
+            type: string
+        -
           name: sort
           in: query
           description: 'Sort by attributes. Available attributes: `name`, `created_at`.'
@@ -2309,12 +2315,12 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /import/datapack:
+  /import/file:
     post:
       tags:
         - Import
-      summary: 'Import from datapack'
-      operationId: 21099c1e89b22f8b85568fa26df220e8
+      summary: 'Import from zip file'
+      operationId: 42c4c4c1eae2d17b7e6681af1f5a6c21
       requestBody:
         required: true
         content:
@@ -2324,6 +2330,7 @@ paths:
                 - file
               properties:
                 file:
+                  description: 'The zip file containing the data. Max 1GB.'
                   type: string
                   format: binary
                 bar_id:

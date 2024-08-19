@@ -66,7 +66,7 @@ class SetupMeilisearch extends Command
         }
 
         $this->line('Clearing existing search tokens from bars...');
-        DB::transaction(function() {
+        DB::transaction(function () {
             DB::table('bars')->update(['search_token' => null]);
         });
 

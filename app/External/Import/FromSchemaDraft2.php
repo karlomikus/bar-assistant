@@ -16,6 +16,7 @@ use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\DTO\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
+use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;
 use Kami\Cocktail\DTO\Cocktail\Ingredient as CocktailIngredientDTO;
 
 class FromSchemaDraft2
@@ -34,7 +35,8 @@ class FromSchemaDraft2
         array $sourceData,
         int $userId,
         int $barId,
-        DuplicateActionsEnum $duplicateAction = DuplicateActionsEnum::None
+        DuplicateActionsEnum $duplicateAction = DuplicateActionsEnum::None,
+        string $dirRef = '',
     ): Cocktail {
         $cocktailExternal = Schema::fromArray($sourceData);
 
@@ -43,7 +45,7 @@ class FromSchemaDraft2
             return $existingCocktail;
         }
 
-        $matcher = new Matcher($userId, $barId, $this->ingredientService);
+        $matcher = new Matcher($barId, $this->ingredientService);
 
         // Add images
         $cocktailImages = [];
@@ -53,7 +55,7 @@ class FromSchemaDraft2
 
                 try {
                     $imageDTO = new Image(
-                        $manager->read(file_get_contents($image->uri)), // TODO
+                        $manager->read(file_get_contents($dirRef . $image->getLocalFilePath())),
                         $image->copyright
                     );
 
@@ -81,12 +83,34 @@ class FromSchemaDraft2
         $ingredients = [];
         $sort = 1;
         foreach ($cocktailExternal->cocktail->ingredients as $scrapedIngredient) {
-            $ingredientId = $matcher->matchOrCreateIngredientByName($externalIngredients->firstWhere('id', $scrapedIngredient->id));
+            $foundExternalIngredient = $externalIngredients->firstWhere('id', $scrapedIngredient->id);
+            $ingredientId = $matcher->matchOrCreateIngredientByName(
+                new IngredientDTO(
+                    $barId,
+                    $foundExternalIngredient->name,
+                    $userId,
+                    null,
+                    $foundExternalIngredient->strength,
+                    $foundExternalIngredient->description,
+                    $foundExternalIngredient->origin
+                ),
+            );
 
             $substitutes = [];
             foreach ($scrapedIngredient->substitutes as $substitute) {
+                $foundExternalSubIngredient = $externalIngredients->firstWhere('id', $substitute->id);
                 $substitutes[] = new SubstituteDTO(
-                    $matcher->matchOrCreateIngredientByName($externalIngredients->firstWhere('id', $substitute->id)),
+                    $matcher->matchOrCreateIngredientByName(
+                        new IngredientDTO(
+                            $barId,
+                            $foundExternalSubIngredient->name,
+                            $userId,
+                            null,
+                            $foundExternalSubIngredient->strength,
+                            $foundExternalSubIngredient->description,
+                            $foundExternalSubIngredient->origin
+                        )
+                    ),
                     $substitute->amount,
                     $substitute->amountMax,
                     $substitute->units,

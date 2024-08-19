@@ -52,10 +52,22 @@ return [
             'throw' => false,
         ],
 
-        'export-datapacks' => [
+        'exports' => [
             'driver' => 'local',
             'root' => storage_path('bar-assistant/exports'),
             'url' => env('APP_URL').'/uploads',
+            'throw' => false,
+        ],
+
+        'temp' => [
+            'driver' => 'local',
+            'root' => storage_path('bar-assistant/temp'),
+            'throw' => false,
+        ],
+
+        'temp-uploads' => [
+            'driver' => 'local',
+            'root' => storage_path('bar-assistant/uploads/temp'),
             'throw' => false,
         ],
 

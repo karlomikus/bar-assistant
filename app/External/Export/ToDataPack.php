@@ -41,8 +41,8 @@ class ToDataPack implements ProcessesBarExport
             'called_from' => __CLASS__,
         ];
 
-        File::ensureDirectoryExists($this->file->disk('export-datapacks')->path((string) $barId));
-        $filename = $this->file->disk('export-datapacks')->path($barId . '/' . $filename);
+        File::ensureDirectoryExists($this->file->disk('exports')->path((string) $barId));
+        $filename = $this->file->disk('exports')->path($barId . '/' . $filename);
 
         Log::debug(sprintf('Exporting datapack to "%s"', $filename));
 

@@ -50,7 +50,7 @@ class Export extends Model
 
     public function getFullPath(): string
     {
-        return Storage::disk('export-datapacks')->path($this->bar_id . '/' . $this->filename);
+        return Storage::disk('exports')->path($this->bar_id . '/' . $this->filename);
     }
 
     protected function casts(): array

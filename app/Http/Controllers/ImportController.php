@@ -5,20 +5,23 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Throwable;
+use Kami\Cocktail\ZipUtils;
 use Illuminate\Http\Response;
+use Kami\Cocktail\Models\Bar;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Scraper\Manager;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\External\Draft2\Schema;
 use Kami\Cocktail\Http\Requests\ImportRequest;
 use Kami\Cocktail\Http\Requests\ScrapeRequest;
-use Kami\Cocktail\External\Import\FromDataPack;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\External\Import\FromSchemaDraft2;
-use Kami\Cocktail\Http\Requests\ImportDatapackRequest;
+use Kami\Cocktail\Http\Requests\ImportFileRequest;
 use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
 class ImportController extends Controller
@@ -91,11 +94,11 @@ class ImportController extends Controller
         ]);
     }
 
-    #[OAT\Post(path: '/import/datapack', tags: ['Import'], summary: 'Import from datapack', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/import/file', tags: ['Import'], summary: 'Import from zip file', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(type: 'object', required: ['file'], properties: [
-                new OAT\Property(property: 'file', type: 'string', format: 'binary'),
+                new OAT\Property(property: 'file', type: 'string', format: 'binary', description: 'The zip file containing the data. Max 1GB.'),
                 new OAT\Property(property: 'bar_id', type: 'integer', example: 1),
                 new OAT\Property(property: 'duplicate_actions', ref: DuplicateActionsEnum::class, example: 'none', description: 'How to handle duplicates. Cocktails are matched by lowercase name.'),
             ])),
@@ -103,18 +106,42 @@ class ImportController extends Controller
     ))]
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
-    public function datapack(ImportDatapackRequest $request, FromDataPack $importer): Response
+    public function file(ImportFileRequest $request, FromSchemaDraft2 $importer): Response
     {
         if ($request->user()->cannot('create', Cocktail::class)) {
             abort(403);
         }
 
-        $datapackFile = $request->file('file');
+        $zipFile = $request->file('file')->store('/', 'temp-uploads');
         $barId = $request->post('bar_id');
         $duplicateAction = DuplicateActionsEnum::from($request->post('duplicate_actions', 'none'));
 
-        // Extract, send disk
-        // $importer->process($datapackFile, bar()->id, $request->user()->id);
+        $bar = Bar::findOrFail($barId);
+        if ($request->user()->cannot('edit', $bar)) {
+            abort(403);
+        }
+
+        $unzippedFilesDisk = Storage::disk('temp');
+
+        $zip = new ZipUtils();
+        $zip->unzip(Storage::disk('temp-uploads')->path($zipFile));
+
+        try {
+            foreach ($unzippedFilesDisk->directories($zip->getDirName() . '/cocktails') as $diskDirPath) {
+                $importer->process(
+                    json_decode(file_get_contents($unzippedFilesDisk->path($diskDirPath . '/recipe.json')), true),
+                    $request->user()->id,
+                    $bar->id,
+                    $duplicateAction,
+                    $unzippedFilesDisk->path($diskDirPath),
+                );
+            }
+        } catch (Throwable $e) {
+            Log::error('Error importing from file: ' . $e->getMessage());
+        } finally {
+            $zip->cleanup();
+            Storage::disk('temp-uploads')->delete($zipFile);
+        }
 
         return new Response(null, 204);
     }

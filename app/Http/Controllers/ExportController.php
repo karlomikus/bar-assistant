@@ -28,6 +28,7 @@ class ExportController extends Controller
     {
         $exports = Export::orderBy('created_at', 'desc')
             ->where('created_user_id', $request->user()->id)
+            ->with('bar')
             ->get();
 
         return ExportResource::collection($exports);

@@ -49,6 +49,17 @@ readonly class Image implements JsonSerializable
         ];
     }
 
+    public function getLocalFilePath(): string
+    {
+        $parts = parse_url($this->uri);
+
+        if ($parts['scheme'] === 'file') {
+            return $parts['path'] ?? '';
+        }
+
+        return $this->uri;
+    }
+
     public function jsonSerialize(): array
     {
         return $this->toArray();
