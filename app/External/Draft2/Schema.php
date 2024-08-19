@@ -26,6 +26,9 @@ readonly class Schema implements JsonSerializable
         $ingredients = [];
         foreach ($model->ingredients as $cocktailIngredient) {
             $ingredients[] = Ingredient::fromModel($cocktailIngredient->ingredient);
+            foreach ($cocktailIngredient->substitutes as $substitute) {
+                $ingredients[] = Ingredient::fromModel($substitute->ingredient);
+            }
         }
 
         return new self(
