@@ -72,6 +72,8 @@ This is a new major release. Here's a quick summary of the more interesting chan
 - Added `/import/scrape` endpoint
     - This endpoint is used to extract recipe data from a website
     - Result is a JSON schema that can be imported via `/import/cocktail` endpoint
+- Added `/import/file` endpoint
+    - This endpoint is used to import cocktails from a zip file containing files exported via `schema` type
 
 ## Changes
 - Meilisearch client API keys are now generated via artisan command

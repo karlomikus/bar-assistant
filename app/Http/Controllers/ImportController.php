@@ -20,7 +20,7 @@ use Kami\Cocktail\Http\Requests\ImportRequest;
 use Kami\Cocktail\Http\Requests\ScrapeRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CocktailResource;
-use Kami\Cocktail\External\Import\FromSchemaDraft2;
+use Kami\Cocktail\External\Import\FromJsonSchema;
 use Kami\Cocktail\Http\Requests\ImportFileRequest;
 use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
@@ -42,7 +42,7 @@ class ImportController extends Controller
         new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function cocktail(ImportRequest $request, FromSchemaDraft2 $importer): JsonResource
+    public function cocktail(ImportRequest $request, FromJsonSchema $importer): JsonResource
     {
         if ($request->user()->cannot('create', Cocktail::class)) {
             abort(403);
@@ -106,7 +106,7 @@ class ImportController extends Controller
     ))]
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
-    public function file(ImportFileRequest $request, FromSchemaDraft2 $importer): Response
+    public function file(ImportFileRequest $request, FromJsonSchema $importer): Response
     {
         if ($request->user()->cannot('create', Cocktail::class)) {
             abort(403);

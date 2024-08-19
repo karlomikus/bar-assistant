@@ -19,7 +19,7 @@ use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
 use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;
 use Kami\Cocktail\DTO\Cocktail\Ingredient as CocktailIngredientDTO;
 
-class FromSchemaDraft2
+class FromJsonSchema
 {
     public function __construct(
         private readonly CocktailService $cocktailService,
