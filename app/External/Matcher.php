@@ -61,11 +61,17 @@ class Matcher
             return $this->matchedIngredients[$matchName];
         }
 
-        $existingIngredient = IngredientModel::whereRaw('LOWER(name) = ?', [$matchName])->where('bar_id', $this->barId)->first();
-        if ($existingIngredient) {
-            $this->matchedIngredients[$matchName] = $existingIngredient->id;
+        $this->matchedIngredients = DB::table('ingredients')->select('id', 'name')->where('bar_id', $this->barId)->get()->map(function ($row) {
+            $row->name = mb_strtolower($row->name, 'UTF-8');
 
-            return $existingIngredient->id;
+            return $row;
+        })->pluck('id', 'name')->toArray();
+
+        $existingIngredient = $this->matchedIngredients[$matchName] ?? null;
+        if ($existingIngredient) {
+            $this->matchedIngredients[$matchName] = $existingIngredient;
+
+            return $existingIngredient;
         }
 
         $newIngredient = $this->ingredientService->createIngredient($ingredient);
@@ -83,11 +89,17 @@ class Matcher
             return $this->matchedGlasses[$matchName];
         }
 
-        $existingGlass = Glass::whereRaw('LOWER(name) = ?', [$matchName])->where('bar_id', $this->barId)->first();
-        if ($existingGlass) {
-            $this->matchedGlasses[$matchName] = $existingGlass->id;
+        $this->matchedGlasses = DB::table('glasses')->select('id', 'name')->where('bar_id', $this->barId)->get()->map(function ($row) {
+            $row->name = mb_strtolower($row->name, 'UTF-8');
 
-            return $existingGlass->id;
+            return $row;
+        })->pluck('id', 'name')->toArray();
+
+        $existingGlass = $this->matchedGlasses[$matchName] ?? null;
+        if ($existingGlass) {
+            $this->matchedGlasses[$matchName] = $existingGlass;
+
+            return $existingGlass;
         }
 
         return null;
@@ -101,11 +113,17 @@ class Matcher
             return $this->matchedMethods[$matchName];
         }
 
-        $existingMethod = CocktailMethod::whereRaw('LOWER(name) = ?', [$matchName])->where('bar_id', $this->barId)->first();
-        if ($existingMethod) {
-            $this->matchedMethods[$matchName] = $existingMethod->id;
+        $this->matchedMethods = DB::table('cocktail_methods')->select('id', 'name')->where('bar_id', $this->barId)->get()->map(function ($row) {
+            $row->name = mb_strtolower($row->name, 'UTF-8');
 
-            return $existingMethod->id;
+            return $row;
+        })->pluck('id', 'name')->toArray();
+
+        $existingMethod = $this->matchedMethods[$matchName] ?? null;
+        if ($existingMethod) {
+            $this->matchedMethods[$matchName] = $existingMethod;
+
+            return $existingMethod;
         }
 
         return null;

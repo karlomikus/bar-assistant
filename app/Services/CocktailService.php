@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Services;
 
 use Throwable;
-use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Tag;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Image;
-use Kami\Cocktail\Models\Utensil;
-use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\DatabaseManager;
@@ -224,92 +221,5 @@ final class CocktailService
         $barMembership->cocktailFavorites()->save($cocktailFavorite);
 
         return $cocktailFavorite;
-    }
-
-    /**
-     * This is a quick insert method used by importers. It skips calling models directly.
-     */
-    public function insertFromExternal(object $externalCocktail, Bar $bar, User $user, array $dbGlasses, array $dbMethods, array $dbIngredients): int
-    {
-        $slug = $externalCocktail->id . '-' . $bar->id;
-
-        $cocktailId = DB::table('cocktails')->insertGetId([
-            'slug' => $slug,
-            'name' => $externalCocktail->name,
-            'instructions' => $externalCocktail->instructions,
-            'description' => $externalCocktail->description,
-            'garnish' => $externalCocktail->garnish,
-            'source' => $externalCocktail->source,
-            'abv' => $externalCocktail->abv,
-            'created_user_id' => $user->id,
-            'glass_id' => $dbGlasses[mb_strtolower($externalCocktail->glass ?? '', 'UTF-8')] ?? null,
-            'cocktail_method_id' => $dbMethods[mb_strtolower($externalCocktail->method ?? '', 'UTF-8')] ?? null,
-            'bar_id' => $bar->id,
-            'created_at' => $externalCocktail->createdAt ?? now(),
-            'updated_at' => $externalCocktail->updatedAt,
-        ]);
-
-        foreach ($externalCocktail->tags as $tag) {
-            $tag = Tag::firstOrCreate([
-                'name' => trim($tag),
-                'bar_id' => $bar->id,
-            ]);
-            $tagsToInsert[] = [
-                'tag_id' => $tag->id,
-                'cocktail_id' => $cocktailId,
-            ];
-        }
-
-        foreach ($externalCocktail->utensils as $utensil) {
-            $utensil = Utensil::firstOrCreate([
-                'name' => trim($utensil),
-                'bar_id' => $bar->id,
-            ]);
-            $cocktailUtensilsToInsert[] = [
-                'utensil_id' => $utensil->id,
-                'cocktail_id' => $cocktailId,
-            ];
-        }
-
-        $sort = 1;
-        foreach ($externalCocktail->ingredients as $cocktailIngredient) {
-            $matchedIngredientId = $dbIngredients[mb_strtolower($cocktailIngredient->ingredient->name, 'UTF-8')] ?? null;
-            if (!$matchedIngredientId) {
-                $this->log->warning(sprintf('Unable to match ingredient "%s" to cocktail "%s"', $cocktailIngredient->ingredient->name, $externalCocktail->name));
-                continue;
-            }
-
-            $ciId = DB::table('cocktail_ingredients')->insertGetId([
-                'cocktail_id' => $cocktailId,
-                'ingredient_id' => $matchedIngredientId,
-                'amount' => $cocktailIngredient->amount,
-                'units' => $cocktailIngredient->units,
-                'optional' => $cocktailIngredient->optional,
-                'note' => $cocktailIngredient->note,
-                'sort' => $sort,
-            ]);
-
-            $sort++;
-
-            foreach ($cocktailIngredient->substitutes as $substitute) {
-                $matchedSubIngredientId = $dbIngredients[mb_strtolower($substitute->ingredient->name, 'UTF-8')] ?? null;
-                if (!$matchedSubIngredientId) {
-                    $this->log->warning(sprintf('Unable to match substitute ingredient "%s" to cocktail "%s"', $substitute->ingredient->name, $externalCocktail->name));
-                    continue;
-                }
-
-                DB::table('cocktail_ingredient_substitutes')->insert([
-                    'cocktail_ingredient_id' => $ciId,
-                    'ingredient_id' => $matchedSubIngredientId,
-                    'amount' => $substitute->amount,
-                    'amount_max' => $substitute->amountMax,
-                    'units' => $substitute->units,
-                    'created_at' => now(),
-                    'updated_at' => null,
-                ]);
-            }
-        }
-
-        return $cocktailId;
     }
 }

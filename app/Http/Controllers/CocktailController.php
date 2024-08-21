@@ -283,7 +283,7 @@ class CocktailController extends Controller
 
     #[OAT\Get(path: '/cocktails/{id}/share', tags: ['Cocktails'], summary: 'Share a cocktail', parameters: [
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
-        new OAT\Parameter(name: 'type', in: 'query', description: 'Share format', schema: new OAT\Schema(type: 'string', enum: ['json', 'json+ld', 'yaml', 'yml', 'xml', 'text', 'markdown', 'md'])),
+        new OAT\Parameter(name: 'type', in: 'query', description: 'Share format', schema: new OAT\Schema(type: 'string', enum: ['json', 'json-ld', 'yaml', 'yml', 'xml', 'text', 'markdown', 'md'])),
         new OAT\Parameter(name: 'units', in: 'query', description: 'Units of measurement', schema: new OAT\Schema(type: 'string')),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -320,7 +320,7 @@ class CocktailController extends Controller
             $shareContent = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
-        if ($type === 'json+ld') {
+        if ($type === 'json-ld') {
             $shareContent = json_encode($cocktail->asJsonLDSchema(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 

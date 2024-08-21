@@ -12,7 +12,7 @@ enum ExportTypeEnum: string
     case Datapack = 'datapack';
     case Schema = 'schema';
     case Markdown = 'md';
-    case JSONLD = 'json+ld';
+    case JSONLD = 'json-ld';
     case XML = 'xml';
 
     public function getFilenameContext(): string
@@ -21,7 +21,7 @@ enum ExportTypeEnum: string
             self::Datapack => 'datapack',
             self::Schema => 'schema',
             self::Markdown => 'markdown',
-            self::JSONLD => 'jsonld',
+            self::JSONLD => 'json-ld',
             self::XML => 'xml',
         };
     }
