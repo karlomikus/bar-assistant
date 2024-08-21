@@ -11,18 +11,17 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\External\ProcessesBarExport;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
-use Kami\Cocktail\External\DataPack\Cocktail as CocktailExternal;
-use Kami\Cocktail\External\DataPack\IngredientFull as IngredientExternal;
+use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
+use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
 
 /**
  * Datapack is a zip archive containing all data required to move to another Bar Assistant instance.
  *
  * @package Kami\Cocktail\External\Export
  */
-class ToDataPack implements ProcessesBarExport
+class ToDataPack
 {
     public function __construct(private readonly FileSystemFactory $file)
     {
@@ -82,7 +81,7 @@ class ToDataPack implements ProcessesBarExport
                 $zip->addFile($img->getPath(), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getFileName());
             }
 
-            $cocktailExportData = $this->prepareDataOutput($data);
+            $cocktailExportData = $this->prepareDataOutput($data->toDataPackArray());
 
             $zip->addFromString('cocktails/' . $cocktail->getExternalId() . '/data.json', $cocktailExportData);
         }
@@ -103,7 +102,7 @@ class ToDataPack implements ProcessesBarExport
                 $zip->addFile($img->getPath(), 'ingredients/' . $ingredient->getExternalId() . '/' . $img->getFileName());
             }
 
-            $ingredientExportData = $this->prepareDataOutput($data);
+            $ingredientExportData = $this->prepareDataOutput($data->toDataPackArray());
 
             $zip->addFromString('ingredients/' . $ingredient->getExternalId() . '/data.json', $ingredientExportData);
         }

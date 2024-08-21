@@ -19,8 +19,8 @@ use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\BarStatusEnum;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use Kami\Cocktail\External\DataPack\Cocktail as CocktailExternal;
-use Kami\Cocktail\External\DataPack\IngredientFull as IngredientExternal;
+use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
+use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
 
 class FromDataPack
 {
@@ -115,7 +115,7 @@ class FromDataPack
         DB::beginTransaction();
         foreach ($this->getDataFromDir('ingredients', $dataDisk) as $fromYield) {
             [$externalIngredient, $filePath] = $fromYield;
-            $externalIngredient = IngredientExternal::fromArray($externalIngredient);
+            $externalIngredient = IngredientExternal::fromDataPackArray($externalIngredient);
             if ($existingIngredients->has($externalIngredient->id)) {
                 continue;
             }
@@ -206,7 +206,7 @@ class FromDataPack
         foreach ($this->getDataFromDir('cocktails', $dataDisk) as $fromYield) {
             [$cocktail, $filePath] = $fromYield;
 
-            $externalCocktail = CocktailExternal::fromArray($cocktail);
+            $externalCocktail = CocktailExternal::fromDataPackArray($cocktail);
 
             if ($existingCocktails->has($externalCocktail->id)) {
                 continue;

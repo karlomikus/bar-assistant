@@ -10,7 +10,7 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\External\Matcher;
 use Intervention\Image\ImageManager;
-use Kami\Cocktail\External\Draft2\Schema;
+use Kami\Cocktail\External\Model\Schema;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Services\Image\ImageService;
@@ -21,11 +21,15 @@ use Kami\Cocktail\DTO\Cocktail\Ingredient as CocktailIngredientDTO;
 
 class FromJsonSchema
 {
+    private Matcher $matcher;
+
     public function __construct(
         private readonly CocktailService $cocktailService,
         private readonly IngredientService $ingredientService,
-        private readonly ImageService $imageService
+        private readonly ImageService $imageService,
+        private readonly int $barId,
     ) {
+        $this->matcher = new Matcher($this->barId, $this->ingredientService);
     }
 
     /**
@@ -38,14 +42,12 @@ class FromJsonSchema
         DuplicateActionsEnum $duplicateAction = DuplicateActionsEnum::None,
         string $dirRef = '',
     ): Cocktail {
-        $cocktailExternal = Schema::fromArray($sourceData);
+        $cocktailExternal = Schema::fromDraft2Array($sourceData);
 
-        $existingCocktail = Cocktail::whereRaw('LOWER(name) = ?', [mb_strtolower($cocktailExternal->cocktail->name, 'UTF-8')])->where('bar_id', $barId)->first();
+        $existingCocktail = $this->matcher->matchCocktailByName(mb_strtolower($cocktailExternal->cocktail->name, 'UTF-8'));
         if ($duplicateAction === DuplicateActionsEnum::Skip && $existingCocktail !== null) {
-            return $existingCocktail;
+            return Cocktail::find($existingCocktail);
         }
-
-        $matcher = new Matcher($barId, $this->ingredientService);
 
         // Add images
         $cocktailImages = [];
@@ -69,13 +71,13 @@ class FromJsonSchema
         // Match glass
         $glassId = null;
         if ($cocktailExternal->cocktail->glass) {
-            $glassId = $matcher->matchGlassByName($cocktailExternal->cocktail->glass);
+            $glassId = $this->matcher->matchGlassByName($cocktailExternal->cocktail->glass);
         }
 
         // Match method
         $methodId = null;
         if ($cocktailExternal->cocktail->method) {
-            $methodId = $matcher->matchMethodByName($cocktailExternal->cocktail->method);
+            $methodId = $this->matcher->matchMethodByName($cocktailExternal->cocktail->method);
         }
 
         // Match ingredients
@@ -83,8 +85,8 @@ class FromJsonSchema
         $ingredients = [];
         $sort = 1;
         foreach ($cocktailExternal->cocktail->ingredients as $scrapedIngredient) {
-            $foundExternalIngredient = $externalIngredients->firstWhere('id', $scrapedIngredient->id);
-            $ingredientId = $matcher->matchOrCreateIngredientByName(
+            $foundExternalIngredient = $externalIngredients->firstWhere('id', $scrapedIngredient->ingredient->id);
+            $ingredientId = $this->matcher->matchOrCreateIngredientByName(
                 new IngredientDTO(
                     $barId,
                     $foundExternalIngredient->name,
@@ -98,9 +100,9 @@ class FromJsonSchema
 
             $substitutes = [];
             foreach ($scrapedIngredient->substitutes as $substitute) {
-                $foundExternalSubIngredient = $externalIngredients->firstWhere('id', $substitute->id);
+                $foundExternalSubIngredient = $externalIngredients->firstWhere('id', $substitute->ingredient->id);
                 $substitutes[] = new SubstituteDTO(
-                    $matcher->matchOrCreateIngredientByName(
+                    $this->matcher->matchOrCreateIngredientByName(
                         new IngredientDTO(
                             $barId,
                             $foundExternalSubIngredient->name,
@@ -119,7 +121,7 @@ class FromJsonSchema
 
             $ingredient = new CocktailIngredientDTO(
                 $ingredientId,
-                $externalIngredients->firstWhere('id', $scrapedIngredient->id)->name,
+                $externalIngredients->firstWhere('id', $scrapedIngredient->ingredient->id)->name,
                 $scrapedIngredient->amount,
                 $scrapedIngredient->units,
                 $sort,
@@ -149,7 +151,7 @@ class FromJsonSchema
         );
 
         if ($duplicateAction === DuplicateActionsEnum::Overwrite && $existingCocktail !== null) {
-            return $this->cocktailService->updateCocktail($existingCocktail->id, $cocktailDTO);
+            return $this->cocktailService->updateCocktail($existingCocktail, $cocktailDTO);
         }
 
         return $this->cocktailService->createCocktail($cocktailDTO);

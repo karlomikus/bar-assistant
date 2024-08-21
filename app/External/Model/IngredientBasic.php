@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\External\DataPack;
+namespace Kami\Cocktail\External\Model;
 
-use JsonSerializable;
+use Kami\Cocktail\External\SupportsDraft2;
+use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 
-readonly class Ingredient implements JsonSerializable
+readonly class IngredientBasic implements SupportsDraft2, SupportsDataPack
 {
     private function __construct(
         public string $id,
@@ -31,7 +32,7 @@ readonly class Ingredient implements JsonSerializable
         );
     }
 
-    public static function fromArray(array $sourceArray): self
+    public static function fromDataPackArray(array $sourceArray): self
     {
         return new self(
             $sourceArray['_id'],
@@ -43,7 +44,7 @@ readonly class Ingredient implements JsonSerializable
         );
     }
 
-    public function toArray(): array
+    public function toDataPackArray(): array
     {
         return [
             '_id' => $this->id,
@@ -55,8 +56,13 @@ readonly class Ingredient implements JsonSerializable
         ];
     }
 
-    public function jsonSerialize(): array
+    public static function fromDraft2Array(array $sourceArray): self
     {
-        return $this->toArray();
+        return self::fromDataPackArray($sourceArray);
+    }
+
+    public function toDraft2Array(): array
+    {
+        return $this->toDataPackArray();
     }
 }

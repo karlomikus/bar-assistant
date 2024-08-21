@@ -4,7 +4,7 @@ This is a new major release. Here's a quick summary of the more interesting chan
 - Docker image is now run as an unprivileged user by default
 - Improved API endpoint naming and structure
 - Added Bar Assistant JSON schema specification for cocktail recipes
-- Improved exporting and importing of data
+- Data exporting is now available in multiple formats
 
 ## Breaking changes
 - Minimal PHP version is now 8.3

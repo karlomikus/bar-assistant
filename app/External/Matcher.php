@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External;
 
 use Kami\Cocktail\Models\Glass;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
@@ -16,6 +17,9 @@ class Matcher
     private array $matchedIngredients = [];
 
     /** @var array<string, int> */
+    private array $matchedCocktails = [];
+
+    /** @var array<string, int> */
     private array $matchedGlasses = [];
 
     /** @var array<string, int> */
@@ -23,6 +27,30 @@ class Matcher
 
     public function __construct(private readonly int $barId, private readonly IngredientService $ingredientService)
     {
+    }
+
+    public function matchCocktailByName(string $name): ?int
+    {
+        $matchName = mb_strtolower($name, 'UTF-8');
+
+        if (isset($this->matchedCocktails[$matchName])) {
+            return $this->matchedCocktails[$matchName];
+        }
+
+        $this->matchedCocktails = DB::table('cocktails')->select('id', 'name')->where('bar_id', $this->barId)->get()->map(function ($row) {
+            $row->name = mb_strtolower($row->name, 'UTF-8');
+
+            return $row;
+        })->pluck('id', 'name')->toArray();
+
+        $existingCocktail = $this->matchedCocktails[$matchName] ?? null;
+        if ($existingCocktail) {
+            $this->matchedCocktails[$matchName] = $existingCocktail;
+
+            return $existingCocktail;
+        }
+
+        return null;
     }
 
     public function matchOrCreateIngredientByName(IngredientDTO $ingredient): int

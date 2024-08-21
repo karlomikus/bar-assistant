@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\External\DataPack;
+namespace Kami\Cocktail\External\Model;
 
-use JsonSerializable;
+use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\Models\Image as ImageModel;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 use Kami\Cocktail\Models\IngredientPrice as IngredientPriceModel;
 
-readonly class IngredientFull implements JsonSerializable
+readonly class Ingredient implements SupportsDataPack
 {
     /**
      * @param array<Image> $images
-     * @param array<Ingredient> $ingredientParts
+     * @param array<IngredientBasic> $ingredientParts
      * @param array<IngredientPrice> $prices
      */
     private function __construct(
@@ -41,7 +41,7 @@ readonly class IngredientFull implements JsonSerializable
         })->toArray();
 
         $ingredientParts = $model->ingredientParts->map(function (ComplexIngredient $part) {
-            return Ingredient::fromModel($part->ingredient);
+            return IngredientBasic::fromModel($part->ingredient);
         })->toArray();
 
         $ingredientPrices = $model->prices->map(function (IngredientPriceModel $price) {
@@ -65,16 +65,16 @@ readonly class IngredientFull implements JsonSerializable
         );
     }
 
-    public static function fromArray(array $sourceArray): self
+    public static function fromDataPackArray(array $sourceArray): self
     {
         $images = [];
         foreach ($sourceArray['images'] ?? [] as $sourceImage) {
-            $images[] = Image::fromArray($sourceImage);
+            $images[] = Image::fromDataPackArray($sourceImage);
         }
 
         $ingredientParts = [];
         foreach ($sourceArray['ingredient_parts'] ?? [] as $ingredient) {
-            $ingredientParts[] = Ingredient::fromArray($ingredient);
+            $ingredientParts[] = IngredientBasic::fromDataPackArray($ingredient);
         }
 
         return new self(
@@ -93,7 +93,7 @@ readonly class IngredientFull implements JsonSerializable
         );
     }
 
-    public function toArray(): array
+    public function toDataPackArray(): array
     {
         return [
             '_id' => $this->id,
@@ -106,14 +106,9 @@ readonly class IngredientFull implements JsonSerializable
             'category' => $this->category,
             'created_at' => $this->createdAt,
             'updated_at' => $this->updatedAt,
-            'images' => array_map(fn ($model) => $model->toArray(), $this->images),
-            'ingredient_parts' => array_map(fn ($model) => $model->toArray(), $this->ingredientParts),
-            'prices' => array_map(fn ($model) => $model->toArray(), $this->prices),
+            'images' => array_map(fn ($model) => $model->toDataPackArray(), $this->images),
+            'ingredient_parts' => array_map(fn ($model) => $model->toDataPackArray(), $this->ingredientParts),
+            'prices' => array_map(fn ($model) => $model->toDataPackArray(), $this->prices),
         ];
-    }
-
-    public function jsonSerialize(): array
-    {
-        return $this->toArray();
     }
 }

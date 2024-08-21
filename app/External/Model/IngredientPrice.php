@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\External\DataPack;
+namespace Kami\Cocktail\External\Model;
 
-use JsonSerializable;
+use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\IngredientPrice as IngredientPriceModel;
 
-readonly class IngredientPrice implements JsonSerializable
+readonly class IngredientPrice implements SupportsDataPack
 {
     private function __construct(
         public string $priceCategoryName,
@@ -29,7 +29,18 @@ readonly class IngredientPrice implements JsonSerializable
         );
     }
 
-    public function toArray(): array
+    public static function fromDataPackArray(array $sourceArray): self
+    {
+        return new self(
+            $sourceArray['price_category_name'],
+            $sourceArray['price'],
+            $sourceArray['currency'],
+            $sourceArray['amount'],
+            $sourceArray['units'],
+        );
+    }
+
+    public function toDataPackArray(): array
     {
         return [
             'price_category_name' => $this->priceCategoryName,
@@ -38,10 +49,5 @@ readonly class IngredientPrice implements JsonSerializable
             'amount' => $this->amount,
             'units' => $this->units,
         ];
-    }
-
-    public function jsonSerialize(): array
-    {
-        return $this->toArray();
     }
 }

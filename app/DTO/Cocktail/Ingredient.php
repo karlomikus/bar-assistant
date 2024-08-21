@@ -30,7 +30,7 @@ readonly class Ingredient
         }
 
         return new self(
-            (int) $source['ingredient_id'],
+            (int) $source['ingredient']['id'],
             null,
             (float) $source['amount'],
             $source['units'],

@@ -2,20 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\External\DataPack;
+namespace Kami\Cocktail\External\Model;
 
-use JsonSerializable;
 use Illuminate\Support\Str;
+use Kami\Cocktail\External\SupportsDataPack;
+use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\Models\CocktailIngredient as CocktailIngredientModel;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute as CocktailIngredientSubstituteModel;
 
-readonly class CocktailIngredient implements JsonSerializable
+readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
 {
     /**
      * @param array<CocktailIngredientSubstitute> $substitutes
      */
     private function __construct(
-        public Ingredient $ingredient,
+        public IngredientBasic $ingredient,
         public float $amount,
         public string $units,
         public bool $optional = false,
@@ -33,7 +34,7 @@ readonly class CocktailIngredient implements JsonSerializable
         })->toArray();
 
         return new self(
-            Ingredient::fromModel($model->ingredient),
+            IngredientBasic::fromModel($model->ingredient),
             $model->amount,
             $model->units,
             (bool) $model->optional,
@@ -44,21 +45,21 @@ readonly class CocktailIngredient implements JsonSerializable
         );
     }
 
-    public static function fromArray(array $sourceArray): self
+    public static function fromDataPackArray(array $sourceArray): self
     {
         $substitutes = [];
         foreach ($sourceArray['substitutes'] ?? [] as $sourceSubstitute) {
             if (is_array($sourceSubstitute)) {
-                $substitutes[] = CocktailIngredientSubstitute::fromArray($sourceSubstitute);
+                $substitutes[] = CocktailIngredientSubstitute::fromDataPackArray($sourceSubstitute);
             } else {
-                $substitutes[] = CocktailIngredientSubstitute::fromArray([
+                $substitutes[] = CocktailIngredientSubstitute::fromDataPackArray([
                     'name' => (string) $sourceSubstitute,
                 ]);
             }
         }
 
         return new self(
-            Ingredient::fromArray([
+            IngredientBasic::fromDataPackArray([
                 '_id' => Str::slug($sourceArray['name']),
                 'name' => $sourceArray['name'],
                 'strength' => $sourceArray['strength'] ?? 0.0,
@@ -76,22 +77,59 @@ readonly class CocktailIngredient implements JsonSerializable
         );
     }
 
-    public function toArray(): array
+    public function toDataPackArray(): array
     {
         return [
-            ...$this->ingredient->toArray(),
+            ...$this->ingredient->toDataPackArray(),
             'amount' => $this->amount,
             'units' => $this->units,
             'optional' => $this->optional,
             'amount_max' => $this->amountMax,
             'note' => $this->note,
-            'substitutes' => array_map(fn ($model) => $model->toArray(), $this->substitutes),
+            'substitutes' => array_map(fn ($model) => $model->toDataPackArray(), $this->substitutes),
             'sort' => $this->sort,
         ];
     }
 
-    public function jsonSerialize(): array
+    public static function fromDraft2Array(array $sourceArray): self
     {
-        return $this->toArray();
+        $substitutes = [];
+        foreach ($sourceArray['substitutes'] ?? [] as $sourceSubstitute) {
+            if (is_array($sourceSubstitute)) {
+                $substitutes[] = CocktailIngredientSubstitute::fromDraft2Array($sourceSubstitute);
+            } else {
+                $substitutes[] = CocktailIngredientSubstitute::fromDraft2Array([
+                    'name' => (string) $sourceSubstitute,
+                ]);
+            }
+        }
+
+        return new self(
+            IngredientBasic::fromDraft2Array([
+                '_id' => $sourceArray['_id'],
+                'name' => $sourceArray['name'] ?? '',
+            ]),
+            $sourceArray['amount'] ?? 0.0,
+            $sourceArray['units'],
+            $sourceArray['optional'] ?? false,
+            $sourceArray['amount_max'] ?? null,
+            $sourceArray['note'] ?? null,
+            $substitutes,
+            $sourceArray['sort'] ?? 0,
+        );
+    }
+
+    public function toDraft2Array(): array
+    {
+        return [
+            '_id' => $this->ingredient->id,
+            'amount' => $this->amount,
+            'units' => $this->units,
+            'optional' => $this->optional,
+            'amount_max' => $this->amountMax,
+            'note' => $this->note,
+            'substitutes' => array_map(fn ($model) => $model->toDraft2Array(), $this->substitutes),
+            'sort' => $this->sort,
+        ];
     }
 }

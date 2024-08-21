@@ -30,7 +30,7 @@ class CocktailRequest extends FormRequest
             'instructions' => 'required',
             'ingredients' => 'array',
             'images' => 'array',
-            'ingredients.*.ingredient_id' => 'required',
+            'ingredients.*.ingredient.id' => 'required',
             'ingredients.*.units' => 'required_with:ingredients.*.amount',
             'ingredients.*.amount' => 'required_with:ingredients.*.units|numeric',
             'ingredients.*.optional' => 'boolean',

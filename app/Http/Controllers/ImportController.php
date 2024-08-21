@@ -15,7 +15,7 @@ use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Scraper\Manager;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Kami\Cocktail\External\Draft2\Schema;
+use Kami\Cocktail\External\Model\Schema;
 use Kami\Cocktail\Http\Requests\ImportRequest;
 use Kami\Cocktail\Http\Requests\ScrapeRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -106,7 +106,7 @@ class ImportController extends Controller
     ))]
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
-    public function file(ImportFileRequest $request, FromJsonSchema $importer): Response
+    public function file(ImportFileRequest $request): Response
     {
         if ($request->user()->cannot('create', Cocktail::class)) {
             abort(403);
@@ -126,6 +126,14 @@ class ImportController extends Controller
         $zip = new ZipUtils();
         $zip->unzip(Storage::disk('temp-uploads')->path($zipFile));
 
+        $importer = new FromJsonSchema(
+            resolve(\Kami\Cocktail\Services\CocktailService::class),
+            resolve(\Kami\Cocktail\Services\IngredientService::class),
+            resolve(\Kami\Cocktail\Services\Image\ImageService::class),
+            $bar->id,
+        );
+
+        \Illuminate\Support\Facades\DB::beginTransaction();
         try {
             foreach ($unzippedFilesDisk->directories($zip->getDirName() . '/cocktails') as $diskDirPath) {
                 $importer->process(
@@ -142,6 +150,8 @@ class ImportController extends Controller
             $zip->cleanup();
             Storage::disk('temp-uploads')->delete($zipFile);
         }
+
+        \Illuminate\Support\Facades\DB::commit();
 
         return new Response(null, 204);
     }

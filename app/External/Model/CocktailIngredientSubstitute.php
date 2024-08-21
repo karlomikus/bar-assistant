@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\External\DataPack;
+namespace Kami\Cocktail\External\Model;
 
-use JsonSerializable;
 use Illuminate\Support\Str;
+use Kami\Cocktail\External\SupportsDataPack;
+use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute as CocktailIngredientSubstituteModel;
 
-readonly class CocktailIngredientSubstitute implements JsonSerializable
+readonly class CocktailIngredientSubstitute implements SupportsDataPack, SupportsDraft2
 {
     private function __construct(
-        public Ingredient $ingredient,
+        public IngredientBasic $ingredient,
         public ?float $amount = null,
         public ?string $units = null,
         public ?float $amountMax = null,
@@ -21,17 +22,17 @@ readonly class CocktailIngredientSubstitute implements JsonSerializable
     public static function fromModel(CocktailIngredientSubstituteModel $model): self
     {
         return new self(
-            Ingredient::fromModel($model->ingredient),
+            IngredientBasic::fromModel($model->ingredient),
             $model->amount,
             $model->units,
             $model->amount_max,
         );
     }
 
-    public static function fromArray(array $sourceArray): self
+    public static function fromDataPackArray(array $sourceArray): self
     {
         return new self(
-            Ingredient::fromArray([
+            IngredientBasic::fromDataPackArray([
                 '_id' => Str::slug($sourceArray['name']),
                 'name' => $sourceArray['name'],
                 'strength' => $sourceArray['strength'] ?? 0.0,
@@ -45,18 +46,36 @@ readonly class CocktailIngredientSubstitute implements JsonSerializable
         );
     }
 
-    public function toArray(): array
+    public function toDataPackArray(): array
     {
         return [
-            ...$this->ingredient->toArray(),
+            ...$this->ingredient->toDataPackArray(),
             'amount' => $this->amount,
             'units' => $this->units,
             'amount_max' => $this->amountMax,
         ];
     }
 
-    public function jsonSerialize(): array
+    public static function fromDraft2Array(array $sourceArray): self
     {
-        return $this->toArray();
+        return new self(
+            IngredientBasic::fromDraft2Array([
+                '_id' => $sourceArray['_id'],
+                'name' => $sourceArray['name'] ?? '',
+            ]),
+            $sourceArray['amount'] ?? null,
+            $sourceArray['units'] ?? null,
+            $sourceArray['amount_max'] ?? null,
+        );
+    }
+
+    public function toDraft2Array(): array
+    {
+        return [
+            '_id' => $this->ingredient->id,
+            'amount' => $this->amount,
+            'units' => $this->units,
+            'amount_max' => $this->amountMax,
+        ];
     }
 }

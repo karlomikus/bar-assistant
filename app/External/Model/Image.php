@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\External\DataPack;
+namespace Kami\Cocktail\External\Model;
 
-use JsonSerializable;
+use Kami\Cocktail\External\SupportsDataPack;
+use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\Models\Image as ImageModel;
 
-readonly class Image implements JsonSerializable
+readonly class Image implements SupportsDraft2, SupportsDataPack
 {
     private function __construct(
         public string $uri,
@@ -27,7 +28,7 @@ readonly class Image implements JsonSerializable
         );
     }
 
-    public static function fromArray(array $sourceArray): self
+    public static function fromDataPackArray(array $sourceArray): self
     {
         return new self(
             $sourceArray['uri'] ?? '',
@@ -37,7 +38,7 @@ readonly class Image implements JsonSerializable
         );
     }
 
-    public function toArray(): array
+    public function toDataPackArray(): array
     {
         return [
             'uri' => $this->uri,
@@ -45,6 +46,16 @@ readonly class Image implements JsonSerializable
             'placeholder_hash' => $this->placeholderHash,
             'copyright' => $this->copyright,
         ];
+    }
+
+    public static function fromDraft2Array(array $sourceArray): self
+    {
+        return self::fromDataPackArray($sourceArray);
+    }
+
+    public function toDraft2Array(): array
+    {
+        return $this->toDataPackArray();
     }
 
     public function getLocalFilePath(): string
@@ -56,10 +67,5 @@ readonly class Image implements JsonSerializable
         }
 
         return $this->uri;
-    }
-
-    public function jsonSerialize(): array
-    {
-        return $this->toArray();
     }
 }

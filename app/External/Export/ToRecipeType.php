@@ -6,17 +6,14 @@ namespace Kami\Cocktail\External\Export;
 
 use ZipArchive;
 use Carbon\Carbon;
-use Spatie\ArrayToXml\ArrayToXml;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\File;
-use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\ExportTypeEnum;
-use Kami\Cocktail\External\ProcessesBarExport;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
-use Kami\Cocktail\External\Draft2\Schema as SchemaExternal;
+use Kami\Cocktail\External\Model\Schema as SchemaExternal;
 use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
 
-class ToRecipeType implements ProcessesBarExport
+class ToRecipeType
 {
     public function __construct(private readonly FileSystemFactory $file)
     {
@@ -79,6 +76,8 @@ class ToRecipeType implements ProcessesBarExport
                 $zip->addFile($img->getPath(), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getFileName());
             }
 
+            $externalSchema = SchemaExternal::fromCocktailModel($cocktail);
+
             if ($type === ExportTypeEnum::Schema) {
                 $cocktailExportData = $this->prepareDataOutput(
                     SchemaExternal::fromCocktailModel($cocktail),
@@ -96,14 +95,13 @@ class ToRecipeType implements ProcessesBarExport
             }
 
             if ($type === ExportTypeEnum::Markdown) {
-                $units = Units::Ml;
-                $cocktailExportData = view('md_recipe_template', compact('cocktail', 'units'))->render();
+                $cocktailExportData = $externalSchema->toMarkdown();
 
                 $zip->addFromString('cocktails/' . $cocktail->getExternalId() . '/recipe.md', $cocktailExportData);
             }
 
             if ($type === ExportTypeEnum::XML) {
-                $cocktailExportData = ArrayToXml::convert(SchemaExternal::fromCocktailModel($cocktail)->toArray(), 'cocktail', xmlEncoding: 'UTF-8');
+                $cocktailExportData = $externalSchema->toXML();
 
                 $zip->addFromString('cocktails/' . $cocktail->getExternalId() . '/recipe.xml', $cocktailExportData);
             }

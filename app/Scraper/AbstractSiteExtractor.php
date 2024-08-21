@@ -6,13 +6,12 @@ namespace Kami\Cocktail\Scraper;
 
 use Kami\RecipeUtils\Parser\Parser;
 use Kami\RecipeUtils\RecipeIngredient;
-use Kami\Cocktail\External\Draft2\Image;
-use Kami\Cocktail\External\Draft2\Schema;
+use Kami\Cocktail\External\Model\Schema;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Symfony\Component\DomCrawler\Crawler;
-use Kami\Cocktail\External\Draft2\Cocktail;
+use Kami\Cocktail\External\Model\Cocktail;
 use Symfony\Component\HttpClient\HttpClient;
-use Kami\Cocktail\External\Draft2\Ingredient;
+use Kami\Cocktail\External\Model\IngredientBasic;
 use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\HttpKernel\HttpCache\Store;
 use Symfony\Component\HttpClient\CachingHttpClient;
@@ -175,7 +174,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             ];
         }, $ingredients);
 
-        $cocktail = Cocktail::fromArray([
+        $cocktail = Cocktail::fromDraft2Array([
             'name' => $this->clean($this->name()),
             'instructions' => $this->instructions(),
             'description' => $this->cleanDescription($this->description()),
@@ -192,12 +191,12 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
 
         $model = new Schema(
             $cocktail,
-            array_map(fn ($ingredient) => Ingredient::fromArray($ingredient), $ingredients),
+            array_map(fn ($ingredient) => IngredientBasic::fromDraft2Array($ingredient), $ingredients),
         );
 
         return [
             'schema_version' => $model::SCHEMA_VERSION,
-            'schema' => $model->toArray(),
+            'schema' => $model->toDraft2Array(),
             'scraper_meta' => $meta,
         ];
     }
