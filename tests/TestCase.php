@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use Jcupitt\Vips\Image;
 use Laravel\Sanctum\Sanctum;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
@@ -46,12 +47,10 @@ abstract class TestCase extends BaseTestCase
         return $this;
     }
 
-    public function getFakeImageContent(string $extension = 'png')
+    public function getFakeImageContent(string $extension = 'png'): string
     {
-        $image = new \Imagick();
-        $image->newImage(10, 10, new \ImagickPixel('red'));
-        $image->setImageFormat($extension);
+        $image = Image::black(10, 10)->bandjoin([0, 0, 0]);
 
-        return $image;
+        return $image->writeToBuffer('.' . $extension);
     }
 }
