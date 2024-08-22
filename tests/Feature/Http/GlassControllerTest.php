@@ -28,6 +28,7 @@ class GlassControllerTest extends TestCase
     public function test_list_all_glasses_response(): void
     {
         Glass::factory()->recycle($this->barMembership->bar)->count(10)->create();
+        Glass::factory()->count(10)->create();
 
         $response = $this->getJson('/api/glasses', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 

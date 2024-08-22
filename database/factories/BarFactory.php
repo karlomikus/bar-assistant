@@ -18,6 +18,8 @@ class BarFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'description' => fake()->paragraph(),
+            'search_token' => 'test-token',
             'created_user_id' => \Kami\Cocktail\Models\User::factory(),
         ];
     }
