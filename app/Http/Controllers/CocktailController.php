@@ -13,7 +13,6 @@ use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
 use Spatie\ArrayToXml\ArrayToXml;
 use Kami\Cocktail\Models\Cocktail;
-use Intervention\Image\ImageManager;
 use Kami\Cocktail\DTO\Image\Image as ImageDTO;
 use Kami\Cocktail\Services\Image\ImageService;
 use Illuminate\Support\Facades\Validator;
@@ -386,12 +385,11 @@ class CocktailController extends Controller
         }
 
         // Copy images
-        $manager = ImageManager::imagick();
         $imageDTOs = [];
         foreach ($cocktail->images as $image) {
             try {
                 $imageDTOs[] = new ImageDTO(
-                    $manager->read($image->getPath()),
+                    file_get_contents($image->getPath()),
                     $image->copyright,
                     $image->sort,
                 );

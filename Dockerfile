@@ -1,4 +1,4 @@
-FROM php:8.2-fpm AS php-base
+FROM php:8.3-fpm AS php-base
 
 ARG PGID=1000
 ENV PGID=${PGID}
@@ -15,8 +15,9 @@ RUN apt update \
     sqlite3 \
     bash \
     cron \
+    && apt-get install -y --no-install-recommends libvips42 \
     && chmod +x /usr/local/bin/install-php-extensions \
-    && install-php-extensions imagick opcache redis zip pcntl bcmath intl \
+    && install-php-extensions opcache redis zip pcntl bcmath intl ffi \
     && echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf \
     && apt-get autoremove -y \
     && apt-get clean \

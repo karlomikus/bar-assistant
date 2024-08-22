@@ -10,15 +10,13 @@ use Psr\Log\LoggerInterface;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
-use Intervention\Image\Encoders\WebpEncoder;
 use Kami\Cocktail\DTO\Image\Image as ImageDTO;
-use Intervention\Image\Interfaces\ImageInterface;
+use Kami\Cocktail\Services\Image\ImageResizeService;
 use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
 
 final readonly class ImageService
 {
     public function __construct(
-        private ImageHashingService $imageHashingService,
         private FileSystemFactory $filesystemManager,
         private LoggerInterface $log,
     ) {
@@ -40,7 +38,8 @@ final readonly class ImageService
             }
 
             try {
-                [$thumbHash, $filepath, $fileExtension] = $this->processImageFile($dtoImage->file);
+                [$filepath, $fileExtension] = $this->processImageFile($dtoImage->file);
+                $thumbHash = ImageHashingService::generatePlaceholderHashFromFilepath($this->filesystemManager->disk('uploads')->path($filepath));
             } catch (Throwable) {
                 continue;
             }
@@ -74,7 +73,8 @@ final readonly class ImageService
         if ($imageDTO->file) {
             $oldFilePath = $image->file_path;
             try {
-                [$thumbHash, $filepath, $fileExtension] = $this->processImageFile($imageDTO->file);
+                [$filepath, $fileExtension] = $this->processImageFile($imageDTO->file);
+                $thumbHash = ImageHashingService::generatePlaceholderHashFromFilepath($this->filesystemManager->disk('uploads')->path($filepath));
 
                 $image->file_path = $filepath;
                 $image->placeholder_hash = $thumbHash;
@@ -126,36 +126,22 @@ final readonly class ImageService
         $this->filesystemManager->disk('uploads')->deleteDirectory('ingredients/' . $bar->id . '/');
     }
 
-    private function processImageFile(ImageInterface $image, ?string $filename = null): array
+    private function processImageFile(string $image, ?string $filename = null): array
     {
         $filename = $filename ?? Str::random(40);
 
-        $thumbHash = null;
         try {
-            $thumbHashImage = clone $image;
-            $thumbHash = $this->imageHashingService->generatePlaceholderHash($thumbHashImage);
-            unset($thumbHashImage);
-        } catch (Throwable $e) {
-            $this->log->error('[IMAGE_SERVICE] ThumbHash Error | ' . $e->getMessage());
-
-            throw $e;
-        }
-
-        try {
-            $image->scaleDown(height: 1400);
-            $encodedImage = $image->encode(new WebpEncoder(quality: 85));
-
             $fileExtension = 'webp';
-
             $filepath = 'temp/' . $filename . '.' . $fileExtension;
 
-            $this->filesystemManager->disk('uploads')->put($filepath, $encodedImage->toString());
+            $vipsImage = ImageResizeService::resizeImageTo($image);
+            $vipsImage->writeToFile($this->filesystemManager->disk('uploads')->path($filepath), ['Q' => 85]);
         } catch (Throwable $e) {
             $this->log->error('[IMAGE_SERVICE] ' . $e->getMessage());
 
             throw $e;
         }
 
-        return [$thumbHash, $filepath, $fileExtension];
+        return [$filepath, $fileExtension];
     }
 }

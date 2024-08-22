@@ -9,7 +9,6 @@ use Kami\Cocktail\DTO\Image\Image;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\External\Matcher;
-use Intervention\Image\ImageManager;
 use Kami\Cocktail\External\Model\Schema;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
@@ -53,11 +52,9 @@ class FromJsonSchema
         $cocktailImages = [];
         foreach ($cocktailExternal->cocktail->images as $image) {
             if ($image->uri) {
-                $manager = ImageManager::imagick();
-
                 try {
                     $imageDTO = new Image(
-                        $manager->read(file_get_contents($dirRef . $image->getLocalFilePath())),
+                        file_get_contents($dirRef . $image->getLocalFilePath()),
                         $image->copyright
                     );
 

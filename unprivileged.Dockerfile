@@ -6,7 +6,7 @@ ENV COMPOSER_NO_DEV=1
 
 USER root
 
-RUN install-php-extensions imagick bcmath intl
+RUN install-php-extensions imagick bcmath intl ffi
 
 RUN apt update \
     && apt-get install -y \

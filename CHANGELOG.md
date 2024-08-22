@@ -8,6 +8,8 @@ This is a new major release. Here's a quick summary of the more interesting chan
 
 ## Breaking changes
 - Minimal PHP version is now 8.3
+- Removed `imagick` PHP extension
+- New extensions required: `ffi`
 - Removed importing cocktails from collections
 - Removed importing data from Bar Assistant v2
 - List all cocktails and ingredients endpoints don't have default includes anymore
@@ -76,6 +78,10 @@ This is a new major release. Here's a quick summary of the more interesting chan
     - This endpoint is used to import cocktails from a zip file containing files exported via `schema` type
 
 ## Changes
+- Image processing moved from Imagick to Vips
+    - This now requires `libvips` to be installed on the server
+        - You can install it via `apt-get install -y --no-install-recommends libvips42`
+    - This now requires `ffi` PHP extension to be installed, and some .ini tweaks
 - Meilisearch client API keys are now generated via artisan command
 - All dates in responses are now in ISO 8601 format
 

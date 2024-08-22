@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Intervention\Image\ImageManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
@@ -60,18 +59,6 @@ class Image extends Model
         };
     }
 
-    public function getImageDataURI(): ?string
-    {
-        if (!$this->file_path) {
-            return null;
-        }
-
-        $manager = ImageManager::imagick();
-        $disk = Storage::disk('uploads');
-
-        return $manager->read($disk->path($this->file_path))->encode()->toDataUri();
-    }
-
     /**
      * @return MorphTo<Ingredient|Cocktail|Model, Image>
      */
@@ -112,13 +99,5 @@ class Image extends Model
     public function isTemp(): bool
     {
         return str_starts_with($this->file_path, 'temp/') || $this->imageable_id === null;
-    }
-
-    public function getThumb(): string
-    {
-        $disk = Storage::disk('uploads');
-        $manager = ImageManager::imagick();
-
-        return $manager->read($disk->get($this->file_path))->coverDown(400, 400)->toJpeg(50)->toString();
     }
 }

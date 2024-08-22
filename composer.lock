@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "957efb4e640130baf52c887822bd2490",
+    "content-hash": "c3e3df3b3843d7e6ad27dc34cea7d4ef",
     "packages": [
         {
             "name": "brick/math",
@@ -1167,32 +1167,39 @@
             "time": "2021-07-21T13:50:14+00:00"
         },
         {
-            "name": "intervention/gif",
-            "version": "4.1.0",
+            "name": "jcupitt/vips",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Intervention/gif.git",
-                "reference": "3a2b5f8a8856e8877cdab5c47e51aab2d4cb23a3"
+                "url": "https://github.com/libvips/php-vips.git",
+                "reference": "69c343e0bc7bac6dc82f4f16f985d8d6a15eb05a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Intervention/gif/zipball/3a2b5f8a8856e8877cdab5c47e51aab2d4cb23a3",
-                "reference": "3a2b5f8a8856e8877cdab5c47e51aab2d4cb23a3",
+                "url": "https://api.github.com/repos/libvips/php-vips/zipball/69c343e0bc7bac6dc82f4f16f985d8d6a15eb05a",
+                "reference": "69c343e0bc7bac6dc82f4f16f985d8d6a15eb05a",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.1"
+                "ext-ffi": "*",
+                "php": ">=7.4",
+                "psr/log": "^1.1.3|^2.0|^3.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1",
-                "phpunit/phpunit": "^10.0",
-                "slevomat/coding-standard": "~8.0",
-                "squizlabs/php_codesniffer": "^3.8"
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phpdocumentor/shim": "^3.3",
+                "phpunit/phpunit": "^9.5",
+                "squizlabs/php_codesniffer": "^3.7"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
-                    "Intervention\\Gif\\": "src"
+                    "Jcupitt\\Vips\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1201,106 +1208,24 @@
             ],
             "authors": [
                 {
-                    "name": "Oliver Vogel",
-                    "email": "oliver@intervention.io",
-                    "homepage": "https://intervention.io/"
+                    "name": "John Cupitt",
+                    "email": "jcupitt@gmail.com",
+                    "homepage": "https://github.com/jcupitt",
+                    "role": "Developer"
                 }
             ],
-            "description": "Native PHP GIF Encoder/Decoder",
-            "homepage": "https://github.com/intervention/gif",
+            "description": "A high-level interface to the libvips image processing library.",
+            "homepage": "https://github.com/libvips/php-vips",
             "keywords": [
-                "animation",
-                "gd",
-                "gif",
-                "image"
-            ],
-            "support": {
-                "issues": "https://github.com/Intervention/gif/issues",
-                "source": "https://github.com/Intervention/gif/tree/4.1.0"
-            },
-            "funding": [
-                {
-                    "url": "https://paypal.me/interventionio",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/Intervention",
-                    "type": "github"
-                }
-            ],
-            "time": "2024-03-26T17:23:47+00:00"
-        },
-        {
-            "name": "intervention/image",
-            "version": "3.7.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Intervention/image.git",
-                "reference": "5451ff9f909c2fc836722e5ed6831b9f9a6db68c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Intervention/image/zipball/5451ff9f909c2fc836722e5ed6831b9f9a6db68c",
-                "reference": "5451ff9f909c2fc836722e5ed6831b9f9a6db68c",
-                "shasum": ""
-            },
-            "require": {
-                "ext-mbstring": "*",
-                "intervention/gif": "^4.1",
-                "php": "^8.1"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.6",
-                "phpstan/phpstan": "^1",
-                "phpunit/phpunit": "^10.0",
-                "slevomat/coding-standard": "~8.0",
-                "squizlabs/php_codesniffer": "^3.8"
-            },
-            "suggest": {
-                "ext-exif": "Recommended to be able to read EXIF data properly."
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Intervention\\Image\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Oliver Vogel",
-                    "email": "oliver@intervention.io",
-                    "homepage": "https://intervention.io/"
-                }
-            ],
-            "description": "PHP image manipulation",
-            "homepage": "https://image.intervention.io/",
-            "keywords": [
-                "gd",
                 "image",
-                "imagick",
-                "resize",
-                "thumbnail",
-                "watermark"
+                "libvips",
+                "processing"
             ],
             "support": {
-                "issues": "https://github.com/Intervention/image/issues",
-                "source": "https://github.com/Intervention/image/tree/3.7.2"
+                "issues": "https://github.com/libvips/php-vips/issues",
+                "source": "https://github.com/libvips/php-vips/tree/v2.4.0"
             },
-            "funding": [
-                {
-                    "url": "https://paypal.me/interventionio",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/Intervention",
-                    "type": "github"
-                }
-            ],
-            "time": "2024-07-05T13:35:01+00:00"
+            "time": "2024-04-09T09:27:18+00:00"
         },
         {
             "name": "kalnoy/nestedset",
