@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Http;
 
 use Tests\TestCase;
-use Kami\Cocktail\Models\Bar;
-use Kami\Cocktail\Models\User;
-use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\Models\UserRoleEnum;
 use Kami\Cocktail\Models\UserShoppingList;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,27 +14,18 @@ class ShoppingListControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $user = User::factory()->create();
-        $this->actingAs($user);
-    }
-
     public function test_list_ingredients_on_shopping_list_response(): void
     {
-        $this->setupBar();
-        $ingredients = Ingredient::factory()->count(5)->create(['bar_id' => 1]);
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
 
-        foreach ($ingredients as $ingredient) {
-            $usl = new UserShoppingList();
-            $usl->ingredient_id = $ingredient->id;
-            $usl->bar_membership_id = 1;
-            $usl->save();
-        }
+        UserShoppingList::factory()->count(5)->create();
+        UserShoppingList::factory()
+            ->recycle($membership, $membership->bar, $membership->user)
+            ->count(5)
+            ->create();
 
-        $response = $this->getJson('/api/shopping-list?bar_id=1');
+        $response = $this->getJson('/api/users/'. $membership->user_id .'/shopping-list', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertOk();
         $response->assertJson(
@@ -51,65 +38,56 @@ class ShoppingListControllerTest extends TestCase
 
     public function test_add_multiple_ingredients_to_shopping_list_response(): void
     {
-        $this->setupBar();
-        $ingredients = Ingredient::factory()->count(3)->create(['bar_id' => 1]);
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+        $ingredients = Ingredient::factory()->recycle($membership->bar)->count(3)->create();
 
-        $response = $this->postJson('/api/shopping-list/batch-store?bar_id=1', [
-            'ingredient_ids' => $ingredients->pluck('id')->toArray()
-        ]);
+        $response = $this->postJson('/api/users/'. $membership->user_id .'/shopping-list/batch-store', [
+            'ingredients' => $ingredients->map(function ($ing) {
+                return ['id' => $ing->id];
+            })->toArray()
+        ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
-        $response->assertOk();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data', 3)
-                ->etc()
-        );
+        $response->assertNoContent();
     }
 
     public function test_add_multiple_ingredients_to_shopping_list_from_another_bar_response(): void
     {
-        $this->setupBar();
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
 
-        Bar::factory()->create(['id' => 2]);
-        DB::table('bar_memberships')->insert(['id' => 2, 'bar_id' => 2, 'user_id' => 1, 'user_role_id' => UserRoleEnum::Admin->value]);
-        $ing1 = Ingredient::factory()->create(['bar_id' => 1]);
-        $ing2 = Ingredient::factory()->create(['bar_id' => 2]);
+        $unOwnedIngredients = Ingredient::factory()->count(3)->create();
 
-        $response = $this->postJson('/api/shopping-list/batch-store?bar_id=1', [
-            'ingredient_ids' => [$ing1->id, $ing2->id]
-        ]);
+        $response = $this->postJson('/api/users/'. $membership->user_id .'/shopping-list/batch-store', [
+            'ingredients' => $unOwnedIngredients->map(function ($ing) {
+                return ['id' => $ing->id];
+            })->toArray()
+        ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
-        $response->assertOk();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data', 1)
-                ->where('data.0.ingredient_id', $ing1->id)
-                ->etc()
-        );
+        $response->assertNoContent();
+        $this->assertDatabaseCount('user_shopping_lists', 0);
     }
 
     public function test_delete_multiple_ingredients_from_shopping_list_response(): void
     {
-        $this->setupBar();
-        $ingredients = Ingredient::factory()->count(2)->create(['bar_id' => 1]);
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
 
-        foreach ($ingredients as $ingredient) {
-            $usl = new UserShoppingList();
-            $usl->ingredient_id = $ingredient->id;
-            $usl->bar_membership_id = 1;
-            $usl->save();
-        }
+        $ingredients = UserShoppingList::factory()
+            ->recycle($membership, $membership->bar, $membership->user)
+            ->count(5)
+            ->create();
 
-        $response = $this->postJson('/api/shopping-list/batch-delete?bar_id=1', [
-            'ingredient_ids' => $ingredients->pluck('id')->toArray()
-        ]);
+        $this->assertDatabaseCount('user_shopping_lists', 5);
+
+        $response = $this->postJson('/api/users/'. $membership->user_id .'/shopping-list/batch-delete', [
+            'ingredients' => $ingredients->pluck('ingredient')->map(function ($ing) {
+                return ['id' => $ing->id];
+            })->toArray()
+        ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertNoContent();
 
-        foreach ($ingredients as $ingredient) {
-            $this->assertDatabaseMissing('user_shopping_lists', ['ingredient_id' => $ingredient->id, 'bar_memebership_id' => 1]);
-        }
+        $this->assertDatabaseCount('user_shopping_lists', 0);
     }
 }

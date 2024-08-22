@@ -96,7 +96,9 @@ class ShoppingListController extends Controller
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(property: 'ingredient_ids', type: 'array', items: new OAT\Items(type: 'integer')),
+                new OAT\Property(property: 'ingredients', type: 'array', items: new OAT\Items(type: 'object', properties: [
+                    new OAT\Property(property: 'id', type: 'integer'),
+                ])),
             ]),
         ]
     ))]
@@ -112,10 +114,11 @@ class ShoppingListController extends Controller
 
         $barMembership = $user->getBarMembership(bar()->id);
 
+        $requestIngredients = collect($request->post('ingredients'));
         $ingredients = DB::table('ingredients')
             ->select('id')
             ->where('bar_id', $barMembership->bar_id)
-            ->whereIn('id', $request->post('ingredient_ids'))
+            ->whereIn('id', $requestIngredients->pluck('id'))
             ->pluck('id');
 
         try {
