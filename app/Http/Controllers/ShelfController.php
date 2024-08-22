@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Repository\IngredientRepository;
 use Kami\Cocktail\Http\Resources\CocktailBasicResource;
-use Kami\Cocktail\Http\Requests\IngredientsBatchRequest;
 use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 
 class ShelfController extends Controller
@@ -36,12 +36,12 @@ class ShelfController extends Controller
     ])]
     public function ingredients(Request $request, int $id): JsonResource
     {
-        // TODO: Change this to be generic
-        if ($request->user()->id !== $id) {
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
             abort(403);
         }
 
-        $barMembership = $request->user()->getBarMembership(bar()->id);
+        $barMembership = $user->getBarMembership(bar()->id);
         $barMembership->load('userIngredients.ingredient');
         $userIngredientIds = $barMembership
             ->userIngredients
@@ -65,7 +65,12 @@ class ShelfController extends Controller
     ])]
     public function cocktails(CocktailRepository $cocktailRepo, Request $request, int $id): JsonResource
     {
-        $barMembership = $request->user()->getBarMembership(bar()->id);
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
+
+        $barMembership = $user->getBarMembership(bar()->id);
 
         $cocktailIds = $cocktailRepo->getCocktailsByIngredients(
             $barMembership->userIngredients->pluck('ingredient_id')->toArray(),
@@ -91,7 +96,12 @@ class ShelfController extends Controller
     ])]
     public function favorites(Request $request, int $id): JsonResource
     {
-        $barMembership = $request->user()->getBarMembership(bar()->id);
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
+
+        $barMembership = $user->getBarMembership(bar()->id);
 
         $cocktailIds = CocktailFavorite::where('bar_membership_id', $barMembership->id)->pluck('cocktail_id');
 
@@ -116,9 +126,14 @@ class ShelfController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchStore(IngredientsBatchRequest $request, int $id): Response
+    public function batchStore(Request $request, int $id): Response
     {
-        $barMembership = $request->user()->getBarMembership(bar()->id);
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
+
+        $barMembership = $user->getBarMembership(bar()->id);
 
         $ingredients = DB::table('ingredients')
             ->select('id')
@@ -158,7 +173,12 @@ class ShelfController extends Controller
     #[BAO\NotFoundResponse]
     public function batchDelete(Request $request, int $id): Response
     {
-        $barMembership = $request->user()->getBarMembership(bar()->id);
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
+
+        $barMembership = $user->getBarMembership(bar()->id);
 
         $ingredients = DB::table('ingredients')
             ->select('id')
@@ -185,9 +205,14 @@ class ShelfController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function recommend(Request $request, IngredientRepository $ingredientRepo): \Illuminate\Http\JsonResponse
+    public function recommend(Request $request, IngredientRepository $ingredientRepo, int $id): \Illuminate\Http\JsonResponse
     {
-        $barMembership = $request->user()->getBarMembership(bar()->id);
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
+
+        $barMembership = $user->getBarMembership(bar()->id);
 
         if (!$barMembership) {
             abort(404);

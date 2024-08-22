@@ -3,11 +3,12 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Kami\Cocktail\Models\UserRoleEnum;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Kami\Cocktail\Models\IngredientCategory>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Kami\Cocktail\Models\BarMembership>
  */
-class IngredientCategoryFactory extends Factory
+class BarMembershipFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,8 +18,9 @@ class IngredientCategoryFactory extends Factory
     public function definition()
     {
         return [
-            'name' => fake()->name(),
-            'description' => fake()->paragraph(),
+            'is_active' => true,
+            'user_role_id' => UserRoleEnum::Admin->value,
+            'user_id' => \Kami\Cocktail\Models\User::factory(),
             'bar_id' => \Kami\Cocktail\Models\Bar::factory(),
         ];
     }

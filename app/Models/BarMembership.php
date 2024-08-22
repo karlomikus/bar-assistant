@@ -7,10 +7,14 @@ namespace Kami\Cocktail\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class BarMembership extends Model
 {
+    /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\BarMembershipFactory> */
+    use HasFactory;
+
     protected $casts = [
         'is_shelf_public' => 'boolean',
         'use_parent_as_substitute' => 'boolean',
