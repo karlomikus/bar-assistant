@@ -22,4 +22,12 @@ class UserIngredient extends Model
     {
         return $this->belongsTo(Ingredient::class);
     }
+
+    /**
+     * @return BelongsTo<BarMembership, UserIngredient>
+     */
+    public function barMembership(): BelongsTo
+    {
+        return $this->belongsTo(BarMembership::class);
+    }
 }

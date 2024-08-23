@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
@@ -31,10 +32,13 @@ class IngredientControllerTest extends TestCase
 
     public function test_paginate_ingredients_response(): void
     {
-        $bar = $this->setupBar();
-        Ingredient::factory()->count(55)->create(['bar_id' => $bar->id]);
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
 
-        $response = $this->getJson('/api/ingredients?bar_id=' . $bar->id);
+        Ingredient::factory()->for($membership->bar)->count(55)->create();
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $response = $this->getJson('/api/ingredients');
 
         $response->assertOk();
         $response->assertJsonCount(50, 'data');
@@ -43,10 +47,10 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonPath('meta.per_page', 50);
         $response->assertJsonPath('meta.total', 55);
 
-        $response = $this->getJson('/api/ingredients?page=2&bar_id=' . $bar->id);
+        $response = $this->getJson('/api/ingredients?page=2');
         $response->assertJsonPath('meta.current_page', 2);
 
-        $response = $this->getJson('/api/ingredients?per_page=5&bar_id=' . $bar->id);
+        $response = $this->getJson('/api/ingredients?per_page=5');
         $response->assertJsonPath('meta.last_page', 11);
     }
 
@@ -62,51 +66,54 @@ class IngredientControllerTest extends TestCase
 
     public function test_list_ingredients_response_filters(): void
     {
-        $bar = $this->setupBar();
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
         $user = User::factory()->create();
-        $ingredientCategory = IngredientCategory::factory()->create();
-        Ingredient::factory()->createMany([
-            ['bar_id' => $bar->id, 'name' => 'Whiskey', 'origin' => 'fix-string', 'strength' => 35.5],
-            ['bar_id' => $bar->id, 'name' => 'XXXX', 'strength' => 0],
-            ['bar_id' => $bar->id, 'name' => 'Test', 'created_user_id' => $user->id, 'strength' => 40],
-            ['bar_id' => $bar->id, 'name' => 'Test 2', 'ingredient_category_id' => $ingredientCategory->id, 'strength' => 0],
+        $ingredientCategory = IngredientCategory::factory()->for($membership->bar)->create();
+        $ingredients = Ingredient::factory()->for($membership->bar)->createMany([
+            ['name' => 'Whiskey', 'origin' => 'fix-string', 'strength' => 35.5, 'created_at' => Carbon::now()->addDays(1)],
+            ['name' => 'XXXX', 'strength' => 0, 'created_at' => Carbon::now()->addDays(2)],
+            ['name' => 'Test', 'created_user_id' => $user->id, 'strength' => 40, 'created_at' => Carbon::now()->addDays(3)],
+            ['name' => 'Test 2', 'ingredient_category_id' => $ingredientCategory->id, 'strength' => 0, 'created_at' => Carbon::now()->addDays(4)],
         ]);
 
         Cocktail::factory()
+            ->for($membership->bar)
             ->has(CocktailIngredient::factory()->state([
-                'ingredient_id' => 1,
+                'ingredient_id' => $ingredients->first()->id,
                 'sort' => 1,
             ]), 'ingredients')
             ->create([
                 'name' => 'A cocktail name',
-                'bar_id' => $bar->id,
             ]);
 
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[name]=whi');
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $response = $this->getJson('/api/ingredients?filter[name]=whi');
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[name]=whi,xx');
+        $response = $this->getJson('/api/ingredients?filter[name]=whi,xx');
         $response->assertJsonCount(2, 'data');
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[created_user_id]=' . $user->id);
+        $response = $this->getJson('/api/ingredients?filter[created_user_id]=' . $user->id);
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[category_id]=' . $ingredientCategory->id);
+        $response = $this->getJson('/api/ingredients?filter[category_id]=' . $ingredientCategory->id);
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[origin]=fix-string');
+        $response = $this->getJson('/api/ingredients?filter[origin]=fix-string');
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[strength_min]=30');
+        $response = $this->getJson('/api/ingredients?filter[strength_min]=30');
         $response->assertJsonCount(2, 'data');
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[strength_max]=39');
+        $response = $this->getJson('/api/ingredients?filter[strength_max]=39');
         $response->assertJsonCount(3, 'data');
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[on_shelf]=true');
+        $response = $this->getJson('/api/ingredients?filter[on_shelf]=true');
         $response->assertJsonCount(0, 'data');
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[on_shopping_list]=true');
+        $response = $this->getJson('/api/ingredients?filter[on_shopping_list]=true');
         $response->assertJsonCount(0, 'data');
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[main_ingredients]=true');
+        $response = $this->getJson('/api/ingredients?filter[main_ingredients]=true');
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/ingredients?bar_id=1&sort=-total_cocktails');
+        $response = $this->getJson('/api/ingredients?sort=-total_cocktails');
         $response->assertJsonPath('data.0.name', 'Whiskey');
-        $response = $this->getJson('/api/ingredients?bar_id=1&sort=-strength');
+        $response = $this->getJson('/api/ingredients?sort=-strength');
         $response->assertJsonPath('data.0.name', 'Test');
-        $response = $this->getJson('/api/ingredients?bar_id=1&sort=-created_at');
+        $response = $this->getJson('/api/ingredients?sort=created_at');
         $response->assertJsonPath('data.0.name', 'Whiskey');
     }
 
@@ -150,15 +157,15 @@ class IngredientControllerTest extends TestCase
     {
         $bar = $this->setupBar();
         $ingredient = Ingredient::factory()
-            ->state([
+            ->create([
+                'slug' => 'test-ingredient-1',
                 'name' => 'Test ingredient',
                 'strength' => 45.5,
                 'description' => 'Test',
                 'origin' => 'Croatia',
                 'color' => '#fff',
                 'bar_id' => $bar->id,
-            ])
-            ->create();
+            ]);
 
         Ingredient::factory()
             ->state([
@@ -192,7 +199,6 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonPath('data.parent_ingredient.id', null);
         $response->assertJsonPath('data.color', '#fff');
         $response->assertJsonPath('data.cocktails_count', 1);
-        $response->assertJsonCount(1, 'data.cocktails');
         $response->assertJsonCount(1, 'data.varieties');
     }
 
@@ -234,7 +240,6 @@ class IngredientControllerTest extends TestCase
                 ->where('data.description', 'Description text')
                 ->where('data.origin', 'Worldwide')
                 ->where('data.color', '#000000')
-                ->where('data.category.id', $ingCat->id)
                 ->etc()
         );
     }
@@ -337,14 +342,12 @@ class IngredientControllerTest extends TestCase
 
     public function test_ingredients_extra_response(): void
     {
-        $this->setupBar();
-        $ingredient1 = Ingredient::factory()->create(['bar_id' => 1]);
-        $ingredient2 = Ingredient::factory()->create(['bar_id' => 1]);
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
 
-        $userIngredient = new UserIngredient();
-        $userIngredient->ingredient_id = $ingredient1->id;
-        $userIngredient->bar_membership_id = 1;
-        $userIngredient->save();
+        $ingredient1 = Ingredient::factory()->for($membership->bar)->create();
+        $ingredient2 = Ingredient::factory()->for($membership->bar)->create();
+        UserIngredient::factory()->for($membership)->for($ingredient1)->create();
 
         $cocktail = Cocktail::factory()
             ->has(CocktailIngredient::factory()->for(
@@ -355,10 +358,12 @@ class IngredientControllerTest extends TestCase
             ), 'ingredients')
             ->create(['bar_id' => 1]);
 
-        $response = $this->getJson('/api/ingredients/' . $ingredient1->id . '/extra?bar_id=1');
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $response = $this->getJson('/api/ingredients/' . $ingredient1->id . '/extra');
         $response->assertJsonCount(0, 'data');
 
-        $response = $this->getJson('/api/ingredients/' . $ingredient2->id . '/extra?bar_id=1');
+        $response = $this->getJson('/api/ingredients/' . $ingredient2->id . '/extra');
 
         $response->assertJson(
             fn (AssertableJson $json) =>

@@ -76,7 +76,7 @@ class Ingredient extends Model
     }
 
     /**
-     * @return BelongsTo<Bar, Cocktail>
+     * @return BelongsTo<Bar, Ingredient>
      */
     public function bar(): BelongsTo
     {
