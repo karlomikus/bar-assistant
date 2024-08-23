@@ -27,7 +27,6 @@ use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\DTO\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
-use Kami\Cocktail\Http\Resources\CocktailPublicResource;
 use Kami\Cocktail\DTO\Cocktail\Ingredient as IngredientDTO;
 use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
 
@@ -234,7 +233,7 @@ class CocktailController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\CocktailPublic::class),
+        new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -249,12 +248,12 @@ class CocktailController extends Controller
         }
 
         if ($cocktail->public_id) {
-            return new CocktailPublicResource($cocktail);
+            return new CocktailResource($cocktail);
         }
 
         $cocktail = $cocktail->makePublic(now());
 
-        return new CocktailPublicResource($cocktail);
+        return new CocktailResource($cocktail);
     }
 
     #[OAT\Delete(path: '/cocktails/{id}/public-link', tags: ['Cocktails'], summary: 'Delete cocktail public link', parameters: [
