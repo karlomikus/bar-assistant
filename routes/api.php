@@ -48,8 +48,6 @@ if (config('bar-assistant.mail_require_confirmation') === true) {
     $apiMiddleware[] = 'verified';
 }
 
-Route::get('/', [ServerController::class, 'index']);
-
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'authenticate'])->name('auth.login');
     Route::post('register', [AuthController::class, 'register']);

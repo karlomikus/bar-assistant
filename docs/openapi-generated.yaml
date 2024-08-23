@@ -3609,6 +3609,23 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /server/version:
+    get:
+      tags:
+        - Server
+      summary: 'Show server information'
+      operationId: 25784e4e494f0fd4dbbdb7b92c301b26
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/ServerVersion' }
+                type: object
+      security:
+        - {  }
   '/users/{id}/ingredients':
     get:
       tags:
@@ -6335,6 +6352,26 @@ components:
           minLength: 5
           example: password
       type: object
+    ServerVersion:
+      required:
+        - version
+        - type
+        - search_host
+        - search_version
+      properties:
+        version:
+          type: string
+          example: 1.0.0
+        type:
+          type: string
+          example: production
+        search_host:
+          type: string
+          example: 'https://search.example.com'
+        search_version:
+          type: string
+          example: 1.2.0
+      type: object
     ShoppingList:
       required:
         - ingredient
@@ -6557,6 +6594,9 @@ tags:
   -
     name: Ratings
     description: Ratings
+  -
+    name: Server
+    description: Server
   -
     name: 'Users: Shelf'
     description: 'Users: Shelf'
