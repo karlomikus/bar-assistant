@@ -6,7 +6,6 @@ use Tests\TestCase;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;

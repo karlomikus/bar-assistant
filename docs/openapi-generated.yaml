@@ -1013,7 +1013,7 @@ paths:
             type: string
             enum:
               - json
-              - json+ld
+              - json-ld
               - yaml
               - yml
               - xml
@@ -4067,9 +4067,9 @@ paths:
           application/json:
             schema:
               properties:
-                ingredient_ids:
+                ingredients:
                   type: array
-                  items: { type: integer }
+                  items: { properties: { id: { type: integer } }, type: object }
               type: object
       responses:
         '204':
@@ -4760,7 +4760,7 @@ components:
         - datapack
         - schema
         - md
-        - json+ld
+        - json-ld
         - xml
     DuplicateActionsEnum:
       type: string

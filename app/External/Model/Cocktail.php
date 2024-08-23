@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External\Model;
 
 use Illuminate\Support\Str;
-use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\External\SupportsJSONLD;
+use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Image as ImageModel;
 use Kami\Cocktail\Models\Cocktail as CocktailModel;
 use Kami\Cocktail\Models\CocktailIngredient as CocktailIngredientModel;
@@ -201,11 +201,12 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             "recipeCategory" => "Drink",
             "recipeCuisine" => "Cocktail",
             "keywords" => implode(', ', $this->tags),
-            "recipeIngredient" => array_map(function(CocktailIngredient $ci) {
+            "recipeIngredient" => array_map(function (CocktailIngredient $ci) {
                 return $ci->amount . ' ' . $ci->units . ' ' . $ci->ingredient->name;
             }, $this->ingredients),
         ], $image);
 
-        return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);;
+        return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        ;
     }
 }

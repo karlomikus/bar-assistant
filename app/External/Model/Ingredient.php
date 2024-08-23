@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\External\Model;
 
-use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\ComplexIngredient;
+use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Image as ImageModel;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 use Kami\Cocktail\Models\IngredientPrice as IngredientPriceModel;

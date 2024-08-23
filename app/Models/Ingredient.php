@@ -76,6 +76,14 @@ class Ingredient extends Model
     }
 
     /**
+     * @return BelongsTo<Bar, Cocktail>
+     */
+    public function bar(): BelongsTo
+    {
+        return $this->belongsTo(Bar::class);
+    }
+
+    /**
      * @return BelongsTo<User, Ingredient>
      */
     public function user(): BelongsTo

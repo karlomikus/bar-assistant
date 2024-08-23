@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Kami\Cocktail\Models\Collection>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Kami\Cocktail\Models\CocktailFavorite>
  */
-class CollectionFactory extends Factory
+class CocktailFavoriteFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,8 +17,7 @@ class CollectionFactory extends Factory
     public function definition()
     {
         return [
-            'name' => fake()->name(),
-            'description' => fake()->paragraph(),
+            'cocktail_id' => \Kami\Cocktail\Models\Cocktail::factory(),
             'bar_membership_id' => \Kami\Cocktail\Models\BarMembership::factory(),
         ];
     }

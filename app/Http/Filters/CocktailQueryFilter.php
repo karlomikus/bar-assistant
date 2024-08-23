@@ -9,8 +9,8 @@ use Kami\Cocktail\Models\Cocktail;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Kami\Cocktail\Repository\CocktailRepository;
 use Spatie\QueryBuilder\AllowedInclude;
+use Kami\Cocktail\Repository\CocktailRepository;
 
 /**
  * @mixin \Kami\Cocktail\Models\Cocktail

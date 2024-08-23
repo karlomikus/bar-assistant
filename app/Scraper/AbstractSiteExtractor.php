@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
+use Symfony\Component\Uid\Ulid;
 use Kami\RecipeUtils\Parser\Parser;
 use Kami\RecipeUtils\RecipeIngredient;
 use Kami\Cocktail\External\Model\Schema;
@@ -11,12 +12,11 @@ use Kami\RecipeUtils\UnitConverter\Units;
 use Symfony\Component\DomCrawler\Crawler;
 use Kami\Cocktail\External\Model\Cocktail;
 use Symfony\Component\HttpClient\HttpClient;
-use Kami\Cocktail\External\Model\IngredientBasic;
 use Symfony\Component\BrowserKit\HttpBrowser;
+use Kami\Cocktail\External\Model\IngredientBasic;
 use Symfony\Component\HttpKernel\HttpCache\Store;
 use Symfony\Component\HttpClient\CachingHttpClient;
 use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
-use Symfony\Component\Uid\Ulid;
 
 abstract class AbstractSiteExtractor implements SiteExtractorContract
 {

@@ -6,8 +6,8 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\User;
-use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OAT;
+use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Hash;

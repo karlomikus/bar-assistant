@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\External;
 
-use Kami\Cocktail\Models\Glass;
 use Illuminate\Support\Facades\DB;
-use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\Services\IngredientService;
-use Kami\Cocktail\Models\Ingredient as IngredientModel;
 use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;
 
 class Matcher

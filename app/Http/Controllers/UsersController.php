@@ -6,10 +6,10 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\User;
+use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Kami\Cocktail\Mail\AccountDeleted;

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Menu;
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Http\Requests\MenuRequest;
 use Kami\Cocktail\Http\Resources\MenuResource;
 use Illuminate\Http\Resources\Json\JsonResource;

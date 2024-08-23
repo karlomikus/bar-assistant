@@ -17,8 +17,13 @@ class CocktailIngredientFactory extends Factory
     public function definition()
     {
         return [
-            'amount' => 60,
-            'units' => 'ml',
+            'amount' => fake()->numberBetween(1, 60),
+            'amount_max' => fake()->optional()->numberBetween(1, 60),
+            'sort' => 1,
+            'optional' => fake()->boolean(),
+            'note' => fake()->sentence(),
+            'units' => fake()->randomElement(['ml', 'cl', 'oz', 'dashes', 'drops', 'tablespoons', 'teaspoons', 'cups', 'pints', 'quarts']),
+            'cocktail_id' => \Kami\Cocktail\Models\Cocktail::factory(),
             'ingredient_id' => \Kami\Cocktail\Models\Ingredient::factory(),
         ];
     }

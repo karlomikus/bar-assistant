@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\External\Model;
 
-use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\External\SupportsDraft2;
+use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Image as ImageModel;
 
 readonly class Image implements SupportsDraft2, SupportsDataPack

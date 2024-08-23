@@ -11,7 +11,6 @@ use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\DTO\Image\Image as ImageDTO;
-use Kami\Cocktail\Services\Image\ImageResizeService;
 use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
 
 final readonly class ImageService

@@ -126,7 +126,7 @@ class CollectionController extends Controller
                 ->pluck('id');
             $collection->cocktails()->attach($cocktails);
         }
-        $collection->load('barMembership');
+        $collection->load('barMembership', 'cocktails');
 
         return (new CollectionResource($collection))
             ->response()
@@ -160,6 +160,8 @@ class CollectionController extends Controller
         $collection->updated_at = now();
         $collection->is_bar_shared = (bool) $request->post('is_bar_shared');
         $collection->save();
+
+        $collection->load('barMembership', 'cocktails');
 
         return new CollectionResource($collection);
     }
@@ -195,7 +197,7 @@ class CollectionController extends Controller
                     ->where('bar_id', $collection->barMembership->bar_id)
                     ->whereIn('id', $cocktailIds)
                     ->pluck('id');
-                $collection->cocktails()->syncWithoutDetaching($cocktails);
+                $collection->cocktails()->sync($cocktails);
             } else {
                 $collection->cocktails()->detach();
             }
@@ -205,6 +207,8 @@ class CollectionController extends Controller
         } catch (Throwable) {
             abort(500, 'Unable to add cocktails to collection!');
         }
+
+        $collection->load('barMembership', 'cocktails');
 
         return new CollectionResource($collection);
     }

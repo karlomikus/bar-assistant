@@ -7,9 +7,9 @@ namespace Tests\Feature\Http;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Glass;
+use Kami\Cocktail\Models\BarMembership;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Kami\Cocktail\Models\BarMembership;
 
 class GlassControllerTest extends TestCase
 {

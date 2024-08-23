@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Requests;
 
 use Illuminate\Validation\Rule;
-use Illuminate\Foundation\Http\FormRequest;
 use Kami\Cocktail\External\ExportTypeEnum;
+use Illuminate\Foundation\Http\FormRequest;
 
 class ExportRequest extends FormRequest
 {

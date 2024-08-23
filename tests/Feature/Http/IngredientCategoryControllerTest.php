@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Http;
 
 use Tests\TestCase;
-use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\BarMembership;
 use Kami\Cocktail\Models\IngredientCategory;
 use Illuminate\Testing\Fluent\AssertableJson;

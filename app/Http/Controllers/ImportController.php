@@ -19,9 +19,9 @@ use Kami\Cocktail\External\Model\Schema;
 use Kami\Cocktail\Http\Requests\ImportRequest;
 use Kami\Cocktail\Http\Requests\ScrapeRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\External\Import\FromJsonSchema;
 use Kami\Cocktail\Http\Requests\ImportFileRequest;
+use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
 class ImportController extends Controller

@@ -8,17 +8,17 @@ use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\OpenAPI as BAO;
 use Spatie\ArrayToXml\ArrayToXml;
 use Kami\Cocktail\Models\Cocktail;
-use Kami\Cocktail\DTO\Image\Image as ImageDTO;
-use Kami\Cocktail\Services\Image\ImageService;
 use Illuminate\Support\Facades\Validator;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
+use Kami\Cocktail\DTO\Image\Image as ImageDTO;
+use Kami\Cocktail\Services\Image\ImageService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Repository\CocktailRepository;
@@ -142,9 +142,7 @@ class CocktailController extends Controller
             abort(500, $e->getMessage());
         }
 
-        $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
-            $query->orderBy('sort');
-        }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
+        $cocktail->load(['ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings']);
 
         return (new CocktailResource($cocktail))
             ->response()

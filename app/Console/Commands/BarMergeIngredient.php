@@ -3,12 +3,16 @@
 namespace Kami\Cocktail\Console\Commands;
 
 use Illuminate\Console\Command;
+
+use function Laravel\Prompts\spin;
+
 use Illuminate\Support\Facades\DB;
+
+use function Laravel\Prompts\search;
+
 use Kami\Cocktail\Models\Ingredient;
 
 use function Laravel\Prompts\confirm;
-use function Laravel\Prompts\spin;
-use function Laravel\Prompts\search;
 use function Laravel\Prompts\multisearch;
 
 class BarMergeIngredient extends Command
