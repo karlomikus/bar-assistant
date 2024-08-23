@@ -1,73 +1,103 @@
 {
-    "name": "Cocktail name",
-    "instructions": "Instruction data",
-    "description": "Description data",
-    "garnish": "Garnish data",
-    "source": "Laravel",
-    "tags": [
-        "Tag 1",
-        "Tag 2"
-    ],
-    "abv": 14.2,
-    "glass": "Glass name",
-    "method": "Method name",
-    "utensils": [],
-    "images": [
-        {
-            "source": null,
-            "copyright": "Localhost",
-            "sort": 1
-        }
-    ],
+    "recipe": {
+        "_id": "negroni",
+        "name": "Negroni",
+        "instructions": "Pour all ingredients directly into a chilled old fashioned glass filled with ice, Stir gently.",
+        "created_at": "2024-06-08T09:42:03+00:00",
+        "updated_at": null,
+        "description": "A traditionally made Negroni is stirred, not shaken; it is built over ice in an old-fashioned or rocks glass and garnished with a slice of orange. Outside of Italy, an orange peel is often used in place of an orange slice.",
+        "source": "https://iba-world.com/negroni/",
+        "garnish": "Garnish with a half orange slice.",
+        "abv": 25.15,
+        "tags": [
+            "IBA Cocktail",
+            "The Unforgettables",
+            "Negroni",
+            "Bitter"
+        ],
+        "glass": "Lowball",
+        "method": "Build",
+        "utensils": [],
+        "images": [
+            {
+                "uri": "test.jpg",
+                "sort": 1,
+                "placeholder_hash": "pCgKHQibRlBk6WloymmXmXZ4YFUH",
+                "copyright": "Test"
+            }
+        ],
+        "ingredients": [
+            {
+                "_id": "gin",
+                "amount": 30,
+                "units": "ml",
+                "optional": false,
+                "amount_max": null,
+                "note": null,
+                "substitutes": [],
+                "sort": 1
+            },
+            {
+                "_id": "campari",
+                "amount": 30,
+                "units": "ml",
+                "optional": false,
+                "amount_max": null,
+                "note": null,
+                "substitutes": [],
+                "sort": 2
+            },
+            {
+                "_id": "sweet-vermouth",
+                "amount": 30,
+                "units": "ml",
+                "optional": false,
+                "amount_max": null,
+                "note": null,
+                "substitutes": [
+                    {
+                        "_id": "cocchi-di-torino",
+                        "amount": null,
+                        "units": null,
+                        "amount_max": null
+                    }
+                ],
+                "sort": 3
+            }
+        ]
+    },
     "ingredients": [
         {
-            "_id": "ingredient-1",
-            "sort": 1,
-            "name": "Ingredient 1",
-            "amount": 30,
-            "amount_max": null,
-            "units": "ml",
-            "optional": false,
-            "category": "Spirits",
-            "description": "Barrel-aged distilled liquor made primarily from corn.",
+            "_id": "gin",
+            "name": "Gin",
             "strength": 40,
-            "origin": "North America",
-            "substitutes": []
+            "description": "Gin is a distilled alcoholic beverage that derives its predominant flavor from juniper berries and other botanicals. It falls under the category of distilled spirits and is known for its diverse and complex flavor profile, which can include herbal, floral, citrus, and spicy notes. The production of gin involves distilling a neutral spirit with botanicals, with juniper being the key botanical required for a spirit to be classified as gin.\n\nThe defining characteristic of gin is the prominent presence of juniper berries in its flavor profile. The name \"gin\" is derived from the French word \"genièvre,\" meaning juniper.\n\nThere are several styles of gin, including London Dry Gin, Plymouth Gin, and New Western or Contemporary-style Gin. Each style has its own production methods and regulations.\n\nGin has a long history and has evolved over centuries, becoming one of the most popular and beloved spirits globally. Its association with a wide array of cocktails makes it a staple in bars and households alike.",
+            "origin": "Worldwide",
+            "category": "Spirits"
         },
         {
-            "_id": "new-ingredient",
-            "sort": 2,
-            "name": "New ingredient",
-            "amount": 2,
-            "amount_max": 4,
-            "units": "dashes",
-            "optional": true,
-            "category": "Beverages",
-            "description": "New ingredient description",
-            "strength": 40,
-            "origin": "Laravel test suite",
-            "note": "Use best one",
-            "substitutes": ["Club soda", "H20"]
+            "_id": "campari",
+            "name": "Campari",
+            "strength": 25,
+            "description": "Campari is an Italian bright red aperitif known for its distinctive bitter and herbal flavor profile. It is made from a proprietary blend of herbs, spices, and fruit peels, with a secret recipe that has been closely guarded since its creation in 1860. The primary flavor component in Campari comes from the infusion of bitter herbs, resulting in a bold and complex taste.\n\nCampari has a strong and memorable flavor that elicits strong reactions, making it a beloved ingredient in classic and contemporary cocktails. It has become a symbol of Italian aperitif culture and is enjoyed worldwide for its unique and iconic taste.",
+            "origin": "Italy",
+            "category": "Liqueurs"
         },
         {
-            "_id": "detailed-subs",
-            "sort": 3,
-            "name": "Detailed subs",
-            "amount": 30,
-            "units": "ml",
-            "strength": 35.5,
-            "substitutes": [
-                {
-                    "_id": "overproof-rum",
-                    "name": "Overproof Rum",
-                    "strength": 50,
-                    "description": "Rum much higher than the standard 40% ABV (80 proof), with many as high as 75% (150 proof) to 80% (160 proof) available.",
-                    "origin": "Caribbean",
-                    "amount": 30,
-                    "units": "ml",
-                    "amount_max": 45
-                }
-            ]
+            "_id": "sweet-vermouth",
+            "name": "Sweet Vermouth",
+            "strength": 18,
+            "description": "Sweet vermouth, often simply referred to as \"vermouth,\" is a fortified and aromatized wine that is flavored with a variety of botanicals, herbs, and spices. It belongs to the category of vermouth, which includes both sweet (red) and dry (white) vermouth.\n\nVermouth is a wine-based product, and like wine, it should be stored in a cool, dark place, and once opened, it is often recommended to be refrigerated to maintain its freshness.",
+            "origin": "Worldwide",
+            "category": "Fortified wine"
+        },
+        {
+            "_id": "cocchi-di-torino",
+            "name": "Cocchi di Torino",
+            "strength": 16.5,
+            "description": "Exciting vermouth with medicinal and aromatic spices, and the taste of bitter orange and notes of cocoa that characterizes the cocchi style.",
+            "origin": "Italy",
+            "category": "Fortified wine"
         }
     ]
 }

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
 class ImportRequest extends FormRequest
 {
@@ -26,7 +28,8 @@ class ImportRequest extends FormRequest
     public function rules()
     {
         return [
-            'schema' => 'required',
+            'source' => 'required|string',
+            'duplicate_actions' => Rule::enum(DuplicateActionsEnum::class),
         ];
     }
 }

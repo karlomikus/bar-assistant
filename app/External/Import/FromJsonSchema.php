@@ -27,6 +27,7 @@ class FromJsonSchema
         private readonly IngredientService $ingredientService,
         private readonly ImageService $imageService,
         private readonly int $barId,
+        private readonly int $userId,
     ) {
         $this->matcher = new Matcher($this->barId, $this->ingredientService);
     }
@@ -36,10 +37,8 @@ class FromJsonSchema
      */
     public function process(
         array $sourceData,
-        int $userId,
-        int $barId,
         DuplicateActionsEnum $duplicateAction = DuplicateActionsEnum::None,
-        string $dirRef = '',
+        string $imageDirectoryBasePath = '',
     ): Cocktail {
         $cocktailExternal = Schema::fromDraft2Array($sourceData);
 
@@ -54,7 +53,7 @@ class FromJsonSchema
             if ($image->uri) {
                 try {
                     $imageDTO = new Image(
-                        file_get_contents($dirRef . $image->getLocalFilePath()),
+                        file_get_contents($imageDirectoryBasePath . $image->getLocalFilePath()),
                         $image->copyright
                     );
 
@@ -85,9 +84,9 @@ class FromJsonSchema
             $foundExternalIngredient = $externalIngredients->firstWhere('id', $scrapedIngredient->ingredient->id);
             $ingredientId = $this->matcher->matchOrCreateIngredientByName(
                 new IngredientDTO(
-                    $barId,
+                    $this->barId,
                     $foundExternalIngredient->name,
-                    $userId,
+                    $this->userId,
                     null,
                     $foundExternalIngredient->strength,
                     $foundExternalIngredient->description,
@@ -101,9 +100,9 @@ class FromJsonSchema
                 $substitutes[] = new SubstituteDTO(
                     $this->matcher->matchOrCreateIngredientByName(
                         new IngredientDTO(
-                            $barId,
+                            $this->barId,
                             $foundExternalSubIngredient->name,
-                            $userId,
+                            $this->userId,
                             null,
                             $foundExternalSubIngredient->strength,
                             $foundExternalSubIngredient->description,
@@ -135,8 +134,8 @@ class FromJsonSchema
         $cocktailDTO = new CocktailDTO(
             $cocktailExternal->cocktail->name,
             $cocktailExternal->cocktail->instructions,
-            $userId,
-            $barId,
+            $this->userId,
+            $this->barId,
             $cocktailExternal->cocktail->description,
             $cocktailExternal->cocktail->source,
             $cocktailExternal->cocktail->garnish,

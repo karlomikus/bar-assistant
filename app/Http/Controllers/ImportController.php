@@ -16,8 +16,11 @@ use Kami\Cocktail\Scraper\Manager;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\External\Model\Schema;
+use Kami\Cocktail\Services\CocktailService;
+use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Http\Requests\ImportRequest;
 use Kami\Cocktail\Http\Requests\ScrapeRequest;
+use Kami\Cocktail\Services\Image\ImageService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\External\Import\FromJsonSchema;
 use Kami\Cocktail\Http\Requests\ImportFileRequest;
@@ -33,7 +36,7 @@ class ImportController extends Controller
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(property: 'schema', ref: Schema::SCHEMA_URL),
+                new OAT\Property(property: 'source', type: 'string'),
                 new OAT\Property(property: 'duplicate_actions', ref: DuplicateActionsEnum::class, example: 'none', description: 'How to handle duplicates. Cocktails are matched by lowercase name.'),
             ]),
         ]
@@ -42,16 +45,24 @@ class ImportController extends Controller
         new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function cocktail(ImportRequest $request, FromJsonSchema $importer): JsonResource
+    public function cocktail(ImportRequest $request): JsonResource
     {
         if ($request->user()->cannot('create', Cocktail::class)) {
             abort(403);
         }
 
-        $source = $request->post('schema');
+        $source = $request->post('source');
         $duplicateAction = DuplicateActionsEnum::from($request->post('duplicate_actions', 'none'));
 
-        $cocktail = $importer->process($source, $request->user()->id, bar()->id, $duplicateAction);
+        $importer = new FromJsonSchema(
+            resolve(CocktailService::class),
+            resolve(IngredientService::class),
+            resolve(ImageService::class),
+            bar()->id,
+            $request->user()->id,
+        );
+
+        $cocktail = $importer->process(json_decode($source, true), $duplicateAction);
 
         return new CocktailResource($cocktail);
     }
@@ -126,30 +137,30 @@ class ImportController extends Controller
         $zip = new ZipUtils();
         $zip->unzip(Storage::disk('temp-uploads')->path($zipFile));
 
-        $importer = new FromJsonSchema(
-            resolve(\Kami\Cocktail\Services\CocktailService::class),
-            resolve(\Kami\Cocktail\Services\IngredientService::class),
-            resolve(\Kami\Cocktail\Services\Image\ImageService::class),
-            $bar->id,
-        );
+        // $importer = new FromJsonSchema(
+        //     resolve(\Kami\Cocktail\Services\CocktailService::class),
+        //     resolve(\Kami\Cocktail\Services\IngredientService::class),
+        //     resolve(\Kami\Cocktail\Services\Image\ImageService::class),
+        //     $bar->id,
+        // );
 
-        \Illuminate\Support\Facades\DB::beginTransaction();
-        try {
-            foreach ($unzippedFilesDisk->directories($zip->getDirName() . '/cocktails') as $diskDirPath) {
-                $importer->process(
-                    json_decode(file_get_contents($unzippedFilesDisk->path($diskDirPath . '/recipe.json')), true),
-                    $request->user()->id,
-                    $bar->id,
-                    $duplicateAction,
-                    $unzippedFilesDisk->path($diskDirPath),
-                );
-            }
-        } catch (Throwable $e) {
-            Log::error('Error importing from file: ' . $e->getMessage());
-        } finally {
-            $zip->cleanup();
-            Storage::disk('temp-uploads')->delete($zipFile);
-        }
+        // \Illuminate\Support\Facades\DB::beginTransaction();
+        // try {
+        //     foreach ($unzippedFilesDisk->directories($zip->getDirName() . '/cocktails') as $diskDirPath) {
+        //         $importer->process(
+        //             json_decode(file_get_contents($unzippedFilesDisk->path($diskDirPath . '/recipe.json')), true),
+        //             $request->user()->id,
+        //             $bar->id,
+        //             $duplicateAction,
+        //             $unzippedFilesDisk->path($diskDirPath),
+        //         );
+        //     }
+        // } catch (Throwable $e) {
+        //     Log::error('Error importing from file: ' . $e->getMessage());
+        // } finally {
+        //     $zip->cleanup();
+        //     Storage::disk('temp-uploads')->delete($zipFile);
+        // }
 
         \Illuminate\Support\Facades\DB::commit();
 

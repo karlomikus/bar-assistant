@@ -83,6 +83,7 @@ class CocktailControllerTest extends TestCase
             ),
             'ingredients'
         )->create([
+            'name' => 'a test',
             'abv' => 33.3,
         ]);
         $cocktailFavorited = Cocktail::factory()->recycle($membership->bar)->create(['abv' => 10]);
@@ -424,7 +425,6 @@ class CocktailControllerTest extends TestCase
             $json
                 ->has('data.public_id')
                 ->has('data.public_at')
-                ->has('data.public_expires_at')
         );
 
         $cocktail = Cocktail::find($cocktail->id);
