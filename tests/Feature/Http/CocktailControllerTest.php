@@ -591,4 +591,26 @@ class CocktailControllerTest extends TestCase
 
         $response->assertStatus(422);
     }
+
+    public function test_cocktail_copy(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $cocktail = Cocktail::factory()->for($membership->bar)->create(['name' => 'Cocktail name']);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $response = $this->postJson('/api/cocktails/' . $cocktail->id . '/copy');
+
+        $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->whereNot('data.id', $cocktail->id)
+                ->whereNot('data.slug', $cocktail->slug)
+                ->whereNot('data.created_at', $cocktail->created_at)
+                ->where('data.name', 'Cocktail name Copy')
+                ->etc()
+        );
+    }
 }

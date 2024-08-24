@@ -448,10 +448,6 @@ class CocktailController extends Controller
             abort(500, $e->getMessage());
         }
 
-        $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
-            $query->orderBy('sort');
-        }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
-
         return (new CocktailResource($cocktail))
             ->response()
             ->setStatusCode(201)
