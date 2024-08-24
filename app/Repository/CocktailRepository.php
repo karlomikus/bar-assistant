@@ -26,21 +26,23 @@ readonly class CocktailRepository
     public function getCocktailsByIngredients(array $ingredientIds, ?int $limit = null, bool $useParentIngredientAsSubstitute = false, bool $matchComplexIngredients = true): Collection
     {
         // Resolve complex ingredients
+        // Basically, goes through all ingredients to match ($ingredientIds) and check if they can create complex ingredients
+        // If they can, that ingredient is added to the list of ingredients to match
         if ($matchComplexIngredients) {
-            $complexIngredientsSubquery = ComplexIngredient::select('main_ingredient_id', DB::raw('COUNT(DISTINCT ingredient_id) as cnt'))
-                ->whereIn('ingredient_id', $ingredientIds)
-                ->groupBy('main_ingredient_id');
+            $rawQuery = "WITH RECURSIVE IngredientChain AS (
+                    SELECT id AS matched_ingredient
+                    FROM ingredients
+                    WHERE id IN (" . implode(',', $ingredientIds) . ")
+                    UNION
+                    SELECT ci.main_ingredient_id AS matched_ingredient
+                    FROM complex_ingredients ci
+                    INNER JOIN IngredientChain ic ON ci.ingredient_id = ic.matched_ingredient
+                )
+                SELECT DISTINCT matched_ingredient
+                FROM IngredientChain;";
 
-            $matchedComplexMainIngredientIds = DB::table(DB::raw("({$complexIngredientsSubquery->toSql()}) as IngredientCount"))
-                ->mergeBindings($complexIngredientsSubquery->getQuery())
-                ->where('cnt', count($ingredientIds))
-                ->pluck('main_ingredient_id');
-
-            foreach ($matchedComplexMainIngredientIds as $additionalId) {
-                if (!in_array($additionalId, $ingredientIds)) {
-                    $ingredientIds[] = $additionalId;
-                }
-            }
+            $additionalIngredients = collect(DB::select($rawQuery))->pluck('matched_ingredient');
+            $ingredientIds = array_merge($ingredientIds, $additionalIngredients->toArray());
         }
 
         $query = $this->db->table('cocktails AS c')
