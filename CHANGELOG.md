@@ -58,6 +58,8 @@ This is a new major release. Here's a quick summary of the more interesting chan
     - Use `images.sort` instead
 - Removed `main_image_id` from ingredient model
     - Use `images.sort` instead
+- Stats
+    - Moved `/stats` to `/bars/{id}/stats`
 
 ## New
 - Introduced `Bar-Assistant-Bar-Id` header to specify bar id

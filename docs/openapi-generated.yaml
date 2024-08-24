@@ -941,7 +941,7 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { $ref: '#/components/schemas/CocktailPublic' }
+                  data: { $ref: '#/components/schemas/Cocktail' }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -2241,8 +2241,8 @@ paths:
           application/json:
             schema:
               properties:
-                schema:
-                  $ref: 'https://barassistant.app/cocktail-02.schema.json'
+                source:
+                  type: string
                 duplicate_actions:
                   $ref: '#/components/schemas/DuplicateActionsEnum'
                   description: 'How to handle duplicates. Cocktails are matched by lowercase name.'
@@ -4156,6 +4156,45 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/bars/{id}/stats':
+    get:
+      tags:
+        - Bars
+      summary: 'Show bar stats'
+      operationId: d62319d3bf13005383b7d8027e9056ec
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/BarStats' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /tags:
     get:
       tags:
@@ -4983,6 +5022,98 @@ components:
           type: array
           items:
             type: string
+      type: object
+    BarStats:
+      properties:
+        total_cocktails:
+          type: integer
+          example: 1
+        total_ingredients:
+          type: integer
+          example: 1
+        total_favorited_cocktails:
+          type: integer
+          example: 1
+        total_shelf_cocktails:
+          type: integer
+          example: 1
+        total_shelf_ingredients:
+          type: integer
+          example: 1
+        total_bar_members:
+          type: integer
+          example: 1
+        total_collections:
+          type: integer
+          example: 1
+        favorite_tags:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+                example: 31
+              name:
+                type: string
+                example: 'Tag name'
+              cocktails_count:
+                type: integer
+                example: 12
+            type: object
+        your_top_ingredients:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: gin
+              name:
+                type: string
+                example: Gin
+              cocktails_count:
+                type: integer
+                example: 1
+            type: object
+        most_popular_ingredients:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: gin
+              name:
+                type: string
+                example: Gin
+              cocktails_count:
+                type: integer
+                example: 1
+            type: object
+        top_rated_cocktails:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: old-fashioned
+              name:
+                type: string
+                example: 'Old Fashioned'
+              avg_rating:
+                type: integer
+                example: 3
+              votes:
+                type: integer
+                example: 42
+            type: object
       type: object
     Cocktail:
       required:

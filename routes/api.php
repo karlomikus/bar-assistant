@@ -178,10 +178,6 @@ Route::middleware($apiMiddleware)->group(function () {
         })->middleware(['ability:*']);
     })->middleware(['ability:*']);
 
-    Route::prefix('stats')->group(function () {
-        Route::get('/', [StatsController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
-    })->middleware(['ability:*']);
-
     Route::prefix('cocktail-methods')->group(function () {
         Route::get('/', [CocktailMethodController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/', [CocktailMethodController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
@@ -225,6 +221,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::post('/{id}/status', [BarController::class, 'toggleBarStatus']);
         Route::post('/{id}/transfer', [BarController::class, 'transfer']);
         Route::get('/{id}/collections', [CollectionController::class, 'shared']);
+        Route::get('/{id}/stats', [StatsController::class, 'index']);
     })->middleware(['ability:*']);
 
     Route::prefix('billing')->group(function () {
