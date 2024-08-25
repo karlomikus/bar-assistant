@@ -8,10 +8,10 @@ use Jcupitt\Vips\Image as Vips;
 
 class ImageThumbnailService
 {
-    public static function generateThumbnailAsJpg(string $filePath, int $size = 400, int $quality = 60): string
+    public static function generateThumbnail(string $filePath, int $size = 400, int $quality = 60): string
     {
         $image = Vips::newFromFile($filePath);
 
-        return $image->thumbnail_image($size)->writeToBuffer('.jpg', ['Q' => $quality]);
+        return $image->thumbnail_image($size)->writeToBuffer('.webp', ['Q' => $quality]);
     }
 }

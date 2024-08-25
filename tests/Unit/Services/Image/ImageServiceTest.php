@@ -21,7 +21,7 @@ class ImageServiceTest extends TestCase
 
     public function testThumbnailImage(): void
     {
-        $thumbnailContent = ImageThumbnailService::generateThumbnailAsJpg(base_path('tests/fixtures/cocktail.jpg'));
+        $thumbnailContent = ImageThumbnailService::generateThumbnail(base_path('tests/fixtures/cocktail.jpg'));
 
         $this->assertNotNull($thumbnailContent);
     }

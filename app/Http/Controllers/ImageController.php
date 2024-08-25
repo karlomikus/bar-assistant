@@ -165,10 +165,10 @@ class ImageController extends Controller
     #[BAO\NotFoundResponse]
     public function thumb(int $id): Response
     {
-        [$content, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id) {
+        [$responseContent, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id) {
             $dbImage = Image::findOrFail($id);
 
-            $responseContent = ImageThumbnailService::generateThumbnailAsJpg($dbImage->getPath());
+            $responseContent = ImageThumbnailService::generateThumbnail($dbImage->getPath());
             if ($dbImage->updated_at) {
                 $etag = md5($dbImage->id . '-' . $dbImage->updated_at->format('Y-m-d H:i:s'));
             } else {
@@ -181,9 +181,9 @@ class ImageController extends Controller
         $notModified = isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag;
         $statusCode = $notModified ? 304 : 200;
 
-        return new Response($content, $statusCode, [
-            'Content-Type' => 'image/jpg',
-            'Content-Length' => strlen($content),
+        return new Response($responseContent, $statusCode, [
+            'Content-Type' => 'image/webp',
+            'Content-Length' => strlen($responseContent),
             'Etag' => $etag
         ]);
     }
