@@ -3815,7 +3815,7 @@ paths:
           application/json:
             schema:
               properties:
-                ingredient_ids:
+                ingredients:
                   type: array
                   items: { type: integer }
               type: object
