@@ -24,6 +24,7 @@ class IngredientPriceResource extends JsonResource
             'price_category' => new PriceCategoryResource($this->priceCategory),
             'price' => new PriceResource(new Price($this->getMoney())),
             'units' => $this->units,
+            'amount' => $this->amount,
             'description' => $this->description,
             'created_at' => $this->created_at->toAtomString(),
             'updated_at' => $this->updated_at?->toAtomString(),
