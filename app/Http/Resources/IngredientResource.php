@@ -47,6 +47,9 @@ class IngredientResource extends JsonResource
                 'can_edit' => $request->user()->can('edit', $this->resource),
                 'can_delete' => $request->user()->can('delete', $this->resource),
             ]),
+            // 'in_shelf' => $this->when($this->relationLoaded('substitutes'), fn () => $this->userHasInShelf($request->user())),
+            'in_shelf' => $this->userHasInShelf($request->user()),
+            'in_shopping_list' => $this->userHasInShoppingList($request->user()),
             'ingredient_parts' => $this->when(
                 $this->relationLoaded('ingredientParts'),
                 fn () => $this->ingredientParts->map(fn ($cip) => new IngredientBasicResource($cip->ingredient))
