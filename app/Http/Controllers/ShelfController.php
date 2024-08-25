@@ -119,7 +119,7 @@ class ShelfController extends Controller
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(property: 'ingredient_ids', type: 'array', items: new OAT\Items(type: 'integer')),
+                new OAT\Property(property: 'ingredients', type: 'array', items: new OAT\Items(type: 'integer')),
             ]),
         ]
     ))]
@@ -138,7 +138,7 @@ class ShelfController extends Controller
         $ingredients = DB::table('ingredients')
             ->select('id')
             ->where('bar_id', $barMembership->bar_id)
-            ->whereIn('id', $request->post('ingredient_ids'))
+            ->whereIn('id', $request->post('ingredients'))
             ->pluck('id');
 
         // Let's remove ingredients from shopping list since they are on our shelf now
@@ -164,7 +164,7 @@ class ShelfController extends Controller
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(property: 'ingredient_ids', type: 'array', items: new OAT\Items(type: 'integer')),
+                new OAT\Property(property: 'ingredients', type: 'array', items: new OAT\Items(type: 'integer')),
             ]),
         ]
     ))]
@@ -183,7 +183,7 @@ class ShelfController extends Controller
         $ingredients = DB::table('ingredients')
             ->select('id')
             ->where('bar_id', $barMembership->bar_id)
-            ->whereIn('id', $request->post('ingredient_ids'))
+            ->whereIn('id', $request->post('ingredients'))
             ->pluck('id');
 
         try {
