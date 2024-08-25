@@ -139,6 +139,20 @@ class Ingredient extends Model
         return $this->cocktailIngredientSubstitutes->pluck('cocktailIngredient.cocktail');
     }
 
+    public function userHasInShelf(User $user): bool
+    {
+        $items = $user->getShelfIngredients($this->bar_id);
+
+        return $items->contains('ingredient_id', $this->id);
+    }
+
+    public function userHasInShoppingList(User $user): bool
+    {
+        $items = $user->getShoppingListIngredients($this->bar_id);
+
+        return $items->contains('ingredient_id', $this->id);
+    }
+
     /**
      * @return Collection<int, Ingredient>
      */
