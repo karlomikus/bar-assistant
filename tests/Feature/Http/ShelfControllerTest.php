@@ -46,7 +46,7 @@ class ShelfControllerTest extends TestCase
             ->create();
 
         $response = $this->postJson('/api/users/'. $membership->user_id .'/ingredients/batch-store', [
-            'ingredient_ids' => $newIngredients->pluck('id')->toArray()
+            'ingredients' => $newIngredients->pluck('id')->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertNoContent();
@@ -68,7 +68,7 @@ class ShelfControllerTest extends TestCase
             ->create();
 
         $response = $this->postJson('/api/users/'. $membership->user_id .'/ingredients/batch-store', [
-            'ingredient_ids' => $unOwnedIngredients->pluck('id')->toArray()
+            'ingredients' => $unOwnedIngredients->pluck('id')->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertNoContent();
@@ -87,7 +87,7 @@ class ShelfControllerTest extends TestCase
 
         $this->assertDatabaseCount('user_ingredients', 5);
         $response = $this->postJson('/api/users/'. $membership->user_id .'/ingredients/batch-delete', [
-            'ingredient_ids' => $ingredients->splice(0, 2)->pluck('id')->toArray()
+            'ingredients' => $ingredients->splice(0, 2)->pluck('id')->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertNoContent();
@@ -109,7 +109,7 @@ class ShelfControllerTest extends TestCase
             ->create();
 
         $response = $this->postJson('/api/users/'. $membership->user_id .'/ingredients/batch-delete', [
-            'ingredient_ids' => $unOwnedIngredients->splice(0, 2)->pluck('id')->toArray()
+            'ingredients' => $unOwnedIngredients->splice(0, 2)->pluck('id')->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertNoContent();
