@@ -16,8 +16,9 @@ assignees: ''
 [If possible, steps to reproduce the behavior.]
 
 **Versions:**
- - Docker: [e.g. 20.10.12], run with `docker version`
- - Browser (if applicable) [e.g. chrome, safari]
+ - Bar Assistant:
+ - Salt Rim:
+ - Browser: (if applicable) [e.g. chrome, safari]
 
 **Additional context, log outputs...**
 [Add any other context about the problem here.]
