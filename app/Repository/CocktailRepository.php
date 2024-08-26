@@ -8,7 +8,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
-use Kami\Cocktail\Models\ComplexIngredient;
 
 readonly class CocktailRepository
 {
@@ -43,33 +42,30 @@ readonly class CocktailRepository
 
             $additionalIngredients = collect(DB::select($rawQuery))->pluck('matched_ingredient');
             $ingredientIds = array_merge($ingredientIds, $additionalIngredients->toArray());
+            $ingredientIds = array_unique($ingredientIds);
         }
 
         $query = $this->db->table('cocktails AS c')
             ->select('c.id')
             ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id')
+            ->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
             ->leftJoin('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')
-            ->where('optional', false);
+            ->where('optional', false)
+            ->where(function ($query) use ($ingredientIds, $useParentIngredientAsSubstitute) {
+                $query->whereIn('i.id', $ingredientIds)->orWhereIn('cis.ingredient_id', $ingredientIds);
 
-        if ($useParentIngredientAsSubstitute) {
-            $query->join('ingredients AS i', function ($join) {
-                $join->on('i.id', '=', 'ci.ingredient_id');
+                if ($useParentIngredientAsSubstitute) {
+                    $query->orWhereIn('i.id', function ($parentSubquery) use ($ingredientIds) {
+                        $parentSubquery
+                            ->select('parent_ingredient_id')
+                            ->from('ingredients')
+                            ->whereIn('id', $ingredientIds)
+                            ->whereNotNull('parent_ingredient_id');
+                    });
+                }
             })
-            ->leftJoin('ingredients AS pi', function ($join) { // Faster than OR join
-                $join->on('pi.parent_ingredient_id', '=', 'ci.ingredient_id');
-            })
-            ->whereIn('i.id', $ingredientIds)
-            ->orWhereIn('i.parent_ingredient_id', $ingredientIds)
-            ->orWhereIn('pi.id', $ingredientIds)
-            ->orWhereIn('pi.parent_ingredient_id', $ingredientIds);
-        } else {
-            $query->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
-            ->whereIn('i.id', $ingredientIds);
-        }
-
-        $query->orWhereIn('cis.ingredient_id', $ingredientIds)
-        ->groupBy('c.id')
-        ->havingRaw('COUNT(*) >= (SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_id = c.id AND optional = false)');
+            ->groupBy('c.id')
+            ->havingRaw('COUNT(*) >= (SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_id = c.id AND optional = false)');
 
         if ($limit) {
             $query->limit($limit);

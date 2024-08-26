@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Scrapers;
 
 use Throwable;
-use Tests\TestCase;
+use Tests\ScraperTestCase;
 use Kami\Cocktail\Scraper\Manager;
 
-class TuxedoNo2ScraperTest extends TestCase
+class TuxedoNo2ScraperTest extends ScraperTestCase
 {
     public function testScrape(): void
     {

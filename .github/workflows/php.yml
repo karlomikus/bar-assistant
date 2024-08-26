@@ -40,4 +40,4 @@ jobs:
       run: composer test
 
     - name: Execute PHPStan
-      run: composer static
+      run: vendor/bin/phpstan analyse

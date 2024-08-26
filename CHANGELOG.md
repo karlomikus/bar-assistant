@@ -94,6 +94,10 @@ This is a new major release. Here's a quick summary of the more interesting chan
     - Should improve sync between docs and implementation
     - Updated docs rendering
 
+## Fixes
+- Improved complex ingredient matching
+- Fixed wrong matching cocktails when parent ingredient tracking is enabled
+
 # v3.18.0
 ## New
 - Added price categories

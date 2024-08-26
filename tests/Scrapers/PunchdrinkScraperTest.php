@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Scrapers;
 
-use Tests\TestCase;
+use Tests\ScraperTestCase;
 use Kami\Cocktail\Scraper\Manager;
 
-class PunchdrinkScraperTest extends TestCase
+class PunchdrinkScraperTest extends ScraperTestCase
 {
     public function testScrape(): void
     {
