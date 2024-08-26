@@ -20,4 +20,12 @@ class CocktailFavorite extends Model
     {
         return $this->belongsTo(Cocktail::class);
     }
+
+    /**
+     * @return BelongsTo<BarMembership, CocktailFavorite>
+     */
+    public function barMembership(): BelongsTo
+    {
+        return $this->belongsTo(BarMembership::class);
+    }
 }
