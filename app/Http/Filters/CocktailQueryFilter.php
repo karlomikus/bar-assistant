@@ -30,7 +30,16 @@ final class CocktailQueryFilter extends QueryBuilder
                 AllowedFilter::exact('id'),
                 AllowedFilter::custom('name', new FilterNameSearch()),
                 AllowedFilter::partial('ingredient_name', 'ingredients.ingredient.name'),
-                AllowedFilter::exact('ingredient_id', 'ingredients.ingredient.id'),
+                // AllowedFilter::exact('ingredient_id', 'ingredients.ingredient.id'),
+                AllowedFilter::exact('ingredient_substitute_id', 'ingredients.substitutes.ingredient.id'),
+                AllowedFilter::callback('ingredient_id', function ($query, $value) {
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
+
+                    $query->whereIn('ci.ingredient_id', $value)
+                        ->orWhereIn('cis.ingredient_id', $value);
+                }),
                 AllowedFilter::exact('tag_id', 'tags.id'),
                 AllowedFilter::exact('created_user_id'),
                 AllowedFilter::exact('glass_id'),
@@ -192,6 +201,7 @@ final class CocktailQueryFilter extends QueryBuilder
             ])
             ->selectRaw('cocktails.*, COUNT(ci.cocktail_id) AS total_ingredients, COUNT(ci.ingredient_id) - COUNT(ui.ingredient_id) AS missing_ingredients')
             ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')
+            ->leftJoin('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')
             ->leftJoin('user_ingredients AS ui', function ($query) use ($barMembership) {
                 $query->on('ui.ingredient_id', '=', 'ci.ingredient_id')->where('ui.bar_membership_id', $barMembership->id);
             })

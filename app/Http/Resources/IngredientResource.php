@@ -38,6 +38,10 @@ class IngredientResource extends JsonResource
             'color' => $this->color,
             'category' => new IngredientCategoryResource($this->whenLoaded('category')),
             'cocktails_count' => $this->whenCounted('cocktails'),
+            'cocktails_as_substitute_count' => $this->when(
+                $this->relationLoaded('cocktailIngredientSubstitutes'),
+                fn () => $this->cocktailsAsSubstituteIngredient()->count()
+            ),
             'varieties' => $this->when($this->relationLoaded('varieties') && $this->relationLoaded('parentIngredient'), function () {
                 return IngredientBasicResource::collection($this->getAllRelatedIngredients());
             }),
