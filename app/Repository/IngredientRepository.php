@@ -48,6 +48,7 @@ readonly class IngredientRepository
                     COUNT(DISTINCT c.id) AS potential_cocktails
                 FROM
                     (
+                        -- Step 1: Ingredients the user doesn't have
                         SELECT
                             i.id AS ingredient_id,
                             i.slug AS ingredient_slug,
@@ -64,6 +65,35 @@ readonly class IngredientRepository
                                     ui.bar_membership_id = :barMembershipId
                             )
                             and bar_id = :barId
+
+                        EXCEPT
+
+                        -- Step 2: Complex ingredients, user has ingredients in their shelf to make them
+                        SELECT
+                            ci.main_ingredient_id AS ingredient_id,
+                            i.slug AS ingredient_slug,
+                            i.name AS ingredient_name
+                        FROM
+                            complex_ingredients ci
+                            JOIN ingredients i ON ci.main_ingredient_id = i.id
+                        WHERE
+                            ci.main_ingredient_id NOT IN (
+                                SELECT DISTINCT
+                                    ui.ingredient_id
+                                FROM
+                                    user_ingredients ui
+                                WHERE
+                                    ui.bar_membership_id = :barMembershipId
+                            )
+                            AND ci.ingredient_id IN (
+                                SELECT DISTINCT
+                                    ui.ingredient_id
+                                FROM
+                                    user_ingredients ui
+                                WHERE
+                                    ui.bar_membership_id = :barMembershipId
+                            )
+                            AND i.bar_id = :barId
                     ) mi
                     JOIN cocktail_ingredients ci ON mi.ingredient_id = ci.ingredient_id
                     JOIN cocktails c ON ci.cocktail_id = c.id

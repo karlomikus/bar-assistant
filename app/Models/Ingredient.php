@@ -170,6 +170,33 @@ class Ingredient extends Model
         return $this->varieties;
     }
 
+    /**
+     * Return all ingredinets that use this ingredient as a substitute
+     *
+     * @return Collection<int, Ingredient>
+     */
+    public function getIngredientsUsedAsSubstituteFor(): Collection
+    {
+        return $this->cocktailIngredientSubstitutes->pluck('cocktailIngredient.ingredient')->unique('id')->sortBy('name');
+    }
+
+    /**
+     * Return all ingredients that can be substituted with this ingredient
+     *
+     * @return Collection<int, Ingredient>
+     */
+    public function getCanBeSubstitutedWithIngredients(): Collection
+    {
+        return Ingredient::query()
+            ->select('ingredients.*')
+            ->distinct()
+            ->from('cocktail_ingredient_substitutes')
+            ->join('cocktail_ingredients', 'cocktail_ingredients.id', 'cocktail_ingredient_substitutes.cocktail_ingredient_id')
+            ->join('ingredients', 'ingredients.id', 'cocktail_ingredient_substitutes.ingredient_id')
+            ->where('cocktail_ingredients.ingredient_id', $this->id)
+            ->get();
+    }
+
     public function delete(): ?bool
     {
         $this->deleteImages();

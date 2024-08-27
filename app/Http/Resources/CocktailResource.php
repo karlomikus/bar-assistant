@@ -71,12 +71,12 @@ class CocktailResource extends JsonResource
                     'can_add_note' => $request->user()->can('addNote', $this->resource),
                 ];
             }),
-            'navigation' => $this->when(true, function () {
-                return [
-                    'prev' => new CocktailBasicResource($this->getPrevCocktail()),
-                    'next' => new CocktailBasicResource($this->getNextCocktail()),
-                ];
-            })
+            // 'navigation' => $this->when(true, function () {
+            //     return [
+            //         'prev' => new CocktailBasicResource($this->getPrevCocktail()),
+            //         'next' => new CocktailBasicResource($this->getNextCocktail()),
+            //     ];
+            // })
         ];
     }
 }
