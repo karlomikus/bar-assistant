@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema()]
+#[OAT\Schema(required: ['price_category', 'price', 'amount', 'units', 'description', 'created_at', 'updated_at'])]
 class IngredientPrice
 {
     #[OAT\Property(property: 'price_category')]

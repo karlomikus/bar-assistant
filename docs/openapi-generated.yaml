@@ -3872,7 +3872,7 @@ paths:
           application/json:
             schema:
               properties:
-                ingredient_ids:
+                ingredients:
                   type: array
                   items: { type: integer }
               type: object
@@ -4963,6 +4963,12 @@ components:
           example: 'Bar subtitle'
       type: object
     BarMembership:
+      required:
+        - user_id
+        - user_name
+        - bar_id
+        - is_shelf_public
+        - use_parent_as_substitute
       properties:
         user_id:
           type: integer
@@ -5024,6 +5030,18 @@ components:
             type: string
       type: object
     BarStats:
+      required:
+        - total_cocktails
+        - total_ingredients
+        - total_favorited_cocktails
+        - total_shelf_cocktails
+        - total_shelf_ingredients
+        - total_bar_members
+        - total_collections
+        - favorite_tags
+        - your_top_ingredients
+        - most_popular_ingredients
+        - top_rated_cocktails
       properties:
         total_cocktails:
           type: integer
@@ -5049,6 +5067,10 @@ components:
         favorite_tags:
           type: array
           items:
+            required:
+              - id
+              - name
+              - cocktails_count
             properties:
               id:
                 type: integer
@@ -5063,6 +5085,11 @@ components:
         your_top_ingredients:
           type: array
           items:
+            required:
+              - id
+              - slug
+              - name
+              - cocktails_count
             properties:
               id:
                 type: integer
@@ -5080,6 +5107,11 @@ components:
         most_popular_ingredients:
           type: array
           items:
+            required:
+              - id
+              - slug
+              - name
+              - cocktails_count
             properties:
               id:
                 type: integer
@@ -5097,6 +5129,12 @@ components:
         top_rated_cocktails:
           type: array
           items:
+            required:
+              - id
+              - slug
+              - name
+              - avg_rating
+              - votes
             properties:
               id:
                 type: integer
@@ -5600,20 +5638,6 @@ components:
           type: integer
           example: 20
       type: object
-    CocktailPublic:
-      properties:
-        public_id:
-          type: string
-          example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
-        public_at:
-          type: string
-          format: datetime
-          example: '2023-05-14T21:23:40.000000Z'
-        public_expires_at:
-          type: string
-          format: datetime
-          example: '2023-05-14T21:23:40.000000Z'
-      type: object
     CocktailRequest:
       required:
         - name
@@ -5704,6 +5728,12 @@ components:
             type: integer
       type: object
     Collection:
+      required:
+        - id
+        - name
+        - description
+        - is_bar_shared
+        - created_at
       properties:
         id:
           type: integer
@@ -6050,6 +6080,14 @@ components:
           example: 'Category of base spirits'
       type: object
     IngredientPrice:
+      required:
+        - price_category
+        - price
+        - amount
+        - units
+        - description
+        - created_at
+        - updated_at
       properties:
         price_category:
           $ref: '#/components/schemas/PriceCategory'
