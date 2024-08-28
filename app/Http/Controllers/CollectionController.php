@@ -69,7 +69,7 @@ class CollectionController extends Controller
     }
 
     #[OAT\Get(path: '/collections/{id}', tags: ['Collections'], summary: 'Show a specific collection', parameters: [
-        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
+        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'integer')),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Collection::class),

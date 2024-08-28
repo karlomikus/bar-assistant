@@ -36,6 +36,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Token' }
                 type: object
@@ -69,6 +71,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Profile' }
                 type: object
@@ -217,6 +221,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Bar' }
                 type: object
@@ -254,6 +260,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Bar' }
                 type: object
@@ -298,6 +306,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Bar' }
                 type: object
@@ -377,6 +387,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Bar' }
                 type: object
@@ -416,6 +428,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/BarMembership' }
                 type: object
@@ -743,6 +757,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Cocktail' }
                 type: object
@@ -780,6 +796,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Cocktail' }
                 type: object
@@ -824,6 +842,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Cocktail' }
                 type: object
@@ -940,6 +960,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Cocktail' }
                 type: object
@@ -1078,6 +1100,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Cocktail' }
                 type: object
@@ -1158,6 +1182,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/CocktailMethod' }
                 type: object
@@ -1189,6 +1215,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/CocktailMethod' }
                 type: object
@@ -1233,6 +1261,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/CocktailMethod' }
                 type: object
@@ -1380,6 +1410,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Collection' }
                 type: object
@@ -1445,13 +1477,15 @@ paths:
           description: 'Database id or slug of a resource'
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         '200':
           description: 'Successful response'
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Collection' }
                 type: object
@@ -1496,6 +1530,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Collection' }
                 type: object
@@ -1578,6 +1614,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Collection' }
                 type: object
@@ -1610,6 +1648,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/CocktailExplore' }
                 type: object
@@ -1662,6 +1702,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Export' }
                 type: object
@@ -1769,6 +1811,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/FileDownloadLink' }
                 type: object
@@ -1874,6 +1918,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Glass' }
                 type: object
@@ -1905,6 +1951,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Glass' }
                 type: object
@@ -1949,6 +1997,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Glass' }
                 type: object
@@ -2096,6 +2146,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Image' }
                 type: object
@@ -2140,6 +2192,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Image' }
                 type: object
@@ -2253,6 +2307,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Cocktail' }
                 type: object
@@ -2420,6 +2476,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/IngredientCategory' }
                 type: object
@@ -2451,6 +2509,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/IngredientCategory' }
                 type: object
@@ -2495,6 +2555,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/IngredientCategory' }
                 type: object
@@ -2682,6 +2744,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Ingredient' }
                 type: object
@@ -2713,6 +2777,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Ingredient' }
                 type: object
@@ -2757,6 +2823,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Ingredient' }
                 type: object
@@ -2983,6 +3051,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Menu' }
                 type: object
@@ -3026,6 +3096,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Menu' }
                 type: object
@@ -3057,6 +3129,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/MenuExplore' }
                 type: object
@@ -3121,6 +3195,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Note' }
                 type: object
@@ -3160,6 +3236,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Note' }
                 type: object
@@ -3245,6 +3323,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Token' }
                 type: object
@@ -3358,6 +3438,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/PriceCategory' }
                 type: object
@@ -3389,6 +3471,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/PriceCategory' }
                 type: object
@@ -3433,6 +3517,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/PriceCategory' }
                 type: object
@@ -3496,6 +3582,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Profile' }
                 type: object
@@ -3524,6 +3612,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Profile' }
                 type: object
@@ -3621,6 +3711,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/ServerVersion' }
                 type: object
@@ -4176,6 +4268,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/BarStats' }
                 type: object
@@ -4264,6 +4358,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Tag' }
                 type: object
@@ -4295,6 +4391,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Tag' }
                 type: object
@@ -4339,6 +4437,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Tag' }
                 type: object
@@ -4459,6 +4559,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/User' }
                 type: object
@@ -4504,6 +4606,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/User' }
                 type: object
@@ -4562,6 +4666,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/User' }
                 type: object
@@ -4682,6 +4788,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Utensil' }
                 type: object
@@ -4713,6 +4821,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Utensil' }
                 type: object
@@ -4757,6 +4867,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Utensil' }
                 type: object
