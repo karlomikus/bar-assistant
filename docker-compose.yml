@@ -1,30 +1,50 @@
 services:
   app:
     build:
-      target: localdev
+      target: dev
       args:
-        PUID: 1000
+        USER_ID: 1000
+        GROUP_ID: 1000
       context: .
-      dockerfile: Dockerfile
+      dockerfile: unprivileged.Dockerfile
     container_name: app
     restart: unless-stopped
+    environment:
+      PHP_FPM_POOL_NAME: "bass-php"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./:/var/www/cocktails
       - ./resources/docker/localdev/php.ini:/usr/local/etc/php/php.ini
 
+  task:
+    build:
+      target: dev
+      args:
+        USER_ID: 1000
+        GROUP_ID: 1000
+      context: .
+      dockerfile: unprivileged.Dockerfile
+    command: ["php", "/var/www/cocktails/artisan", "schedule:work"]
+    environment:
+      PHP_FPM_POOL_NAME: "bass-task"
+    volumes:
+      - ./:/var/www/cocktails
+
   horizon:
     build:
-      target: localdev
+      target: dev
       args:
-        PUID: 1000
+        USER_ID: 1000
+        GROUP_ID: 1000
       context: .
-      dockerfile: Dockerfile
+      dockerfile: unprivileged.Dockerfile
     restart: unless-stopped
+    environment:
+      PHP_FPM_POOL_NAME: "bass-horizon"
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    command: php artisan horizon
+    command: ["php", "/var/www/cocktails/artisan", "horizon"]
     volumes:
       - ./:/var/www/cocktails
 

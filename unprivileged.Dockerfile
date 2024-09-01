@@ -1,8 +1,10 @@
-FROM serversideup/php:8.3-fpm-nginx as php-base
+FROM serversideup/php:8.3-fpm-nginx AS php-base
 
 ENV S6_CMD_WAIT_FOR_SERVICES=1
 ENV PHP_OPCACHE_ENABLE=1
 ENV COMPOSER_NO_DEV=1
+ENV APP_BASE_DIR=/var/www/cocktails
+ENV NGINX_WEBROOT=/var/www/cocktails/public
 
 USER root
 
@@ -11,13 +13,14 @@ RUN install-php-extensions imagick bcmath intl ffi
 RUN apt update \
     && apt-get install -y \
     sqlite3 \
+    && apt-get install -y --no-install-recommends libvips42 \
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 USER www-data
 
-FROM php-base as dist
+FROM php-base AS dist
 
 ARG BAR_ASSISTANT_VERSION
 ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-develop}
@@ -38,9 +41,9 @@ RUN composer install --optimize-autoloader --no-dev \
     && php artisan config:cache \
     && php artisan route:cache
 
-VOLUME ["/var/www/html/storage/bar-assistant"]
+VOLUME ["/var/www/cocktails/storage/bar-assistant"]
 
-FROM php-base as dev
+FROM php-base AS dev
 
 USER root
 
