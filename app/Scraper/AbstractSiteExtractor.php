@@ -25,7 +25,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
 
     public function __construct(
         protected readonly string $url,
-        protected readonly Units $defaultConvertTo = Units::Ml,
+        protected readonly ?Units $defaultConvertTo = null,
     ) {
         $store = new Store(storage_path('http_cache/'));
         $client = HttpClient::create([

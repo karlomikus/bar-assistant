@@ -37,7 +37,7 @@ class Image extends Model
         return $disk->url($this->file_path);
     }
 
-    public function getImageExteralURI(): ?string
+    public function getImageAsFileURI(): ?string
     {
         if (!$this->file_path) {
             return null;

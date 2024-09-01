@@ -18,10 +18,10 @@ readonly class Image implements SupportsDraft2, SupportsDataPack
     ) {
     }
 
-    public static function fromModel(ImageModel $model): self
+    public static function fromModel(ImageModel $model, bool $useFileURI = false): self
     {
         return new self(
-            $model->getImageExteralURI(),
+            $useFileURI ? $model->getImageAsFileURI() : $model->getImageUrl(),
             $model->copyright ?? '',
             $model->sort,
             $model->placeholder_hash,
@@ -50,7 +50,12 @@ readonly class Image implements SupportsDraft2, SupportsDataPack
 
     public static function fromDraft2Array(array $sourceArray): self
     {
-        return self::fromDataPackArray($sourceArray);
+        return new self(
+            $sourceArray['uri'] ?? $sourceArray['url'] ?? $sourceArray['source'] ?? '',
+            $sourceArray['copyright'] ?? '',
+            $sourceArray['sort'] ?? 0,
+            $sourceArray['placeholder_hash'] ?? null,
+        );
     }
 
     public function toDraft2Array(): array
