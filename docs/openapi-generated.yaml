@@ -2358,10 +2358,10 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
-                  schema_version: { type: string, example: draft2 }
-                  schema: { $ref: 'https://barassistant.app/cocktail-02.schema.json' }
-                  scraper_meta: { type: object, additionalProperties: true }
+                  data: { required: [schema_version, schema, scraper_meta], properties: { schema_version: { type: string, example: draft2 }, schema: { $ref: 'https://barassistant.app/cocktail-02.schema.json' }, scraper_meta: { type: array, items: { required: [_id, source], properties: { _id: { type: string }, source: { type: string } }, type: object } } }, type: object }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -4237,9 +4237,13 @@ paths:
         '200':
           description: 'Successful response'
           content:
-            text/markdown:
+            application/json:
               schema:
-                type: string
+                required:
+                  - data
+                properties:
+                  data: { required: [type, content], properties: { type: { type: string, example: markdown }, content: { type: string, example: '<content in requested format>' } }, type: object }
+                type: object
         '403':
           description: 'You are not authorized for this action.'
           content:

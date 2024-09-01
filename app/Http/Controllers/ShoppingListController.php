@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
+use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\UserShoppingList;
@@ -35,7 +36,7 @@ class ShoppingListController extends Controller
         }
 
         return UserShoppingListResource::collection(
-            $user->getBarMembership(bar()->id)->shoppingListIngredients->load('ingredient')
+            $user->getBarMembership(bar()->id)->shoppingListIngredients->load('ingredient')->sortBy('ingredient.name')
         );
     }
 
@@ -137,10 +138,15 @@ class ShoppingListController extends Controller
         new OAT\Parameter(name: 'type', in: 'query', description: 'Type of share. Available types: `markdown`.', schema: new OAT\Schema(type: 'string')),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
-        new OAT\MediaType(mediaType: 'text/markdown', schema: new OAT\Schema(type: 'string')),
+        new OAT\JsonContent(required: ['data'], properties: [
+            new OAT\Property(property: 'data', type: 'object', required: ['type', 'content'], properties: [
+                new OAT\Property(property: 'type', type: 'string', example: 'markdown'),
+                new OAT\Property(property: 'content', type: 'string', example: '<content in requested format>'),
+            ]),
+        ]),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function share(Request $request, int $id): Response
+    public function share(Request $request, int $id): JsonResponse
     {
         $user = User::findOrFail($id);
         if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
@@ -156,11 +162,12 @@ class ShoppingListController extends Controller
             ->groupBy('ingredient.category.name');
 
         if ($type === 'markdown' || $type === 'md') {
-            return new Response(
-                view('md_shopping_list_template', compact('shoppingListIngredients'))->render(),
-                200,
-                ['Content-Type' => 'text/markdown']
-            );
+            return response()->json([
+                'data' => [
+                    'type' => $type,
+                    'content' => view('md_shopping_list_template', compact('shoppingListIngredients'))->render(),
+                ]
+            ]);
         }
 
         abort(400, 'Requested type "' . $type . '" not supported');
