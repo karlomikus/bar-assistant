@@ -18,7 +18,7 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
     private function __construct(
         public IngredientBasic $ingredient,
         public float $amount,
-        public string $units,
+        public ?string $units,
         public bool $optional = false,
         public ?float $amountMax = null,
         public ?string $note = null,
