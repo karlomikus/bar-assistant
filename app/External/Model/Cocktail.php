@@ -39,10 +39,10 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
     ) {
     }
 
-    public static function fromModel(CocktailModel $model): self
+    public static function fromModel(CocktailModel $model, bool $useFileURI = false): self
     {
-        $images = $model->images->map(function (ImageModel $image) {
-            return Image::fromModel($image);
+        $images = $model->images->map(function (ImageModel $image) use ($useFileURI) {
+            return Image::fromModel($image, $useFileURI);
         })->toArray();
 
         $ingredients = $model->ingredients->map(function (CocktailIngredientModel $cocktailIngredient) {

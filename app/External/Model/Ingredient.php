@@ -34,10 +34,10 @@ readonly class Ingredient implements SupportsDataPack
     ) {
     }
 
-    public static function fromModel(IngredientModel $model): self
+    public static function fromModel(IngredientModel $model, bool $useFileURI = false): self
     {
-        $images = $model->images->map(function (ImageModel $image) {
-            return Image::fromModel($image);
+        $images = $model->images->map(function (ImageModel $image) use ($useFileURI) {
+            return Image::fromModel($image, $useFileURI);
         })->toArray();
 
         $ingredientParts = $model->ingredientParts->map(function (ComplexIngredient $part) {

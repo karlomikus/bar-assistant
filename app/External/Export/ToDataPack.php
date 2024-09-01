@@ -74,7 +74,7 @@ class ToDataPack
 
         /** @var Cocktail $cocktail */
         foreach ($cocktails as $cocktail) {
-            $data = CocktailExternal::fromModel($cocktail);
+            $data = CocktailExternal::fromModel($cocktail, true);
 
             /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($cocktail->images as $img) {
@@ -95,7 +95,7 @@ class ToDataPack
 
         /** @var Ingredient $ingredient */
         foreach ($ingredients as $ingredient) {
-            $data = IngredientExternal::fromModel($ingredient);
+            $data = IngredientExternal::fromModel($ingredient, true);
 
             /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($ingredient->images as $img) {
