@@ -10,6 +10,7 @@ readonly class Image
         public ?string $file,
         public ?string $copyright = null,
         public ?int $sort = 0,
+        public ?int $id = null,
     ) {
     }
 }

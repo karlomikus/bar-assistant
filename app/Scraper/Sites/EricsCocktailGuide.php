@@ -62,7 +62,7 @@ class EricsCocktailGuide extends AbstractSiteExtractor
         preg_match_all('~\bbackground(-image)?\s*:(.*?)\(\s*(\'|")?(?<image>.*?)\3?\s*\)~i', $style, $matches);
 
         return [
-            'url' => $this->getSupportedUrls()[0] . $matches['image'][0],
+            'uri' => $this->getSupportedUrls()[0] . $matches['image'][0],
             'copyright' => 'Eric\'s Cocktail Guide',
         ];
     }

@@ -13,6 +13,7 @@ use Illuminate\Http\UploadedFile;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 use Kami\Cocktail\Http\Requests\ImageRequest;
 use Kami\Cocktail\DTO\Image\Image as ImageDTO;
 use Kami\Cocktail\Services\Image\ImageService;
@@ -73,11 +74,19 @@ class ImageController extends Controller
     {
         $images = [];
         foreach ($request->images ?? [] as $formImage) {
-            if (isset($formImage['image'])) {
-                /** @var UploadedFile $imageSource */
+            $imageSource = null;
+
+            if (isset($formImage['image']) && $formImage['image'] instanceof UploadedFile) {
+                Validator::make($formImage, [
+                    'image' => 'image|max:51200',
+                ])->validate();
+
                 $imageSource = $formImage['image']->get();
-            } else {
-                $imageSource = file_get_contents((string) $formImage['image_url']);
+            }
+
+            if (isset($formImage['image']) && is_string($formImage['image'])) {
+                // TODO: Validate
+                $imageSource = file_get_contents($formImage['image']);
             }
 
             try {
@@ -85,6 +94,7 @@ class ImageController extends Controller
                     $imageSource,
                     $formImage['copyright'] ?? null,
                     (int) ($formImage['sort'] ?? 0),
+                    isset($formImage['id']) ? (int) $formImage['id'] : null,
                 );
                 $images[] = $image;
             } catch (Throwable $e) {

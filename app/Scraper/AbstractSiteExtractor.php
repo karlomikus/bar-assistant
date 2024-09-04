@@ -127,7 +127,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
     /**
      * Array containing image information
      *
-     * @return null|array{"url": string|null, "copyright": string|null}
+     * @return null|array{"uri": string|null, "copyright": string|null}
      */
     public function image(): ?array
     {
@@ -171,6 +171,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             return [
                 '_id' => $org['_id'],
                 'source' => $org['source'],
+                'original_amount' => $org['original_amount'],
             ];
         }, $ingredients);
 
@@ -184,7 +185,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             'tags' => $this->tags(),
             'method' => $this->method(),
             'images' => [
-                $this->image()
+                $this->convertImagesToDataUri()
             ],
             'ingredients' => $ingredients,
         ]);
@@ -232,5 +233,25 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
     protected function cleanDescription(?string $description): ?string
     {
         return $this->clean($description);
+    }
+
+    private function convertImagesToDataUri(): array
+    {
+        $image = $this->image();
+        if ($image['uri']) {
+            $url = parse_url($image['uri']);
+            $cleanUrl = $url['scheme'] . '://' . $url['host'] . (isset($url['path'])?$url['path']:'');
+
+            $type = pathinfo($cleanUrl, PATHINFO_EXTENSION);
+            $data = file_get_contents($cleanUrl);
+            $dataUri = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+            return [
+                'uri' => $dataUri,
+                'copyright' => $image['copyright'],
+            ];
+        }
+
+        return $image;
     }
 }

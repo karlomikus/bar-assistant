@@ -78,7 +78,7 @@ class CocktailParty extends AbstractSiteExtractor
     public function image(): ?array
     {
         return [
-            'url' => $this->findDescriptionContainer()->filter('.elementor-widget-image img')->first()->attr('src'),
+            'uri' => $this->findDescriptionContainer()->filter('.elementor-widget-image img')->first()->attr('src'),
             'copyright' => 'CocktailParty',
         ];
     }

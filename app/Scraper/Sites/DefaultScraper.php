@@ -148,7 +148,7 @@ class DefaultScraper extends AbstractSiteExtractor
 
             $result[] = new RecipeIngredient(
                 ucfirst(e($recipeIngredient->name)),
-                $recipeIngredient->amount,
+                (float) number_format($recipeIngredient->amount, 2, '.', ''),
                 $recipeIngredient->units,
                 $recipeIngredient->source,
                 $recipeIngredient->originalAmount,

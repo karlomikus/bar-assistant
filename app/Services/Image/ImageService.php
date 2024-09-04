@@ -32,25 +32,51 @@ final readonly class ImageService
     {
         $images = [];
         foreach ($requestImages as $dtoImage) {
-            if (!($dtoImage instanceof ImageDTO) || $dtoImage->file === null) {
+            if (!($dtoImage instanceof ImageDTO)) {
                 continue;
             }
 
-            try {
-                [$filepath, $fileExtension] = $this->processImageFile($dtoImage->file);
-                $thumbHash = ImageHashingService::generatePlaceholderHashFromFilepath($this->filesystemManager->disk('uploads')->path($filepath));
-            } catch (Throwable) {
-                continue;
-            }
+            if ($dtoImage->id) {
+                $image = Image::findOrFail($dtoImage->id);
 
-            $image = new Image();
-            $image->copyright = $dtoImage->copyright;
-            $image->file_path = $filepath;
-            $image->file_extension = $fileExtension;
-            $image->created_user_id = $userId;
-            $image->sort = $dtoImage->sort;
-            $image->placeholder_hash = $thumbHash;
-            $image->save();
+                if ($dtoImage->file) {
+                    try {
+                        [$filepath, $fileExtension] = $this->processImageFile($dtoImage->file);
+                        $thumbHash = ImageHashingService::generatePlaceholderHashFromFilepath($this->filesystemManager->disk('uploads')->path($filepath));
+
+                        $image->file_path = $filepath;
+                        $image->placeholder_hash = $thumbHash;
+                    } catch (Throwable) {
+                        continue;
+                    }
+                }
+
+                $image->copyright = $dtoImage->copyright;
+                $image->sort = $dtoImage->sort;
+                $image->updated_user_id = $userId;
+                $image->updated_at = now();
+                $image->save();
+            } else {
+                if (!$dtoImage->file) {
+                    continue;
+                }
+
+                try {
+                    [$filepath, $fileExtension] = $this->processImageFile($dtoImage->file);
+                    $thumbHash = ImageHashingService::generatePlaceholderHashFromFilepath($this->filesystemManager->disk('uploads')->path($filepath));
+                } catch (Throwable) {
+                    continue;
+                }
+    
+                $image = new Image();
+                $image->copyright = $dtoImage->copyright;
+                $image->file_path = $filepath;
+                $image->file_extension = $fileExtension;
+                $image->created_user_id = $userId;
+                $image->sort = $dtoImage->sort;
+                $image->placeholder_hash = $thumbHash;
+                $image->save();
+            }
 
             $images[] = $image;
         }

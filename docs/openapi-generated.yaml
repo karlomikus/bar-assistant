@@ -5987,6 +5987,13 @@ components:
       type: object
     Image:
       description: 'Image attached to a specific resource'
+      required:
+        - id
+        - file_path
+        - url
+        - copyright
+        - sort
+        - placeholder_hash
       properties:
         id:
           type: integer
@@ -6013,6 +6020,11 @@ components:
       type: object
     ImageRequest:
       properties:
+        id:
+          description: 'Existing image id, used to update an existing image'
+          type:
+            - integer
+            - 'null'
         image:
           description: 'Image file. Required if `image_url` is not set.'
           type: string

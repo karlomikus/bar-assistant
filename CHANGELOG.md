@@ -76,6 +76,7 @@ This is a new major release. Here's a quick summary of the more interesting chan
 - Added `/import/scrape` endpoint
     - This endpoint is used to extract recipe data from a website
     - Result is a JSON schema that can be imported via `/import/cocktail` endpoint
+    - Images in response are now base64 encoded
 - Added `/import/file` endpoint
     - This endpoint is used to import cocktails from a zip file containing files exported via `schema` type
 - Added `used_as_substitute_for` and `can_be_substituted_with` to ingredient response
