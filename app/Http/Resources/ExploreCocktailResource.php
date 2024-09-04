@@ -42,7 +42,9 @@ class ExploreCocktailResource extends JsonResource
             'abv' => $this->abv,
             'ingredients' => $this->ingredients->map(function ($cocktailIngredient) {
                 return [
-                    'name' => $cocktailIngredient->ingredient->name,
+                    'ingredient' => [
+                        'name' => $cocktailIngredient->ingredient->name,
+                    ],
                     'amount' => $cocktailIngredient->amount,
                     'amount_max' => $cocktailIngredient->amount_max,
                     'units' => $cocktailIngredient->units,
