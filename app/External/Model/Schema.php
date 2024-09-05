@@ -8,6 +8,7 @@ use Symfony\Component\Yaml\Yaml;
 use Spatie\ArrayToXml\ArrayToXml;
 use Kami\Cocktail\External\SupportsXML;
 use Kami\Cocktail\External\SupportsYAML;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\External\SupportsMarkdown;
 use Kami\Cocktail\Models\Cocktail as CocktailModel;
@@ -26,7 +27,7 @@ readonly class Schema implements SupportsDraft2, SupportsXML, SupportsMarkdown, 
     ) {
     }
 
-    public static function fromCocktailModel(CocktailModel $model): self
+    public static function fromCocktailModel(CocktailModel $model, ?Units $toUnits = null): self
     {
         $ingredients = [];
         foreach ($model->ingredients as $cocktailIngredient) {
@@ -37,7 +38,7 @@ readonly class Schema implements SupportsDraft2, SupportsXML, SupportsMarkdown, 
         }
 
         return new self(
-            Cocktail::fromModel($model),
+            Cocktail::fromModel($model, toUnits: $toUnits),
             $ingredients,
         );
     }

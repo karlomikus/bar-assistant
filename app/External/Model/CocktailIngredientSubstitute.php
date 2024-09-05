@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External\Model;
 
 use Illuminate\Support\Str;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\CocktailIngredientFormatter;
@@ -21,14 +22,14 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
     ) {
     }
 
-    public static function fromModel(CocktailIngredientSubstituteModel $model): self
+    public static function fromModel(CocktailIngredientSubstituteModel $model, ?Units $toUnits = null): self
     {
         return new self(
             IngredientBasic::fromModel($model->ingredient),
             $model->amount,
             $model->units,
             $model->amount_max,
-            $model->getConvertedTo(),
+            $model->getConvertedTo($toUnits),
         );
     }
 

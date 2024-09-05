@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Kami\Cocktail\External\Export\ToDataPack;
 use Kami\Cocktail\External\Export\ToRecipeType;
+use Kami\Cocktail\External\ForceUnitConvertEnum;
 use Illuminate\Queue\Attributes\WithoutRelations;
 
 class StartTypedExport implements ShouldQueue
@@ -25,6 +26,7 @@ class StartTypedExport implements ShouldQueue
         private readonly ExportTypeEnum $type,
         #[WithoutRelations]
         private readonly Export $export,
+        private readonly ForceUnitConvertEnum $units,
     ) {
     }
 
@@ -33,7 +35,7 @@ class StartTypedExport implements ShouldQueue
         if ($this->type === ExportTypeEnum::Datapack) {
             resolve(ToDataPack::class)->process($this->barId, $this->export->filename);
         } else {
-            resolve(ToRecipeType::class)->process($this->barId, $this->export->filename, $this->type);
+            resolve(ToRecipeType::class)->process($this->barId, $this->export->filename, $this->type, $this->units);
         }
 
 

@@ -15,6 +15,7 @@ use Kami\Cocktail\Models\FileToken;
 use Kami\Cocktail\Jobs\StartTypedExport;
 use Kami\Cocktail\External\ExportTypeEnum;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\External\ForceUnitConvertEnum;
 use Kami\Cocktail\Http\Resources\ExportResource;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -56,6 +57,7 @@ class ExportController extends Controller
         }
 
         $type = ExportTypeEnum::tryFrom($request->post('type', 'schema'));
+        $units = ForceUnitConvertEnum::tryFrom($request->post('units', 'none'));
 
         $export = new Export();
         $export->bar_id = $bar->id;
@@ -64,7 +66,7 @@ class ExportController extends Controller
         $export->created_user_id = $request->user()->id;
         $export->save();
 
-        StartTypedExport::dispatch($bar->id, $type, $export);
+        StartTypedExport::dispatch($bar->id, $type, $export, $units);
 
         $export->refresh();
 

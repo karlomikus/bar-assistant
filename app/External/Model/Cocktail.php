@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External\Model;
 
 use Illuminate\Support\Str;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\External\SupportsJSONLD;
 use Kami\Cocktail\External\SupportsDataPack;
@@ -39,14 +40,14 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
     ) {
     }
 
-    public static function fromModel(CocktailModel $model, bool $useFileURI = false): self
+    public static function fromModel(CocktailModel $model, bool $useFileURI = false, ?Units $toUnits = null): self
     {
         $images = $model->images->map(function (ImageModel $image) use ($useFileURI) {
             return Image::fromModel($image, $useFileURI);
         })->toArray();
 
-        $ingredients = $model->ingredients->map(function (CocktailIngredientModel $cocktailIngredient) {
-            return CocktailIngredient::fromModel($cocktailIngredient);
+        $ingredients = $model->ingredients->map(function (CocktailIngredientModel $cocktailIngredient) use ($toUnits) {
+            return CocktailIngredient::fromModel($cocktailIngredient, $toUnits);
         })->toArray();
 
         return new self(

@@ -8,7 +8,9 @@ use ZipArchive;
 use Carbon\Carbon;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\File;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\ExportTypeEnum;
+use Kami\Cocktail\External\ForceUnitConvertEnum;
 use Kami\Cocktail\External\Model\Schema as SchemaExternal;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
@@ -19,10 +21,15 @@ class ToRecipeType
     {
     }
 
-    public function process(int $barId, ?string $filename = null, ExportTypeEnum $type = ExportTypeEnum::Schema): string
+    public function process(int $barId, ?string $filename = null, ExportTypeEnum $type = ExportTypeEnum::Schema, ForceUnitConvertEnum $units = ForceUnitConvertEnum::Original): string
     {
         if (!$filename) {
             throw new \Exception('Export filename is required');
+        }
+
+        $toUnits = null;
+        if ($units !== ForceUnitConvertEnum::Original) {
+            $toUnits = Units::tryFrom($units->value);
         }
 
         $version = config('bar-assistant.version');
@@ -46,7 +53,7 @@ class ToRecipeType
             throw new ExportFileNotCreatedException($message);
         }
 
-        $this->dumpCocktails($barId, $zip, $type);
+        $this->dumpCocktails($barId, $zip, $type, $toUnits);
 
         if ($metaContent = json_encode($meta)) {
             $zip->addFromString('_meta.json', $metaContent);
@@ -57,7 +64,7 @@ class ToRecipeType
         return $filename;
     }
 
-    private function dumpCocktails(int $barId, ZipArchive &$zip, ExportTypeEnum $type): void
+    private function dumpCocktails(int $barId, ZipArchive &$zip, ExportTypeEnum $type, ?Units $toUnits = null): void
     {
         $cocktails = Cocktail::with([
             'ingredients.ingredient',
@@ -76,11 +83,11 @@ class ToRecipeType
                 $zip->addFile($img->getPath(), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getFileName());
             }
 
-            $externalSchema = SchemaExternal::fromCocktailModel($cocktail);
+            $externalSchema = SchemaExternal::fromCocktailModel($cocktail, $toUnits);
 
             if ($type === ExportTypeEnum::Schema) {
                 $cocktailExportData = $this->prepareDataOutput(
-                    SchemaExternal::fromCocktailModel($cocktail),
+                    $externalSchema,
                 );
 
                 $zip->addFromString('cocktails/' . $cocktail->getExternalId() . '/recipe.json', $cocktailExportData);

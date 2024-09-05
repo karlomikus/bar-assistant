@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External\Model;
 
 use Illuminate\Support\Str;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\CocktailIngredientFormatter;
@@ -29,7 +30,7 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
     ) {
     }
 
-    public static function fromModel(CocktailIngredientModel $model): self
+    public static function fromModel(CocktailIngredientModel $model, ?Units $toUnits = null): self
     {
         $substitutes = $model->substitutes->map(function (CocktailIngredientSubstituteModel $substitute) {
             return CocktailIngredientSubstitute::fromModel($substitute);
@@ -44,7 +45,7 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
             $model->note,
             $substitutes,
             $model->sort,
-            $model->getConvertedTo(),
+            $model->getConvertedTo($toUnits),
         );
     }
 
