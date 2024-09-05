@@ -190,7 +190,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             "@type" => "Recipe",
             "author" => [
                 '@type' => 'Organization',
-                'name' => "Recipe exported from Bar Assistant"
+                'name' => "Bar Assistant | Source: " . e($this->source)
             ],
             "name" => e($this->name),
             "datePublished" => $this->createdAt,
@@ -202,11 +202,10 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             "recipeCuisine" => "Cocktail",
             "keywords" => implode(', ', $this->tags),
             "recipeIngredient" => array_map(function (CocktailIngredient $ci) {
-                return $ci->amount . ' ' . $ci->units . ' ' . $ci->ingredient->name;
+                return $ci->formatter->printIngredient();
             }, $this->ingredients),
-        ], $image);
+        ], ['image' => $image]);
 
         return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        ;
     }
 }

@@ -308,32 +308,28 @@ class CocktailController extends Controller
         $type = $request->get('type', 'json');
         $units = Units::tryFrom($request->get('units', ''));
 
-        $data = SchemaDraft2::fromCocktailModel($cocktail, true)->toDraft2Array();
+        $data = SchemaDraft2::fromCocktailModel($cocktail);
 
         $shareContent = null;
 
         if ($type === 'json') {
-            $shareContent = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            $shareContent = json_encode($data->toDraft2Array(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
         if ($type === 'json-ld') {
-            $shareContent = json_encode($cocktail->asJsonLDSchema(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            $shareContent = $data->cocktail->toJSONLD();
         }
 
         if ($type === 'yaml' || $type === 'yml') {
-            $shareContent = Yaml::dump($data, 4, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
+            $shareContent = $data->toYAML();
         }
 
         if ($type === 'xml') {
-            $shareContent = ArrayToXml::convert($data, 'cocktail', xmlEncoding: 'UTF-8');
-        }
-
-        if ($type === 'text') {
-            $shareContent = view('recipe_text_template', compact('cocktail', 'units'))->render();
+            $shareContent = $data->toXML();
         }
 
         if ($type === 'markdown' || $type === 'md') {
-            $shareContent = view('md_recipe_template', compact('cocktail', 'units'))->render();
+            $shareContent = $data->toMarkdown();
         }
 
         if ($shareContent === null) {

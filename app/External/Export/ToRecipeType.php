@@ -105,6 +105,12 @@ class ToRecipeType
 
                 $zip->addFromString('cocktails/' . $cocktail->getExternalId() . '/recipe.xml', $cocktailExportData);
             }
+
+            if ($type === ExportTypeEnum::YAML) {
+                $cocktailExportData = $externalSchema->toYAML();
+
+                $zip->addFromString('cocktails/' . $cocktail->getExternalId() . '/recipe.yaml', $cocktailExportData);
+            }
         }
     }
 

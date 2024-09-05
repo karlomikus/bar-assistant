@@ -1,40 +1,39 @@
 # {{ $cocktail->name }}
+@if ($cocktail->source)
+![Recipe source]({{ $cocktail->source }})
+@endif
 {{ $cocktail->description }}
-
 @foreach ($cocktail->images as $image)
-![{{ $image->copyright }}]({{ $image->getImageUrl() }})
+
+![{{ $image->copyright }}]({{ $image->uri }})
 @endforeach
 
 ## Ingredients
 @foreach ($cocktail->ingredients as $ci)
-- {{ $ci->getConvertedTo($units)->printIngredient() }} {{ $ci->note ? ' - ' . $ci->note : '' }}
+- {{ $ci->formatter->printIngredient() }}{{ $ci->note ? ' - ' . $ci->note : '' }}
 @foreach ($ci->substitutes as $sub)
-    - {{ $sub->ingredient->name }} {{ $sub->printAmount() }}
+    - or {{ $sub->formatter->printIngredient() }}
 @endforeach
 @endforeach
 
 ## Instructions
 {{ $cocktail->instructions }}
 
+@if ($cocktail->garnish)
 ### Garnish
 {{ $cocktail->garnish }}
 
+@endif
 ---
-@if ($cocktail->getABV())
-- ABV: {{ $cocktail->getABV() }}
+@if ($cocktail->abv)
+- ABV: {{ $cocktail->abv }}
 @endif
-@if ($cocktail->getVolume())
-- Volume: {{ $cocktail->getVolume() }}
-@endif
-@if ($cocktail->getVolume())
-- Alcohol units: {{ $cocktail->getAlcoholUnits() }}
-@endif
-@if ($cocktail->tags->isNotEmpty())
-- Tags: {{ $cocktail->tags->implode('name', ',') }}
+@if (count($cocktail->tags) > 0)
+- Tags: {{ implode(', ', $cocktail->tags) }}
 @endif
 @if ($cocktail->glass)
-- Glass: {{ $cocktail->glass->name }}
+- Glass: {{ $cocktail->glass }}
 @endif
 @if ($cocktail->method)
-- Method: {{ $cocktail->method->name }}
+- Method: {{ $cocktail->method }}
 @endif

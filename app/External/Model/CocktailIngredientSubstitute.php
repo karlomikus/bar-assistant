@@ -7,6 +7,7 @@ namespace Kami\Cocktail\External\Model;
 use Illuminate\Support\Str;
 use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\External\SupportsDataPack;
+use Kami\Cocktail\Models\CocktailIngredientFormatter;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute as CocktailIngredientSubstituteModel;
 
 readonly class CocktailIngredientSubstitute implements SupportsDataPack, SupportsDraft2
@@ -16,6 +17,7 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
         public ?float $amount = null,
         public ?string $units = null,
         public ?float $amountMax = null,
+        public ?CocktailIngredientFormatter $formatter = null,
     ) {
     }
 
@@ -26,6 +28,7 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
             $model->amount,
             $model->units,
             $model->amount_max,
+            $model->getConvertedTo(),
         );
     }
 

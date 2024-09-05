@@ -47,9 +47,9 @@ class CocktailIngredient extends Model
         return $this->hasMany(CocktailIngredientSubstitute::class);
     }
 
-    public function getConvertedTo(Units $units): CocktailIngredientConverted
+    public function getConvertedTo(?Units $units = null): CocktailIngredientFormatter
     {
-        return new CocktailIngredientConverted($this, $units);
+        return new CocktailIngredientFormatter($this, $units);
     }
 
     public function userHasInShelf(User $user): bool

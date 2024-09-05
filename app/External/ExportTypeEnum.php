@@ -14,6 +14,7 @@ enum ExportTypeEnum: string
     case Markdown = 'md';
     case JSONLD = 'json-ld';
     case XML = 'xml';
+    case YAML = 'yaml';
 
     public function getFilenameContext(): string
     {
@@ -23,6 +24,7 @@ enum ExportTypeEnum: string
             self::Markdown => 'markdown',
             self::JSONLD => 'json-ld',
             self::XML => 'xml',
+            self::YAML => 'yaml',
         };
     }
 }

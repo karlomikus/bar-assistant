@@ -7,18 +7,24 @@ namespace Kami\Cocktail\Models;
 use Kami\RecipeUtils\Converter;
 use Kami\RecipeUtils\UnitConverter\Units;
 
-class CocktailIngredientConverted
+class CocktailIngredientFormatter
 {
-    public function __construct(private readonly CocktailIngredient $cocktailIngredient, private readonly Units $toUnits)
-    {
+    public function __construct(
+        private readonly CocktailIngredient|CocktailIngredientSubstitute $cocktailIngredient,
+        private readonly ?Units $toUnits = null,
+    ) {
     }
 
     public function getOriginalUnitsAsEnum(): ?Units
     {
+        if (!$this->cocktailIngredient->units) {
+            return null;
+        }
+
         return Units::tryFrom($this->cocktailIngredient->units);
     }
 
-    public function getOriginalAmount(): float
+    public function getOriginalAmount(): ?float
     {
         return $this->cocktailIngredient->amount;
     }
@@ -38,10 +44,10 @@ class CocktailIngredientConverted
         return $this->convert($this->cocktailIngredient->amount_max);
     }
 
-    public function getUnits(): string
+    public function getUnits(): ?string
     {
         $currentUnits = $this->getOriginalUnitsAsEnum();
-        if (!$currentUnits || $currentUnits === Units::Dash) {
+        if ($this->toUnits === null || !$currentUnits || $currentUnits === Units::Dash) {
             return $this->cocktailIngredient->units;
         }
 
@@ -65,9 +71,13 @@ class CocktailIngredientConverted
     public function printIngredient(): string
     {
         $name = $this->cocktailIngredient->ingredient->name;
-        $optional = $this->cocktailIngredient->optional === true ? ' (optional)' : '';
 
-        return sprintf('%s %s%s', $this->printAmounts(), $name, $optional);
+        $optional = '';
+        if ($this->cocktailIngredient instanceof CocktailIngredient) {
+            $optional = $this->cocktailIngredient->optional === true ? ' (optional)' : '';
+        }
+
+        return trim(sprintf('%s %s%s', $this->printAmounts(), $name, $optional));
     }
 
     private function convert(?float $value): ?float
@@ -77,7 +87,7 @@ class CocktailIngredientConverted
         }
 
         if ($this->getOriginalUnitsAsEnum()) {
-            if ($this->getOriginalUnitsAsEnum() === Units::Dash) {
+            if ($this->getOriginalUnitsAsEnum() === Units::Dash || $this->toUnits === null) {
                 return $value;
             }
 

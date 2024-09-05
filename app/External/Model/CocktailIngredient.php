@@ -7,6 +7,7 @@ namespace Kami\Cocktail\External\Model;
 use Illuminate\Support\Str;
 use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\External\SupportsDataPack;
+use Kami\Cocktail\Models\CocktailIngredientFormatter;
 use Kami\Cocktail\Models\CocktailIngredient as CocktailIngredientModel;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute as CocktailIngredientSubstituteModel;
 
@@ -24,6 +25,7 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
         public ?string $note = null,
         public array $substitutes = [],
         public int $sort = 0,
+        public ?CocktailIngredientFormatter $formatter = null,
     ) {
     }
 
@@ -42,6 +44,7 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
             $model->note,
             $substitutes,
             $model->sort,
+            $model->getConvertedTo(),
         );
     }
 

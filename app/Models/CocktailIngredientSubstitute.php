@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -29,16 +30,9 @@ class CocktailIngredientSubstitute extends Model
         return $this->belongsTo(Ingredient::class);
     }
 
-    public function printAmount(): string
+    public function getConvertedTo(?Units $units = null): CocktailIngredientFormatter
     {
-        $units = $this->units ?? '';
-
-        $str = sprintf('%s %s', $this->amount, $units);
-        if ($this->amount_max) {
-            $str .= sprintf(' - %s %s', $this->amount_max, $units);
-        }
-
-        return trim($str);
+        return new CocktailIngredientFormatter($this, $units);
     }
 
     public function userHasInShelf(User $user): bool

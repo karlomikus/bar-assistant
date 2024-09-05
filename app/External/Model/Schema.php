@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\External\Model;
 
+use Symfony\Component\Yaml\Yaml;
 use Spatie\ArrayToXml\ArrayToXml;
 use Kami\Cocktail\External\SupportsXML;
+use Kami\Cocktail\External\SupportsYAML;
 use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\External\SupportsMarkdown;
 use Kami\Cocktail\Models\Cocktail as CocktailModel;
 
-readonly class Schema implements SupportsDraft2, SupportsXML, SupportsMarkdown
+readonly class Schema implements SupportsDraft2, SupportsXML, SupportsMarkdown, SupportsYAML
 {
     public const SCHEMA_VERSION = 'draft2';
     public const SCHEMA_URL = 'https://barassistant.app/cocktail-02.schema.json';
@@ -24,7 +26,7 @@ readonly class Schema implements SupportsDraft2, SupportsXML, SupportsMarkdown
     ) {
     }
 
-    public static function fromCocktailModel(CocktailModel $model, bool $useFullURL = false): self
+    public static function fromCocktailModel(CocktailModel $model): self
     {
         $ingredients = [];
         foreach ($model->ingredients as $cocktailIngredient) {
@@ -64,8 +66,12 @@ readonly class Schema implements SupportsDraft2, SupportsXML, SupportsMarkdown
     public function toMarkdown(): string
     {
         $cocktail = $this->cocktail;
-        $units = \Kami\RecipeUtils\UnitConverter\Units::Ml;
 
-        return view('md_recipe_template', compact('cocktail', 'units'))->render();
+        return view('md_recipe_template', compact('cocktail'))->render();
+    }
+
+    public function toYAML(): string
+    {
+        return Yaml::dump($this->toDraft2Array(), 4, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
     }
 }
