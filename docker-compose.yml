@@ -5,8 +5,6 @@ services:
       args:
         USER_ID: 1000
         GROUP_ID: 1000
-      context: .
-      dockerfile: unprivileged.Dockerfile
     container_name: app
     restart: unless-stopped
     environment:
@@ -23,8 +21,6 @@ services:
       args:
         USER_ID: 1000
         GROUP_ID: 1000
-      context: .
-      dockerfile: unprivileged.Dockerfile
     command: ["php", "/var/www/cocktails/artisan", "schedule:work"]
     environment:
       PHP_FPM_POOL_NAME: "bass-task"
@@ -37,8 +33,6 @@ services:
       args:
         USER_ID: 1000
         GROUP_ID: 1000
-      context: .
-      dockerfile: unprivileged.Dockerfile
     restart: unless-stopped
     environment:
       PHP_FPM_POOL_NAME: "bass-horizon"
