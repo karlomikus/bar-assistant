@@ -1,3 +1,13 @@
+FROM alpine:latest AS datapack
+
+RUN apk add --no-cache git
+
+WORKDIR /app/data
+
+RUN git clone --depth 1 --branch datapack https://github.com/bar-assistant/data.git .
+
+RUN rm -r .git
+
 FROM serversideup/php:8.3-fpm-nginx AS php-base
 
 ENV S6_CMD_WAIT_FOR_SERVICES=1
@@ -31,7 +41,7 @@ COPY ./resources/docker/dist/php.ini /usr/local/etc/php/conf.d/zzz-bass-php.ini
 
 COPY --chown=www-data:www-data . .
 
-ADD --chown=www-data:www-data https://github.com/bar-assistant/data.git ./resources/data
+COPY --from=datapack --chown=www-data:www-data /app/data ./resources/data
 
 RUN composer install --optimize-autoloader --no-dev \
     && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/open-api-spec.yml \
@@ -51,8 +61,6 @@ ARG USER_ID=1000
 ARG GROUP_ID=1000
 
 RUN install-php-extensions xdebug
-
-# RUN echo "* * * * * developer cd /var/www/cocktails && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontab
 
 RUN docker-php-serversideup-set-id www-data $USER_ID:$GROUP_ID && \
     docker-php-serversideup-set-file-permissions --owner $USER_ID:$GROUP_ID --service nginx
