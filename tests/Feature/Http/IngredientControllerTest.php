@@ -350,13 +350,14 @@ class IngredientControllerTest extends TestCase
         UserIngredient::factory()->for($membership)->for($ingredient1)->create();
 
         $cocktail = Cocktail::factory()
+            ->for($membership->bar)
             ->has(CocktailIngredient::factory()->for(
                 $ingredient1
             ), 'ingredients')
             ->has(CocktailIngredient::factory()->for(
                 $ingredient2
             ), 'ingredients')
-            ->create(['bar_id' => 1]);
+            ->create();
 
         $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
 
