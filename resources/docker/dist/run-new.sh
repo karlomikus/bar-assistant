@@ -2,12 +2,12 @@
 
 set -e
 
-mkdir -p /var/www/html/storage/bar-assistant/uploads/{cocktails,ingredients,temp}
-mkdir -p /var/www/html/storage/bar-assistant/backups
+mkdir -p /var/www/cocktails/storage/bar-assistant/uploads/{cocktails,ingredients,temp}
+mkdir -p /var/www/cocktails/storage/bar-assistant/backups
 
-db_file=/var/www/html/storage/bar-assistant/database.ba3.sqlite
+db_file=/var/www/cocktails/storage/bar-assistant/database.ba3.sqlite
 
-cd /var/www/html
+cd /var/www/cocktails
 
 if [ ! -f "$db_file" ]; then
     echo "[BAR-ASSISTANT] SQLite database not found, creating a new one..."
