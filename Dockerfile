@@ -58,6 +58,8 @@ RUN composer install --optimize-autoloader --no-dev \
 
 VOLUME ["/var/www/cocktails/storage/bar-assistant"]
 
+USER root
+
 FROM php-base AS dev
 
 USER root
