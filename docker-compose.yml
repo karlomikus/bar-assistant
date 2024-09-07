@@ -13,7 +13,7 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./:/var/www/cocktails
-      - ./resources/docker/localdev/php.ini:/usr/local/etc/php/php.ini
+      - ./resources/docker/localdev/php.ini:/usr/local/etc/php/conf.d/zzz-xbass-php.ini
 
   task:
     build:
@@ -26,6 +26,7 @@ services:
       PHP_FPM_POOL_NAME: "bass-task"
     volumes:
       - ./:/var/www/cocktails
+      - ./resources/docker/localdev/php.ini:/usr/local/etc/php/conf.d/zzz-xbass-php.ini
 
   horizon:
     build:
@@ -41,6 +42,7 @@ services:
     command: ["php", "/var/www/cocktails/artisan", "horizon"]
     volumes:
       - ./:/var/www/cocktails
+      - ./resources/docker/localdev/php.ini:/usr/local/etc/php/conf.d/zzz-xbass-php.ini
 
   webserver:
     image: nginx:alpine
