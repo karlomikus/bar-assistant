@@ -18,7 +18,7 @@ ENV NGINX_WEBROOT=/var/www/cocktails/public
 
 USER root
 
-RUN install-php-extensions imagick bcmath intl ffi
+RUN install-php-extensions bcmath intl ffi
 
 RUN apt update \
     && apt-get install -y \
