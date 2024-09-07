@@ -21,15 +21,14 @@ sqlite3 "$db_file" 'pragma journal_mode=wal;'
 # Start running artisan commands
 cd /var/www/cocktails
 
-# Setup laravel
+# Run DB setup
+php artisan migrate --force
 php artisan storage:link
 php artisan config:cache
 php artisan route:cache
 # Setup Meilisearch ENV variables
 php artisan bar:setup-meilisearch
 php artisan scout:sync-index-settings
-# Run DB setup
-php artisan migrate --force
 # Update meilisearch indexes
 php artisan bar:refresh-search
 
