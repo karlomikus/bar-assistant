@@ -21,8 +21,6 @@ sqlite3 "$db_file" 'pragma journal_mode=wal;'
 # Start running artisan commands
 cd /var/www/cocktails
 
-chown -R www-data:www-data /var/www/cocktails/storage/bar-assistant
-
 # Setup laravel
 php artisan storage:link
 php artisan config:cache
