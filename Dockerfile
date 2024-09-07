@@ -39,6 +39,12 @@ ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-develop}
 
 COPY --chmod=755 ./resources/docker/dist/run-new.sh /etc/entrypoint.d/99-bass.sh
 
+USER root
+
+RUN docker-php-serversideup-s6-init
+
+USER www-data
+
 COPY ./resources/docker/dist/php.ini /usr/local/etc/php/conf.d/zzz-bass-php.ini
 
 COPY --chown=www-data:www-data . .
