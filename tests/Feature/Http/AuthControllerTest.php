@@ -60,7 +60,7 @@ class AuthControllerTest extends TestCase
         );
 
         // Logout and check headers
-        $response = $this->postJson('/api/logout');
+        $response = $this->postJson('/api/auth/logout');
 
         $response->assertNoContent();
     }

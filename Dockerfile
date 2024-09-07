@@ -30,6 +30,8 @@ RUN apt update \
 
 USER www-data
 
+WORKDIR /var/www/cocktails
+
 FROM php-base AS dist
 
 ARG BAR_ASSISTANT_VERSION

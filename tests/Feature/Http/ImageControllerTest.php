@@ -117,7 +117,7 @@ class ImageControllerTest extends TestCase
         $response = $this->post('/api/images', [
             'images' => [
                 [
-                    'image_url' => 'https://raw.githubusercontent.com/karlomikus/bar-assistant/master/resources/art/readme-header.png',
+                    'image' => 'https://raw.githubusercontent.com/karlomikus/bar-assistant/master/resources/art/readme-header.png',
                     'copyright' => 'BA 1',
                     'sort' => 1,
                 ],
@@ -144,9 +144,14 @@ class ImageControllerTest extends TestCase
         $response = $this->post('/api/images', [
             'images' => [
                 [
-                    'image_url' => 'test',
+                    'image' => 'test',
                     'copyright' => 'BA 1',
                     'sort' => 1,
+                ],
+                [
+                    'image' => file_get_contents(base_path('tests/fixtures/sus_image.txt')),
+                    'copyright' => 'BA 2',
+                    'sort' => 2,
                 ],
             ],
         ], ['Accept' => 'application/json']);
