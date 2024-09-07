@@ -37,7 +37,7 @@ FROM php-base AS dist
 ARG BAR_ASSISTANT_VERSION
 ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-develop}
 
-COPY --chmod=755 ./resources/docker/dist/run-new.sh /etc/entrypoint.d/99-bass.sh
+COPY --chmod=755 ./resources/docker/dist/init.sh /etc/entrypoint.d/99-bass.sh
 
 USER root
 
@@ -57,8 +57,6 @@ RUN composer install --optimize-autoloader --no-dev \
     && php artisan key:generate
 
 VOLUME ["/var/www/cocktails/storage/bar-assistant"]
-
-USER root
 
 FROM php-base AS dev
 

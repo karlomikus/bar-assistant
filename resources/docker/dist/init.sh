@@ -2,12 +2,12 @@
 
 set -e
 
+# Create default bar assistant directories
 mkdir -p /var/www/cocktails/storage/bar-assistant/uploads/{cocktails,ingredients,temp}
 mkdir -p /var/www/cocktails/storage/bar-assistant/backups
 
+# SQLite database location
 db_file=/var/www/cocktails/storage/bar-assistant/database.ba3.sqlite
-
-cd /var/www/cocktails
 
 if [ ! -f "$db_file" ]; then
     echo "[BAR-ASSISTANT] SQLite database not found, creating a new one..."
@@ -17,6 +17,11 @@ fi
 # Enable WAL mode
 echo "[BAR-ASSISTANT] Enabling database WAL mode..."
 sqlite3 "$db_file" 'pragma journal_mode=wal;'
+
+# Start running artisan commands
+cd /var/www/cocktails
+
+chown -R www-data:www-data /var/www/cocktails/storage/bar-assistant
 
 # Setup laravel
 php artisan storage:link
@@ -49,4 +54,4 @@ echo '
                                
 '
 
-echo "[BAR-ASSISTANT] Bar Assistant API ready"
+echo "[BAR-ASSISTANT] Bar Assistant API ready [port: 8080]"
