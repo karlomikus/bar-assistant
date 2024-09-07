@@ -14,6 +14,6 @@ class WrapObjectWithData extends OAT\JsonContent
      */
     public function __construct(string $className)
     {
-        parent::__construct(properties: [new OAT\Property(property: 'data', type: 'object', ref: $className)]);
+        parent::__construct(required: ['data'], properties: [new OAT\Property(property: 'data', type: 'object', ref: $className)]);
     }
 }

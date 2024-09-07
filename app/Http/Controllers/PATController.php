@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\App;
+use Kami\Cocktail\Models\AbilityEnum;
 use Kami\Cocktail\Http\Requests\PATRequest;
 use Kami\Cocktail\Http\Resources\PATResource;
 use Kami\Cocktail\Models\PersonalAccessToken;
@@ -45,7 +46,7 @@ class PATController extends Controller
         ]
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\PersonalAccessToken::class),
+        new BAO\WrapObjectWithData(BAO\Schemas\Token::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     public function store(PATRequest $request): TokenResource
@@ -59,10 +60,9 @@ class PATController extends Controller
             $expiresAt = Carbon::parse($expiresAt);
         }
 
-        $allowedAbilities = ['cocktails.read', 'cocktails.write', 'ingredients.read', 'ingredients.write'];
-        $abilities = array_filter($request->post('abilities', []), fn ($inputAbility) => in_array($inputAbility, $allowedAbilities, true));
+        $abilities = array_filter($request->post('abilities', []), fn ($inputAbility) => AbilityEnum::tryFrom($inputAbility) !== null);
         if (count($abilities) === 0) {
-            abort(400, 'Unknown abilities given, valid abilties include: ' . implode(', ', $allowedAbilities));
+            abort(400, 'Unsupported abilities given, valid abilties include: ' . implode(', ', array_map(fn (AbilityEnum $ability) => $ability->value, AbilityEnum::cases())));
         }
 
         $token = $request->user()->createToken(

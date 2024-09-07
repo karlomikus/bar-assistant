@@ -138,7 +138,7 @@ class ImbibeMagazine extends DefaultScraper
         }
 
         return [
-            'url' => $url,
+            'uri' => $url,
             'copyright' => $copyright,
         ];
     }

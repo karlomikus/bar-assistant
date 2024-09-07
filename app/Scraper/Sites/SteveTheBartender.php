@@ -37,7 +37,7 @@ class SteveTheBartender extends AbstractSiteExtractor
     public function image(): ?array
     {
         return [
-            'url' => $this->getRecipeSchema()['image'][0],
+            'uri' => $this->getRecipeSchema()['image'][0],
             'copyright' => 'Steve the Bartender',
         ];
     }

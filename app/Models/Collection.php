@@ -23,7 +23,7 @@ class Collection extends Model
      */
     public function cocktails(): BelongsToMany
     {
-        return $this->belongsToMany(Cocktail::class, 'collections_cocktails');
+        return $this->belongsToMany(Cocktail::class, 'collections_cocktails')->orderBy('name');
     }
 
     /**

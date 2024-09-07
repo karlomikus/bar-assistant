@@ -17,7 +17,7 @@ readonly class Substitute
     public static function fromArray(array $source): self
     {
         return new self(
-            $source['id'],
+            $source['ingredient']['id'],
             ($source['amount'] ?? null) !== null ? (float) $source['amount'] : null,
             ($source['amount_max'] ?? null) !== null ? (float) $source['amount_max'] : null,
             $source['units'] ?? null,

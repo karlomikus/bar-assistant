@@ -64,14 +64,14 @@ class KindredCocktails extends AbstractSiteExtractor
     public function image(): ?array
     {
         $result = [
-            'url' => null,
+            'uri' => null,
             'copyright' => null,
         ];
 
         try {
-            $result['url'] = $this->crawler->filterXPath('//img[@property="schema:image"]')->first()->attr('src');
-            if (!str_starts_with($result['url'], 'http')) {
-                $result['url'] = 'https://kindredcocktails.com' . $result['url'];
+            $result['uri'] = $this->crawler->filterXPath('//img[@property="schema:image"]')->first()->attr('src');
+            if (!str_starts_with($result['uri'], 'http')) {
+                $result['uri'] = 'https://kindredcocktails.com' . $result['uri'];
             }
         } catch (Throwable) {
         }

@@ -19,6 +19,7 @@ class CollectionFactory extends Factory
         return [
             'name' => fake()->name(),
             'description' => fake()->paragraph(),
+            'bar_membership_id' => \Kami\Cocktail\Models\BarMembership::factory(),
         ];
     }
 }

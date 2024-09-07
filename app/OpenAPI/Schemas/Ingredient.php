@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema()]
+#[OAT\Schema(required: ['id', 'slug', 'name', 'description', 'origin', 'color', 'created_at', 'updated_at', 'strength'])]
 class Ingredient
 {
     #[OAT\Property(example: 1)]
@@ -26,9 +26,6 @@ class Ingredient
 
     #[OAT\Property(example: 'Worldwide')]
     public ?string $origin = null;
-
-    #[OAT\Property(property: 'main_image_id', example: 1)]
-    public ?string $mainImageId = null;
 
     #[OAT\Property(property: 'created_at', format: 'date-time')]
     public string $createdAt;

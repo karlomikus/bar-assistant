@@ -9,6 +9,8 @@ use OpenApi\Attributes as OAT;
 #[OAT\Schema()]
 class PersonalAccessToken
 {
+    #[OAT\Property(example: 1)]
+    public int $id;
     #[OAT\Property(example: 'user_generated')]
     public string $name;
     /** @var string[] */

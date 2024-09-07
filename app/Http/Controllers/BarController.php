@@ -7,13 +7,13 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
+use OpenApi\Attributes as OAT;
 use Symfony\Component\Uid\Ulid;
 use Kami\Cocktail\Jobs\SetupBar;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Kami\Cocktail\Models\BarStatusEnum;
@@ -78,6 +78,7 @@ class BarController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
+    #[BAO\ValidationFailedResponse]
     public function store(BarRequest $request): JsonResponse
     {
         if ($request->user()->cannot('create', Bar::class)) {
@@ -114,6 +115,8 @@ class BarController extends Controller
 
         $bar->save();
 
+        Bar::updateSearchToken($bar);
+
         $request->user()->joinBarAs($bar, UserRoleEnum::Admin);
 
         SetupBar::dispatch($bar, $request->user(), $barOptions);
@@ -137,6 +140,7 @@ class BarController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
+    #[BAO\ValidationFailedResponse]
     public function update(int $id, BarRequest $request): JsonResource
     {
         $bar = Bar::findOrFail($id);

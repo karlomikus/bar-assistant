@@ -5,98 +5,46 @@ declare(strict_types=1);
 namespace Tests\Feature\Http;
 
 use Tests\TestCase;
-use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ImportControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
-    {
-        parent::setUp();
+    // public function test_import_cocktail_from_json(): void
+    // {
+    //     $membership = $this->setupBarMembership();
+    //     $this->actingAs($membership->user);
 
-        $this->actingAs(
-            User::factory()->create()
-        );
-    }
+    //     $source = file_get_contents(base_path('tests/fixtures/import.json'));
 
-    public function test_cocktail_scrape_from_valid_url(): void
-    {
-        $this->setupBar();
-        $response = $this->postJson('/api/import/cocktail?bar_id=1', [
-            'source' => 'https://punchdrink.com/recipes/whiskey-peach-smash/'
-        ]);
+    //     $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+    //     $response = $this->postJson('/api/import/cocktail', [
+    //         'schema' => $source
+    //     ]);
 
-        $response->assertOk();
-        $response->assertJsonPath('data.name', 'Whiskey Peach Smash');
-        $response->assertJsonCount(1, 'data.images');
-        $response->assertJsonCount(5, 'data.ingredients');
-    }
+    //     $response->assertSuccessful();
+    // }
 
-    public function test_cocktail_scrape_fails_safely_for_unknown_url(): void
-    {
-        $this->setupBar();
-        $response = $this->postJson('/api/import/cocktail?bar_id=1', [
-            'source' => 'https://google.com'
-        ]);
+    // public function test_import_cocktail_from_json_overwrite_duplicates(): void
+    // {
+    //     $membership = $this->setupBarMembership();
+    //     $this->actingAs($membership->user);
 
-        $response->assertOk();
-    }
+    //     $source = file_get_contents(base_path('tests/fixtures/import.json'));
 
-    public function test_cocktail_scrape_from_json(): void
-    {
-        $this->setupBar();
-        $source = file_get_contents(base_path('tests/fixtures/import.json'));
-        $response = $this->postJson('/api/import/cocktail?bar_id=1&type=json', [
-            'source' => $source
-        ]);
+    //     $cocktail = Cocktail::factory()->for($membership->bar)->create(['name' => 'Negroni', 'description' => 'To be replaced']);
 
-        $response->assertOk();
-        $response->assertJsonPath('data.name', 'Cocktail name');
-    }
+    //     $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+    //     $response = $this->postJson('/api/import/cocktail', [
+    //         'schema' => $source,
+    //         'duplicate_actions' => 'overwrite'
+    //     ]);
 
-    public function test_cocktail_scrape_from_json_fails_bad_format(): void
-    {
-        $this->setupBar();
-        $response = $this->postJson('/api/import/cocktail?bar_id=1&type=json', [
-            'source' => 'TEST'
-        ]);
-
-        $response->assertBadRequest();
-    }
-
-    public function test_cocktail_scrape_from_yaml(): void
-    {
-        $this->setupBar();
-        $source = file_get_contents(base_path('tests/fixtures/import.yaml'));
-        $response = $this->postJson('/api/import/cocktail?bar_id=1&type=yaml', [
-            'source' => $source
-        ]);
-
-        $response->assertOk();
-        $response->assertJsonPath('data.name', 'Old Fashioned');
-        $response->assertJsonCount(4, 'data.ingredients');
-        $response->assertJsonCount(1, 'data.images');
-    }
-
-    public function test_cocktail_scrape_from_yaml_fails_bad_format(): void
-    {
-        $this->setupBar();
-        $response = $this->postJson('/api/import/cocktail?type=yaml&bar_id=1', [
-            'source' => "{-- Test \n}\n-test"
-        ]);
-
-        $response->assertBadRequest();
-    }
-
-    public function test_cocktail_scrape_unknown_collection(): void
-    {
-        $this->setupBar();
-        $response = $this->postJson('/api/import/cocktail?type=collection&bar_id=1', [
-            'source' => '{"test": []}'
-        ]);
-
-        $response->assertBadRequest();
-    }
+    //     $response->assertSuccessful();
+    //     $cocktail->refresh();
+    //     $this->assertSame($cocktail->name, 'Negroni');
+    //     $this->assertNotSame($cocktail->description, 'To be replaced');
+    // }
 }

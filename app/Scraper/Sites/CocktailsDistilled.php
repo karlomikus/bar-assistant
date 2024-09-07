@@ -103,7 +103,7 @@ class CocktailsDistilled extends AbstractSiteExtractor
         $image = $this->crawler->filter('.recipe-slideshow-images img')->first()->attr('src');
 
         return [
-            'url' => $image,
+            'uri' => $image,
             'copyright' => 'Cocktails Distilled',
         ];
     }

@@ -7,6 +7,7 @@ use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Http\UploadedFile;
 use Kami\Cocktail\Models\Cocktail;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,7 +27,9 @@ class ImageControllerTest extends TestCase
 
     public function test_single_image_upload(): void
     {
-        Storage::fake('uploads');
+        $s = Storage::fake('uploads');
+        File::ensureDirectoryExists($s->path('temp'));
+
         $response = $this->post('/api/images', [
             'images' => [
                 [
@@ -53,7 +56,9 @@ class ImageControllerTest extends TestCase
 
     public function test_multiple_image_upload(): void
     {
-        Storage::fake('uploads');
+        $s = Storage::fake('uploads');
+        File::ensureDirectoryExists($s->path('temp'));
+
         $response = $this->post('/api/images', [
             'images' => [
                 [
@@ -106,10 +111,13 @@ class ImageControllerTest extends TestCase
 
     public function test_multiple_image_upload_by_url(): void
     {
+        $s = Storage::fake('uploads');
+        File::ensureDirectoryExists($s->path('temp'));
+
         $response = $this->post('/api/images', [
             'images' => [
                 [
-                    'image_url' => 'https://raw.githubusercontent.com/karlomikus/bar-assistant/master/resources/art/readme-header.png',
+                    'image' => 'https://raw.githubusercontent.com/karlomikus/bar-assistant/master/resources/art/readme-header.png',
                     'copyright' => 'BA 1',
                     'sort' => 1,
                 ],
@@ -125,6 +133,10 @@ class ImageControllerTest extends TestCase
                     ->etc();
             });
         });
+
+        $filename = $response->json('data.0.file_path');
+
+        Storage::disk('uploads')->assertExists($filename);
     }
 
     public function test_multiple_image_upload_by_url_fails(): void
@@ -132,9 +144,14 @@ class ImageControllerTest extends TestCase
         $response = $this->post('/api/images', [
             'images' => [
                 [
-                    'image_url' => 'test',
+                    'image' => 'test',
                     'copyright' => 'BA 1',
                     'sort' => 1,
+                ],
+                [
+                    'image' => file_get_contents(base_path('tests/fixtures/sus_image.txt')),
+                    'copyright' => 'BA 2',
+                    'sort' => 2,
                 ],
             ],
         ], ['Accept' => 'application/json']);
@@ -160,16 +177,21 @@ class ImageControllerTest extends TestCase
 
     public function test_image_update(): void
     {
-        $bar = $this->setupBar();
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
         Storage::fake('uploads');
+
         $imageFile = UploadedFile::fake()->createWithContent('image1.jpg', $this->getFakeImageContent('jpg'));
-        $cocktailImage = Image::factory()->for(Cocktail::factory()->create(['bar_id' => $bar->id]), 'imageable')->create([
-            'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'uploads'),
-            'file_extension' => $imageFile->extension(),
-            'copyright' => 'initial',
-            'sort' => 7,
-            'created_user_id' => auth()->user()->id
-        ]);
+        $cocktailImage = Image::factory()
+            ->recycle($membership->bar, $membership->user)
+            ->for(Cocktail::factory()->recycle($membership->bar, $membership->user)->create(), 'imageable')
+            ->create([
+                'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'uploads'),
+                'file_extension' => $imageFile->extension(),
+                'copyright' => 'initial',
+                'sort' => 7,
+            ]);
 
         $response = $this->postJson('/api/images/' . $cocktailImage->id, [
             'copyright' => 'New copyright'

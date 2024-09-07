@@ -5,75 +5,61 @@ declare(strict_types=1);
 namespace Tests\Feature\Http;
 
 use Tests\TestCase;
-use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Cocktail;
-use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RatingControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    public function test_rate_cocktail(): void
     {
-        parent::setUp();
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
 
-        $this->actingAs(
-            User::factory()->create()
-        );
-    }
+        $cocktail = Cocktail::factory()->for($membership->bar)->create();
 
-    public function test_rate_cocktail_response(): void
-    {
-        $this->setupBar();
-        $cocktail = Cocktail::factory()->create(['bar_id' => 1]);
-
-        $response = $this->postJson('/api/ratings/cocktails/' . $cocktail->id, [
+        $response = $this->postJson('/api/cocktails/' . $cocktail->id . '/ratings', [
             'rating' => 3
         ]);
 
-        $response->assertCreated();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->where('data.rating', 3)
-                ->where('data.rateable_id', $cocktail->id)
-                ->where('data.user_id', 1)
-                ->etc()
-        );
+        $response->assertNoContent();
+        $this->assertDatabaseHas('ratings', [
+            'rateable_id' => $cocktail->id,
+            'user_id' => $membership->user_id,
+            'rating' => 3
+        ]);
     }
 
-    public function test_rate_cocktail_updates_existing_rating_response(): void
+    public function test_rating_cocktail_updates_existing_rating(): void
     {
-        $this->setupBar();
-        $cocktail = Cocktail::factory()->create(['bar_id' => 1]);
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
 
-        $cocktail->rate(2, auth()->user()->id);
+        $cocktail = Cocktail::factory()->for($membership->bar)->create();
+        $cocktail->rate(2, $membership->user_id);
 
-        $response = $this->postJson('/api/ratings/cocktails/' . $cocktail->id, [
+        $response = $this->postJson('/api/cocktails/' . $cocktail->id . '/ratings', [
             'rating' => 4
         ]);
 
-        $response->assertOk();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->where('data.rating', 4)
-                ->where('data.rateable_id', $cocktail->id)
-                ->where('data.user_id', 1)
-                ->etc()
-        );
+        $response->assertNoContent();
+        $this->assertDatabaseHas('ratings', [
+            'rateable_id' => $cocktail->id,
+            'user_id' => $membership->user_id,
+            'rating' => 4
+        ]);
     }
 
-    public function test_delete_cocktail_rating_response(): void
+    public function test_delete_cocktail_rating(): void
     {
-        $this->setupBar();
-        $cocktail = Cocktail::factory()->create(['bar_id' => 1]);
-        $cocktail->rate(2, auth()->user()->id);
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
 
-        $response = $this->delete('/api/ratings/cocktails/' . $cocktail->id);
+        $cocktail = Cocktail::factory()->for($membership->bar)->create();
+        $cocktail->rate(2, $membership->user_id);
+
+        $response = $this->deleteJson('/api/cocktails/' . $cocktail->id . '/ratings');
 
         $this->assertDatabaseMissing('ratings', ['rateable_id' => $cocktail->id]);
         $response->assertNoContent();

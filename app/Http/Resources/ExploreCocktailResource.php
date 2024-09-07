@@ -21,10 +21,7 @@ class ExploreCocktailResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'bar' => [
-                'name' => $this->bar->name,
-                'subtitle' => $this->bar->subtitle,
-            ],
+            'bar' => new BarBasicResource($this->bar),
             'name' => $this->name,
             'instructions' => e($this->instructions),
             'garnish' => e($this->garnish),
@@ -45,7 +42,9 @@ class ExploreCocktailResource extends JsonResource
             'abv' => $this->abv,
             'ingredients' => $this->ingredients->map(function ($cocktailIngredient) {
                 return [
-                    'name' => $cocktailIngredient->ingredient->name,
+                    'ingredient' => [
+                        'name' => $cocktailIngredient->ingredient->name,
+                    ],
                     'amount' => $cocktailIngredient->amount,
                     'amount_max' => $cocktailIngredient->amount_max,
                     'units' => $cocktailIngredient->units,

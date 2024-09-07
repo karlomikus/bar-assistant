@@ -7,8 +7,8 @@ namespace Kami\Cocktail\Console\Commands;
 use Throwable;
 use Kami\Cocktail\Models\Bar;
 use Illuminate\Console\Command;
-use Kami\Cocktail\External\Export\ToDataPack;
 use Kami\Cocktail\External\ExportTypeEnum;
+use Kami\Cocktail\External\Export\ToDataPack;
 
 class BarExportRecipes extends Command
 {
@@ -51,7 +51,7 @@ class BarExportRecipes extends Command
 
         $this->output->info(sprintf('Starting recipe export from bar: %s - "%s"', $bar->id, $bar->name));
 
-        $filename = $this->exporter->process($barId, null, $type);
+        $filename = $this->exporter->process($barId, null);
 
         $this->output->success('Data exported to file: ' . $filename);
 

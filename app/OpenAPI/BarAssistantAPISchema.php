@@ -14,6 +14,8 @@ use OpenApi\Attributes as OAT;
     ],
 )]
 #[OAT\Info(
+    license: new OAT\License(name: 'MIT', url: 'https://github.com/karlomikus/bar-assistant/blob/master/LICENSE'),
+    contact: new OAT\Contact(name: 'Bar Assistant', url: 'https://barassistant.app', email: 'info@barassistant.app'),
     title: "Bar Assistant API",
     version: "{{VERSION}}",
     description: "**Bar Assistant** is all-in-one solution for managing your home bar. Compared to other recipe management software that usually tries to be more for general use, Bar Assistant is made specifically for managing cocktail recipes. This means that there are a lot of cocktail-oriented features, like ingredient substitutes, first-class ingredients, ABV calculations, unit switching and more.
@@ -28,11 +30,13 @@ The rate limit is set to 1,000 requests per minute per IP address, or per user I
 
 Ensure that each request includes the `Content-Type: application/json` header.
 
-## Authentication
+## Auth
 
 Include your login token in the header of every request, using the following format: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.
 
-For requests that require a reference to a specific bar, include the bar ID in the query string, e.g., `/cocktails?bar_id=1`.
+## Bar context
+
+For requests that require a reference to a specific bar, include the `bar_id` in the query string, e.g., `/cocktails?bar_id=1`, or use `Bar-Assistant-Bar-Id` header in your request.
 
 ## Authorization
 

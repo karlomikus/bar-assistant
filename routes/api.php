@@ -48,13 +48,13 @@ if (config('bar-assistant.mail_require_confirmation') === true) {
     $apiMiddleware[] = 'verified';
 }
 
-Route::get('/', [ServerController::class, 'index']);
-
-Route::post('login', [AuthController::class, 'authenticate'])->name('auth.login');
-Route::post('register', [AuthController::class, 'register']);
-Route::post('forgot-password', [AuthController::class, 'passwordForgot']);
-Route::post('reset-password', [AuthController::class, 'passwordReset']);
-Route::get('verify/{id}/{hash}', [AuthController::class, 'confirmAccount']);
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'authenticate'])->name('auth.login');
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('forgot-password', [AuthController::class, 'passwordForgot']);
+    Route::post('reset-password', [AuthController::class, 'passwordReset']);
+    Route::get('verify/{id}/{hash}', [AuthController::class, 'confirmAccount']);
+});
 
 Route::prefix('server')->group(function () {
     Route::get('/version', [ServerController::class, 'version']);
@@ -70,17 +70,18 @@ Route::prefix('explore')->group(function () {
     Route::get('/menus/{barSlug}', [MenuController::class, 'show']);
 });
 
+Route::prefix('exports')->group(function () {
+    Route::get('/{id}/download', [ExportController::class, 'download'])->name('exports.download');
+})->middleware(['ability:*']);
+
 Route::middleware($apiMiddleware)->group(function () {
-    Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware(['ability:*']);
+    Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware(['ability:*']);
     Route::post('password-check', [AuthController::class, 'passwordCheck'])->middleware(['ability:*']);
 
     Route::get('/profile', [ProfileController::class, 'show'])->middleware(['ability:*']);
     Route::post('/profile', [ProfileController::class, 'update'])->middleware(['ability:*']);
 
     Route::prefix('shelf')->group(function () {
-        Route::get('/cocktails', [ShelfController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/cocktail-favorites', [ShelfController::class, 'favorites'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/ingredients', [ShelfController::class, 'ingredients'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/ingredients/batch-store', [ShelfController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/ingredients/batch-delete', [ShelfController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
     })->middleware(['ability:*']);
@@ -88,11 +89,12 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::prefix('ingredients')->group(function () {
         Route::get('/', [IngredientController::class, 'index'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.read']);
         Route::post('/', [IngredientController::class, 'store'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.write']);
-        Route::get('/recommend', [IngredientController::class, 'recommend'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.read']);
         Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show')->middleware(['ability:ingredients.read']);
         Route::put('/{id}', [IngredientController::class, 'update'])->middleware(['ability:ingredients.write']);
         Route::delete('/{id}', [IngredientController::class, 'delete'])->middleware(['ability:ingredients.write']);
         Route::get('/{id}/extra', [IngredientController::class, 'extra'])->middleware(['ability:ingredients.read']);
+        Route::get('/{id}/cocktails', [IngredientController::class, 'cocktails'])->middleware(['ability:ingredients.read']);
+        Route::get('/{id}/substitutes', [IngredientController::class, 'substitutes'])->middleware(['ability:ingredients.read']);
     });
 
     Route::prefix('ingredient-categories')->group(function () {
@@ -115,20 +117,19 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::delete('/{id}/public-link', [CocktailController::class, 'makePrivate'])->name('cocktails.make-private')->middleware(['ability:cocktails.write']);
         Route::get('/{id}/similar', [CocktailController::class, 'similar'])->name('cocktails.similar')->middleware(['ability:cocktails.read']);
         Route::post('/{id}/copy', [CocktailController::class, 'copy'])->middleware([EnsureRequestHasBarQuery::class, 'ability:cocktails.write']);
+
+        Route::prefix('/{id}/ratings')->group(function () {
+            Route::post('/', [RatingController::class, 'rateCocktail'])->name('ratings.rate-cocktail');
+            Route::delete('/', [RatingController::class, 'deleteCocktailRating'])->name('ratings.unrate-cocktail');
+        })->middleware(['ability:cocktails.write']);
     });
 
     Route::prefix('images')->group(function () {
+        Route::get('/', [ImageController::class, 'index']);
         Route::get('/{id}', [ImageController::class, 'show']);
         Route::post('/', [ImageController::class, 'store']);
         Route::post('/{id}', [ImageController::class, 'update']);
         Route::delete('/{id}', [ImageController::class, 'delete']);
-    })->middleware(['ability:*']);
-
-    Route::prefix('shopping-list')->group(function () {
-        Route::get('/', [ShoppingListController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/share', [ShoppingListController::class, 'share'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/batch-store', [ShoppingListController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/batch-delete', [ShoppingListController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
     })->middleware(['ability:*']);
 
     Route::prefix('glasses')->group(function () {
@@ -155,21 +156,26 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::delete('/{id}', [TagController::class, 'delete']);
     })->middleware(['ability:*']);
 
-    Route::prefix('ratings')->group(function () {
-        Route::post('/cocktails/{id}', [RatingController::class, 'rateCocktail'])->name('ratings.rate-cocktail');
-        Route::delete('/cocktails/{id}', [RatingController::class, 'deleteCocktailRating'])->name('ratings.unrate-cocktail');
-    })->middleware(['ability:*']);
-
     Route::prefix('users')->group(function () {
         Route::get('/', [UsersController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/', [UsersController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [UsersController::class, 'show'])->middleware(EnsureRequestHasBarQuery::class)->name('users.show');
         Route::put('/{id}', [UsersController::class, 'update'])->middleware(EnsureRequestHasBarQuery::class);
         Route::delete('/{id}', [UsersController::class, 'delete']);
-    })->middleware(['ability:*']);
 
-    Route::prefix('stats')->group(function () {
-        Route::get('/', [StatsController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/{id}/ingredients', [ShelfController::class, 'ingredients'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/{id}/cocktails', [ShelfController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/{id}/cocktails/favorites', [ShelfController::class, 'favorites'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/{id}/ingredients/batch-store', [ShelfController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/{id}/ingredients/batch-delete', [ShelfController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/{id}/ingredients/recommend', [ShelfController::class, 'recommend'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.read']);
+
+        Route::prefix('{id}/shopping-list')->group(function () {
+            Route::get('/', [ShoppingListController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+            Route::get('/share', [ShoppingListController::class, 'share'])->middleware(EnsureRequestHasBarQuery::class);
+            Route::post('/batch-store', [ShoppingListController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
+            Route::post('/batch-delete', [ShoppingListController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
+        })->middleware(['ability:*']);
     })->middleware(['ability:*']);
 
     Route::prefix('cocktail-methods')->group(function () {
@@ -190,18 +196,16 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::prefix('collections')->group(function () {
         Route::get('/', [CollectionController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/', [CollectionController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/shared', [CollectionController::class, 'shared'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}', [CollectionController::class, 'show'])->name('collection.show');
         Route::put('/{id}', [CollectionController::class, 'update']);
         Route::delete('/{id}', [CollectionController::class, 'delete']);
-        Route::post('/{id}/cocktails', [CollectionController::class, 'cocktails']);
-        Route::put('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'cocktail']);
-        Route::delete('/{id}/cocktails/{cocktailId}', [CollectionController::class, 'deleteResourceFromCollection']);
-        Route::get('/{id}/share', [CollectionController::class, 'share'])->name('collection.share');
+        Route::put('/{id}/cocktails', [CollectionController::class, 'cocktails']);
     })->middleware(['ability:*']);
 
     Route::prefix('import')->middleware(['throttle:importing'])->group(function () {
+        Route::post('/scrape', [ImportController::class, 'scrape'])->middleware(EnsureRequestHasBarQuery::class)->name('import.scrape');
         Route::post('/cocktail', [ImportController::class, 'cocktail'])->middleware(EnsureRequestHasBarQuery::class)->name('import.cocktail');
+        Route::post('/file', [ImportController::class, 'file'])->middleware(EnsureRequestHasBarQuery::class)->name('import.file');
     })->middleware(['ability:*']);
 
     Route::prefix('bars')->group(function () {
@@ -216,6 +220,8 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::delete('/{id}/memberships/{userId}', [BarController::class, 'removeMembership']);
         Route::post('/{id}/status', [BarController::class, 'toggleBarStatus']);
         Route::post('/{id}/transfer', [BarController::class, 'transfer']);
+        Route::get('/{id}/collections', [CollectionController::class, 'shared']);
+        Route::get('/{id}/stats', [StatsController::class, 'index']);
     })->middleware(['ability:*']);
 
     Route::prefix('billing')->group(function () {
@@ -238,7 +244,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/', [ExportController::class, 'index']);
         Route::post('/', [ExportController::class, 'store'])->middleware(['throttle:exports']);
         Route::delete('/{id}', [ExportController::class, 'delete']);
-        Route::get('/{id}/download', [ExportController::class, 'download']);
+        Route::post('/{id}/download', [ExportController::class, 'generateDownloadLink']);
     })->middleware(['ability:*']);
 
     Route::prefix('price-categories')->group(function () {

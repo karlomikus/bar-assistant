@@ -28,7 +28,7 @@ class AuthControllerTest extends TestCase
             'password' => Hash::make('my-test-password'),
         ]);
 
-        $response = $this->postJson('/api/login', [
+        $response = $this->postJson('/api/auth/login', [
             'email' => $user->email,
             'password' => 'my-test-password'
         ]);
@@ -44,7 +44,7 @@ class AuthControllerTest extends TestCase
             'password' => Hash::make('my-test-password'),
         ]);
 
-        $response = $this->postJson('/api/login', [
+        $response = $this->postJson('/api/auth/login', [
             'email' => 'test@test2.com',
             'password' => 'my-test-password'
         ]);
@@ -60,14 +60,14 @@ class AuthControllerTest extends TestCase
         );
 
         // Logout and check headers
-        $response = $this->postJson('/api/logout');
+        $response = $this->postJson('/api/auth/logout');
 
         $response->assertNoContent();
     }
 
     public function test_register_response(): void
     {
-        $response = $this->postJson('/api/register', [
+        $response = $this->postJson('/api/auth/register', [
             'email' => 'test@test.com',
             'password' => 'test-password',
             'name' => 'Test Guy',
@@ -83,7 +83,7 @@ class AuthControllerTest extends TestCase
         Mail::fake();
         Config::set('bar-assistant.mail_require_confirmation', true);
 
-        $this->postJson('/api/register', [
+        $this->postJson('/api/auth/register', [
             'email' => 'test@test.com',
             'password' => 'test-password',
             'name' => 'Test Guy',
@@ -102,7 +102,7 @@ class AuthControllerTest extends TestCase
             'password' => Hash::make('my-test-password'),
         ]);
 
-        $response = $this->postJson('/api/forgot-password', [
+        $response = $this->postJson('/api/auth/forgot-password', [
             'email' => 'test@test.com'
         ]);
 
@@ -117,7 +117,7 @@ class AuthControllerTest extends TestCase
     {
         Mail::fake();
 
-        $response = $this->postJson('/api/forgot-password', [
+        $response = $this->postJson('/api/auth/forgot-password', [
             'email' => 'a@test.com'
         ]);
 
@@ -135,7 +135,7 @@ class AuthControllerTest extends TestCase
         ]);
         $token = Password::createToken($user);
 
-        $response = $this->postJson('/api/reset-password', [
+        $response = $this->postJson('/api/auth/reset-password', [
             'token' => $token,
             'email' => 'test@test.com',
             'password' => 'new_password_1234',
@@ -156,7 +156,7 @@ class AuthControllerTest extends TestCase
         ]);
         Password::createToken($user);
 
-        $response = $this->postJson('/api/reset-password', [
+        $response = $this->postJson('/api/auth/reset-password', [
             'token' => Str::random(8),
             'email' => 'test@test.com',
             'password' => 'new_password_1234',
@@ -177,7 +177,7 @@ class AuthControllerTest extends TestCase
         ]);
         $hash = sha1('test@test.com');
 
-        $response = $this->getJson('/api/verify/' . $user->id . '/' . $hash);
+        $response = $this->getJson('/api/auth/verify/' . $user->id . '/' . $hash);
 
         $user->refresh();
 

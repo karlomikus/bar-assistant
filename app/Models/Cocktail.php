@@ -248,6 +248,8 @@ class Cocktail extends Model implements UploadableInterface
      */
     public function scopeWithRatings(Builder $query, int $userId): Builder
     {
+        $this->loadMissing('ratings');
+
         return $query->addSelect([
             'average_rating' => Rating::selectRaw('AVG(rating)')
                 ->whereColumn('rateable_id', 'cocktails.id')
@@ -310,15 +312,15 @@ class Cocktail extends Model implements UploadableInterface
             "@type" => "Recipe",
             "author" => [
                 '@type' => 'Organization',
-                'name' => "Recipe generated from Bar Assistant"
+                'name' => "Recipe exported from Bar Assistant"
             ],
             "name" => e($this->name),
             "datePublished" => $this->created_at->format('Y-m-d'),
             "description" => e($this->description),
             "image" => [
                 "@type" => "ImageObject",
-                "author" => e($this->getMainImage()->copyright),
-                "url" => $this->getMainImage()->getImageUrl(),
+                "author" => e($this->getMainImage()?->copyright),
+                "url" => $this->getMainImage()?->getImageUrl(),
             ],
             'recipeInstructions' => e($this->instructions),
             "cookingMethod" => $this->method?->name,

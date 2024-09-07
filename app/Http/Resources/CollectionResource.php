@@ -24,11 +24,11 @@ class CollectionResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'is_bar_shared' => $this->is_bar_shared,
-            'created_at' => $this->created_at->toDateTimeString(),
+            'created_at' => $this->created_at->toAtomString(),
             'created_user' => $this->whenLoaded('barMembership', function () {
                 return new UserBasicResource($this->barMembership->user);
             }),
-            'cocktails' => $this->cocktails->pluck('id')
+            'cocktails' => CocktailBasicResource::collection($this->whenLoaded('cocktails')),
         ];
     }
 }

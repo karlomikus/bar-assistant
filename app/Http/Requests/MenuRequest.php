@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Requests;
 
+use Kami\Cocktail\Rules\ValidCurrency;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MenuRequest extends FormRequest
@@ -30,6 +31,7 @@ class MenuRequest extends FormRequest
             'cocktails' => 'required|array',
             'cocktails.*.cocktail_id' => 'required',
             'cocktails.*.sort' => 'required|integer',
+            'cocktails.*.currency' => ['required_with:cocktails.*.price', 'size:3', new ValidCurrency()],
         ];
     }
 }

@@ -7,98 +7,138 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\UserShoppingList;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Repository\CocktailRepository;
-use Kami\Cocktail\Http\Requests\IngredientsBatchRequest;
-use Kami\Cocktail\Http\Resources\UserIngredientResource;
+use Kami\Cocktail\Repository\IngredientRepository;
+use Kami\Cocktail\Http\Resources\CocktailBasicResource;
+use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 
 class ShelfController extends Controller
 {
-    #[OAT\Get(path: '/shelf/ingredients', tags: ['Shelf'], summary: 'Show a list of ingredients on the shelf', parameters: [
+    #[OAT\Get(path: '/users/{id}/ingredients', tags: ['Users: Shelf'], summary: 'Show a list of shelf ingredients', description: 'Ingredients that user saved to their shelf', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
+        new BAO\Parameters\PageParameter(),
+        new BAO\Parameters\PerPageParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\UserIngredient::class),
+        new BAO\PaginateData(BAO\Schemas\IngredientBasic::class),
     ])]
-    public function ingredients(Request $request): JsonResource
+    public function ingredients(Request $request, int $id): JsonResource
     {
-        $barMembership = $request->user()->getBarMembership(bar()->id);
-        $barMembership->load('userIngredients.ingredient');
-        $userIngredients = $barMembership
-            ->userIngredients
-            ->sortBy('ingredient.name');
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
 
-        return UserIngredientResource::collection($userIngredients);
+        $barMembership = $user->getBarMembership(bar()->id);
+        $barMembership->load('userIngredients.ingredient');
+        $userIngredientIds = $barMembership
+            ->userIngredients
+            ->pluck('ingredient_id');
+
+        /** @var \Illuminate\Pagination\LengthAwarePaginator<Ingredient> */
+        $ingredients = Ingredient::whereIn('id', $userIngredientIds)->orderBy('name')->paginate($request->get('per_page', 100));
+
+        return IngredientBasicResource::collection($ingredients->withQueryString());
     }
 
-    #[OAT\Get(path: '/shelf/cocktails', tags: ['Shelf'], summary: 'Show a list of cocktails on the shelf', parameters: [
+    #[OAT\Get(path: '/users/{id}/cocktails', tags: ['Users: Shelf'], summary: 'Show a list shelf cocktails', description: 'Cocktails that the user can make with ingredients on their shelf', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
-        new OAT\Parameter(name: 'limit', in: 'query', description: 'Limit the number of results', schema: new OAT\Schema(type: 'integer')),
+        new BAO\Parameters\BarIdHeaderParameter(),
+        new BAO\Parameters\PageParameter(),
+        new BAO\Parameters\PerPageParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
-        new OAT\JsonContent(properties: [new OAT\Property(property: 'data', type: 'array', description: 'List of cocktail ids that are on the shelf', items: new OAT\Items(type: 'integer'))]),
+        new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
     ])]
-    public function cocktails(CocktailRepository $cocktailRepo, Request $request): JsonResponse
+    public function cocktails(CocktailRepository $cocktailRepo, Request $request, int $id): JsonResource
     {
-        $barMembership = $request->user()->getBarMembership(bar()->id);
-        $limit = $request->has('limit') ? (int) $request->get('limit') : null;
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
+
+        $barMembership = $user->getBarMembership(bar()->id);
 
         $cocktailIds = $cocktailRepo->getCocktailsByIngredients(
             $barMembership->userIngredients->pluck('ingredient_id')->toArray(),
-            $limit,
+            null,
             $barMembership->use_parent_as_substitute,
         );
 
-        return response()->json([
-            'data' => $cocktailIds
-        ]);
+        /** @var \Illuminate\Pagination\LengthAwarePaginator<Cocktail> */
+        $cocktails = Cocktail::whereIn('id', $cocktailIds)->paginate($request->get('per_page', 100));
+
+        return CocktailBasicResource::collection($cocktails->withQueryString());
     }
 
-    #[OAT\Get(path: '/shelf/cocktail-favorites', tags: ['Shelf'], summary: 'Show a list of cocktails on the shelf that the user has favorited', parameters: [
+    #[OAT\Get(path: '/users/{id}/cocktails/favorites', tags: ['Users: Shelf'], summary: 'Show a list of cocktails user has favorited', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
+        new BAO\Parameters\PageParameter(),
+        new BAO\Parameters\PerPageParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
-        new OAT\JsonContent(properties: [new OAT\Property(property: 'data', type: 'array', description: 'List of cocktail ids', items: new OAT\Items(type: 'integer'))]),
+        new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
     ])]
-    public function favorites(Request $request): JsonResponse
+    public function favorites(Request $request, int $id): JsonResource
     {
-        $barMembership = $request->user()->getBarMembership(bar()->id);
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
+
+        $barMembership = $user->getBarMembership(bar()->id);
 
         $cocktailIds = CocktailFavorite::where('bar_membership_id', $barMembership->id)->pluck('cocktail_id');
 
-        return response()->json([
-            'data' => $cocktailIds
-        ]);
+        /** @var \Illuminate\Pagination\LengthAwarePaginator<Cocktail> */
+        $cocktails = Cocktail::whereIn('id', $cocktailIds)->paginate($request->get('per_page', 100));
+
+        return CocktailBasicResource::collection($cocktails->withQueryString());
     }
 
-    #[OAT\Post(path: '/shelf/ingredients/batch-store', tags: ['Shelf'], summary: 'Batch store ingredients', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/users/{id}/ingredients/batch-store', tags: ['Users: Shelf'], summary: 'Batch store ingredients to the shelf', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+        new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
+    ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(property: 'ingredient_ids', type: 'array', items: new OAT\Items(type: 'integer')),
+                new OAT\Property(property: 'ingredients', type: 'array', items: new OAT\Items(type: 'integer')),
             ]),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\UserIngredient::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchStore(IngredientsBatchRequest $request): JsonResource
+    public function batchStore(Request $request, int $id): Response
     {
-        $barMembership = $request->user()->getBarMembership(bar()->id);
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
+
+        $barMembership = $user->getBarMembership(bar()->id);
 
         $ingredients = DB::table('ingredients')
             ->select('id')
             ->where('bar_id', $barMembership->bar_id)
-            ->whereIn('id', $request->post('ingredient_ids'))
+            ->whereIn('id', $request->post('ingredients'))
             ->pluck('id');
 
         // Let's remove ingredients from shopping list since they are on our shelf now
@@ -111,32 +151,39 @@ class ShelfController extends Controller
             $models[] = $userIngredient;
         }
 
-        $shelfIngredients = $barMembership->userIngredients()->saveMany($models);
+        $barMembership->userIngredients()->saveMany($models);
 
-        return UserIngredientResource::collection($shelfIngredients);
+        return new Response(null, 204);
     }
 
-    #[OAT\Post(path: '/shelf/ingredients/batch-delete', tags: ['Shelf'], summary: 'Delete multiple ingredients from the shelf', parameters: [
+    #[OAT\Post(path: '/users/{id}/ingredients/batch-delete', tags: ['Users: Shelf'], summary: 'Delete multiple ingredients from the shelf', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(property: 'ingredient_ids', type: 'array', items: new OAT\Items(type: 'integer')),
+                new OAT\Property(property: 'ingredients', type: 'array', items: new OAT\Items(type: 'integer')),
             ]),
         ]
     ))]
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchDelete(Request $request): Response
+    public function batchDelete(Request $request, int $id): Response
     {
-        $barMembership = $request->user()->getBarMembership(bar()->id);
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
+
+        $barMembership = $user->getBarMembership(bar()->id);
 
         $ingredients = DB::table('ingredients')
             ->select('id')
             ->where('bar_id', $barMembership->bar_id)
-            ->whereIn('id', $request->post('ingredient_ids'))
+            ->whereIn('id', $request->post('ingredients'))
             ->pluck('id');
 
         try {
@@ -146,5 +193,33 @@ class ShelfController extends Controller
         }
 
         return new Response(null, 204);
+    }
+
+    #[OAT\Get(path: '/users/{id}/ingredients/recommend', tags: ['Users: Shelf'], summary: 'Recommend next ingredients', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+        new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\IngredientRecommend::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function recommend(Request $request, IngredientRepository $ingredientRepo, int $id): \Illuminate\Http\JsonResponse
+    {
+        $user = User::findOrFail($id);
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+            abort(403);
+        }
+
+        $barMembership = $user->getBarMembership(bar()->id);
+
+        if (!$barMembership) {
+            abort(404);
+        }
+
+        $possibleIngredients = $ingredientRepo->getIngredientsForPossibleCocktails(bar()->id, $barMembership->id);
+
+        return response()->json(['data' => $possibleIngredients]);
     }
 }

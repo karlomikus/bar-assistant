@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature\Http;
 
 use Tests\TestCase;
-use Kami\Cocktail\Models\Bar;
-use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Collection;
+use Kami\Cocktail\Models\BarMembership;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,22 +15,22 @@ class CollectionControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    private BarMembership $barMembership;
+
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->actingAs(User::factory()->create());
+        $this->barMembership = $this->setupBarMembership();
+        $this->actingAs($this->barMembership->user);
     }
 
     public function test_list_user_collections_response(): void
     {
-        $this->setupBar();
+        Collection::factory()->recycle($this->barMembership->bar)->for($this->barMembership)->count(10)->create();
 
-        Collection::factory()->count(10)->create([
-            'bar_membership_id' => 1,
-        ]);
-
-        $response = $this->getJson('/api/collections?bar_id=1');
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $this->barMembership->bar_id);
+        $response = $this->getJson('/api/collections');
 
         $response->assertOk();
         $response->assertJson(
@@ -44,12 +43,9 @@ class CollectionControllerTest extends TestCase
 
     public function test_show_user_collection_response(): void
     {
-        $this->setupBar();
-
-        $collection = Collection::factory()->create([
+        $collection = Collection::factory()->for($this->barMembership)->create([
             'name' => 'TEST',
             'description' => 'Description',
-            'bar_membership_id' => 1,
         ]);
 
         $response = $this->getJson('/api/collections/' . $collection->id);
@@ -69,10 +65,10 @@ class CollectionControllerTest extends TestCase
 
     public function test_create_collection_response(): void
     {
-        $bar = $this->setupBar();
+        $cocktail = Cocktail::factory()->for($this->barMembership->bar)->create();
 
-        $cocktail = Cocktail::factory()->create(['bar_id' => $bar->id]);
-        $response = $this->postJson('/api/collections?bar_id=1', [
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $this->barMembership->bar_id);
+        $response = $this->postJson('/api/collections', [
             'name' => 'TEST',
             'description' => 'Description',
             'cocktails' => [$cocktail->id]
@@ -87,19 +83,18 @@ class CollectionControllerTest extends TestCase
                 ->has('data.id')
                 ->where('data.name', 'TEST')
                 ->where('data.description', 'Description')
-                ->where('data.cocktails', [$cocktail->id])
+                ->where('data.cocktails.0.id', $cocktail->id)
                 ->etc()
         );
     }
 
     public function test_create_collection_does_not_add_cocktail_from_another_bar_response(): void
     {
-        $bar = $this->setupBar();
-        $anotherBar = Bar::factory()->create(['created_user_id' => auth()->user()->id]);
+        $cocktail1 = Cocktail::factory()->for($this->barMembership->bar)->create();
+        $cocktail2 = Cocktail::factory()->create();
 
-        $cocktail1 = Cocktail::factory()->create(['bar_id' => $bar->id]);
-        $cocktail2 = Cocktail::factory()->create(['bar_id' => $anotherBar->id]);
-        $response = $this->postJson('/api/collections?bar_id=1', [
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $this->barMembership->bar_id);
+        $response = $this->postJson('/api/collections', [
             'name' => 'TEST',
             'description' => 'Description',
             'cocktails' => [$cocktail1->id, $cocktail2->id]
@@ -114,19 +109,17 @@ class CollectionControllerTest extends TestCase
                 ->has('data.id')
                 ->where('data.name', 'TEST')
                 ->where('data.description', 'Description')
-                ->where('data.cocktails', [$cocktail1->id])
+                ->has('data.cocktails', 1)
+                ->where('data.cocktails.0.id', $cocktail1->id)
                 ->etc()
         );
     }
 
     public function test_update_collections_response(): void
     {
-        $this->setupBar();
-
-        $model = Collection::factory()->create([
+        $model = Collection::factory()->for($this->barMembership)->create([
             'name' => 'TEST',
             'description' => 'Description',
-            'bar_membership_id' => 1,
         ]);
 
         $response = $this->putJson('/api/collections/' . $model->id, [
@@ -149,12 +142,9 @@ class CollectionControllerTest extends TestCase
 
     public function test_delete_collection_response(): void
     {
-        $this->setupBar();
-
-        $model = Collection::factory()->create([
+        $model = Collection::factory()->for($this->barMembership)->create([
             'name' => 'TEST',
             'description' => 'Description',
-            'bar_membership_id' => 1,
         ]);
 
         $response = $this->delete('/api/collections/' . $model->id);
@@ -164,51 +154,47 @@ class CollectionControllerTest extends TestCase
         $this->assertDatabaseMissing('collections', ['id' => $model->id]);
     }
 
-    public function test_add_cocktail_to_collection(): void
+    public function test_list_shared_collections_in_a_bar(): void
     {
-        $bar = $this->setupBar();
-
-        $cocktail = Cocktail::factory()->create(['bar_id' => $bar->id]);
-        $collection = Collection::factory()->create([
-            'name' => 'TEST',
-            'description' => 'Description',
-            'bar_membership_id' => 1,
-        ]);
-
-        $response = $this->putJson('/api/collections/' . $collection->id . '/cocktails/' . $cocktail->id);
-
-        $response->assertSuccessful();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->where('data.id', $collection->id)
-                ->where('data.name', 'TEST')
-                ->where('data.description', 'Description')
-                ->where('data.cocktails', [$cocktail->id])
-                ->etc()
-        );
-    }
-
-    public function test_list_shared_collections_response(): void
-    {
-        $this->setupBar();
-
-        Collection::factory()->count(5)->create([
-            'bar_membership_id' => 1,
-        ]);
-        Collection::factory()->count(3)->create([
-            'bar_membership_id' => 1,
+        Collection::factory()->for($this->barMembership)->count(5)->create();
+        Collection::factory()->for($this->barMembership)->count(3)->create([
             'is_bar_shared' => true
         ]);
 
-        $response = $this->getJson('/api/collections/shared?bar_id=1');
+        $response = $this->getJson('/api/bars/' . $this->barMembership->bar_id . '/collections');
 
         $response->assertOk();
         $response->assertJson(
             fn (AssertableJson $json) =>
             $json
                 ->has('data', 3)
+                ->etc()
+        );
+    }
+
+    public function test_sync_cocktails_in_collection(): void
+    {
+        $cocktailsInCollection = Cocktail::factory()->for($this->barMembership->bar)->count(3);
+
+        $model = Collection::factory()
+            ->for($this->barMembership)
+            ->has($cocktailsInCollection)
+            ->create([
+                'name' => 'TEST',
+                'description' => 'Description',
+            ]);
+
+        $newCocktailToAdd = Cocktail::factory()->for($this->barMembership->bar)->create();
+
+        $response = $this->putJson('/api/collections/' . $model->id . '/cocktails', [
+            'cocktails' => [$newCocktailToAdd->id],
+        ]);
+
+        $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data.cocktails', 1)
                 ->etc()
         );
     }

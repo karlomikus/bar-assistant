@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Menu;
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Http\Requests\MenuRequest;
 use Kami\Cocktail\Http\Resources\MenuResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -17,7 +17,8 @@ class MenuController extends Controller
 {
     #[OAT\Get(path: '/menu', tags: ['Menu'], summary: 'Show menu', parameters: [
         new BAO\Parameters\BarIdParameter(),
-    ], security: [])]
+        new BAO\Parameters\BarIdHeaderParameter(),
+    ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Menu::class),
     ])]
@@ -62,12 +63,13 @@ class MenuController extends Controller
 
     #[OAT\Post(path: '/menu', tags: ['Menu'], summary: 'Update menu', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\MenuRequest::class),
         ]
-    ), security: [])]
+    ))]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Menu::class),
     ])]

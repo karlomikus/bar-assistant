@@ -8,18 +8,17 @@ use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\OpenAPI as BAO;
 use Spatie\ArrayToXml\ArrayToXml;
 use Kami\Cocktail\Models\Cocktail;
-use Intervention\Image\ImageManager;
-use Kami\Cocktail\DTO\Image\Image as ImageDTO;
-use Kami\Cocktail\Services\ImageService;
 use Illuminate\Support\Facades\Validator;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
+use Kami\Cocktail\DTO\Image\Image as ImageDTO;
+use Kami\Cocktail\Services\Image\ImageService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Repository\CocktailRepository;
@@ -27,8 +26,7 @@ use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\DTO\Cocktail\Cocktail as CocktailDTO;
-use Kami\Cocktail\External\Cocktail as CocktailExternal;
-use Kami\Cocktail\Http\Resources\CocktailPublicResource;
+use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
 use Kami\Cocktail\DTO\Cocktail\Ingredient as IngredientDTO;
 use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
 
@@ -36,6 +34,7 @@ class CocktailController extends Controller
 {
     #[OAT\Get(path: '/cocktails', tags: ['Cocktails'], summary: 'Show a list of cocktails', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
@@ -65,7 +64,7 @@ class CocktailController extends Controller
             new OAT\Property(property: 'ignore_ingredients', type: 'string'),
         ])),
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `favorited_at`.', schema: new OAT\Schema(type: 'string')),
-        new OAT\Parameter(name: 'includes', in: 'query', description: 'Include additional relationships. Available relations: `glass`, `method`, `user`, `navigation`, `utensils`, `createdUser`, `updatedUser`.', schema: new OAT\Schema(type: 'string')),
+        new OAT\Parameter(name: 'include', in: 'query', description: 'Include additional relationships. Available relations: `glass`, `method`, `user`, `navigation`, `utensils`, `createdUser`, `updatedUser`, `images`, `tags`, `ingredients.ingredient`, `ratings`.', schema: new OAT\Schema(type: 'string')),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\PaginateData(BAO\Schemas\Cocktail::class),
@@ -99,9 +98,7 @@ class CocktailController extends Controller
             ->orWhere('id', $idOrSlug)
             ->withRatings($request->user()->id)
             ->firstOrFail()
-            ->load(['ingredients.ingredient', 'images' => function ($query) {
-                $query->orderBy('sort');
-            }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
+            ->load(['ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings']);
 
         if ($request->user()->cannot('show', $cocktail)) {
             abort(403);
@@ -112,6 +109,7 @@ class CocktailController extends Controller
 
     #[OAT\Post(path: '/cocktails', tags: ['Cocktails'], summary: 'Create a new cocktail', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -124,6 +122,7 @@ class CocktailController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
+    #[BAO\ValidationFailedResponse]
     public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
         Validator::make($request->post('ingredients', []), [
@@ -142,9 +141,7 @@ class CocktailController extends Controller
             abort(500, $e->getMessage());
         }
 
-        $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
-            $query->orderBy('sort');
-        }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
+        $cocktail->load(['ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings']);
 
         return (new CocktailResource($cocktail))
             ->response()
@@ -165,6 +162,7 @@ class CocktailController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
+    #[BAO\ValidationFailedResponse]
     public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): JsonResource
     {
         $cocktail = Cocktail::findOrFail($id);
@@ -235,7 +233,7 @@ class CocktailController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\CocktailPublic::class),
+        new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -250,12 +248,12 @@ class CocktailController extends Controller
         }
 
         if ($cocktail->public_id) {
-            return new CocktailPublicResource($cocktail);
+            return new CocktailResource($cocktail);
         }
 
         $cocktail = $cocktail->makePublic(now());
 
-        return new CocktailPublicResource($cocktail);
+        return new CocktailResource($cocktail);
     }
 
     #[OAT\Delete(path: '/cocktails/{id}/public-link', tags: ['Cocktails'], summary: 'Delete cocktail public link', parameters: [
@@ -279,7 +277,22 @@ class CocktailController extends Controller
         return new Response(null, 204);
     }
 
-    public function share(Request $request, string $idOrSlug): Response
+    #[OAT\Get(path: '/cocktails/{id}/share', tags: ['Cocktails'], summary: 'Share a cocktail', parameters: [
+        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
+        new OAT\Parameter(name: 'type', in: 'query', description: 'Share format', schema: new OAT\Schema(type: 'string', enum: ['json', 'json-ld', 'yaml', 'yml', 'xml', 'text', 'markdown', 'md'])),
+        new OAT\Parameter(name: 'units', in: 'query', description: 'Units of measurement', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new OAT\JsonContent(required: ['data'], properties: [
+            new OAT\Property(property: 'data', type: 'object', required: ['type', 'content'], properties: [
+                new OAT\Property(property: 'type', type: 'string', example: 'json'),
+                new OAT\Property(property: 'content', type: 'string', example: '<content in requested format>'),
+            ]),
+        ]),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function share(Request $request, string $idOrSlug): JsonResponse
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
@@ -295,41 +308,40 @@ class CocktailController extends Controller
         $type = $request->get('type', 'json');
         $units = Units::tryFrom($request->get('units', ''));
 
-        $data = CocktailExternal::fromModel($cocktail)->toArray();
+        $data = SchemaDraft2::fromCocktailModel($cocktail);
+
+        $shareContent = null;
 
         if ($type === 'json') {
-            return new Response(json_encode($data, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
+            $shareContent = json_encode($data->toDraft2Array(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
-        if ($type === 'json+ld') {
-            return new Response(json_encode($cocktail->asJsonLDSchema(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
+        if ($type === 'json-ld') {
+            $shareContent = $data->cocktail->toJSONLD();
         }
 
         if ($type === 'yaml' || $type === 'yml') {
-            return new Response(Yaml::dump($data, 4, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK), 200, ['Content-Type' => 'application/yaml']);
+            $shareContent = $data->toYAML();
         }
 
         if ($type === 'xml') {
-            return new Response(ArrayToXml::convert($data, 'cocktail', xmlEncoding: 'UTF-8'), 200, ['Content-Type' => 'application/xml']);
-        }
-
-        if ($type === 'text') {
-            return new Response(
-                view('recipe_text_template', compact('cocktail', 'units'))->render(),
-                200,
-                ['Content-Type' => 'plain/text']
-            );
+            $shareContent = $data->toXML();
         }
 
         if ($type === 'markdown' || $type === 'md') {
-            return new Response(
-                view('md_recipe_template', compact('cocktail', 'units'))->render(),
-                200,
-                ['Content-Type' => 'text/markdown']
-            );
+            $shareContent = $data->toMarkdown();
         }
 
-        abort(400, 'Requested type "' . $type . '" not supported');
+        if ($shareContent === null) {
+            abort(400, 'Requested type "' . $type . '" not supported');
+        }
+
+        return response()->json([
+            'data' => [
+                'type' => $type,
+                'content' => $shareContent,
+            ]
+        ]);
     }
 
     public function similar(CocktailRepository $cocktailRepo, Request $request, string $idOrSlug): JsonResource
@@ -345,6 +357,15 @@ class CocktailController extends Controller
         return CocktailResource::collection($relatedCocktails);
     }
 
+    #[OAT\Post(path: '/cocktails/{id}/copy', tags: ['Cocktails'], summary: 'Copy cocktail', parameters: [
+        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[OAT\Response(response: 201, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
+    ], headers: [
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[BAO\NotAuthorizedResponse]
     public function copy(string $idOrSlug, CocktailService $cocktailService, ImageService $imageservice, Request $request): JsonResponse
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)
@@ -357,12 +378,11 @@ class CocktailController extends Controller
         }
 
         // Copy images
-        $manager = ImageManager::imagick();
         $imageDTOs = [];
         foreach ($cocktail->images as $image) {
             try {
                 $imageDTOs[] = new ImageDTO(
-                    $manager->read($image->getPath()),
+                    file_get_contents($image->getPath()),
                     $image->copyright,
                     $image->sort,
                 );
@@ -423,10 +443,6 @@ class CocktailController extends Controller
         } catch (Throwable $e) {
             abort(500, $e->getMessage());
         }
-
-        $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
-            $query->orderBy('sort');
-        }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
 
         return (new CocktailResource($cocktail))
             ->response()

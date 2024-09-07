@@ -23,7 +23,7 @@ class NoteResource extends JsonResource
             'id' => $this->id,
             'note' => $this->note,
             'user_id' => $this->user_id,
-            'created_at' => $this->created_at->toDateTimeString(),
+            'created_at' => $this->created_at->toAtomString(),
         ];
     }
 }

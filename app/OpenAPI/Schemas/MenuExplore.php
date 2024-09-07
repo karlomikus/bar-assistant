@@ -18,11 +18,8 @@ class MenuExplore
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
         new OAT\Property(type: 'string', property: 'name', example: 'Category name'),
         new OAT\Property(type: 'array', property: 'cocktails', items: new OAT\Items(type: 'object', properties: [
-            new OAT\Property(type: 'string', property: 'sort', example: 1),
-            new OAT\Property(type: 'object', property: 'price', properties: [
-                new OAT\Property(type: 'integer', property: 'full', example: 2385),
-                new OAT\Property(type: 'string', property: 'formatted', example: 'EUR 23.85'),
-            ]),
+            new OAT\Property(type: 'integer', property: 'sort', example: 1),
+            new OAT\Property(property: 'price', ref: Price::class),
             new OAT\Property(type: 'string', property: 'public_id', example: '01ARZ3NDEKTSV4RRFFQ69G5FAV'),
             new OAT\Property(type: 'string', property: 'slug', example: 'cocktail-name-1'),
             new OAT\Property(type: 'string', property: 'currency', example: 'EUR'),

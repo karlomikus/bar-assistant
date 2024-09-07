@@ -2,10 +2,17 @@
 
 namespace Kami\Cocktail;
 
+use Exception;
+
 class ProtobufDecoder
 {
     private string $data;
     private int $idx;
+
+    public const WIRE_VARINT = 0;
+    public const WIRE_FIXED64 = 1;
+    public const WIRE_LENGTH_DELIMITED = 2;
+    public const WIRE_FIXED32 = 5;
 
     public function __construct(string $data)
     {
@@ -119,23 +126,20 @@ class ProtobufDecoder
             $value = null;
 
             switch ($type) {
-                case 0: $value = $this->readVarint();
+                case self::WIRE_VARINT:
+                    $value = $this->readVarint();
                     break;
-                case 1: $value = $this->read64bit();
+                case self::WIRE_FIXED64:
+                    $value = $this->read64bit();
                     break;
-                case 2: $value = $this->readStringOrObject();
+                case self::WIRE_LENGTH_DELIMITED:
+                    $value = $this->readStringOrObject();
                     break;
-                    // case 3:
-                    // case 4:
-                    //     continue;
-                default:
-                    throw new \Exception("Invalid wiretype received: $type - idx $this->idx");
+                case self::WIRE_FIXED32:
+                    throw new Exception("Unsupported wire type: $type");
             }
 
-            $fields[] = [
-                "field" => $field,
-                "value" => $value,
-            ];
+            $fields[] = $value;
         }
 
         return $fields;

@@ -8,20 +8,39 @@ use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Image;
+use Illuminate\Http\UploadedFile;
+use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Log;
-use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Cache;
-use Kami\Cocktail\DTO\Image\Image as ImageDTO;
-use Kami\Cocktail\Services\ImageService;
+use Illuminate\Support\Facades\Validator;
 use Kami\Cocktail\Http\Requests\ImageRequest;
+use Kami\Cocktail\DTO\Image\Image as ImageDTO;
+use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\Http\Resources\ImageResource;
+use Symfony\Component\HttpFoundation\File\File;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\ImageUpdateRequest;
+use Kami\Cocktail\Services\Image\ImageThumbnailService;
 
 class ImageController extends Controller
 {
+    #[OAT\Get(path: '/images', tags: ['Images'], summary: 'List uploaded images', description: 'List all images uploaded by the authenticated user', parameters: [
+        new BAO\Parameters\PageParameter(),
+        new BAO\Parameters\PerPageParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\PaginateData(BAO\Schemas\Image::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function index(Request $request): JsonResource
+    {
+        $images = Image::where('created_user_id', $request->user()->id)->orderBy('created_at', 'desc')->paginate($request->get('per_page', 100));
+
+        return ImageResource::collection($images->withQueryString());
+    }
+
     #[OAT\Get(path: '/images/{id}', tags: ['Images'], summary: 'Show an image', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
@@ -41,10 +60,10 @@ class ImageController extends Controller
         return new ImageResource($image);
     }
 
-    #[OAT\Post(path: '/images', tags: ['Images'], summary: 'Upload an image', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/images', tags: ['Images'], summary: 'Upload an image', description: 'Used to upload multiple images at once. Uploaded images via this endpoint will not be attached to any resource. Images are converted to WebP format with 85% quality of the original image.', requestBody: new OAT\RequestBody(
         required: true,
         content: [
-            new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(type: 'object', properties: [
+            new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(type: 'object', required: ['images'], properties: [
                 new OAT\Property(property: 'images', type: 'array', items: new OAT\Items(ref: BAO\Schemas\ImageRequest::class)),
             ])),
         ]
@@ -54,27 +73,43 @@ class ImageController extends Controller
     ])]
     public function store(ImageService $imageservice, ImageRequest $request): JsonResource
     {
-        $manager = ImageManager::imagick();
-
         $images = [];
-        foreach ($request->images as $formImage) {
-            if (isset($formImage['image'])) {
-                $imageSource = $formImage['image'];
-            } else {
-                $imageSource = file_get_contents((string) $formImage['image_url']);
+        foreach ($request->images ?? [] as $formImage) {
+            $imageSource = null;
+
+            $rules = ['image' => 'image|max:51200'];
+
+            if (isset($formImage['image']) && $formImage['image'] instanceof UploadedFile) {
+                Validator::make($formImage, $rules)->validate();
+
+                $imageSource = $formImage['image']->get();
+            }
+
+            if (isset($formImage['image']) && is_string($formImage['image'])) {
+                $tempFileObject = null;
+                try {
+                    if ($imageSource = file_get_contents($formImage['image'])) {
+                        $tempFileName = tempnam(sys_get_temp_dir(), 'bass');
+                        file_put_contents($tempFileName, $imageSource);
+                        $tempFileObject = new File($tempFileName);
+                    }
+                } catch (Throwable) {
+                }
+
+                Validator::make(['image' => $tempFileObject], $rules)->validate();
             }
 
             try {
                 $image = new ImageDTO(
-                    $manager->read($imageSource),
-                    $formImage['copyright'],
-                    (int) $formImage['sort'],
+                    $imageSource,
+                    $formImage['copyright'] ?? null,
+                    (int) ($formImage['sort'] ?? 0),
+                    isset($formImage['id']) ? (int) $formImage['id'] : null,
                 );
+                $images[] = $image;
             } catch (Throwable $e) {
                 Log::error($e->getMessage());
-                abort(500, 'Unable to create an image file!');
             }
-            $images[] = $image;
         }
 
         $images = $imageservice->uploadAndSaveImages($images, $request->user()->id);
@@ -104,15 +139,13 @@ class ImageController extends Controller
 
         $imageSource = null;
         if ($request->hasFile('image')) {
-            $imageSource = $request->file('image');
+            $imageSource = $request->file('image')->get();
         } elseif ($request->has('image_url')) {
-            $imageSource = $request->input('image_url');
+            $imageSource = file_get_contents($request->input('image_url'));
         }
 
-        $manager = ImageManager::imagick();
-
         $imageDTO = new ImageDTO(
-            $imageSource ? $manager->read($imageSource) : null,
+            $imageSource,
             $request->input('copyright') ?? null,
             $request->has('sort') ? (int) $request->input('sort') : null,
         );
@@ -124,7 +157,7 @@ class ImageController extends Controller
         return new ImageResource($image);
     }
 
-    #[OAT\Delete(path: '/images/{id}', tags: ['Images'], summary: 'Delete an image', parameters: [
+    #[OAT\Delete(path: '/images/{id}', tags: ['Images'], summary: 'Delete image', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
@@ -152,10 +185,10 @@ class ImageController extends Controller
     #[BAO\NotFoundResponse]
     public function thumb(int $id): Response
     {
-        [$content, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id) {
+        [$responseContent, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id) {
             $dbImage = Image::findOrFail($id);
 
-            $responseContent = $dbImage->getThumb();
+            $responseContent = ImageThumbnailService::generateThumbnail($dbImage->getPath());
             if ($dbImage->updated_at) {
                 $etag = md5($dbImage->id . '-' . $dbImage->updated_at->format('Y-m-d H:i:s'));
             } else {
@@ -168,9 +201,9 @@ class ImageController extends Controller
         $notModified = isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag;
         $statusCode = $notModified ? 304 : 200;
 
-        return new Response($content, $statusCode, [
-            'Content-Type' => 'image/jpg',
-            'Content-Length' => strlen($content),
+        return new Response($responseContent, $statusCode, [
+            'Content-Type' => 'image/webp',
+            'Content-Length' => strlen($responseContent),
             'Etag' => $etag
         ]);
     }

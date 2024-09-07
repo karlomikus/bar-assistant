@@ -58,7 +58,7 @@ class LiquorCom extends AbstractSiteExtractor
     public function image(): ?array
     {
         return [
-            'url' => $this->getRecipeSchema()['image']['url'] ?? '',
+            'uri' => $this->getRecipeSchema()['image']['url'] ?? '',
             'copyright' => $this->getRecipeSchema()['author']['name'] ?? 'Liquor.com',
         ];
     }

@@ -18,11 +18,16 @@ class IngredientFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'slug' => fake()->slug(),
             'origin' => fake()->country(),
-            'strength' => fake()->randomFloat(2),
+            'description' => fake()->paragraph(),
+            'color' => fake()->hexColor(),
+            'strength' => fake()->randomFloat(2, 0, 100),
             'ingredient_category_id' => \Kami\Cocktail\Models\IngredientCategory::factory(),
             'created_user_id' => \Kami\Cocktail\Models\User::factory(),
             'bar_id' => \Kami\Cocktail\Models\Bar::factory(),
+            'created_at' => fake()->dateTime(),
+            'updated_at' => fake()->dateTime(),
         ];
     }
 }

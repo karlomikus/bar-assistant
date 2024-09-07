@@ -18,11 +18,10 @@ class EnsureRequestHasBarQuery
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // $barId = $request->header('Bar-Assistant-Bar-Id', null) ?? $request->get('bar_id', null);
-        $barId = $request->get('bar_id', null);
+        $barId = $request->header('Bar-Assistant-Bar-Id', null) ?? $request->get('bar_id', null);
 
         if (!$barId) {
-            abort(400, sprintf("Missing required '%s' parameter while requesting '%s'", 'bar_id', $request->path()));
+            abort(400, sprintf("Missing required bar reference while requesting '%s'. Use 'Bar-Assistant-Bar-Id' header to specify bar id.", $request->path()));
         }
 
         $bar = Cache::remember('ba:bar:' . $barId, 60 * 60 * 24, function () use ($barId) {

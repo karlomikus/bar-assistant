@@ -6,7 +6,7 @@ namespace Tests\Feature\Http;
 
 use Tests\TestCase;
 use Kami\Cocktail\Models\Tag;
-use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\BarMembership;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -14,21 +14,22 @@ class TagControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    private BarMembership $barMembership;
+
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->actingAs(
-            User::factory()->create()
-        );
+        $this->barMembership = $this->setupBarMembership();
+        $this->actingAs($this->barMembership->user);
     }
 
     public function test_list_tags_response(): void
     {
-        $bar = $this->setupBar();
-        Tag::factory()->count(10)->create(['bar_id' => $bar->id]);
+        Tag::factory()->for($this->barMembership->bar)->count(10)->create();
 
-        $response = $this->getJson('/api/tags?bar_id=' . $bar->id);
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $this->barMembership->bar_id);
+        $response = $this->getJson('/api/tags');
 
         $response->assertStatus(200);
         $response->assertJson(
@@ -41,10 +42,8 @@ class TagControllerTest extends TestCase
 
     public function test_show_tag_response(): void
     {
-        $bar = $this->setupBar();
-        $model = Tag::factory()->create([
+        $model = Tag::factory()->for($this->barMembership->bar)->create([
             'name' => 'Test tag',
-            'bar_id' => $bar->id
         ]);
 
         $response = $this->getJson('/api/tags/' . $model->id);
@@ -62,8 +61,8 @@ class TagControllerTest extends TestCase
 
     public function test_create_tag_response(): void
     {
-        $this->setupBar();
-        $response = $this->postJson('/api/tags?bar_id=1', [
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $this->barMembership->bar_id);
+        $response = $this->postJson('/api/tags', [
             'name' => 'Test tag',
         ]);
 
@@ -81,10 +80,8 @@ class TagControllerTest extends TestCase
 
     public function test_update_tag_response(): void
     {
-        $bar = $this->setupBar();
-        $model = Tag::factory()->create([
+        $model = Tag::factory()->for($this->barMembership->bar)->create([
             'name' => 'Start tag',
-            'bar_id' => $bar->id
         ]);
 
         $response = $this->putJson('/api/tags/' . $model->id, [
@@ -104,10 +101,8 @@ class TagControllerTest extends TestCase
 
     public function test_delete_tag_response(): void
     {
-        $bar = $this->setupBar();
-        $tag = Tag::factory()->create([
+        $tag = Tag::factory()->for($this->barMembership->bar)->create([
             'name' => 'Start cat',
-            'bar_id' => $bar->id,
         ]);
 
         $response = $this->delete('/api/tags/' . $tag->id);

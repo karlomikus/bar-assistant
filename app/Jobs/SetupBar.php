@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Kami\Cocktail\External\Import\FromDataPack;
 use Illuminate\Queue\Attributes\WithoutRelations;
-use Kami\Cocktail\External\Import\FromRecipesData;
 
 class SetupBar implements ShouldQueue
 {
@@ -37,7 +37,7 @@ class SetupBar implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(FromRecipesData $import): void
+    public function handle(FromDataPack $import): void
     {
         $dataDisk = Storage::disk('data-files');
 
