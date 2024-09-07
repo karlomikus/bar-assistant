@@ -26,4 +26,23 @@ php artisan migrate --force
 # Update meilisearch indexes
 php artisan bar:refresh-search
 
+echo '
+                               
+    __                         
+   |@@@g_                      
+   |@@ <@@g_              ~~,  
+   |@@   @@@@a_           @@|  
+   |@@   @@@@@@@_         @@|  
+   |@@   @@@@@@@@@@@@@@@@@@@|  
+   |@@   @@@@@@@@"        @@|  
+   |@@   @@@@@P           @@|  
+   |@@ _~@@P              @@|  
+   |@@@@P                      
+   '""'                        
+                               
+   ggggggggggggg               
+   BBBBBBBBBBBBN               
+                               
+'
+
 echo "[BAR-ASSISTANT] Bar Assistant API ready"
