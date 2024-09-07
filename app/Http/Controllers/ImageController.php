@@ -18,6 +18,7 @@ use Kami\Cocktail\Http\Requests\ImageRequest;
 use Kami\Cocktail\DTO\Image\Image as ImageDTO;
 use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\Http\Resources\ImageResource;
+use Symfony\Component\HttpFoundation\File\File;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\ImageUpdateRequest;
 use Kami\Cocktail\Services\Image\ImageThumbnailService;
@@ -76,17 +77,26 @@ class ImageController extends Controller
         foreach ($request->images ?? [] as $formImage) {
             $imageSource = null;
 
+            $rules = ['image' => 'image|max:51200'];
+
             if (isset($formImage['image']) && $formImage['image'] instanceof UploadedFile) {
-                Validator::make($formImage, [
-                    'image' => 'image|max:51200',
-                ])->validate();
+                Validator::make($formImage, $rules)->validate();
 
                 $imageSource = $formImage['image']->get();
             }
 
             if (isset($formImage['image']) && is_string($formImage['image'])) {
-                // TODO: Validate
-                $imageSource = file_get_contents($formImage['image']);
+                $tempFileObject = null;
+                try {
+                    if ($imageSource = file_get_contents($formImage['image'])) {
+                        $tempFileName = tempnam(sys_get_temp_dir(), 'bass');
+                        file_put_contents($tempFileName, $imageSource);
+                        $tempFileObject = new File($tempFileName);
+                    }
+                } catch (Throwable) {
+                }
+
+                Validator::make(['image' => $tempFileObject], $rules)->validate();
             }
 
             try {
