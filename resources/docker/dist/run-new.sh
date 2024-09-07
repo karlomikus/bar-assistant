@@ -18,6 +18,10 @@ fi
 echo "[BAR-ASSISTANT] Enabling database WAL mode..."
 sqlite3 "$db_file" 'pragma journal_mode=wal;'
 
+# Setup laravel
+php artisan storage:link
+php artisan config:cache
+php artisan route:cache
 # Setup Meilisearch ENV variables
 php artisan bar:setup-meilisearch
 php artisan scout:sync-index-settings

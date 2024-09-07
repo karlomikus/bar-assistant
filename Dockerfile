@@ -48,10 +48,7 @@ COPY --from=datapack --chown=www-data:www-data /app/data ./resources/data
 RUN composer install --optimize-autoloader --no-dev \
     && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/open-api-spec.yml \
     && cp .env.dist .env \
-    && php artisan key:generate \
-    && php artisan storage:link \
-    && php artisan config:cache \
-    && php artisan route:cache
+    && php artisan key:generate
 
 VOLUME ["/var/www/cocktails/storage/bar-assistant"]
 
