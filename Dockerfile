@@ -30,7 +30,7 @@ RUN apt update \
 
 USER www-data
 
-WORKDIR /var/www/cocktails
+WORKDIR ${APP_BASE_DIR}
 
 FROM php-base AS dist
 
@@ -53,10 +53,9 @@ COPY --from=datapack --chown=www-data:www-data /app/data ./resources/data
 
 RUN composer install --optimize-autoloader --no-dev \
     && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/open-api-spec.yml \
-    && cp .env.dist .env \
-    && php artisan key:generate
+    && cp .env.dist .env
 
-VOLUME ["/var/www/cocktails/storage/bar-assistant"]
+VOLUME ["$APP_BASE_DIR/storage/bar-assistant"]
 
 FROM php-base AS dev
 
