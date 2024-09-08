@@ -25,13 +25,16 @@ cd "$APP_BASE_DIR"
 php artisan key:generate
 php artisan migrate --force
 php artisan storage:link
-php artisan config:cache
-php artisan route:cache
 # Setup Meilisearch ENV variables
 php artisan bar:setup-meilisearch
 php artisan scout:sync-index-settings
+php artisan config:cache
+php artisan route:cache
+php artisan event:cache
 # Update meilisearch indexes
 php artisan bar:refresh-search
+
+php artisan about
 
 echo '
                                

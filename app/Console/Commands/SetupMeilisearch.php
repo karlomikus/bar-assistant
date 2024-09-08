@@ -74,6 +74,9 @@ class SetupMeilisearch extends Command
 
         $this->line('Updating ENV...');
 
+        // $this->line('MS Api Key: ' . $searchApiKey->getKey());
+        // $this->line('MS Api Key UID: ' . $searchApiKey->getUid());
+
         $envFile = App::environmentFilePath();
         $envContents = file_get_contents($envFile);
 
