@@ -55,4 +55,5 @@ echo '
                                
 '
 
-echo "[BAR-ASSISTANT] Bar Assistant API ready [port: 8080]"
+echo " 🍸 Check our managed service at https://barassistant.app/ 🍸 "
+echo "[BAR-ASSISTANT] Bar Assistant API ready [listening on port: 8080]"
