@@ -141,7 +141,7 @@ class ToDataPack
     {
         return match ($type) {
             ExportTypeEnum::JSON => json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
-            ExportTypeEnum::YAML => Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK),
+            ExportTypeEnum::YAML => Yaml::dump($data, 8, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK | Yaml::DUMP_OBJECT_AS_MAP),
         };
     }
 }

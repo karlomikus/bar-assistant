@@ -1,3 +1,7 @@
+# v3.19.1
+## Fixes
+- Fix missing base data in recipes export
+
 # v3.19.0
 ## New
 - Updated the way OpenAPI specification is generated
