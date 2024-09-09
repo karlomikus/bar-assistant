@@ -43,14 +43,14 @@ final class IngredientService
             $ingredient->created_user_id = $dto->userId;
             $ingredient->save();
 
-            foreach($dto->complexIngredientParts as $ingredientPartId) {
+            foreach ($dto->complexIngredientParts as $ingredientPartId) {
                 $part = new ComplexIngredient();
                 $part->ingredient_id = $ingredientPartId;
                 $part->main_ingredient_id = $ingredient->id;
                 $part->save();
             }
 
-            foreach($dto->prices as $ingredientPriceDto) {
+            foreach ($dto->prices as $ingredientPriceDto) {
                 $price = new IngredientPrice();
                 $price->ingredient_id = $ingredient->id;
                 $price->price_category_id = $ingredientPriceDto->priceCategoryId;
@@ -118,7 +118,7 @@ final class IngredientService
 
             if (count($dto->prices) > 0) {
                 $ingredient->prices()->delete();
-                foreach($dto->prices as $ingredientPriceDto) {
+                foreach ($dto->prices as $ingredientPriceDto) {
                     $price = new IngredientPrice();
                     $price->ingredient_id = $ingredient->id;
                     $price->price_category_id = $ingredientPriceDto->priceCategoryId;

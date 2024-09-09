@@ -64,7 +64,7 @@ class ImbibeMagazine extends DefaultScraper
         });
 
         if ($result === null) {
-            foreach($this->getLegacyRecipeIngredients() as $line) {
+            foreach ($this->getLegacyRecipeIngredients() as $line) {
                 if (str_starts_with($line, 'Glass:')) {
                     $result = str_replace('Glass:', '', $line);
                 }
@@ -85,7 +85,7 @@ class ImbibeMagazine extends DefaultScraper
         }
 
         if (empty($result)) {
-            foreach($this->getLegacyRecipeIngredients() as $line) {
+            foreach ($this->getLegacyRecipeIngredients() as $line) {
                 if (str_starts_with($line, 'Tools:') || str_starts_with($line, 'Garnish:') || str_starts_with($line, 'Glass:')) {
                     continue;
                 }
@@ -109,7 +109,7 @@ class ImbibeMagazine extends DefaultScraper
         });
 
         if ($result === null) {
-            foreach($this->getLegacyRecipeIngredients() as $line) {
+            foreach ($this->getLegacyRecipeIngredients() as $line) {
                 if (str_starts_with($line, 'Garnish:')) {
                     $result = str_replace('Garnish:', '', $line);
                 }
@@ -164,7 +164,7 @@ class ImbibeMagazine extends DefaultScraper
         try {
             $ingredientsParagraph = $this->crawler->filterXPath('//div[contains(@class, \'recipe__main-content\')]')->first()->filterXPath('//p[2]')->html();
             $ingredientsParagraphLines = explode('<br>', $ingredientsParagraph);
-            foreach($ingredientsParagraphLines as $line) {
+            foreach ($ingredientsParagraphLines as $line) {
                 $result[] = trim($line);
             }
         } catch (\Throwable) {
