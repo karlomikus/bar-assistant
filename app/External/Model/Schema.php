@@ -61,7 +61,7 @@ readonly class Schema implements SupportsDraft2, SupportsXML, SupportsMarkdown, 
 
     public function toXML(): string
     {
-        return ArrayToXml::convert($this->toDraft2Array(), self::SCHEMA_VERSION, xmlEncoding: 'UTF-8');
+        return ArrayToXml::convert($this->toDraft2Array(), self::SCHEMA_VERSION, domProperties: ['preserveWhiteSpace' => true, 'formatOutput' => true], xmlEncoding: 'UTF-8');
     }
 
     public function toMarkdown(): string

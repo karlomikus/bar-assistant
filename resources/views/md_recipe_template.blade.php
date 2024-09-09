@@ -1,6 +1,6 @@
 # {{ $cocktail->name }}
 @if ($cocktail->source)
-![Recipe source]({{ $cocktail->source }})
+[Recipe source]({{ $cocktail->source }})
 @endif
 {{ $cocktail->description }}
 @foreach ($cocktail->images as $image)

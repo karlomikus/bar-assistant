@@ -1,0 +1,25 @@
+{
+    "@context": "https://schema.org",
+    "@type": "Recipe",
+    "author": {
+        "@type": "Organization",
+        "name": "Bar Assistant | Source: https://barassistant.app"
+    },
+    "name": "Gin and Tonic",
+    "datePublished": "2020-01-01T12:00:00+00:00",
+    "description": "Cocktail description goes here",
+    "recipeInstructions": "Cocktail instructions go here",
+    "cookingMethod": "Shake",
+    "recipeYield": "1 drink",
+    "recipeCategory": "Drink",
+    "recipeCuisine": "Cocktail",
+    "keywords": "",
+    "recipeIngredient": [
+        "45 ml - 60 ml Gin"
+    ],
+    "image": {
+        "@type": "ImageObject",
+        "author": "Exported copyright",
+        "url": "http://localhost/uploads/tests/non_existing_image.jpg"
+    }
+}

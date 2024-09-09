@@ -1,0 +1,38 @@
+recipe:
+  _id: test-cocktail
+  name: 'Gin and Tonic'
+  instructions: 'Cocktail instructions go here'
+  created_at: '2020-01-01T12:00:00+00:00'
+  updated_at: '2021-01-01T12:00:00+00:00'
+  description: 'Cocktail description goes here'
+  source: 'https://barassistant.app'
+  garnish: 'Straw and lemon wheel'
+  abv: 32.3
+  tags: {  }
+  glass: Highball
+  method: Shake
+  utensils: {  }
+  images:
+    -
+      uri: 'http://localhost/uploads/tests/non_existing_image.jpg'
+      sort: 1
+      placeholder_hash: null
+      copyright: 'Exported copyright'
+  ingredients:
+    -
+      _id: gin
+      amount: 45.0
+      units: ml
+      optional: false
+      amount_max: 60.0
+      note: 'Ingredient note'
+      substitutes: {  }
+      sort: 1
+ingredients:
+  -
+    _id: gin
+    name: Gin
+    strength: 40.0
+    description: 'Test description'
+    origin: London
+    category: spirits
