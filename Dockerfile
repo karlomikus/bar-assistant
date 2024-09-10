@@ -12,7 +12,6 @@ FROM serversideup/php:8.3-fpm-nginx AS php-base
 
 ENV S6_CMD_WAIT_FOR_SERVICES=1
 ENV PHP_OPCACHE_ENABLE=1
-ENV COMPOSER_NO_DEV=1
 ENV APP_BASE_DIR=/var/www/cocktails
 ENV NGINX_WEBROOT=/var/www/cocktails/public
 
