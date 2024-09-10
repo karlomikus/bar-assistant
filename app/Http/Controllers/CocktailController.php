@@ -308,7 +308,7 @@ class CocktailController extends Controller
         $type = $request->get('type', 'json');
         $units = Units::tryFrom($request->get('units', ''));
 
-        $data = SchemaDraft2::fromCocktailModel($cocktail);
+        $data = SchemaDraft2::fromCocktailModel($cocktail, $units);
 
         $shareContent = null;
 
