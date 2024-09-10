@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Import;
+namespace Tests\Feature\External;
 
 use Carbon\Carbon;
 use Tests\TestCase;

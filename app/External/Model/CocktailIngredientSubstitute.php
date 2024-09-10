@@ -54,9 +54,9 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
     {
         return [
             ...$this->ingredient->toDataPackArray(),
-            'amount' => $this->amount,
-            'units' => $this->units,
-            'amount_max' => $this->amountMax,
+            'amount' => $this->formatter?->getAmount() ?? $this->amount,
+            'units' => $this->formatter?->getUnits() ?? $this->units,
+            'amount_max' => $this->formatter?->getMaxAmount() ?? $this->amountMax,
         ];
     }
 
@@ -77,9 +77,9 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
     {
         return [
             '_id' => $this->ingredient->id,
-            'amount' => $this->amount,
-            'units' => $this->units,
-            'amount_max' => $this->amountMax,
+            'amount' => $this->formatter?->getAmount() ?? $this->amount,
+            'units' => $this->formatter?->getUnits() ?? $this->units,
+            'amount_max' => $this->formatter?->getMaxAmount() ?? $this->amountMax,
         ];
     }
 }

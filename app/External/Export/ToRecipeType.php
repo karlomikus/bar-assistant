@@ -87,7 +87,7 @@ class ToRecipeType
 
             if ($type === ExportTypeEnum::Schema) {
                 $cocktailExportData = $this->prepareDataOutput(
-                    $externalSchema,
+                    $externalSchema->toDraft2Array(),
                 );
 
                 $zip->addFromString('cocktails/' . $cocktail->getExternalId() . '/recipe.json', $cocktailExportData);

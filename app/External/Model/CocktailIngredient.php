@@ -85,10 +85,10 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
     {
         return [
             ...$this->ingredient->toDataPackArray(),
-            'amount' => $this->amount,
-            'units' => $this->units,
+            'amount' => $this->formatter?->getAmount() ?? $this->amount,
+            'units' => $this->formatter?->getUnits() ?? $this->units,
             'optional' => $this->optional,
-            'amount_max' => $this->amountMax,
+            'amount_max' => $this->formatter?->getMaxAmount() ?? $this->amountMax,
             'note' => $this->note,
             'substitutes' => array_map(fn ($model) => $model->toDataPackArray(), $this->substitutes),
             'sort' => $this->sort,
@@ -127,10 +127,10 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
     {
         return [
             '_id' => $this->ingredient->id,
-            'amount' => $this->amount,
-            'units' => $this->units,
+            'amount' => $this->formatter?->getAmount() ?? $this->amount,
+            'units' => $this->formatter?->getUnits() ?? $this->units,
             'optional' => $this->optional,
-            'amount_max' => $this->amountMax,
+            'amount_max' => $this->formatter?->getMaxAmount() ?? $this->amountMax,
             'note' => $this->note,
             'substitutes' => array_map(fn ($model) => $model->toDraft2Array(), $this->substitutes),
             'sort' => $this->sort,
