@@ -142,7 +142,7 @@ class ExportController extends Controller
 
         return response()->json([
             'data' => [
-                'url' => route('exports.download', ['id' => $export->id, 't' => $token, 'e' => $expires->getTimestamp()]),
+                'url' => route('exports.download', ['id' => $export->id, 't' => $token, 'e' => $expires->getTimestamp()], false),
                 'token' => $token,
                 'expires' => $expires->format(DateTimeImmutable::ATOM),
             ]
