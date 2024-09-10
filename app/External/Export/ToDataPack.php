@@ -11,6 +11,8 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\RecipeUtils\UnitConverter\Units;
+use Kami\Cocktail\External\ForceUnitConvertEnum;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
 use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
@@ -27,10 +29,15 @@ class ToDataPack
     {
     }
 
-    public function process(int $barId, ?string $filename = null): string
+    public function process(int $barId, ?string $filename = null, ForceUnitConvertEnum $units = ForceUnitConvertEnum::Original): string
     {
         if (!$filename) {
             throw new \Exception('Export filename is required');
+        }
+
+        $toUnits = null;
+        if ($units !== ForceUnitConvertEnum::Original) {
+            $toUnits = Units::tryFrom($units->value);
         }
 
         $version = config('bar-assistant.version');
@@ -53,7 +60,7 @@ class ToDataPack
             throw new ExportFileNotCreatedException($message);
         }
 
-        $this->dumpCocktails($barId, $zip);
+        $this->dumpCocktails($barId, $zip, $toUnits);
         $this->dumpIngredients($barId, $zip);
         $this->dumpBaseData($barId, $zip);
 
@@ -66,7 +73,7 @@ class ToDataPack
         return $filename;
     }
 
-    private function dumpCocktails(int $barId, ZipArchive &$zip): void
+    private function dumpCocktails(int $barId, ZipArchive &$zip, ?Units $toUnits = null): void
     {
         $cocktails = Cocktail::with(['ingredients.ingredient', 'ingredients.substitutes', 'images' => function ($query) {
             $query->orderBy('sort');
@@ -74,7 +81,7 @@ class ToDataPack
 
         /** @var Cocktail $cocktail */
         foreach ($cocktails as $cocktail) {
-            $data = CocktailExternal::fromModel($cocktail, true);
+            $data = CocktailExternal::fromModel($cocktail, true, $toUnits);
 
             /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($cocktail->images as $img) {
