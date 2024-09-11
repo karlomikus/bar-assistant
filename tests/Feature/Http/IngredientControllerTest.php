@@ -351,10 +351,10 @@ class IngredientControllerTest extends TestCase
 
         $cocktail = Cocktail::factory()
             ->for($membership->bar)
-            ->has(CocktailIngredient::factory()->for(
+            ->has(CocktailIngredient::factory()->state(['optional' => false])->for(
                 $ingredient1
             ), 'ingredients')
-            ->has(CocktailIngredient::factory()->for(
+            ->has(CocktailIngredient::factory()->state(['optional' => false])->for(
                 $ingredient2
             ), 'ingredients')
             ->create();
