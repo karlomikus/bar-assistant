@@ -207,6 +207,10 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             }, $this->ingredients),
         ], ['image' => $image]);
 
-        return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if ($data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) {
+            return $data;
+        }
+
+        return '{}';
     }
 }

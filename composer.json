@@ -69,7 +69,7 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ],
-        "static": "vendor/bin/phpstan analyse --xdebug",
+        "static": "vendor/bin/phpstan analyse",
         "fix-style": "vendor/bin/pint",
         "test": "php artisan test --parallel",
         "openapi": "vendor/bin/openapi app -o docs/openapi-generated.yaml --version 3.1.0"

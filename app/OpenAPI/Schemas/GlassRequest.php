@@ -24,10 +24,10 @@ class GlassRequest
     {
         $result = new self();
 
-        $result->name = $request->post('name');
-        $result->description = $request->post('description');
+        $result->name = $request->input('name');
+        $result->description = $request->input('description');
         $result->volume = $request->float('volume');
-        $result->volumeUnits = $request->post('volume_units');
+        $result->volumeUnits = $request->input('volume_units');
 
         return $result;
     }

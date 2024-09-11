@@ -65,13 +65,13 @@ class BarImportRecipes extends Command
 
         $barId = $this->ask('Enter the id of the bar you want to import to, or leave empty to create a new one');
         if ($barId !== null) {
-            $bar = Bar::findOrFail($barId);
+            $bar = Bar::findOrFail((int) $barId);
             $user = $bar->createdUser;
 
             $this->comment(sprintf('Using existing bar: %s - %s', $bar->id, $bar->name));
         } else {
             $barName = $this->ask('Enter new bar name');
-            $userId = $this->ask('Enter the id of the user you want to assign this bar to');
+            $userId = (int) $this->ask('Enter the id of the user you want to assign this bar to');
             $user = User::findOrFail($userId);
 
             $this->comment(sprintf('User with id found: %s - %s', $user->id, $user->email));

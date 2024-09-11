@@ -33,25 +33,29 @@ readonly class Cocktail
 
     public static function fromIlluminateRequest(Request $request, int $barId): self
     {
+        $formIngredients = $request->post('ingredients', []);
+
         $ingredients = [];
-        foreach ($request->post('ingredients', []) as $formIngredient) {
-            $ingredients[] = Ingredient::fromArray($formIngredient);
+        if (is_array($formIngredients)) {
+            foreach ($formIngredients as $formIngredient) {
+                $ingredients[] = Ingredient::fromArray($formIngredient);
+            }
         }
 
         return new self(
-            $request->post('name'),
-            $request->post('instructions'),
+            $request->input('name'),
+            $request->input('instructions'),
             $request->user()->id,
             $barId,
-            $request->post('description'),
-            $request->post('source'),
-            $request->post('garnish'),
-            $request->post('glass_id') ? (int) $request->post('glass_id') : null,
-            $request->post('cocktail_method_id') ? (int) $request->post('cocktail_method_id') : null,
-            $request->post('tags', []),
+            $request->input('description'),
+            $request->input('source'),
+            $request->input('garnish'),
+            $request->filled('glass_id') ? $request->integer('glass_id') : null,
+            $request->filled('cocktail_method_id') ? $request->integer('cocktail_method_id') : null,
+            $request->input('tags', []),
             $ingredients,
-            $request->post('images', []),
-            $request->post('utensils', []),
+            $request->input('images', []),
+            $request->input('utensils', []),
         );
     }
 }

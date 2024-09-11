@@ -240,11 +240,13 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
         $image = $this->image();
         if ($image['uri']) {
             $url = parse_url($image['uri']);
-            $cleanUrl = $url['scheme'] . '://' . $url['host'] . (isset($url['path'])?$url['path']:'');
+            $cleanUrl = ($url['scheme'] ?? '') . '://' . ($url['host'] ?? '') . (isset($url['path']) ? $url['path'] : '');
 
+            $dataUri = null;
             $type = pathinfo($cleanUrl, PATHINFO_EXTENSION);
-            $data = file_get_contents($cleanUrl);
-            $dataUri = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            if ($data = file_get_contents($cleanUrl)) {
+                $dataUri = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            }
 
             return [
                 'uri' => $dataUri,

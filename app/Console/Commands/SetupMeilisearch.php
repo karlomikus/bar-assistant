@@ -79,6 +79,11 @@ class SetupMeilisearch extends Command
 
         $envFile = App::environmentFilePath();
         $envContents = file_get_contents($envFile);
+        if (!$envContents) {
+            $this->error('Unable to read ENV file. Aborting.');
+
+            return Command::INVALID;
+        }
 
         // Update existing variables
         if (str_contains($envContents, 'MEILISEARCH_API_KEY=')) {
@@ -92,6 +97,11 @@ class SetupMeilisearch extends Command
         }
 
         $envContents = file_get_contents($envFile);
+        if (!$envContents) {
+            $this->error('Unable to read ENV file. Aborting.');
+
+            return Command::INVALID;
+        }
 
         if (str_contains($envContents, 'MEILISEARCH_API_KEY_UID=')) {
             file_put_contents($envFile, str_replace(

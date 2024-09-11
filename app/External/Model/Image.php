@@ -67,7 +67,7 @@ readonly class Image implements SupportsDraft2, SupportsDataPack
     {
         $parts = parse_url($this->uri);
 
-        if ($parts['scheme'] === 'file') {
+        if (($parts['scheme'] ?? '') === 'file') {
             return $parts['path'] ?? '';
         }
 

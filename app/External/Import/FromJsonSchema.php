@@ -50,10 +50,10 @@ class FromJsonSchema
         // Add images
         $cocktailImages = [];
         foreach ($cocktailExternal->cocktail->images as $image) {
-            if ($image->uri) {
+            if ($image->uri && $imageContents = file_get_contents($imageDirectoryBasePath . $image->getLocalFilePath())) {
                 try {
                     $imageDTO = new Image(
-                        file_get_contents($imageDirectoryBasePath . $image->getLocalFilePath()),
+                        $imageContents,
                         $image->copyright
                     );
 

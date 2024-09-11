@@ -76,7 +76,11 @@ class FromDataPack
 
     private function importBaseData(string $tableName, string $filepath, int $barId): void
     {
-        $data = json_decode(file_get_contents($filepath), true);
+        if ($fileContents = file_get_contents($filepath)) {
+            $data = json_decode($fileContents, true);
+        } else {
+            $data = [];
+        }
 
         $importData = array_map(function (array $item) use ($barId) {
             $item['bar_id'] = $barId;
@@ -334,10 +338,12 @@ class FromDataPack
     private function getDataFromDir(string $dir, FilesystemAdapter $dataDisk): Generator
     {
         foreach ($dataDisk->directories($dir) as $diskDirPath) {
-            yield [
-                json_decode(file_get_contents($dataDisk->path($diskDirPath . '/data.json')), true),
-                $diskDirPath,
-            ];
+            if ($fileContents = file_get_contents($dataDisk->path($diskDirPath . '/data.json'))) {
+                yield [
+                    json_decode($fileContents, true),
+                    $diskDirPath,
+                ];
+            }
         }
     }
 }

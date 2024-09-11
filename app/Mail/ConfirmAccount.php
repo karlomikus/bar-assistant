@@ -22,7 +22,7 @@ class ConfirmAccount extends Mailable
     {
         $mailResetUrl = config('bar-assistant.mail_confirm_url');
         if ($mailResetUrl) {
-            $this->url = str_replace('[id]', (string) $userId, $mailResetUrl);
+            $this->url = (string) str_replace('[id]', (string) $userId, $mailResetUrl);
             $this->url = str_replace('[hash]', $hash, $this->url);
         } else {
             $this->url = '';

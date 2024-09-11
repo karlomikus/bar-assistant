@@ -31,23 +31,27 @@ readonly class Ingredient
 
     public static function fromIlluminateRequest(Request $request, int $barId): self
     {
+        $formPrices = $request->input('prices', []);
+
         $prices = [];
-        foreach ($request->post('prices', []) as $price) {
-            $prices[] = Price::fromArray($price);
+        if (is_array($formPrices)) {
+            foreach ($formPrices as $price) {
+                $prices[] = Price::fromArray($price);
+            }
         }
 
         return new self(
             $barId,
-            $request->post('name'),
+            $request->input('name'),
             $request->user()->id,
-            $request->post('ingredient_category_id') ? (int) $request->post('ingredient_category_id') : null,
+            $request->filled('ingredient_category_id') ? $request->integer('ingredient_category_id') : null,
             $request->float('strength'),
-            $request->post('description'),
-            $request->post('origin'),
-            $request->post('color'),
-            $request->post('parent_ingredient_id') ? (int) $request->post('parent_ingredient_id') : null,
-            $request->post('images', []),
-            $request->post('complex_ingredient_part_ids', []),
+            $request->input('description'),
+            $request->input('origin'),
+            $request->input('color'),
+            $request->filled('parent_ingredient_id') ? $request->integer('parent_ingredient_id') : null,
+            $request->input('images', []),
+            $request->input('complex_ingredient_part_ids', []),
             $prices,
         );
     }
