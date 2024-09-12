@@ -5117,7 +5117,7 @@ components:
           description: 'Enable users with invite code to join this bar. Default `false`.'
           type: boolean
         options:
-          description: 'List of data that the bar will start with. Possible values: `ingredients`, `cocktails`. Cocktails cannot be imported without ingredients.'
+          description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.'
           type: array
           items:
             type: enum
@@ -6636,6 +6636,13 @@ components:
         version:
           type: string
           example: 1.0.0
+        latest_version:
+          description: 'Latest version available on GitHub'
+          type: string
+          example: 3.1.0
+        is_latest:
+          type: boolean
+          example: true
         type:
           type: string
           example: production

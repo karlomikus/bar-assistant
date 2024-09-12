@@ -11,6 +11,10 @@ class ServerVersion
 {
     #[OAT\Property(example: '1.0.0')]
     public string $version;
+    #[OAT\Property(example: '3.1.0', description: 'Latest version available on GitHub')]
+    public string $latest_version;
+    #[OAT\Property(example: true)]
+    public bool $is_latest;
     #[OAT\Property(example: 'production')]
     public string $type;
     #[OAT\Property(property: 'search_host', example: 'https://search.example.com')]
