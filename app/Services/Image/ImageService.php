@@ -151,6 +151,9 @@ final readonly class ImageService
         $this->filesystemManager->disk('uploads')->deleteDirectory('ingredients/' . $bar->id . '/');
     }
 
+    /**
+     * @return array<string>
+     */
     private function processImageFile(string $image, ?string $filename = null): array
     {
         $filename = $filename ?? Str::random(40);

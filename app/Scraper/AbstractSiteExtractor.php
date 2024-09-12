@@ -149,7 +149,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
     /**
      * Cocktail information as array
      *
-     * @return array
+     * @return array<mixed>
      */
     public function toArray(): array
     {
@@ -237,6 +237,9 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
         return $this->clean($description);
     }
 
+    /**
+     * @return array<string, string|null>
+     */
     private function convertImagesToDataUri(): array
     {
         $image = $this->image();

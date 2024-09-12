@@ -53,6 +53,9 @@ class Export extends Model
         return Storage::disk('exports')->path($this->bar_id . '/' . $this->filename);
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

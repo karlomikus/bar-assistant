@@ -121,6 +121,9 @@ class ToRecipeType
         }
     }
 
+    /**
+     * @param SchemaExternal|array<mixed> $data
+     */
     private function prepareDataOutput(SchemaExternal|array $data): string
     {
         if ($data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) {

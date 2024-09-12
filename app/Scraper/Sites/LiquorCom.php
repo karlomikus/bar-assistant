@@ -63,6 +63,9 @@ class LiquorCom extends AbstractSiteExtractor
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+    */
     private function getRecipeSchema(): array
     {
         $recipeSchema = [];

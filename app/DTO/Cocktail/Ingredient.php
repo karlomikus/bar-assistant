@@ -22,6 +22,9 @@ readonly class Ingredient
     ) {
     }
 
+    /**
+     * @param array<mixed> $source
+     */
     public static function fromArray(array $source): self
     {
         $substitutes = [];

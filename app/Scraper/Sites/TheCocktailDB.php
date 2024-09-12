@@ -10,6 +10,9 @@ use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class TheCocktailDB extends AbstractSiteExtractor
 {
+    /**
+     * @var array<string, mixed>
+     */
     private array $apiDrinkData = [];
 
     public function __construct(string $url)

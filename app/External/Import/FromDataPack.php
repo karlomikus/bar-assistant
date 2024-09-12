@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\BarStatusEnum;
-use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
 use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
@@ -31,7 +30,7 @@ class FromDataPack
         $this->uploadsDisk = Storage::disk('uploads');
     }
 
-    public function process(FilesystemAdapter $dataDisk, Bar $bar, User $user, array $flags = []): bool
+    public function process(Filesystem $dataDisk, Bar $bar, User $user, array $flags = []): bool
     {
         Log::debug(sprintf('Starting datapack import for "%s"', $bar->name));
 
@@ -47,7 +46,7 @@ class FromDataPack
         ];
 
         foreach ($baseDataFiles as $table => $file) {
-            if ($dataDisk->fileExists($file)) {
+            if ($dataDisk->exists($file)) {
                 $this->importBaseData($table, $dataDisk->path($file), $bar->id);
             }
         }
@@ -103,7 +102,7 @@ class FromDataPack
         DB::table($tableName)->insert($importData);
     }
 
-    private function importIngredients(FilesystemAdapter $dataDisk, Bar $bar, User $user): void
+    private function importIngredients(Filesystem $dataDisk, Bar $bar, User $user): void
     {
         $categories = DB::table('ingredient_categories')->select('id', 'name')->where('bar_id', $bar->id)->get();
         $existingIngredients = DB::table('ingredients')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(function ($ingredient) {
@@ -191,7 +190,7 @@ class FromDataPack
         DB::commit();
     }
 
-    private function importBaseCocktails(FilesystemAdapter $dataDisk, Bar $bar, User $user): void
+    private function importBaseCocktails(Filesystem $dataDisk, Bar $bar, User $user): void
     {
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
@@ -323,9 +322,9 @@ class FromDataPack
         DB::table('cocktail_tag')->insert($tagsToInsert);
     }
 
-    private function copyResourceImage(FilesystemAdapter $dataDisk, string $baseSrcImagePath, string $targetImagePath): void
+    private function copyResourceImage(Filesystem $dataDisk, string $baseSrcImagePath, string $targetImagePath): void
     {
-        if (!$dataDisk->fileExists($baseSrcImagePath)) {
+        if (!$dataDisk->exists($baseSrcImagePath)) {
             return;
         }
 
@@ -335,7 +334,7 @@ class FromDataPack
         );
     }
 
-    private function getDataFromDir(string $dir, FilesystemAdapter $dataDisk): Generator
+    private function getDataFromDir(string $dir, Filesystem $dataDisk): Generator
     {
         foreach ($dataDisk->directories($dir) as $diskDirPath) {
             if ($fileContents = file_get_contents($dataDisk->path($diskDirPath . '/data.json'))) {

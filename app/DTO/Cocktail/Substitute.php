@@ -14,6 +14,9 @@ readonly class Substitute
     ) {
     }
 
+    /**
+     * @param array<mixed> $source
+     */
     public static function fromArray(array $source): self
     {
         return new self(

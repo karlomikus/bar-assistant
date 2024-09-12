@@ -65,6 +65,9 @@ class SteveTheBartender extends AbstractSiteExtractor
         return trim($this->getRecipeSchema()['description']);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getRecipeSchema(): array
     {
         $recipeSchema = [];

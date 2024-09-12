@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Kami\Cocktail\Utils;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
@@ -269,6 +270,9 @@ class Cocktail extends Model implements UploadableInterface
         return $this->ingredients->pluck('ingredient.name');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toSearchableArray(): array
     {
         return [
@@ -305,6 +309,9 @@ class Cocktail extends Model implements UploadableInterface
         return true;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function asJsonLDSchema(): array
     {
         return [

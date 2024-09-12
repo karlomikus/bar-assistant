@@ -34,6 +34,9 @@ class IngredientCategory extends Model
         return $this->belongsTo(Bar::class);
     }
 
+    /**
+     * @return array<string>
+     */
     protected function getScopeAttributes(): array
     {
         return ['bar_id'];

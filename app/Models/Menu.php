@@ -35,6 +35,9 @@ class Menu extends Model
         return $this->belongsTo(Bar::class);
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $cocktailMenuItems
+     */
     public function syncCocktails(array $cocktailMenuItems): void
     {
         $validCocktails = DB::table('cocktails')

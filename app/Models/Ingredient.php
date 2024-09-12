@@ -204,6 +204,9 @@ class Ingredient extends Model
         return parent::delete();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toSearchableArray(): array
     {
         return [

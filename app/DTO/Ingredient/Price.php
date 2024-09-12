@@ -19,6 +19,9 @@ readonly class Price
     ) {
     }
 
+    /**
+     * @param array<mixed> $source
+     */
     public static function fromArray(array $source): self
     {
         $category = PriceCategory::findOrFail((int) $source['price_category_id']);

@@ -143,6 +143,9 @@ class ImbibeMagazine extends DefaultScraper
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getRecipeSchema(): array
     {
         $recipeSchema = [];
@@ -157,6 +160,9 @@ class ImbibeMagazine extends DefaultScraper
         return $recipeSchema;
     }
 
+    /**
+     * @return array<string>
+     */
     private function getLegacyRecipeIngredients(): array
     {
         $result = [];
