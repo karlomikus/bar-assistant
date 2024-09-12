@@ -56,8 +56,8 @@ class ExportController extends Controller
             abort(403);
         }
 
-        $type = ExportTypeEnum::tryFrom($request->post('type', 'schema'));
-        $units = ForceUnitConvertEnum::tryFrom($request->post('units', 'none'));
+        $type = ExportTypeEnum::tryFrom($request->input('type', 'schema'));
+        $units = ForceUnitConvertEnum::tryFrom($request->input('units', 'none'));
 
         $export = new Export();
         $export->bar_id = $bar->id;
@@ -104,13 +104,12 @@ class ExportController extends Controller
     public function download(Request $request, int $id): BinaryFileResponse
     {
         $export = Export::findOrFail($id);
+        $date = DateTimeImmutable::createFromFormat('U', $request->get('e'));
+        if ($date === false) {
+            abort(404);
+        }
 
-        if (!FileToken::check(
-            $request->get('t'),
-            $id,
-            $export->filename,
-            DateTimeImmutable::createFromFormat('U', $request->get('e'))
-        )) {
+        if (!FileToken::check($request->get('t'), $id, $export->filename, $date)) {
             abort(404);
         }
 

@@ -71,8 +71,8 @@ class CocktailMethodController extends Controller
         }
 
         $method = new CocktailMethod();
-        $method->name = $request->post('name');
-        $method->dilution_percentage = (int) $request->post('dilution_percentage');
+        $method->name = $request->input('name');
+        $method->dilution_percentage = (int) $request->input('dilution_percentage');
         $method->bar_id = bar()->id;
         $method->save();
 
@@ -103,8 +103,8 @@ class CocktailMethodController extends Controller
             abort(403);
         }
 
-        $method->name = $request->post('name');
-        $method->dilution_percentage = (int) $request->post('dilution_percentage');
+        $method->name = $request->input('name');
+        $method->dilution_percentage = (int) $request->input('dilution_percentage');
         $method->updated_at = now();
         $method->save();
 

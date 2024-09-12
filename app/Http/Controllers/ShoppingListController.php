@@ -62,7 +62,7 @@ class ShoppingListController extends Controller
 
         $barMembership = $user->getBarMembership(bar()->id);
 
-        $requestIngredients = collect($request->post('ingredients'));
+        $requestIngredients = $request->collect('ingredients');
         $ingredients = DB::table('ingredients')
             ->select('id')
             ->where('bar_id', $barMembership->bar_id)
@@ -115,7 +115,7 @@ class ShoppingListController extends Controller
 
         $barMembership = $user->getBarMembership(bar()->id);
 
-        $requestIngredients = collect($request->post('ingredients'));
+        $requestIngredients = $request->collect('ingredients');
         $ingredients = DB::table('ingredients')
             ->select('id')
             ->where('bar_id', $barMembership->bar_id)

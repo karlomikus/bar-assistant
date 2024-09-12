@@ -90,25 +90,25 @@ class BarController extends Controller
         ]);
 
         $inviteEnabled = (bool) $request->post('enable_invites', '0');
-        $barOptions = $request->post('options', []);
+        $barOptions = $request->input('options', []);
 
         $bar = new Bar();
-        $bar->name = $request->post('name');
-        $bar->subtitle = $request->post('subtitle');
-        $bar->description = $request->post('description');
+        $bar->name = $request->input('name');
+        $bar->subtitle = $request->input('subtitle');
+        $bar->description = $request->input('description');
         $bar->created_user_id = $request->user()->id;
         $bar->invite_code = $inviteEnabled ? (string) new Ulid() : null;
-        if ($request->post('slug')) {
-            $bar->slug = Str::slug($request->post('slug'));
+        if ($request->input('slug')) {
+            $bar->slug = Str::slug($request->input('slug'));
         } else {
             $bar->generateSlug();
         }
 
         $settings = [];
-        if ($defaultUnits = $request->post('default_units')) {
+        if ($defaultUnits = $request->input('default_units')) {
             $settings['default_units'] = Units::tryFrom($defaultUnits)?->value;
         }
-        if ($defaultLanguage = $request->post('default_language')) {
+        if ($defaultLanguage = $request->input('default_language')) {
             $settings['default_lang'] = $defaultLanguage;
         }
         $bar->settings = $settings;
@@ -155,7 +155,7 @@ class BarController extends Controller
 
         Cache::forget('ba:bar:' . $bar->id);
 
-        $inviteEnabled = (bool) $request->post('enable_invites', '0');
+        $inviteEnabled = (bool) $request->input('enable_invites', '0');
         if ($inviteEnabled && $bar->invite_code === null) {
             $bar->invite_code = (string) new Ulid();
         } else {
@@ -163,13 +163,13 @@ class BarController extends Controller
         }
 
         $settings = $bar->settings;
-        $settings['default_units'] = Units::tryFrom($request->post('default_units') ?? '')?->value;
+        $settings['default_units'] = Units::tryFrom($request->input('default_units') ?? '')?->value;
         $bar->settings = $settings;
 
-        $bar->status = $request->post('status') ?? BarStatusEnum::Active->value;
-        $bar->name = $request->post('name');
-        $bar->description = $request->post('description');
-        $bar->subtitle = $request->post('subtitle');
+        $bar->status = $request->input('status') ?? BarStatusEnum::Active->value;
+        $bar->name = $request->input('name');
+        $bar->description = $request->input('description');
+        $bar->subtitle = $request->input('subtitle');
         $bar->updated_user_id = $request->user()->id;
         $bar->updated_at = now();
         $bar->save();

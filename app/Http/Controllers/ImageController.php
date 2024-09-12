@@ -82,7 +82,9 @@ class ImageController extends Controller
             if (isset($formImage['image']) && $formImage['image'] instanceof UploadedFile) {
                 Validator::make($formImage, $rules)->validate();
 
-                $imageSource = $formImage['image']->get();
+                if ($sourceData = $formImage['image']->get()) {
+                    $imageSource = $sourceData;
+                }
             }
 
             if (isset($formImage['image']) && is_string($formImage['image'])) {
@@ -92,6 +94,8 @@ class ImageController extends Controller
                         $tempFileName = tempnam(sys_get_temp_dir(), 'bass');
                         file_put_contents($tempFileName, $imageSource);
                         $tempFileObject = new File($tempFileName);
+                    } else {
+                        $imageSource = null;
                     }
                 } catch (Throwable) {
                 }
@@ -138,11 +142,11 @@ class ImageController extends Controller
         }
 
         $imageSource = null;
-        if ($request->hasFile('image')) {
-            $imageSource = $request->file('image')->get();
-        } elseif ($request->has('image_url')) {
-            $imageSource = file_get_contents($request->input('image_url'));
-        }
+        // if ($request->hasFile('image')) {
+        //     $imageSource = $request->file('image')->get();
+        // } elseif ($request->has('image_url')) {
+        //     $imageSource = file_get_contents($request->input('image_url'));
+        // }
 
         $imageDTO = new ImageDTO(
             $imageSource,

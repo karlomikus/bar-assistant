@@ -8,7 +8,7 @@ class SchemaModel
 {
     public ?string $name = null;
     public ?string $description = null;
-    /** @var array<string> */
+    /** @var array<string|null> */
     public array $instructions = [];
     /** @var array<string> */
     public array $tags = [];

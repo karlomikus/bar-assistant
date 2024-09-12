@@ -30,7 +30,12 @@ class TheCocktailDB extends AbstractSiteExtractor
             $url = 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=' . $drinkApiId;
         }
 
-        $data = json_decode(file_get_contents($url), true);
+        if ($contents = file_get_contents($url)) {
+            $data = json_decode($contents, true);
+        } else {
+            $data = [];
+        }
+
         $this->apiDrinkData = $data['drinks'][0];
     }
 

@@ -96,9 +96,9 @@ class UsersController extends Controller
         $user = User::where('email', $email)->first();
         if ($user === null) {
             $user = new User();
-            $user->name = $request->post('name');
-            $user->email = $request->post('email');
-            $user->password = Hash::make($request->post('password'));
+            $user->name = $request->input('name');
+            $user->email = $request->input('email');
+            $user->password = Hash::make($request->input('password'));
             if ($requireConfirmation === false) {
                 $user->email_verified_at = now();
             }
@@ -140,7 +140,7 @@ class UsersController extends Controller
             abort(403);
         }
 
-        $user->name = $request->post('name');
+        $user->name = $request->input('name');
 
         if ($request->has('role_id') && $request->user()->isBarAdmin(bar()->id)) {
             $barMembership = $user->getBarMembership(bar()->id);

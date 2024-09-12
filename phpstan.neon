@@ -7,12 +7,8 @@ parameters:
         - app/
 
     # Level 9 is the highest level
-    level: 6
+    level: 7
 
     ignoreErrors:
         -
             identifier: missingType.iterableValue
-
-    excludePaths:
-        - ./app/Search # 2much2laravel
-        - ./app/Scraper/Sites/DefaultScraper.php # Interface/Base class mapping stuff

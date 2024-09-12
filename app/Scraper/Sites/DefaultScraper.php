@@ -92,10 +92,8 @@ class DefaultScraper extends AbstractSiteExtractor
         $instructions = array_map(function ($instructionStep) {
             if (is_string($instructionStep)) {
                 return $instructionStep;
-            }
-
-            if (isset($instructionStep['text'])) {
-                return $instructionStep['text'];
+            } else {
+                return null;
             }
         }, $instructions);
 

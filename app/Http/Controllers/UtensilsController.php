@@ -71,8 +71,8 @@ class UtensilsController extends Controller
         }
 
         $utensil = new Utensil();
-        $utensil->name = $request->post('name');
-        $utensil->description = $request->post('description');
+        $utensil->name = $request->input('name');
+        $utensil->description = $request->input('description');
         $utensil->bar_id = bar()->id;
         $utensil->save();
 
@@ -103,8 +103,8 @@ class UtensilsController extends Controller
             abort(403);
         }
 
-        $utensil->name = $request->post('name');
-        $utensil->description = $request->post('description');
+        $utensil->name = $request->input('name');
+        $utensil->description = $request->input('description');
         $utensil->updated_at = now();
         $utensil->save();
 

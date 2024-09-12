@@ -111,10 +111,10 @@ class CollectionController extends Controller
         $barMembership = $request->user()->getBarMembership(bar()->id);
 
         $collection = new CocktailCollection();
-        $collection->name = $request->post('name');
-        $collection->description = $request->post('description');
+        $collection->name = $request->input('name');
+        $collection->description = $request->input('description');
         $collection->bar_membership_id = $barMembership->id;
-        $collection->is_bar_shared = (bool) $request->post('is_bar_shared');
+        $collection->is_bar_shared = $request->boolean('is_bar_shared');
         $collection->save();
 
         $cocktailIds = $request->post('cocktails', []);
@@ -155,10 +155,10 @@ class CollectionController extends Controller
             abort(403);
         }
 
-        $collection->name = $request->post('name');
-        $collection->description = $request->post('description');
+        $collection->name = $request->input('name');
+        $collection->description = $request->input('description');
         $collection->updated_at = now();
-        $collection->is_bar_shared = (bool) $request->post('is_bar_shared');
+        $collection->is_bar_shared = $request->boolean('is_bar_shared');
         $collection->save();
 
         $collection->load('barMembership', 'cocktails');

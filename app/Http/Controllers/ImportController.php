@@ -51,8 +51,8 @@ class ImportController extends Controller
             abort(403);
         }
 
-        $source = $request->post('source');
-        $duplicateAction = DuplicateActionsEnum::from($request->post('duplicate_actions', 'none'));
+        $source = $request->input('source');
+        $duplicateAction = $request->enum('duplicate_actions', DuplicateActionsEnum::class);
 
         $importer = new FromJsonSchema(
             resolve(CocktailService::class),
@@ -98,7 +98,7 @@ class ImportController extends Controller
         }
 
         try {
-            $scraper = Manager::scrape($request->post('source'));
+            $scraper = Manager::scrape($request->input('source'));
         } catch (Throwable $e) {
             abort(400, $e->getMessage());
         }
@@ -110,65 +110,65 @@ class ImportController extends Controller
         ]);
     }
 
-    #[OAT\Post(path: '/import/file', tags: ['Import'], summary: 'Import from zip file', requestBody: new OAT\RequestBody(
-        required: true,
-        content: [
-            new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(type: 'object', required: ['file'], properties: [
-                new OAT\Property(property: 'file', type: 'string', format: 'binary', description: 'The zip file containing the data. Max 1GB.'),
-                new OAT\Property(property: 'bar_id', type: 'integer', example: 1),
-                new OAT\Property(property: 'duplicate_actions', ref: DuplicateActionsEnum::class, example: 'none', description: 'How to handle duplicates. Cocktails are matched by lowercase name.'),
-            ])),
-        ]
-    ))]
-    #[OAT\Response(response: 204, description: 'Successful response')]
-    #[BAO\NotAuthorizedResponse]
-    public function file(ImportFileRequest $request): Response
-    {
-        if ($request->user()->cannot('create', Cocktail::class)) {
-            abort(403);
-        }
+    // #[OAT\Post(path: '/import/file', tags: ['Import'], summary: 'Import from zip file', requestBody: new OAT\RequestBody(
+    //     required: true,
+    //     content: [
+    //         new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(type: 'object', required: ['file'], properties: [
+    //             new OAT\Property(property: 'file', type: 'string', format: 'binary', description: 'The zip file containing the data. Max 1GB.'),
+    //             new OAT\Property(property: 'bar_id', type: 'integer', example: 1),
+    //             new OAT\Property(property: 'duplicate_actions', ref: DuplicateActionsEnum::class, example: 'none', description: 'How to handle duplicates. Cocktails are matched by lowercase name.'),
+    //         ])),
+    //     ]
+    // ))]
+    // #[OAT\Response(response: 204, description: 'Successful response')]
+    // #[BAO\NotAuthorizedResponse]
+    // public function file(ImportFileRequest $request): Response
+    // {
+    //     if ($request->user()->cannot('create', Cocktail::class)) {
+    //         abort(403);
+    //     }
 
-        $zipFile = $request->file('file')->store('/', 'temp-uploads');
-        $barId = $request->post('bar_id');
-        $duplicateAction = DuplicateActionsEnum::from($request->post('duplicate_actions', 'none'));
+    //     $zipFile = $request->file('file')->store('/', 'temp-uploads');
+    //     $barId = $request->post('bar_id');
+    //     $duplicateAction = DuplicateActionsEnum::from($request->post('duplicate_actions', 'none'));
 
-        $bar = Bar::findOrFail($barId);
-        if ($request->user()->cannot('edit', $bar)) {
-            abort(403);
-        }
+    //     $bar = Bar::findOrFail($barId);
+    //     if ($request->user()->cannot('edit', $bar)) {
+    //         abort(403);
+    //     }
 
-        $unzippedFilesDisk = Storage::disk('temp');
+    //     $unzippedFilesDisk = Storage::disk('temp');
 
-        $zip = new ZipUtils();
-        $zip->unzip(Storage::disk('temp-uploads')->path($zipFile));
+    //     $zip = new ZipUtils();
+    //     $zip->unzip(Storage::disk('temp-uploads')->path($zipFile));
 
-        // $importer = new FromJsonSchema(
-        //     resolve(\Kami\Cocktail\Services\CocktailService::class),
-        //     resolve(\Kami\Cocktail\Services\IngredientService::class),
-        //     resolve(\Kami\Cocktail\Services\Image\ImageService::class),
-        //     $bar->id,
-        // );
+    //     // $importer = new FromJsonSchema(
+    //     //     resolve(\Kami\Cocktail\Services\CocktailService::class),
+    //     //     resolve(\Kami\Cocktail\Services\IngredientService::class),
+    //     //     resolve(\Kami\Cocktail\Services\Image\ImageService::class),
+    //     //     $bar->id,
+    //     // );
 
-        // \Illuminate\Support\Facades\DB::beginTransaction();
-        // try {
-        //     foreach ($unzippedFilesDisk->directories($zip->getDirName() . '/cocktails') as $diskDirPath) {
-        //         $importer->process(
-        //             json_decode(file_get_contents($unzippedFilesDisk->path($diskDirPath . '/recipe.json')), true),
-        //             $request->user()->id,
-        //             $bar->id,
-        //             $duplicateAction,
-        //             $unzippedFilesDisk->path($diskDirPath),
-        //         );
-        //     }
-        // } catch (Throwable $e) {
-        //     Log::error('Error importing from file: ' . $e->getMessage());
-        // } finally {
-        //     $zip->cleanup();
-        //     Storage::disk('temp-uploads')->delete($zipFile);
-        // }
+    //     // \Illuminate\Support\Facades\DB::beginTransaction();
+    //     // try {
+    //     //     foreach ($unzippedFilesDisk->directories($zip->getDirName() . '/cocktails') as $diskDirPath) {
+    //     //         $importer->process(
+    //     //             json_decode(file_get_contents($unzippedFilesDisk->path($diskDirPath . '/recipe.json')), true),
+    //     //             $request->user()->id,
+    //     //             $bar->id,
+    //     //             $duplicateAction,
+    //     //             $unzippedFilesDisk->path($diskDirPath),
+    //     //         );
+    //     //     }
+    //     // } catch (Throwable $e) {
+    //     //     Log::error('Error importing from file: ' . $e->getMessage());
+    //     // } finally {
+    //     //     $zip->cleanup();
+    //     //     Storage::disk('temp-uploads')->delete($zipFile);
+    //     // }
 
-        \Illuminate\Support\Facades\DB::commit();
+    //     \Illuminate\Support\Facades\DB::commit();
 
-        return new Response(null, 204);
-    }
+    //     return new Response(null, 204);
+    // }
 }

@@ -125,7 +125,7 @@ class CocktailController extends Controller
     #[BAO\ValidationFailedResponse]
     public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
-        Validator::make($request->post('ingredients', []), [
+        Validator::make($request->input('ingredients', []), [
             '*.ingredient_id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
         ])->validate();
 
@@ -167,7 +167,7 @@ class CocktailController extends Controller
     {
         $cocktail = Cocktail::findOrFail($id);
 
-        Validator::make($request->post('ingredients', []), [
+        Validator::make($request->input('ingredients', []), [
             '*.ingredient_id' => [new ResourceBelongsToBar($cocktail->bar_id, 'ingredients')],
         ])->validate();
 
@@ -380,13 +380,15 @@ class CocktailController extends Controller
         // Copy images
         $imageDTOs = [];
         foreach ($cocktail->images as $image) {
-            try {
-                $imageDTOs[] = new ImageDTO(
-                    file_get_contents($image->getPath()),
-                    $image->copyright,
-                    $image->sort,
-                );
-            } catch (Throwable $e) {
+            if ($imageContents = file_get_contents($image->getPath())) {
+                try {
+                    $imageDTOs[] = new ImageDTO(
+                        $imageContents,
+                        $image->copyright,
+                        $image->sort,
+                    );
+                } catch (Throwable $e) {
+                }
             }
         }
 

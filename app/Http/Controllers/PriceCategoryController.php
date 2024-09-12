@@ -71,9 +71,9 @@ class PriceCategoryController extends Controller
         }
 
         $priceCategory = new PriceCategory();
-        $priceCategory->name = $request->post('name');
-        $priceCategory->description = $request->post('description');
-        $priceCategory->currency = $request->post('currency');
+        $priceCategory->name = $request->input('name');
+        $priceCategory->description = $request->input('description');
+        $priceCategory->currency = $request->input('currency');
         $priceCategory->bar_id = bar()->id;
         $priceCategory->save();
 
@@ -104,9 +104,9 @@ class PriceCategoryController extends Controller
             abort(403);
         }
 
-        $priceCategory->name = $request->post('name');
-        $priceCategory->description = $request->post('description');
-        $priceCategory->currency = $request->post('currency');
+        $priceCategory->name = $request->input('name');
+        $priceCategory->description = $request->input('description');
+        $priceCategory->currency = $request->input('currency');
         $priceCategory->save();
 
         return new PriceCategoryResource($priceCategory);

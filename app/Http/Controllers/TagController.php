@@ -73,7 +73,7 @@ class TagController extends Controller
         }
 
         $tag = new Tag();
-        $tag->name = $request->post('name');
+        $tag->name = $request->input('name');
         $tag->bar_id = bar()->id;
         $tag->save();
 
@@ -104,7 +104,7 @@ class TagController extends Controller
             abort(403);
         }
 
-        $tag->name = $request->post('name');
+        $tag->name = $request->input('name');
         $tag->save();
 
         $cocktailIds = DB::table('cocktail_tag')->select('cocktail_id')->where('tag_id', $tag->id)->pluck('cocktail_id');

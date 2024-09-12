@@ -50,7 +50,7 @@ class AuthController extends Controller
             abort(400, 'Unable to authenticate. Check your login credentials and try again.');
         }
 
-        $tokenName = $request->post('token_name') ?? $request->userAgent() ?? 'Unknown device';
+        $tokenName = $request->input('token_name') ?? $request->userAgent() ?? 'Unknown device';
         $token = $user->createToken($tokenName, expiresAt: now()->addDays(14));
 
         return new TokenResource($token);
@@ -86,9 +86,9 @@ class AuthController extends Controller
         $requireConfirmation = config('bar-assistant.mail_require_confirmation');
 
         $user = new User();
-        $user->name = $req->post('name');
-        $user->password = Hash::make($req->post('password'));
-        $user->email = $req->post('email');
+        $user->name = $req->input('name');
+        $user->password = Hash::make($req->input('password'));
+        $user->email = $req->input('email');
         if ($requireConfirmation === false) {
             $user->email_verified_at = now();
         }
@@ -196,7 +196,7 @@ class AuthController extends Controller
 
     public function passwordCheck(Request $request): JsonResponse
     {
-        $status = Hash::check($request->post('password'), $request->user()->password);
+        $status = Hash::check($request->input('password'), $request->user()->password);
 
         return response()->json(['data' => [
             'status' => $status,

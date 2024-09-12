@@ -55,18 +55,15 @@ class PATController extends Controller
             abort(403);
         }
 
-        $expiresAt = $request->post('expires_at');
-        if ($expiresAt) {
-            $expiresAt = Carbon::parse($expiresAt);
-        }
+        $expiresAt = $request->date('expires_at');
 
-        $abilities = array_filter($request->post('abilities', []), fn ($inputAbility) => AbilityEnum::tryFrom($inputAbility) !== null);
+        $abilities = array_filter($request->input('abilities', []), fn ($inputAbility) => AbilityEnum::tryFrom($inputAbility) !== null);
         if (count($abilities) === 0) {
             abort(400, 'Unsupported abilities given, valid abilties include: ' . implode(', ', array_map(fn (AbilityEnum $ability) => $ability->value, AbilityEnum::cases())));
         }
 
         $token = $request->user()->createToken(
-            $request->post('name', 'user_generated'),
+            $request->input('name', 'user_generated'),
             $abilities,
             $expiresAt
         );

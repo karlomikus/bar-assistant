@@ -67,11 +67,11 @@ class NoteController extends Controller
     #[BAO\NotFoundResponse]
     public function store(NoteRequest $request): JsonResponse
     {
-        $resourceId = $request->post('resource_id');
-        $resourceType = $request->post('resource');
+        $resourceId = $request->input('resource_id');
+        $resourceType = $request->input('resource');
 
         $resourceModel = match ($resourceType) {
-            'cocktail' => Cocktail::findOrFail($resourceId),
+            'cocktail' => Cocktail::findOrFail((int) $resourceId),
             default => abort(404)
         };
 
@@ -79,7 +79,7 @@ class NoteController extends Controller
             abort(403);
         }
 
-        $note = $resourceModel->addNote($request->post('note'), $request->user()->id);
+        $note = $resourceModel->addNote($request->input('note'), $request->user()->id);
 
         return (new NoteResource($note))
             ->response()

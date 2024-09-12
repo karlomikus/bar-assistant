@@ -38,7 +38,9 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
 
         $browser->request('GET', $url);
 
-        $this->crawler = new Crawler($browser->getResponse()->getContent());
+        /** @var \Symfony\Component\BrowserKit\Response $response */
+        $response = $browser->getResponse();
+        $this->crawler = new Crawler($response->getContent());
         $this->ingredientParser = new Parser();
     }
 

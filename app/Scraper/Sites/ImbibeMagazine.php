@@ -66,7 +66,7 @@ class ImbibeMagazine extends DefaultScraper
         if ($result === null) {
             foreach($this->getLegacyRecipeIngredients() as $line) {
                 if (str_starts_with($line, 'Glass:')) {
-                    $result = str_replace('Glass:', '', $line);
+                    $result = (string) str_replace('Glass:', '', $line);
                 }
             }
         }
@@ -111,7 +111,7 @@ class ImbibeMagazine extends DefaultScraper
         if ($result === null) {
             foreach($this->getLegacyRecipeIngredients() as $line) {
                 if (str_starts_with($line, 'Garnish:')) {
-                    $result = str_replace('Garnish:', '', $line);
+                    $result = (string) str_replace('Garnish:', '', $line);
                 }
             }
         }

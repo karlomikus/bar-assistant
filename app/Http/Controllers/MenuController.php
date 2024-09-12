@@ -81,12 +81,12 @@ class MenuController extends Controller
         }
 
         $menu = Menu::firstOrCreate(['bar_id' => bar()->id]);
-        $menu->is_enabled = (bool) $request->post('is_enabled');
+        $menu->is_enabled = $request->boolean('is_enabled');
         if (!$menu->created_at) {
             $menu->created_at = now();
         }
         $menu->updated_at = now();
-        $menu->syncCocktails($request->post('cocktails', []));
+        $menu->syncCocktails($request->input('cocktails', []));
         $menu->save();
 
         return new MenuResource($menu);

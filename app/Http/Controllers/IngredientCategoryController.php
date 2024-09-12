@@ -71,8 +71,8 @@ class IngredientCategoryController extends Controller
         }
 
         $category = new IngredientCategory();
-        $category->name = $request->post('name');
-        $category->description = $request->post('description');
+        $category->name = $request->input('name');
+        $category->description = $request->input('description');
         $category->bar_id = bar()->id;
         $category->save();
 
@@ -103,8 +103,8 @@ class IngredientCategoryController extends Controller
             abort(403);
         }
 
-        $category->name = $request->post('name');
-        $category->description = $request->post('description');
+        $category->name = $request->input('name');
+        $category->description = $request->input('description');
         $category->updated_at = now();
         $category->save();
 

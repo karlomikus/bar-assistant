@@ -40,13 +40,11 @@ class BarImportRecipes extends Command
      */
     public function handle(): int
     {
-        /** @var \Illuminate\Support\Facades\Storage|\Illuminate\Filesystem\FilesystemAdapter */
         $tempUnzipDisk = Storage::build([
             'driver' => 'local',
             'root' => storage_path('bar-assistant/temp/' . Str::random(8)),
         ]);
 
-        /** @var \Illuminate\Support\Facades\Storage|\Illuminate\Filesystem\FilesystemAdapter */
         $barAssistantDisk = Storage::build([
             'driver' => 'local',
             'root' => storage_path('bar-assistant'),

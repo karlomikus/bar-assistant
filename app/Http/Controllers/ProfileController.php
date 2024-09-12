@@ -42,7 +42,7 @@ class ProfileController extends Controller
         $currentUser->email = $request->post('email');
 
         if ($request->has('password') && $request->post('password') !== null) {
-            $currentUser->password = Hash::make($request->post('password'));
+            $currentUser->password = Hash::make($request->input('password'));
 
             $currentUser->tokens()->delete();
         }
