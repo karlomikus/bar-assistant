@@ -10,6 +10,7 @@ use Laravel\Scout\EngineManager;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\App;
+use Kami\Cocktail\Services\VersionCheckService;
 
 class ServerController extends Controller
 {
@@ -17,7 +18,7 @@ class ServerController extends Controller
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapObjectWithData(BAO\Schemas\ServerVersion::class),
     ])]
-    public function version(): JsonResponse
+    public function version(VersionCheckService $versionCheckService): JsonResponse
     {
         $searchHost = null;
         $searchVersion = null;
@@ -29,9 +30,13 @@ class ServerController extends Controller
             $searchVersion = $meilisearch->version()['pkgVersion'];
         }
 
+        $githubReleaseVersion = $versionCheckService->getLatestVersion();
+
         return response()->json([
             'data' => [
                 'version' => config('bar-assistant.version'),
+                'latest_version' => $githubReleaseVersion,
+                'is_latest' => $versionCheckService->isLatest($githubReleaseVersion, config('bar-assistant.version')),
                 'type' => config('app.env'),
                 'search_host' => $searchHost,
                 'search_version' => $searchVersion,

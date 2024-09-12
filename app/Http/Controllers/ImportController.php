@@ -5,16 +5,11 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Throwable;
-use Kami\Cocktail\ZipUtils;
-use Illuminate\Http\Response;
-use Kami\Cocktail\Models\Bar;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Scraper\Manager;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\External\Model\Schema;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
@@ -23,7 +18,6 @@ use Kami\Cocktail\Http\Requests\ScrapeRequest;
 use Kami\Cocktail\Services\Image\ImageService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\External\Import\FromJsonSchema;
-use Kami\Cocktail\Http\Requests\ImportFileRequest;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 

@@ -1,11 +1,12 @@
 # v4.0.0
 This is a new major release. Here's a quick summary of the more interesting changes:
 
-- Docker image is now run as an unprivileged user by default
-    - This has various implications, so please checkout migration guide for more info
+- Docker image is now run as an unprivileged user by default. This has various implications, so please check the migration guide for more info
 - Improved API endpoint naming and structure
 - Added public Bar Assistant JSON schema specification for cocktail recipes
 - Data exporting is now available in multiple formats
+
+[Migration guide](https://docs.barassistant.app/setup/migrate-to-40/)
 
 ## Breaking changes
 - Minimal PHP version is now 8.3
@@ -77,9 +78,7 @@ This is a new major release. Here's a quick summary of the more interesting chan
 - Added `/import/scrape` endpoint
     - This endpoint is used to extract recipe data from a website
     - Result is a JSON schema that can be imported via `/import/cocktail` endpoint
-    - Images in response are now base64 encoded
-- Added `/import/file` endpoint
-    - This endpoint is used to import cocktails from a zip file containing files exported via `schema` type
+    - Images in response are now base64 encoded. This allows more flexibility in image handling for the clients
 - Added `used_as_substitute_for` and `can_be_substituted_with` to ingredient response
 
 ## Changes
