@@ -28,8 +28,13 @@ class ImageServiceTest extends TestCase
 
     public function testResizeImage(): void
     {
+        /** @var \Illuminate\Filesystem\FilesystemAdapter */
         $disk = Storage::fake('uploads');
-        $image = ImageResizeService::resizeImageTo(file_get_contents(base_path('tests/fixtures/cocktail.jpg')), 200);
+        if ($contents = file_get_contents(base_path('tests/fixtures/cocktail.jpg'))) {
+            $image = ImageResizeService::resizeImageTo($contents, 200);
+        } else {
+            $this->fail('Unable to read image');
+        }
 
         $this->assertSame(200, $image->height);
 

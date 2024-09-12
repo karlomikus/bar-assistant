@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 class GenericScraperTest extends TestCase
 {
     #[DataProvider('provideUrls')]
-    public function testScrape($url): void
+    public function testScrape(string $url): void
     {
         // We test simple data here, it's too much work to keep everything in sync with the website changes
         $scraper = Manager::scrape($url);
@@ -24,6 +24,9 @@ class GenericScraperTest extends TestCase
         $this->assertNotEmpty($ingredients);
     }
 
+    /**
+     * @return array<array<string>>
+     */
     public static function provideUrls(): array
     {
         return [

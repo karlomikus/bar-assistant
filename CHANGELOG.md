@@ -2,8 +2,9 @@
 This is a new major release. Here's a quick summary of the more interesting changes:
 
 - Docker image is now run as an unprivileged user by default
+    - This has various implications, so please checkout migration guide for more info
 - Improved API endpoint naming and structure
-- Added Bar Assistant JSON schema specification for cocktail recipes
+- Added public Bar Assistant JSON schema specification for cocktail recipes
 - Data exporting is now available in multiple formats
 
 ## Breaking changes

@@ -87,14 +87,22 @@ class ToDataPackTest extends TestCase
         $this->assertFileExists($unzippedFilesDisk->path('ingredients/test-ingredient/data.json'));
         $this->assertFileExists($unzippedFilesDisk->path('ingredients/test-ingredient/i-1-img.png'));
 
-        $cocktailExport = json_decode(file_get_contents($unzippedFilesDisk->path('cocktails/test-cocktail/data.json')), true);
+        $cocktailExport = [];
+        if ($cocktailFixture = file_get_contents($unzippedFilesDisk->path('cocktails/test-cocktail/data.json'))) {
+            $cocktailExport = json_decode($cocktailFixture, true);
+        }
+
+        $ingredientExport = [];
+        if ($ingredientFixture = file_get_contents($unzippedFilesDisk->path('ingredients/test-ingredient/data.json'))) {
+            $ingredientExport = json_decode($ingredientFixture, true);
+        }
+
         $this->assertSame('file:///c-1-img.jpg', $cocktailExport['images'][0]['uri']);
-        $ingredientExport = json_decode(file_get_contents($unzippedFilesDisk->path('ingredients/test-ingredient/data.json')), true);
         $this->assertSame('file:///i-1-img.png', $ingredientExport['images'][0]['uri']);
     }
 
     /**
-     * @return \Illuminate\Contracts\Filesystem\Factory&PHPUnit_Framework_MockObject_MockObject
+     * @return \Illuminate\Contracts\Filesystem\Factory&\PHPUnit\Framework\MockObject\MockObject
      */
     private function getFileMock()
     {

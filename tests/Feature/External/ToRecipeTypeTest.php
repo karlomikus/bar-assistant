@@ -75,7 +75,7 @@ class ToRecipeTypeTest extends TestCase
     }
 
     /**
-     * @return \Illuminate\Contracts\Filesystem\Factory&PHPUnit_Framework_MockObject_MockObject
+     * @return \Illuminate\Contracts\Filesystem\Factory&\PHPUnit\Framework\MockObject\MockObject
      */
     private function getFileMock()
     {

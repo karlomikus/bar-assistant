@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Rules;
 
+use Illuminate\Contracts\Translation\Translator;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Translation\PotentiallyTranslatedString;
 
 class ResourceBelongsToBarTest extends TestCase
 {
@@ -18,8 +20,11 @@ class ResourceBelongsToBarTest extends TestCase
         $membership = $this->setupBarMembership();
 
         $hasFailed = false;
-        $failed = function () use (&$hasFailed) {
+        $failed = function () use (&$hasFailed): PotentiallyTranslatedString {
             $hasFailed = true;
+            $translator = $this->getMockBuilder(Translator::class)->getMock();
+
+            return new PotentiallyTranslatedString('', $translator);
         };
 
         $ingredients = Ingredient::factory()->for($membership->bar)->count(3)->create();
@@ -35,8 +40,12 @@ class ResourceBelongsToBarTest extends TestCase
         $membership = $this->setupBarMembership();
 
         $hasFailed = false;
-        $failed = function () use (&$hasFailed) {
+        $failed = function () use (&$hasFailed): PotentiallyTranslatedString {
             $hasFailed = true;
+
+            $translator = $this->getMockBuilder(Translator::class)->getMock();
+
+            return new PotentiallyTranslatedString('', $translator);
         };
 
         $ingredients = Ingredient::factory()->for($membership->bar)->count(3)->create();
@@ -52,8 +61,12 @@ class ResourceBelongsToBarTest extends TestCase
         $membership = $this->setupBarMembership();
 
         $hasFailed = false;
-        $failed = function () use (&$hasFailed) {
+        $failed = function () use (&$hasFailed): PotentiallyTranslatedString {
             $hasFailed = true;
+
+            $translator = $this->getMockBuilder(Translator::class)->getMock();
+
+            return new PotentiallyTranslatedString('', $translator);
         };
 
         $ingredients = Ingredient::factory()->for($membership->bar)->count(3)->create();

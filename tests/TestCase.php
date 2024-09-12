@@ -20,8 +20,10 @@ abstract class TestCase extends BaseTestCase
 
     public function setupBar(): Bar
     {
-        $bar = Bar::factory()->create(['id' => 1, 'created_user_id' => auth()->user()->id]);
-        DB::table('bar_memberships')->insert(['id' => 1, 'bar_id' => $bar->id, 'user_id' => auth()->user()->id, 'user_role_id' => UserRoleEnum::Admin->value]);
+        /** @var \Kami\Cocktail\Models\User */
+        $user = auth('sanctum')->user();
+        $bar = Bar::factory()->create(['id' => 1, 'created_user_id' => $user->id]);
+        DB::table('bar_memberships')->insert(['id' => 1, 'bar_id' => $bar->id, 'user_id' => $user->id, 'user_role_id' => UserRoleEnum::Admin->value]);
 
         return $bar;
     }
@@ -37,6 +39,9 @@ abstract class TestCase extends BaseTestCase
         return $membership;
     }
 
+    /**
+     * @param array<string> $abilities
+     */
     public function actingAs(UserContract $user, $guard = null, array $abilities = ['*']): self
     {
         Sanctum::actingAs(
