@@ -89,6 +89,7 @@ This is a new major release. Here's a quick summary of the more interesting chan
     - This now requires `ffi` PHP extension to be installed, and some .ini tweaks
 - Meilisearch client API keys are now generated via artisan command
 - All dates in responses are now in ISO 8601 format
+- You can now update slug of existing bar
 
 # v3.19.0
 ## New

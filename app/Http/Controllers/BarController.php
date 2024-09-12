@@ -168,6 +168,10 @@ class BarController extends Controller
         $settings['default_units'] = Units::tryFrom($request->input('default_units') ?? '')?->value;
         $bar->settings = $settings;
 
+        if ($request->filled('slug')) {
+            $bar->slug = Str::slug($request->input('slug'));
+        }
+
         $bar->status = $request->input('status') ?? BarStatusEnum::Active->value;
         $bar->name = $request->input('name');
         $bar->description = $request->input('description');
