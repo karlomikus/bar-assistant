@@ -8,10 +8,13 @@ use Throwable;
 use Kami\Cocktail\Models\Bar;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Models\Export;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\External\ExportTypeEnum;
 use Kami\Cocktail\External\Export\ToDataPack;
 use Kami\Cocktail\External\Export\ToRecipeType;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
+
+use function Laravel\Prompts\search;
 
 class BarExportRecipes extends Command
 {
@@ -20,14 +23,14 @@ class BarExportRecipes extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:export-recipes {barId} {--t|type=datapack : Export type} {--u|units= : Force unit conversion when possible (none, ml, oz, cl)}';
+    protected $signature = 'bar:export-recipes {barId?} {--t|type=datapack : Export type} {--u|units= : Force unit conversion when possible (none, ml, oz, cl)}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Export all recipe data (ingredients, cocktails, base data) from a single bar';
+    protected $description = 'Export data from a single bar. Available export types: datapack, schema, markdown, json-ld, xml, yaml';
 
     public function __construct(private readonly ToDataPack $datapackExporter, private readonly ToRecipeType $recipeExporter)
     {
@@ -40,6 +43,18 @@ class BarExportRecipes extends Command
     public function handle(): int
     {
         $barId = (int) $this->argument('barId');
+
+        if ($barId === 0) {
+            $barId = search(
+                'Search bars by name',
+                fn (string $value) => strlen($value) > 0
+                    ? DB::table('bars')->orderBy('name')->where('name', 'like', '%' . $value . '%')->pluck('name', 'id')->toArray()
+                    : [],
+                scroll: 10,
+                required: true
+            );
+        }
+
         $type = ExportTypeEnum::tryFrom($this->option('type') ?? 'datapack');
         $units = ForceUnitConvertEnum::tryFrom($this->option('units') ?? 'none');
 

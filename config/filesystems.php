@@ -44,6 +44,12 @@ return [
             'throw' => false,
         ],
 
+        'bar-assistant' => [
+            'driver' => 'local',
+            'root' => storage_path('bar-assistant'),
+            'throw' => false,
+        ],
+
         'uploads' => [
             'driver' => 'local',
             'root' => storage_path('bar-assistant/uploads'),

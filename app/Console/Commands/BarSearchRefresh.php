@@ -21,7 +21,7 @@ class BarSearchRefresh extends Command
      *
      * @var string
      */
-    protected $description = 'Sync search engine index with the latest Bar Assistant data';
+    protected $description = 'Sync search engine indices with the latest Bar Assistant data';
 
     /**
      * Execute the console command.
