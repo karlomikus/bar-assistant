@@ -2371,42 +2371,6 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /import/file:
-    post:
-      tags:
-        - Import
-      summary: 'Import from zip file'
-      operationId: 42c4c4c1eae2d17b7e6681af1f5a6c21
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              required:
-                - file
-              properties:
-                file:
-                  description: 'The zip file containing the data. Max 1GB.'
-                  type: string
-                  format: binary
-                bar_id:
-                  type: integer
-                  example: 1
-                duplicate_actions:
-                  $ref: '#/components/schemas/DuplicateActionsEnum'
-                  description: 'How to handle duplicates. Cocktails are matched by lowercase name.'
-              type: object
-      responses:
-        '204':
-          description: 'Successful response'
-        '403':
-          description: 'You are not authorized for this action.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
   /ingredient-categories:
     get:
       tags:
@@ -4934,6 +4898,14 @@ components:
         - md
         - json-ld
         - xml
+        - yaml
+    ForceUnitConvertEnum:
+      type: string
+      enum:
+        - none
+        - ml
+        - oz
+        - cl
     DuplicateActionsEnum:
       type: string
       enum:
@@ -6019,6 +5991,9 @@ components:
           example: 1QcSHQRnh493V4dIh4eXh1h4kJUI
       type: object
     ImageRequest:
+      required:
+        - image
+        - sort
       properties:
         id:
           description: 'Existing image id, used to update an existing image'
@@ -6026,15 +6001,9 @@ components:
             - integer
             - 'null'
         image:
-          description: 'Image file. Required if `image_url` is not set.'
+          description: 'Image file. Base64 encoded images also supported. Max 50MB'
           type: string
           format: binary
-        image_url:
-          description: 'Image URL. Required if `image` is not set.'
-          type:
-            - string
-            - 'null'
-          example: 'http://example.com/cocktail_image.jpg'
         sort:
           type: integer
           example: 1
