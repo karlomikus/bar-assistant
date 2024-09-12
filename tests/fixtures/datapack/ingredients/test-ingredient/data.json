@@ -1,0 +1,22 @@
+{
+    "_id": "test-ingredient",
+    "_parent_id": null,
+    "name": "Test ingredient",
+    "strength": 37.75,
+    "description": "Description of ingredient",
+    "origin": "French Guiana",
+    "color": "#b474de",
+    "category": "category 1",
+    "created_at": "1976-01-23T22:25:11+00:00",
+    "updated_at": "1998-01-08T13:41:44+00:00",
+    "images": [
+        {
+            "uri": "file:///i-1-img.png",
+            "sort": 1,
+            "placeholder_hash": null,
+            "copyright": "Image copyright"
+        }
+    ],
+    "ingredient_parts": [],
+    "prices": []
+}

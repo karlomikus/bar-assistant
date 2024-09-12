@@ -1,0 +1,10 @@
+[
+    {
+        "name": "category 1",
+        "description": "category description"
+    },
+    {
+        "name": "category 2",
+        "description": null
+    }
+]

@@ -1,0 +1,12 @@
+[
+    {
+        "name": "price 1",
+        "currency": "NAM",
+        "description": "Price description"
+    },
+    {
+        "name": "price 2",
+        "currency": "TKL",
+        "description": null
+    }
+]

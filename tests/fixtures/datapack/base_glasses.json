@@ -1,0 +1,10 @@
+[
+    {
+        "name": "glass 1",
+        "description": "glass 1 description"
+    },
+    {
+        "name": "glass 2",
+        "description": null
+    }
+]
