@@ -29,6 +29,7 @@ class IngredientRequest
     /** @var int[] */
     #[OAT\Property(property: 'complex_ingredient_part_ids', description: 'Existing ingredient ids')]
     public array $complexIngredientPartIds = [];
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
         new OAT\Property(type: 'integer', property: 'price_category_id', example: 1),
         new OAT\Property(type: 'integer', property: 'price', example: 2500),

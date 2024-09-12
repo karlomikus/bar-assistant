@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\BarStatusEnum;
+use Kami\Cocktail\External\BarOptionsEnum;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
 use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
@@ -30,6 +31,9 @@ class FromDataPack
         $this->uploadsDisk = Storage::disk('uploads');
     }
 
+    /**
+     * @param array<BarOptionsEnum> $flags
+     */
     public function process(Filesystem $dataDisk, Bar $bar, User $user, array $flags = []): bool
     {
         Log::debug(sprintf('Starting datapack import for "%s"', $bar->name));
@@ -51,11 +55,11 @@ class FromDataPack
             }
         }
 
-        if (in_array('ingredients', $flags)) {
+        if (in_array(BarOptionsEnum::Ingredients, $flags)) {
             $this->importIngredients($dataDisk, $bar, $user);
         }
 
-        if (in_array('ingredients', $flags) && in_array('cocktails', $flags)) {
+        if (in_array(BarOptionsEnum::Ingredients, $flags) && in_array(BarOptionsEnum::Cocktails, $flags)) {
             $this->importBaseCocktails($dataDisk, $bar, $user);
         }
 

@@ -11,6 +11,7 @@ class ValidationError
 {
     #[OAT\Property(example: 'The cocktail name must be a string. (and 2 more errors)')]
     public string $message;
+    /** @var array<mixed> */
     #[OAT\Property(type: 'object', additionalProperties: new OAT\AdditionalProperties(type: 'array', items: new OAT\Items(type: 'string')))]
     public array $errors;
 }

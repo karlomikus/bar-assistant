@@ -12,6 +12,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Illuminate\Support\Facades\Storage;
+use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\External\Import\FromDataPack;
 
 class BarImportRecipes extends Command
@@ -92,7 +93,7 @@ class BarImportRecipes extends Command
 
         $this->comment('Starting recipes import...');
         Cache::flush();
-        $this->importer->process($tempUnzipDisk, $bar, $user, ['cocktails', 'ingredients']);
+        $this->importer->process($tempUnzipDisk, $bar, $user, [BarOptionsEnum::Cocktails, BarOptionsEnum::Ingredients]);
 
         $tempUnzipDisk->deleteDirectory('/');
 

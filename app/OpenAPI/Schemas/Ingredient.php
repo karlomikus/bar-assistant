@@ -53,6 +53,7 @@ class Ingredient
     #[OAT\Property()]
     public array $varieties = [];
 
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
         new OAT\Property(type: 'integer', property: 'id', example: 1),
         new OAT\Property(type: 'string', property: 'slug', example: 'old-fashioned-1'),
@@ -66,6 +67,7 @@ class Ingredient
     #[OAT\Property(property: 'updated_user')]
     public ?UserBasic $updatedUser = null;
 
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
         new OAT\Property(type: 'boolean', property: 'can_edit', example: true),
         new OAT\Property(type: 'boolean', property: 'can_delete', example: true),

@@ -11,6 +11,7 @@ class MenuRequest
 {
     #[OAT\Property(property: 'is_enabled')]
     public bool $isEnabled = false;
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
         new OAT\Property(type: 'integer', property: 'cocktail_id', example: 1),
         new OAT\Property(type: 'integer', property: 'price', example: 2252, format: 'minor'),

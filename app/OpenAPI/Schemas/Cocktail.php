@@ -53,6 +53,7 @@ class Cocktail
     #[OAT\Property()]
     public array $images = [];
 
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(
         type: 'object',
         properties: [
@@ -62,6 +63,7 @@ class Cocktail
     ))]
     public array $tags = [];
 
+    /** @var array<mixed> */
     #[OAT\Property(type: 'object', required: ['user', 'average', 'total_votes'], properties: [
         new OAT\Property(type: 'integer', property: 'user', example: 1, nullable: true, description: 'Current user\'s rating'),
         new OAT\Property(type: 'integer', property: 'average', example: 4, description: 'Average rating'),
@@ -110,6 +112,7 @@ class Cocktail
     #[OAT\Property(property: 'in_shelf')]
     public bool $inShelf = false;
 
+    /** @var array<mixed> */
     #[OAT\Property(type: 'object', required: ['can_edit', 'can_delete', 'can_rate', 'can_add_note'], properties: [
         new OAT\Property(type: 'boolean', property: 'can_edit', example: true),
         new OAT\Property(type: 'boolean', property: 'can_delete', example: true),
@@ -118,6 +121,7 @@ class Cocktail
     ])]
     public array $access = [];
 
+    /** @var array<mixed> */
     #[OAT\Property(type: 'object', required: ['prev', 'next'], properties: [
         new OAT\Property(type: 'string', nullable: true, property: 'prev', example: 'old-fashioned-1'),
         new OAT\Property(type: 'string', nullable: true, property: 'next', example: 'tom-collins-1'),

@@ -23,12 +23,14 @@ class BarStats
     public int $total_bar_members;
     #[OAT\Property(example: 1)]
     public int $total_collections;
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', required: ['id', 'name', 'cocktails_count'], properties: [
         new OAT\Property(property: 'id', type: 'integer', example: 31),
         new OAT\Property(property: 'name', type: 'string', example: 'Tag name'),
         new OAT\Property(property: 'cocktails_count', type: 'integer', example: 12),
     ]))]
     public array $favorite_tags;
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', required: ['id', 'slug', 'name', 'cocktails_count'], properties: [
         new OAT\Property(property: 'id', type: 'integer', example: 1),
         new OAT\Property(property: 'slug', type: 'string', example: 'gin'),
@@ -36,6 +38,7 @@ class BarStats
         new OAT\Property(property: 'cocktails_count', type: 'integer', example: 1),
     ]))]
     public array $your_top_ingredients;
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', required: ['id', 'slug', 'name', 'cocktails_count'], properties: [
         new OAT\Property(property: 'id', type: 'integer', example: 1),
         new OAT\Property(property: 'slug', type: 'string', example: 'gin'),
@@ -43,6 +46,7 @@ class BarStats
         new OAT\Property(property: 'cocktails_count', type: 'integer', example: 1),
     ]))]
     public array $most_popular_ingredients;
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', required: ['id', 'slug', 'name', 'avg_rating', 'votes'], properties: [
         new OAT\Property(property: 'id', type: 'integer', example: 1),
         new OAT\Property(property: 'slug', type: 'string', example: 'old-fashioned'),

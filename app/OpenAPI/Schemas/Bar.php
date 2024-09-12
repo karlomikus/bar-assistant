@@ -24,6 +24,7 @@ class Bar
     public ?string $inviteCode;
     #[OAT\Property(example: 'active')]
     public BarStatusEnum $status;
+    /** @var array<mixed> */
     #[OAT\Property(items: new OAT\Items(type: 'object', additionalProperties: true))]
     public array $settings = [];
     #[OAT\Property(property: 'search_host')]
@@ -38,6 +39,7 @@ class Bar
     public UserBasic $createdUser;
     #[OAT\Property(property: 'updated_user')]
     public ?UserBasic $updatedUser = null;
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
         new OAT\Property(type: 'integer', property: 'role_id', example: 1),
         new OAT\Property(type: 'boolean', property: 'can_edit', example: true),

@@ -26,6 +26,7 @@ class CocktailIngredient
     public array $substitutes = [];
     #[OAT\Property(example: 'Additional notes')]
     public ?string $note = null;
+    /** @var array<mixed> */
     #[OAT\Property(
         type: 'object',
         required: ['ml', 'oz', 'cl'],

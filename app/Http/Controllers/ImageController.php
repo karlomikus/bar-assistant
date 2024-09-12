@@ -75,33 +75,7 @@ class ImageController extends Controller
     {
         $images = [];
         foreach ($request->images ?? [] as $formImage) {
-            $imageSource = null;
-
-            $rules = ['image' => 'image|max:51200'];
-
-            if (isset($formImage['image']) && $formImage['image'] instanceof UploadedFile) {
-                Validator::make($formImage, $rules)->validate();
-
-                if ($sourceData = $formImage['image']->get()) {
-                    $imageSource = $sourceData;
-                }
-            }
-
-            if (isset($formImage['image']) && is_string($formImage['image'])) {
-                $tempFileObject = null;
-                try {
-                    if ($imageSource = file_get_contents($formImage['image'])) {
-                        $tempFileName = tempnam(sys_get_temp_dir(), 'bass');
-                        file_put_contents($tempFileName, $imageSource);
-                        $tempFileObject = new File($tempFileName);
-                    } else {
-                        $imageSource = null;
-                    }
-                } catch (Throwable) {
-                }
-
-                Validator::make(['image' => $tempFileObject], $rules)->validate();
-            }
+            $imageSource = $this->getValidImageSource($formImage);
 
             try {
                 $image = new ImageDTO(
@@ -141,17 +115,14 @@ class ImageController extends Controller
             abort(403);
         }
 
-        $imageSource = null;
-        // if ($request->hasFile('image')) {
-        //     $imageSource = $request->file('image')->get();
-        // } elseif ($request->has('image_url')) {
-        //     $imageSource = file_get_contents($request->input('image_url'));
-        // }
+        $imageFile = $request->hasFile('image') ? $request->file('image') : $request->input('image');
+
+        $imageSource = $this->getValidImageSource(['image' => $imageFile]);
 
         $imageDTO = new ImageDTO(
             $imageSource,
             $request->input('copyright') ?? null,
-            $request->has('sort') ? (int) $request->input('sort') : null,
+            $request->filled('sort') ? $request->integer('sort') : null,
         );
 
         $image = $imageservice->updateImage($id, $imageDTO, $request->user()->id);
@@ -210,5 +181,41 @@ class ImageController extends Controller
             'Content-Length' => strlen($responseContent),
             'Etag' => $etag
         ]);
+    }
+
+    /**
+     * @param array{image?: string|UploadedFile} $formImage
+     */
+    private function getValidImageSource(array $formImage): ?string
+    {
+        $imageSource = null;
+
+        $rules = ['image' => 'image|max:51200'];
+
+        if (isset($formImage['image']) && $formImage['image'] instanceof UploadedFile) {
+            Validator::make($formImage, $rules)->validate();
+
+            if ($sourceData = $formImage['image']->get()) {
+                $imageSource = $sourceData;
+            }
+        }
+
+        if (isset($formImage['image']) && is_string($formImage['image'])) {
+            $tempFileObject = null;
+            try {
+                if ($imageSource = file_get_contents($formImage['image'])) {
+                    $tempFileName = tempnam(sys_get_temp_dir(), 'bass');
+                    file_put_contents($tempFileName, $imageSource);
+                    $tempFileObject = new File($tempFileName);
+                } else {
+                    $imageSource = null;
+                }
+            } catch (Throwable) {
+            }
+
+            Validator::make(['image' => $tempFileObject], $rules)->validate();
+        }
+
+        return $imageSource;
     }
 }

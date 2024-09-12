@@ -26,6 +26,7 @@ class CocktailRequest
     /** @var string[] */
     #[OAT\Property()]
     public array $tags = [];
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(
         type: 'object',
         required: ['ingredient_id', 'units', 'amount'],

@@ -17,6 +17,7 @@ class Menu
     public string $createdAt;
     #[OAT\Property(property: 'updated_at', format: 'date-time')]
     public ?string $updatedAt = null;
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
         new OAT\Property(type: 'string', property: 'name', example: 'Category name'),
         new OAT\Property(type: 'array', property: 'cocktails', items: new OAT\Items(type: 'object', properties: [

@@ -21,6 +21,7 @@ use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Http\Requests\BarRequest;
 use Kami\Cocktail\Http\Resources\BarResource;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\Http\Resources\BarMembershipResource;
 
 class BarController extends Controller
@@ -91,6 +92,7 @@ class BarController extends Controller
 
         $inviteEnabled = (bool) $request->post('enable_invites', '0');
         $barOptions = $request->input('options', []);
+        $barOptions = array_map(fn ($flag) => BarOptionsEnum::tryFrom($flag), $barOptions);
 
         $bar = new Bar();
         $bar->name = $request->input('name');

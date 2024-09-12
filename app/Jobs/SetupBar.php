@@ -10,6 +10,7 @@ use Kami\Cocktail\Models\User;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
+use Kami\Cocktail\External\BarOptionsEnum;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Kami\Cocktail\External\Import\FromDataPack;
@@ -24,6 +25,8 @@ class SetupBar implements ShouldQueue
 
     /**
      * Create a new job instance.
+     * 
+     * @param array<BarOptionsEnum> $barOptions
      */
     public function __construct(
         #[WithoutRelations]

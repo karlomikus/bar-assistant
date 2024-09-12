@@ -4890,6 +4890,11 @@ paths:
                 type: object
 components:
   schemas:
+    BarOptionsEnum:
+      type: string
+      enum:
+        - ingredients
+        - cocktails
     ExportTypeEnum:
       type: string
       enum:
@@ -5115,7 +5120,10 @@ components:
           description: 'List of data that the bar will start with. Possible values: `ingredients`, `cocktails`. Cocktails cannot be imported without ingredients.'
           type: array
           items:
-            type: string
+            type: enum
+            enum:
+              - ingredients
+              - cocktails
       type: object
     BarStats:
       required:

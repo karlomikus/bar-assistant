@@ -9,12 +9,14 @@ use OpenApi\Attributes as OAT;
 #[OAT\Schema()]
 class MenuExplore
 {
+    /** @var array<mixed> */
     #[OAT\Property(type: 'object', properties: [
         new OAT\Property(type: 'string', property: 'name', example: 'Bar name'),
         new OAT\Property(type: 'string', property: 'subtitle', example: 'Bar subtitle'),
         new OAT\Property(type: 'string', property: 'description', example: 'Bar description'),
     ])]
     public array $bar;
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
         new OAT\Property(type: 'string', property: 'name', example: 'Category name'),
         new OAT\Property(type: 'array', property: 'cocktails', items: new OAT\Items(type: 'object', properties: [
