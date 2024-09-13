@@ -6003,15 +6003,17 @@ components:
         - image
         - sort
       properties:
+        image:
+          description: 'Image file. Base64 encoded images also supported. Max 50MB'
+          type:
+            - string
+            - 'null'
+          format: binary
         id:
           description: 'Existing image id, used to update an existing image'
           type:
             - integer
             - 'null'
-        image:
-          description: 'Image file. Base64 encoded images also supported. Max 50MB'
-          type: string
-          format: binary
         sort:
           type: integer
           example: 1
