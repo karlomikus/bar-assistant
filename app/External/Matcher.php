@@ -6,7 +6,7 @@ namespace Kami\Cocktail\External;
 
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Services\IngredientService;
-use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;
+use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest as IngredientDTO;
 
 class Matcher
 {

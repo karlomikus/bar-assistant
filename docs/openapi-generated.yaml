@@ -6221,6 +6221,27 @@ components:
             - 'null'
           format: date-time
       type: object
+    IngredientPriceRequest:
+      required:
+        - price_category_id
+        - price
+        - amount
+        - units
+      properties:
+        price_category_id:
+          type: integer
+        price:
+          type: integer
+        amount:
+          type: number
+          format: float
+        units:
+          type: string
+        description:
+          type:
+            - string
+            - 'null'
+      type: object
     IngredientRecommend:
       description: 'Ingredient recommendation with number of potential cocktails'
       type: object
@@ -6246,9 +6267,7 @@ components:
             - 'null'
           example: 1
         strength:
-          type:
-            - number
-            - 'null'
+          type: number
           format: float
           example: 40
         description:
@@ -6267,7 +6286,9 @@ components:
             - 'null'
           example: '#ffffff'
         parent_ingredient_id:
-          type: integer
+          type:
+            - integer
+            - 'null'
           example: 1
         images:
           description: 'Existing image ids'
@@ -6282,25 +6303,7 @@ components:
         prices:
           type: array
           items:
-            properties:
-              price_category_id:
-                type: integer
-                example: 1
-              price:
-                type: integer
-                example: 2500
-              amount:
-                type: number
-                example: 750
-              units:
-                type: string
-                example: ml
-              description:
-                type:
-                  - string
-                  - 'null'
-                example: 'Updated price'
-            type: object
+            $ref: '#/components/schemas/IngredientPriceRequest'
       type: object
     LoginRequest:
       required:

@@ -24,7 +24,7 @@ use Kami\Cocktail\Http\Filters\IngredientQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\CocktailBasicResource;
 use Kami\Cocktail\Http\Resources\IngredientBasicResource;
-use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;
+use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest as IngredientDTO;
 
 class IngredientController extends Controller
 {
