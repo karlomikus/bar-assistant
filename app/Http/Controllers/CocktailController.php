@@ -23,10 +23,10 @@ use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
-use Kami\Cocktail\DTO\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
-use Kami\Cocktail\DTO\Cocktail\Ingredient as IngredientDTO;
-use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
+use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest as CocktailDTO;
+use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientRequest as IngredientDTO;
+use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientSubstituteRequest as SubstituteDTO;
 
 class CocktailController extends Controller
 {
@@ -131,7 +131,7 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $cocktailDTO = CocktailDTO::fromIlluminateRequest($request, bar()->id);
+        $cocktailDTO = CocktailDTO::fromIlluminateRequest($request);
 
         try {
             $cocktail = $cocktailService->createCocktail($cocktailDTO);
@@ -173,7 +173,7 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $cocktailDTO = CocktailDTO::fromIlluminateRequest($request, $cocktail->bar_id);
+        $cocktailDTO = CocktailDTO::fromIlluminateRequest($request);
 
         try {
             $cocktail = $cocktailService->updateCocktail($id, $cocktailDTO);

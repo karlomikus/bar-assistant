@@ -5671,6 +5671,44 @@ components:
           type: boolean
           example: true
       type: object
+    CocktailIngredientRequest:
+      required:
+        - ingredient_id
+        - amount
+        - units
+      properties:
+        ingredient_id:
+          type: integer
+        name:
+          type:
+            - string
+            - 'null'
+        amount:
+          type: number
+          format: float
+          example: 30
+        units:
+          type: string
+          example: ml
+        sort:
+          type: integer
+        optional:
+          type: boolean
+        substitutes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CocktailIngredientSubstituteRequest'
+        amount_max:
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 60
+        note:
+          type:
+            - string
+            - 'null'
+      type: object
     CocktailIngredientSubstitute:
       required:
         - ingredient
@@ -5701,6 +5739,30 @@ components:
         in_shelf:
           type: boolean
           example: true
+      type: object
+    CocktailIngredientSubstituteRequest:
+      required:
+        - ingredient_id
+      properties:
+        ingredient_id:
+          type: integer
+        amount:
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 30
+        amount_max:
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 60
+        units:
+          type:
+            - string
+            - 'null'
+          example: ml
       type: object
     CocktailMethod:
       required:
@@ -5777,41 +5839,7 @@ components:
         ingredients:
           type: array
           items:
-            required:
-              - ingredient_id
-              - units
-              - amount
-            properties:
-              ingredient_id:
-                type: integer
-                example: 1
-              amount:
-                type: number
-                format: float
-                example: 30
-              amount_max:
-                type:
-                  - number
-                  - 'null'
-                format: float
-                example: 60
-              units:
-                type: string
-                example: ml
-              optional:
-                type: boolean
-                example: false
-              note:
-                type:
-                  - string
-                  - 'null'
-                example: 'Ingredient note'
-              substitutes:
-                type: array
-                items:
-                  properties: { id: { type: integer, example: 1 }, amount: { type: [number, 'null'], format: float, example: 30 }, amount_max: { type: [number, 'null'], format: float, example: 60 }, units: { type: [string, 'null'], example: ml } }
-                  type: object
-            type: object
+            $ref: '#/components/schemas/CocktailIngredientRequest'
         images:
           description: 'List of existing image ids'
           type: array

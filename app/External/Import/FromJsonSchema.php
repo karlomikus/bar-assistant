@@ -13,10 +13,10 @@ use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\OpenAPI\Schemas\ImageRequest;
-use Kami\Cocktail\DTO\Cocktail\Cocktail as CocktailDTO;
-use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
-use Kami\Cocktail\DTO\Cocktail\Ingredient as CocktailIngredientDTO;
+use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest as CocktailDTO;
 use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest as IngredientDTO;
+use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientRequest as CocktailIngredientDTO;
+use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientSubstituteRequest as SubstituteDTO;
 
 class FromJsonSchema
 {

@@ -275,20 +275,20 @@ class CocktailControllerTest extends TestCase
             'utensils' => [2, 5, 3],
             'ingredients' => [
                 [
-                    'ingredient' => ['id' => $gin->id],
+                    'ingredient_id' => $gin->id,
                     'amount' => 30,
                     'units' => 'ml',
                     'optional' => false,
                     'sort' => 1,
                 ],
                 [
-                    'ingredient' => ['id' => $ing2->id],
+                    'ingredient_id' => $ing2->id,
                     'amount' => 45,
                     'units' => 'ml',
                     'optional' => false,
                     'sort' => 2,
                     'substitutes' => [
-                        ['ingredient' => ['id' => $ing3->id]]
+                        ['ingredient_id' => $ing3->id]
                     ]
                 ]
             ]
@@ -357,7 +357,7 @@ class CocktailControllerTest extends TestCase
             'utensils' => [2, 1],
             'ingredients' => [
                 [
-                    'ingredient' => ['id' => $gin->id],
+                    'ingredient_id' => $gin->id,
                     'amount' => 30,
                     'units' => 'ml',
                     'optional' => false,

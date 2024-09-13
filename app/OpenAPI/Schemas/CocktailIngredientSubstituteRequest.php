@@ -2,14 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\DTO\Cocktail;
+namespace Kami\Cocktail\OpenAPI\Schemas;
 
-readonly class Substitute
+use OpenApi\Attributes as OAT;
+
+#[OAT\Schema(required: ['ingredient_id'])]
+readonly class CocktailIngredientSubstituteRequest
 {
     public function __construct(
+        #[OAT\Property(property: 'ingredient_id')]
         public int $ingredientId,
+        #[OAT\Property(example: 30)]
         public ?float $amount = null,
+        #[OAT\Property(property: 'amount_max', example: 60)]
         public ?float $amountMax = null,
+        #[OAT\Property(example: 'ml')]
         public ?string $units = null,
     ) {
     }
@@ -20,7 +27,7 @@ readonly class Substitute
     public static function fromArray(array $source): self
     {
         return new self(
-            $source['ingredient']['id'],
+            $source['ingredient_id'],
             ($source['amount'] ?? null) !== null ? (float) $source['amount'] : null,
             ($source['amount_max'] ?? null) !== null ? (float) $source['amount_max'] : null,
             $source['units'] ?? null,
