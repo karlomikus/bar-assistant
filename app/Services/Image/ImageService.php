@@ -10,7 +10,7 @@ use Psr\Log\LoggerInterface;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
-use Kami\Cocktail\DTO\Image\Image as ImageDTO;
+use Kami\Cocktail\OpenAPI\Schemas\ImageRequest;
 use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
 
 final readonly class ImageService
@@ -24,24 +24,20 @@ final readonly class ImageService
     /**
      * Uploads and saves an image with filepath
      *
-     * @param array<ImageDTO> $requestImages
+     * @param array<ImageRequest> $requestImages
      * @param int $userId
-     * @return array<\Kami\Cocktail\Models\Image>
+     * @return array<Image>
      */
     public function uploadAndSaveImages(array $requestImages, int $userId): array
     {
         $images = [];
         foreach ($requestImages as $dtoImage) {
-            if (!($dtoImage instanceof ImageDTO)) {
-                continue;
-            }
-
             if ($dtoImage->id) {
                 $image = Image::findOrFail($dtoImage->id);
 
-                if ($dtoImage->file) {
+                if ($dtoImage->image) {
                     try {
-                        [$filepath, $fileExtension] = $this->processImageFile($dtoImage->file);
+                        [$filepath, $fileExtension] = $this->processImageFile($dtoImage->image);
                         $thumbHash = ImageHashingService::generatePlaceholderHashFromFilepath($this->filesystemManager->disk('uploads')->path($filepath));
 
                         $image->file_path = $filepath;
@@ -57,17 +53,17 @@ final readonly class ImageService
                 $image->updated_at = now();
                 $image->save();
             } else {
-                if (!$dtoImage->file) {
+                if (!$dtoImage->image) {
                     continue;
                 }
 
                 try {
-                    [$filepath, $fileExtension] = $this->processImageFile($dtoImage->file);
+                    [$filepath, $fileExtension] = $this->processImageFile($dtoImage->image);
                     $thumbHash = ImageHashingService::generatePlaceholderHashFromFilepath($this->filesystemManager->disk('uploads')->path($filepath));
                 } catch (Throwable) {
                     continue;
                 }
-    
+
                 $image = new Image();
                 $image->copyright = $dtoImage->copyright;
                 $image->file_path = $filepath;
@@ -84,21 +80,14 @@ final readonly class ImageService
         return $images;
     }
 
-    /**
-     * Update image by id
-     *
-     * @param int $imageId
-     * @param ImageDTO $imageDTO Image object
-     * @return \Kami\Cocktail\Models\Image Database image model
-     */
-    public function updateImage(int $imageId, ImageDTO $imageDTO, int $userId): Image
+    public function updateImage(int $imageId, ImageRequest $imageDTO, int $userId): Image
     {
         $image = Image::findOrFail($imageId);
 
-        if ($imageDTO->file) {
+        if ($imageDTO->image) {
             $oldFilePath = $image->file_path;
             try {
-                [$filepath, $fileExtension] = $this->processImageFile($imageDTO->file);
+                [$filepath, $fileExtension] = $this->processImageFile($imageDTO->image);
                 $thumbHash = ImageHashingService::generatePlaceholderHashFromFilepath($this->filesystemManager->disk('uploads')->path($filepath));
 
                 $image->file_path = $filepath;

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Rules;
 
-use Illuminate\Contracts\Translation\Translator;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
+use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Translation\PotentiallyTranslatedString;
 

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Bar;
 use OpenApi\Attributes as OAT;
+use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\UserIngredient;

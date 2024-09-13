@@ -7,8 +7,8 @@ namespace Kami\Cocktail\Models;
 use Illuminate\Database\Eloquent\Model;
 use PrinsFrank\Standards\Currency\CurrencyAlpha3;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PriceCategory extends Model
 {

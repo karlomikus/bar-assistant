@@ -14,10 +14,9 @@ use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Kami\Cocktail\Http\Requests\ImageRequest;
-use Kami\Cocktail\DTO\Image\Image as ImageDTO;
 use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\Http\Resources\ImageResource;
+use Kami\Cocktail\OpenAPI\Schemas\ImageRequest;
 use Symfony\Component\HttpFoundation\File\File;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\ImageUpdateRequest;
@@ -71,18 +70,18 @@ class ImageController extends Controller
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Image::class),
     ])]
-    public function store(ImageService $imageservice, ImageRequest $request): JsonResource
+    public function store(ImageService $imageservice, Request $request): JsonResource
     {
         $images = [];
         foreach ($request->images ?? [] as $formImage) {
             $imageSource = $this->getValidImageSource($formImage);
 
             try {
-                $image = new ImageDTO(
+                $image = new ImageRequest(
                     $imageSource,
-                    $formImage['copyright'] ?? null,
-                    (int) ($formImage['sort'] ?? 0),
                     isset($formImage['id']) ? (int) $formImage['id'] : null,
+                    (int) ($formImage['sort'] ?? 0),
+                    $formImage['copyright'] ?? null,
                 );
                 $images[] = $image;
             } catch (Throwable $e) {
@@ -119,10 +118,10 @@ class ImageController extends Controller
 
         $imageSource = $this->getValidImageSource(['image' => $imageFile]);
 
-        $imageDTO = new ImageDTO(
-            $imageSource,
-            $request->input('copyright') ?? null,
-            $request->filled('sort') ? $request->integer('sort') : null,
+        $imageDTO = new ImageRequest(
+            image: $imageSource,
+            copyright: $request->input('copyright') ?? null,
+            sort: $request->filled('sort') ? $request->integer('sort') : $image->sort,
         );
 
         $image = $imageservice->updateImage($id, $imageDTO, $request->user()->id);

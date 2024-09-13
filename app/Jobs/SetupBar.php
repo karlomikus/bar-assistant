@@ -25,7 +25,7 @@ class SetupBar implements ShouldQueue
 
     /**
      * Create a new job instance.
-     * 
+     *
      * @param array<BarOptionsEnum> $barOptions
      */
     public function __construct(

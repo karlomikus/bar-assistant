@@ -18,10 +18,10 @@ use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Kami\Cocktail\Models\BarStatusEnum;
 use Kami\RecipeUtils\UnitConverter\Units;
+use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\Http\Requests\BarRequest;
 use Kami\Cocktail\Http\Resources\BarResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\Http\Resources\BarMembershipResource;
 
 class BarController extends Controller

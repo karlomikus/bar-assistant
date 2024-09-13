@@ -7,11 +7,11 @@ namespace Tests\Feature\Repository;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Repository\CocktailRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
-use Kami\Cocktail\Models\ComplexIngredient;
 
 class CocktailRepositoryTest extends TestCase
 {
@@ -28,48 +28,60 @@ class CocktailRepositoryTest extends TestCase
 
         Cocktail::factory()
             ->for($membership->bar)
-            ->has(CocktailIngredient::factory()
+            ->has(
+                CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($ingredient1)
                     ->recycle($membership->bar),
-                'ingredients')
+                'ingredients'
+            )
             ->create();
 
         Cocktail::factory()
             ->for($membership->bar)
-            ->has(CocktailIngredient::factory()
+            ->has(
+                CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($ingredient1)
                     ->recycle($membership->bar),
-                'ingredients')
-            ->has(CocktailIngredient::factory()
+                'ingredients'
+            )
+            ->has(
+                CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($ingredient2)
                     ->recycle($membership->bar),
-                'ingredients')
+                'ingredients'
+            )
             ->create();
 
         Cocktail::factory()
             ->for($membership->bar)
-            ->has(CocktailIngredient::factory()
+            ->has(
+                CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($ingredient3)
                     ->recycle($membership->bar),
-                'ingredients')
+                'ingredients'
+            )
             ->create();
 
         Cocktail::factory()
             ->for($membership->bar)
-            ->has(CocktailIngredient::factory()
+            ->has(
+                CocktailIngredient::factory()
                     ->state(['optional' => true])
                     ->for($ingredient2)
                     ->recycle($membership->bar),
-                'ingredients')
-            ->has(CocktailIngredient::factory()
+                'ingredients'
+            )
+            ->has(
+                CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($ingredient3)
                     ->recycle($membership->bar),
-                'ingredients')
+                'ingredients'
+            )
             ->create();
 
         Ingredient::factory()->for($membership->bar)->count(10)->create();
@@ -92,17 +104,21 @@ class CocktailRepositoryTest extends TestCase
 
         Cocktail::factory()
             ->for($membership->bar)
-            ->has(CocktailIngredient::factory()
+            ->has(
+                CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($ingredient1)
                     ->has(CocktailIngredientSubstitute::factory()->for($ingredient2), 'substitutes')
                     ->recycle($membership->bar),
-                'ingredients')
-            ->has(CocktailIngredient::factory()
+                'ingredients'
+            )
+            ->has(
+                CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($ingredient3)
                     ->recycle($membership->bar),
-                'ingredients')
+                'ingredients'
+            )
             ->create();
 
         Ingredient::factory()->for($membership->bar)->count(10)->create();
@@ -129,30 +145,38 @@ class CocktailRepositoryTest extends TestCase
 
         Cocktail::factory()
             ->for($membership->bar)
-            ->has(CocktailIngredient::factory()
+            ->has(
+                CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($gin)
                     ->recycle($membership->bar),
-                'ingredients')
-            ->has(CocktailIngredient::factory()
+                'ingredients'
+            )
+            ->has(
+                CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($lemonJuice)
                     ->recycle($membership->bar),
-                'ingredients')
+                'ingredients'
+            )
             ->create();
 
         Cocktail::factory()
             ->for($membership->bar)
-            ->has(CocktailIngredient::factory()
+            ->has(
+                CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($whiskey)
                     ->recycle($membership->bar),
-                'ingredients')
-            ->has(CocktailIngredient::factory()
+                'ingredients'
+            )
+            ->has(
+                CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($lemonJuice)
                     ->recycle($membership->bar),
-                'ingredients')
+                'ingredients'
+            )
             ->create();
 
         Ingredient::factory()->for($membership->bar)->count(10)->create();

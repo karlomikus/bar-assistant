@@ -167,7 +167,7 @@ class ImageControllerTest extends TestCase
         $cocktailImage = Image::factory()->for(Cocktail::factory(), 'imageable')->create([
             'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'uploads'),
             'file_extension' => $imageFile->extension(),
-            'created_user_id' => auth()->user()->id
+            'created_user_id' => auth('sanctum')->user()->id
         ]);
 
         $response = $this->get('/api/images/' . $cocktailImage->id . '/thumb');
@@ -227,7 +227,7 @@ class ImageControllerTest extends TestCase
             'file_extension' => $imageFile->extension(),
             'copyright' => 'initial',
             'sort' => 7,
-            'created_user_id' => auth()->user()->id
+            'created_user_id' => auth('sanctum')->user()->id
         ]);
 
         $response = $this->post('/api/images/' . $cocktailImage->id, [

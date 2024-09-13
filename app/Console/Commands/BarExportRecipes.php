@@ -9,12 +9,13 @@ use Kami\Cocktail\Models\Bar;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Models\Export;
 use Illuminate\Support\Facades\DB;
+
+use function Laravel\Prompts\search;
+
 use Kami\Cocktail\External\ExportTypeEnum;
 use Kami\Cocktail\External\Export\ToDataPack;
 use Kami\Cocktail\External\Export\ToRecipeType;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
-
-use function Laravel\Prompts\search;
 
 class BarExportRecipes extends Command
 {
@@ -66,7 +67,7 @@ class BarExportRecipes extends Command
             return Command::FAILURE;
         }
 
-        $this->line(sprintf('Starting new export (%s | %s) from bar: %s - "%s"', $type->value, $units->value,$bar->id, $bar->name));
+        $this->line(sprintf('Starting new export (%s | %s) from bar: %s - "%s"', $type->value, $units->value, $bar->id, $bar->name));
 
         if ($type === ExportTypeEnum::Datapack) {
             $filename = $this->datapackExporter->process($bar->id, Export::generateFilename('datapack'), $units);

@@ -36,11 +36,13 @@ class StatsControllerTest extends TestCase
         $cocktail1 = Cocktail::factory()
             ->for($membership->bar)
             ->hasTags(['name' => 'Tag 1'])
-            ->has(CocktailIngredient::factory()
+            ->has(
+                CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($ingredient)
                     ->recycle($membership->bar),
-                'ingredients')
+                'ingredients'
+            )
             ->create();
 
         CocktailFavorite::factory()

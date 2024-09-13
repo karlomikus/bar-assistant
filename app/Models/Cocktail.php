@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Kami\Cocktail\Utils;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;

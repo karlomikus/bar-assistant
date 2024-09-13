@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External\Import;
 
 use Throwable;
-use Kami\Cocktail\DTO\Image\Image;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\External\Matcher;
@@ -13,6 +12,7 @@ use Kami\Cocktail\External\Model\Schema;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Services\Image\ImageService;
+use Kami\Cocktail\OpenAPI\Schemas\ImageRequest;
 use Kami\Cocktail\DTO\Cocktail\Cocktail as CocktailDTO;
 use Kami\Cocktail\DTO\Cocktail\Substitute as SubstituteDTO;
 use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;
@@ -52,9 +52,9 @@ class FromJsonSchema
         foreach ($cocktailExternal->cocktail->images as $image) {
             if ($image->uri && $imageContents = file_get_contents($imageDirectoryBasePath . $image->getLocalFilePath())) {
                 try {
-                    $imageDTO = new Image(
-                        $imageContents,
-                        $image->copyright
+                    $imageDTO = new ImageRequest(
+                        image: $imageContents,
+                        copyright: $image->copyright
                     );
 
                     $cocktailImages[] = $this->imageService->uploadAndSaveImages([$imageDTO], 1)[0]->id;

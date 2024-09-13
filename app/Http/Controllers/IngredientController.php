@@ -77,17 +77,17 @@ class IngredientController extends Controller
     public function show(Request $request, string $id): JsonResource
     {
         $ingredient = Ingredient::with(
-                'cocktails',
-                'images',
-                'varieties',
-                'parentIngredient',
-                'createdUser',
-                'updatedUser',
-                'ingredientParts.ingredient',
-                'prices.priceCategory',
-                'category',
-                'cocktailIngredientSubstitutes.cocktailIngredient.ingredient'
-            )
+            'cocktails',
+            'images',
+            'varieties',
+            'parentIngredient',
+            'createdUser',
+            'updatedUser',
+            'ingredientParts.ingredient',
+            'prices.priceCategory',
+            'category',
+            'cocktailIngredientSubstitutes.cocktailIngredient.ingredient'
+        )
             ->withCount('cocktails')
             ->where('id', $id)
             ->orWhere('slug', $id)

@@ -8,17 +8,15 @@ use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
-use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
-use Spatie\ArrayToXml\ArrayToXml;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Validator;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
-use Kami\Cocktail\DTO\Image\Image as ImageDTO;
 use Kami\Cocktail\Services\Image\ImageService;
+use Kami\Cocktail\OpenAPI\Schemas\ImageRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Repository\CocktailRepository;
@@ -382,10 +380,10 @@ class CocktailController extends Controller
         foreach ($cocktail->images as $image) {
             if ($imageContents = file_get_contents($image->getPath())) {
                 try {
-                    $imageDTOs[] = new ImageDTO(
-                        $imageContents,
-                        $image->copyright,
-                        $image->sort,
+                    $imageDTOs[] = new ImageRequest(
+                        image: $imageContents,
+                        copyright: $image->copyright,
+                        sort: $image->sort,
                     );
                 } catch (Throwable $e) {
                 }
