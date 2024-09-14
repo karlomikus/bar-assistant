@@ -28,8 +28,6 @@ class ImageRequest extends FormRequest
         return [
             'images' => 'array',
             'images.*.id' => 'sometimes|integer',
-            // 'images.*.image' => 'sometimes|image|max:51200',
-            // 'images.*.image_url' => 'sometimes|url',
             'images.*.sort' => 'integer',
         ];
     }

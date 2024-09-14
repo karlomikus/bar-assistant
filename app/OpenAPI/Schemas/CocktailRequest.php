@@ -10,6 +10,12 @@ use OpenApi\Attributes as OAT;
 #[OAT\Schema(required: ['name', 'instructions'])]
 readonly class CocktailRequest
 {
+    /**
+     * @param array<string> $tags
+     * @param array<CocktailIngredientRequest> $ingredients
+     * @param array<int> $images
+     * @param array<int> $utensils
+     */
     public function __construct(
         #[OAT\Property(example: 'Cocktail name')]
         public string $name,
@@ -27,16 +33,12 @@ readonly class CocktailRequest
         public ?int $glassId = null,
         #[OAT\Property(example: 1, property: 'method_id')]
         public ?int $methodId = null,
-        /** @var string[] */
         #[OAT\Property(items: new OAT\Items(type: 'string'))]
         public array $tags = [],
-        /** @var array<CocktailIngredientRequest> */
         #[OAT\Property(items: new OAT\Items(type: CocktailIngredientRequest::class))]
         public array $ingredients = [],
-        /** @var int[] */
         #[OAT\Property(items: new OAT\Items(type: 'integer'), description: 'List of existing image ids')]
         public array $images = [],
-        /** @var int[] */
         #[OAT\Property(items: new OAT\Items(type: 'integer'), description: 'List of existing utensil ids')]
         public array $utensils = [],
     ) {

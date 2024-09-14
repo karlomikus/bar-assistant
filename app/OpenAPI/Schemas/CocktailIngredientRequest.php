@@ -9,6 +9,9 @@ use OpenApi\Attributes as OAT;
 #[OAT\Schema(required: ['ingredient_id', 'amount', 'units'])]
 readonly class CocktailIngredientRequest
 {
+    /**
+     * @param CocktailIngredientSubstituteRequest[] $substitutes
+     */
     public function __construct(
         #[OAT\Property(property: 'ingredient_id')]
         public int $id,
@@ -22,8 +25,6 @@ readonly class CocktailIngredientRequest
         public int $sort = 0,
         #[OAT\Property()]
         public bool $optional = false,
-
-        /** @var CocktailIngredientSubstituteRequest[] */
         #[OAT\Property(items: new OAT\Items(type: CocktailIngredientSubstituteRequest::class))]
         public array $substitutes = [],
         #[OAT\Property(property: 'amount_max', example: 60)]

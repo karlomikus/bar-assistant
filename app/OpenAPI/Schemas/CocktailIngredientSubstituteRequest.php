@@ -27,7 +27,7 @@ readonly class CocktailIngredientSubstituteRequest
     public static function fromArray(array $source): self
     {
         return new self(
-            $source['ingredient_id'],
+            (int) $source['ingredient_id'],
             ($source['amount'] ?? null) !== null ? (float) $source['amount'] : null,
             ($source['amount_max'] ?? null) !== null ? (float) $source['amount_max'] : null,
             $source['units'] ?? null,
