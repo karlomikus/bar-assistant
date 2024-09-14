@@ -51,7 +51,7 @@ COPY --chown=www-data:www-data . .
 COPY --from=datapack --chown=www-data:www-data /app/data ./resources/data
 
 RUN composer install --optimize-autoloader --no-dev \
-    && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/open-api-spec.yml \
+    && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/openapi-generated.yml \
     && cp .env.dist .env
 
 VOLUME ["$APP_BASE_DIR/storage/bar-assistant"]
