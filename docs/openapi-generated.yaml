@@ -1075,6 +1075,47 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/cocktails/{id}/similar':
+    get:
+      tags:
+        - Cocktails
+      summary: 'Show similar cocktails'
+      operationId: 3e08ff7e8e549570aadbaf5b727eaa2a
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Cocktail' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   '/cocktails/{id}/copy':
     post:
       tags:
@@ -1689,13 +1730,7 @@ paths:
         content:
           application/json:
             schema:
-              properties:
-                type:
-                  $ref: '#/components/schemas/ExportTypeEnum'
-                bar_id:
-                  type: integer
-                  example: 1
-              type: object
+              $ref: '#/components/schemas/ExportRequest'
       responses:
         '200':
           description: 'Successful response'
@@ -4257,6 +4292,66 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /billing/subscriptions:
+    get:
+      tags:
+        - Billing
+      summary: 'Get subscription status'
+      operationId: 5e298d4bebc46cd05931c3a15c92f248
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/UserSubscription' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    post:
+      tags:
+        - Billing
+      summary: 'Update subscription'
+      operationId: 6b69b6aa21e0e7174a5601c02a19161e
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - type
+              properties:
+                type:
+                  type: string
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /tags:
     get:
       tags:
@@ -5921,6 +6016,15 @@ components:
           type: boolean
           example: true
       type: object
+    ExportRequest:
+      properties:
+        type:
+          $ref: '#/components/schemas/ExportTypeEnum'
+        units:
+          $ref: '#/components/schemas/ForceUnitConvertEnum'
+        bar_id:
+          type: integer
+      type: object
     FileDownloadLink:
       properties:
         url:
@@ -6711,6 +6815,59 @@ components:
                 type: integer
             type: object
       type: object
+    Subscription:
+      properties:
+        type:
+          type: string
+        paddle_id:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        paused_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        ends_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        past_due:
+          type: boolean
+        is_recurring:
+          type: boolean
+        next_billed_at:
+          type: array
+          items:
+            properties:
+              currency:
+                type: string
+              amount:
+                type: string
+              date:
+                type: string
+                format: date-time
+            type: object
+        update_payment_url:
+          type: string
+          format: uri
+        cancel_url:
+          type: string
+          format: uri
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+      type: object
     Tag:
       required:
         - id
@@ -6740,6 +6897,33 @@ components:
         token:
           type: string
           example: 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII
+      type: object
+    Transaction:
+      properties:
+        total:
+          type: string
+        tax:
+          type: string
+        currency:
+          type: string
+        status:
+          type: string
+        invoice_number:
+          type: string
+        url:
+          type: string
+          format: uri
+        billed_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
       type: object
     User:
       properties:
@@ -6799,6 +6983,36 @@ components:
           type: string
           format: password
           example: password
+      type: object
+    UserSubscription:
+      required:
+        - prices
+        - customer
+        - subscription
+      properties:
+        prices:
+          type: string
+        customer:
+          type: array
+          items:
+            required:
+              - paddle_id
+              - paddle_email
+              - paddle_name
+            properties:
+              paddle_id:
+                type: string
+              paddle_email:
+                type: string
+              paddle_name:
+                type: string
+            type: object
+        subscription:
+          oneOf:
+            -
+              $ref: '#/components/schemas/Subscription'
+            -
+              type: 'null'
       type: object
     Utensil:
       required:
@@ -6917,6 +7131,9 @@ tags:
   -
     name: 'Users: Shopping list'
     description: 'Users: Shopping list'
+  -
+    name: Billing
+    description: Billing
   -
     name: Tag
     description: Tag

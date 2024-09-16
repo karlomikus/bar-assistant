@@ -37,7 +37,7 @@ class ShelfController extends Controller
     public function ingredients(Request $request, int $id): JsonResource
     {
         $user = User::findOrFail($id);
-        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+        if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
             abort(403);
         }
 
@@ -66,7 +66,7 @@ class ShelfController extends Controller
     public function cocktails(CocktailRepository $cocktailRepo, Request $request, int $id): JsonResource
     {
         $user = User::findOrFail($id);
-        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+        if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
             abort(403);
         }
 
@@ -97,7 +97,7 @@ class ShelfController extends Controller
     public function favorites(Request $request, int $id): JsonResource
     {
         $user = User::findOrFail($id);
-        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+        if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
             abort(403);
         }
 
@@ -129,7 +129,7 @@ class ShelfController extends Controller
     public function batchStore(Request $request, int $id): Response
     {
         $user = User::findOrFail($id);
-        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+        if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
             abort(403);
         }
 
@@ -174,7 +174,7 @@ class ShelfController extends Controller
     public function batchDelete(Request $request, int $id): Response
     {
         $user = User::findOrFail($id);
-        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+        if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
             abort(403);
         }
 
@@ -208,7 +208,7 @@ class ShelfController extends Controller
     public function recommend(Request $request, IngredientRepository $ingredientRepo, int $id): \Illuminate\Http\JsonResponse
     {
         $user = User::findOrFail($id);
-        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
+        if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
             abort(403);
         }
 

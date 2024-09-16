@@ -38,10 +38,7 @@ class ExportController extends Controller
     #[OAT\Post(path: '/exports', tags: ['Exports'], summary: 'Create a new export', requestBody: new OAT\RequestBody(
         required: true,
         content: [
-            new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(property: 'type', ref: ExportTypeEnum::class),
-                new OAT\Property(property: 'bar_id', type: 'integer', example: 1),
-            ]),
+            new OAT\JsonContent(ref: BAO\Schemas\ExportRequest::class),
         ]
     ))]
     #[OAT\Response(response: 200, description: 'Successful response', content: [

@@ -52,7 +52,9 @@ class ExploreCocktailResource extends JsonResource
                     'note' => $cocktailIngredient->note,
                     'substitutes' => $cocktailIngredient->substitutes->map(function ($substitute) {
                         return [
-                            'name' => $substitute->ingredient->name,
+                            'ingredient' => [
+                                'name' => $substitute->ingredient->name,
+                            ],
                             'amount' => $substitute->amount,
                             'amount_max' => $substitute->amount_max,
                             'units' => $substitute->units,

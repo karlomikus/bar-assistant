@@ -342,6 +342,14 @@ class CocktailController extends Controller
         ]);
     }
 
+    #[OAT\Get(path: '/cocktails/{id}/similar', tags: ['Cocktails'], summary: 'Show similar cocktails', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\Cocktail::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function similar(CocktailRepository $cocktailRepo, Request $request, string $idOrSlug): JsonResource
     {
         $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->with('ingredients.ingredient')->firstOrFail();
