@@ -11,7 +11,6 @@ RUN rm -r .git
 FROM serversideup/php:8.3-fpm-nginx AS php-base
 
 ENV S6_CMD_WAIT_FOR_SERVICES=1
-ENV PHP_OPCACHE_ENABLE=1
 ENV APP_BASE_DIR=/var/www/cocktails
 ENV NGINX_WEBROOT=/var/www/cocktails/public
 
@@ -33,10 +32,13 @@ WORKDIR ${APP_BASE_DIR}
 
 FROM php-base AS dist
 
+ENV PHP_OPCACHE_ENABLE=1
 ARG BAR_ASSISTANT_VERSION
 ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-develop}
 
 COPY --chmod=755 ./resources/docker/dist/init.sh /etc/entrypoint.d/99-bass.sh
+
+COPY --chmod=755 --chown=www-data:www-data ./resources/docker/dist/nginx.conf /etc/nginx/server-opts.d/99-bass.conf
 
 USER root
 
