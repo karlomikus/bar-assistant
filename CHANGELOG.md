@@ -91,6 +91,10 @@ This is a new major release. Here's a quick summary of the more interesting chan
 - All dates in responses are now in ISO 8601 format
 - You can now update slug of existing bar
 
+# v3.19.1
+## Fixes
+- Fix missing base data in recipes export
+
 # v3.19.0
 ## New
 - Updated the way OpenAPI specification is generated
