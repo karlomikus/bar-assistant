@@ -71,7 +71,7 @@
         ],
         "static": "vendor/bin/phpstan analyse",
         "fix-style": "vendor/bin/pint",
-        "test": "php artisan test --parallel",
+        "test": "php artisan test",
         "openapi": "vendor/bin/openapi app -o docs/openapi-generated.yaml --version 3.1.0"
     },
     "extra": {
