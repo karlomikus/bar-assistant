@@ -17,7 +17,9 @@ jobs:
     steps:
     - uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'
+        php-version: '8.3'
+        extensions: bcmath, intl, ffi
+        ini-values: ffi.enable=true, zend.max_allowed_stack_size=-1
 
     - uses: actions/checkout@v4
 
