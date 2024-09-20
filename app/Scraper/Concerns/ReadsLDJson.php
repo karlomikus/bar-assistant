@@ -14,7 +14,7 @@ trait ReadsLDJson
         $nodes = iterator_to_array($fromNodes);
 
         if (!$nodes) {
-            return [];
+            return null;
         }
 
         $items = array_map(function ($node) {

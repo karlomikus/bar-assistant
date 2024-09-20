@@ -1,92 +1,77 @@
-FROM php:8.2-fpm AS php-base
+FROM alpine:latest AS datapack
 
-ARG PGID=1000
-ENV PGID=${PGID}
-ARG PUID=1000
-ENV PUID=${PUID}
+RUN apk add --no-cache git
 
-# Add php extension manager
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+WORKDIR /app/data
+
+RUN git clone --depth 1 --branch datapack https://github.com/bar-assistant/data.git .
+
+RUN rm -r .git
+
+FROM serversideup/php:8.3-fpm-nginx AS php-base
+
+ENV S6_CMD_WAIT_FOR_SERVICES=1
+ENV APP_BASE_DIR=/var/www/cocktails
+ENV NGINX_WEBROOT=/var/www/cocktails/public
+
+USER root
+
+RUN install-php-extensions bcmath intl ffi
 
 RUN apt update \
     && apt-get install -y \
-    git \
-    unzip \
     sqlite3 \
-    bash \
-    cron \
-    && chmod +x /usr/local/bin/install-php-extensions \
-    && install-php-extensions imagick opcache redis zip pcntl bcmath intl \
-    && echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf \
+    && apt-get install -y --no-install-recommends libvips42 \
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Add composer
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+USER www-data
 
-# Configure php
-COPY ./resources/docker/dist/php.ini $PHP_INI_DIR/php.ini
-
-WORKDIR /var/www/cocktails
-
-CMD ["php-fpm"]
+WORKDIR ${APP_BASE_DIR}
 
 FROM php-base AS dist
 
+ENV PHP_OPCACHE_ENABLE=1
+ENV PHP_OPCACHE_MAX_ACCELERATED_FILES=20000
+ENV PHP_OPCACHE_MEMORY_CONSUMPTION=256
 ARG BAR_ASSISTANT_VERSION
 ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-develop}
 
-RUN apt update \
-    && apt-get install -y \
-    nginx \
-    gosu \
-    supervisor \
-    && apt-get autoremove -y \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+COPY --chmod=755 ./resources/docker/dist/init.sh /etc/entrypoint.d/99-bass.sh
 
-WORKDIR /var/www/cocktails
+COPY --chmod=755 --chown=www-data:www-data ./resources/docker/dist/nginx.conf /etc/nginx/server-opts.d/99-bass.conf
 
-COPY . .
+USER root
 
-ADD https://github.com/bar-assistant/data.git ./resources/data
+RUN docker-php-serversideup-s6-init
 
-RUN composer install --optimize-autoloader --no-dev
+USER www-data
 
-# Configure nginx
-COPY ./resources/docker/dist/nginx.conf /etc/nginx/sites-enabled/default
+COPY ./resources/docker/dist/php.ini /usr/local/etc/php/conf.d/zzz-bass-php.ini
 
-# Add container entrypoint script
-COPY ./resources/docker/dist/entrypoint.sh /usr/local/bin/entrypoint
+COPY --chown=www-data:www-data . .
 
-RUN chmod +x /usr/local/bin/entrypoint \
-    && chmod +x /var/www/cocktails/resources/docker/dist/run.sh \
-    && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/open-api-spec.yml \
-    && mkdir -p /var/www/cocktails/storage/bar-assistant/ \
-    && echo "* * * * * www-data cd /var/www/cocktails && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontab \
-    && chown -R www-data:www-data /var/www/cocktails
+COPY --from=datapack --chown=www-data:www-data /app/data ./resources/data
 
-EXPOSE 3000
+RUN composer install --optimize-autoloader --no-dev \
+    && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/openapi-generated.yaml \
+    && cp .env.dist .env
 
-VOLUME ["/var/www/cocktails/storage/bar-assistant"]
+VOLUME ["$APP_BASE_DIR/storage/bar-assistant"]
 
-ENTRYPOINT ["entrypoint"]
+FROM php-base AS dev
 
-FROM php-base AS localdev
+USER root
 
-RUN useradd -G www-data,root -u $PUID -d /home/developer developer
-RUN mkdir -p /home/developer/.composer && \
-    chown -R developer:developer /home/developer
+ARG USER_ID=1000
+ARG GROUP_ID=1000
 
 RUN install-php-extensions xdebug
 
-RUN echo "* * * * * developer cd /var/www/cocktails && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontab
+RUN docker-php-serversideup-set-id www-data $USER_ID:$GROUP_ID && \
+    docker-php-serversideup-set-file-permissions --owner $USER_ID:$GROUP_ID --service nginx
 
-USER developer
+RUN docker-php-serversideup-s6-init
 
-WORKDIR /var/www/cocktails
-
-EXPOSE 9000
-
-CMD ["php-fpm"]
+USER www-data

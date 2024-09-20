@@ -13,7 +13,7 @@ class Profile
     public int $id;
     #[OAT\Property(example: 'Floral')]
     public string $name;
-    #[OAT\Property(property: 'cocktails_count', example: 12)]
+    #[OAT\Property(example: 'example@example.com')]
     public string $email;
     #[OAT\Property(property: 'is_subscribed')]
     public bool $isSubscribed = false;

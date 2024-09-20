@@ -20,6 +20,7 @@ class ImageFactory extends Factory
             'copyright' => fake()->paragraph(),
             'file_path' => fake()->filePath(),
             'file_extension' => fake()->fileExtension(),
+            'created_user_id' => \Kami\Cocktail\Models\User::factory(),
         ];
     }
 }

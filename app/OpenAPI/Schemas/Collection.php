@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema()]
+#[OAT\Schema(required: ['id', 'name', 'description', 'is_bar_shared', 'created_at'])]
 class Collection
 {
     #[OAT\Property(example: 1)]
@@ -21,7 +21,7 @@ class Collection
     public string $createdAt;
     #[OAT\Property(property: 'created_user')]
     public UserBasic $createdUser;
-    /** @var int[] */
+    /** @var CocktailBasic[] */
     #[OAT\Property()]
     public array $cocktails = [];
 }

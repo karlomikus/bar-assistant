@@ -25,13 +25,15 @@ class ResourceBelongsToBar implements ValidationRule
             $value = [$value];
         }
 
+        $value = (array) $value;
+
         $count = DB::table($this->table)
             ->select($this->column)
             ->whereIn($this->column, $value)
             ->where('bar_id', $this->barId)
             ->count();
 
-        if ($count !== count($value)) {
+        if ($count !== count((array) $value)) {
             $fail('Selected resources are not part of the current bar');
         }
     }

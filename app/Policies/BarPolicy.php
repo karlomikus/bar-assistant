@@ -65,6 +65,11 @@ class BarPolicy
         return $user->id === $bar->created_user_id;
     }
 
+    public function createDatapack(User $user, Bar $bar): bool
+    {
+        return $user->isBarAdmin($bar->id);
+    }
+
     public function access(User $user, Bar $bar): bool
     {
         return $user->hasBarMembership($bar->id) && $bar->isAccessible();

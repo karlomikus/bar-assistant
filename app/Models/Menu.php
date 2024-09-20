@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Brick\Money\Money;
+use Brick\Math\RoundingMode;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -33,6 +35,9 @@ class Menu extends Model
         return $this->belongsTo(Bar::class);
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $cocktailMenuItems
+     */
     public function syncCocktails(array $cocktailMenuItems): void
     {
         $validCocktails = DB::table('cocktails')
@@ -48,9 +53,14 @@ class Menu extends Model
                 continue;
             }
 
-            $price = str_replace([','], '.', $cocktailMenuItem['price'] ?? '0');
-            $price = (float) number_format((float) $price, 2);
-            $price *= 100;
+            $price = 0;
+            if ($cocktailMenuItem['price'] ?? false) {
+                $price = Money::of(
+                    $cocktailMenuItem['price'],
+                    $cocktailMenuItem['currency'],
+                    roundingMode: RoundingMode::UP
+                )->getMinorAmount()->toInt();
+            }
 
             $currentMenuItems[] = $cocktailMenuItem['cocktail_id'];
             $this->menuCocktails()->updateOrCreate([

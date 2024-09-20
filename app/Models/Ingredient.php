@@ -76,6 +76,14 @@ class Ingredient extends Model
     }
 
     /**
+     * @return BelongsTo<Bar, Ingredient>
+     */
+    public function bar(): BelongsTo
+    {
+        return $this->belongsTo(Bar::class);
+    }
+
+    /**
      * @return BelongsTo<User, Ingredient>
      */
     public function user(): BelongsTo
@@ -131,6 +139,20 @@ class Ingredient extends Model
         return $this->cocktailIngredientSubstitutes->pluck('cocktailIngredient.cocktail');
     }
 
+    public function userHasInShelf(User $user): bool
+    {
+        $items = $user->getShelfIngredients($this->bar_id);
+
+        return $items->contains('ingredient_id', $this->id);
+    }
+
+    public function userHasInShoppingList(User $user): bool
+    {
+        $items = $user->getShoppingListIngredients($this->bar_id);
+
+        return $items->contains('ingredient_id', $this->id);
+    }
+
     /**
      * @return Collection<int, Ingredient>
      */
@@ -148,6 +170,33 @@ class Ingredient extends Model
         return $this->varieties;
     }
 
+    /**
+     * Return all ingredinets that use this ingredient as a substitute
+     *
+     * @return Collection<int, Ingredient>
+     */
+    public function getIngredientsUsedAsSubstituteFor(): Collection
+    {
+        return $this->cocktailIngredientSubstitutes->pluck('cocktailIngredient.ingredient')->unique('id')->sortBy('name');
+    }
+
+    /**
+     * Return all ingredients that can be substituted with this ingredient
+     *
+     * @return Collection<int, Ingredient>
+     */
+    public function getCanBeSubstitutedWithIngredients(): Collection
+    {
+        return Ingredient::query()
+            ->select('ingredients.*')
+            ->distinct()
+            ->from('cocktail_ingredient_substitutes')
+            ->join('cocktail_ingredients', 'cocktail_ingredients.id', 'cocktail_ingredient_substitutes.cocktail_ingredient_id')
+            ->join('ingredients', 'ingredients.id', 'cocktail_ingredient_substitutes.ingredient_id')
+            ->where('cocktail_ingredients.ingredient_id', $this->id)
+            ->get();
+    }
+
     public function delete(): ?bool
     {
         $this->deleteImages();
@@ -155,6 +204,9 @@ class Ingredient extends Model
         return parent::delete();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toSearchableArray(): array
     {
         return [

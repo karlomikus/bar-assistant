@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Http;
 
 use Tests\TestCase;
-use Kami\Cocktail\Models\Bar;
-use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\BarMembership;
 use Kami\Cocktail\Models\CocktailMethod;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -15,23 +14,22 @@ class CocktailMethodControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    private BarMembership $barMembership;
+
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->actingAs(
-            User::factory()->create()
-        );
+        $this->barMembership = $this->setupBarMembership();
+        $this->actingAs($this->barMembership->user);
     }
 
     public function test_list_methods_response(): void
     {
-        $bar = $this->setupBar();
-        CocktailMethod::factory()->count(6)->create(['bar_id' => $bar->id]);
-        $anotherBar = Bar::factory()->create(['created_user_id' => auth()->user()->id]);
-        CocktailMethod::factory()->count(6)->create(['bar_id' => $anotherBar->id]);
+        CocktailMethod::factory()->recycle($this->barMembership->bar)->count(6)->create();
+        CocktailMethod::factory()->count(6)->create();
 
-        $response = $this->getJson('/api/cocktail-methods?bar_id=1');
+        $response = $this->getJson('/api/cocktail-methods', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
         $response->assertStatus(200);
         $response->assertJson(
@@ -44,11 +42,8 @@ class CocktailMethodControllerTest extends TestCase
 
     public function test_show_method_response(): void
     {
-        $bar = $this->setupBar();
-
-        $model = CocktailMethod::factory()->create([
+        $model = CocktailMethod::factory()->recycle($this->barMembership->bar)->create([
             'name' => 'Test method',
-            'bar_id' => $bar->id,
         ]);
 
         $response = $this->getJson('/api/cocktail-methods/' . $model->id);
@@ -67,12 +62,10 @@ class CocktailMethodControllerTest extends TestCase
 
     public function test_create_method_response(): void
     {
-        $this->setupBar();
-
-        $response = $this->postJson('/api/cocktail-methods?bar_id=1', [
+        $response = $this->postJson('/api/cocktail-methods', [
             'name' => 'Test method',
             'dilution_percentage' => 32,
-        ]);
+        ], ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
         $response->assertCreated();
         $this->assertNotEmpty($response->headers->get('Location'));
@@ -89,12 +82,9 @@ class CocktailMethodControllerTest extends TestCase
 
     public function test_update_method_response(): void
     {
-        $bar = $this->setupBar();
-
-        $model = CocktailMethod::factory()->create([
+        $model = CocktailMethod::factory()->recycle($this->barMembership->bar)->create([
             'name' => 'Start method',
             'dilution_percentage' => 32,
-            'bar_id' => $bar->id,
         ]);
 
         $response = $this->putJson('/api/cocktail-methods/' . $model->id, [
@@ -116,11 +106,8 @@ class CocktailMethodControllerTest extends TestCase
 
     public function test_delete_method_response(): void
     {
-        $bar = $this->setupBar();
-
-        $method = CocktailMethod::factory()->create([
+        $method = CocktailMethod::factory()->recycle($this->barMembership->bar)->create([
             'name' => 'Start method',
-            'bar_id' => $bar->id,
         ]);
 
         $response = $this->delete('/api/cocktail-methods/' . $method->id);

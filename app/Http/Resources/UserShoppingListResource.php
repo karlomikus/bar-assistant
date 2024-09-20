@@ -20,9 +20,8 @@ class UserShoppingListResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'ingredient_id' => $this->ingredient_id,
-            'ingredient_slug' => $this->ingredient->slug,
-            'ingredient_name' => $this->ingredient->name,
+            'ingredient' => new IngredientBasicResource($this->ingredient),
+            'quantity' => $this->quantity,
         ];
     }
 }

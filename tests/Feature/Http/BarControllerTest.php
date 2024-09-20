@@ -14,8 +14,6 @@ class BarControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    private Bar $currentUserBar;
-
     public function setUp(): void
     {
         parent::setUp();
@@ -34,7 +32,6 @@ class BarControllerTest extends TestCase
         $user1->joinBarAs($bar1);
         $user2->joinBarAs($bar2);
         $currentUser->joinBarAs($userBar, UserRoleEnum::Admin);
-        $this->currentUserBar = $userBar;
     }
 
     public function test_show_user_bars(): void

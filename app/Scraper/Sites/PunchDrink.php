@@ -51,9 +51,10 @@ class PunchDrink extends DefaultScraper
             return $image;
         }
 
-        $image['copyright'] = 'Punch Staff | ' . $photoAuthorEl->text('');
-
-        return $image;
+        return [
+            'uri' => $image['uri'],
+            'copyright' => 'Punch Staff | ' . $photoAuthorEl->text(''),
+        ];
     }
 
     private function parseEditorsNote(): string

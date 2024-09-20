@@ -7,9 +7,9 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Utensil;
+use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Http\Requests\UtensilRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\UtensilResource;
@@ -18,6 +18,7 @@ class UtensilsController extends Controller
 {
     #[OAT\Get(path: '/utensils', tags: ['Utensils'], summary: 'Show a list of utensils', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Utensil::class),
@@ -50,6 +51,7 @@ class UtensilsController extends Controller
 
     #[OAT\Post(path: '/utensils', tags: ['Utensils'], summary: 'Create a new utensil', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -69,8 +71,8 @@ class UtensilsController extends Controller
         }
 
         $utensil = new Utensil();
-        $utensil->name = $request->post('name');
-        $utensil->description = $request->post('description');
+        $utensil->name = $request->input('name');
+        $utensil->description = $request->input('description');
         $utensil->bar_id = bar()->id;
         $utensil->save();
 
@@ -101,8 +103,8 @@ class UtensilsController extends Controller
             abort(403);
         }
 
-        $utensil->name = $request->post('name');
-        $utensil->description = $request->post('description');
+        $utensil->name = $request->input('name');
+        $utensil->description = $request->input('description');
         $utensil->updated_at = now();
         $utensil->save();
 

@@ -18,7 +18,16 @@ class CocktailFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'slug' => fake()->slug(),
+            'description' => fake()->optional()->paragraph(),
             'instructions' => fake()->paragraph(),
+            'source' => fake()->optional()->url(),
+            'garnish' => fake()->optional()->paragraph(),
+            'cocktail_method_id' => \Kami\Cocktail\Models\CocktailMethod::factory(),
+            'glass_id' => \Kami\Cocktail\Models\Glass::factory(),
+            'abv' => fake()->randomFloat(2, 0, 80),
+            'created_at' => fake()->dateTime(),
+            'updated_at' => fake()->optional()->dateTime(),
             'created_user_id' => \Kami\Cocktail\Models\User::factory(),
             'bar_id' => \Kami\Cocktail\Models\Bar::factory(),
         ];

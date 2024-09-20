@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Intervention\Image\ImageManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
@@ -38,7 +37,7 @@ class Image extends Model
         return $disk->url($this->file_path);
     }
 
-    public function getImageExteralURI(): ?string
+    public function getImageAsFileURI(): ?string
     {
         if (!$this->file_path) {
             return null;
@@ -53,19 +52,11 @@ class Image extends Model
             return null;
         }
 
-        return str_replace('cocktails/' . $this->imageable->bar_id . '/', '', $this->file_path);
-    }
-
-    public function getImageDataURI(): ?string
-    {
-        if (!$this->file_path) {
-            return null;
-        }
-
-        $manager = ImageManager::imagick();
-        $disk = Storage::disk('uploads');
-
-        return $manager->read($disk->path($this->file_path))->encode()->toDataUri();
+        return match ($this->imageable_type) {
+            Cocktail::class => str_replace('cocktails/' . $this->imageable->bar_id . '/', '', $this->file_path),
+            Ingredient::class => str_replace('ingredients/' . $this->imageable->bar_id . '/', '', $this->file_path),
+            default => null,
+        };
     }
 
     /**
@@ -108,13 +99,5 @@ class Image extends Model
     public function isTemp(): bool
     {
         return str_starts_with($this->file_path, 'temp/') || $this->imageable_id === null;
-    }
-
-    public function getThumb(): string
-    {
-        $disk = Storage::disk('uploads');
-        $manager = ImageManager::imagick();
-
-        return $manager->read($disk->get($this->file_path))->coverDown(400, 400)->toJpeg(50)->toString();
     }
 }

@@ -14,13 +14,22 @@ interface SiteExtractorContract
 
     public function instructions(): ?string;
 
+    /**
+     * @return array<string>
+     */
     public function tags(): array;
 
     public function glass(): ?string;
 
+    /**
+     * @return array<mixed>
+     */
     public function ingredients(): array;
 
     public function garnish(): ?string;
 
+    /**
+     * @return null|array<string, string>
+     */
     public function image(): ?array;
 }

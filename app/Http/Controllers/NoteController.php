@@ -6,10 +6,10 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Note;
+use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Http\Requests\NoteRequest;
 use Kami\Cocktail\Http\Resources\NoteResource;
@@ -67,11 +67,11 @@ class NoteController extends Controller
     #[BAO\NotFoundResponse]
     public function store(NoteRequest $request): JsonResponse
     {
-        $resourceId = $request->post('resource_id');
-        $resourceType = $request->post('resource');
+        $resourceId = $request->input('resource_id');
+        $resourceType = $request->input('resource');
 
         $resourceModel = match ($resourceType) {
-            'cocktail' => Cocktail::findOrFail($resourceId),
+            'cocktail' => Cocktail::findOrFail((int) $resourceId),
             default => abort(404)
         };
 
@@ -79,7 +79,7 @@ class NoteController extends Controller
             abort(403);
         }
 
-        $note = $resourceModel->addNote($request->post('note'), $request->user()->id);
+        $note = $resourceModel->addNote($request->input('note'), $request->user()->id);
 
         return (new NoteResource($note))
             ->response()

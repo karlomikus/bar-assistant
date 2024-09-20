@@ -1,7 +1,14 @@
 openapi: 3.1.0
 info:
   title: 'Bar Assistant API'
-  description: "**Bar Assistant** is all-in-one solution for managing your home bar. Compared to other recipe management software that usually tries to be more for general use, Bar Assistant is made specifically for managing cocktail recipes. This means that there are a lot of cocktail-oriented features, like ingredient substitutes, first-class ingredients, ABV calculations, unit switching and more.\n\n[Homepage](https://barassistant.app/) &middot; [Official Documentation](https://bar-assistant.github.io/docs/) &middot; [GitHub Repository](https://github.com/karlomikus/bar-assistant)\n\n## Rate Limiting\n\nThe rate limit is set to 1,000 requests per minute per IP address, or per user ID if authenticated. Certain endpoints have specific rate limits, such as importing and exporting data. Exporting is limited to 1 request per minute, while importing is restricted to 2 requests per minute for users without a subscription (applicable to cloud-hosted instances).\n\n## Content-Type\n\nEnsure that each request includes the `Content-Type: application/json` header.\n\n## Authentication\n\nInclude your login token in the header of every request, using the following format: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.\n\nFor requests that require a reference to a specific bar, include the bar ID in the query string, e.g., `/cocktails?bar_id=1`.\n\n## Authorization\n\nA `403 Forbidden` status code will be returned if you attempt to access a resource without the necessary permissions.\n\n## Sorting\n\nCertain endpoints support sorting by specific attributes. Prepend `-` to an attribute for descending order, or omit it for ascending order. For example, `?sort=name` sorts by the `name` attribute in ascending order. Multiple sorts can be applied by separating attributes with a comma.\n\n## Includes\n\nSome endpoints support the inclusion of related data on demand. To include multiple relationships, separate them with a comma. For example, `?include=notes,user` will include additional data for both notes and the user.\n\n## Pagination\n\nTo paginate results, use the `?per_page=30` parameter to limit the number of results per request. To navigate to a specific page, use `?page=3`.\n\n## Filtering\n\nCertain endpoints allow filtering by specific attributes. For example, `?filter[attribute_name]=value` filters results based on the given attribute. Multiple filter values can be separated by commas, e.g., `?filter[attribute_name]=value1,value2`."
+  description: "**Bar Assistant** is all-in-one solution for managing your home bar. Compared to other recipe management software that usually tries to be more for general use, Bar Assistant is made specifically for managing cocktail recipes. This means that there are a lot of cocktail-oriented features, like ingredient substitutes, first-class ingredients, ABV calculations, unit switching and more.\n\n[Homepage](https://barassistant.app/) &middot; [Official Documentation](https://bar-assistant.github.io/docs/) &middot; [GitHub Repository](https://github.com/karlomikus/bar-assistant)\n\n## Rate Limiting\n\nThe rate limit is set to 1,000 requests per minute per IP address, or per user ID if authenticated. Certain endpoints have specific rate limits, such as importing and exporting data. Exporting is limited to 1 request per minute, while importing is restricted to 2 requests per minute for users without a subscription (applicable to cloud-hosted instances).\n\n## Content-Type\n\nEnsure that each request includes the `Content-Type: application/json` header.\n\n## Auth\n\nInclude your login token in the header of every request, using the following format: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.\n\n## Bar context\n\nFor requests that require a reference to a specific bar, include the `bar_id` in the query string, e.g., `/cocktails?bar_id=1`, or use `Bar-Assistant-Bar-Id` header in your request.\n\n## Authorization\n\nA `403 Forbidden` status code will be returned if you attempt to access a resource without the necessary permissions.\n\n## Sorting\n\nCertain endpoints support sorting by specific attributes. Prepend `-` to an attribute for descending order, or omit it for ascending order. For example, `?sort=name` sorts by the `name` attribute in ascending order. Multiple sorts can be applied by separating attributes with a comma.\n\n## Includes\n\nSome endpoints support the inclusion of related data on demand. To include multiple relationships, separate them with a comma. For example, `?include=notes,user` will include additional data for both notes and the user.\n\n## Pagination\n\nTo paginate results, use the `?per_page=30` parameter to limit the number of results per request. To navigate to a specific page, use `?page=3`.\n\n## Filtering\n\nCertain endpoints allow filtering by specific attributes. For example, `?filter[attribute_name]=value` filters results based on the given attribute. Multiple filter values can be separated by commas, e.g., `?filter[attribute_name]=value1,value2`."
+  contact:
+    name: 'Bar Assistant'
+    url: 'https://barassistant.app'
+    email: info@barassistant.app
+  license:
+    name: MIT
+    url: 'https://github.com/karlomikus/bar-assistant/blob/master/LICENSE'
   version: '{{VERSION}}'
 servers:
   -
@@ -11,12 +18,12 @@ servers:
     url: 'https://api.barassistant.app/api'
     description: Production
 paths:
-  /login:
+  /auth/login:
     post:
       tags:
         - Authentication
       summary: 'Authenticate user and get a token'
-      operationId: d08b90aaa2cd3c4e803481016726da9b
+      operationId: ff0821f3f5e448e9be30bed07cac39a3
       requestBody:
         required: true
         content:
@@ -29,27 +36,29 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Token' }
                 type: object
         '400':
           description: 'Unable to authenticate'
       security: []
-  /logout:
+  /auth/logout:
     post:
       tags:
         - Authentication
       summary: 'Logout currently authenticated user'
-      operationId: 755dbc19ae417c07c2bfd1c45ee919c9
+      operationId: 7faef09646fa779e3f4eb458d4472c75
       responses:
         '204':
           description: 'Successful response'
-  /register:
+  /auth/register:
     post:
       tags:
         - Authentication
       summary: 'Register a new user'
-      operationId: 51662939845b30a86466bbb682cfcd9f
+      operationId: 26578afaf886b858f56e5e1b8fc3403b
       requestBody:
         required: true
         content:
@@ -62,6 +71,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Profile' }
                 type: object
@@ -74,12 +85,12 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
-  /forgot-password:
+  /auth/forgot-password:
     post:
       tags:
         - Authentication
       summary: 'Request a new user password'
-      operationId: 1aaffc187d2845383cae3f2efb745aac
+      operationId: 7a6f983e087620ddd905bd4925f83983
       requestBody:
         required: true
         content:
@@ -96,12 +107,12 @@ paths:
         '400':
           description: 'Unable to send password reset link'
       security: []
-  /reset-password:
+  /auth/reset-password:
     post:
       tags:
         - Authentication
       summary: 'Reset user password'
-      operationId: e7a0a2a0a5a74f36ef4484228cae9bfb
+      operationId: 5000f083616176e5a4edc804f813aecc
       requestBody:
         required: true
         content:
@@ -129,12 +140,12 @@ paths:
         '400':
           description: 'Unable to reset password'
       security: []
-  '/verify/{id}/{hash}':
+  '/auth/verify/{id}/{hash}':
     post:
       tags:
         - Authentication
       summary: 'Confirm user account'
-      operationId: 69a4e6bdc0f95b6c983f71031d4f17d0
+      operationId: 015719985fb92cfb18e9c6a19c82b1db
       parameters:
         -
           name: id
@@ -183,6 +194,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Bar' } }
                 type: object
@@ -208,6 +221,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Bar' }
                 type: object
@@ -219,6 +234,12 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
   '/bars/{id}':
     get:
       tags:
@@ -239,6 +260,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Bar' }
                 type: object
@@ -283,6 +306,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Bar' }
                 type: object
@@ -302,6 +327,12 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
     delete:
       tags:
         - Bars
@@ -356,6 +387,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Bar' }
                 type: object
@@ -395,6 +428,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/BarMembership' }
                 type: object
@@ -574,8 +609,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
         -
@@ -654,9 +696,9 @@ paths:
           schema:
             type: string
         -
-          name: includes
+          name: include
           in: query
-          description: 'Include additional relationships. Available relations: `glass`, `method`, `user`, `navigation`, `utensils`, `createdUser`, `updatedUser`.'
+          description: 'Include additional relationships. Available relations: `glass`, `method`, `user`, `navigation`, `utensils`, `createdUser`, `updatedUser`, `images`, `tags`, `ingredients.ingredient`, `ratings`.'
           schema:
             type: string
       responses:
@@ -687,8 +729,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -708,6 +757,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Cocktail' }
                 type: object
@@ -719,6 +770,12 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
   '/cocktails/{id}':
     get:
       tags:
@@ -739,6 +796,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Cocktail' }
                 type: object
@@ -783,6 +842,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Cocktail' }
                 type: object
@@ -802,6 +863,12 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
     delete:
       tags:
         - Cocktails
@@ -893,8 +960,10 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
-                  data: { $ref: '#/components/schemas/CocktailPublic' }
+                  data: { $ref: '#/components/schemas/Cocktail' }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -944,6 +1013,147 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/cocktails/{id}/share':
+    get:
+      tags:
+        - Cocktails
+      summary: 'Share a cocktail'
+      operationId: c2af4839cdc102afb67b7be674895e8c
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id or slug of a resource'
+          required: true
+          schema:
+            type: string
+        -
+          name: type
+          in: query
+          description: 'Share format'
+          schema:
+            type: string
+            enum:
+              - json
+              - json-ld
+              - yaml
+              - yml
+              - xml
+              - text
+              - markdown
+              - md
+        -
+          name: units
+          in: query
+          description: 'Units of measurement'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { required: [type, content], properties: { type: { type: string, example: json }, content: { type: string, example: '<content in requested format>' } }, type: object }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/cocktails/{id}/similar':
+    get:
+      tags:
+        - Cocktails
+      summary: 'Show similar cocktails'
+      operationId: 3e08ff7e8e549570aadbaf5b727eaa2a
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Cocktail' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/cocktails/{id}/copy':
+    post:
+      tags:
+        - Cocktails
+      summary: 'Copy cocktail'
+      operationId: d7c826954ef1111d8a897c62e27df861
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id or slug of a resource'
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: 'Successful response'
+          headers:
+            Location:
+              description: 'URL of the new resource'
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/Cocktail' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /cocktail-methods:
     get:
       tags:
@@ -954,8 +1164,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       responses:
@@ -964,6 +1181,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/CocktailMethod' } }
                 type: object
@@ -976,8 +1195,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -997,6 +1223,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/CocktailMethod' }
                 type: object
@@ -1028,6 +1256,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/CocktailMethod' }
                 type: object
@@ -1072,6 +1302,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/CocktailMethod' }
                 type: object
@@ -1131,6 +1363,20 @@ paths:
       operationId: 308d0156539f4be8f650f7ed64ed3d7f
       parameters:
         -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
+        -
           name: filter
           in: query
           description: 'Filter by attributes'
@@ -1146,6 +1392,12 @@ paths:
                 type: string
             type: object
         -
+          name: include
+          in: query
+          description: 'Include additional relationships. Available relations: `cocktails`.'
+          schema:
+            type: string
+        -
           name: sort
           in: query
           description: 'Sort by attributes. Available attributes: `name`, `created_at`.'
@@ -1157,6 +1409,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Collection' } }
                 type: object
@@ -1169,8 +1423,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -1190,6 +1451,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Collection' }
                 type: object
@@ -1201,20 +1464,46 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /collections/shared:
+  '/bars/{id}/collections':
     get:
       tags:
         - Collections
-      summary: 'Show a list of shared collections'
-      operationId: 42313a65e610e5fb2a0d851e06c6914d
+      summary: 'List bar shared collections'
+      operationId: a15fa7e1679d8b4eafed56112a63da76
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: 'Successful response'
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Collection' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
                 type: object
   '/collections/{id}':
     get:
@@ -1229,13 +1518,15 @@ paths:
           description: 'Database id or slug of a resource'
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         '200':
           description: 'Successful response'
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Collection' }
                 type: object
@@ -1280,6 +1571,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Collection' }
                 type: object
@@ -1332,16 +1625,17 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
   '/collections/{id}/cocktails':
-    post:
+    put:
       tags:
         - Collections
-      summary: 'Sync multiple cocktails in a collection'
-      operationId: ac25b0f887ef526ef9d11b444bc0aa43
+      summary: 'Sync cocktails in a collection'
+      description: 'Used to updated/add/delete cocktails in a collection. To delete all cocktails pass an empty array.'
+      operationId: 934e63129e4bf90dd91eccc108f51f40
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar'
+          name: id
+          in: path
+          description: 'Database id of a resource'
           required: true
           schema:
             type: integer
@@ -1361,6 +1655,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Collection' }
                 type: object
@@ -1372,104 +1668,29 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  '/collections/{id}/cocktails/{cocktailId}':
-    put:
-      tags:
-        - Collections
-      summary: 'Add single cocktail to a collection'
-      operationId: b2cf864d955029e00e713c0f837d36d4
-      parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar'
-          required: true
-          schema:
-            type: integer
-        -
-          name: cocktailId
-          in: path
-          description: 'Database id of a cocktail'
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/Collection' }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/ingredients/{id}/cocktails/{cocktailId}':
-    delete:
-      tags:
-        - Collections
-      summary: 'Delete a cocktail from a collection'
-      operationId: 00fd3daef3dc5cba5dade787e9d227ec
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: cocktailId
-          in: path
-          description: 'Database id of a cocktail'
-          required: true
-          schema:
-            type: integer
-      responses:
-        '204':
-          description: 'Successful response'
-        '403':
-          description: 'You are not authorized for this action.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/explore/cocktails/{ulid}':
+  '/explore/cocktails/{public_id}':
     get:
       tags:
         - Explore
       summary: 'Show a public cocktail'
-      operationId: 98ae5704f462b0b0647c27532813284b
+      operationId: 83841be3da52f7694d8382c5f5b13d8e
       parameters:
         -
-          name: ulid
+          name: public_id
           in: path
-          description: 'Public cocktail ULID'
+          description: 'Public cocktail id'
           required: true
           schema:
             type: string
+            format: ulid
       responses:
         '200':
           description: 'Successful response'
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/CocktailExplore' }
                 type: object
@@ -1494,6 +1715,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Export' } }
                 type: object
@@ -1507,20 +1730,15 @@ paths:
         content:
           application/json:
             schema:
-              properties:
-                type:
-                  type: string
-                  example: json
-                bar_id:
-                  type: integer
-                  example: 1
-              type: object
+              $ref: '#/components/schemas/ExportRequest'
       responses:
         '200':
           description: 'Successful response'
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Export' }
                 type: object
@@ -1565,12 +1783,55 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  '/exports/{id}/Download':
+  '/exports/{id}/download':
     get:
       tags:
         - Exports
       summary: 'Download export'
-      operationId: fa4bc1a5118ce21897ba5359cae50c4b
+      operationId: df14ed9175061d3560c934ca7c89b47a
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: t
+          in: query
+          description: Token
+          required: true
+          schema:
+            type: string
+        -
+          name: e
+          in: query
+          description: Timestamp
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/octet-stream:
+              example: binary
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
+    post:
+      tags:
+        - Exports
+      summary: 'Generate download link'
+      description: 'Generates a publicly accessible download link for the export. The link will be valid for 1 minute by default.'
+      operationId: 48e1c2637c22de5ec50f90272526b454
       parameters:
         -
           name: id
@@ -1583,8 +1844,13 @@ paths:
         '200':
           description: 'Successful response'
           content:
-            application/octet-stream:
-              example: binary
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/FileDownloadLink' }
+                type: object
         '403':
           description: 'You are not authorized for this action.'
           content:
@@ -1611,8 +1877,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
         -
@@ -1638,6 +1911,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Glass' } }
                 type: object
@@ -1650,8 +1925,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -1671,6 +1953,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Glass' }
                 type: object
@@ -1702,6 +1986,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Glass' }
                 type: object
@@ -1746,6 +2032,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Glass' }
                 type: object
@@ -1797,6 +2085,82 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /images:
+    get:
+      tags:
+        - Images
+      summary: 'List uploaded images'
+      description: 'List all images uploaded by the authenticated user'
+      operationId: 3ac02bbdafb65e59d8b5c6d5aaf9806d
+      parameters:
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Image' } }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    post:
+      tags:
+        - Images
+      summary: 'Upload an image'
+      description: 'Used to upload multiple images at once. Uploaded images via this endpoint will not be attached to any resource. Images are converted to WebP format with 85% quality of the original image.'
+      operationId: d889115b2fa2ccddce23e39df958cc47
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - images
+              properties:
+                images:
+                  type: array
+                  items: { $ref: '#/components/schemas/ImageRequest' }
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Image' } }
+                type: object
   '/images/{id}':
     get:
       tags:
@@ -1817,6 +2181,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Image' }
                 type: object
@@ -1861,6 +2227,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Image' }
                 type: object
@@ -1875,7 +2243,7 @@ paths:
     delete:
       tags:
         - Images
-      summary: 'Delete an image'
+      summary: 'Delete image'
       operationId: 99a6b84660d0881a68e57435afb2e6ea
       parameters:
         -
@@ -1903,31 +2271,6 @@ paths:
               schema:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  /images:
-    post:
-      tags:
-        - Images
-      summary: 'Upload an image'
-      operationId: d889115b2fa2ccddce23e39df958cc47
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              properties:
-                images:
-                  type: array
-                  items: { $ref: '#/components/schemas/ImageRequest' }
-              type: object
-      responses:
-        '200':
-          description: 'Successful response'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/Image' } }
                 type: object
   '/images/{id}/thumb':
     get:
@@ -1964,35 +2307,76 @@ paths:
     post:
       tags:
         - Import
-      summary: 'Import a cocktail'
+      summary: 'Import from recipe schema'
       operationId: f46bb44c14109f5d529b854e81d57150
       parameters:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
           schema:
             type: integer
         -
-          name: type
-          in: query
-          description: 'Type of import'
-          required: true
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
-            type: string
-            enum:
-              - url
-              - json
-              - yaml
-              - yml
-              - collection
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                source:
+                  type: string
+                duplicate_actions:
+                  $ref: '#/components/schemas/DuplicateActionsEnum'
+                  description: 'How to handle duplicates. Cocktails are matched by lowercase name.'
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/Cocktail' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /import/scrape:
+    post:
+      tags:
+        - Import
+      summary: 'Scrape a recipe'
+      description: 'Try to scrape a recipe from a website. Most of the well known recipe websites should work. Data returned is a valid JSON schema that you can import using import cocktail endpoint.'
+      operationId: 33b756be1976d85e9b0e8e734beed74f
+      parameters:
         -
-          name: save
+          name: bar_id
           in: query
-          description: 'Save imported cocktails to the database'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
           schema:
-            type: boolean
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
@@ -2002,8 +2386,6 @@ paths:
                 source:
                   type: string
                   example: 'https://www.example.com/recipe-url'
-                duplicate_actions:
-                  $ref: '#/components/schemas/DuplicateActionsEnum'
               type: object
       responses:
         '200':
@@ -2011,8 +2393,10 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
-                  data: { $ref: '#/components/schemas/Cocktail' }
+                  data: { required: [schema_version, schema, scraper_meta], properties: { schema_version: { type: string, example: draft2 }, schema: { $ref: 'https://barassistant.app/cocktail-02.schema.json' }, scraper_meta: { type: array, items: { required: [_id, source], properties: { _id: { type: string }, source: { type: string } }, type: object } } }, type: object }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -2032,8 +2416,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       responses:
@@ -2042,6 +2433,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/IngredientCategory' } }
                 type: object
@@ -2054,8 +2447,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -2075,6 +2475,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/IngredientCategory' }
                 type: object
@@ -2106,6 +2508,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/IngredientCategory' }
                 type: object
@@ -2150,6 +2554,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/IngredientCategory' }
                 type: object
@@ -2211,8 +2617,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
         -
@@ -2269,9 +2682,9 @@ paths:
           schema:
             type: string
         -
-          name: includes
+          name: include
           in: query
-          description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `cocktails`, `cocktailIngredientSubstitutes`, `prices`.'
+          description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `prices`, `ingredientParts`, `category`, `images`.'
           schema:
             type: string
       responses:
@@ -2302,8 +2715,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -2323,6 +2743,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Ingredient' }
                 type: object
@@ -2354,6 +2776,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Ingredient' }
                 type: object
@@ -2398,6 +2822,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Ingredient' }
                 type: object
@@ -2453,7 +2879,7 @@ paths:
     get:
       tags:
         - Ingredients
-      summary: 'Show how many extra cocktails you can make if you add this ingredient to your shelf'
+      summary: 'Extra cocktails you can make if you add this ingredient to your shelf'
       operationId: ff324ec47870a7091f125afea3f7e664
       parameters:
         -
@@ -2469,6 +2895,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
                 type: object
@@ -2488,18 +2916,30 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /ingredients/recommend:
+  '/ingredients/{id}/cocktails':
     get:
       tags:
         - Ingredients
-      summary: 'Recommend next ingredients to buy'
-      operationId: a54487bcba28019a606666105f57f7c3
+      summary: 'List of cocktails that use this ingredient'
+      operationId: aba5fae0baf2ce1fc02a691412c8a6ab
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar'
+          name: id
+          in: path
+          description: 'Database id of a resource'
           required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
           schema:
             type: integer
       responses:
@@ -2509,7 +2949,63 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { properties: { id: { type: integer, example: 1 }, slug: { type: string, example: old-fashioned-1 }, name: { type: string, example: 'Old fashioned' }, potential_cocktails: { description: 'Number of new cocktails that user can make with this ingredient', type: integer, example: 3 } }, type: object } }
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/ingredients/{id}/substitutes':
+    get:
+      tags:
+        - Ingredients
+      summary: 'List ingredient substitutes'
+      description: 'Show a list of ingredients that are used as a substitute for this ingredient in cocktail recipes.'
+      operationId: fccb6b72c41f8a78ab604bc86a879c27
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -2537,8 +3033,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       responses:
@@ -2547,6 +3050,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Menu' }
                 type: object
@@ -2558,7 +3063,6 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-      security: []
     post:
       tags:
         - Menu
@@ -2568,8 +3072,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -2584,6 +3095,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Menu' }
                 type: object
@@ -2595,7 +3108,6 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-      security: []
   '/explore/menus/{slug}':
     get:
       tags:
@@ -2616,6 +3128,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/MenuExplore' }
                 type: object
@@ -2680,6 +3194,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Note' }
                 type: object
@@ -2719,6 +3235,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Note' }
                 type: object
@@ -2782,6 +3300,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/PersonalAccessToken' } }
                 type: object
@@ -2802,8 +3322,10 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
-                  data: { $ref: '#/components/schemas/PersonalAccessToken' }
+                  data: { $ref: '#/components/schemas/Token' }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -2856,8 +3378,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       responses:
@@ -2866,6 +3395,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/PriceCategory' } }
                 type: object
@@ -2878,8 +3409,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -2899,6 +3437,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/PriceCategory' }
                 type: object
@@ -2930,6 +3470,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/PriceCategory' }
                 type: object
@@ -2974,6 +3516,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/PriceCategory' }
                 type: object
@@ -3029,7 +3573,7 @@ paths:
     get:
       tags:
         - Profile
-      summary: 'Show authenticated user profile'
+      summary: 'Show profile'
       operationId: 73fd658c723e80f927b251628b9a616b
       responses:
         '200':
@@ -3037,6 +3581,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Profile' }
                 type: object
@@ -3051,7 +3597,7 @@ paths:
     post:
       tags:
         - Profile
-      summary: 'Update authenticated user profile'
+      summary: 'Update profile'
       operationId: c5958eea850b563b057d22dc8258efbf
       requestBody:
         required: true
@@ -3065,6 +3611,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Profile' }
                 type: object
@@ -3076,17 +3624,17 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  '/ratings/cocktails/{id}':
+  '/cocktails/{id}/ratings':
     post:
       tags:
         - Ratings
       summary: 'Rate a cocktail'
-      operationId: d08a80593bbc130a2d9bf1c3fa09259b
+      operationId: c7c135615b762420f7b338e0bc744a76
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar'
+          name: id
+          in: path
+          description: 'Database id of a resource'
           required: true
           schema:
             type: integer
@@ -3100,13 +3648,15 @@ paths:
                   type: integer
               type: object
       responses:
-        '200':
+        '204':
           description: 'Successful response'
+        '404':
+          description: 'Resource record not found.'
           content:
             application/json:
               schema:
                 properties:
-                  data: { $ref: '#/components/schemas/Rating' }
+                  data: { $ref: '#/components/schemas/APIError' }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -3120,7 +3670,7 @@ paths:
       tags:
         - Ratings
       summary: "Delete current user's cocktail rating"
-      operationId: 383f4f99d862cbff18251ee0613fdec4
+      operationId: 93d095c7348ac6ee7d0f3cb8ea1f1c36
       parameters:
         -
           name: id
@@ -3148,18 +3698,64 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /shelf/ingredients:
+  /server/version:
     get:
       tags:
-        - Shelf
-      summary: 'Show a list of ingredients on the shelf'
-      operationId: 69493b94b4505315ffd519dea3650e0c
+        - Server
+      summary: 'Show server information'
+      operationId: 25784e4e494f0fd4dbbdb7b92c301b26
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/ServerVersion' }
+                type: object
+      security:
+        - {  }
+  '/users/{id}/ingredients':
+    get:
+      tags:
+        - 'Users: Shelf'
+      summary: 'Show a list of shelf ingredients'
+      description: 'Ingredients that user saved to their shelf'
+      operationId: b34236369b075eabaacef013be799024
       parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
           schema:
             type: integer
       responses:
@@ -3169,26 +3765,49 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/UserIngredient' } }
+                  data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
                 type: object
-  /shelf/cocktails:
+  '/users/{id}/cocktails':
     get:
       tags:
-        - Shelf
-      summary: 'Show a list of cocktails on the shelf'
-      operationId: d663f570b3b97976d21894bb6215b00d
+        - 'Users: Shelf'
+      summary: 'Show a list shelf cocktails'
+      description: 'Cocktails that the user can make with ingredients on their shelf'
+      operationId: 5a48f072f2ca1f25807838c8ae331db5
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar'
+          name: id
+          in: path
+          description: 'Database id of a resource'
           required: true
           schema:
             type: integer
         -
-          name: limit
+          name: bar_id
           in: query
-          description: 'Limit the number of results'
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
           schema:
             type: integer
       responses:
@@ -3198,20 +3817,48 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { description: 'List of cocktail ids that are on the shelf', type: array, items: { type: integer } }
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
                 type: object
-  /shelf/cocktail-favorites:
+  '/users/{id}/cocktails/favorites':
     get:
       tags:
-        - Shelf
-      summary: 'Show a list of cocktails on the shelf that the user has favorited'
-      operationId: 034f3c889e4be90c68d26a8e202630c4
+        - 'Users: Shelf'
+      summary: 'Show a list of cocktails user has favorited'
+      operationId: 0038cb5730a723a0c58e5605fecb0ccb
       parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
           schema:
             type: integer
       responses:
@@ -3221,33 +3868,51 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { description: 'List of cocktail ids', type: array, items: { type: integer } }
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
                 type: object
-  /shelf/ingredients/batch-store:
+  '/users/{id}/ingredients/batch-store':
     post:
       tags:
-        - Shelf
-      summary: 'Batch store ingredients'
-      operationId: a9cceabb7c8f192e730ecdf1aee55edd
+        - 'Users: Shelf'
+      summary: 'Batch store ingredients to the shelf'
+      operationId: 28c0db334504ef005e3704dcc80154b1
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
           application/json:
             schema:
               properties:
-                ingredient_ids:
+                ingredients:
                   type: array
                   items: { type: integer }
               type: object
       responses:
-        '201':
+        '204':
           description: 'Successful response'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/UserIngredient' } }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           content:
@@ -3264,18 +3929,32 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /shelf/ingredients/batch-delete:
+  '/users/{id}/ingredients/batch-delete':
     post:
       tags:
-        - Shelf
+        - 'Users: Shelf'
       summary: 'Delete multiple ingredients from the shelf'
-      operationId: bedc00e895ad5edf650539fb24670b96
+      operationId: 8effce422c8cbe13a9b273a71f9d8afc
       parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -3284,7 +3963,7 @@ paths:
           application/json:
             schema:
               properties:
-                ingredient_ids:
+                ingredients:
                   type: array
                   items: { type: integer }
               type: object
@@ -3307,18 +3986,87 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /shopping-list:
+  '/users/{id}/ingredients/recommend':
     get:
       tags:
-        - 'Shopping list'
+        - 'Users: Shelf'
+      summary: 'Recommend next ingredients'
+      operationId: f5e680e7f9f44a047888ad4bc8a22ba8
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/IngredientRecommend' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/users/{id}/shopping-list':
+    get:
+      tags:
+        - 'Users: Shopping list'
       summary: 'Show shopping list'
-      operationId: 57230d3776679bad7c99fb478fadbdd1
+      operationId: ea114c1013eabd71064b7b33513d13cd
       parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       responses:
@@ -3327,6 +4075,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/ShoppingList' } }
                 type: object
@@ -3338,19 +4088,32 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-      security: []
-  /shopping-list/batch-store:
+  '/users/{id}/shopping-list/batch-store':
     post:
       tags:
-        - 'Shopping list'
+        - 'Users: Shopping list'
       summary: 'Batch add ingredients to shopping list'
-      operationId: a3541b87bafbea2193beff9c9865184d
+      operationId: c9dbd5fceec4406656e93b94646ea5f6
       parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -3358,20 +4121,10 @@ paths:
         content:
           application/json:
             schema:
-              properties:
-                ingredient_ids:
-                  type: array
-                  items: { type: integer }
-              type: object
+              $ref: '#/components/schemas/ShoppingListRequest'
       responses:
-        '200':
+        '204':
           description: 'Successful response'
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/ShoppingList' } }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           content:
@@ -3388,18 +4141,32 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /shopping-list/batch-delete:
+  '/users/{id}/shopping-list/batch-delete':
     post:
       tags:
-        - 'Shopping list'
+        - 'Users: Shopping list'
       summary: 'Batch delete ingredients from shopping list'
-      operationId: 5490435654005127044016b3f4d764b5
+      operationId: cec5d8ca07890aaad3cd264ba62a88bb
       parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -3408,9 +4175,9 @@ paths:
           application/json:
             schema:
               properties:
-                ingredient_ids:
+                ingredients:
                   type: array
-                  items: { type: integer }
+                  items: { properties: { id: { type: integer } }, type: object }
               type: object
       responses:
         '204':
@@ -3431,27 +4198,51 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /shopping-list/share:
+  '/users/{id}/shopping-list/share':
     get:
       tags:
-        - 'Shopping list'
+        - 'Users: Shopping list'
       summary: 'Share shopping list'
-      operationId: 2138a55649c305a3c279f64fbd97fca8
+      operationId: 1d4aaec85e00ac2c559f362058f02056
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar'
+          name: id
+          in: path
+          description: 'Database id of a resource'
           required: true
           schema:
             type: integer
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: type
+          in: query
+          description: 'Type of share. Available types: `markdown`.'
+          schema:
+            type: string
       responses:
         '200':
           description: 'Successful response'
           content:
-            text/markdown:
+            application/json:
               schema:
-                type: string
+                required:
+                  - data
+                properties:
+                  data: { required: [type, content], properties: { type: { type: string, example: markdown }, content: { type: string, example: '<content in requested format>' } }, type: object }
+                type: object
         '403':
           description: 'You are not authorized for this action.'
           content:
@@ -3460,7 +4251,107 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-      security: []
+  '/bars/{id}/stats':
+    get:
+      tags:
+        - Bars
+      summary: 'Show bar stats'
+      operationId: d62319d3bf13005383b7d8027e9056ec
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/BarStats' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /billing/subscriptions:
+    get:
+      tags:
+        - Billing
+      summary: 'Get subscription status'
+      operationId: 5e298d4bebc46cd05931c3a15c92f248
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/UserSubscription' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    post:
+      tags:
+        - Billing
+      summary: 'Update subscription'
+      operationId: 6b69b6aa21e0e7174a5601c02a19161e
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - type
+              properties:
+                type:
+                  type: string
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /tags:
     get:
       tags:
@@ -3471,8 +4362,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       responses:
@@ -3481,6 +4379,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Tag' } }
                 type: object
@@ -3493,8 +4393,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -3514,6 +4421,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Tag' }
                 type: object
@@ -3545,6 +4454,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Tag' }
                 type: object
@@ -3589,6 +4500,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Tag' }
                 type: object
@@ -3650,8 +4563,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       responses:
@@ -3660,6 +4580,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/User' } }
                 type: object
@@ -3672,8 +4594,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -3693,6 +4622,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/User' }
                 type: object
@@ -3714,8 +4645,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
         -
@@ -3731,6 +4669,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/User' }
                 type: object
@@ -3759,8 +4699,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
         -
@@ -3782,6 +4729,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/User' }
                 type: object
@@ -3843,8 +4792,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       responses:
@@ -3853,6 +4809,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Utensil' } }
                 type: object
@@ -3865,8 +4823,15 @@ paths:
         -
           name: bar_id
           in: query
-          description: 'Database id of a bar'
-          required: true
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
           schema:
             type: integer
       requestBody:
@@ -3886,6 +4851,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Utensil' }
                 type: object
@@ -3917,6 +4884,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Utensil' }
                 type: object
@@ -3961,6 +4930,8 @@ paths:
           content:
             application/json:
               schema:
+                required:
+                  - data
                 properties:
                   data: { $ref: '#/components/schemas/Utensil' }
                 type: object
@@ -4014,12 +4985,33 @@ paths:
                 type: object
 components:
   schemas:
-    DuplicateActionsEnum:
-      type: integer
+    BarOptionsEnum:
+      type: string
       enum:
-        - 0
-        - 1
-        - 2
+        - ingredients
+        - cocktails
+    ExportTypeEnum:
+      type: string
+      enum:
+        - datapack
+        - schema
+        - md
+        - json-ld
+        - xml
+        - yaml
+    ForceUnitConvertEnum:
+      type: string
+      enum:
+        - none
+        - ml
+        - oz
+        - cl
+    DuplicateActionsEnum:
+      type: string
+      enum:
+        - none
+        - skip
+        - overwrite
     AbilityEnum:
       type: string
       enum:
@@ -4046,6 +5038,21 @@ components:
           example: 'Resource record not found.'
       type: object
     Bar:
+      required:
+        - id
+        - slug
+        - name
+        - subtitle
+        - description
+        - status
+        - access
+        - invite_code
+        - active
+        - settings
+        - search_host
+        - search_token
+        - created_at
+        - updated_at
       properties:
         id:
           type: integer
@@ -4076,12 +5083,13 @@ components:
         settings:
           type: array
           items:
-            type: string
-        search_driver_host:
+            type: object
+            additionalProperties: true
+        search_host:
           type:
             - string
             - 'null'
-        search_driver_api_key:
+        search_token:
           type:
             - string
             - 'null'
@@ -4122,7 +5130,33 @@ components:
                 example: true
             type: object
       type: object
+    BarBasic:
+      required:
+        - id
+        - slug
+        - name
+        - subtitle
+      properties:
+        id:
+          type: integer
+          example: 1
+        slug:
+          type: string
+          example: bar-name-1
+        name:
+          type: string
+          example: 'Bar name'
+        subtitle:
+          type: string
+          example: 'Bar subtitle'
+      type: object
     BarMembership:
+      required:
+        - user_id
+        - user_name
+        - bar_id
+        - is_shelf_public
+        - use_parent_as_substitute
       properties:
         user_id:
           type: integer
@@ -4178,10 +5212,137 @@ components:
           description: 'Enable users with invite code to join this bar. Default `false`.'
           type: boolean
         options:
-          description: 'List of data that the bar will start with. Possible values: `ingredients`, `cocktails`. Cocktails cannot be imported without ingredients.'
+          description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.'
           type: array
           items:
-            type: string
+            type: enum
+            enum:
+              - ingredients
+              - cocktails
+      type: object
+    BarStats:
+      required:
+        - total_cocktails
+        - total_ingredients
+        - total_favorited_cocktails
+        - total_shelf_cocktails
+        - total_shelf_ingredients
+        - total_bar_members
+        - total_collections
+        - favorite_tags
+        - your_top_ingredients
+        - most_popular_ingredients
+        - top_rated_cocktails
+      properties:
+        total_cocktails:
+          type: integer
+          example: 1
+        total_ingredients:
+          type: integer
+          example: 1
+        total_favorited_cocktails:
+          type: integer
+          example: 1
+        total_shelf_cocktails:
+          type: integer
+          example: 1
+        total_shelf_ingredients:
+          type: integer
+          example: 1
+        total_bar_members:
+          type: integer
+          example: 1
+        total_collections:
+          type: integer
+          example: 1
+        favorite_tags:
+          type: array
+          items:
+            required:
+              - id
+              - name
+              - cocktails_count
+            properties:
+              id:
+                type: integer
+                example: 31
+              name:
+                type: string
+                example: 'Tag name'
+              cocktails_count:
+                type: integer
+                example: 12
+            type: object
+        your_top_ingredients:
+          type: array
+          items:
+            required:
+              - id
+              - slug
+              - name
+              - cocktails_count
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: gin
+              name:
+                type: string
+                example: Gin
+              cocktails_count:
+                type: integer
+                example: 1
+            type: object
+        most_popular_ingredients:
+          type: array
+          items:
+            required:
+              - id
+              - slug
+              - name
+              - cocktails_count
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: gin
+              name:
+                type: string
+                example: Gin
+              cocktails_count:
+                type: integer
+                example: 1
+            type: object
+        top_rated_cocktails:
+          type: array
+          items:
+            required:
+              - id
+              - slug
+              - name
+              - avg_rating
+              - votes
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: old-fashioned
+              name:
+                type: string
+                example: 'Old Fashioned'
+              avg_rating:
+                type: integer
+                example: 3
+              votes:
+                type: integer
+                example: 42
+            type: object
       type: object
     Cocktail:
       required:
@@ -4194,10 +5355,6 @@ components:
         - source
         - public_id
         - public_at
-        - main_image_id
-        - images
-        - tags
-        - rating
         - created_at
         - updated_at
         - abv
@@ -4239,11 +5396,6 @@ components:
             - string
             - 'null'
           format: date-time
-        main_image_id:
-          type:
-            - integer
-            - 'null'
-          example: 1
         images:
           type: array
           items:
@@ -4260,6 +5412,10 @@ components:
                 example: 'Tag name'
             type: object
         rating:
+          required:
+            - user
+            - average
+            - total_votes
           properties:
             user:
               description: "Current user's rating"
@@ -4337,6 +5493,11 @@ components:
         in_shelf:
           type: boolean
         access:
+          required:
+            - can_edit
+            - can_delete
+            - can_rate
+            - can_add_note
           properties:
             can_edit:
               type: boolean
@@ -4352,6 +5513,9 @@ components:
               example: true
           type: object
         navigation:
+          required:
+            - prev
+            - next
           properties:
             prev:
               type:
@@ -4367,6 +5531,10 @@ components:
       type: object
     CocktailBasic:
       description: 'Minimal cocktail information'
+      required:
+        - id
+        - slug
+        - name
       properties:
         id:
           type: integer
@@ -4381,14 +5549,7 @@ components:
     CocktailExplore:
       properties:
         bar:
-          properties:
-            name:
-              type: string
-              example: 'Bar name'
-            subtitle:
-              type: string
-              example: 'Bar subtitle'
-          type: object
+          $ref: '#/components/schemas/BarBasic'
         name:
           type: string
           example: 'Cocktail name'
@@ -4444,7 +5605,7 @@ components:
           items:
             properties:
               name:
-                type: integer
+                type: string
                 example: 'Ingredient name'
               amount:
                 type: number
@@ -4483,7 +5644,15 @@ components:
           example: 40
       type: object
     CocktailIngredient:
+      required:
+        - ingredient
+        - sort
+        - amount
+        - units
+        - formatted
       properties:
+        ingredient:
+          $ref: '#/components/schemas/IngredientBasic'
         sort:
           type: integer
           example: 0
@@ -4503,15 +5672,6 @@ components:
         optional:
           type: boolean
           example: false
-        ingredient_id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: Vodka
-        ingredient_slug:
-          type: string
-          example: vodka-1
         substitutes:
           type: array
           items:
@@ -4523,24 +5683,79 @@ components:
           example: 'Additional notes'
         formatted:
           description: 'Amounts in different units, converted if possible'
-          type: array
-          items:
-            properties:
-              amount:
-                type: number
-                format: float
-                example: 30
-              amount_max:
-                type: number
-                format: float
-                example: 60
-              units:
-                type: string
-                example: ml
-              full_text:
-                type: string
-                example: '30-60 ml'
-            type: object
+          required:
+            - ml
+            - oz
+            - cl
+          properties:
+            ml:
+              required:
+                - amount
+                - amount_max
+                - units
+                - full_text
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  example: 30
+                amount_max:
+                  type: number
+                  format: float
+                  example: 60
+                units:
+                  type: string
+                  example: ml
+                full_text:
+                  type: string
+                  example: '30-60 ml'
+              type: object
+            oz:
+              required:
+                - amount
+                - amount_max
+                - units
+                - full_text
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  example: 1
+                amount_max:
+                  type: number
+                  format: float
+                  example: 2
+                units:
+                  type: string
+                  example: oz
+                full_text:
+                  type: string
+                  example: '1-2 oz'
+              type: object
+            cl:
+              required:
+                - amount
+                - amount_max
+                - units
+                - full_text
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  example: 3
+                amount_max:
+                  type: number
+                  format: float
+                  example: 6
+                units:
+                  type: string
+                  example: cl
+                full_text:
+                  type: string
+                  example: '3-6 cl'
+              type: object
+          type: object
+          additionalProperties: true
         in_shelf:
           type: boolean
           example: true
@@ -4551,17 +5766,54 @@ components:
           type: boolean
           example: true
       type: object
-    CocktailIngredientSubstitute:
+    CocktailIngredientRequest:
+      required:
+        - ingredient_id
+        - amount
+        - units
       properties:
-        id:
+        ingredient_id:
           type: integer
-          example: 1
-        slug:
-          type: string
-          example: vodka
         name:
+          type:
+            - string
+            - 'null'
+        amount:
+          type: number
+          format: float
+          example: 30
+        units:
           type: string
-          example: Vodka
+          example: ml
+        sort:
+          type: integer
+        optional:
+          type: boolean
+        substitutes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CocktailIngredientSubstituteRequest'
+        amount_max:
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 60
+        note:
+          type:
+            - string
+            - 'null'
+      type: object
+    CocktailIngredientSubstitute:
+      required:
+        - ingredient
+        - amount
+        - amount_max
+        - units
+        - in_shelf
+      properties:
+        ingredient:
+          $ref: '#/components/schemas/IngredientBasic'
         amount:
           type:
             - number
@@ -4582,6 +5834,30 @@ components:
         in_shelf:
           type: boolean
           example: true
+      type: object
+    CocktailIngredientSubstituteRequest:
+      required:
+        - ingredient_id
+      properties:
+        ingredient_id:
+          type: integer
+        amount:
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 30
+        amount_max:
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 60
+        units:
+          type:
+            - string
+            - 'null'
+          example: ml
       type: object
     CocktailMethod:
       required:
@@ -4614,20 +5890,6 @@ components:
         dilution_percentage:
           type: integer
           example: 20
-      type: object
-    CocktailPublic:
-      properties:
-        public_id:
-          type: string
-          example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
-        public_at:
-          type: string
-          format: datetime
-          example: '2023-05-14T21:23:40.000000Z'
-        public_expires_at:
-          type: string
-          format: datetime
-          example: '2023-05-14T21:23:40.000000Z'
       type: object
     CocktailRequest:
       required:
@@ -4672,41 +5934,7 @@ components:
         ingredients:
           type: array
           items:
-            required:
-              - ingredient_id
-              - units
-              - amount
-            properties:
-              ingredient_id:
-                type: integer
-                example: 1
-              amount:
-                type: number
-                format: float
-                example: 30
-              amount_max:
-                type:
-                  - number
-                  - 'null'
-                format: float
-                example: 60
-              units:
-                type: string
-                example: ml
-              optional:
-                type: boolean
-                example: false
-              note:
-                type:
-                  - string
-                  - 'null'
-                example: 'Ingredient note'
-              substitutes:
-                type: array
-                items:
-                  properties: { id: { type: integer, example: 1 }, amount: { type: [number, 'null'], format: float, example: 30 }, amount_max: { type: [number, 'null'], format: float, example: 60 }, units: { type: [string, 'null'], example: ml } }
-                  type: object
-            type: object
+            $ref: '#/components/schemas/CocktailIngredientRequest'
         images:
           description: 'List of existing image ids'
           type: array
@@ -4719,6 +5947,12 @@ components:
             type: integer
       type: object
     Collection:
+      required:
+        - id
+        - name
+        - description
+        - is_bar_shared
+        - created_at
       properties:
         id:
           type: integer
@@ -4742,7 +5976,7 @@ components:
         cocktails:
           type: array
           items:
-            type: integer
+            $ref: '#/components/schemas/CocktailBasic'
       type: object
     CollectionRequest:
       required:
@@ -4781,6 +6015,28 @@ components:
         is_done:
           type: boolean
           example: true
+      type: object
+    ExportRequest:
+      properties:
+        type:
+          $ref: '#/components/schemas/ExportTypeEnum'
+        units:
+          $ref: '#/components/schemas/ForceUnitConvertEnum'
+        bar_id:
+          type: integer
+      type: object
+    FileDownloadLink:
+      properties:
+        url:
+          description: 'Absolute URL to download the export'
+          type: string
+          example: 'http://example.com/api/exports/29/download?t=2053f2e716f2dcddc0a2b767249235750e549af6d459cb1c65d4720e72404d88&e=1723480826'
+        token:
+          type: string
+          example: 2053f2e716f2dcddc0a2b767249235750e549af6d459cb1c65d4720e72404d88
+        expires:
+          type: string
+          example: '2024-08-12T16:40:26+00:00'
       type: object
     Glass:
       required:
@@ -4843,6 +6099,13 @@ components:
       type: object
     Image:
       description: 'Image attached to a specific resource'
+      required:
+        - id
+        - file_path
+        - url
+        - copyright
+        - sort
+        - placeholder_hash
       properties:
         id:
           type: integer
@@ -4870,15 +6133,19 @@ components:
     ImageRequest:
       required:
         - image
+        - sort
       properties:
         image:
-          type: string
-          format: binary
-        image_url:
+          description: 'Image file. Base64 encoded images also supported. Max 50MB'
           type:
             - string
             - 'null'
-          example: 'http://example.com/cocktail_image.jpg'
+          format: binary
+        id:
+          description: 'Existing image id, used to update an existing image'
+          type:
+            - integer
+            - 'null'
         sort:
           type: integer
           example: 1
@@ -4889,6 +6156,16 @@ components:
           example: 'Image copyright'
       type: object
     Ingredient:
+      required:
+        - id
+        - slug
+        - name
+        - description
+        - origin
+        - color
+        - created_at
+        - updated_at
+        - strength
       properties:
         id:
           type: integer
@@ -4913,11 +6190,6 @@ components:
             - string
             - 'null'
           example: Worldwide
-        main_image_id:
-          type:
-            - string
-            - 'null'
-          example: 1
         created_at:
           type: string
           format: date-time
@@ -4996,6 +6268,10 @@ components:
       type: object
     IngredientBasic:
       description: 'Minimal ingredient information'
+      required:
+        - id
+        - slug
+        - name
       properties:
         id:
           type: integer
@@ -5043,18 +6319,19 @@ components:
           example: 'Category of base spirits'
       type: object
     IngredientPrice:
+      required:
+        - price_category
+        - price
+        - amount
+        - units
+        - description
+        - created_at
+        - updated_at
       properties:
         price_category:
           $ref: '#/components/schemas/PriceCategory'
         price:
-          type: string
-          example: 'EUR 30.00'
-        price_minor:
-          type: integer
-          example: 3000
-        price_formatted:
-          type: string
-          example: €30.00
+          $ref: '#/components/schemas/Price'
         amount:
           type: number
           format: float
@@ -5076,6 +6353,39 @@ components:
             - 'null'
           format: date-time
       type: object
+    IngredientPriceRequest:
+      required:
+        - price_category_id
+        - price
+        - amount
+        - units
+      properties:
+        price_category_id:
+          type: integer
+        price:
+          type: integer
+        amount:
+          type: number
+          format: float
+        units:
+          type: string
+        description:
+          type:
+            - string
+            - 'null'
+      type: object
+    IngredientRecommend:
+      description: 'Ingredient recommendation with number of potential cocktails'
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/IngredientBasic'
+        -
+          properties:
+            potential_cocktails:
+              type: integer
+              example: 10
+          type: object
     IngredientRequest:
       required:
         - name
@@ -5089,9 +6399,7 @@ components:
             - 'null'
           example: 1
         strength:
-          type:
-            - number
-            - 'null'
+          type: number
           format: float
           example: 40
         description:
@@ -5110,7 +6418,9 @@ components:
             - 'null'
           example: '#ffffff'
         parent_ingredient_id:
-          type: integer
+          type:
+            - integer
+            - 'null'
           example: 1
         images:
           description: 'Existing image ids'
@@ -5125,25 +6435,7 @@ components:
         prices:
           type: array
           items:
-            properties:
-              price_category_id:
-                type: integer
-                example: 1
-              price:
-                type: integer
-                example: 2500
-              amount:
-                type: number
-                example: 750
-              units:
-                type: string
-                example: ml
-              description:
-                type:
-                  - string
-                  - 'null'
-                example: 'Updated price'
-            type: object
+            $ref: '#/components/schemas/IngredientPriceRequest'
       type: object
     LoginRequest:
       required:
@@ -5188,7 +6480,7 @@ components:
               cocktails:
                 type: array
                 items:
-                  properties: { id: { type: integer, example: 1 }, slug: { type: string, example: cocktail-name-1 }, sort: { type: integer, example: 1 }, price: { type: string, example: 'EUR 23.85' }, currency: { type: string, example: EUR }, name: { type: string, example: 'Cocktail name' }, short_ingredients: { type: array, items: { type: string, example: Vodka } } }
+                  properties: { id: { type: integer, example: 1 }, slug: { type: string, example: cocktail-name-1 }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, currency: { type: string, example: EUR }, name: { type: string, example: 'Cocktail name' }, short_ingredients: { type: array, items: { type: string, example: Vodka } } }
                   type: object
             type: object
       type: object
@@ -5216,7 +6508,7 @@ components:
               cocktails:
                 type: array
                 items:
-                  properties: { sort: { type: string, example: 1 }, price: { properties: { full: { type: integer, example: 2385 }, formatted: { type: string, example: 'EUR 23.85' } }, type: object }, public_id: { type: string, example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, slug: { type: string, example: cocktail-name-1 }, currency: { type: string, example: EUR }, name: { type: string, example: 'Cocktail name' }, short_ingredients: { type: array, items: { type: string, example: Vodka } }, image: { type: string, example: 'https://example.com/image.jpg' } }
+                  properties: { sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, public_id: { type: string, example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, slug: { type: string, example: cocktail-name-1 }, currency: { type: string, example: EUR }, name: { type: string, example: 'Cocktail name' }, short_ingredients: { type: array, items: { type: string, example: Vodka } }, image: { type: string, example: 'https://example.com/image.jpg' } }
                   type: object
             type: object
       type: object
@@ -5235,8 +6527,9 @@ components:
                 type: integer
                 example: 1
               price:
-                type: string
-                example: '22.52'
+                type: integer
+                format: minor
+                example: 2252
               category_name:
                 type: string
                 example: 'Category name'
@@ -5245,6 +6538,7 @@ components:
                 example: 1
               currency:
                 type: string
+                format: 'ISO 4217'
                 example: EUR
             type: object
       type: object
@@ -5282,6 +6576,9 @@ components:
       type: object
     PersonalAccessToken:
       properties:
+        id:
+          type: integer
+          example: 1
         name:
           type: string
           example: user_generated
@@ -5323,6 +6620,27 @@ components:
             - 'null'
           example: '2023-05-14T21:23:40.000000Z'
       type: object
+    Price:
+      required:
+        - price
+        - price_minor
+        - formatted_price
+        - currency
+      properties:
+        price:
+          type: number
+          format: float
+          example: 13.39
+        price_minor:
+          type: integer
+          example: 1339
+        formatted_price:
+          type: string
+          example: 'EUR 13.39'
+        currency:
+          type: string
+          example: EUR
+      type: object
     PriceCategory:
       required:
         - id
@@ -5343,6 +6661,7 @@ components:
           example: 'Current price on amazon.de'
         currency:
           type: string
+          format: 'ISO 4217'
           example: EUR
         currency_symbol:
           type: string
@@ -5363,6 +6682,7 @@ components:
           example: 'Current price on amazon.de'
         currency:
           type: string
+          format: 'ISO 4217'
           example: EUR
       type: object
     Profile:
@@ -5377,9 +6697,9 @@ components:
         name:
           type: string
           example: Floral
-        cocktails_count:
+        email:
           type: string
-          example: 12
+          example: example@example.com
         is_subscribed:
           type: boolean
         memberships:
@@ -5443,17 +6763,110 @@ components:
           minLength: 5
           example: password
       type: object
-    ShoppingList:
+    ServerVersion:
+      required:
+        - version
+        - type
+        - search_host
+        - search_version
       properties:
-        ingredient_id:
+        version:
+          type: string
+          example: 1.0.0
+        latest_version:
+          description: 'Latest version available on GitHub'
+          type: string
+          example: 3.1.0
+        is_latest:
+          type: boolean
+          example: true
+        type:
+          type: string
+          example: production
+        search_host:
+          type: string
+          example: 'https://search.example.com'
+        search_version:
+          type: string
+          example: 1.2.0
+      type: object
+    ShoppingList:
+      required:
+        - ingredient
+        - quantity
+      properties:
+        ingredient:
+          $ref: '#/components/schemas/IngredientBasic'
+        quantity:
           type: integer
-          example: 1
-        ingredient_name:
+          example: 3
+      type: object
+    ShoppingListRequest:
+      required:
+        - ingredients
+      properties:
+        ingredients:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              quantity:
+                type: integer
+            type: object
+      type: object
+    Subscription:
+      properties:
+        type:
           type: string
-          example: gin-1
-        ingredient_slug:
+        paddle_id:
           type: string
-          example: gin-1
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        paused_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        ends_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        past_due:
+          type: boolean
+        is_recurring:
+          type: boolean
+        next_billed_at:
+          type: array
+          items:
+            properties:
+              currency:
+                type: string
+              amount:
+                type: string
+              date:
+                type: string
+                format: date-time
+            type: object
+        update_payment_url:
+          type: string
+          format: uri
+        cancel_url:
+          type: string
+          format: uri
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
       type: object
     Tag:
       required:
@@ -5485,6 +6898,33 @@ components:
           type: string
           example: 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII
       type: object
+    Transaction:
+      properties:
+        total:
+          type: string
+        tax:
+          type: string
+        currency:
+          type: string
+        status:
+          type: string
+        invoice_number:
+          type: string
+        url:
+          type: string
+          format: uri
+        billed_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+      type: object
     User:
       properties:
         id:
@@ -5507,7 +6947,7 @@ components:
               type: integer
               example: 1
             role_name:
-              type: integer
+              type: string
               example: Admin
           type: object
       type: object
@@ -5522,18 +6962,6 @@ components:
         name:
           type: string
           example: Bartender
-      type: object
-    UserIngredient:
-      properties:
-        id:
-          type: integer
-          example: 1
-        ingredient_id:
-          type: integer
-          example: 1
-        ingredient_slug:
-          type: string
-          example: gin-1
       type: object
     UserRequest:
       required:
@@ -5555,6 +6983,36 @@ components:
           type: string
           format: password
           example: password
+      type: object
+    UserSubscription:
+      required:
+        - prices
+        - customer
+        - subscription
+      properties:
+        prices:
+          type: string
+        customer:
+          type: array
+          items:
+            required:
+              - paddle_id
+              - paddle_email
+              - paddle_name
+            properties:
+              paddle_id:
+                type: string
+              paddle_email:
+                type: string
+              paddle_name:
+                type: string
+            type: object
+        subscription:
+          oneOf:
+            -
+              $ref: '#/components/schemas/Subscription'
+            -
+              type: 'null'
       type: object
     Utensil:
       required:
@@ -5586,6 +7044,21 @@ components:
             - string
             - 'null'
           example: 'Used to shake ingredients'
+      type: object
+    ValidationError:
+      required:
+        - errors
+        - message
+      properties:
+        message:
+          type: string
+          example: 'The cocktail name must be a string. (and 2 more errors)'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
       type: object
   securitySchemes:
     user_token:
@@ -5650,11 +7123,17 @@ tags:
     name: Ratings
     description: Ratings
   -
-    name: Shelf
-    description: Shelf
+    name: Server
+    description: Server
   -
-    name: 'Shopping list'
-    description: 'Shopping list'
+    name: 'Users: Shelf'
+    description: 'Users: Shelf'
+  -
+    name: 'Users: Shopping list'
+    description: 'Users: Shopping list'
+  -
+    name: Billing
+    description: Billing
   -
     name: Tag
     description: Tag

@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Kami\Cocktail\Models\Bar;
+use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
@@ -16,15 +19,23 @@ use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class StatsController extends Controller
 {
-    public function index(CocktailRepository $cocktailRepo, Request $request): JsonResponse
+    #[OAT\Get(path: '/bars/{id}/stats', tags: ['Bars'], summary: 'Show bar stats', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\BarStats::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function index(CocktailRepository $cocktailRepo, Request $request, int $id): JsonResponse
     {
-        $bar = bar();
-        $barMembership = $request->user()->getBarMembership(bar()->id)->load('userIngredients');
-        $limit = $request->get('limit', 5);
+        $bar = Bar::findOrFail($id);
+        $barMembership = $request->user()->getBarMembership($bar->id)->load('userIngredients');
+        $limit = 5;
         $stats = [];
 
         $popularIngredients = DB::table('cocktail_ingredients')
-            ->select('ingredient_id', 'ingredients.name as name', 'ingredients.slug as ingredient_slug', DB::raw('COUNT(ingredient_id) AS cocktails_count'))
+            ->select('ingredient_id as id', 'ingredients.name as name', 'ingredients.slug as slug', DB::raw('COUNT(ingredient_id) AS cocktails_count'))
             ->join('cocktails', 'cocktails.id', '=', 'cocktail_ingredients.cocktail_id')
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
             ->where('cocktails.bar_id', $bar->id)
@@ -34,7 +45,7 @@ class StatsController extends Controller
             ->get();
 
         $topRatedCocktails = DB::table('ratings')
-            ->select('rateable_id AS cocktail_id', 'cocktails.name as name', 'cocktails.slug as cocktail_slug', DB::raw('AVG(rating) AS avg_rating'), DB::raw('COUNT(*) AS votes'))
+            ->select('rateable_id AS id', 'cocktails.name as name', 'cocktails.slug as slug', DB::raw('AVG(rating) AS avg_rating'), DB::raw('COUNT(*) AS votes'))
             ->join('cocktails', 'cocktails.id', '=', 'ratings.rateable_id')
             ->where('rateable_type', Cocktail::class)
             ->where('cocktails.bar_id', $bar->id)
@@ -45,7 +56,7 @@ class StatsController extends Controller
             ->get();
 
         $userFavoriteIngredients = DB::table('cocktail_ingredients')
-            ->selectRaw('ingredient_id, ingredients.name, COUNT(cocktail_id) AS cocktails_count')
+            ->selectRaw('ingredients.id, ingredients.slug, ingredients.name, COUNT(cocktail_id) AS cocktails_count')
             ->whereIn('cocktail_id', function ($query) use ($barMembership) {
                 $query->from('cocktail_favorites')->select('cocktail_id')->where('bar_membership_id', $barMembership->id);
             })

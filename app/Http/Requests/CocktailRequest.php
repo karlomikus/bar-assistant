@@ -30,10 +30,16 @@ class CocktailRequest extends FormRequest
             'instructions' => 'required',
             'ingredients' => 'array',
             'images' => 'array',
-            'ingredients.*.ingredient_id' => 'required',
+            'images.*' => 'integer',
+            'ingredients.*.ingredient_id' => 'required|integer',
             'ingredients.*.units' => 'required_with:ingredients.*.amount',
             'ingredients.*.amount' => 'required_with:ingredients.*.units|numeric',
+            'ingredients.*.amount_max' => 'nullable|numeric',
             'ingredients.*.optional' => 'boolean',
+            'ingredients.*.ingredient.substitutes' => 'array',
+            'ingredients.*.ingredient.substitutes.*.ingredient_id' => 'integer',
+            'ingredients.*.ingredient.substitutes.*.amount' => 'numeric',
+            'ingredients.*.ingredient.substitutes.*.amount_max' => 'nullable|numeric',
         ];
     }
 }

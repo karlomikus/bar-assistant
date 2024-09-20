@@ -7,7 +7,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\BarStatusEnum;
 
-#[OAT\Schema()]
+#[OAT\Schema(required: ['id', 'slug', 'name', 'subtitle', 'description', 'status', 'access', 'invite_code', 'active', 'settings', 'search_host', 'search_token', 'created_at', 'updated_at'])]
 class Bar
 {
     #[OAT\Property(example: 1)]
@@ -24,12 +24,13 @@ class Bar
     public ?string $inviteCode;
     #[OAT\Property(example: 'active')]
     public BarStatusEnum $status;
-    #[OAT\Property(items: new OAT\Items(type: 'string'))]
+    /** @var array<mixed> */
+    #[OAT\Property(items: new OAT\Items(type: 'object', additionalProperties: true))]
     public array $settings = [];
-    #[OAT\Property(property: 'search_driver_host')]
-    public ?string $searchDriverHost = null;
-    #[OAT\Property(property: 'search_driver_api_key')]
-    public ?string $searchDriverApiKey = null;
+    #[OAT\Property(property: 'search_host')]
+    public ?string $searchHost = null;
+    #[OAT\Property(property: 'search_token')]
+    public ?string $searchToken = null;
     #[OAT\Property(property: 'created_at', format: 'date-time')]
     public string $createdAt;
     #[OAT\Property(property: 'updated_at', format: 'date-time')]
@@ -38,6 +39,7 @@ class Bar
     public UserBasic $createdUser;
     #[OAT\Property(property: 'updated_user')]
     public ?UserBasic $updatedUser = null;
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
         new OAT\Property(type: 'integer', property: 'role_id', example: 1),
         new OAT\Property(type: 'boolean', property: 'can_edit', example: true),

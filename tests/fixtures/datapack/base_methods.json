@@ -1,0 +1,10 @@
+[
+    {
+        "name": "method 1",
+        "dilution_percentage": 15
+    },
+    {
+        "name": "method 2",
+        "dilution_percentage": 0
+    }
+]

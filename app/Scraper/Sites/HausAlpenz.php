@@ -112,7 +112,7 @@ class HausAlpenz extends AbstractSiteExtractor
         }
 
         return [
-            'url' => $img,
+            'uri' => $img,
             'copyright' => $copyrightAuthor,
         ];
     }

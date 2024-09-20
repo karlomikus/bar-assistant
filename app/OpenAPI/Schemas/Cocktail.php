@@ -16,10 +16,6 @@ use OpenApi\Attributes as OAT;
     'source',
     'public_id',
     'public_at',
-    'main_image_id',
-    'images',
-    'tags',
-    'rating',
     'created_at',
     'updated_at',
     'abv',
@@ -53,13 +49,11 @@ class Cocktail
     #[OAT\Property(property: 'public_at', format: 'date-time')]
     public ?string $publicAt = null;
 
-    #[OAT\Property(property: 'main_image_id', example: 1)]
-    public ?int $mainImageId = null;
-
     /** @var Image[] */
     #[OAT\Property()]
     public array $images = [];
 
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(
         type: 'object',
         properties: [
@@ -69,7 +63,8 @@ class Cocktail
     ))]
     public array $tags = [];
 
-    #[OAT\Property(type: 'object', properties: [
+    /** @var array<mixed> */
+    #[OAT\Property(type: 'object', required: ['user', 'average', 'total_votes'], properties: [
         new OAT\Property(type: 'integer', property: 'user', example: 1, nullable: true, description: 'Current user\'s rating'),
         new OAT\Property(type: 'integer', property: 'average', example: 4, description: 'Average rating'),
         new OAT\Property(type: 'integer', property: 'total_votes', example: 12),
@@ -117,7 +112,8 @@ class Cocktail
     #[OAT\Property(property: 'in_shelf')]
     public bool $inShelf = false;
 
-    #[OAT\Property(type: 'object', properties: [
+    /** @var array<mixed> */
+    #[OAT\Property(type: 'object', required: ['can_edit', 'can_delete', 'can_rate', 'can_add_note'], properties: [
         new OAT\Property(type: 'boolean', property: 'can_edit', example: true),
         new OAT\Property(type: 'boolean', property: 'can_delete', example: true),
         new OAT\Property(type: 'boolean', property: 'can_rate', example: true),
@@ -125,7 +121,8 @@ class Cocktail
     ])]
     public array $access = [];
 
-    #[OAT\Property(type: 'object', properties: [
+    /** @var array<mixed> */
+    #[OAT\Property(type: 'object', required: ['prev', 'next'], properties: [
         new OAT\Property(type: 'string', nullable: true, property: 'prev', example: 'old-fashioned-1'),
         new OAT\Property(type: 'string', nullable: true, property: 'next', example: 'tom-collins-1'),
     ])]

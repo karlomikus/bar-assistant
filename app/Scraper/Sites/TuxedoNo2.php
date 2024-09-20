@@ -125,7 +125,7 @@ class TuxedoNo2 extends AbstractSiteExtractor
         }
 
         return [
-            'url' => $sources[2],
+            'uri' => $sources[2],
             'copyright' => 'TuxedoNo2',
         ];
     }

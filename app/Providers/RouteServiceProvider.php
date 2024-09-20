@@ -3,6 +3,7 @@
 namespace Kami\Cocktail\Providers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
@@ -56,7 +57,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('exports', function (Request $request) {
-            return Limit::perMinute(1)->by($request->user()?->id ?: $request->ip());
+            return App::environment('production') ? Limit::perMinute(1)->by($request->user()?->id ?: $request->ip()) : Limit::none();
         });
     }
 }

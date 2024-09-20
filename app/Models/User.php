@@ -57,7 +57,21 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getShelfIngredients(int $barId): Collection
     {
-        return $this->getBarMembership($barId)?->userIngredients ?? new Collection();
+        /** @var Collection<int, UserIngredient> */
+        $emptyCollection = new Collection();
+
+        return $this->getBarMembership($barId)?->userIngredients ?? $emptyCollection;
+    }
+
+    /**
+     * @return Collection<int, UserShoppingList>
+     */
+    public function getShoppingListIngredients(int $barId): Collection
+    {
+        /** @var Collection<int, UserShoppingList> */
+        $emptyCollection = new Collection();
+
+        return $this->getBarMembership($barId)?->shoppingListIngredients ?? $emptyCollection;
     }
 
     /**

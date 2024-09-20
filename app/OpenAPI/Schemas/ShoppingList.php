@@ -6,13 +6,11 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema()]
+#[OAT\Schema(required: ['ingredient', 'quantity'])]
 class ShoppingList
 {
-    #[OAT\Property(property: 'ingredient_id', example: 1)]
-    public int $ingredientId;
-    #[OAT\Property(property: 'ingredient_name', example: 'gin-1')]
-    public string $ingredientName;
-    #[OAT\Property(property: 'ingredient_slug', example: 'gin-1')]
-    public string $ingredientSlug;
+    #[OAT\Property()]
+    public IngredientBasic $ingredient;
+    #[OAT\Property(example: 3)]
+    public int $quantity;
 }

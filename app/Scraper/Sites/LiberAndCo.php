@@ -114,7 +114,7 @@ class LiberAndCo extends AbstractSiteExtractor
         }
 
         return [
-            'url' => $imageUrl,
+            'uri' => $imageUrl,
             'copyright' => 'LiberAndCo' . $imageAuthor,
         ];
     }

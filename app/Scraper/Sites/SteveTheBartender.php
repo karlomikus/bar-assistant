@@ -37,7 +37,7 @@ class SteveTheBartender extends AbstractSiteExtractor
     public function image(): ?array
     {
         return [
-            'url' => $this->getRecipeSchema()['image'][0],
+            'uri' => $this->getRecipeSchema()['image'][0],
             'copyright' => 'Steve the Bartender',
         ];
     }
@@ -65,6 +65,9 @@ class SteveTheBartender extends AbstractSiteExtractor
         return trim($this->getRecipeSchema()['description']);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getRecipeSchema(): array
     {
         $recipeSchema = [];

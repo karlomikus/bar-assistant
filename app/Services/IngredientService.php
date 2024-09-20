@@ -13,9 +13,9 @@ use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\IngredientPrice;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\Exceptions\IngredientException;
+use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest;
 use Kami\Cocktail\Exceptions\IngredientParentException;
 use Kami\Cocktail\Exceptions\ImagesNotAttachedException;
-use Kami\Cocktail\DTO\Ingredient\Ingredient as IngredientDTO;
 
 final class IngredientService
 {
@@ -24,7 +24,7 @@ final class IngredientService
     ) {
     }
 
-    public function createIngredient(IngredientDTO $dto): Ingredient
+    public function createIngredient(IngredientRequest $dto): Ingredient
     {
         try {
             if ($dto->name === '') {
@@ -83,7 +83,7 @@ final class IngredientService
         return $ingredient;
     }
 
-    public function updateIngredient(int $id, IngredientDTO $dto): Ingredient
+    public function updateIngredient(int $id, IngredientRequest $dto): Ingredient
     {
         if ($dto->parentIngredientId === $id) {
             throw new IngredientParentException('Parent ingredient is the same as the current ingredient!');

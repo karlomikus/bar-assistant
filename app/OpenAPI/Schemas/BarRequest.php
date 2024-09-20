@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
+use Kami\Cocktail\External\BarOptionsEnum;
 
 #[OAT\Schema(required: ['name'])]
 class BarRequest
@@ -23,6 +24,7 @@ class BarRequest
     public ?string $defaultLang = null;
     #[OAT\Property(property: 'enable_invites', description: 'Enable users with invite code to join this bar. Default `false`.')]
     public bool $enableInvites = true;
-    #[OAT\Property(items: new OAT\Items(type: 'string'), description: 'List of data that the bar will start with. Possible values: `ingredients`, `cocktails`. Cocktails cannot be imported without ingredients.')]
+    /** @var array<mixed> */
+    #[OAT\Property(items: new OAT\Items(type: 'enum', enum: BarOptionsEnum::class), description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.')]
     public array $options = ['ingredients', 'cocktails'];
 }

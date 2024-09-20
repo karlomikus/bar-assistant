@@ -6,15 +6,11 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema()]
+#[OAT\Schema(required: ['ingredient', 'amount', 'amount_max', 'units', 'in_shelf'])]
 class CocktailIngredientSubstitute
 {
-    #[OAT\Property(example: 1)]
-    public int $id;
-    #[OAT\Property(example: 'vodka')]
-    public string $slug;
-    #[OAT\Property(example: 'Vodka')]
-    public string $name;
+    #[OAT\Property()]
+    public IngredientBasic $ingredient;
     #[OAT\Property(example: 30)]
     public ?float $amount = null;
     #[OAT\Property(property: 'amount_max', example: 60)]

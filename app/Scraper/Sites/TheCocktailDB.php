@@ -10,6 +10,9 @@ use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class TheCocktailDB extends AbstractSiteExtractor
 {
+    /**
+     * @var array<string, mixed>
+     */
     private array $apiDrinkData = [];
 
     public function __construct(string $url)
@@ -30,7 +33,12 @@ class TheCocktailDB extends AbstractSiteExtractor
             $url = 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=' . $drinkApiId;
         }
 
-        $data = json_decode(file_get_contents($url), true);
+        if ($contents = file_get_contents($url)) {
+            $data = json_decode($contents, true);
+        } else {
+            $data = [];
+        }
+
         $this->apiDrinkData = $data['drinks'][0];
     }
 
@@ -102,7 +110,7 @@ class TheCocktailDB extends AbstractSiteExtractor
     public function image(): ?array
     {
         return [
-            'url' => $this->apiDrinkData['strDrinkThumb'],
+            'uri' => $this->apiDrinkData['strDrinkThumb'],
             'copyright' => $this->apiDrinkData['strImageAttribution'],
         ];
     }

@@ -9,11 +9,8 @@ use OpenApi\Attributes as OAT;
 #[OAT\Schema()]
 class CocktailExplore
 {
-    #[OAT\Property(type: 'object', properties: [
-        new OAT\Property(type: 'string', property: 'name', example: 'Bar name'),
-        new OAT\Property(type: 'string', property: 'subtitle', example: 'Bar subtitle'),
-    ])]
-    public array $bar;
+    #[OAT\Property()]
+    public BarBasic $bar;
 
     #[OAT\Property(example: 'Cocktail name')]
     public string $name;
@@ -30,6 +27,7 @@ class CocktailExplore
     #[OAT\Property(example: 'Source of the recipe')]
     public ?string $source = null;
 
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
         new OAT\Property(type: 'integer', property: 'sort', example: 1),
         new OAT\Property(type: 'string', property: 'placeholder_hash', example: 'a1b2c3d4e5f6g7h8i9j0'),
@@ -49,8 +47,9 @@ class CocktailExplore
     #[OAT\Property()]
     public array $utensils = [];
 
+    /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
-        new OAT\Property(type: 'integer', property: 'name', example: 'Ingredient name'),
+        new OAT\Property(type: 'string', property: 'name', example: 'Ingredient name'),
         new OAT\Property(type: 'number', property: 'amount', example: 30.0),
         new OAT\Property(type: 'number', property: 'amount_max', example: 45.0, nullable: true),
         new OAT\Property(type: 'string', property: 'units', example: 'ml'),

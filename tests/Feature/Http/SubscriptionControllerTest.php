@@ -42,7 +42,8 @@ class SubscriptionControllerTest extends TestCase
 
     public function test_no_subscription_response(): void
     {
-        $user = auth()->user();
+        /** @var \Kami\Cocktail\Models\User */
+        $user = auth('sanctum')->user();
 
         $response = $this->getJson('/api/billing/subscription');
         $response->assertSuccessful();
@@ -63,7 +64,8 @@ class SubscriptionControllerTest extends TestCase
 
     public function test_subscription_active_response(): void
     {
-        $user = auth()->user();
+        /** @var \Kami\Cocktail\Models\User */
+        $user = auth('sanctum')->user();
 
         Cashier::fake([
             'subscriptions*' => [
@@ -140,7 +142,8 @@ class SubscriptionControllerTest extends TestCase
     public function test_subscription_pause_response(): void
     {
         Mail::fake();
-        $user = auth()->user();
+        /** @var \Kami\Cocktail\Models\User */
+        $user = auth('sanctum')->user();
 
         Cashier::fake([
             'subscriptions/sub_12345/pause' => [
@@ -180,7 +183,8 @@ class SubscriptionControllerTest extends TestCase
     public function test_subscription_resume_response(): void
     {
         Mail::fake();
-        $user = auth()->user();
+        /** @var \Kami\Cocktail\Models\User */
+        $user = auth('sanctum')->user();
 
         Cashier::fake([
             'subscriptions/sub_12345/resume' => [

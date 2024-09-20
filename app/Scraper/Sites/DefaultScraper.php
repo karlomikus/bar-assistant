@@ -92,10 +92,8 @@ class DefaultScraper extends AbstractSiteExtractor
         $instructions = array_map(function ($instructionStep) {
             if (is_string($instructionStep)) {
                 return $instructionStep;
-            }
-
-            if (isset($instructionStep['text'])) {
-                return $instructionStep['text'];
+            } else {
+                return null;
             }
         }, $instructions);
 
@@ -148,7 +146,7 @@ class DefaultScraper extends AbstractSiteExtractor
 
             $result[] = new RecipeIngredient(
                 ucfirst(e($recipeIngredient->name)),
-                $recipeIngredient->amount,
+                (float) number_format($recipeIngredient->amount, 2, '.', ''),
                 $recipeIngredient->units,
                 $recipeIngredient->source,
                 $recipeIngredient->originalAmount,
@@ -163,7 +161,7 @@ class DefaultScraper extends AbstractSiteExtractor
     public function image(): ?array
     {
         return [
-            'url' => $this->schemaModel?->image ?? null,
+            'uri' => $this->schemaModel?->image ?? null,
             'copyright' => $this->schemaModel?->author ?? null,
         ];
     }

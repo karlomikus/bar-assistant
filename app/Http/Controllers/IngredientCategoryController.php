@@ -7,8 +7,8 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\IngredientCategory;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\IngredientCategoryRequest;
@@ -18,6 +18,7 @@ class IngredientCategoryController extends Controller
 {
     #[OAT\Get(path: '/ingredient-categories', tags: ['Ingredient category'], summary: 'Show a list of ingredient categories', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\IngredientCategory::class),
@@ -50,6 +51,7 @@ class IngredientCategoryController extends Controller
 
     #[OAT\Post(path: '/ingredient-categories', tags: ['Ingredient category'], summary: 'Create a new ingredient category', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -69,8 +71,8 @@ class IngredientCategoryController extends Controller
         }
 
         $category = new IngredientCategory();
-        $category->name = $request->post('name');
-        $category->description = $request->post('description');
+        $category->name = $request->input('name');
+        $category->description = $request->input('description');
         $category->bar_id = bar()->id;
         $category->save();
 
@@ -101,8 +103,8 @@ class IngredientCategoryController extends Controller
             abort(403);
         }
 
-        $category->name = $request->post('name');
-        $category->description = $request->post('description');
+        $category->name = $request->input('name');
+        $category->description = $request->input('description');
         $category->updated_at = now();
         $category->save();
 

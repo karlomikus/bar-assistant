@@ -12,7 +12,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Illuminate\Support\Facades\Storage;
-use Kami\Cocktail\External\Import\FromRecipesData;
+use Kami\Cocktail\External\BarOptionsEnum;
+use Kami\Cocktail\External\Import\FromDataPack;
 
 class BarImportRecipes extends Command
 {
@@ -28,9 +29,9 @@ class BarImportRecipes extends Command
      *
      * @var string
      */
-    protected $description = 'Import recipes exported via bar:export-recipes command';
+    protected $description = 'Import recipes exported as a Bar Assistant datapack';
 
-    public function __construct(private readonly FromRecipesData $importer)
+    public function __construct(private readonly FromDataPack $importer)
     {
         parent::__construct();
     }
@@ -40,19 +41,27 @@ class BarImportRecipes extends Command
      */
     public function handle(): int
     {
-        /** @var \Illuminate\Support\Facades\Storage|\Illuminate\Filesystem\FilesystemAdapter */
         $tempUnzipDisk = Storage::build([
             'driver' => 'local',
             'root' => storage_path('bar-assistant/temp/' . Str::random(8)),
         ]);
 
-        /** @var \Illuminate\Support\Facades\Storage|\Illuminate\Filesystem\FilesystemAdapter */
-        $barAssistantDisk = Storage::build([
-            'driver' => 'local',
-            'root' => storage_path('bar-assistant'),
-        ]);
+        $zipFileDisk = Storage::disk('bar-assistant');
 
-        $filename = $barAssistantDisk->path($this->argument('filename'));
+        $filename = $this->argument('filename');
+
+        if ($filename === null) {
+            $this->error('Please provide a filename relative to the "bar-assistant/" folder.');
+
+            return Command::FAILURE;
+        }
+
+        $filename = $zipFileDisk->path($filename);
+        if (!$zipFileDisk->exists($filename)) {
+            $this->error(sprintf('File "%s" does not exist.', $filename));
+
+            return Command::FAILURE;
+        }
 
         $zip = new ZipArchive();
         if ($zip->open($filename) !== true) {
@@ -65,16 +74,16 @@ class BarImportRecipes extends Command
 
         $barId = $this->ask('Enter the id of the bar you want to import to, or leave empty to create a new one');
         if ($barId !== null) {
-            $bar = Bar::findOrFail($barId);
+            $bar = Bar::findOrFail((int) $barId);
             $user = $bar->createdUser;
 
-            $this->comment(sprintf('Using existing bar: %s - %s', $bar->id, $bar->name));
+            $this->line(sprintf('Using existing bar: %s - %s', $bar->id, $bar->name));
         } else {
             $barName = $this->ask('Enter new bar name');
-            $userId = $this->ask('Enter the id of the user you want to assign this bar to');
+            $userId = (int) $this->ask('Enter the id of the user you want to assign this bar to');
             $user = User::findOrFail($userId);
 
-            $this->comment(sprintf('User with id found: %s - %s', $user->id, $user->email));
+            $this->line(sprintf('User with id found: %s - %s', $user->id, $user->email));
 
             $bar = new Bar();
             $bar->name = $barName;
@@ -83,7 +92,7 @@ class BarImportRecipes extends Command
 
             $user->joinBarAs($bar, UserRoleEnum::Admin);
 
-            $this->comment('Bar created successfully');
+            $this->line('Bar created successfully');
         }
 
         if (!$this->confirm('Continue with importing the data?')) {
@@ -92,9 +101,9 @@ class BarImportRecipes extends Command
             return Command::FAILURE;
         }
 
-        $this->comment('Starting recipes import...');
+        $this->line('Starting recipes import...');
         Cache::flush();
-        $this->importer->process($tempUnzipDisk, $bar, $user, ['cocktails', 'ingredients']);
+        $this->importer->process($tempUnzipDisk, $bar, $user, [BarOptionsEnum::Cocktails, BarOptionsEnum::Ingredients]);
 
         $tempUnzipDisk->deleteDirectory('/');
 

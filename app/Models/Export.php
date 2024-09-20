@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -42,20 +43,19 @@ class Export extends Model
         return $this;
     }
 
-    public function withFilename(): self
+    public static function generateFilename(string $exportTypeName = 'recipes'): string
     {
-        $this->filename = sprintf('%s_%s_%s.zip', Carbon::now()->format('Ymd'), 'recipes', Str::random(8));
-
-        return $this;
+        return sprintf('%s_%s_%s.zip', $exportTypeName, Carbon::now()->format('Ymd'), Str::random(8));
     }
 
     public function getFullPath(): string
     {
-        $folderPath = storage_path(sprintf('bar-assistant/backups/'));
-
-        return $folderPath . $this->filename;
+        return Storage::disk('exports')->path($this->bar_id . '/' . $this->filename);
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [

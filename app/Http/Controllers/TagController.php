@@ -6,10 +6,10 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Tag;
+use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Http\Requests\TagRequest;
@@ -20,6 +20,7 @@ class TagController extends Controller
 {
     #[OAT\Get(path: '/tags', tags: ['Tag'], summary: 'Show a list of all tags', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Tag::class),
@@ -52,6 +53,7 @@ class TagController extends Controller
 
     #[OAT\Post(path: '/tags', tags: ['Tag'], summary: 'Create a new tag', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -71,7 +73,7 @@ class TagController extends Controller
         }
 
         $tag = new Tag();
-        $tag->name = $request->post('name');
+        $tag->name = $request->input('name');
         $tag->bar_id = bar()->id;
         $tag->save();
 
@@ -102,7 +104,7 @@ class TagController extends Controller
             abort(403);
         }
 
-        $tag->name = $request->post('name');
+        $tag->name = $request->input('name');
         $tag->save();
 
         $cocktailIds = DB::table('cocktail_tag')->select('cocktail_id')->where('tag_id', $tag->id)->pluck('cocktail_id');

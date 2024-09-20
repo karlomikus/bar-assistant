@@ -1,0 +1,24 @@
+{
+    "_id": "test-cocktail",
+    "name": "Test cocktail",
+    "instructions": "Cocktail instructions",
+    "created_at": "1979-12-23T09:07:48+00:00",
+    "updated_at": "1983-01-24T11:37:19+00:00",
+    "description": "Cocktail description",
+    "source": "http://www.bins.org/fugiat-reprehenderit-necessitatibus-sapiente-quia",
+    "garnish": "Lemon wheel",
+    "abv": 37.77,
+    "tags": [],
+    "glass": "glass 2",
+    "method": "method 1",
+    "utensils": [],
+    "images": [
+        {
+            "uri": "file:///c-1-img.jpg",
+            "sort": 1,
+            "placeholder_hash": null,
+            "copyright": "Random image"
+        }
+    ],
+    "ingredients": []
+}

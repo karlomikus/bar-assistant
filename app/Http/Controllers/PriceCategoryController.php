@@ -7,8 +7,8 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\PriceCategory;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\PriceCategoryRequest;
@@ -18,6 +18,7 @@ class PriceCategoryController extends Controller
 {
     #[OAT\Get(path: '/price-categories', tags: ['Price category'], summary: 'Show a list of price categories', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\PriceCategory::class),
@@ -50,6 +51,7 @@ class PriceCategoryController extends Controller
 
     #[OAT\Post(path: '/price-categories', tags: ['Price category'], summary: 'Create a new price category', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -69,9 +71,9 @@ class PriceCategoryController extends Controller
         }
 
         $priceCategory = new PriceCategory();
-        $priceCategory->name = $request->post('name');
-        $priceCategory->description = $request->post('description');
-        $priceCategory->currency = $request->post('currency');
+        $priceCategory->name = $request->input('name');
+        $priceCategory->description = $request->input('description');
+        $priceCategory->currency = $request->input('currency');
         $priceCategory->bar_id = bar()->id;
         $priceCategory->save();
 
@@ -102,9 +104,9 @@ class PriceCategoryController extends Controller
             abort(403);
         }
 
-        $priceCategory->name = $request->post('name');
-        $priceCategory->description = $request->post('description');
-        $priceCategory->currency = $request->post('currency');
+        $priceCategory->name = $request->input('name');
+        $priceCategory->description = $request->input('description');
+        $priceCategory->currency = $request->input('currency');
         $priceCategory->save();
 
         return new PriceCategoryResource($priceCategory);

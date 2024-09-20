@@ -26,34 +26,41 @@ class IngredientResource extends JsonResource
             'strength' => $this->strength,
             'description' => e($this->description),
             'origin' => $this->origin,
-            'main_image_id' => $this->images->first()->id ?? null,
-            'created_at' => $this->created_at->toJson(),
-            'updated_at' => $this->updated_at?->toJson(),
-            'images' => ImageResource::collection($this->images),
+            'created_at' => $this->created_at->toAtomString(),
+            'updated_at' => $this->updated_at?->toAtomString(),
+            'images' => $this->when(
+                $this->relationLoaded('images'),
+                fn () => ImageResource::collection($this->images)
+            ),
             'parent_ingredient' => $this->when($this->relationLoaded('parentIngredient') && $this->parent_ingredient_id !== null, function () {
                 return new IngredientBasicResource($this->parentIngredient);
             }),
             'color' => $this->color,
-            'category' => new IngredientCategoryResource($this->category),
+            'category' => new IngredientCategoryResource($this->whenLoaded('category')),
             'cocktails_count' => $this->whenCounted('cocktails'),
+            'cocktails_as_substitute_count' => $this->when(
+                $this->relationLoaded('cocktailIngredientSubstitutes'),
+                fn () => $this->cocktailsAsSubstituteIngredient()->count()
+            ),
             'varieties' => $this->when($this->relationLoaded('varieties') && $this->relationLoaded('parentIngredient'), function () {
                 return IngredientBasicResource::collection($this->getAllRelatedIngredients());
             }),
-            'cocktails' => $this->when($this->relationLoaded('cocktails') || $this->relationLoaded('cocktailIngredientSubstitutes'), function () {
-                return $this->cocktails->merge($this->cocktailsAsSubstituteIngredient())->map(function ($c) {
-                    return [
-                        'id' => $c->id,
-                        'slug' => $c->slug,
-                        'name' => $c->name,
-                    ];
-                })->sortBy('name')->toArray();
-            }),
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
-            'access' => $this->when($this->relationLoaded('createdUser'), fn () => [
+            'access' => $this->when(true, fn () => [
                 'can_edit' => $request->user()->can('edit', $this->resource),
                 'can_delete' => $request->user()->can('delete', $this->resource),
             ]),
+            'in_shelf' => $this->userHasInShelf($request->user()),
+            'in_shopping_list' => $this->userHasInShoppingList($request->user()),
+            'used_as_substitute_for' => $this->when(
+                $this->relationLoaded('cocktailIngredientSubstitutes'),
+                fn () => IngredientBasicResource::collection($this->getIngredientsUsedAsSubstituteFor())
+            ),
+            'can_be_substituted_with' => $this->when(
+                $this->relationLoaded('cocktailIngredientSubstitutes'),
+                fn () => IngredientBasicResource::collection($this->getCanBeSubstitutedWithIngredients())
+            ),
             'ingredient_parts' => $this->when(
                 $this->relationLoaded('ingredientParts'),
                 fn () => $this->ingredientParts->map(fn ($cip) => new IngredientBasicResource($cip->ingredient))

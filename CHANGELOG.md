@@ -1,3 +1,96 @@
+# v4.0.0
+This is a new major release. Here's a quick summary of the more interesting changes:
+
+- Docker image is now run as an unprivileged user by default. This has various implications, so please check the migration guide for more info
+- Improved API endpoint naming and structure
+- Added public Bar Assistant JSON schema specification for cocktail recipes
+- Data exporting is now available in multiple formats
+
+[Migration guide](https://docs.barassistant.app/setup/migrate-to-40/)
+
+## Breaking changes
+- Minimal PHP version is now 8.3
+- Removed `imagick` PHP extension
+- New extensions required: `ffi`
+- Removed importing cocktails from collections
+- Removed importing data from Bar Assistant v2
+- List all cocktails and ingredients endpoints don't have default includes anymore
+    - Refer to OpenAPI documentation for a list of available includes
+- Shelf
+    - Moved `/shelf/ingredients` to `/users/{id}/ingredients`
+        - Changed response schema, now returns `IngredientBasic`
+        - Supports pagination
+    - Moved `/shelf/cocktails` to `/users/{id}/cocktails`
+        - Changed response schema, now returns `CocktailBasic`
+        - Supports pagination
+    - Moved `/shelf/cocktails/favorites` to `/users/{id}/cocktails/favorites`
+        - Changed response schema, now returns `CocktailBasic`
+        - Supports pagination
+- Removed `cocktails` property from `Ingredient` schema
+    - Use `/ingredients/{id}/cocktails` endpoint instead
+    - Supports pagination
+- Moved `/ingredients/recommend` to `/users/{id}/ingredients/recommend`
+- Grouped `/login`, `/logout`, `/register`, `/forgot-password`, `/reset-password` and `/verify/{id}/{hash}` endpoints into `/auth`
+- Shopping list
+    - Moved `/shopping-list` to `/users/{id}/shopping-list`
+        - Updated `ShoppingList` schema
+- Collections
+    - Removed PUT `/collections/{id}/cocktails/{cocktailId}` endpoint
+    - Removed `/collections/{id}/share` endpoint
+    - Removed DELETE `/collections/{id}/cocktails/{cocktailId}` endpoint
+    - Removed PUT `/collections/{id}/cocktails/{cocktailId}` endpoint
+    - Changed POST `/collections/{id}/cocktails` endpoint to PUT `/collections/{id}/cocktails`
+    - Moved GET `/collections/shared` to GET `/bars/{id}/collections`
+- Ratings
+    - Moved `/ratings/cocktails/{id}` to `/cocktails/{id}/ratings`
+    - Changed POST ratings response status code to 201
+- Menu
+    - Changed `price` attribute in menu request from `string` to `integer`
+- Exports
+    - Added POST `/exports/{id}/download` endpoint
+        - Used to generate a download link for an export
+    - Added GET `/exports/{id}/download` endpoint
+        - Now requires a token and an expiration date
+        - Authorization is not required anymore
+        - Used to download an export
+- Import
+    - Importing now requires a valid JSON schema
+    - Removed `save` parameter from `/import/cocktail` endpoint
+- Removed `main_image_id` from cocktail model
+    - Use `images.sort` instead
+- Removed `main_image_id` from ingredient model
+    - Use `images.sort` instead
+- Stats
+    - Moved `/stats` to `/bars/{id}/stats`
+
+## New
+- Introduced `Bar-Assistant-Bar-Id` header to specify bar id
+    - Used for all endpoints that require bar id
+    - You can still send `bar_id` query parameter when needed, but it is considered deprecated
+- Added `/ingredients/{id}/cocktails` endpoint, lists all cocktails that use this ingredient
+    - Includes cocktails that use this ingredient as a substitute
+- Added `/ingredients/{id}/substitutes` endpoint, lists all ingredients that are used as a substitute for this ingredient in cocktail recipes
+- Introduced new export recipe schema
+- Added `quantity` to shopping list ingredients
+- Images are now converted to WebP format before saving to disk
+- Added `/images` endpoint, this endpoint is used to list all user uploaded images
+- Bar search tokens are now saved in database
+- Added `/import/scrape` endpoint
+    - This endpoint is used to extract recipe data from a website
+    - Result is a JSON schema that can be imported via `/import/cocktail` endpoint
+    - Images in response are now base64 encoded. This allows more flexibility in image handling for the clients
+- Added `used_as_substitute_for` and `can_be_substituted_with` to ingredient response
+
+## Changes
+- Recommended ingredients now take complex ingredients into consideration
+- Image processing moved from Imagick to Vips
+    - This now requires `libvips` to be installed on the server
+        - You can install it via `apt-get install -y --no-install-recommends libvips42`
+    - This now requires `ffi` PHP extension to be installed, and some .ini tweaks
+- Meilisearch client API keys are now generated via artisan command
+- All dates in responses are now in ISO 8601 format
+- You can now update slug of existing bar
+
 # v3.19.1
 ## Fixes
 - Fix missing base data in recipes export

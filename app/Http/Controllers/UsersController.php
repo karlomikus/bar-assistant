@@ -6,10 +6,10 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\User;
+use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Kami\Cocktail\Mail\AccountDeleted;
@@ -22,6 +22,7 @@ class UsersController extends Controller
 {
     #[OAT\Get(path: '/users', tags: ['Users'], summary: 'Show a list of users of a bar', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\User::class),
@@ -44,6 +45,7 @@ class UsersController extends Controller
 
     #[OAT\Get(path: '/users/{id}', tags: ['Users'], summary: 'Show a user', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -68,6 +70,7 @@ class UsersController extends Controller
 
     #[OAT\Post(path: '/users', tags: ['Users'], summary: 'Create a new user', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -93,9 +96,9 @@ class UsersController extends Controller
         $user = User::where('email', $email)->first();
         if ($user === null) {
             $user = new User();
-            $user->name = $request->post('name');
-            $user->email = $request->post('email');
-            $user->password = Hash::make($request->post('password'));
+            $user->name = $request->input('name');
+            $user->email = $request->input('email');
+            $user->password = Hash::make($request->input('password'));
             if ($requireConfirmation === false) {
                 $user->email_verified_at = now();
             }
@@ -116,6 +119,7 @@ class UsersController extends Controller
 
     #[OAT\Put(path: '/users/{id}', tags: ['Users'], summary: 'Update a user', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -136,7 +140,7 @@ class UsersController extends Controller
             abort(403);
         }
 
-        $user->name = $request->post('name');
+        $user->name = $request->input('name');
 
         if ($request->has('role_id') && $request->user()->isBarAdmin(bar()->id)) {
             $barMembership = $user->getBarMembership(bar()->id);

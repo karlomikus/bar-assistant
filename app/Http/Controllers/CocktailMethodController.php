@@ -7,8 +7,8 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\CocktailMethod;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailMethodRequest;
@@ -18,6 +18,7 @@ class CocktailMethodController extends Controller
 {
     #[OAT\Get(path: '/cocktail-methods', tags: ['Cocktail method'], summary: 'Show a list of all methods', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\CocktailMethod::class),
@@ -50,6 +51,7 @@ class CocktailMethodController extends Controller
 
     #[OAT\Post(path: '/cocktail-methods', tags: ['Cocktail method'], summary: 'Create a new method', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -69,8 +71,8 @@ class CocktailMethodController extends Controller
         }
 
         $method = new CocktailMethod();
-        $method->name = $request->post('name');
-        $method->dilution_percentage = (int) $request->post('dilution_percentage');
+        $method->name = $request->input('name');
+        $method->dilution_percentage = (int) $request->input('dilution_percentage');
         $method->bar_id = bar()->id;
         $method->save();
 
@@ -101,8 +103,8 @@ class CocktailMethodController extends Controller
             abort(403);
         }
 
-        $method->name = $request->post('name');
-        $method->dilution_percentage = (int) $request->post('dilution_percentage');
+        $method->name = $request->input('name');
+        $method->dilution_percentage = (int) $request->input('dilution_percentage');
         $method->updated_at = now();
         $method->save();
 

@@ -5,7 +5,8 @@
         "brick/money": "^0.9.0",
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
-        "intervention/image": "^3.5.1",
+        "jcupitt/vips": "^2.4",
+        "kalnoy/nestedset": "^6.0",
         "karlomikus/recipe-utils": "^0.12.0",
         "laravel/cashier-paddle": "^2.0",
         "laravel/framework": "^11.0",
@@ -36,7 +37,7 @@
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^8.1",
         "phpstan/phpstan": "^1.8",
-        "phpunit/phpunit": "^10.4.0",
+        "phpunit/phpunit": "^10.5",
         "spatie/laravel-ignition": "^2.0"
     },
     "autoload": {
@@ -68,9 +69,9 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ],
-        "static": "vendor/bin/phpstan analyse --xdebug",
+        "static": "vendor/bin/phpstan analyse",
         "fix-style": "vendor/bin/pint",
-        "test": "php artisan test --parallel",
+        "test": "php artisan test",
         "openapi": "vendor/bin/openapi app -o docs/openapi-generated.yaml --version 3.1.0"
     },
     "extra": {

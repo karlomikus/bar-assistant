@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Http;
 
 use Tests\TestCase;
-use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\BarMembership;
 use Kami\Cocktail\Models\IngredientCategory;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,21 +14,21 @@ class IngredientCategoryControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    private BarMembership $barMembership;
+
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->actingAs(
-            User::factory()->create()
-        );
+        $this->barMembership = $this->setupBarMembership();
+        $this->actingAs($this->barMembership->user);
     }
 
     public function test_list_categories_response(): void
     {
-        $this->setupBar();
-        IngredientCategory::factory()->count(10)->create(['bar_id' => 1]);
+        IngredientCategory::factory()->recycle($this->barMembership->bar)->count(10)->create();
 
-        $response = $this->getJson('/api/ingredient-categories?bar_id=1');
+        $response = $this->getJson('/api/ingredient-categories', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
         $response->assertStatus(200);
         $response->assertJson(
@@ -41,11 +41,9 @@ class IngredientCategoryControllerTest extends TestCase
 
     public function test_show_category_response(): void
     {
-        $bar = $this->setupBar();
-        $cat = IngredientCategory::factory()->create([
+        $cat = IngredientCategory::factory()->recycle($this->barMembership->bar)->create([
             'name' => 'Test cat',
             'description' => 'Test cat desc',
-            'bar_id' => $bar->id,
         ]);
 
         $response = $this->getJson('/api/ingredient-categories/' . $cat->id);
@@ -64,11 +62,10 @@ class IngredientCategoryControllerTest extends TestCase
 
     public function test_create_category_response(): void
     {
-        $this->setupBar();
-        $response = $this->postJson('/api/ingredient-categories?bar_id=1', [
+        $response = $this->postJson('/api/ingredient-categories', [
             'name' => 'Test cat',
             'description' => 'Test cat desc',
-        ]);
+        ], ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
         $response->assertCreated();
         $this->assertNotEmpty($response->headers->get('Location'));
@@ -85,11 +82,9 @@ class IngredientCategoryControllerTest extends TestCase
 
     public function test_update_category_response(): void
     {
-        $bar = $this->setupBar();
-        $cat = IngredientCategory::factory()->create([
+        $cat = IngredientCategory::factory()->recycle($this->barMembership->bar)->create([
             'name' => 'Start cat',
             'description' => 'Start cat desc',
-            'bar_id' => $bar->id,
         ]);
 
         $response = $this->putJson('/api/ingredient-categories/' . $cat->id, [
@@ -111,11 +106,9 @@ class IngredientCategoryControllerTest extends TestCase
 
     public function test_delete_category_response(): void
     {
-        $bar = $this->setupBar();
-        $cat = IngredientCategory::factory()->create([
+        $cat = IngredientCategory::factory()->recycle($this->barMembership->bar)->create([
             'name' => 'Start cat',
             'description' => 'Start cat desc',
-            'bar_id' => $bar->id,
         ]);
 
         $response = $this->delete('/api/ingredient-categories/' . $cat->id);

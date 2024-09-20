@@ -26,8 +26,8 @@ class ImageRequest extends FormRequest
     public function rules()
     {
         return [
-            'images.*.image' => 'sometimes|required|image',
-            'images.*.image_url' => 'sometimes|required|url',
+            'images' => 'array',
+            'images.*.id' => 'sometimes|integer',
             'images.*.sort' => 'integer',
         ];
     }

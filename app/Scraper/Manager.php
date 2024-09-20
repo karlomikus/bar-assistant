@@ -12,6 +12,9 @@ use Kami\Cocktail\Exceptions\ScraperMissingException;
 
 final class Manager
 {
+    /**
+     * @var array<class-string<AbstractSiteExtractor>>
+     */
     private array $supportedSites = [
         \Kami\Cocktail\Scraper\Sites\TuxedoNo2::class,
         \Kami\Cocktail\Scraper\Sites\ImbibeMagazine::class,

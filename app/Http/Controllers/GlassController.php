@@ -7,9 +7,9 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Glass;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Http\Requests\GlassRequest;
 use Kami\Cocktail\Http\Resources\GlassResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -19,6 +19,7 @@ class GlassController extends Controller
 {
     #[OAT\Get(path: '/glasses', tags: ['Glasses'], summary: 'Show a list of glass types', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
             new OAT\Property(property: 'name', type: 'string'),
         ])),
@@ -55,6 +56,7 @@ class GlassController extends Controller
 
     #[OAT\Post(path: '/glasses', tags: ['Glasses'], summary: 'Create a new glass', parameters: [
         new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [

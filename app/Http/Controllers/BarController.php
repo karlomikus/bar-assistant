@@ -7,17 +7,18 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use OpenApi\Attributes as OAT;
-use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
+use OpenApi\Attributes as OAT;
 use Symfony\Component\Uid\Ulid;
 use Kami\Cocktail\Jobs\SetupBar;
 use Illuminate\Http\JsonResponse;
+use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Kami\Cocktail\Models\BarStatusEnum;
 use Kami\RecipeUtils\UnitConverter\Units;
+use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\Http\Requests\BarRequest;
 use Kami\Cocktail\Http\Resources\BarResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -78,6 +79,7 @@ class BarController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
+    #[BAO\ValidationFailedResponse]
     public function store(BarRequest $request): JsonResponse
     {
         if ($request->user()->cannot('create', Bar::class)) {
@@ -89,30 +91,33 @@ class BarController extends Controller
         ]);
 
         $inviteEnabled = (bool) $request->post('enable_invites', '0');
-        $barOptions = $request->post('options', []);
+        $barOptions = $request->input('options', []);
+        $barOptions = array_map(fn ($flag) => BarOptionsEnum::tryFrom($flag), $barOptions);
 
         $bar = new Bar();
-        $bar->name = $request->post('name');
-        $bar->subtitle = $request->post('subtitle');
-        $bar->description = $request->post('description');
+        $bar->name = $request->input('name');
+        $bar->subtitle = $request->input('subtitle');
+        $bar->description = $request->input('description');
         $bar->created_user_id = $request->user()->id;
         $bar->invite_code = $inviteEnabled ? (string) new Ulid() : null;
-        if ($request->post('slug')) {
-            $bar->slug = Str::slug($request->post('slug'));
+        if ($request->input('slug')) {
+            $bar->slug = Str::slug($request->input('slug'));
         } else {
             $bar->generateSlug();
         }
 
         $settings = [];
-        if ($defaultUnits = $request->post('default_units')) {
+        if ($defaultUnits = $request->input('default_units')) {
             $settings['default_units'] = Units::tryFrom($defaultUnits)?->value;
         }
-        if ($defaultLanguage = $request->post('default_language')) {
+        if ($defaultLanguage = $request->input('default_language')) {
             $settings['default_lang'] = $defaultLanguage;
         }
         $bar->settings = $settings;
 
         $bar->save();
+
+        Bar::updateSearchToken($bar);
 
         $request->user()->joinBarAs($bar, UserRoleEnum::Admin);
 
@@ -137,6 +142,7 @@ class BarController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
+    #[BAO\ValidationFailedResponse]
     public function update(int $id, BarRequest $request): JsonResource
     {
         $bar = Bar::findOrFail($id);
@@ -151,7 +157,7 @@ class BarController extends Controller
 
         Cache::forget('ba:bar:' . $bar->id);
 
-        $inviteEnabled = (bool) $request->post('enable_invites', '0');
+        $inviteEnabled = (bool) $request->input('enable_invites', '0');
         if ($inviteEnabled && $bar->invite_code === null) {
             $bar->invite_code = (string) new Ulid();
         } else {
@@ -159,13 +165,17 @@ class BarController extends Controller
         }
 
         $settings = $bar->settings;
-        $settings['default_units'] = Units::tryFrom($request->post('default_units') ?? '')?->value;
+        $settings['default_units'] = Units::tryFrom($request->input('default_units') ?? '')?->value;
         $bar->settings = $settings;
 
-        $bar->status = $request->post('status') ?? BarStatusEnum::Active->value;
-        $bar->name = $request->post('name');
-        $bar->description = $request->post('description');
-        $bar->subtitle = $request->post('subtitle');
+        if ($request->filled('slug')) {
+            $bar->slug = Str::slug($request->input('slug'));
+        }
+
+        $bar->status = $request->input('status') ?? BarStatusEnum::Active->value;
+        $bar->name = $request->input('name');
+        $bar->description = $request->input('description');
+        $bar->subtitle = $request->input('subtitle');
         $bar->updated_user_id = $request->user()->id;
         $bar->updated_at = now();
         $bar->save();

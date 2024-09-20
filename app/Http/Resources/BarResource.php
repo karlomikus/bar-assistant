@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
-use Kami\Cocktail\Search\SearchActionsAdapter;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -20,8 +19,6 @@ class BarResource extends JsonResource
      */
     public function toArray($request)
     {
-        $search = app(SearchActionsAdapter::class);
-
         return [
             'id' => $this->id,
             'slug' => $this->slug,
@@ -31,10 +28,10 @@ class BarResource extends JsonResource
             'invite_code' => $this->invite_code,
             'status' => $this->getStatus()->value,
             'settings' => $this->settings ?? [],
-            'search_driver_host' => $search->getActions()->getHost(),
-            'search_driver_api_key' => $search->getActions()->getBarSearchApiKey($this->id),
-            'created_at' => $this->created_at->toJson(),
-            'updated_at' => $this->updated_at?->toJson() ?? null,
+            'search_host' => config('scout.meilisearch.host'),
+            'search_token' => $this->search_token,
+            'created_at' => $this->created_at->toAtomString(),
+            'updated_at' => $this->updated_at?->toAtomString() ?? null,
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
             'access' => [

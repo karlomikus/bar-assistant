@@ -1,32 +1,35 @@
 services:
   app:
     build:
-      target: localdev
+      target: dev
       args:
-        PUID: 1000
-      context: .
-      dockerfile: Dockerfile
+        USER_ID: 1000
+        GROUP_ID: 1000
     container_name: app
     restart: unless-stopped
+    environment:
+      PHP_FPM_POOL_NAME: "bass-php"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./:/var/www/cocktails
-      - ./resources/docker/localdev/php.ini:/usr/local/etc/php/php.ini
+      - ./resources/docker/localdev/php.ini:/usr/local/etc/php/conf.d/zzz-xbass-php.ini
 
   horizon:
     build:
-      target: localdev
+      target: dev
       args:
-        PUID: 1000
-      context: .
-      dockerfile: Dockerfile
+        USER_ID: 1000
+        GROUP_ID: 1000
     restart: unless-stopped
+    environment:
+      PHP_FPM_POOL_NAME: "bass-horizon"
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    command: php artisan horizon
+    command: ["php", "/var/www/cocktails/artisan", "horizon"]
     volumes:
       - ./:/var/www/cocktails
+      - ./resources/docker/localdev/php.ini:/usr/local/etc/php/conf.d/zzz-xbass-php.ini
 
   webserver:
     image: nginx:alpine
@@ -45,7 +48,7 @@ services:
     restart: unless-stopped
 
   meilisearch:
-    image: getmeili/meilisearch:v1.6
+    image: getmeili/meilisearch:v1.7
     environment:
       - MEILI_MASTER_KEY=masterKeyThatIsReallyReallyLong4Real
     restart: unless-stopped

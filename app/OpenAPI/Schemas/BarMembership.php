@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema()]
+#[OAT\Schema(required: ['user_id', 'user_name', 'bar_id', 'is_shelf_public', 'use_parent_as_substitute'])]
 class BarMembership
 {
     #[OAT\Property(property: 'user_id', example: 1)]

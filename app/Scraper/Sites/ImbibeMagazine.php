@@ -66,7 +66,7 @@ class ImbibeMagazine extends DefaultScraper
         if ($result === null) {
             foreach ($this->getLegacyRecipeIngredients() as $line) {
                 if (str_starts_with($line, 'Glass:')) {
-                    $result = str_replace('Glass:', '', $line);
+                    $result = (string) str_replace('Glass:', '', $line);
                 }
             }
         }
@@ -111,7 +111,7 @@ class ImbibeMagazine extends DefaultScraper
         if ($result === null) {
             foreach ($this->getLegacyRecipeIngredients() as $line) {
                 if (str_starts_with($line, 'Garnish:')) {
-                    $result = str_replace('Garnish:', '', $line);
+                    $result = (string) str_replace('Garnish:', '', $line);
                 }
             }
         }
@@ -138,11 +138,14 @@ class ImbibeMagazine extends DefaultScraper
         }
 
         return [
-            'url' => $url,
+            'uri' => $url,
             'copyright' => $copyright,
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getRecipeSchema(): array
     {
         $recipeSchema = [];
@@ -157,6 +160,9 @@ class ImbibeMagazine extends DefaultScraper
         return $recipeSchema;
     }
 
+    /**
+     * @return array<string>
+     */
     private function getLegacyRecipeIngredients(): array
     {
         $result = [];
