@@ -1,3 +1,7 @@
+# v4.0.1
+## Fixes
+- Fixed a bug where cocktails with substitutes + any other filter were not being filtered correctly
+
 # v4.0.0
 This is a new major release. Here's a quick summary of the more interesting changes:
 
