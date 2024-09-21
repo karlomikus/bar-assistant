@@ -37,8 +37,9 @@ final class CocktailQueryFilter extends QueryBuilder
                         $value = [$value];
                     }
 
-                    $query->whereIn('ci.ingredient_id', $value)
-                        ->orWhereIn('cis.ingredient_id', $value);
+                    $query->where(function ($q) use ($value) {
+                        $q->whereIn('ci.ingredient_id', $value)->orWhereIn('cis.ingredient_id', $value);
+                    });
                 }),
                 AllowedFilter::exact('tag_id', 'tags.id'),
                 AllowedFilter::exact('created_user_id'),
