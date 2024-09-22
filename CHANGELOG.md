@@ -1,3 +1,7 @@
+# v4.0.2
+## Fixes
+- Fixed a bug where the bar import command checked the wrong filepath
+
 # v4.0.1
 ## Fixes
 - Fixed a bug where cocktails with substitutes + any other filter were not being filtered correctly

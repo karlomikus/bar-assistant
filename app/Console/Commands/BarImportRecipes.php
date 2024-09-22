@@ -56,12 +56,13 @@ class BarImportRecipes extends Command
             return Command::FAILURE;
         }
 
-        $filename = $zipFileDisk->path($filename);
         if (!$zipFileDisk->exists($filename)) {
             $this->error(sprintf('File "%s" does not exist.', $filename));
 
             return Command::FAILURE;
         }
+
+        $filename = $zipFileDisk->path($filename);
 
         $zip = new ZipArchive();
         if ($zip->open($filename) !== true) {
