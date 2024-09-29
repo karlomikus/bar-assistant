@@ -75,3 +75,20 @@ RUN docker-php-serversideup-set-id www-data $USER_ID:$GROUP_ID && \
 RUN docker-php-serversideup-s6-init
 
 USER www-data
+
+FROM php-base AS prod
+
+ENV PHP_OPCACHE_ENABLE=1
+ENV PHP_OPCACHE_MAX_ACCELERATED_FILES=20000
+ENV PHP_OPCACHE_MEMORY_CONSUMPTION=256
+
+COPY --chmod=755 ./resources/docker/dist/init.sh /etc/entrypoint.d/99-bass.sh
+COPY --chmod=755 --chown=www-data:www-data ./resources/docker/dist/nginx.conf /etc/nginx/server-opts.d/99-bass.conf
+
+USER root
+
+RUN docker-php-serversideup-s6-init
+
+USER www-data
+
+COPY ./resources/docker/dist/php.ini /usr/local/etc/php/conf.d/zzz-bass-php.ini
