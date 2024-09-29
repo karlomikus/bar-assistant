@@ -4292,12 +4292,12 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /billing/subscriptions:
+  /billing/subscription:
     get:
       tags:
         - Billing
       summary: 'Get subscription status'
-      operationId: 5e298d4bebc46cd05931c3a15c92f248
+      operationId: 69a9ec343d37c0baa6b984cac0c06da8
       responses:
         '200':
           description: 'Successful response'
@@ -4321,7 +4321,7 @@ paths:
       tags:
         - Billing
       summary: 'Update subscription'
-      operationId: 6b69b6aa21e0e7174a5601c02a19161e
+      operationId: 6b1e9ae3c684b7a71a5ab7348766e6c5
       requestBody:
         required: true
         content:
