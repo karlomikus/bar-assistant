@@ -166,7 +166,7 @@ class AuthController extends Controller
         abort(400, $status);
     }
 
-    #[OAT\Post(path: '/auth/verify/{id}/{hash}', tags: ['Authentication'], summary: 'Confirm user account', parameters: [
+    #[OAT\Get(path: '/auth/verify/{id}/{hash}', tags: ['Authentication'], summary: 'Confirm user account', parameters: [
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id of a user', schema: new OAT\Schema(type: 'integer')),
         new OAT\Parameter(name: 'hash', in: 'path', required: true, description: 'Hash string sent to user email', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
