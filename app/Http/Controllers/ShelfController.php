@@ -7,12 +7,14 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\UserShoppingList;
@@ -221,5 +223,101 @@ class ShelfController extends Controller
         $possibleIngredients = $ingredientRepo->getIngredientsForPossibleCocktails(bar()->id, $barMembership->id);
 
         return response()->json(['data' => $possibleIngredients]);
+    }
+
+    #[OAT\Get(path: '/bars/{id}/ingredients', tags: ['Bar Shelf'], summary: 'Show a list of bar shelf ingredients', description: 'Ingredients that bar has in it\'s shelf', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+        new BAO\Parameters\PageParameter(),
+        new BAO\Parameters\PerPageParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\PaginateData(BAO\Schemas\IngredientBasic::class),
+    ])]
+    public function barIngredients(Request $request, int $id): JsonResource
+    {
+        $bar = Bar::findOrFail($id);
+        if ($request->user()->cannot('show', $bar)) {
+            abort(403);
+        }
+
+        $ingredientIds = $bar->shelfIngredients->pluck('ingredient_id');
+
+        /** @var \Illuminate\Pagination\LengthAwarePaginator<Ingredient> */
+        $ingredients = Ingredient::whereIn('id', $ingredientIds)->orderBy('name')->paginate($request->get('per_page', 100));
+
+        return IngredientBasicResource::collection($ingredients->withQueryString());
+    }
+
+    #[OAT\Post(path: '/bars/{id}/ingredients/batch-store', tags: ['Bar Shelf'], summary: 'Batch store bar ingredients to bar shelf', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(type: 'object', properties: [
+                new OAT\Property(property: 'ingredients', type: 'array', items: new OAT\Items(type: 'integer')),
+            ]),
+        ]
+    ))]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function batchStoreBarIngredients(Request $request, int $id): Response
+    {
+        $bar = Bar::findOrFail($id);
+        if ($request->user()->cannot('edit', $bar)) {
+            abort(403);
+        }
+
+        $ingredients = DB::table('ingredients')
+            ->select('id')
+            ->where('bar_id', $bar->id)
+            ->whereIn('id', $request->post('ingredients'))
+            ->pluck('id');
+
+        $models = [];
+        foreach ($ingredients as $dbIngredientId) {
+            $userIngredient = new BarIngredient();
+            $userIngredient->ingredient_id = $dbIngredientId;
+            $models[] = $userIngredient;
+        }
+
+        $bar->shelfIngredients()->saveMany($models);
+
+        return new Response(null, 204);
+    }
+
+    #[OAT\Post(path: '/bars/{id}/ingredients/batch-delete', tags: ['Bar Shelf'], summary: 'Delete multiple ingredients from bar shelf', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(type: 'object', properties: [
+                new OAT\Property(property: 'ingredients', type: 'array', items: new OAT\Items(type: 'integer')),
+            ]),
+        ]
+    ))]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function batchDeleteBarIngredients(Request $request, int $id): Response
+    {
+        $bar = Bar::findOrFail($id);
+        if ($request->user()->cannot('edit', $bar)) {
+            abort(403);
+        }
+
+        $ingredients = DB::table('ingredients')
+            ->select('id')
+            ->where('bar_id', $bar->id)
+            ->whereIn('id', $request->post('ingredients'))
+            ->pluck('id');
+
+        try {
+            $bar->shelfIngredients()->whereIn('ingredient_id', $ingredients)->delete();
+        } catch (Throwable $e) {
+            abort(500, $e->getMessage());
+        }
+
+        return new Response(null, 204);
     }
 }
