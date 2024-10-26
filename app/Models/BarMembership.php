@@ -21,7 +21,7 @@ class BarMembership extends Model
     ];
 
     /**
-     * @return BelongsTo<Bar, BarMembership>
+     * @return BelongsTo<Bar, $this>
      */
     public function bar(): BelongsTo
     {
@@ -29,7 +29,7 @@ class BarMembership extends Model
     }
 
     /**
-     * @return BelongsTo<UserRole, BarMembership>
+     * @return BelongsTo<UserRole, $this>
      */
     public function role(): BelongsTo
     {
@@ -37,7 +37,7 @@ class BarMembership extends Model
     }
 
     /**
-     * @return BelongsTo<User, BarMembership>
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -45,7 +45,7 @@ class BarMembership extends Model
     }
 
     /**
-     * @return HasMany<UserIngredient>
+     * @return HasMany<UserIngredient, $this>
      */
     public function userIngredients(): HasMany
     {
@@ -53,7 +53,7 @@ class BarMembership extends Model
     }
 
     /**
-     * @return HasMany<UserShoppingList>
+     * @return HasMany<UserShoppingList, $this>
      */
     public function shoppingListIngredients(): HasMany
     {
@@ -61,7 +61,7 @@ class BarMembership extends Model
     }
 
     /**
-     * @return HasMany<CocktailFavorite>
+     * @return HasMany<CocktailFavorite, $this>
      */
     public function cocktailFavorites(): HasMany
     {
@@ -69,7 +69,7 @@ class BarMembership extends Model
     }
 
     /**
-     * @return HasMany<CocktailCollection>
+     * @return HasMany<CocktailCollection, $this>
      */
     public function cocktailCollections(): HasMany
     {

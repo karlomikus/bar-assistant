@@ -14,7 +14,7 @@ class Rating extends Model
     use HasFactory;
 
     /**
-     * @return MorphTo<Cocktail|Model, Rating>
+     * @return MorphTo<Cocktail|Model, $this>
      */
     public function rateable(): MorphTo
     {

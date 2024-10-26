@@ -21,7 +21,7 @@ class MenuCocktail extends Model
     ];
 
     /**
-     * @return BelongsTo<Cocktail, MenuCocktail>
+     * @return BelongsTo<Cocktail, $this>
      */
     public function cocktail(): BelongsTo
     {
@@ -29,7 +29,7 @@ class MenuCocktail extends Model
     }
 
     /**
-     * @return BelongsTo<Menu, MenuCocktail>
+     * @return BelongsTo<Menu, $this>
      */
     public function menu(): BelongsTo
     {

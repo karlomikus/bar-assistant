@@ -14,7 +14,7 @@ class Note extends Model
     use HasFactory;
 
     /**
-     * @return MorphTo<Cocktail|Model, Note>
+     * @return MorphTo<Cocktail|Model, $this>
      */
     public function noteable(): MorphTo
     {

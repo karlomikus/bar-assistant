@@ -21,7 +21,7 @@ class Tag extends Model
     public $fillable = ['name', 'bar_id'];
 
     /**
-     * @return BelongsToMany<Cocktail>
+     * @return BelongsToMany<Cocktail, $this>
      */
     public function cocktails(): BelongsToMany
     {
@@ -29,7 +29,7 @@ class Tag extends Model
     }
 
     /**
-     * @return BelongsTo<Bar, Tag>
+     * @return BelongsTo<Bar, $this>
      */
     public function bar(): BelongsTo
     {

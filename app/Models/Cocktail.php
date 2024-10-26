@@ -60,7 +60,7 @@ class Cocktail extends Model implements UploadableInterface
     }
 
     /**
-     * @return BelongsTo<Glass, Cocktail>
+     * @return BelongsTo<Glass, $this>
      */
     public function glass(): BelongsTo
     {
@@ -68,7 +68,7 @@ class Cocktail extends Model implements UploadableInterface
     }
 
     /**
-     * @return BelongsTo<Bar, Cocktail>
+     * @return BelongsTo<Bar, $this>
      */
     public function bar(): BelongsTo
     {
@@ -76,7 +76,7 @@ class Cocktail extends Model implements UploadableInterface
     }
 
     /**
-     * @return HasMany<CocktailIngredient>
+     * @return HasMany<CocktailIngredient, $this>
      */
     public function ingredients(): HasMany
     {
@@ -84,7 +84,7 @@ class Cocktail extends Model implements UploadableInterface
     }
 
     /**
-     * @return BelongsToMany<Tag>
+     * @return BelongsToMany<Tag, $this>
      */
     public function tags(): BelongsToMany
     {
@@ -92,7 +92,7 @@ class Cocktail extends Model implements UploadableInterface
     }
 
     /**
-     * @return BelongsToMany<Utensil>
+     * @return BelongsToMany<Utensil, $this>
      */
     public function utensils(): BelongsToMany
     {
@@ -100,7 +100,7 @@ class Cocktail extends Model implements UploadableInterface
     }
 
     /**
-     * @return BelongsTo<CocktailMethod, Cocktail>
+     * @return BelongsTo<CocktailMethod, $this>
      */
     public function method(): BelongsTo
     {
@@ -108,7 +108,7 @@ class Cocktail extends Model implements UploadableInterface
     }
 
     /**
-     * @return BelongsToMany<CocktailCollection>
+     * @return BelongsToMany<CocktailCollection, $this>
      */
     public function collections(): BelongsToMany
     {

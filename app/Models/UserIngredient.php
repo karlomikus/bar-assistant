@@ -16,7 +16,7 @@ class UserIngredient extends Model
     public $timestamps = false;
 
     /**
-     * @return BelongsTo<Ingredient, UserIngredient>
+     * @return BelongsTo<Ingredient, $this>
      */
     public function ingredient(): BelongsTo
     {
@@ -24,7 +24,7 @@ class UserIngredient extends Model
     }
 
     /**
-     * @return BelongsTo<BarMembership, UserIngredient>
+     * @return BelongsTo<BarMembership, $this>
      */
     public function barMembership(): BelongsTo
     {

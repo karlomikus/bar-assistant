@@ -60,7 +60,7 @@ class Ingredient extends Model
     }
 
     /**
-     * @return BelongsTo<IngredientCategory, Ingredient>
+     * @return BelongsTo<IngredientCategory, $this>
      */
     public function category(): BelongsTo
     {
@@ -68,7 +68,7 @@ class Ingredient extends Model
     }
 
     /**
-     * @return BelongsToMany<Cocktail>
+     * @return BelongsToMany<Cocktail, $this>
      */
     public function cocktails(): BelongsToMany
     {
@@ -76,7 +76,7 @@ class Ingredient extends Model
     }
 
     /**
-     * @return BelongsTo<Bar, Ingredient>
+     * @return BelongsTo<Bar, $this>
      */
     public function bar(): BelongsTo
     {
@@ -84,7 +84,7 @@ class Ingredient extends Model
     }
 
     /**
-     * @return BelongsTo<User, Ingredient>
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -92,7 +92,7 @@ class Ingredient extends Model
     }
 
     /**
-     * @return HasMany<Ingredient>
+     * @return HasMany<Ingredient, $this>
      */
     public function varieties(): HasMany
     {
@@ -100,7 +100,7 @@ class Ingredient extends Model
     }
 
     /**
-     * @return BelongsTo<Ingredient, Ingredient>
+     * @return BelongsTo<Ingredient, $this>
      */
     public function parentIngredient(): BelongsTo
     {
@@ -108,7 +108,7 @@ class Ingredient extends Model
     }
 
     /**
-     * @return HasMany<CocktailIngredientSubstitute>
+     * @return HasMany<CocktailIngredientSubstitute, $this>
      */
     public function cocktailIngredientSubstitutes(): HasMany
     {
@@ -116,7 +116,7 @@ class Ingredient extends Model
     }
 
     /**
-     * @return HasMany<ComplexIngredient>
+     * @return HasMany<ComplexIngredient, $this>
      */
     public function ingredientParts(): HasMany
     {
@@ -124,7 +124,7 @@ class Ingredient extends Model
     }
 
     /**
-     * @return HasMany<IngredientPrice>
+     * @return HasMany<IngredientPrice, $this>
      */
     public function prices(): HasMany
     {
@@ -183,7 +183,7 @@ class Ingredient extends Model
     /**
      * Return all ingredients that can be substituted with this ingredient
      *
-     * @return Collection<int, Ingredient>
+     * @return Collection<int, $this>
      */
     public function getCanBeSubstitutedWithIngredients(): Collection
     {

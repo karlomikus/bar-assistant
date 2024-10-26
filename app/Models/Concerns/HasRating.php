@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 trait HasRating
 {
     /**
-     * @return MorphMany<Rating>
+     * @return MorphMany<Rating, $this>
      */
     public function ratings(): MorphMany
     {

@@ -60,10 +60,11 @@ class Image extends Model
     }
 
     /**
-     * @return MorphTo<Ingredient|Cocktail|Model, Image>
+     * @return MorphTo<Ingredient|Cocktail, $this>
      */
     public function imageable(): MorphTo
     {
+        /** @phpstan-ignore-next-line */
         return $this->morphTo();
     }
 

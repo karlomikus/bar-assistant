@@ -19,7 +19,7 @@ class Export extends Model
     use HasBarAwareScope;
 
     /**
-     * @return BelongsTo<Bar, Export>
+     * @return BelongsTo<Bar, $this>
      */
     public function bar(): BelongsTo
     {

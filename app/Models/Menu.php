@@ -20,7 +20,7 @@ class Menu extends Model
     protected $fillable = ['bar_id'];
 
     /**
-     * @return HasMany<MenuCocktail>
+     * @return HasMany<MenuCocktail, $this>
      */
     public function menuCocktails(): HasMany
     {
@@ -28,7 +28,7 @@ class Menu extends Model
     }
 
     /**
-     * @return BelongsTo<Bar, Menu>
+     * @return BelongsTo<Bar, $this>
      */
     public function bar(): BelongsTo
     {

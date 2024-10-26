@@ -19,7 +19,7 @@ class CocktailMethod extends Model
     use HasAuthors;
 
     /**
-     * @return HasMany<Cocktail>
+     * @return HasMany<Cocktail, $this>
      */
     public function cocktails(): HasMany
     {
@@ -27,7 +27,7 @@ class CocktailMethod extends Model
     }
 
     /**
-     * @return BelongsTo<Bar, CocktailMethod>
+     * @return BelongsTo<Bar, $this>
      */
     public function bar(): BelongsTo
     {

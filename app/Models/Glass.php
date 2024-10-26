@@ -43,7 +43,7 @@ class Glass extends Model
     }
 
     /**
-     * @return HasMany<Cocktail>
+     * @return HasMany<Cocktail, $this>
      */
     public function cocktails(): HasMany
     {
@@ -51,7 +51,7 @@ class Glass extends Model
     }
 
     /**
-     * @return BelongsTo<Bar, Glass>
+     * @return BelongsTo<Bar, $this>
      */
     public function bar(): BelongsTo
     {
