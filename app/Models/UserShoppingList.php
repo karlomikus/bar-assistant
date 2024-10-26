@@ -14,7 +14,7 @@ class UserShoppingList extends Model
     use HasFactory;
 
     /**
-     * @return BelongsTo<Ingredient, UserShoppingList>
+     * @return BelongsTo<Ingredient, $this>
      */
     public function ingredient(): BelongsTo
     {

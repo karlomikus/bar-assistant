@@ -48,7 +48,7 @@ class CocktailsDistilled extends AbstractSiteExtractor
 
         $this->crawler->filter('.ingredients ul li')->each(function ($listNode) use (&$result) {
             $ingredientName = $listNode->innerText();
-            if (!$ingredientName || (string) $ingredientName === '') {
+            if (!isset($ingredientName) || (string) $ingredientName === '') {
                 $ingredientName = $listNode->filter('a')->text();
             }
 

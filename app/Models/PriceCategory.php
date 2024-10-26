@@ -24,7 +24,7 @@ class PriceCategory extends Model
     }
 
     /**
-     * @return BelongsTo<Bar, PriceCategory>
+     * @return BelongsTo<Bar, $this>
      */
     public function bar(): BelongsTo
     {

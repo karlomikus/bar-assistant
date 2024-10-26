@@ -17,7 +17,7 @@ class Utensil extends Model
     use HasBarAwareScope;
 
     /**
-     * @return HasMany<Cocktail>
+     * @return HasMany<Cocktail, $this>
      */
     public function cocktails(): HasMany
     {
@@ -25,7 +25,7 @@ class Utensil extends Model
     }
 
     /**
-     * @return BelongsTo<Bar, Utensil>
+     * @return BelongsTo<Bar, $this>
      */
     public function bar(): BelongsTo
     {

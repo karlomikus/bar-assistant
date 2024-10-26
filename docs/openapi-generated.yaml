@@ -141,11 +141,11 @@ paths:
           description: 'Unable to reset password'
       security: []
   '/auth/verify/{id}/{hash}':
-    post:
+    get:
       tags:
         - Authentication
       summary: 'Confirm user account'
-      operationId: 015719985fb92cfb18e9c6a19c82b1db
+      operationId: 46fe45b80f30383e9f9fe664be4d5dff
       parameters:
         -
           name: id

@@ -75,7 +75,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return HasMany<BarMembership>
+     * @return HasMany<BarMembership, $this>
      */
     public function memberships(): HasMany
     {
@@ -105,7 +105,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return HasMany<Bar>
+     * @return HasMany<Bar, $this>
      */
     public function ownedBars(): HasMany
     {

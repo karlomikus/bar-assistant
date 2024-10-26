@@ -18,7 +18,7 @@ class ComplexIngredient extends Model
     public $timestamps = false;
 
     /**
-     * @return BelongsTo<Ingredient, ComplexIngredient>
+     * @return BelongsTo<Ingredient, $this>
      */
     public function mainIngredient(): BelongsTo
     {
@@ -26,7 +26,7 @@ class ComplexIngredient extends Model
     }
 
     /**
-     * @return BelongsTo<Ingredient, ComplexIngredient>
+     * @return BelongsTo<Ingredient, $this>
      */
     public function ingredient(): BelongsTo
     {

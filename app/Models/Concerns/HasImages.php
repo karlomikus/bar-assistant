@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 trait HasImages
 {
     /**
-     * @return MorphMany<Image>
+     * @return MorphMany<Image, $this>
      */
     public function images(): MorphMany
     {

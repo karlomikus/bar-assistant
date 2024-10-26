@@ -72,7 +72,7 @@ class Bar extends Model
     }
 
     /**
-     * @return BelongsToMany<User>
+     * @return BelongsToMany<User, $this>
      */
     public function users(): BelongsToMany
     {
@@ -82,7 +82,7 @@ class Bar extends Model
     }
 
     /**
-     * @return HasMany<BarMembership>
+     * @return HasMany<BarMembership, $this>
      */
     public function memberships(): HasMany
     {
@@ -90,7 +90,7 @@ class Bar extends Model
     }
 
     /**
-     * @return HasMany<Cocktail>
+     * @return HasMany<Cocktail, $this>
      */
     public function cocktails(): HasMany
     {
@@ -98,7 +98,7 @@ class Bar extends Model
     }
 
     /**
-     * @return HasMany<Ingredient>
+     * @return HasMany<Ingredient, $this>
      */
     public function ingredients(): HasMany
     {
@@ -106,7 +106,7 @@ class Bar extends Model
     }
 
     /**
-     * @return HasMany<Export>
+     * @return HasMany<Export, $this>
      */
     public function exports(): HasMany
     {

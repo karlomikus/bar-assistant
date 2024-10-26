@@ -19,7 +19,7 @@ class Collection extends Model
     ];
 
     /**
-     * @return BelongsToMany<Cocktail>
+     * @return BelongsToMany<Cocktail, $this>
      */
     public function cocktails(): BelongsToMany
     {
@@ -27,7 +27,7 @@ class Collection extends Model
     }
 
     /**
-     * @return BelongsTo<BarMembership, Collection>
+     * @return BelongsTo<BarMembership, $this>
      */
     public function barMembership(): BelongsTo
     {

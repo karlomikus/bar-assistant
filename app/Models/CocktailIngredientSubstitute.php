@@ -15,7 +15,7 @@ class CocktailIngredientSubstitute extends Model
     use HasFactory;
 
     /**
-     * @return BelongsTo<CocktailIngredient, CocktailIngredientSubstitute>
+     * @return BelongsTo<CocktailIngredient, $this>
      */
     public function cocktailIngredient(): BelongsTo
     {
@@ -23,7 +23,7 @@ class CocktailIngredientSubstitute extends Model
     }
 
     /**
-     * @return BelongsTo<Ingredient, CocktailIngredientSubstitute>
+     * @return BelongsTo<Ingredient, $this>
      */
     public function ingredient(): BelongsTo
     {

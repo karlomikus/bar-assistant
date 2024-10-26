@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class IngredientPrice extends Model
 {
     /**
-     * @return BelongsTo<Ingredient, IngredientPrice>
+     * @return BelongsTo<Ingredient, $this>
      */
     public function ingredient(): BelongsTo
     {
@@ -19,7 +19,7 @@ class IngredientPrice extends Model
     }
 
     /**
-     * @return BelongsTo<PriceCategory, IngredientPrice>
+     * @return BelongsTo<PriceCategory, $this>
      */
     public function priceCategory(): BelongsTo
     {

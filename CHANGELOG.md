@@ -1,3 +1,10 @@
+# v4.0.3
+## Changes
+- Added prod target to docker image
+
+## Fixes
+- Fixed wrong endpoint name
+
 # v4.0.2
 ## Fixes
 - Fixed a bug where the bar import command checked the wrong filepath

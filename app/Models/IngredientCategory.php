@@ -19,7 +19,7 @@ class IngredientCategory extends Model
     use NodeTrait;
 
     /**
-     * @return HasMany<Ingredient>
+     * @return HasMany<Ingredient, $this>
      */
     public function ingredients(): HasMany
     {
@@ -27,7 +27,7 @@ class IngredientCategory extends Model
     }
 
     /**
-     * @return BelongsTo<Bar, IngredientCategory>
+     * @return BelongsTo<Bar, $this>
      */
     public function bar(): BelongsTo
     {

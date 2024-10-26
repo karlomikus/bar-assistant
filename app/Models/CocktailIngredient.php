@@ -24,7 +24,7 @@ class CocktailIngredient extends Model
     ];
 
     /**
-     * @return BelongsTo<Ingredient, CocktailIngredient>
+     * @return BelongsTo<Ingredient, $this>
      */
     public function ingredient(): BelongsTo
     {
@@ -32,7 +32,7 @@ class CocktailIngredient extends Model
     }
 
     /**
-     * @return BelongsTo<Cocktail, CocktailIngredient>
+     * @return BelongsTo<Cocktail, $this>
      */
     public function cocktail(): BelongsTo
     {
@@ -40,7 +40,7 @@ class CocktailIngredient extends Model
     }
 
     /**
-     * @return HasMany<CocktailIngredientSubstitute>
+     * @return HasMany<CocktailIngredientSubstitute, $this>
      */
     public function substitutes(): HasMany
     {
