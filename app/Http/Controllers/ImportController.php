@@ -23,14 +23,14 @@ use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
 class ImportController extends Controller
 {
-    #[OAT\Post(path: '/import/cocktail', tags: ['Import'], summary: 'Import from recipe schema', parameters: [
+    #[OAT\Post(path: '/import/cocktail', tags: ['Import'], summary: 'Import recipe', description: 'Import a recipe from a JSON structure that follows Bar Assistant recipe JSON schema. Supported schemas include [Draft 2](https://barassistant.app/cocktail-02.schema.json) and [Draft 1](https://barassistant.app/cocktail-01.schema.json).', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(property: 'source', type: 'string'),
+                new OAT\Property(property: 'source', type: 'string', description: 'Valid JSON structure to import.'),
                 new OAT\Property(property: 'duplicate_actions', ref: DuplicateActionsEnum::class, example: 'none', description: 'How to handle duplicates. Cocktails are matched by lowercase name.'),
             ]),
         ]
