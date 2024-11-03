@@ -1,3 +1,7 @@
+# v4.0.4
+## Fixes
+- Check for shelf ingredients before adding them to the shelf
+
 # v4.0.3
 ## Changes
 - Added prod target to docker image
