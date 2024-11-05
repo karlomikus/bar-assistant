@@ -1,6 +1,7 @@
 # v4.0.4
 ## Fixes
 - Check for shelf ingredients before adding them to the shelf
+- Fix for missing directories in docker entrypoint
 
 # v4.0.3
 ## Changes

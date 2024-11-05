@@ -14,6 +14,7 @@ use Kami\Cocktail\Models\UserRoleEnum;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\External\Import\FromDataPack;
+use Throwable;
 
 class BarImportRecipes extends Command
 {
@@ -104,7 +105,17 @@ class BarImportRecipes extends Command
 
         $this->line('Starting recipes import...');
         Cache::flush();
-        $this->importer->process($tempUnzipDisk, $bar, $user, [BarOptionsEnum::Cocktails, BarOptionsEnum::Ingredients]);
+
+        try {
+            $this->importer->process($tempUnzipDisk, $bar, $user, [BarOptionsEnum::Cocktails, BarOptionsEnum::Ingredients]);
+        } catch (Throwable $e) {
+            $tempUnzipDisk->deleteDirectory('/');
+
+            $this->error('Error occured during import:');
+            $this->error($e->getMessage());
+
+            return Command::FAILURE;
+        }
 
         $tempUnzipDisk->deleteDirectory('/');
 
