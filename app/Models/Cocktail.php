@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Models;
 
 use Carbon\Carbon;
 use Kami\Cocktail\Utils;
+use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Kami\RecipeUtils\Converter;
@@ -56,7 +57,7 @@ class Cocktail extends Model implements UploadableInterface
 
     public function getExternalId(): string
     {
-        return str_replace('-' . $this->bar_id, '', $this->slug);
+        return Str::slug($this->name);
     }
 
     /**
