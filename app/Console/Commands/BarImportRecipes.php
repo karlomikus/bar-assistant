@@ -13,7 +13,6 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Illuminate\Support\Facades\Storage;
-use Kami\Cocktail\Models\BarStatusEnum;
 use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\External\Import\FromDataPack;
 
