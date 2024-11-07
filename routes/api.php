@@ -50,10 +50,14 @@ if (config('bar-assistant.mail_require_confirmation') === true) {
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'authenticate'])->name('auth.login');
+    Route::post('oidc', [AuthController::class, 'startOidc']);
+    Route::get('oidc/callback', [AuthController::class, 'oidcCallback']);
+    Route::post('oidc/token', [AuthController::class, 'tokenRequest']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('forgot-password', [AuthController::class, 'passwordForgot']);
     Route::post('reset-password', [AuthController::class, 'passwordReset']);
     Route::get('verify/{id}/{hash}', [AuthController::class, 'confirmAccount']);
+
 });
 
 Route::prefix('server')->group(function () {

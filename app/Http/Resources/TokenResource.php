@@ -20,7 +20,9 @@ class TokenResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'token' => $this->plainTextToken,
+            'token' => property_exists($this->resource, 'plainTextToken')
+                ? $this->resource->plainTextToken
+                : $this->resource,
         ];
     }
 }
