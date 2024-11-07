@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -56,7 +57,7 @@ class Ingredient extends Model
 
     public function getExternalId(): string
     {
-        return str_replace('-' . $this->bar_id, '', $this->slug);
+        return Str::slug($this->name);
     }
 
     /**

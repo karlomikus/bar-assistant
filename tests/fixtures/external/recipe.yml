@@ -1,5 +1,5 @@
 recipe:
-  _id: test-cocktail
+  _id: gin-and-tonic
   name: 'Gin and Tonic'
   instructions: 'Cocktail instructions go here'
   created_at: '2020-01-01T12:00:00+00:00'

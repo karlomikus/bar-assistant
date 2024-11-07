@@ -3,7 +3,9 @@
 set -e
 
 # Create default bar assistant directories
-mkdir -p "$APP_BASE_DIR"/storage/bar-assistant/uploads/{cocktails,ingredients,temp}
+mkdir -p "$APP_BASE_DIR"/storage/bar-assistant/uploads/cocktails
+mkdir -p "$APP_BASE_DIR"/storage/bar-assistant/uploads/ingredients
+mkdir -p "$APP_BASE_DIR"/storage/bar-assistant/uploads/temp
 mkdir -p "$APP_BASE_DIR"/storage/bar-assistant/backups
 
 # SQLite database location

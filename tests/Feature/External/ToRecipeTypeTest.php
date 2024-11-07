@@ -43,8 +43,8 @@ class ToRecipeTypeTest extends TestCase
         CocktailMethod::factory()->for($membership->bar)->count(3)->create();
         PriceCategory::factory()->for($membership->bar)->count(3)->create();
         Utensil::factory()->for($membership->bar)->count(3)->create();
-        $cocktail = Cocktail::factory()->for($membership->bar)->create(['slug' => 'test-cocktail-1']);
-        $ingredient = Ingredient::factory()->for($membership->bar)->create(['slug' => 'test-ingredient-1']);
+        $cocktail = Cocktail::factory()->for($membership->bar)->create(['name' => 'Gin and Tonic']);
+        $ingredient = Ingredient::factory()->for($membership->bar)->create(['name' => 'Jack Daniels']);
 
         $imageCocktailFile = UploadedFile::fake()->createWithContent('image1.jpg', $this->getFakeImageContent('jpg'));
         $ingredientCocktailFile = UploadedFile::fake()->createWithContent('image2.jpg', $this->getFakeImageContent('png'));
@@ -70,8 +70,8 @@ class ToRecipeTypeTest extends TestCase
         $zip->close();
 
         $this->assertFileExists($unzippedFilesDisk->path('_meta.json'));
-        $this->assertFileExists($unzippedFilesDisk->path('cocktails/test-cocktail/recipe.json'));
-        $this->assertFileExists($unzippedFilesDisk->path('cocktails/test-cocktail/c-1-img.jpg'));
+        $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic/recipe.json'));
+        $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic/c-1-img.jpg'));
     }
 
     /**
