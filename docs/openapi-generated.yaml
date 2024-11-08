@@ -2307,7 +2307,8 @@ paths:
     post:
       tags:
         - Import
-      summary: 'Import from recipe schema'
+      summary: 'Import recipe'
+      description: 'Import a recipe from a JSON structure that follows Bar Assistant recipe JSON schema. Supported schemas include [Draft 2](https://barassistant.app/cocktail-02.schema.json) and [Draft 1](https://barassistant.app/cocktail-01.schema.json).'
       operationId: f46bb44c14109f5d529b854e81d57150
       parameters:
         -
@@ -2331,6 +2332,7 @@ paths:
             schema:
               properties:
                 source:
+                  description: 'Valid JSON structure to import.'
                   type: string
                 duplicate_actions:
                   $ref: '#/components/schemas/DuplicateActionsEnum'

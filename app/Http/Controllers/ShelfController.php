@@ -136,6 +136,7 @@ class ShelfController extends Controller
         }
 
         $barMembership = $user->getBarMembership(bar()->id);
+        $existingBarIngredients = $barMembership->userIngredients->pluck('ingredient_id');
 
         $ingredients = DB::table('ingredients')
             ->select('id')
@@ -148,6 +149,9 @@ class ShelfController extends Controller
 
         $models = [];
         foreach ($ingredients as $dbIngredientId) {
+            if ($existingBarIngredients->contains($dbIngredientId)) {
+                continue;
+            }
             $userIngredient = new UserIngredient();
             $userIngredient->ingredient_id = $dbIngredientId;
             $models[] = $userIngredient;
