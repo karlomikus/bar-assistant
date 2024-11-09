@@ -71,6 +71,14 @@ final class CocktailQueryFilter extends QueryBuilder
                         ));
                     }
                 }),
+                AllowedFilter::callback('bar_shelf', function ($query, $value) use ($cocktailRepo, $useParentIngredientAsSubstitute) {
+                    if ($value === true) {
+                        $query->whereIn('cocktails.id', $cocktailRepo->getCocktailsByIngredients(
+                            bar()->shelfIngredients->pluck('ingredient_id')->toArray(),
+                            useParentIngredientAsSubstitute: $useParentIngredientAsSubstitute,
+                        ));
+                    }
+                }),
                 AllowedFilter::callback('user_shelves', function ($query, $value) use ($cocktailRepo, $useParentIngredientAsSubstitute) {
                     if (!is_array($value)) {
                         $value = [$value];

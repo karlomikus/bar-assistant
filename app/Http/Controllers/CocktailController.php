@@ -46,6 +46,7 @@ class CocktailController extends Controller
             new OAT\Property(property: 'collection_id', type: 'string'),
             new OAT\Property(property: 'favorites', type: 'boolean'),
             new OAT\Property(property: 'on_shelf', type: 'boolean'),
+            new OAT\Property(property: 'bar_shelf', type: 'boolean'),
             new OAT\Property(property: 'user_shelves', type: 'string'),
             new OAT\Property(property: 'shelf_ingredients', type: 'string'),
             new OAT\Property(property: 'is_public', type: 'boolean'),

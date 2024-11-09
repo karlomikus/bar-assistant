@@ -81,4 +81,34 @@ class CocktailIngredient extends Model
 
         return $requiredIngredientIds->every(fn ($id) => $currentShelf->contains($id));
     }
+
+    public function barHasInShelf(): bool
+    {
+        return $this->ingredient->barHasInShelf($this->ingredient->bar);
+    }
+
+    public function barHasInShelfAsSubstitute(): bool
+    {
+        $currentShelf = $this->ingredient->bar->shelfIngredients;
+
+        foreach ($this->substitutes as $sub) {
+            if ($currentShelf->contains('ingredient_id', $sub->ingredient_id)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function barHasInShelfAsComplexIngredient(): bool
+    {
+        $requiredIngredientIds = $this->ingredient->ingredientParts->pluck('ingredient_id');
+        if ($requiredIngredientIds->isEmpty()) {
+            return false;
+        }
+
+        $currentShelf = $this->ingredient->bar->shelfIngredients->pluck('ingredient_id');
+
+        return $requiredIngredientIds->every(fn ($id) => $currentShelf->contains($id));
+    }
 }

@@ -309,6 +309,18 @@ class Cocktail extends Model implements UploadableInterface
         return true;
     }
 
+    public function canBarMake(): bool
+    {
+        $currentShelf = $this->bar->shelfIngredients;
+        foreach ($this->ingredients as $ci) {
+            if (!$currentShelf->contains('ingredient_id', $ci->ingredient_id) && !$ci->optional) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * @return array<string, mixed>
      */
