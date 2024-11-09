@@ -660,6 +660,8 @@ paths:
                 type: boolean
               on_shelf:
                 type: boolean
+              bar_shelf:
+                type: boolean
               user_shelves:
                 type: string
               shelf_ingredients:
@@ -2665,6 +2667,8 @@ paths:
               on_shopping_list:
                 type: boolean
               on_shelf:
+                type: boolean
+              bar_shelf:
                 type: boolean
               strength_min:
                 type: number

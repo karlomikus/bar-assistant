@@ -147,9 +147,9 @@ class Ingredient extends Model
         return $items->contains('ingredient_id', $this->id);
     }
 
-    public function barHasInShelf(Bar $bar): bool
+    public function barHasInShelf(): bool
     {
-        return $bar->shelfIngredients->contains('ingredient_id', $this->id);
+        return $this->bar->shelfIngredients->contains('ingredient_id', $this->id);
     }
 
     public function userHasInShoppingList(User $user): bool

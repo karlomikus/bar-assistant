@@ -84,7 +84,7 @@ class CocktailIngredient extends Model
 
     public function barHasInShelf(): bool
     {
-        return $this->ingredient->barHasInShelf($this->ingredient->bar);
+        return $this->ingredient->barHasInShelf();
     }
 
     public function barHasInShelfAsSubstitute(): bool

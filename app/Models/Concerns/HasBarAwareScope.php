@@ -14,8 +14,13 @@ trait HasBarAwareScope
      * @param Builder<\Illuminate\Database\Eloquent\Model> $query
      * @return Builder<\Illuminate\Database\Eloquent\Model>
      */
-    public function scopeFilterByBar(Builder $query): Builder
+    public function scopeFilterByBar(Builder $query, ?string $alias = null): Builder
     {
-        return $query->where('bar_id', bar()->id);
+        $col = 'bar_id';
+        if ($alias !== null) {
+            $col = $alias . '.' . $col;
+        }
+
+        return $query->where($col, bar()->id);
     }
 }
