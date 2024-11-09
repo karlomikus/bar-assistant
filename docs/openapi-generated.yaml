@@ -5622,6 +5622,8 @@ components:
               type: 'null'
         in_shelf:
           type: boolean
+        in_bar_shelf:
+          type: boolean
         access:
           required:
             - can_edit
@@ -5895,6 +5897,15 @@ components:
         in_shelf_as_complex_ingredient:
           type: boolean
           example: true
+        in_bar_shelf:
+          type: boolean
+          example: true
+        in_bar_shelf_as_substitute:
+          type: boolean
+          example: true
+        in_bar_shelf_as_complex_ingredient:
+          type: boolean
+          example: true
       type: object
     CocktailIngredientRequest:
       required:
@@ -5941,6 +5952,7 @@ components:
         - amount_max
         - units
         - in_shelf
+        - in_bar_shelf
       properties:
         ingredient:
           $ref: '#/components/schemas/IngredientBasic'
@@ -5962,6 +5974,9 @@ components:
             - 'null'
           example: ml
         in_shelf:
+          type: boolean
+          example: true
+        in_bar_shelf:
           type: boolean
           example: true
       type: object
@@ -6395,6 +6410,20 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IngredientPrice'
+        in_shelf:
+          type: boolean
+        in_bar_shelf:
+          type: boolean
+        in_shopping_list:
+          type: boolean
+        used_as_substitute_for:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientBasic'
+        can_be_substituted_with:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientBasic'
       type: object
     IngredientBasic:
       description: 'Minimal ingredient information'

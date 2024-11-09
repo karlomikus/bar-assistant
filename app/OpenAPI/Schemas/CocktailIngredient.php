@@ -60,4 +60,10 @@ class CocktailIngredient
     public bool $inShelfAsSubstitute = false;
     #[OAT\Property(property: 'in_shelf_as_complex_ingredient', example: true)]
     public bool $inShelfAsComplexIngredient = false;
+    #[OAT\Property(property: 'in_bar_shelf', example: true)]
+    public bool $inBarShelf = false;
+    #[OAT\Property(property: 'in_bar_shelf_as_substitute', example: true)]
+    public bool $inBarShelfAsSubstitute = false;
+    #[OAT\Property(property: 'in_bar_shelf_as_complex_ingredient', example: true)]
+    public bool $inBarShelfAsComplexIngredient = false;
 }
