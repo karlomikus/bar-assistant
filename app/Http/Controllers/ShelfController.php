@@ -22,6 +22,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Repository\IngredientRepository;
 use Kami\Cocktail\Http\Resources\CocktailBasicResource;
+use Kami\Cocktail\Http\Requests\ShelfIngredientsRequest;
 use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 
 class ShelfController extends Controller
@@ -128,7 +129,7 @@ class ShelfController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchStore(Request $request, int $id): Response
+    public function batchStore(ShelfIngredientsRequest $request, int $id): Response
     {
         $user = User::findOrFail($id);
         if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
@@ -177,7 +178,7 @@ class ShelfController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchDelete(Request $request, int $id): Response
+    public function batchDelete(ShelfIngredientsRequest $request, int $id): Response
     {
         $user = User::findOrFail($id);
         if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
@@ -265,7 +266,7 @@ class ShelfController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchStoreBarIngredients(Request $request, int $id): Response
+    public function batchStoreBarIngredients(ShelfIngredientsRequest $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
         if ($request->user()->cannot('manageShelf', $bar)) {
@@ -303,7 +304,7 @@ class ShelfController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchDeleteBarIngredients(Request $request, int $id): Response
+    public function batchDeleteBarIngredients(ShelfIngredientsRequest $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
         if ($request->user()->cannot('manageShelf', $bar)) {
