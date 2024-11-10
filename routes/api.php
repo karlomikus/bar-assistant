@@ -222,6 +222,9 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::post('/{id}/transfer', [BarController::class, 'transfer']);
         Route::get('/{id}/collections', [CollectionController::class, 'shared']);
         Route::get('/{id}/stats', [StatsController::class, 'index']);
+        Route::get('/{id}/ingredients', [ShelfController::class, 'barIngredients']);
+        Route::post('/{id}/ingredients/batch-store', [ShelfController::class, 'batchStoreBarIngredients']);
+        Route::post('/{id}/ingredients/batch-delete', [ShelfController::class, 'batchDeleteBarIngredients']);
     })->middleware(['ability:*']);
 
     Route::prefix('billing')->group(function () {

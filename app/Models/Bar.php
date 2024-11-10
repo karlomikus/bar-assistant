@@ -106,6 +106,14 @@ class Bar extends Model
     }
 
     /**
+     * @return HasMany<BarIngredient, $this>
+     */
+    public function shelfIngredients(): HasMany
+    {
+        return $this->hasMany(BarIngredient::class);
+    }
+
+    /**
      * @return HasMany<Export, $this>
      */
     public function exports(): HasMany

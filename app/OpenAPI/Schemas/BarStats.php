@@ -20,6 +20,8 @@ class BarStats
     #[OAT\Property(example: 1)]
     public int $total_shelf_ingredients;
     #[OAT\Property(example: 1)]
+    public int $total_bar_shelf_cocktails;
+    #[OAT\Property(example: 1)]
     public int $total_bar_members;
     #[OAT\Property(example: 1)]
     public int $total_collections;

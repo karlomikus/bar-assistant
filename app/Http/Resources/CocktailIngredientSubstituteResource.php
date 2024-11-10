@@ -25,6 +25,7 @@ class CocktailIngredientSubstituteResource extends JsonResource
             'amount_max' => $this->amount_max,
             'units' => $this->units,
             'in_shelf' => $this->userHasInShelf($request->user()),
+            'in_bar_shelf' => $this->barHasInShelf(),
         ];
     }
 }

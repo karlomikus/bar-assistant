@@ -43,6 +43,11 @@ final class IngredientQueryFilter extends QueryBuilder
                             ->where('user_ingredients.bar_membership_id', $barMembership->id);
                     }
                 }),
+                AllowedFilter::callback('bar_shelf', function ($query, $value) {
+                    if ($value === true) {
+                        $query->join('bar_ingredients', 'bar_ingredients.ingredient_id', '=', 'ingredients.id');
+                    }
+                }),
                 AllowedFilter::callback('strength_min', function ($query, $value) {
                     $query->where('strength', '>=', $value);
                 }),
@@ -78,6 +83,6 @@ final class IngredientQueryFilter extends QueryBuilder
             ])
             ->allowedIncludes(['parentIngredient', 'varieties', 'prices', 'category', 'ingredientParts', 'images'])
             ->withCount('cocktails')
-            ->filterByBar();
+            ->filterByBar('ingredients');
     }
 }
