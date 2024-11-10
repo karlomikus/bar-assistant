@@ -268,7 +268,7 @@ class ShelfController extends Controller
     public function batchStoreBarIngredients(Request $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
-        if ($request->user()->cannot('edit', $bar)) {
+        if ($request->user()->cannot('manageShelf', $bar)) {
             abort(403);
         }
 
@@ -306,7 +306,7 @@ class ShelfController extends Controller
     public function batchDeleteBarIngredients(Request $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
-        if ($request->user()->cannot('edit', $bar)) {
+        if ($request->user()->cannot('manageShelf', $bar)) {
             abort(403);
         }
 
