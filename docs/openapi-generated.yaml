@@ -694,7 +694,7 @@ paths:
         -
           name: sort
           in: query
-          description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `favorited_at`.'
+          description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `missing_bar_ingredients`, `favorited_at`.'
           schema:
             type: string
         -
@@ -5377,6 +5377,9 @@ components:
           type: integer
           example: 1
         total_shelf_ingredients:
+          type: integer
+          example: 1
+        total_bar_shelf_cocktails:
           type: integer
           example: 1
         total_bar_members:
