@@ -187,6 +187,7 @@ final class CocktailQueryFilter extends QueryBuilder
                 'abv',
                 'total_ingredients',
                 'missing_ingredients',
+                'missing_bar_ingredients',
                 AllowedSort::callback('favorited_at', function ($query, bool $descending) use ($barMembership) {
                     $direction = $descending ? 'DESC' : 'ASC';
 
@@ -208,14 +209,18 @@ final class CocktailQueryFilter extends QueryBuilder
                 'ratings',
                 AllowedInclude::callback('navigation', fn ($q) => $q),
             ])
-            ->selectRaw('cocktails.*, COUNT(ci.cocktail_id) AS total_ingredients, COUNT(ci.ingredient_id) - COUNT(ui.ingredient_id) AS missing_ingredients')
+            ->selectRaw('cocktails.*, COUNT(ci.cocktail_id) AS total_ingredients, COUNT(ci.ingredient_id) - COUNT(ui.ingredient_id) AS missing_ingredients, COUNT(ci.ingredient_id) - COUNT(bi.ingredient_id) AS missing_bar_ingredients')
             ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')
             ->leftJoin('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')
             ->leftJoin('user_ingredients AS ui', function ($query) use ($barMembership) {
                 $query->on('ui.ingredient_id', '=', 'ci.ingredient_id')->where('ui.bar_membership_id', $barMembership->id);
             })
+            ->leftJoin('bar_ingredients AS bi', function ($query) {
+                $query->on('bi.ingredient_id', '=', 'ci.ingredient_id');
+            })
             ->groupBy('cocktails.id')
-            ->filterByBar()
+            ->filterByBar('cocktails')
+            ->with('bar.shelfIngredients')
             ->withRatings($this->request->user()->id);
     }
 }
