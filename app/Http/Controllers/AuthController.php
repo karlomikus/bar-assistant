@@ -16,6 +16,8 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 use Kami\Cocktail\Mail\PasswordReset;
 use Kami\Cocktail\Mail\ConfirmAccount;
 use Kami\Cocktail\Mail\PasswordChanged;
@@ -30,12 +32,13 @@ use Kami\Cocktail\Http\Resources\ProfileResource;
 class AuthController extends Controller
 {
     private ?myOidc $_oidcClient = null;
+    private tmpData $_tmpData;
     private bool $oidcAutoRegister = false;
-    private int $oidcAuthTimeout = 300;
 
     public function __construct()
     {
         $this->initOidcClient();
+        $this->_tmpData = new tmpData();
     }
 
     #[OAT\Post(path: '/auth/login', tags: ['Authentication'], summary: 'Authenticate user and get a token', requestBody: new OAT\RequestBody(
@@ -256,11 +259,11 @@ class AuthController extends Controller
         $tokenName = $request->input('token_name') ?? $request->userAgent() ?? 'OIDC';
         // Generate a code to identify the request
         $code = bin2hex(random_bytes(16));
-        // Set these in session so we can use them later
-        $this->setClientCode($code);
-        $this->setClientCodeTokenName($code, $tokenName);
-        $this->setClientCodeUrl($code, $clientRedirecturl);
         $auth_endpoint = $this->_oidcClient->getAuthUrl();
+        $this->_tmpData->setClientCodeWithKey($this->_oidcClient->getHashedState(), $code);
+        // Set these in session so we can use them later
+        $this->_tmpData->setClientCodeTokenName($tokenName);
+        $this->_tmpData->setClientCodeUrl($clientRedirecturl);
         return response()->json([
             "data" => [
             'auth_url' => $auth_endpoint,
@@ -273,7 +276,9 @@ class AuthController extends Controller
         if (!$this->_oidcClient) {
             abort(400, 'OIDC is not enabled.');
         }
-        $this->_oidcClient->authenticate();
+        if (!$this->_oidcClient->authenticate()) {
+            abort(400, 'Unable to authenticate with OIDC.');
+        }
         $userInfo = $this->_oidcClient->requestUserInfo();
         $email = $userInfo->email ?? '';
         if (empty($email)) {
@@ -302,13 +307,16 @@ class AuthController extends Controller
         } elseif ($requireConfirmation === true && !$user->hasVerifiedEmail()) {
             abort(400, "User with email exists. Please confirm your account first.");
         }
-        $code = $this->getClientCode();
-        $tokenName = $this->getClientCodeTokenName($code);
+        // be careful, the state in the oidc was cleared during the authenticate
+        $hashedState = $this->_oidcClient->hash($_REQUEST['state']);
+        if (!$this->_tmpData->updateByKey($hashedState)) {
+            abort(400, 'Invalid state.');
+        }
+        $this->_tmpData->unsetClientCodeWithKey($hashedState);
+        $tokenName = $this->_tmpData->getClientCodeTokenName();
+        $clientRedirecturl = $this->_tmpData->getClientCodeUrl();
         $token = $user->createToken($tokenName, expiresAt: now()->addDays(14));
-        $clientRedirecturl = $this->getClientCodeUrl($code);
-        $this->unsetClientCodeTokenName($code);
-        $this->unsetClientCodeUrl($code);
-        $this->setClientCodeToken($code, $token->plainTextToken);
+        $this->_tmpData->setClientCodeToken($token->plainTextToken);
         if (empty($clientRedirecturl)) {
             return response()->json("OIDC Success, please redirect your application", 200);
         }
@@ -318,140 +326,53 @@ class AuthController extends Controller
     public function tokenRequest(Request $request): JsonResource
     {
         $code = $request->input('code');
-        if (!$code || $code !== $this->getClientCode()) {
+        if (!$code || $this->_tmpData->checkClientCodeAndUpdate($code)) {
             abort(400, 'Invalid code.');
         }
-        $this->unsetClientCode();
-        $token = $this->getClientCodeToken($code);
-        $this->unsetClientCodeToken($code);
+        $token = $this->_tmpData->getClientCodeToken();
+        $this->_tmpData->unsetAll();
         if (!$token) {
             abort(400, 'Token not found.');
         }
         return new TokenResource($token);
-    }
-
-    protected function setClientCodeUrl(string $code, null|string $url): void
-    {
-        if (empty($url)) {
-            return;
-        }
-        $this->setSessionKey($code."-url", $url, $this->oidcAuthTimeout);
-    }
-
-    protected function getClientCodeUrl(string $code): null|string
-    {
-        if (empty($code)) {
-            return null;
-        }
-        return $this->getSessionKey($code."-url");
-    }
-
-    protected function unsetClientCodeUrl(string $code): void
-    {
-        $this->unsetSessionKey($code."-url");
-    }
-
-    protected function setClientCodeToken(string $code, string $token): void
-    {
-        $this->setSessionKey($code."-token", $token, $this->oidcAuthTimeout);
-    }
-
-    protected function getClientCodeToken(string $code): null|string
-    {
-        return $this->getSessionKey($code."-token");
-    }
-
-    protected function unsetClientCodeToken(string $code): void
-    {
-        $this->unsetSessionKey($code."-token");
-    }
-
-    protected function setClientCodeTokenName(string $code, string $tokenName): void
-    {
-        $this->setSessionKey($code."-token-name", $tokenName, $this->oidcAuthTimeout);
-    }
-
-    protected function getClientCodeTokenName(string $code): null|string
-    {
-        return $this->getSessionKey($code."-token-name");
-    }
-
-    protected function unsetClientCodeTokenName(string $code): void
-    {
-        $this->unsetSessionKey($code."-token-name");
-    }
-
-    protected function setClientCode(string $code): void
-    {
-        $this->setSessionKey('connect_code', $code, $this->oidcAuthTimeout);
-    }
-
-    protected function getClientCode(): null|string
-    {
-        return $this->getSessionKey('connect_code');
-    }
-
-    protected function unsetClientCode(): void
-    {
-        $this->unsetSessionKey('connect_code');
-    }
-    /**
-     * Use session to manage a nonce
-     */
-    protected function startSession(): void
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            @session_start();
-        }
-    }
-
-    protected function setSessionKey(string $key, string $value, int $ttl = 0): void
-    {
-        $this->startSession();
-        if ($ttl > 0) {
-            $ttl_key = $key . '_ttl';
-            $_SESSION[$ttl_key] = time() + $ttl;
-        }
-        $_SESSION[$key] = $value;
-    }
-
-    protected function unsetSessionKey(string $key): void
-    {
-        $this->startSession();
-        unset($_SESSION[$key]);
-    }
-
-    protected function getSessionKey(string $key): null|string
-    {
-        $this->startSession();
-
-        if (array_key_exists($key, $_SESSION)) {
-            $ttl_key = $key . '_ttl';
-            if (array_key_exists($ttl_key, $_SESSION) && $_SESSION[$ttl_key] < time()) {
-                unset($_SESSION[$key]);
-                unset($_SESSION[$ttl_key]);
-                return null;
-            }
-            return $_SESSION[$key];
-        }
-        return null;
     }
 }
 
 
 class myOidc extends OpenIDConnectClient
 {
+    // for oidc client
+    private string $_state = '';
+    private string $_nonce = '';
+    private string $_codeVerifier = '';
+    private string $_hashedState = '';
+    private string $hashMethod = 'sha256';
+
+    // timeout for cache
+    public int $cacheTimeout = 300;
+
+    private function codeVerifierKey(): string
+    {
+        return $this->_hashedState . '.code_verifier';
+    }
+
+    private function nonceKey(): string
+    {
+        return $this->_hashedState . '.nonce';
+    }
+
+
     public function getAuthUrl(): string
     {
         // I'd like to use OpenID-Connect-PHP directly,
         // but we can not get the redirect URL from the client, so I write this part
         $auth_endpoint = $this->getProviderConfigValue('authorization_endpoint');
         $response_type = 'code';
-        // The nonce is an arbitrary value
-        $nonce = $this->setNonce($this->generateRandString());
 
         // State essentially acts as a session key for OIDC
         $state = $this->setState($this->generateRandString());
+        // The nonce is an arbitrary value
+        $nonce = $this->setNonce($this->generateRandString());
 
         // Generate the auth URL
         $auth_params = array_merge($this->getAuthParams(), [
@@ -477,7 +398,298 @@ class myOidc extends OpenIDConnectClient
         }
         // I just copied the code from OpenID-Connect-PHP
         $auth_endpoint .= (strpos($auth_endpoint, '?') === false ? '?' : '&') . http_build_query($auth_params, '', '&', $this->encType);
-        $this->commitSession();
         return $auth_endpoint;
     }
+
+    public function authenticate(): bool
+    {
+        // If we have an authorization code, validate it,
+        // becasue we store the state in the cache, let's try to get it from there
+        if (isset($_REQUEST['code'])) {
+            if (!$this->checkStateAndUpdate($_REQUEST['state'])) {
+                return false;
+            }
+        }
+        return parent::authenticate();
+    }
+
+    public function hash(string $data): string
+    {
+        return hash($this->hashMethod, $data);
+    }
+
+    public function checkState(string $state): bool
+    {
+        $hashedState = $this->hash($state);
+        return Cache::has($hashedState);
+    }
+
+
+    public function checkStateAndUpdate(string $state): bool
+    {
+        if ($this->checkState($state)) {
+            $this->_state = $state;
+            $this->_hashedState = $this->hash($state);
+            $this->_nonce = decrypt(Cache::get($this->nonceKey()));
+            $this->_codeVerifier = decrypt(Cache::get($this->codeVerifierKey()));
+            return true;
+        }
+        $this->_state = '';
+        $this->_nonce = '';
+        $this->_codeVerifier = '';
+        return false;
+    }
+
+    protected function setState(string $state): string
+    {
+        $this->_state = $state;
+        $this->_hashedState = $this->hash($state);
+        Cache::put($this->_hashedState, true, $this->cacheTimeout);
+        return $state;
+    }
+
+    protected function getState(): string
+    {
+        return $this->_state;
+    }
+
+    public function getHashedState(): string
+    {
+        return $this->_hashedState;
+    }
+
+    protected function unsetState(): void
+    {
+        Cache::forget($this->_hashedState);
+        $this->_state = '';
+        $this->_hashedState = '';
+    }
+
+    protected function setNonce(string $nonce): string
+    {
+        if (empty($this->_state)) {
+            throw new \RuntimeException('State is not set.');
+        }
+        $encryptedNonce = encrypt($nonce);
+        Cache::put($this->nonceKey(), $encryptedNonce, $this->cacheTimeout);
+        return $nonce;
+    }
+
+    protected function getNonce(): string
+    {
+        return $this->_nonce;
+    }
+
+    protected function unsetNonce(): void
+    {
+        Cache::forget($this->nonceKey());
+        $this->_nonce = '';
+    }
+
+    /**
+     * Stores $codeVerifier
+     */
+    protected function setCodeVerifier(string $codeVerifier): string
+    {
+        if (empty($this->_state)) {
+            throw new \RuntimeException('State is not set.');
+        }
+        $encryptedCodeVerifier = encrypt($codeVerifier);
+        Cache::put($this->codeVerifierKey(), $encryptedCodeVerifier, $this->cacheTimeout);
+        return $codeVerifier;
+    }
+
+    /**
+     * Get stored codeVerifier
+     *
+     * @return string
+     */
+    protected function getCodeVerifier()
+    {
+        return $this->_codeVerifier;
+    }
+
+    /**
+     * Cleanup codeVerifier
+     *
+     * @return void
+     */
+    protected function unsetCodeVerifier()
+    {
+        Cache::forget($this->codeVerifierKey());
+        $this->_codeVerifier = '';
+    }
+
+}
+
+
+class tmpData
+{
+    // for client of this server
+    private string $_clientCodeToken = '';
+    private string $_clientCodeTokenName = '';
+    private string $_clientCodeUrl = '';
+    private string $_hashedClientCode = '';
+    private string $hashMethod = 'sha256';
+    public int $cacheTimeout = 300;
+
+
+    private function codeKeyWithPrefix(string $prefixKey): string
+    {
+        return $prefixKey . '.client_code';
+    }
+
+    private function tokenKey(): string
+    {
+        return $this->_hashedClientCode . '.token';
+    }
+
+    private function tokenNameKey(): string
+    {
+        return $this->_hashedClientCode . '.token_name';
+    }
+
+    private function urlKey(): string
+    {
+        return $this->_hashedClientCode . '.url';
+    }
+
+
+    public function hash(string $data): string
+    {
+        return hash($this->hashMethod, $data);
+    }
+
+
+    public function setClientCodeWithKey(string $key, string $code): string
+    {
+        $this->_hashedClientCode = $this->hash($code);
+        $keyWithSuffix = $this->codeKeyWithPrefix($key);
+        Cache::put($keyWithSuffix, encrypt($code), $this->cacheTimeout);
+        Cache::put($this->_hashedClientCode, true, $this->cacheTimeout);
+        return $code;
+    }
+
+    public function getClientCodeWithKey(string $key): string
+    {
+        $keyWithSuffix = $this->codeKeyWithPrefix($key);
+        return decrypt(Cache::get($keyWithSuffix));
+    }
+
+    public function unsetClientCodeWithKey(string $key): void
+    {
+        $keyWithSuffix = $this->codeKeyWithPrefix($key);
+        Cache::forget($keyWithSuffix);
+    }
+
+
+    public function updateByKey(string $key): bool
+    {
+        $code = $this->getClientCodeWithKey($key);
+        return $this->checkClientCodeAndUpdate($code);
+    }
+
+    public function checkClientCode(string $code): bool
+    {
+        $hashedCode = $this->hash($code);
+        return Cache::has($hashedCode);
+    }
+
+    public function checkClientCodeAndUpdate(string $code): bool
+    {
+        if ($this->checkClientCode($code)) {
+            $this->_hashedClientCode = $this->hash($code);
+            $this->_clientCodeToken = decrypt(Cache::get($this->tokenKey()));
+            $this->_clientCodeTokenName = decrypt(Cache::get($this->tokenNameKey()));
+            $this->_clientCodeUrl = decrypt(Cache::get($this->urlKey()));
+            return true;
+        }
+        $this->_clientCodeToken = '';
+        $this->_clientCodeTokenName = '';
+        $this->_clientCodeUrl = '';
+        return false;
+    }
+
+
+    public function setClientCodeToken(string $token): string
+    {
+        $encryptedToken = encrypt($token);
+        Cache::put($this->tokenKey(), $encryptedToken, $this->cacheTimeout);
+        return $token;
+    }
+
+    public function getClientCodeToken(): string
+    {
+        return $this->_clientCodeToken;
+    }
+
+    public function unsetClientCodeToken(): void
+    {
+        Cache::forget($this->tokenKey());
+        $this->_clientCodeToken = '';
+    }
+
+    public function setClientCodeTokenName(string $tokenName): string
+    {
+        $encryptedTokenName = encrypt($tokenName);
+        Cache::put($this->tokenNameKey(), $encryptedTokenName, $this->cacheTimeout);
+        return $tokenName;
+    }
+
+    public function getClientCodeTokenName(): string
+    {
+        return $this->_clientCodeTokenName;
+    }
+
+    public function unsetClientCodeTokenName(): void
+    {
+        Cache::forget($this->tokenNameKey());
+        $this->_clientCodeTokenName = '';
+    }
+
+    public function setClientCodeUrl(string $url): string
+    {
+        $encryptedUrl = encrypt($url);
+        Cache::put($this->urlKey(), $encryptedUrl, $this->cacheTimeout);
+        return $url;
+    }
+
+    public function getClientCodeUrl(): string
+    {
+        return $this->_clientCodeUrl;
+    }
+
+    public function unsetClientCodeUrl(): void
+    {
+        Cache::forget($this->urlKey());
+        $this->_clientCodeUrl = '';
+    }
+
+    public function unsetAll(): void
+    {
+        Cache::forget($this->_hashedClientCode);
+        $this->_hashedClientCode = '';
+        $this->unsetClientCodeToken();
+        $this->unsetClientCodeTokenName();
+        $this->unsetClientCodeUrl();
+    }
+
+}
+
+
+
+function decrypt(string|null $data): string
+{
+    if (empty($data)) {
+        return '';
+    }
+    return Crypt::decrypt($data);
+}
+
+function encrypt(string|null $data): string
+{
+    if (empty($data)) {
+        return '';
+    }
+    return Crypt::encrypt($data);
 }
