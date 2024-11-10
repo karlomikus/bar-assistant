@@ -326,7 +326,7 @@ class AuthController extends Controller
     public function tokenRequest(Request $request): JsonResource
     {
         $code = $request->input('code');
-        if (!$code || $this->_tmpData->checkClientCodeAndUpdate($code)) {
+        if (!$code || !$this->_tmpData->checkClientCodeAndUpdate($code)) {
             abort(400, 'Invalid code.');
         }
         $token = $this->_tmpData->getClientCodeToken();
