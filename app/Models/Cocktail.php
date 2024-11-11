@@ -297,7 +297,29 @@ class Cocktail extends Model implements UploadableInterface
         return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first();
     }
 
-    public function canUserMake(User $user): bool
+    public function getUserShelfMatchPercentage(User $user): float
+    {
+        $currentShelf = $user->getShelfIngredients($this->bar_id);
+        $totalIngredients = $this->ingredients->count();
+        $matchIngredients = $this->ingredients->filter(function (CocktailIngredient $ci) use ($currentShelf) {
+            return $currentShelf->contains('ingredient_id', $ci->ingredient_id);
+        })->count();
+
+        return ($matchIngredients / $totalIngredients) * 100;
+    }
+
+    public function getBarShelfMatchPercentage(): float
+    {
+        $currentShelf = $this->bar->shelfIngredients;
+        $totalIngredients = $this->ingredients->count();
+        $matchIngredients = $this->ingredients->filter(function (CocktailIngredient $ci) use ($currentShelf) {
+            return $currentShelf->contains('ingredient_id', $ci->ingredient_id);
+        })->count();
+
+        return ($matchIngredients / $totalIngredients) * 100;
+    }
+
+    public function inUserShelf(User $user): bool
     {
         $currentShelf = $user->getShelfIngredients($this->bar_id);
         foreach ($this->ingredients as $ci) {
@@ -309,7 +331,7 @@ class Cocktail extends Model implements UploadableInterface
         return true;
     }
 
-    public function canBarMake(): bool
+    public function inBarShelf(): bool
     {
         $currentShelf = $this->bar->shelfIngredients;
         foreach ($this->ingredients as $ci) {

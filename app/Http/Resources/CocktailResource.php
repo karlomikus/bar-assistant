@@ -62,8 +62,8 @@ class CocktailResource extends JsonResource
             'calories' => $this->when($this->relationLoaded('method'), fn () => $this->getCalories()),
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
-            'in_shelf' => $this->when($this->relationLoaded('ingredients'), fn () => $this->canUserMake($request->user())),
-            'in_bar_shelf' => $this->when($this->relationLoaded('ingredients'), fn () => $this->canBarMake()),
+            'in_shelf' => $this->when($this->relationLoaded('ingredients'), fn () => $this->inUserShelf($request->user())),
+            'in_bar_shelf' => $this->when($this->relationLoaded('ingredients'), fn () => $this->inBarShelf()),
             'access' => $this->when(true, function () use ($request) {
                 return [
                     'can_edit' => $request->user()->can('edit', $this->resource),
