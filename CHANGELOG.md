@@ -12,6 +12,9 @@
     - Added `total_bar_shelf_cocktails` to `/stats` endpoint
     - Added bar shelf status attributes to `Ingredient` and `Cocktail` response schemas
 
+## Fixes
+- Fallback to "EUR" for unknown currencies in menu
+
 ## Changes
 - Added validation to endpoints that manage user and bar shelf
 

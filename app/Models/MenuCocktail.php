@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Brick\Money\Money;
+use Brick\Money\Currency;
 use Illuminate\Database\Eloquent\Model;
+use Brick\Money\Exception\UnknownCurrencyException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MenuCocktail extends Model
@@ -38,6 +40,14 @@ class MenuCocktail extends Model
 
     public function getMoney(): Money
     {
-        return Money::ofMinor($this->price, $this->currency ?? 'EUR');
+        try {
+            $currency = Currency::of($this->currency);
+        } catch (UnknownCurrencyException) {
+            // Prior to inclusion of Money object, currency could be any string
+            // To handle migration cases, we'll fallback to EUR
+            $currency = 'EUR';
+        }
+
+        return Money::ofMinor($this->price, $currency);
     }
 }
