@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
+use Kami\Cocktail\Models\Image;
 use Symfony\Component\Uid\Ulid;
 use Kami\Cocktail\Jobs\SetupBar;
 use Illuminate\Http\JsonResponse;
@@ -35,7 +36,7 @@ class BarController extends Controller
         $bars = Bar::select('bars.*')
             ->join('bar_memberships', 'bar_memberships.bar_id', '=', 'bars.id')
             ->where('bar_memberships.user_id', $request->user()->id)
-            ->with('createdUser', 'memberships')
+            ->with('createdUser', 'memberships', 'images')
             ->get();
 
         return BarResource::collection($bars);
@@ -62,7 +63,7 @@ class BarController extends Controller
             $bar->save();
         }
 
-        $bar->load('createdUser', 'updatedUser');
+        $bar->load('createdUser', 'updatedUser', 'images');
 
         return new BarResource($bar);
     }
@@ -116,6 +117,19 @@ class BarController extends Controller
         $bar->settings = $settings;
 
         $bar->save();
+
+        /** @var array<int> */
+        $images = $request->input('images', []);
+        if (count($images) > 0) {
+            try {
+                $imageModels = Image::findOrFail($images);
+                $bar->attachImages($imageModels);
+            } catch (\Throwable $e) {
+                abort(500, $e->getMessage());
+            }
+        }
+
+        $bar->load('createdUser', 'updatedUser', 'images');
 
         Bar::updateSearchToken($bar);
 
@@ -179,6 +193,19 @@ class BarController extends Controller
         $bar->updated_user_id = $request->user()->id;
         $bar->updated_at = now();
         $bar->save();
+
+        /** @var array<int> */
+        $images = $request->input('images', []);
+        if (count($images) > 0) {
+            try {
+                $imageModels = Image::findOrFail($images);
+                $bar->attachImages($imageModels);
+            } catch (\Throwable $e) {
+                abort(500, $e->getMessage());
+            }
+        }
+
+        $bar->load('createdUser', 'updatedUser', 'images');
 
         return new BarResource($bar);
     }

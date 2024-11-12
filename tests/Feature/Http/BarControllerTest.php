@@ -7,6 +7,7 @@ namespace Tests\Feature\Http;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -121,5 +122,39 @@ class BarControllerTest extends TestCase
         $this->assertSame(['default_units' => 'oz'], $bar->settings);
         $this->assertSame('Updated bar', $bar->name);
         $this->assertSame('description text', $bar->description);
+    }
+
+    public function test_create_bar_with_image(): void
+    {
+        $image = Image::factory()->create();
+
+        $response = $this->postJson('/api/bars', [
+            'name' => 'Test bar name',
+            'images' => [$image->id]
+        ]);
+
+        $response->assertCreated();
+        $response->assertJsonPath('data.name', 'Test bar name');
+        $response->assertJsonCount(1, 'data.images');
+    }
+
+    public function test_update_bar_with_image(): void
+    {
+        $image = Image::factory()->create();
+
+        $response = $this->putJson('/api/bars/3', [
+            'name' => 'Updated bar',
+            'images' => [$image->id]
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data.images');
+    }
+
+    public function test_bar_delete(): void
+    {
+        $response = $this->deleteJson('/api/bars/3');
+
+        $response->assertNoContent();
     }
 }
