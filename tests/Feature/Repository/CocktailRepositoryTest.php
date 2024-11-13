@@ -187,4 +187,81 @@ class CocktailRepositoryTest extends TestCase
 
         $this->assertSame([1], $cocktails->toArray());
     }
+
+    public function test_gets_cocktails_that_can_be_made_with_ingredients_include_parent_ingredients(): void
+    {
+        $membership = $this->setupBarMembership();
+
+        $parentIngredient = Ingredient::factory()->for($membership->bar)->create();
+        $subIngredient = Ingredient::factory()->for($membership->bar)->create(['parent_ingredient_id' => $parentIngredient->id]);
+        $cocktail = Cocktail::factory()->for($membership->bar)->has(
+            CocktailIngredient::factory()
+                ->state(['optional' => false])
+                ->for($parentIngredient)
+                ->recycle($membership->bar),
+            'ingredients'
+        )->create();
+
+        $repository = resolve(CocktailRepository::class);
+        $cocktails = $repository->getCocktailsByIngredients([$subIngredient->id], null, true);
+
+        $this->assertSame([$cocktail->id], $cocktails->toArray());
+    }
+
+    public function test_fetch_similar_cocktails(): void
+    {
+        $membership = $this->setupBarMembership();
+
+        $gin = Ingredient::factory()->for($membership->bar)->create();
+        $bourbon = Ingredient::factory()->for($membership->bar)->create();
+        $campari = Ingredient::factory()->for($membership->bar)->create();
+        $vermouth = Ingredient::factory()->for($membership->bar)->create();
+
+        $negroni = Cocktail::factory()->for($membership->bar)
+            ->has(
+                CocktailIngredient::factory()
+                    ->state(['optional' => false])
+                    ->for($vermouth)
+                    ->recycle($membership->bar),
+                'ingredients')
+            ->has(
+                CocktailIngredient::factory()
+                    ->state(['optional' => false])
+                    ->for($campari)
+                    ->recycle($membership->bar),
+                'ingredients')
+            ->has(
+                CocktailIngredient::factory()
+                    ->state(['optional' => false])
+                    ->for($gin)
+                    ->recycle($membership->bar),
+                'ingredients')
+            ->create();
+
+        $boulvardier = Cocktail::factory()->for($membership->bar)
+            ->has(
+                CocktailIngredient::factory()
+                    ->state(['optional' => false])
+                    ->for($vermouth)
+                    ->recycle($membership->bar),
+                'ingredients')
+            ->has(
+                CocktailIngredient::factory()
+                    ->state(['optional' => false])
+                    ->for($campari)
+                    ->recycle($membership->bar),
+                'ingredients')
+            ->has(
+                CocktailIngredient::factory()
+                    ->state(['optional' => false])
+                    ->for($bourbon)
+                    ->recycle($membership->bar),
+                'ingredients')
+            ->create();
+
+        $repository = resolve(CocktailRepository::class);
+        $cocktails = $repository->getSimilarCocktails($boulvardier);
+
+        $this->assertSame($negroni->id, $cocktails->first()->id);
+    }
 }
