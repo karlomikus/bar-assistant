@@ -11,9 +11,11 @@
     - Added sorting by `missing_bar_ingredients` attribute to `/cocktails` endpoint
     - Added `total_bar_shelf_cocktails` to `/stats` endpoint
     - Added bar shelf status attributes to `Ingredient` and `Cocktail` response schemas
+- You can now add images to Bar resource
+    - Allows to upload custom bar logo, for example
 
 ## Fixes
-- Fallback to "EUR" for unknown currencies in menu
+- Fallback to "EUR" for unknown currencies in menu (fixes migration issues from v3)
 
 ## Changes
 - Added validation to endpoints that manage user and bar shelf

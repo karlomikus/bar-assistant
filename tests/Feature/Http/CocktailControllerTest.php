@@ -462,7 +462,18 @@ class CocktailControllerTest extends TestCase
             ]);
 
         $response = $this->getJson('/api/cocktails/' . $cocktail->id . '/share');
-
+        $response->assertStatus(200);
+        $response = $this->getJson('/api/cocktails/' . $cocktail->id . '/share?type=json-ld');
+        $response->assertStatus(200);
+        $response = $this->getJson('/api/cocktails/' . $cocktail->id . '/share?type=yml');
+        $response->assertStatus(200);
+        $response = $this->getJson('/api/cocktails/' . $cocktail->id . '/share?type=yaml');
+        $response->assertStatus(200);
+        $response = $this->getJson('/api/cocktails/' . $cocktail->id . '/share?type=xml');
+        $response->assertStatus(200);
+        $response = $this->getJson('/api/cocktails/' . $cocktail->id . '/share?type=markdown');
+        $response->assertStatus(200);
+        $response = $this->getJson('/api/cocktails/' . $cocktail->id . '/share?type=md');
         $response->assertStatus(200);
     }
 
@@ -612,5 +623,25 @@ class CocktailControllerTest extends TestCase
                 ->where('data.name', 'Cocktail name Copy')
                 ->etc()
         );
+    }
+
+    public function test_toggle_favorite(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $cocktail = Cocktail::factory()->for($membership->bar)->create();
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $response = $this->postJson('/api/cocktails/' . $cocktail->id . '/toggle-favorite');
+
+        $response->assertSuccessful();
+        $favorite = CocktailFavorite::where('cocktail_id', $cocktail->id)->first();
+        $this->assertNotNull($favorite);
+
+        $response = $this->postJson('/api/cocktails/' . $cocktail->id . '/toggle-favorite');
+        $response->assertSuccessful();
+        $favorite = CocktailFavorite::where('cocktail_id', $cocktail->id)->first();
+        $this->assertNull($favorite);
     }
 }
