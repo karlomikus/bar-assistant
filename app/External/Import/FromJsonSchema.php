@@ -50,17 +50,17 @@ class FromJsonSchema
         // Add images
         $cocktailImages = [];
         foreach ($cocktailExternal->cocktail->images as $image) {
-            if ($image->uri && $imageContents = file_get_contents($imageDirectoryBasePath . $image->getLocalFilePath())) {
-                try {
+            try {
+                if ($image->uri && $imageContents = file_get_contents($imageDirectoryBasePath . $image->getLocalFilePath())) {
                     $imageDTO = new ImageRequest(
                         image: $imageContents,
                         copyright: $image->copyright
                     );
 
                     $cocktailImages[] = $this->imageService->uploadAndSaveImages([$imageDTO], 1)[0]->id;
-                } catch (Throwable $e) {
-                    Log::error('Importing image error: ' . $e->getMessage());
                 }
+            } catch (Throwable $e) {
+                Log::error('Importing image error: ' . $e->getMessage());
             }
         }
 
