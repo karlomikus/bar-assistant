@@ -6,7 +6,6 @@ namespace Tests\Feature\Http;
 
 use Tests\TestCase;
 use Kami\Cocktail\Models\User;
-use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\UserIngredient;

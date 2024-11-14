@@ -223,19 +223,22 @@ class CocktailRepositoryTest extends TestCase
                     ->state(['optional' => false])
                     ->for($vermouth)
                     ->recycle($membership->bar),
-                'ingredients')
+                'ingredients'
+            )
             ->has(
                 CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($campari)
                     ->recycle($membership->bar),
-                'ingredients')
+                'ingredients'
+            )
             ->has(
                 CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($gin)
                     ->recycle($membership->bar),
-                'ingredients')
+                'ingredients'
+            )
             ->create();
 
         $boulvardier = Cocktail::factory()->for($membership->bar)
@@ -244,19 +247,22 @@ class CocktailRepositoryTest extends TestCase
                     ->state(['optional' => false])
                     ->for($vermouth)
                     ->recycle($membership->bar),
-                'ingredients')
+                'ingredients'
+            )
             ->has(
                 CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($campari)
                     ->recycle($membership->bar),
-                'ingredients')
+                'ingredients'
+            )
             ->has(
                 CocktailIngredient::factory()
                     ->state(['optional' => false])
                     ->for($bourbon)
                     ->recycle($membership->bar),
-                'ingredients')
+                'ingredients'
+            )
             ->create();
 
         $repository = resolve(CocktailRepository::class);
