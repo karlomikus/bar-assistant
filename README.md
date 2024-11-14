@@ -62,6 +62,12 @@ Contributions Welcome!
 
 For more details, see [CONTRIBUTING.md](/CONTRIBUTING.md).
 
+## Support and Donations
+
+Bar Asistant is free, but maintaining any open source project takes time and resources. If you find Bar Assistant valuable and want to support its future development, consider donating.
+
+[Donate with PayPal](https://www.paypal.com/ncp/payment/9L8T4YJZBRXAS)
+
 ## License
 
 The Bar Assistant API is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
