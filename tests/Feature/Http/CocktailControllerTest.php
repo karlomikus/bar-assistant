@@ -77,7 +77,7 @@ class CocktailControllerTest extends TestCase
                 ['name' => 'Army & Navy', 'abv' => 10],
             ]);
         Cocktail::factory()->recycle($membership->bar)->hasTags(1)->create(['name' => 'test 1', 'abv' => 10]);
-        Cocktail::factory()->recycle($membership->bar)->has(
+        $cocktail1 = Cocktail::factory()->recycle($membership->bar)->has(
             CocktailIngredient::factory()->for(
                 Ingredient::factory()->state(['name' => 'absinthe'])->create()
             ),
@@ -123,6 +123,32 @@ class CocktailControllerTest extends TestCase
         $response->assertJsonCount(1, 'data');
         $response = $this->getJson('/api/cocktails?filter[name]=army');
         $response->assertJsonCount(1, 'data');
+        $response = $this->getJson('/api/cocktails?filter[user_rating_min]=1');
+        $response->assertJsonCount(0, 'data');
+        $response = $this->getJson('/api/cocktails?filter[user_rating_max]=5');
+        $response->assertJsonCount(0, 'data');
+        $response = $this->getJson('/api/cocktails?filter[average_rating_min]=1');
+        $response->assertJsonCount(0, 'data');
+        $response = $this->getJson('/api/cocktails?filter[average_rating_max]=5');
+        $response->assertJsonCount(0, 'data');
+        $response = $this->getJson('/api/cocktails?filter[main_ingredient_id]=' . $cocktail1->ingredients->first()->id);
+        $response->assertJsonCount(1, 'data');
+        $response = $this->getJson('/api/cocktails?filter[total_ingredients]=1');
+        $response->assertJsonCount(1, 'data');
+        $response = $this->getJson('/api/cocktails?filter[missing_ingredients]=4');
+        $response->assertJsonCount(0, 'data');
+        $response = $this->getJson('/api/cocktails?filter[missing_ingredients]=1');
+        $response->assertJsonCount(1, 'data');
+        $response = $this->getJson('/api/cocktails?filter[shelf_ingredients]=9999');
+        $response->assertJsonCount(0, 'data');
+        $response = $this->getJson('/api/cocktails?filter[bar_shelf]=true');
+        $response->assertJsonCount(0, 'data');
+        $response = $this->getJson('/api/cocktails?filter[collection_id]=3331');
+        $response->assertJsonCount(0, 'data');
+        $response = $this->getJson('/api/cocktails?filter[specific_ingredients]=' . $cocktail1->ingredients->first()->id);
+        $response->assertJsonCount(1, 'data');
+        $response = $this->getJson('/api/cocktails?filter[ignore_ingredients]=' . $cocktail1->ingredients->first()->id);
+        $response->assertJsonCount(8, 'data');
     }
 
     public function test_cocktails_response_with_sorts(): void
