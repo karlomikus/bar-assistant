@@ -660,6 +660,8 @@ paths:
                 type: boolean
               on_shelf:
                 type: boolean
+              bar_shelf:
+                type: boolean
               user_shelves:
                 type: string
               shelf_ingredients:
@@ -692,7 +694,7 @@ paths:
         -
           name: sort
           in: query
-          description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `favorited_at`.'
+          description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `missing_bar_ingredients`, `favorited_at`.'
           schema:
             type: string
         -
@@ -2666,6 +2668,8 @@ paths:
                 type: boolean
               on_shelf:
                 type: boolean
+              bar_shelf:
+                type: boolean
               strength_min:
                 type: number
                 format: float
@@ -4043,6 +4047,130 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/bars/{id}/ingredients':
+    get:
+      tags:
+        - 'Bar Shelf'
+      summary: 'Show a list of bar shelf ingredients'
+      description: "Ingredients that bar has in it's shelf"
+      operationId: 0b3c5cbb1c0b8aa375aee04c1b3f021a
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                type: object
+  '/bars/{id}/ingredients/batch-store':
+    post:
+      tags:
+        - 'Bar Shelf'
+      summary: 'Batch store bar ingredients to bar shelf'
+      operationId: 72acd54d8500a59f453864e000f51c7b
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ingredients:
+                  type: array
+                  items: { type: integer }
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/bars/{id}/ingredients/batch-delete':
+    post:
+      tags:
+        - 'Bar Shelf'
+      summary: 'Delete multiple ingredients from bar shelf'
+      operationId: 2a4715024c2fca55798ecd592feaf6e5
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ingredients:
+                  type: array
+                  items: { type: integer }
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   '/users/{id}/shopping-list':
     get:
       tags:
@@ -5251,6 +5379,9 @@ components:
         total_shelf_ingredients:
           type: integer
           example: 1
+        total_bar_shelf_cocktails:
+          type: integer
+          example: 1
         total_bar_members:
           type: integer
           example: 1
@@ -5493,6 +5624,8 @@ components:
             -
               type: 'null'
         in_shelf:
+          type: boolean
+        in_bar_shelf:
           type: boolean
         access:
           required:
@@ -5767,6 +5900,15 @@ components:
         in_shelf_as_complex_ingredient:
           type: boolean
           example: true
+        in_bar_shelf:
+          type: boolean
+          example: true
+        in_bar_shelf_as_substitute:
+          type: boolean
+          example: true
+        in_bar_shelf_as_complex_ingredient:
+          type: boolean
+          example: true
       type: object
     CocktailIngredientRequest:
       required:
@@ -5813,6 +5955,7 @@ components:
         - amount_max
         - units
         - in_shelf
+        - in_bar_shelf
       properties:
         ingredient:
           $ref: '#/components/schemas/IngredientBasic'
@@ -5834,6 +5977,9 @@ components:
             - 'null'
           example: ml
         in_shelf:
+          type: boolean
+          example: true
+        in_bar_shelf:
           type: boolean
           example: true
       type: object
@@ -6267,6 +6413,20 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IngredientPrice'
+        in_shelf:
+          type: boolean
+        in_bar_shelf:
+          type: boolean
+        in_shopping_list:
+          type: boolean
+        used_as_substitute_for:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientBasic'
+        can_be_substituted_with:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientBasic'
       type: object
     IngredientBasic:
       description: 'Minimal ingredient information'
@@ -7130,6 +7290,9 @@ tags:
   -
     name: 'Users: Shelf'
     description: 'Users: Shelf'
+  -
+    name: 'Bar Shelf'
+    description: 'Bar Shelf'
   -
     name: 'Users: Shopping list'
     description: 'Users: Shopping list'

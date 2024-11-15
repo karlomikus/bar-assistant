@@ -40,7 +40,11 @@ class BarResource extends JsonResource
                 'can_delete' => $request->user()->can('delete', $this->resource),
                 'can_activate' => $request->user()->can('activate', $this->resource),
                 'can_deactivate' => $request->user()->can('deactivate', $this->resource),
-            ]
+            ],
+            'images' => $this->when(
+                $this->relationLoaded('images'),
+                fn () => ImageResource::collection($this->images)
+            ),
         ];
     }
 }

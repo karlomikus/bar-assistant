@@ -1,7 +1,30 @@
+# v4.1.0
+## New
+- Added bar shelf
+    - Each bar now has its own shelf which can be viewed by every bar member
+    - Currently members with Admin and Moderator roles can manage bar shelf
+    - Bar shelf will be initially populated with all ingredients that current bar owner has in his shelf
+    - Added GET `/bars/{id}/ingredients` endpoint
+    - Added POST `/bars/{id}/ingredients/batch-store` endpoint
+    - Added POST `/bars/{id}/ingredients/batch-delete` endpoint
+    - Added filtering by `bar_shelf` attribute to `/ingredients` and `/cocktails` endpoints
+    - Added sorting by `missing_bar_ingredients` attribute to `/cocktails` endpoint
+    - Added `total_bar_shelf_cocktails` to `/stats` endpoint
+    - Added bar shelf status attributes to `Ingredient` and `Cocktail` response schemas
+- You can now add images to Bar resource
+    - Allows to upload custom bar logo, for example
+
+## Fixes
+- Fallback to "EUR" for unknown currencies in menu (fixes migration issues from v3)
+
+## Changes
+- Added validation to endpoints that manage user and bar shelf
+
 # v4.0.4
 ## Fixes
 - Check for shelf ingredients before adding them to the shelf
 - Fix for missing directories in docker entrypoint
+- Fix export id generation
 
 # v4.0.3
 ## Changes

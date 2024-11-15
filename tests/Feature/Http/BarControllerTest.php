@@ -7,6 +7,7 @@ namespace Tests\Feature\Http;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\UserRoleEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -121,5 +122,88 @@ class BarControllerTest extends TestCase
         $this->assertSame(['default_units' => 'oz'], $bar->settings);
         $this->assertSame('Updated bar', $bar->name);
         $this->assertSame('description text', $bar->description);
+    }
+
+    public function test_create_bar_with_image(): void
+    {
+        $image = Image::factory()->create();
+
+        $response = $this->postJson('/api/bars', [
+            'name' => 'Test bar name',
+            'images' => [$image->id]
+        ]);
+
+        $response->assertCreated();
+        $response->assertJsonPath('data.name', 'Test bar name');
+        $response->assertJsonCount(1, 'data.images');
+    }
+
+    public function test_update_bar_with_image(): void
+    {
+        $image = Image::factory()->create();
+
+        $response = $this->putJson('/api/bars/3', [
+            'name' => 'Updated bar',
+            'images' => [$image->id]
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data.images');
+    }
+
+    public function test_bar_delete(): void
+    {
+        $response = $this->deleteJson('/api/bars/3');
+
+        $response->assertNoContent();
+    }
+
+    public function test_show_bar_members(): void
+    {
+        $response = $this->getJson('/api/bars/3/memberships');
+
+        $response->assertJsonCount(1, 'data');
+    }
+
+    public function test_show_bar_members_forbidden(): void
+    {
+        $response = $this->getJson('/api/bars/1/memberships');
+
+        $response->assertForbidden();
+    }
+
+    public function test_leave_bar(): void
+    {
+        $this->assertSame(1, Bar::find(3)->memberships()->count());
+        $response = $this->deleteJson('/api/bars/3/memberships');
+
+        $response->assertNoContent();
+        $this->assertSame(0, Bar::find(3)->memberships()->count());
+    }
+
+    public function test_remove_member_from_bar(): void
+    {
+        $memberToRemove = User::factory()->create();
+        $bar = Bar::find(3);
+        $memberToRemove->joinBarAs($bar);
+
+        $this->assertSame(2, $bar->memberships()->count());
+
+        $response = $this->deleteJson('/api/bars/3/memberships/' . $memberToRemove->id);
+
+        $response->assertNoContent();
+        $this->assertSame(1, $bar->memberships()->count());
+    }
+
+    public function test_join_bar_with_invite_code(): void
+    {
+        $bar = Bar::factory()->create(['invite_code' => '01H8S3VH2HTEB3D893AW8NTBBC']);
+
+        $response = $this->postJson('/api/bars/join', [
+            'invite_code' => '01H8S3VH2HTEB3D893AW8NTBBC'
+        ]);
+
+        $response->assertOk();
+        $this->assertSame(1, $bar->memberships()->count());
     }
 }

@@ -74,4 +74,9 @@ class BarPolicy
     {
         return $user->hasBarMembership($bar->id) && $bar->isAccessible();
     }
+
+    public function manageShelf(User $user, Bar $bar): bool
+    {
+        return $user->id === $bar->owner()->id || $user->isBarAdmin($bar->id) || $user->isBarModerator($bar->id);
+    }
 }

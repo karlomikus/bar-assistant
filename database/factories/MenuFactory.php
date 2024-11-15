@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Kami\Cocktail\Models\PriceCategory>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Kami\Cocktail\Models\Menu>
  */
-class PriceCategoryFactory extends Factory
+class MenuFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,10 +17,10 @@ class PriceCategoryFactory extends Factory
     public function definition()
     {
         return [
-            'name' => fake()->sentence(3),
-            'description' => fake()->paragraph(),
-            'currency' => fake()->currencyCode(),
             'bar_id' => \Kami\Cocktail\Models\Bar::factory(),
+            'is_enabled' => fake()->boolean(),
+            'created_at' => fake()->dateTime(),
+            'updated_at' => fake()->optional()->dateTime(),
         ];
     }
 }

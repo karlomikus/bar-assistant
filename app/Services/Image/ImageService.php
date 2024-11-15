@@ -123,8 +123,9 @@ final readonly class ImageService
     {
         $cocktailIds = $bar->cocktails()->pluck('id');
         $ingredientIds = $bar->ingredients()->pluck('id');
+        $barLogoPath = $bar->images->first()?->file_path;
 
-        DB::transaction(function () use ($cocktailIds, $ingredientIds) {
+        DB::transaction(function () use ($cocktailIds, $ingredientIds, $bar) {
             DB::table('images')
                 ->where('imageable_type', \Kami\Cocktail\Models\Cocktail::class)
                 ->whereIn('imageable_id', $cocktailIds)
@@ -134,10 +135,18 @@ final readonly class ImageService
                 ->where('imageable_type', \Kami\Cocktail\Models\Ingredient::class)
                 ->whereIn('imageable_id', $ingredientIds)
                 ->delete();
+
+            DB::table('images')
+                ->where('imageable_type', \Kami\Cocktail\Models\Bar::class)
+                ->where('imageable_id', $bar->id)
+                ->delete();
         });
 
         $this->filesystemManager->disk('uploads')->deleteDirectory('cocktails/' . $bar->id . '/');
         $this->filesystemManager->disk('uploads')->deleteDirectory('ingredients/' . $bar->id . '/');
+        if ($barLogoPath) {
+            $this->filesystemManager->disk('uploads')->delete($barLogoPath);
+        }
     }
 
     /**

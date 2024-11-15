@@ -8,6 +8,7 @@ use Spatie\Sluggable\HasSlug;
 use Laravel\Scout\EngineManager;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
+use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Services\Image\ImageService;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,10 +21,16 @@ class Bar extends Model
     use HasFactory;
     use HasAuthors;
     use HasSlug;
+    use HasImages;
 
     protected $casts = [
         'settings' => 'array',
     ];
+
+    public function getUploadPath(): string
+    {
+        return 'logos/';
+    }
 
     protected static function booted(): void
     {
@@ -103,6 +110,14 @@ class Bar extends Model
     public function ingredients(): HasMany
     {
         return $this->hasMany(Ingredient::class);
+    }
+
+    /**
+     * @return HasMany<BarIngredient, $this>
+     */
+    public function shelfIngredients(): HasMany
+    {
+        return $this->hasMany(BarIngredient::class);
     }
 
     /**

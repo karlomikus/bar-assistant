@@ -15,8 +15,8 @@ class Controller extends BaseController
     use DispatchesJobs;
     use ValidatesRequests;
 
-    public function getJsonEncodingOptions(): int
-    {
-        return JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_PRESERVE_ZERO_FRACTION;
-    }
+    // public function getJsonEncodingOptions(): int
+    // {
+    //     return JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_PRESERVE_ZERO_FRACTION;
+    // }
 }

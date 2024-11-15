@@ -42,6 +42,7 @@ class IngredientController extends Controller
             new OAT\Property(property: 'created_user_id', type: 'integer'),
             new OAT\Property(property: 'on_shopping_list', type: 'boolean'),
             new OAT\Property(property: 'on_shelf', type: 'boolean'),
+            new OAT\Property(property: 'bar_shelf', type: 'boolean'),
             new OAT\Property(property: 'strength_min', type: 'float'),
             new OAT\Property(property: 'strength_max', type: 'float'),
             new OAT\Property(property: 'main_ingredients', type: 'string'),

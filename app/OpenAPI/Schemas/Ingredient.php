@@ -81,4 +81,21 @@ class Ingredient
     /** @var IngredientPrice[] */
     #[OAT\Property()]
     public array $prices = [];
+
+    #[OAT\Property(property: 'in_shelf')]
+    public bool $inShelf = false;
+
+    #[OAT\Property(property: 'in_bar_shelf')]
+    public bool $inBarShelf = false;
+
+    #[OAT\Property(property: 'in_shopping_list')]
+    public bool $inShoppingList = false;
+
+    /** @var IngredientBasic[] */
+    #[OAT\Property(property: 'used_as_substitute_for')]
+    public array $usedAsSubstituteFor = [];
+
+    /** @var IngredientBasic[] */
+    #[OAT\Property(property: 'can_be_substituted_with')]
+    public array $canBeSubstitutedWith = [];
 }

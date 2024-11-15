@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Tests\Feature\Http;
 
 use Tests\TestCase;
+use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\UserIngredient;
+use Kami\Cocktail\Models\CocktailFavorite;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -33,6 +36,23 @@ class ShelfControllerTest extends TestCase
                 ->has('data', 5)
                 ->etc()
         );
+    }
+
+    public function test_list_ingredients_on_shelf_forbidden_response(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        UserIngredient::factory()
+            ->recycle($membership, $membership->bar, $membership->user)
+            ->count(2)
+            ->create();
+
+        $this->actingAs(User::factory()->create());
+
+        $response = $this->getJson('/api/users/'. $membership->user_id .'/ingredients', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
+
+        $response->assertForbidden();
     }
 
     public function test_add_multiple_ingredients_to_shelf_response(): void
@@ -114,5 +134,118 @@ class ShelfControllerTest extends TestCase
 
         $response->assertNoContent();
         $this->assertDatabaseHas('user_ingredients', ['ingredient_id' => $ownedIngredients->pluck('id')->toArray(), 'bar_membership_id' => $membership->id]);
+    }
+
+    public function test_list_ingredients_on_bar_shelf_response(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        BarIngredient::factory()
+            ->recycle($membership->bar, $membership->user)
+            ->count(5)
+            ->create();
+
+        $response = $this->getJson('/api/bars/'. $membership->bar_id .'/ingredients');
+
+        $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data', 5)
+                ->etc()
+        );
+    }
+
+    public function test_add_multiple_ingredients_to_bar_shelf_response(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $newIngredients = Ingredient::factory()
+            ->recycle($membership->bar)
+            ->count(5)
+            ->create();
+
+        $response = $this->postJson('/api/bars/'. $membership->bar_id .'/ingredients/batch-store', [
+            'ingredients' => $newIngredients->pluck('id')->toArray()
+        ]);
+
+        $response->assertNoContent();
+        $this->assertDatabaseHas('bar_ingredients', ['ingredient_id' => $newIngredients->pluck('id')->toArray(), 'bar_id' => $membership->bar_id]);
+    }
+
+    public function test_delete_multiple_ingredients_from_bar_shelf_response(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $ingredients = BarIngredient::factory()
+            ->recycle($membership->bar, $membership->user)
+            ->count(5)
+            ->create();
+
+        $this->assertDatabaseCount('bar_ingredients', 5);
+        $response = $this->postJson('/api/bars/'. $membership->user_id .'/ingredients/batch-delete', [
+            'ingredients' => $ingredients->splice(0, 2)->pluck('id')->toArray()
+        ]);
+
+        $response->assertNoContent();
+        $this->assertDatabaseCount('bar_ingredients', 3);
+    }
+
+    public function test_list_user_shelf_cocktails(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        UserIngredient::factory()
+            ->recycle($membership, $membership->bar, $membership->user)
+            ->count(5)
+            ->create();
+
+        $response = $this->getJson('/api/users/'. $membership->user_id .'/cocktails', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
+
+        $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data', 0)
+                ->etc()
+        );
+    }
+
+    public function test_list_user_favorite_cocktails(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        CocktailFavorite::factory()->for($membership)->create();
+
+        $response = $this->getJson('/api/users/'. $membership->user_id .'/cocktails/favorites', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
+
+        $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data', 1)
+                ->etc()
+        );
+    }
+
+    public function test_list_next_recommended_ingredients(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $response = $this->getJson('/api/users/'. $membership->user_id .'/ingredients/recommend', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
+
+        $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data', 0)
+                ->etc()
+        );
     }
 }

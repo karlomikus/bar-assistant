@@ -46,6 +46,7 @@ class CocktailController extends Controller
             new OAT\Property(property: 'collection_id', type: 'string'),
             new OAT\Property(property: 'favorites', type: 'boolean'),
             new OAT\Property(property: 'on_shelf', type: 'boolean'),
+            new OAT\Property(property: 'bar_shelf', type: 'boolean'),
             new OAT\Property(property: 'user_shelves', type: 'string'),
             new OAT\Property(property: 'shelf_ingredients', type: 'string'),
             new OAT\Property(property: 'is_public', type: 'boolean'),
@@ -61,7 +62,7 @@ class CocktailController extends Controller
             new OAT\Property(property: 'specific_ingredients', type: 'string'),
             new OAT\Property(property: 'ignore_ingredients', type: 'string'),
         ])),
-        new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `favorited_at`.', schema: new OAT\Schema(type: 'string')),
+        new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `missing_bar_ingredients`, `favorited_at`.', schema: new OAT\Schema(type: 'string')),
         new OAT\Parameter(name: 'include', in: 'query', description: 'Include additional relationships. Available relations: `glass`, `method`, `user`, `navigation`, `utensils`, `createdUser`, `updatedUser`, `images`, `tags`, `ingredients.ingredient`, `ratings`.', schema: new OAT\Schema(type: 'string')),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [

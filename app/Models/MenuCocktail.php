@@ -5,11 +5,17 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Brick\Money\Money;
+use Brick\Money\Currency;
 use Illuminate\Database\Eloquent\Model;
+use Brick\Money\Exception\UnknownCurrencyException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class MenuCocktail extends Model
 {
+    /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\MenuCocktailFactory> */
+    use HasFactory;
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -38,6 +44,14 @@ class MenuCocktail extends Model
 
     public function getMoney(): Money
     {
-        return Money::ofMinor($this->price, $this->currency ?? 'EUR');
+        try {
+            $currency = Currency::of($this->currency);
+        } catch (UnknownCurrencyException) {
+            // Prior to inclusion of Money object, currency could be any string
+            // To handle migration cases, we'll fallback to EUR
+            $currency = 'EUR';
+        }
+
+        return Money::ofMinor($this->price, $currency);
     }
 }
