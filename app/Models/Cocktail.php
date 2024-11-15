@@ -374,4 +374,29 @@ class Cocktail extends Model implements UploadableInterface
             }),
         ];
     }
+
+    public function calculatePrice(PriceCategory $priceCategory): \Brick\Money\Money
+    {
+        $totalPrice = \Brick\Money\Money::of(0, $priceCategory->getCurrency()->value);
+
+        /** @var CocktailIngredient */
+        foreach ($this->ingredients as $cocktailIngredient) {
+            /** @var IngredientPrice|null */
+            $ingredientPrice = $cocktailIngredient->ingredient->prices->firstWhere('price_category_id', $priceCategory->id);
+            if ($ingredientPrice === null) {
+                continue;
+            }
+
+            $converted = $cocktailIngredient->getConvertedTo(\Kami\RecipeUtils\UnitConverter\Units::tryFrom($ingredientPrice->units));
+            if ($converted->getUnits() === null) {
+                continue;
+            }
+
+            $totalPrice = $totalPrice->plus(
+                $ingredientPrice->getPricePerPour($converted->getAmount(), Units::tryFrom($converted->getUnits()))
+            );
+        }
+
+        return $totalPrice;
+    }
 }

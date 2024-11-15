@@ -117,6 +117,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::delete('/{id}/public-link', [CocktailController::class, 'makePrivate'])->name('cocktails.make-private')->middleware(['ability:cocktails.write']);
         Route::get('/{id}/similar', [CocktailController::class, 'similar'])->name('cocktails.similar')->middleware(['ability:cocktails.read']);
         Route::post('/{id}/copy', [CocktailController::class, 'copy'])->middleware([EnsureRequestHasBarQuery::class, 'ability:cocktails.write']);
+        Route::get('/{id}/prices', [CocktailController::class, 'prices'])->middleware(['ability:cocktails.read']);
 
         Route::prefix('/{id}/ratings')->group(function () {
             Route::post('/', [RatingController::class, 'rateCocktail'])->name('ratings.rate-cocktail');
