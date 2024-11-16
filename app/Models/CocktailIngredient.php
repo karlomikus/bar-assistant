@@ -47,9 +47,12 @@ class CocktailIngredient extends Model
         return $this->hasMany(CocktailIngredientSubstitute::class);
     }
 
-    public function getConvertedTo(?Units $units = null): CocktailIngredientFormatter
+    /**
+     * @param array<Units> $ignoreUnits
+     */
+    public function getConvertedTo(?Units $units = null, array $ignoreUnits = [Units::Dash]): CocktailIngredientFormatter
     {
-        return new CocktailIngredientFormatter($this, $units);
+        return new CocktailIngredientFormatter($this, $units, $ignoreUnits);
     }
 
     public function userHasInShelf(User $user): bool

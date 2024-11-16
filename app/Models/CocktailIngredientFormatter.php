@@ -7,11 +7,15 @@ namespace Kami\Cocktail\Models;
 use Kami\RecipeUtils\Converter;
 use Kami\RecipeUtils\UnitConverter\Units;
 
-class CocktailIngredientFormatter
+final readonly class CocktailIngredientFormatter
 {
+    /**
+     * @param array<Units> $ignoreUnits
+     */
     public function __construct(
-        private readonly CocktailIngredient|CocktailIngredientSubstitute $cocktailIngredient,
-        private readonly ?Units $toUnits = null,
+        private CocktailIngredient|CocktailIngredientSubstitute $cocktailIngredient,
+        private ?Units $toUnits = null,
+        private array $ignoreUnits = [Units::Dash],
     ) {
     }
 
@@ -47,7 +51,7 @@ class CocktailIngredientFormatter
     public function getUnits(): ?string
     {
         $currentUnits = $this->getOriginalUnitsAsEnum();
-        if ($this->toUnits === null || !$currentUnits || $currentUnits === Units::Dash) {
+        if ($this->toUnits === null || !$currentUnits || in_array($currentUnits, $this->ignoreUnits, true)) {
             return $this->cocktailIngredient->units;
         }
 
@@ -87,7 +91,7 @@ class CocktailIngredientFormatter
         }
 
         if ($this->getOriginalUnitsAsEnum()) {
-            if ($this->getOriginalUnitsAsEnum() === Units::Dash || $this->toUnits === null) {
+            if (in_array($this->getOriginalUnitsAsEnum(), $this->ignoreUnits, true) || $this->toUnits === null) {
                 return $value;
             }
 
