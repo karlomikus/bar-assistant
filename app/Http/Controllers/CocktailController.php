@@ -462,10 +462,10 @@ class CocktailController extends Controller
     }
 
     #[OAT\Get(path: '/cocktails/{id}/prices', tags: ['Cocktails'], operationId: 'getCocktailPrices', summary: 'Show cocktail prices', description: 'Shows a list of cocktail prices grouped per available price categories. Missing ingredient prices are skipped.', parameters: [
-        new BAO\Parameters\DatabaseIdParameter(),
+        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\IngredientBasic::class),
+        new BAO\WrapItemsWithData(BAO\Schemas\CocktailPrice::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]

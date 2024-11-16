@@ -1167,10 +1167,10 @@ paths:
         -
           name: id
           in: path
-          description: 'Database id of a resource'
+          description: 'Database id or slug of a resource'
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: 'Successful response'
@@ -1180,7 +1180,7 @@ paths:
                 required:
                   - data
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailPrice' } }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -6080,6 +6080,40 @@ components:
         dilution_percentage:
           type: integer
           example: 20
+      type: object
+    CocktailPrice:
+      required:
+        - missing_prices_count
+        - price_category
+        - total_price
+        - prices_per_ingredient
+      properties:
+        missing_prices_count:
+          description: 'Number of ingredients that are missing defined prices in this category'
+          type: integer
+          example: 1
+        price_category:
+          $ref: '#/components/schemas/PriceCategory'
+        total_price:
+          $ref: '#/components/schemas/Price'
+          description: 'Total cocktail price, sum of `price_per_pour` amounts'
+        prices_per_ingredient:
+          type: array
+          items:
+            required:
+              - ingredient
+              - price_per_amount
+              - price_per_pour
+            properties:
+              ingredient:
+                $ref: '#/components/schemas/IngredientBasic'
+              price_per_amount:
+                $ref: '#/components/schemas/Price'
+                description: 'Price per 1 unit of ingredient amount'
+              price_per_pour:
+                $ref: '#/components/schemas/Price'
+                description: 'Price per cocktail ingredient part'
+            type: object
       type: object
     CocktailRequest:
       required:

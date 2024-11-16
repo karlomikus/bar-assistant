@@ -114,4 +114,15 @@ class CocktailIngredient extends Model
 
         return $requiredIngredientIds->every(fn ($id) => $currentShelf->contains($id));
     }
+
+    public function getMinPriceInCategory(PriceCategory $priceCategory): ?IngredientPrice
+    {
+        return $this
+            ->ingredient
+            ->prices
+            ->sortBy('price')
+            ->where('price_category_id', $priceCategory->id)
+            ->where('units', $this->units)
+            ->first();
+    }
 }

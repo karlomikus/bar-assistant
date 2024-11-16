@@ -8,11 +8,14 @@ use Brick\Money\Money;
 use Brick\Math\RoundingMode;
 use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
-use Kami\RecipeUtils\UnitConverter\Units;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class IngredientPrice extends Model
 {
+    /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\IngredientPriceFactory> */
+    use HasFactory;
+
     /**
      * @return BelongsTo<Ingredient, $this>
      */
@@ -39,10 +42,10 @@ class IngredientPrice extends Model
         return $this->getMoney()->dividedBy($this->amount, RoundingMode::HALF_EVEN);
     }
 
-    public function getPricePerPour(float $amount, ?Units $units): Money
+    public function getPricePerPour(float $amount, ?string $units): Money
     {
-        if (!$units || Units::tryFrom($this->units) !== $units) {
-            throw new InvalidArgumentException('Price per unit units do not match');
+        if (!$units || $this->units !== $units) {
+            throw new InvalidArgumentException('Price per unit units do not match (expected: ' . $this->units . ', got: ' . $units . ')');
         }
 
         return $this->getPricePerUnit()->multipliedBy($amount, RoundingMode::HALF_EVEN);

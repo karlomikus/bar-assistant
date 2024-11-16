@@ -382,19 +382,24 @@ class Cocktail extends Model implements UploadableInterface
         /** @var CocktailIngredient */
         foreach ($this->ingredients as $cocktailIngredient) {
             /** @var IngredientPrice|null */
-            $ingredientPrice = $cocktailIngredient->ingredient->prices->firstWhere('price_category_id', $priceCategory->id);
+            $ingredientPrice = $cocktailIngredient->getMinPriceInCategory($priceCategory);
+
             if ($ingredientPrice === null) {
                 continue;
             }
 
-            $converted = $cocktailIngredient->getConvertedTo(\Kami\RecipeUtils\UnitConverter\Units::tryFrom($ingredientPrice->units));
+            $converted = $cocktailIngredient->getConvertedTo(Units::tryFrom($ingredientPrice->units), []);
             if ($converted->getUnits() === null) {
                 continue;
             }
 
-            $totalPrice = $totalPrice->plus(
-                $ingredientPrice->getPricePerPour($converted->getAmount(), Units::tryFrom($converted->getUnits()))
-            );
+            try {
+                $pricePerPour = $ingredientPrice->getPricePerPour($converted->getAmount(), $converted->getUnits());
+            } catch (\Throwable) {
+                continue;
+            }
+
+            $totalPrice = $totalPrice->plus($pricePerPour);
         }
 
         return $totalPrice;
