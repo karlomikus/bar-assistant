@@ -4213,6 +4213,44 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/bars/{id}/cocktails':
+    get:
+      tags:
+        - 'Bar Shelf'
+      summary: 'Show a list bar shelf cocktails'
+      description: 'Cocktails that the bar can make with ingredients on their shelf'
+      operationId: 40813734b16874942a79324150fb3dd1
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                type: object
   '/users/{id}/shopping-list':
     get:
       tags:
@@ -5722,6 +5760,11 @@ components:
         name:
           type: string
           example: 'Old fashioned'
+        short_ingredients:
+          type: array
+          items:
+            type: string
+            example: Vodka
       type: object
     CocktailExplore:
       properties:

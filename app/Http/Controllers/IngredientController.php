@@ -259,7 +259,7 @@ class IngredientController extends Controller
             )
             ->pluck('cocktail_id');
 
-        $cocktails = Cocktail::whereIn('id', $cocktailIds)->orderBy('name')->paginate($request->get('per_page', 100));
+        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->orderBy('name')->paginate($request->get('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails);
     }

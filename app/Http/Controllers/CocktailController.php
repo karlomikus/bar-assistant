@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\CocktailPrice;
+use Kami\Cocktail\Models\PriceCategory;
 use Illuminate\Support\Facades\Validator;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Services\CocktailService;
@@ -481,11 +482,10 @@ class CocktailController extends Controller
         }
 
         $results = [];
-        $categories = \Kami\Cocktail\Models\PriceCategory::where('bar_id', $cocktail->bar_id)->get();
+        $categories = PriceCategory::where('bar_id', $cocktail->bar_id)->get();
 
         foreach ($categories as $category) {
-            $cocktailPrice = new CocktailPrice($category, $cocktail);
-            $result = new CocktailPriceResource($cocktailPrice);
+            $result = new CocktailPriceResource(new CocktailPrice($category, $cocktail));
 
             $results[] = $result;
         }

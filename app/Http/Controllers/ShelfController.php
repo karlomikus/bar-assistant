@@ -82,7 +82,7 @@ class ShelfController extends Controller
         );
 
         /** @var \Illuminate\Pagination\LengthAwarePaginator<Cocktail> */
-        $cocktails = Cocktail::whereIn('id', $cocktailIds)->paginate($request->get('per_page', 100));
+        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->get('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails->withQueryString());
     }
@@ -109,7 +109,7 @@ class ShelfController extends Controller
         $cocktailIds = CocktailFavorite::where('bar_membership_id', $barMembership->id)->pluck('cocktail_id');
 
         /** @var \Illuminate\Pagination\LengthAwarePaginator<Cocktail> */
-        $cocktails = Cocktail::whereIn('id', $cocktailIds)->paginate($request->get('per_page', 100));
+        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->get('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails->withQueryString());
     }
@@ -324,5 +324,30 @@ class ShelfController extends Controller
         }
 
         return new Response(null, 204);
+    }
+
+    #[OAT\Get(path: '/bars/{id}/cocktails', tags: ['Bar Shelf'], summary: 'Show a list bar shelf cocktails', description: 'Cocktails that the bar can make with ingredients on their shelf', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+        new BAO\Parameters\PageParameter(),
+        new BAO\Parameters\PerPageParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
+    ])]
+    public function barCocktails(CocktailRepository $cocktailRepo, Request $request, int $id): JsonResource
+    {
+        $bar = Bar::findOrFail($id);
+        if ($request->user()->cannot('show', $bar)) {
+            abort(403);
+        }
+
+        $cocktailIds = $cocktailRepo->getCocktailsByIngredients(
+            $bar->shelfIngredients->pluck('ingredient_id')->toArray(),
+        );
+
+        /** @var \Illuminate\Pagination\LengthAwarePaginator<Cocktail> */
+        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->get('per_page', 100));
+
+        return CocktailBasicResource::collection($cocktails->withQueryString());
     }
 }
