@@ -9,7 +9,7 @@ use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\PriceCategory;
 use Kami\Cocktail\Models\IngredientPrice;
 
-class BarMaintenance extends Command
+class BarSeed extends Command
 {
     /**
      * The name and signature of the console command.
