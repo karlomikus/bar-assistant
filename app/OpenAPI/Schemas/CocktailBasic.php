@@ -15,4 +15,7 @@ class CocktailBasic
     public string $slug;
     #[OAT\Property(example: 'Old fashioned')]
     public string $name;
+    /** @var array<string> */
+    #[OAT\Property(type: 'array', property: 'short_ingredients', items: new OAT\Items(type: 'string', example: 'Vodka'))]
+    public array $shortIngredients;
 }
