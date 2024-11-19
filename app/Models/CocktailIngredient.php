@@ -47,9 +47,12 @@ class CocktailIngredient extends Model
         return $this->hasMany(CocktailIngredientSubstitute::class);
     }
 
-    public function getConvertedTo(?Units $units = null): CocktailIngredientFormatter
+    /**
+     * @param array<Units> $ignoreUnits
+     */
+    public function getConvertedTo(?Units $units = null, array $ignoreUnits = [Units::Dash]): CocktailIngredientFormatter
     {
-        return new CocktailIngredientFormatter($this, $units);
+        return new CocktailIngredientFormatter($this, $units, $ignoreUnits);
     }
 
     public function userHasInShelf(User $user): bool
@@ -110,5 +113,16 @@ class CocktailIngredient extends Model
         $currentShelf = $this->ingredient->bar->shelfIngredients->pluck('ingredient_id');
 
         return $requiredIngredientIds->every(fn ($id) => $currentShelf->contains($id));
+    }
+
+    public function getMinPriceInCategory(PriceCategory $priceCategory): ?IngredientPrice
+    {
+        return $this
+            ->ingredient
+            ->prices
+            ->sortBy('price')
+            ->where('price_category_id', $priceCategory->id)
+            ->where('units', $this->units)
+            ->first();
     }
 }

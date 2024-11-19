@@ -11,6 +11,8 @@ use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\Models\CocktailPrice;
+use Kami\Cocktail\Models\PriceCategory;
 use Illuminate\Support\Facades\Validator;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Services\CocktailService;
@@ -23,6 +25,7 @@ use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Kami\Cocktail\Http\Resources\CocktailPriceResource;
 use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest as CocktailDTO;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientRequest as IngredientDTO;
@@ -457,5 +460,36 @@ class CocktailController extends Controller
             ->response()
             ->setStatusCode(201)
             ->header('Location', route('cocktails.show', $cocktail->id));
+    }
+
+    #[OAT\Get(path: '/cocktails/{id}/prices', tags: ['Cocktails'], operationId: 'getCocktailPrices', summary: 'Show cocktail prices', description: 'Shows a list of cocktail prices grouped per available price categories. Missing ingredient prices are skipped.', parameters: [
+        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\CocktailPrice::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function prices(Request $request, string $idOrSlug): JsonResource
+    {
+        $cocktail = Cocktail::where('slug', $idOrSlug)
+            ->orWhere('id', $idOrSlug)
+            ->firstOrFail()
+            ->load(['ingredients.ingredient.prices.priceCategory']);
+
+        if ($request->user()->cannot('show', $cocktail)) {
+            abort(403);
+        }
+
+        $results = [];
+        $categories = PriceCategory::where('bar_id', $cocktail->bar_id)->get();
+
+        foreach ($categories as $category) {
+            $result = new CocktailPriceResource(new CocktailPrice($category, $cocktail));
+
+            $results[] = $result;
+        }
+
+        return CocktailPriceResource::collection($results);
     }
 }

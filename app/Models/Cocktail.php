@@ -374,4 +374,34 @@ class Cocktail extends Model implements UploadableInterface
             }),
         ];
     }
+
+    public function calculatePrice(PriceCategory $priceCategory): \Brick\Money\Money
+    {
+        $totalPrice = \Brick\Money\Money::of(0, $priceCategory->getCurrency()->value);
+
+        /** @var CocktailIngredient */
+        foreach ($this->ingredients as $cocktailIngredient) {
+            /** @var IngredientPrice|null */
+            $ingredientPrice = $cocktailIngredient->getMinPriceInCategory($priceCategory);
+
+            if ($ingredientPrice === null) {
+                continue;
+            }
+
+            $converted = $cocktailIngredient->getConvertedTo(Units::tryFrom($ingredientPrice->units), []);
+            if ($converted->getUnits() === null) {
+                continue;
+            }
+
+            try {
+                $pricePerPour = $ingredientPrice->getPricePerPour($converted->getAmount(), $converted->getUnits());
+            } catch (\Throwable) {
+                continue;
+            }
+
+            $totalPrice = $totalPrice->plus($pricePerPour);
+        }
+
+        return $totalPrice;
+    }
 }

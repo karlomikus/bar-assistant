@@ -23,6 +23,7 @@ class CocktailBasicResource extends JsonResource
             'id' => $this->id,
             'slug' => $this->slug,
             'name' => $this->name,
+            'short_ingredients' => $this->getIngredientNames(),
         ];
     }
 }

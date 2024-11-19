@@ -1,3 +1,13 @@
+# v4.2.0
+## New
+- Added cocktail prices
+    - Added `/cocktails/{id}/prices` endpoint
+    - Show all calculated prices per price category
+- Added `/menu/export` endpoint
+    - Exports menu as CSV
+- Added `/bars/{id}/cocktails` endpoint, showing bar shelf cocktails
+- `BasicCocktail` schema now includes `short_ingredients` property
+
 # v4.1.0
 ## New
 - Added bar shelf

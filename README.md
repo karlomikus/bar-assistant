@@ -45,6 +45,9 @@ This repository only contains the API server, if you are looking for easy to use
 - Create public bar menus
 - Manage custom API personal access tokens with custom permissions set by users
 - Detailed statistics about recipes and user tastes
+- Data export support in various formats
+- Support for multiple ingredient prices
+- Automatic cocktail price calculation based on ingredients
 
 ## Managed instance
 

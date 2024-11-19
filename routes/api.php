@@ -117,6 +117,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::delete('/{id}/public-link', [CocktailController::class, 'makePrivate'])->name('cocktails.make-private')->middleware(['ability:cocktails.write']);
         Route::get('/{id}/similar', [CocktailController::class, 'similar'])->name('cocktails.similar')->middleware(['ability:cocktails.read']);
         Route::post('/{id}/copy', [CocktailController::class, 'copy'])->middleware([EnsureRequestHasBarQuery::class, 'ability:cocktails.write']);
+        Route::get('/{id}/prices', [CocktailController::class, 'prices'])->middleware(['ability:cocktails.read']);
 
         Route::prefix('/{id}/ratings')->group(function () {
             Route::post('/', [RatingController::class, 'rateCocktail'])->name('ratings.rate-cocktail');
@@ -225,6 +226,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/{id}/ingredients', [ShelfController::class, 'barIngredients']);
         Route::post('/{id}/ingredients/batch-store', [ShelfController::class, 'batchStoreBarIngredients']);
         Route::post('/{id}/ingredients/batch-delete', [ShelfController::class, 'batchDeleteBarIngredients']);
+        Route::get('/{id}/cocktails', [ShelfController::class, 'barCocktails']);
     })->middleware(['ability:*']);
 
     Route::prefix('billing')->group(function () {
@@ -235,6 +237,7 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::prefix('menu')->group(function () {
         Route::get('/', [MenuController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/', [MenuController::class, 'update'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/export', [MenuController::class, 'export'])->middleware(EnsureRequestHasBarQuery::class);
     })->middleware(['ability:*']);
 
     Route::prefix('tokens')->group(function () {

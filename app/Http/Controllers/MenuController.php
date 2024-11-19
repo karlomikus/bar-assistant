@@ -8,10 +8,13 @@ use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Menu;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
+use Maatwebsite\Excel\Facades\Excel;
+use Kami\Cocktail\Exports\MenusExport;
 use Kami\Cocktail\Http\Requests\MenuRequest;
 use Kami\Cocktail\Http\Resources\MenuResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\MenuPublicResource;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class MenuController extends Controller
 {
@@ -90,5 +93,29 @@ class MenuController extends Controller
         $menu->save();
 
         return new MenuResource($menu);
+    }
+
+    #[OAT\Get(path: '/menu/export', tags: ['Menu'], summary: 'Export menu', description: 'Export menu as CSV', parameters: [
+        new BAO\Parameters\BarIdParameter(),
+        new BAO\Parameters\BarIdHeaderParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new OAT\MediaType(mediaType: 'text/csv', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    public function export(Request $request): BinaryFileResponse
+    {
+        if ($request->user()->cannot('view', Menu::class)) {
+            abort(403);
+        }
+
+        return Excel::download(
+            new MenusExport(bar()->id),
+            bar()->slug . '-menu.csv',
+            \Maatwebsite\Excel\Excel::CSV,
+            [
+                'Content-Type' => 'text/csv',
+            ]
+        );
     }
 }

@@ -1156,6 +1156,48 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/cocktails/{id}/prices':
+    get:
+      tags:
+        - Cocktails
+      summary: 'Show cocktail prices'
+      description: 'Shows a list of cocktail prices grouped per available price categories. Missing ingredient prices are skipped.'
+      operationId: getCocktailPrices
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id or slug of a resource'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailPrice' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /cocktail-methods:
     get:
       tags:
@@ -3148,6 +3190,43 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
+  /menu/export:
+    get:
+      tags:
+        - Menu
+      summary: 'Export menu'
+      description: 'Export menu as CSV'
+      operationId: 69581b120488a658b86369819bd257e0
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            text/csv:
+              schema:
+                type: string
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /notes:
     get:
       tags:
@@ -4170,6 +4249,44 @@ paths:
               schema:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/bars/{id}/cocktails':
+    get:
+      tags:
+        - 'Bar Shelf'
+      summary: 'Show a list bar shelf cocktails'
+      description: 'Cocktails that the bar can make with ingredients on their shelf'
+      operationId: 40813734b16874942a79324150fb3dd1
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
                 type: object
   '/users/{id}/shopping-list':
     get:
@@ -5680,6 +5797,11 @@ components:
         name:
           type: string
           example: 'Old fashioned'
+        short_ingredients:
+          type: array
+          items:
+            type: string
+            example: Vodka
       type: object
     CocktailExplore:
       properties:
@@ -6038,6 +6160,40 @@ components:
         dilution_percentage:
           type: integer
           example: 20
+      type: object
+    CocktailPrice:
+      required:
+        - missing_prices_count
+        - price_category
+        - total_price
+        - prices_per_ingredient
+      properties:
+        missing_prices_count:
+          description: 'Number of ingredients that are missing defined prices in this category'
+          type: integer
+          example: 1
+        price_category:
+          $ref: '#/components/schemas/PriceCategory'
+        total_price:
+          $ref: '#/components/schemas/Price'
+          description: 'Total cocktail price, sum of `price_per_pour` amounts'
+        prices_per_ingredient:
+          type: array
+          items:
+            required:
+              - ingredient
+              - price_per_amount
+              - price_per_pour
+            properties:
+              ingredient:
+                $ref: '#/components/schemas/IngredientBasic'
+              price_per_amount:
+                $ref: '#/components/schemas/Price'
+                description: 'Price per 1 unit of ingredient amount'
+              price_per_pour:
+                $ref: '#/components/schemas/Price'
+                description: 'Price per cocktail ingredient part'
+            type: object
       type: object
     CocktailRequest:
       required:

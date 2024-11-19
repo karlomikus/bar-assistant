@@ -82,4 +82,14 @@ class MenuControllerTest extends TestCase
 
         $response->assertSuccessful();
     }
+
+    public function test_export_menu(): void
+    {
+        $menu = Menu::factory()->for($this->barMembership->bar)->create(['is_enabled' => true]);
+        MenuCocktail::factory()->recycle($menu)->count(2)->create();
+
+        $response = $this->getJson('/api/menu/export', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+
+        $response->assertSuccessful();
+    }
 }
