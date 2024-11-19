@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Menu;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Maatwebsite\Excel\Facades\Excel;
 use Kami\Cocktail\Exports\MenusExport;
+use Kami\Cocktail\Models\MenuCocktail;
 use Kami\Cocktail\Http\Requests\MenuRequest;
 use Kami\Cocktail\Http\Resources\MenuResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\MenuPublicResource;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class MenuController extends Controller
 {
@@ -103,19 +104,45 @@ class MenuController extends Controller
         new OAT\MediaType(mediaType: 'text/csv', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function export(Request $request): BinaryFileResponse
+    public function export(Request $request): Response
     {
         if ($request->user()->cannot('view', Menu::class)) {
             abort(403);
         }
 
-        return Excel::download(
-            new MenusExport(bar()->id),
-            bar()->slug . '-menu.csv',
-            \Maatwebsite\Excel\Excel::CSV,
+        $records = [
             [
-                'Content-Type' => 'text/csv',
+                'cocktail',
+                'ingredients',
+                'category',
+                'price',
+                'currency',
+                'full_price',
             ]
-        );
+        ];
+
+        $cocktails = MenuCocktail::query()
+            ->with('cocktail.ingredients.ingredient')
+            ->join('menus', 'menus.id', '=', 'menu_cocktails.menu_id')
+            ->where('menus.bar_id', bar()->id)
+            ->get();
+
+        foreach ($cocktails as $menuCocktail) {
+            $record = [
+                e(preg_replace("/\s+/u", " ", $menuCocktail->cocktail->name)),
+                e($menuCocktail->cocktail->getIngredientNames()->implode(', ')),
+                e($menuCocktail->category_name),
+                $menuCocktail->getMoney()->getAmount()->toFloat(),
+                $menuCocktail->getMoney()->getCurrency()->getCurrencyCode(),
+                (string) $menuCocktail->getMoney(),
+            ];
+
+            $records[] = $record;
+        }
+
+        $writer = \League\Csv\Writer::createFromString();
+        $writer->insertAll($records);
+
+        return new Response($writer->toString(), 200, ['Content-Type' => 'text/csv']);
     }
 }
