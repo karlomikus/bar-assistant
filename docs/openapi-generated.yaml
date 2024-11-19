@@ -3190,6 +3190,43 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
+  /menu/export:
+    get:
+      tags:
+        - Menu
+      summary: 'Export menu'
+      description: 'Export menu as CSV'
+      operationId: 69581b120488a658b86369819bd257e0
+      parameters:
+        -
+          name: bar_id
+          in: query
+          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            text/csv:
+              schema:
+                type: string
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /notes:
     get:
       tags:

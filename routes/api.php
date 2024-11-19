@@ -237,6 +237,7 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::prefix('menu')->group(function () {
         Route::get('/', [MenuController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/', [MenuController::class, 'update'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/export', [MenuController::class, 'export'])->middleware(EnsureRequestHasBarQuery::class);
     })->middleware(['ability:*']);
 
     Route::prefix('tokens')->group(function () {

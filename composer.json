@@ -15,6 +15,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/scout": "^10.4",
         "league/csv": "^9.0",
+        "maatwebsite/excel": "^3.1",
         "meilisearch/meilisearch-php": "^1.0",
         "prinsfrank/standards": "^3.9",
         "spatie/array-to-xml": "^3.1",
