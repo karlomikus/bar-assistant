@@ -24,6 +24,10 @@ final readonly class UnitValueObject implements Stringable, JsonSerializable
             return Units::Dash;
         }
 
+        if ($this->isBarspoon()) {
+            return Units::Barspoon;
+        }
+
         return Units::tryFrom($this->value);
     }
 
