@@ -68,7 +68,6 @@ class CocktailParty extends AbstractSiteExtractor
                     $recipeIngredient->amount,
                     $unit,
                     $node->text(''),
-                    $recipeIngredient->originalAmount,
                     $recipeIngredient->comment,
                     $recipeIngredient->amountMax
                 );
