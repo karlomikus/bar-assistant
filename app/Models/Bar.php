@@ -44,18 +44,18 @@ class Bar extends Model
                 return;
             }
 
-            self::updateSearchToken($bar);
+            $bar->updateSearchToken();
         });
     }
 
-    public static function updateSearchToken(Bar $bar): void
+    public function updateSearchToken(): void
     {
         /** @var \Meilisearch\Client */
         $meilisearch = resolve(EngineManager::class)->engine();
 
         $rules = (object) [
             '*' => (object) [
-                'filter' => 'bar_id = ' . $bar->id,
+                'filter' => 'bar_id = ' . $this->id,
             ],
         ];
 
@@ -65,8 +65,8 @@ class Bar extends Model
             ['apiKey' => config('scout.meilisearch.api_key')]
         );
 
-        $bar->search_token = $tenantToken;
-        $bar->save();
+        $this->search_token = $tenantToken;
+        $this->save();
     }
 
     public function getSlugOptions(): SlugOptions
