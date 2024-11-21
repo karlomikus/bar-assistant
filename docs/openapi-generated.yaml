@@ -6182,15 +6182,19 @@ components:
           items:
             required:
               - ingredient
-              - price_per_amount
-              - price_per_pour
+              - price_per_unit
+              - price_per_use
+              - units
             properties:
               ingredient:
                 $ref: '#/components/schemas/IngredientBasic'
-              price_per_amount:
+              units:
+                description: 'Units used for price calculation'
+                type: string
+              price_per_unit:
                 $ref: '#/components/schemas/Price'
                 description: 'Price per 1 unit of ingredient amount'
-              price_per_pour:
+              price_per_use:
                 $ref: '#/components/schemas/Price'
                 description: 'Price per cocktail ingredient part'
             type: object

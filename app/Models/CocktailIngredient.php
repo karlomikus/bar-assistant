@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Brick\Money\Money;
+use Brick\Math\RoundingMode;
 use Illuminate\Database\Eloquent\Model;
-use Kami\RecipeUtils\UnitConverter\Units;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -45,14 +46,6 @@ class CocktailIngredient extends Model
     public function substitutes(): HasMany
     {
         return $this->hasMany(CocktailIngredientSubstitute::class);
-    }
-
-    /**
-     * @param array<Units> $ignoreUnits
-     */
-    public function getConvertedTo(?Units $units = null, array $ignoreUnits = [Units::Dash]): CocktailIngredientFormatter
-    {
-        return new CocktailIngredientFormatter($this, $units, $ignoreUnits);
     }
 
     public function userHasInShelf(User $user): bool
@@ -115,11 +108,48 @@ class CocktailIngredient extends Model
         return $requiredIngredientIds->every(fn ($id) => $currentShelf->contains($id));
     }
 
-    public function getMinPriceInCategory(PriceCategory $priceCategory): ?IngredientPrice
+    public function getAmount(): AmountValueObject
+    {
+        return new AmountValueObject(
+            $this->amount,
+            new UnitValueObject($this->units),
+            $this->amount_max,
+        );
+    }
+
+    /**
+     * Return the price per use in the given price category.
+     * Converts ingredient amount to match the price amount if possible.
+     *
+     * @param PriceCategory $priceCategory
+     * @return null|Money
+     */
+    public function getConvertedPricePerUse(PriceCategory $priceCategory): ?Money
+    {
+        // Price already converted to cocktail ingredient units
+        $ingredientPrice = $this->getMinConvertedPriceInCategory($priceCategory);
+
+        if ($ingredientPrice === null) {
+            return null;
+        }
+
+        // Convert current ingredient amount to price units
+        $convertedLocalAmount = $this->getAmount()->convertTo(new UnitValueObject($ingredientPrice->units));
+
+        try {
+            $pricePerUse = $ingredientPrice->getPricePerUnit()->multipliedBy($convertedLocalAmount->amountMin, RoundingMode::HALF_EVEN);
+        } catch (\Throwable) {
+            return null;
+        }
+
+        return $pricePerUse;
+    }
+
+    public function getMinConvertedPriceInCategory(PriceCategory $priceCategory): ?IngredientPrice
     {
         return $this
             ->ingredient
-            ->prices
+            ->getPricesWithConvertedUnits($this->units)
             ->sortBy('price')
             ->where('price_category_id', $priceCategory->id)
             ->where('units', $this->units)

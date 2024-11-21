@@ -11,6 +11,7 @@ use Kami\Cocktail\External\SupportsJSONLD;
 use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Image as ImageModel;
 use Kami\Cocktail\Models\Cocktail as CocktailModel;
+use Kami\Cocktail\Models\CocktailIngredientFormatter;
 use Kami\Cocktail\Models\CocktailIngredient as CocktailIngredientModel;
 
 readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSONLD
@@ -203,7 +204,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             "recipeCuisine" => "Cocktail",
             "keywords" => implode(', ', $this->tags),
             "recipeIngredient" => array_map(function (CocktailIngredient $ci) {
-                return $ci->formatter->printIngredient();
+                return (new CocktailIngredientFormatter($ci->amount, $ci->ingredient->name, $ci->optional))->format();
             }, $this->ingredients),
         ], ['image' => $image]);
 

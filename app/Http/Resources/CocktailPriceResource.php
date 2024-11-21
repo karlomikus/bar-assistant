@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
-use Throwable;
 use Kami\Cocktail\Models\Price;
-use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,27 +22,16 @@ class CocktailPriceResource extends JsonResource
     public function toArray($request)
     {
         $prices = $this->cocktail->ingredients->map(function (CocktailIngredient $cocktailIngredient) {
-            $price = $cocktailIngredient->getMinPriceInCategory($this->priceCategory);
-
-            if ($price === null) {
-                return null;
-            }
-
-            $converted = $cocktailIngredient->getConvertedTo(Units::tryFrom($price->units), []);
-            if ($converted->getUnits() === null) {
-                return null;
-            }
-
-            try {
-                $pricePerPour = $price->getPricePerPour($converted->getAmount(), $converted->getUnits());
-            } catch (Throwable) {
+            $minIngredientPrice = $cocktailIngredient->getMinConvertedPriceInCategory($this->priceCategory);
+            if ($minIngredientPrice === null) {
                 return null;
             }
 
             return [
+                'units' => $minIngredientPrice->getAmount()->units,
                 'ingredient' => new IngredientBasicResource($cocktailIngredient->ingredient),
-                'price_per_amount' => new PriceResource(new Price($price->getPricePerUnit())),
-                'price_per_pour' => new PriceResource(new Price($pricePerPour)),
+                'price_per_unit' => new PriceResource(new Price($minIngredientPrice->getPricePerUnit($cocktailIngredient->units))),
+                'price_per_use' => new PriceResource(new Price($cocktailIngredient->getConvertedPricePerUse($this->priceCategory))),
             ];
         })->filter()->values();
 

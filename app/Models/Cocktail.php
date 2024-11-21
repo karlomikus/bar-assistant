@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Carbon\Carbon;
+use Brick\Money\Money;
 use Kami\Cocktail\Utils;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
@@ -375,27 +376,15 @@ class Cocktail extends Model implements UploadableInterface
         ];
     }
 
-    public function calculatePrice(PriceCategory $priceCategory): \Brick\Money\Money
+    public function calculatePrice(PriceCategory $priceCategory): Money
     {
-        $totalPrice = \Brick\Money\Money::of(0, $priceCategory->getCurrency()->value);
+        $totalPrice = Money::of(0, $priceCategory->getCurrency()->value);
 
         /** @var CocktailIngredient */
         foreach ($this->ingredients as $cocktailIngredient) {
-            /** @var IngredientPrice|null */
-            $ingredientPrice = $cocktailIngredient->getMinPriceInCategory($priceCategory);
+            $pricePerPour = $cocktailIngredient->getConvertedPricePerUse($priceCategory);
 
-            if ($ingredientPrice === null) {
-                continue;
-            }
-
-            $converted = $cocktailIngredient->getConvertedTo(Units::tryFrom($ingredientPrice->units), []);
-            if ($converted->getUnits() === null) {
-                continue;
-            }
-
-            try {
-                $pricePerPour = $ingredientPrice->getPricePerPour($converted->getAmount(), $converted->getUnits());
-            } catch (\Throwable) {
+            if ($pricePerPour === null) {
                 continue;
             }
 

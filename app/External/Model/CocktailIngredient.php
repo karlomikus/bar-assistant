@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External\Model;
 
 use Illuminate\Support\Str;
+use Kami\Cocktail\Models\UnitValueObject;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\SupportsDraft2;
+use Kami\Cocktail\Models\AmountValueObject;
 use Kami\Cocktail\External\SupportsDataPack;
-use Kami\Cocktail\Models\CocktailIngredientFormatter;
 use Kami\Cocktail\Models\CocktailIngredient as CocktailIngredientModel;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute as CocktailIngredientSubstituteModel;
 
@@ -19,33 +20,32 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
      */
     private function __construct(
         public IngredientBasic $ingredient,
-        public float $amount,
-        public ?string $units,
+        public AmountValueObject $amount,
         public bool $optional = false,
-        public ?float $amountMax = null,
         public ?string $note = null,
         public array $substitutes = [],
         public int $sort = 0,
-        public ?CocktailIngredientFormatter $formatter = null,
     ) {
     }
 
     public static function fromModel(CocktailIngredientModel $model, ?Units $toUnits = null): self
     {
-        $substitutes = $model->substitutes->map(function (CocktailIngredientSubstituteModel $substitute) {
-            return CocktailIngredientSubstitute::fromModel($substitute);
+        $substitutes = $model->substitutes->map(function (CocktailIngredientSubstituteModel $substitute) use ($toUnits) {
+            return CocktailIngredientSubstitute::fromModel($substitute, $toUnits);
         })->toArray();
+
+        $amount = $model->getAmount();
+        if ($toUnits && !$model->getAmount()->units->isDash()) {
+            $amount = $amount->convertTo(new UnitValueObject($toUnits->value));
+        }
 
         return new self(
             IngredientBasic::fromModel($model->ingredient),
-            $model->amount,
-            $model->units,
+            $amount,
             (bool) $model->optional,
-            $model->amount_max,
             $model->note,
             $substitutes,
             $model->sort,
-            $model->getConvertedTo($toUnits),
         );
     }
 
@@ -71,10 +71,12 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
                 'origin' => $sourceArray['origin'] ?? null,
                 'category' => $sourceArray['category'] ?? null,
             ]),
-            $sourceArray['amount'] ?? 0.0,
-            $sourceArray['units'],
+            new AmountValueObject(
+                $sourceArray['amount'] ?? 0.0,
+                new UnitValueObject($sourceArray['units']),
+                $sourceArray['amount_max'] ?? null,
+            ),
             $sourceArray['optional'] ?? false,
-            $sourceArray['amount_max'] ?? null,
             $sourceArray['note'] ?? null,
             $substitutes,
             $sourceArray['sort'] ?? 0,
@@ -85,10 +87,10 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
     {
         return [
             ...$this->ingredient->toDataPackArray(),
-            'amount' => $this->formatter?->getAmount() ?? $this->amount,
-            'units' => $this->formatter?->getUnits() ?? $this->units,
+            'amount' => $this->amount->amountMin,
+            'units' => $this->amount->units->value,
             'optional' => $this->optional,
-            'amount_max' => $this->formatter?->getMaxAmount() ?? $this->amountMax,
+            'amount_max' => $this->amount->amountMax,
             'note' => $this->note,
             'substitutes' => array_map(fn ($model) => $model->toDataPackArray(), $this->substitutes),
             'sort' => $this->sort,
@@ -113,10 +115,12 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
                 '_id' => $sourceArray['_id'],
                 'name' => $sourceArray['name'] ?? '',
             ]),
-            $sourceArray['amount'] ?? 0.0,
-            $sourceArray['units'],
+            new AmountValueObject(
+                $sourceArray['amount'] ?? 0.0,
+                new UnitValueObject($sourceArray['units']),
+                $sourceArray['amount_max'] ?? null,
+            ),
             $sourceArray['optional'] ?? false,
-            $sourceArray['amount_max'] ?? null,
             $sourceArray['note'] ?? null,
             $substitutes,
             $sourceArray['sort'] ?? 0,
@@ -127,10 +131,10 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
     {
         return [
             '_id' => $this->ingredient->id,
-            'amount' => $this->formatter?->getAmount() ?? $this->amount,
-            'units' => $this->formatter?->getUnits() ?? $this->units,
+            'amount' => $this->amount->amountMin,
+            'units' => $this->amount->units->value,
             'optional' => $this->optional,
-            'amount_max' => $this->formatter?->getMaxAmount() ?? $this->amountMax,
+            'amount_max' => $this->amount->amountMax,
             'note' => $this->note,
             'substitutes' => array_map(fn ($model) => $model->toDraft2Array(), $this->substitutes),
             'sort' => $this->sort,

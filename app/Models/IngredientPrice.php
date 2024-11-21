@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Models;
 
 use Brick\Money\Money;
 use Brick\Math\RoundingMode;
-use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -37,17 +36,18 @@ class IngredientPrice extends Model
         return Money::ofMinor($this->price, $this->priceCategory->currency);
     }
 
-    public function getPricePerUnit(): Money
+    public function getAmount(): AmountValueObject
     {
-        return $this->getMoney()->dividedBy($this->amount, RoundingMode::HALF_EVEN);
+        return new AmountValueObject($this->amount, new UnitValueObject($this->units));
     }
 
-    public function getPricePerPour(float $amount, ?string $units): Money
+    public function getPricePerUnit(?string $units = null): Money
     {
-        if (!$units || $this->units !== $units) {
-            throw new InvalidArgumentException('Price per unit units do not match (expected: ' . $this->units . ', got: ' . $units . ')');
+        $amount = $this->getAmount()->amountMin;
+        if ($units) {
+            $amount = $this->getAmount()->convertTo(new UnitValueObject($units))->amountMin;
         }
 
-        return $this->getPricePerUnit()->multipliedBy($amount, RoundingMode::HALF_EVEN);
+        return $this->getMoney()->dividedBy($amount, RoundingMode::HALF_EVEN);
     }
 }

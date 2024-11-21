@@ -15,7 +15,9 @@ use Kami\Cocktail\Models\Utensil;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Storage;
+use Kami\Cocktail\Models\PriceCategory;
 use Kami\Cocktail\Models\CocktailMethod;
+use Kami\Cocktail\Models\IngredientPrice;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -669,5 +671,124 @@ class CocktailControllerTest extends TestCase
         $response->assertSuccessful();
         $favorite = CocktailFavorite::where('cocktail_id', $cocktail->id)->first();
         $this->assertNull($favorite);
+    }
+
+    public function test_cocktail_has_multiple_ingredient_formats(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $ingredientGin = Ingredient::factory()->for($membership->bar)->create([
+            'name' => 'Gin'
+        ]);
+
+        $ingredientMint = Ingredient::factory()->for($membership->bar)->create([
+            'name' => 'Mint'
+        ]);
+
+        $cocktail = Cocktail::factory()->for($membership->bar)->create();
+        CocktailIngredient::factory()->for($cocktail)->for($ingredientGin)->create([
+            'amount' => 1.5,
+            'amount_max' => 2,
+            'units' => 'oz',
+            'optional' => true,
+        ]);
+        CocktailIngredient::factory()->for($cocktail)->for($ingredientMint)->create([
+            'amount' => 7,
+            'amount_max' => null,
+            'units' => 'leaves',
+            'optional' => false,
+        ]);
+
+        $response = $this->getJson('/api/cocktails/' . $cocktail->id);
+
+        $response->assertStatus(200);
+
+        // Convert convertable
+        $response->assertJsonPath('data.ingredients.0.formatted.ml.amount', 45);
+        $response->assertJsonPath('data.ingredients.0.formatted.ml.amount_max', 60);
+        $response->assertJsonPath('data.ingredients.0.formatted.ml.units', 'ml');
+        $response->assertJsonPath('data.ingredients.0.formatted.ml.full_text', '45 ml - 60 ml Gin (optional)');
+
+        $response->assertJsonPath('data.ingredients.0.formatted.oz.amount', 1.5);
+        $response->assertJsonPath('data.ingredients.0.formatted.oz.amount_max', 2);
+        $response->assertJsonPath('data.ingredients.0.formatted.oz.units', 'oz');
+        $response->assertJsonPath('data.ingredients.0.formatted.oz.full_text', '1.5 oz - 2 oz Gin (optional)');
+
+        $response->assertJsonPath('data.ingredients.0.formatted.cl.amount', 4.5);
+        $response->assertJsonPath('data.ingredients.0.formatted.cl.amount_max', 6);
+        $response->assertJsonPath('data.ingredients.0.formatted.cl.units', 'cl');
+        $response->assertJsonPath('data.ingredients.0.formatted.cl.full_text', '4.5 cl - 6 cl Gin (optional)');
+
+        // Dont convert unconvertable
+        $response->assertJsonPath('data.ingredients.1.formatted.ml.amount', 7);
+        $response->assertJsonPath('data.ingredients.1.formatted.ml.amount_max', null);
+        $response->assertJsonPath('data.ingredients.1.formatted.ml.units', 'leaves');
+        $response->assertJsonPath('data.ingredients.1.formatted.ml.full_text', '7 leaves Mint');
+
+        $response->assertJsonPath('data.ingredients.1.formatted.oz.amount', 7);
+        $response->assertJsonPath('data.ingredients.1.formatted.oz.amount_max', null);
+        $response->assertJsonPath('data.ingredients.1.formatted.oz.units', 'leaves');
+        $response->assertJsonPath('data.ingredients.1.formatted.oz.full_text', '7 leaves Mint');
+
+        $response->assertJsonPath('data.ingredients.1.formatted.cl.amount', 7);
+        $response->assertJsonPath('data.ingredients.1.formatted.cl.amount_max', null);
+        $response->assertJsonPath('data.ingredients.1.formatted.cl.units', 'leaves');
+        $response->assertJsonPath('data.ingredients.1.formatted.cl.full_text', '7 leaves Mint');
+    }
+
+    public function test_cocktail_prices(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $priceCategory = PriceCategory::factory()->for($membership->bar)->create([
+            'currency' => 'USD'
+        ]);
+
+        $ingredient1 = Ingredient::factory()->for($membership->bar)->create();
+        IngredientPrice::factory()->for($ingredient1)->for($priceCategory)->create([
+            'price' => 2000,
+            'amount' => 750,
+            'units' => 'ml',
+        ]);
+
+        $ingredient2 = Ingredient::factory()->for($membership->bar)->create();
+        IngredientPrice::factory()->for($ingredient2)->for($priceCategory)->create([
+            'price' => 2000,
+            'amount' => 25,
+            'units' => 'oz',
+        ]);
+
+        $cocktail = Cocktail::factory()->for($membership->bar)->create();
+        CocktailIngredient::factory()->for($cocktail)->for($ingredient1)->create([
+            'amount' => 30,
+            'amount_max' => null,
+            'units' => 'ml',
+            'optional' => false,
+        ]);
+        CocktailIngredient::factory()->for($cocktail)->for($ingredient2)->create([
+            'amount' => 1,
+            'amount_max' => null,
+            'units' => 'oz',
+            'optional' => false,
+        ]);
+        CocktailIngredient::factory()->for($cocktail)->for($ingredient1)->create([
+            'amount' => 0.5,
+            'amount_max' => null,
+            'units' => 'oz',
+            'optional' => false,
+        ]);
+
+        $response = $this->getJson('/api/cocktails/' . $cocktail->id . '/prices');
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.0.prices_per_ingredient.0.price_per_unit.price', 0.03);
+        $response->assertJsonPath('data.0.prices_per_ingredient.0.price_per_use.price', 0.9);
+        $response->assertJsonPath('data.0.prices_per_ingredient.1.price_per_unit.price', 0.8);
+        $response->assertJsonPath('data.0.prices_per_ingredient.1.price_per_use.price', 0.8);
+        $response->assertJsonPath('data.0.prices_per_ingredient.2.price_per_unit.price', 0.8);
+        $response->assertJsonPath('data.0.prices_per_ingredient.2.price_per_use.price', 0.4);
+        $response->assertJsonPath('data.0.total_price.price', 2.1);
     }
 }

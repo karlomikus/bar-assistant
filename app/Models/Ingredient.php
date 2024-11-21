@@ -203,6 +203,26 @@ class Ingredient extends Model
             ->get();
     }
 
+    /**
+     * @return Collection<int, IngredientPrice>
+     */
+    public function getPricesWithConvertedUnits(?string $toUnits): Collection
+    {
+        if ($toUnits === null) {
+            return $this->prices;
+        }
+
+        $newPrices = $this->prices->map(function (IngredientPrice $ip) use ($toUnits) {
+            $convertedAmount = $ip->getAmount()->convertTo(new UnitValueObject($toUnits));
+            $ip->amount = $convertedAmount->amountMin;
+            $ip->units = $convertedAmount->units->value;
+
+            return $ip;
+        });
+
+        return $newPrices;
+    }
+
     public function delete(): ?bool
     {
         $this->deleteImages();

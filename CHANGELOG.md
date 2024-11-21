@@ -3,10 +3,16 @@
 - Added cocktail prices
     - Added `/cocktails/{id}/prices` endpoint
     - Show all calculated prices per price category
+    - Automatically converts units to calculate the price if possible
 - Added `/menu/export` endpoint
     - Exports menu as CSV
 - Added `/bars/{id}/cocktails` endpoint, showing bar shelf cocktails
 - `BasicCocktail` schema now includes `short_ingredients` property
+- TODO: Add shelf, prices export
+
+## Fixes
+- Fixed missing substitute ingredient unit conversion in exports
+- Fixed missing max amount when importing from export
 
 # v4.1.0
 ## New

@@ -270,8 +270,9 @@ class FromDataPack
                 $ciId = DB::table('cocktail_ingredients')->insertGetId([
                     'cocktail_id' => $cocktailId,
                     'ingredient_id' => $matchedIngredientId,
-                    'amount' => $cocktailIngredient->amount,
-                    'units' => $cocktailIngredient->units,
+                    'amount' => $cocktailIngredient->amount->amountMin,
+                    'amount_max' => $cocktailIngredient->amount->amountMax,
+                    'units' => $cocktailIngredient->amount->units->value,
                     'optional' => $cocktailIngredient->optional,
                     'note' => $cocktailIngredient->note,
                     'sort' => $sort,
@@ -289,9 +290,9 @@ class FromDataPack
                     DB::table('cocktail_ingredient_substitutes')->insert([
                         'cocktail_ingredient_id' => $ciId,
                         'ingredient_id' => $matchedSubIngredientId,
-                        'amount' => $substitute->amount,
-                        'amount_max' => $substitute->amountMax,
-                        'units' => $substitute->units,
+                        'amount' => $substitute->amount->amountMin,
+                        'amount_max' => $substitute->amount->amountMax,
+                        'units' => $substitute->amount->units->value,
                         'created_at' => now(),
                         'updated_at' => null,
                     ]);

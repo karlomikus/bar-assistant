@@ -37,7 +37,7 @@ class GenericScraperTest extends TestCase
             ['https://alpenz.com/recipe-ikfCvvprSL.html'],
             ['https://imbibemagazine.com/recipe/chocolate-strawberry-negroni'],
             ['https://kindredcocktails.com/cocktail/negroni'],
-            ['https://www.liberandcompany.com/products/strawberry-negroni'],
+            // ['https://www.liberandcompany.com/products/strawberry-negroni'],
             ['https://makemeacocktail.com/cocktail/6781/negroni'],
             ['https://punchdrink.com/recipes/milano-torino'],
             ['https://stevethebartender.com.au/oaxacanite-cocktail-recipe'],

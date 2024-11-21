@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Resources;
 
 use JsonSerializable;
-use Kami\RecipeUtils\UnitConverter\Units;
+use Kami\Cocktail\Models\UnitValueObject;
 use Kami\Cocktail\Models\CocktailIngredient;
+use Kami\Cocktail\Models\CocktailIngredientFormatter;
 
 final class AmountFormats implements JsonSerializable
 {
@@ -16,17 +17,17 @@ final class AmountFormats implements JsonSerializable
 
     public function jsonSerialize(): mixed
     {
-        $unitsToConvertTo = [Units::Ml, Units::Oz, Units::Cl];
+        $unitsToConvertTo = ['ml', 'oz', 'cl'];
         $formats = [];
 
         foreach ($unitsToConvertTo as $unitTo) {
-            $convertedModel = $this->cocktailIngredient->getConvertedTo($unitTo);
+            $convertedAmount = $this->cocktailIngredient->getAmount()->convertTo(new UnitValueObject($unitTo));
 
-            $formats[$unitTo->value] = [
-                'amount' => $convertedModel->getAmount(),
-                'amount_max' => $convertedModel->getMaxAmount(),
-                'units' => $convertedModel->getUnits(),
-                'full_text' => $convertedModel->printIngredient(),
+            $formats[$unitTo] = [
+                'amount' => $convertedAmount->amountMin,
+                'amount_max' => $convertedAmount->amountMax,
+                'units' => $convertedAmount->units->value,
+                'full_text' => (new CocktailIngredientFormatter($convertedAmount, $this->cocktailIngredient->ingredient->name, $this->cocktailIngredient->optional))->format(),
             ];
         }
 
