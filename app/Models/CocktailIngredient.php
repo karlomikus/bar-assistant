@@ -142,6 +142,10 @@ class CocktailIngredient extends Model
             return null;
         }
 
+        if ($pricePerUse->isLessThanOrEqualTo(0)) {
+            $pricePerUse = $pricePerUse->plus(0.01);
+        }
+
         return $pricePerUse;
     }
 
