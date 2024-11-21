@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External\Model;
 
 use Illuminate\Support\Str;
-use Kami\Cocktail\Models\UnitValueObject;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\SupportsDraft2;
-use Kami\Cocktail\Models\AmountValueObject;
 use Kami\Cocktail\External\SupportsDataPack;
+use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
+use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
 use Kami\Cocktail\Models\CocktailIngredient as CocktailIngredientModel;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute as CocktailIngredientSubstituteModel;
 

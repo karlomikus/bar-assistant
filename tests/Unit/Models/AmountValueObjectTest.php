@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Unit\Models;
 
 use Tests\TestCase;
-use Kami\Cocktail\Models\UnitValueObject;
-use Kami\Cocktail\Models\AmountValueObject;
+use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
+use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
 
 class AmountValueObjectTest extends TestCase
 {

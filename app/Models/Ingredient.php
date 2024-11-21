@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ingredient extends Model

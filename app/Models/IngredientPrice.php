@@ -9,6 +9,8 @@ use Brick\Math\RoundingMode;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
+use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
 
 class IngredientPrice extends Model
 {

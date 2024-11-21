@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
+
 final readonly class CocktailIngredientFormatter
 {
     public function __construct(
