@@ -17,6 +17,7 @@ use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
 use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
 use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
+use Kami\Cocktail\Models\BarIngredient;
 
 /**
  * Datapack is a zip archive containing all data required to move to another Bar Assistant instance.
@@ -124,6 +125,8 @@ class ToDataPack
             'base_ingredient_categories' => DB::table('ingredient_categories')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
             'base_price_categories' => DB::table('price_categories')->select('name', 'currency', 'description')->where('bar_id', $barId)->get()->toArray(),
         ];
+
+        $baseDataFiles['bar_shelf'] = BarIngredient::where('bar_id', $barId)->with('ingredient')->get()->map(fn ($bi) => $bi->ingredient->getExternalId())->toArray();
 
         foreach ($baseDataFiles as $file => $data) {
             $exportData = $this->prepareDataOutput($data);
