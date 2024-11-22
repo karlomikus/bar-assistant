@@ -7,7 +7,7 @@ namespace Kami\Cocktail\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \Kami\Cocktail\Models\Price
+ * @mixin \Kami\Cocktail\Models\ValueObjects\Price
  */
 class PriceResource extends JsonResource
 {

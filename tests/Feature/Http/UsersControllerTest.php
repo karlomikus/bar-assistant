@@ -7,7 +7,7 @@ namespace Tests\Feature\Http;
 use Tests\TestCase;
 use Kami\Cocktail\Models\User;
 use Illuminate\Support\Facades\DB;
-use Kami\Cocktail\Models\UserRoleEnum;
+use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

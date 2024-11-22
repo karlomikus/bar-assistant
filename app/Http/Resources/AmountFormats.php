@@ -6,8 +6,8 @@ namespace Kami\Cocktail\Http\Resources;
 
 use JsonSerializable;
 use Kami\Cocktail\Models\CocktailIngredient;
-use Kami\Cocktail\Models\CocktailIngredientFormatter;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
+use Kami\Cocktail\Models\ValueObjects\CocktailIngredientFormatter;
 
 final class AmountFormats implements JsonSerializable
 {

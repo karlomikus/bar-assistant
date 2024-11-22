@@ -37,5 +37,10 @@ class AmountValueObjectTest extends TestCase
         $result = $ml->convertTo(new UnitValueObject('oz'));
 
         $this->assertSame('30 unknown', (string) $result);
+
+        $ml = new AmountValueObject(30.0, new UnitValueObject('ml'), 45.0);
+        $result = $ml->convertTo(new UnitValueObject('oz'));
+
+        $this->assertSame('1 oz - 1.5 oz', (string) $result);
     }
 }

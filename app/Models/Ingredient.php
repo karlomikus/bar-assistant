@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Ingredient extends Model
+class Ingredient extends Model implements UploadableInterface
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\IngredientFactory> */
     use HasFactory;

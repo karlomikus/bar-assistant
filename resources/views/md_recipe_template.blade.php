@@ -10,9 +10,9 @@
 
 ## Ingredients
 @foreach ($cocktail->ingredients as $ci)
-- {{ (new \Kami\Cocktail\Models\CocktailIngredientFormatter($ci->amount, $ci->ingredient->name, $ci->optional))->format() }}{{ $ci->note ? ' - ' . $ci->note : '' }}
+- {{ (new \Kami\Cocktail\Models\ValueObjects\CocktailIngredientFormatter($ci->amount, $ci->ingredient->name, $ci->optional))->format() }}{{ $ci->note ? ' - ' . $ci->note : '' }}
 @foreach ($ci->substitutes as $sub)
-    - or {{ (new \Kami\Cocktail\Models\CocktailIngredientFormatter($sub->amount, $sub->ingredient->name))->format() }}
+    - or {{ (new \Kami\Cocktail\Models\ValueObjects\CocktailIngredientFormatter($sub->amount, $sub->ingredient->name))->format() }}
 @endforeach
 @endforeach
 

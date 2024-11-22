@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Models;
+namespace Kami\Cocktail\Models\ValueObjects;
 
 use Brick\Money\Money;
 
@@ -10,6 +10,11 @@ readonly class Price
 {
     public function __construct(private Money $money)
     {
+    }
+
+    public function getMoney(): Money
+    {
+        return $this->money;
     }
 
     public function getPriceAsFloat(): float

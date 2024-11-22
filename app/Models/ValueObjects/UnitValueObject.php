@@ -48,6 +48,6 @@ final readonly class UnitValueObject implements Stringable, JsonSerializable
 
     public function jsonSerialize(): string
     {
-        return (string) $this;
+        return $this->value;
     }
 }

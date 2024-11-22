@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Models;
+namespace Kami\Cocktail\Models\Enums;
 
 use OpenApi\Attributes as OAT;
 

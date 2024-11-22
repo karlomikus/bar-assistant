@@ -10,12 +10,13 @@ use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
+use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Kami\Cocktail\Services\Image\ImageService;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Bar extends Model
+class Bar extends Model implements UploadableInterface
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\BarFactory> */
     use HasFactory;

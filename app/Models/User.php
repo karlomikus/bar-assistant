@@ -9,6 +9,8 @@ use Laravel\Paddle\Billable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Collection;
+use Kami\Cocktail\Models\Enums\UserRoleEnum;
+use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

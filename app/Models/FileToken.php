@@ -6,7 +6,7 @@ namespace Kami\Cocktail\Models;
 
 use DateTimeImmutable;
 
-class FileToken
+final class FileToken
 {
     public static function generate(int $id, string $filename, DateTimeImmutable $expires): string
     {

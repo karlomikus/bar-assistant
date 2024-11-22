@@ -11,7 +11,7 @@ use Kami\Cocktail\External\SupportsJSONLD;
 use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Image as ImageModel;
 use Kami\Cocktail\Models\Cocktail as CocktailModel;
-use Kami\Cocktail\Models\CocktailIngredientFormatter;
+use Kami\Cocktail\Models\ValueObjects\CocktailIngredientFormatter;
 use Kami\Cocktail\Models\CocktailIngredient as CocktailIngredientModel;
 
 readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSONLD

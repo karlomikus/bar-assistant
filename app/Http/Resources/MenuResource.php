@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
-use Kami\Cocktail\Models\Price;
 use Kami\Cocktail\Models\MenuCocktail;
+use Kami\Cocktail\Models\ValueObjects\Price;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**

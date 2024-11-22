@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Models;
-
-use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
+namespace Kami\Cocktail\Models\ValueObjects;
 
 final readonly class CocktailIngredientFormatter
 {
