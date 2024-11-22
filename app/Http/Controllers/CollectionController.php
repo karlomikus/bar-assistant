@@ -20,7 +20,7 @@ use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class CollectionController extends Controller
 {
-    #[OAT\Get(path: '/collections', tags: ['Collections'], summary: 'Show a list of collections', parameters: [
+    #[OAT\Get(path: '/collections', tags: ['Collections'], operationId: 'listCollections', summary: 'Show a list of collections', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
@@ -41,7 +41,7 @@ class CollectionController extends Controller
         return CollectionResource::collection($collections);
     }
 
-    #[OAT\Get(path: '/bars/{id}/collections', tags: ['Collections'], summary: 'List bar shared collections', parameters: [
+    #[OAT\Get(path: '/bars/{id}/collections', tags: ['Collections'], operationId: 'listSharedCollections', summary: 'List bar shared collections', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -68,7 +68,7 @@ class CollectionController extends Controller
         return CollectionResource::collection($collections);
     }
 
-    #[OAT\Get(path: '/collections/{id}', tags: ['Collections'], summary: 'Show a specific collection', parameters: [
+    #[OAT\Get(path: '/collections/{id}', tags: ['Collections'], operationId: 'showCollection', summary: 'Show a specific collection', parameters: [
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'integer')),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -87,7 +87,7 @@ class CollectionController extends Controller
         return new CollectionResource($collection);
     }
 
-    #[OAT\Post(path: '/collections', tags: ['Collections'], summary: 'Create a new collection', parameters: [
+    #[OAT\Post(path: '/collections', tags: ['Collections'], operationId: 'saveCollection', summary: 'Create a new collection', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -134,7 +134,7 @@ class CollectionController extends Controller
             ->header('Location', route('collection.show', $collection->id));
     }
 
-    #[OAT\Put(path: '/collections/{id}', tags: ['Collections'], summary: 'Update a specific collection', parameters: [
+    #[OAT\Put(path: '/collections/{id}', tags: ['Collections'], operationId: 'updateCollection', summary: 'Update a specific collection', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -166,7 +166,7 @@ class CollectionController extends Controller
         return new CollectionResource($collection);
     }
 
-    #[OAT\Put(path: '/collections/{id}/cocktails', tags: ['Collections'], summary: 'Sync cocktails in a collection', description: 'Used to updated/add/delete cocktails in a collection. To delete all cocktails pass an empty array.', parameters: [
+    #[OAT\Put(path: '/collections/{id}/cocktails', tags: ['Collections'], operationId: 'syncCocktailsInCollection', summary: 'Sync cocktails in a collection', description: 'Used to updated/add/delete cocktails in a collection. To delete all cocktails pass an empty array.', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -213,7 +213,7 @@ class CollectionController extends Controller
         return new CollectionResource($collection);
     }
 
-    #[OAT\Delete(path: '/collections/{id}', tags: ['Collections'], summary: 'Delete a specific collection', parameters: [
+    #[OAT\Delete(path: '/collections/{id}', tags: ['Collections'], operationId: 'deleteCollection', summary: 'Delete a specific collection', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

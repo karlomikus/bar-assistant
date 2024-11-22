@@ -18,7 +18,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class NoteController extends Controller
 {
-    #[OAT\Get(path: '/notes', tags: ['Notes'], summary: 'Show a list of all notes', parameters: [
+    #[OAT\Get(path: '/notes', tags: ['Notes'], operationId: 'listNotes', summary: 'Show a list of all notes', parameters: [
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
@@ -33,7 +33,7 @@ class NoteController extends Controller
         return NoteResource::collection($notes->withQueryString());
     }
 
-    #[OAT\Get(path: '/notes/{id}', tags: ['Notes'], summary: 'Show a single note', parameters: [
+    #[OAT\Get(path: '/notes/{id}', tags: ['Notes'], operationId: 'showNote', summary: 'Show a single note', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -52,7 +52,7 @@ class NoteController extends Controller
         return new NoteResource($note);
     }
 
-    #[OAT\Post(path: '/notes', tags: ['Notes'], summary: 'Create a new note', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/notes', tags: ['Notes'], operationId: 'saveNote', summary: 'Create a new note', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\NoteRequest::class),
@@ -87,7 +87,7 @@ class NoteController extends Controller
             ->header('Location', route('notes.show', $note->id));
     }
 
-    #[OAT\Delete(path: '/notes/{id}', tags: ['Notes'], summary: 'Delete a specific note', parameters: [
+    #[OAT\Delete(path: '/notes/{id}', tags: ['Notes'], operationId: 'deleteNote', summary: 'Delete a specific note', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

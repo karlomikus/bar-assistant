@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ExportController extends Controller
 {
-    #[OAT\Get(path: '/exports', tags: ['Exports'], summary: 'Show a list of exports')]
+    #[OAT\Get(path: '/exports', tags: ['Exports'], operationId: 'listExports', summary: 'Show a list of exports')]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Export::class),
     ])]
@@ -35,7 +35,7 @@ class ExportController extends Controller
         return ExportResource::collection($exports);
     }
 
-    #[OAT\Post(path: '/exports', tags: ['Exports'], summary: 'Create a new export', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/exports', tags: ['Exports'], operationId: 'saveExport', summary: 'Create a new export', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\ExportRequest::class),
@@ -70,7 +70,7 @@ class ExportController extends Controller
         return new ExportResource($export);
     }
 
-    #[OAT\Delete(path: '/exports/{id}', tags: ['Exports'], summary: 'Delete export', parameters: [
+    #[OAT\Delete(path: '/exports/{id}', tags: ['Exports'], operationId: 'deleteExport', summary: 'Delete export', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
@@ -89,7 +89,7 @@ class ExportController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/exports/{id}/download', tags: ['Exports'], summary: 'Download export', parameters: [
+    #[OAT\Get(path: '/exports/{id}/download', tags: ['Exports'], operationId: 'downloadExport', summary: 'Download export', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new OAT\Parameter(name: 't', in: 'query', description: 'Token', required: true, schema: new OAT\Schema(type: 'string')),
         new OAT\Parameter(name: 'e', in: 'query', description: 'Timestamp', required: true, schema: new OAT\Schema(type: 'string')),
@@ -113,7 +113,7 @@ class ExportController extends Controller
         return response()->download($export->getFullPath());
     }
 
-    #[OAT\Post(path: '/exports/{id}/download', tags: ['Exports'], summary: 'Generate download link', description: 'Generates a publicly accessible download link for the export. The link will be valid for 1 minute by default.', parameters: [
+    #[OAT\Post(path: '/exports/{id}/download', tags: ['Exports'], operationId: 'generateExportDownloadLink', summary: 'Generate download link', description: 'Generates a publicly accessible download link for the export. The link will be valid for 1 minute by default.', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [

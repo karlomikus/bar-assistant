@@ -17,7 +17,7 @@ use Kami\Cocktail\Http\Resources\MenuPublicResource;
 
 class MenuController extends Controller
 {
-    #[OAT\Get(path: '/menu', tags: ['Menu'], summary: 'Show menu', parameters: [
+    #[OAT\Get(path: '/menu', tags: ['Menu'], operationId: 'showMenu', summary: 'Show menu', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
@@ -42,7 +42,7 @@ class MenuController extends Controller
         return new MenuResource($menu);
     }
 
-    #[OAT\Get(path: '/explore/menus/{slug}', tags: ['Explore'], summary: 'Show public bar menu', parameters: [
+    #[OAT\Get(path: '/explore/menus/{slug}', tags: ['Explore'], operationId: 'publicMenu', summary: 'Show public bar menu', parameters: [
         new OAT\Parameter(name: 'slug', in: 'path', required: true, description: 'Bar database slug', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -63,7 +63,7 @@ class MenuController extends Controller
         return new MenuPublicResource($menu);
     }
 
-    #[OAT\Post(path: '/menu', tags: ['Menu'], summary: 'Update menu', parameters: [
+    #[OAT\Post(path: '/menu', tags: ['Menu'], operationId: 'updateMenu', summary: 'Update menu', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -94,7 +94,7 @@ class MenuController extends Controller
         return new MenuResource($menu);
     }
 
-    #[OAT\Get(path: '/menu/export', tags: ['Menu'], summary: 'Export menu', description: 'Export menu as CSV', parameters: [
+    #[OAT\Get(path: '/menu/export', tags: ['Menu'], operationId: 'exportMenu', summary: 'Export menu', description: 'Export menu as CSV', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]

@@ -28,7 +28,7 @@ use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest as IngredientDTO;
 
 class IngredientController extends Controller
 {
-    #[OAT\Get(path: '/ingredients', tags: ['Ingredients'], summary: 'Show a list of ingredients', parameters: [
+    #[OAT\Get(path: '/ingredients', tags: ['Ingredients'], operationId: 'listIngredients', summary: 'Show a list of ingredients', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\PageParameter(),
@@ -67,7 +67,7 @@ class IngredientController extends Controller
         return IngredientResource::collection($ingredients->withQueryString());
     }
 
-    #[OAT\Get(path: '/ingredients/{id}', tags: ['Ingredients'], summary: 'Show an ingredient', parameters: [
+    #[OAT\Get(path: '/ingredients/{id}', tags: ['Ingredients'], operationId: 'showIngredient', summary: 'Show an ingredient', parameters: [
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -101,7 +101,7 @@ class IngredientController extends Controller
         return new IngredientResource($ingredient);
     }
 
-    #[OAT\Post(path: '/ingredients', tags: ['Ingredients'], summary: 'Create an ingredient', parameters: [
+    #[OAT\Post(path: '/ingredients', tags: ['Ingredients'], operationId: 'saveIngredient', summary: 'Create an ingredient', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -137,7 +137,7 @@ class IngredientController extends Controller
             ->header('Location', route('ingredients.show', $ingredient->id));
     }
 
-    #[OAT\Put(path: '/ingredients/{id}', tags: ['Ingredients'], summary: 'Update an ingredient', parameters: [
+    #[OAT\Put(path: '/ingredients/{id}', tags: ['Ingredients'], operationId: 'updateIngredient', summary: 'Update an ingredient', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -171,7 +171,7 @@ class IngredientController extends Controller
         return new IngredientResource($ingredient);
     }
 
-    #[OAT\Delete(path: '/ingredients/{id}', tags: ['Ingredients'], summary: 'Delete an ingredient', parameters: [
+    #[OAT\Delete(path: '/ingredients/{id}', tags: ['Ingredients'], operationId: 'deleteIngredient', summary: 'Delete an ingredient', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
@@ -190,7 +190,7 @@ class IngredientController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/ingredients/{id}/extra', tags: ['Ingredients'], summary: 'Extra cocktails you can make if you add this ingredient to your shelf', parameters: [
+    #[OAT\Get(path: '/ingredients/{id}/extra', tags: ['Ingredients'], operationId: 'extraIngredients', summary: 'Extra cocktails you can make if you add this ingredient to your shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -227,7 +227,7 @@ class IngredientController extends Controller
         ]);
     }
 
-    #[OAT\Get(path: '/ingredients/{id}/cocktails', tags: ['Ingredients'], summary: 'List of cocktails that use this ingredient', parameters: [
+    #[OAT\Get(path: '/ingredients/{id}/cocktails', tags: ['Ingredients'], operationId: 'ingredientCocktails', summary: 'List of cocktails that use this ingredient', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
@@ -264,7 +264,7 @@ class IngredientController extends Controller
         return CocktailBasicResource::collection($cocktails);
     }
 
-    #[OAT\Get(path: '/ingredients/{id}/substitutes', tags: ['Ingredients'], summary: 'List ingredient substitutes', description: 'Show a list of ingredients that are used as a substitute for this ingredient in cocktail recipes.', parameters: [
+    #[OAT\Get(path: '/ingredients/{id}/substitutes', tags: ['Ingredients'], operationId: 'ingredientSubstitutes', summary: 'List ingredient substitutes', description: 'Show a list of ingredients that are used as a substitute for this ingredient in cocktail recipes.', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),

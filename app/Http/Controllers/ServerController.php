@@ -14,7 +14,7 @@ use Kami\Cocktail\Services\VersionCheckService;
 
 class ServerController extends Controller
 {
-    #[OAT\Get(path: '/server/version', tags: ['Server'], summary: 'Show server information', security: [[]])]
+    #[OAT\Get(path: '/server/version', tags: ['Server'], operationId: 'showServerVersion', summary: 'Show server information', security: [[]])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapObjectWithData(BAO\Schemas\ServerVersion::class),
     ])]

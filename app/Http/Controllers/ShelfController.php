@@ -27,7 +27,7 @@ use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 
 class ShelfController extends Controller
 {
-    #[OAT\Get(path: '/users/{id}/ingredients', tags: ['Users: Shelf'], summary: 'Show a list of shelf ingredients', description: 'Ingredients that user saved to their shelf', parameters: [
+    #[OAT\Get(path: '/users/{id}/ingredients', tags: ['Users: Shelf'], operationId: 'listUserIngredients', summary: 'Show a list of shelf ingredients', description: 'Ingredients that user saved to their shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
@@ -56,7 +56,7 @@ class ShelfController extends Controller
         return IngredientBasicResource::collection($ingredients->withQueryString());
     }
 
-    #[OAT\Get(path: '/users/{id}/cocktails', tags: ['Users: Shelf'], summary: 'Show a list shelf cocktails', description: 'Cocktails that the user can make with ingredients on their shelf', parameters: [
+    #[OAT\Get(path: '/users/{id}/cocktails', tags: ['Users: Shelf'], operationId: 'listUserShelfCocktails', summary: 'Show a list shelf cocktails', description: 'Cocktails that the user can make with ingredients on their shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
@@ -87,7 +87,7 @@ class ShelfController extends Controller
         return CocktailBasicResource::collection($cocktails->withQueryString());
     }
 
-    #[OAT\Get(path: '/users/{id}/cocktails/favorites', tags: ['Users: Shelf'], summary: 'Show a list of cocktails user has favorited', parameters: [
+    #[OAT\Get(path: '/users/{id}/cocktails/favorites', tags: ['Users: Shelf'], operationId: 'listUserFavoriteCocktails', summary: 'Show a list of cocktails user has favorited', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
@@ -114,7 +114,7 @@ class ShelfController extends Controller
         return CocktailBasicResource::collection($cocktails->withQueryString());
     }
 
-    #[OAT\Post(path: '/users/{id}/ingredients/batch-store', tags: ['Users: Shelf'], summary: 'Batch store ingredients to the shelf', parameters: [
+    #[OAT\Post(path: '/users/{id}/ingredients/batch-store', tags: ['Users: Shelf'], operationId: 'batchStoreUserIngredients', summary: 'Batch store ingredients to the shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
@@ -163,7 +163,7 @@ class ShelfController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Post(path: '/users/{id}/ingredients/batch-delete', tags: ['Users: Shelf'], summary: 'Delete multiple ingredients from the shelf', parameters: [
+    #[OAT\Post(path: '/users/{id}/ingredients/batch-delete', tags: ['Users: Shelf'], operationId: 'batchDeleteUserIngredients', summary: 'Delete multiple ingredients from the shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
@@ -202,7 +202,7 @@ class ShelfController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/users/{id}/ingredients/recommend', tags: ['Users: Shelf'], summary: 'Recommend next ingredients', parameters: [
+    #[OAT\Get(path: '/users/{id}/ingredients/recommend', tags: ['Users: Shelf'], operationId: 'recommendIngredients', summary: 'Recommend next ingredients', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
@@ -230,7 +230,7 @@ class ShelfController extends Controller
         return response()->json(['data' => $possibleIngredients]);
     }
 
-    #[OAT\Get(path: '/bars/{id}/ingredients', tags: ['Bar Shelf'], summary: 'Show a list of bar shelf ingredients', description: 'Ingredients that bar has in it\'s shelf', parameters: [
+    #[OAT\Get(path: '/bars/{id}/ingredients', tags: ['Bar Shelf'], operationId: 'listBarShelfIngredients', summary: 'Show a list of bar shelf ingredients', description: 'Ingredients that bar has in it\'s shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
@@ -253,7 +253,7 @@ class ShelfController extends Controller
         return IngredientBasicResource::collection($ingredients->withQueryString());
     }
 
-    #[OAT\Post(path: '/bars/{id}/ingredients/batch-store', tags: ['Bar Shelf'], summary: 'Batch store bar ingredients to bar shelf', parameters: [
+    #[OAT\Post(path: '/bars/{id}/ingredients/batch-store', tags: ['Bar Shelf'], operationId: 'batchStoreBarShelfIngredients', summary: 'Batch store bar ingredients to bar shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -291,7 +291,7 @@ class ShelfController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Post(path: '/bars/{id}/ingredients/batch-delete', tags: ['Bar Shelf'], summary: 'Delete multiple ingredients from bar shelf', parameters: [
+    #[OAT\Post(path: '/bars/{id}/ingredients/batch-delete', tags: ['Bar Shelf'], operationId: 'batchDeleteBarShelfIngredients', summary: 'Delete multiple ingredients from bar shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -326,7 +326,7 @@ class ShelfController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/bars/{id}/cocktails', tags: ['Bar Shelf'], summary: 'Show a list bar shelf cocktails', description: 'Cocktails that the bar can make with ingredients on their shelf', parameters: [
+    #[OAT\Get(path: '/bars/{id}/cocktails', tags: ['Bar Shelf'], operationId: 'listBarShelfCocktails', summary: 'Show a list bar shelf cocktails', description: 'Cocktails that the bar can make with ingredients on their shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),

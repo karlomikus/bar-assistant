@@ -23,7 +23,7 @@ paths:
       tags:
         - Authentication
       summary: 'Authenticate user and get a token'
-      operationId: ff0821f3f5e448e9be30bed07cac39a3
+      operationId: authenticate
       requestBody:
         required: true
         content:
@@ -49,7 +49,7 @@ paths:
       tags:
         - Authentication
       summary: 'Logout currently authenticated user'
-      operationId: 7faef09646fa779e3f4eb458d4472c75
+      operationId: logout
       responses:
         '204':
           description: 'Successful response'
@@ -58,7 +58,7 @@ paths:
       tags:
         - Authentication
       summary: 'Register a new user'
-      operationId: 26578afaf886b858f56e5e1b8fc3403b
+      operationId: register
       requestBody:
         required: true
         content:
@@ -90,7 +90,7 @@ paths:
       tags:
         - Authentication
       summary: 'Request a new user password'
-      operationId: 7a6f983e087620ddd905bd4925f83983
+      operationId: passwordForgot
       requestBody:
         required: true
         content:
@@ -112,7 +112,7 @@ paths:
       tags:
         - Authentication
       summary: 'Reset user password'
-      operationId: 5000f083616176e5a4edc804f813aecc
+      operationId: passwordReset
       requestBody:
         required: true
         content:
@@ -145,7 +145,7 @@ paths:
       tags:
         - Authentication
       summary: 'Confirm user account'
-      operationId: 46fe45b80f30383e9f9fe664be4d5dff
+      operationId: confirmAccount
       parameters:
         -
           name: id
@@ -187,7 +187,7 @@ paths:
         - Bars
       summary: 'Show a list of bars'
       description: 'Show a list of bars user has access to. Includes bars that user has made and bars he is a member of.'
-      operationId: 8e4aff1910c2f6b973c0bcff7ac77418
+      operationId: listBars
       responses:
         '200':
           description: 'Successful response'
@@ -203,7 +203,7 @@ paths:
       tags:
         - Bars
       summary: 'Create a new bar'
-      operationId: af500d926f43cd1cd146adc9c46f8e41
+      operationId: saveBar
       requestBody:
         required: true
         content:
@@ -245,7 +245,7 @@ paths:
       tags:
         - Bars
       summary: 'Show a specific bar'
-      operationId: 6e92536f11339d30675019e6e93f9ce4
+      operationId: showBar
       parameters:
         -
           name: id
@@ -285,7 +285,7 @@ paths:
       tags:
         - Bars
       summary: 'Update a bar'
-      operationId: 06fb0f42934fc2cd15b00b25027494d1
+      operationId: updateBar
       parameters:
         -
           name: id
@@ -337,7 +337,7 @@ paths:
       tags:
         - Bars
       summary: 'Delete a bar'
-      operationId: dac7d15bfe40981c358d5a52c8a9e31b
+      operationId: deleteBar
       parameters:
         -
           name: id
@@ -370,7 +370,7 @@ paths:
       tags:
         - Bars
       summary: 'Join a bar via invite code'
-      operationId: 825a1e86cd76f3ca07ad2f11ea45f648
+      operationId: joinBar
       requestBody:
         required: true
         content:
@@ -413,7 +413,7 @@ paths:
       tags:
         - Bars
       summary: 'List all members of a bar'
-      operationId: 7a49e26fb4754edae7aa107fd1e35205
+      operationId: listBarMembership
       parameters:
         -
           name: id
@@ -453,7 +453,7 @@ paths:
       tags:
         - Bars
       summary: 'Leave a bar you are a member of'
-      operationId: c3986ac9cf5fe6e4090b993e323480ad
+      operationId: leaveBar
       parameters:
         -
           name: id
@@ -478,7 +478,7 @@ paths:
       tags:
         - Bars
       summary: 'Remove a member from a bar'
-      operationId: 74df840e62b14107dd9d65b49ed84b27
+      operationId: removeBarMembership
       parameters:
         -
           name: id
@@ -518,7 +518,7 @@ paths:
       tags:
         - Bars
       summary: 'Transfer bar ownership'
-      operationId: 208f8a6850027fe0ea9f3b304975fa30
+      operationId: transferBarOwnership
       parameters:
         -
           name: id
@@ -562,7 +562,7 @@ paths:
       tags:
         - Bars
       summary: 'Update bar status'
-      operationId: 200c1aba9ada2cd66a7d0b7a4ec90a8e
+      operationId: toggleBarStatus
       parameters:
         -
           name: id
@@ -604,7 +604,7 @@ paths:
       tags:
         - Cocktails
       summary: 'Show a list of cocktails'
-      operationId: 4400982243630124406e8675b4632a32
+      operationId: listCocktails
       parameters:
         -
           name: bar_id
@@ -726,7 +726,7 @@ paths:
       tags:
         - Cocktails
       summary: 'Create a new cocktail'
-      operationId: cbc4c3f93b89c16a916c7cc574ca118e
+      operationId: saveCocktail
       parameters:
         -
           name: bar_id
@@ -783,7 +783,7 @@ paths:
       tags:
         - Cocktails
       summary: 'Show a specific cocktail'
-      operationId: 9286466f1f4b710e7f06c79f947ec7b0
+      operationId: showCocktail
       parameters:
         -
           name: id
@@ -823,7 +823,7 @@ paths:
       tags:
         - Cocktails
       summary: 'Update a specific cocktail'
-      operationId: ca968c657169055c33bc68a1b08b6eaa
+      operationId: updateCocktail
       parameters:
         -
           name: id
@@ -875,7 +875,7 @@ paths:
       tags:
         - Cocktails
       summary: 'Delete a specific cocktail'
-      operationId: c642d725c11d12c781fbfad353ba7bcb
+      operationId: deleteCocktail
       parameters:
         -
           name: id
@@ -908,7 +908,7 @@ paths:
       tags:
         - Cocktails
       summary: 'Toggle cocktail as favorite'
-      operationId: 89742b5d96b9183518a473d9e640db6e
+      operationId: toggleCocktailFavorite
       parameters:
         -
           name: id
@@ -947,7 +947,7 @@ paths:
       tags:
         - Cocktails
       summary: 'Create a public ID for cocktail'
-      operationId: 191e2ca5633e6d5f7c25430fddbbd9c8
+      operationId: createCocktailPublicLink
       parameters:
         -
           name: id
@@ -987,7 +987,7 @@ paths:
       tags:
         - Cocktails
       summary: 'Delete cocktail public link'
-      operationId: a4a90713002827189fef279434f86791
+      operationId: deleteCocktailPublicLink
       parameters:
         -
           name: id
@@ -1020,7 +1020,7 @@ paths:
       tags:
         - Cocktails
       summary: 'Share a cocktail'
-      operationId: c2af4839cdc102afb67b7be674895e8c
+      operationId: shareCocktail
       parameters:
         -
           name: id
@@ -1082,7 +1082,7 @@ paths:
       tags:
         - Cocktails
       summary: 'Show similar cocktails'
-      operationId: 3e08ff7e8e549570aadbaf5b727eaa2a
+      operationId: showSimilarCocktails
       parameters:
         -
           name: id
@@ -1123,7 +1123,7 @@ paths:
       tags:
         - Cocktails
       summary: 'Copy cocktail'
-      operationId: d7c826954ef1111d8a897c62e27df861
+      operationId: copyCocktail
       parameters:
         -
           name: id
@@ -1203,7 +1203,7 @@ paths:
       tags:
         - 'Cocktail method'
       summary: 'Show a list of all methods'
-      operationId: 14008654b6c5780b9e826e4e2fcf237a
+      operationId: listCocktailMethods
       parameters:
         -
           name: bar_id
@@ -1234,7 +1234,7 @@ paths:
       tags:
         - 'Cocktail method'
       summary: 'Create a new method'
-      operationId: 4b70b5048cbee429f002bf3f270c8a94
+      operationId: saveCocktailMethod
       parameters:
         -
           name: bar_id
@@ -1285,7 +1285,7 @@ paths:
       tags:
         - 'Cocktail method'
       summary: 'Show a single method'
-      operationId: f1714d10fa6232a1cc65c88929b26bb8
+      operationId: showCocktailMethod
       parameters:
         -
           name: id
@@ -1325,7 +1325,7 @@ paths:
       tags:
         - 'Cocktail method'
       summary: 'Update a specific method'
-      operationId: 7507b8dac0ec7199fc2c229a2c127a4e
+      operationId: updateCocktailMethod
       parameters:
         -
           name: id
@@ -1371,7 +1371,7 @@ paths:
       tags:
         - 'Cocktail method'
       summary: 'Delete specific method'
-      operationId: 42b0ceafc9fa786c4984ff1508868ec3
+      operationId: deleteCocktailMethod
       parameters:
         -
           name: id
@@ -1404,7 +1404,7 @@ paths:
       tags:
         - Collections
       summary: 'Show a list of collections'
-      operationId: 308d0156539f4be8f650f7ed64ed3d7f
+      operationId: listCollections
       parameters:
         -
           name: bar_id
@@ -1462,7 +1462,7 @@ paths:
       tags:
         - Collections
       summary: 'Create a new collection'
-      operationId: a2c6fd135d182cbeeadbc042b35b0a80
+      operationId: saveCollection
       parameters:
         -
           name: bar_id
@@ -1513,7 +1513,7 @@ paths:
       tags:
         - Collections
       summary: 'List bar shared collections'
-      operationId: a15fa7e1679d8b4eafed56112a63da76
+      operationId: listSharedCollections
       parameters:
         -
           name: id
@@ -1554,7 +1554,7 @@ paths:
       tags:
         - Collections
       summary: 'Show a specific collection'
-      operationId: 621b31f704cec7566d650351f0907df6
+      operationId: showCollection
       parameters:
         -
           name: id
@@ -1594,7 +1594,7 @@ paths:
       tags:
         - Collections
       summary: 'Update a specific collection'
-      operationId: 7497163b1fe8e97bae47a3904200722a
+      operationId: updateCollection
       parameters:
         -
           name: id
@@ -1640,7 +1640,7 @@ paths:
       tags:
         - Collections
       summary: 'Delete a specific collection'
-      operationId: 00390f2c5b043adc54cc72165bc3eccb
+      operationId: deleteCollection
       parameters:
         -
           name: id
@@ -1674,7 +1674,7 @@ paths:
         - Collections
       summary: 'Sync cocktails in a collection'
       description: 'Used to updated/add/delete cocktails in a collection. To delete all cocktails pass an empty array.'
-      operationId: 934e63129e4bf90dd91eccc108f51f40
+      operationId: syncCocktailsInCollection
       parameters:
         -
           name: id
@@ -1717,7 +1717,7 @@ paths:
       tags:
         - Explore
       summary: 'Show a public cocktail'
-      operationId: 83841be3da52f7694d8382c5f5b13d8e
+      operationId: showPublicCocktail
       parameters:
         -
           name: public_id
@@ -1752,7 +1752,7 @@ paths:
       tags:
         - Exports
       summary: 'Show a list of exports'
-      operationId: 5bc2aea6bb7fb81d2a426faccbb4b4d7
+      operationId: listExports
       responses:
         '200':
           description: 'Successful response'
@@ -1768,7 +1768,7 @@ paths:
       tags:
         - Exports
       summary: 'Create a new export'
-      operationId: 1bedc78fd0edd24fdcc408977166e8cb
+      operationId: saveExport
       requestBody:
         required: true
         content:
@@ -1799,7 +1799,7 @@ paths:
       tags:
         - Exports
       summary: 'Delete export'
-      operationId: 6566cf7c2310f6d0f77d6be65bb36868
+      operationId: deleteExport
       parameters:
         -
           name: id
@@ -1832,7 +1832,7 @@ paths:
       tags:
         - Exports
       summary: 'Download export'
-      operationId: df14ed9175061d3560c934ca7c89b47a
+      operationId: downloadExport
       parameters:
         -
           name: id
@@ -1875,7 +1875,7 @@ paths:
         - Exports
       summary: 'Generate download link'
       description: 'Generates a publicly accessible download link for the export. The link will be valid for 1 minute by default.'
-      operationId: 48e1c2637c22de5ec50f90272526b454
+      operationId: generateExportDownloadLink
       parameters:
         -
           name: id
@@ -1916,7 +1916,7 @@ paths:
       tags:
         - Glasses
       summary: 'Show a list of glass types'
-      operationId: aa68a5da541be756aa65f07353e63cdf
+      operationId: listGlassware
       parameters:
         -
           name: bar_id
@@ -1964,7 +1964,7 @@ paths:
       tags:
         - Glasses
       summary: 'Create a new glass'
-      operationId: b81ce1bc5d5988d9221774a715a90950
+      operationId: saveGlassware
       parameters:
         -
           name: bar_id
@@ -2015,7 +2015,7 @@ paths:
       tags:
         - Glasses
       summary: 'Show glass'
-      operationId: aca8ea95b45a17cfe2a0442cde2f53ad
+      operationId: showGlassware
       parameters:
         -
           name: id
@@ -2055,7 +2055,7 @@ paths:
       tags:
         - Glasses
       summary: 'Update glass'
-      operationId: c9c1cb0561aa1222cc78654eaceb9a62
+      operationId: updateGlassware
       parameters:
         -
           name: id
@@ -2101,7 +2101,7 @@ paths:
       tags:
         - Glasses
       summary: 'Delete glass'
-      operationId: 876925de63d0a9bf6b8d2337661f135a
+      operationId: deleteGlassware
       parameters:
         -
           name: id
@@ -2135,7 +2135,7 @@ paths:
         - Images
       summary: 'List uploaded images'
       description: 'List all images uploaded by the authenticated user'
-      operationId: 3ac02bbdafb65e59d8b5c6d5aaf9806d
+      operationId: listImages
       parameters:
         -
           name: page
@@ -2181,7 +2181,7 @@ paths:
         - Images
       summary: 'Upload an image'
       description: 'Used to upload multiple images at once. Uploaded images via this endpoint will not be attached to any resource. Images are converted to WebP format with 85% quality of the original image.'
-      operationId: d889115b2fa2ccddce23e39df958cc47
+      operationId: uploadImage
       requestBody:
         required: true
         content:
@@ -2210,7 +2210,7 @@ paths:
       tags:
         - Images
       summary: 'Show an image'
-      operationId: 02d07ad762ad36175a8b4c2cdf4eef03
+      operationId: showImage
       parameters:
         -
           name: id
@@ -2250,7 +2250,7 @@ paths:
       tags:
         - Images
       summary: 'Update image'
-      operationId: 18a765565c4f43cc01167738ab8ff7cd
+      operationId: updateImage
       parameters:
         -
           name: id
@@ -2288,7 +2288,7 @@ paths:
       tags:
         - Images
       summary: 'Delete image'
-      operationId: 99a6b84660d0881a68e57435afb2e6ea
+      operationId: deleteImage
       parameters:
         -
           name: id
@@ -2321,7 +2321,7 @@ paths:
       tags:
         - Images
       summary: 'Get a thumbnail of an image'
-      operationId: f3fac097ef10296417650431b970d7b3
+      operationId: getImageThumbnail
       parameters:
         -
           name: id
@@ -2353,7 +2353,7 @@ paths:
         - Import
       summary: 'Import recipe'
       description: 'Import a recipe from a JSON structure that follows Bar Assistant recipe JSON schema. Supported schemas include [Draft 2](https://barassistant.app/cocktail-02.schema.json) and [Draft 1](https://barassistant.app/cocktail-01.schema.json).'
-      operationId: f46bb44c14109f5d529b854e81d57150
+      operationId: importCocktail
       parameters:
         -
           name: bar_id
@@ -2407,7 +2407,7 @@ paths:
         - Import
       summary: 'Scrape a recipe'
       description: 'Try to scrape a recipe from a website. Most of the well known recipe websites should work. Data returned is a valid JSON schema that you can import using import cocktail endpoint.'
-      operationId: 33b756be1976d85e9b0e8e734beed74f
+      operationId: scrapeRecipe
       parameters:
         -
           name: bar_id
@@ -2457,7 +2457,7 @@ paths:
       tags:
         - 'Ingredient category'
       summary: 'Show a list of ingredient categories'
-      operationId: 9c5a332d2fd9a695a6805451249a0c28
+      operationId: listIngredientCategories
       parameters:
         -
           name: bar_id
@@ -2488,7 +2488,7 @@ paths:
       tags:
         - 'Ingredient category'
       summary: 'Create a new ingredient category'
-      operationId: beef561152a333f7c81fec58a7590f37
+      operationId: saveIngredientCategory
       parameters:
         -
           name: bar_id
@@ -2539,7 +2539,7 @@ paths:
       tags:
         - 'Ingredient category'
       summary: 'Show ingredient category'
-      operationId: cca43ededebdf742491f0f8eb0dcfab5
+      operationId: showIngredientCategory
       parameters:
         -
           name: id
@@ -2579,7 +2579,7 @@ paths:
       tags:
         - 'Ingredient category'
       summary: 'Update ingredient category'
-      operationId: bdd96c56bc078a0dbdbc9cb71b1bd503
+      operationId: updateIngredientCategory
       parameters:
         -
           name: id
@@ -2625,7 +2625,7 @@ paths:
       tags:
         - 'Ingredient category'
       summary: 'Delete ingredient category'
-      operationId: 5190ba80efae47305bdbcf1a68de6fd7
+      operationId: deleteIngredientCategory
       parameters:
         -
           name: id
@@ -2658,7 +2658,7 @@ paths:
       tags:
         - Ingredients
       summary: 'Show a list of ingredients'
-      operationId: 1638cf5bb5113e3ca4793347b9ca84ed
+      operationId: listIngredients
       parameters:
         -
           name: bar_id
@@ -2758,7 +2758,7 @@ paths:
       tags:
         - Ingredients
       summary: 'Create an ingredient'
-      operationId: efa43043e488624a2f3d8e8123a2d9be
+      operationId: saveIngredient
       parameters:
         -
           name: bar_id
@@ -2809,7 +2809,7 @@ paths:
       tags:
         - Ingredients
       summary: 'Show an ingredient'
-      operationId: 0ede5ee7aaed9fd2c985386b7a13e005
+      operationId: showIngredient
       parameters:
         -
           name: id
@@ -2849,7 +2849,7 @@ paths:
       tags:
         - Ingredients
       summary: 'Update an ingredient'
-      operationId: f9433e9c103e95ceebcf99171a11e81d
+      operationId: updateIngredient
       parameters:
         -
           name: id
@@ -2895,7 +2895,7 @@ paths:
       tags:
         - Ingredients
       summary: 'Delete an ingredient'
-      operationId: 31e064558b854ed32ba5f29a76aee385
+      operationId: deleteIngredient
       parameters:
         -
           name: id
@@ -2928,7 +2928,7 @@ paths:
       tags:
         - Ingredients
       summary: 'Extra cocktails you can make if you add this ingredient to your shelf'
-      operationId: ff324ec47870a7091f125afea3f7e664
+      operationId: extraIngredients
       parameters:
         -
           name: id
@@ -2969,7 +2969,7 @@ paths:
       tags:
         - Ingredients
       summary: 'List of cocktails that use this ingredient'
-      operationId: aba5fae0baf2ce1fc02a691412c8a6ab
+      operationId: ingredientCocktails
       parameters:
         -
           name: id
@@ -3023,7 +3023,7 @@ paths:
         - Ingredients
       summary: 'List ingredient substitutes'
       description: 'Show a list of ingredients that are used as a substitute for this ingredient in cocktail recipes.'
-      operationId: fccb6b72c41f8a78ab604bc86a879c27
+      operationId: ingredientSubstitutes
       parameters:
         -
           name: id
@@ -3076,7 +3076,7 @@ paths:
       tags:
         - Menu
       summary: 'Show menu'
-      operationId: 15005db445c5ccad445e198729cc4e22
+      operationId: showMenu
       parameters:
         -
           name: bar_id
@@ -3115,7 +3115,7 @@ paths:
       tags:
         - Menu
       summary: 'Update menu'
-      operationId: 9ac6e03b541a1351a5d691b2aa232283
+      operationId: updateMenu
       parameters:
         -
           name: bar_id
@@ -3161,7 +3161,7 @@ paths:
       tags:
         - Explore
       summary: 'Show public bar menu'
-      operationId: c2dee2186390212153a41c0527ddb728
+      operationId: publicMenu
       parameters:
         -
           name: slug
@@ -3196,7 +3196,7 @@ paths:
         - Menu
       summary: 'Export menu'
       description: 'Export menu as CSV'
-      operationId: 69581b120488a658b86369819bd257e0
+      operationId: exportMenu
       parameters:
         -
           name: bar_id
@@ -3232,7 +3232,7 @@ paths:
       tags:
         - Notes
       summary: 'Show a list of all notes'
-      operationId: 8b1d23cbbf81842599e3e9463477cb58
+      operationId: listNotes
       parameters:
         -
           name: page
@@ -3261,7 +3261,7 @@ paths:
       tags:
         - Notes
       summary: 'Create a new note'
-      operationId: a0c90a217efa521e80b3b94c1a4bf3a7
+      operationId: saveNote
       requestBody:
         required: true
         content:
@@ -3305,7 +3305,7 @@ paths:
       tags:
         - Notes
       summary: 'Show a single note'
-      operationId: c46ec527098402aba4a10b074a7b4047
+      operationId: showNote
       parameters:
         -
           name: id
@@ -3345,7 +3345,7 @@ paths:
       tags:
         - Notes
       summary: 'Delete a specific note'
-      operationId: 075f33453cc8e1e0d26bd8f07b2c5d59
+      operationId: deleteNote
       parameters:
         -
           name: id
@@ -3378,7 +3378,7 @@ paths:
       tags:
         - Tokens
       summary: 'Show a list of tokens'
-      operationId: 68b9d61d5bd7070a04356cf10d75f151
+      operationId: listTokens
       responses:
         '200':
           description: 'Successful response'
@@ -3394,7 +3394,7 @@ paths:
       tags:
         - Tokens
       summary: 'Create new personal access token'
-      operationId: d91a0f74be09f52fd56164e7c58e7795
+      operationId: saveToken
       requestBody:
         required: true
         content:
@@ -3425,7 +3425,7 @@ paths:
       tags:
         - Tokens
       summary: 'Revoke personal access token'
-      operationId: e3638ffac30ab37a8015b26a88b7bad9
+      operationId: deleteToken
       parameters:
         -
           name: id
@@ -3458,7 +3458,7 @@ paths:
       tags:
         - 'Price category'
       summary: 'Show a list of price categories'
-      operationId: 8ffdcf8e07576f57714428563d35c0ff
+      operationId: listPriceCategories
       parameters:
         -
           name: bar_id
@@ -3489,7 +3489,7 @@ paths:
       tags:
         - 'Price category'
       summary: 'Create a new price category'
-      operationId: 000ce8107dfa5fe811876785a0f24308
+      operationId: savePriceCategory
       parameters:
         -
           name: bar_id
@@ -3580,7 +3580,7 @@ paths:
       tags:
         - 'Price category'
       summary: 'Update price category'
-      operationId: 86fc70306463caa72b7bfd33553393be
+      operationId: updatePriceCategory
       parameters:
         -
           name: id
@@ -3626,7 +3626,7 @@ paths:
       tags:
         - 'Price category'
       summary: 'Delete price category'
-      operationId: 9f109b6442b874b6de95a9b1b400d1fb
+      operationId: deletePriceCategory
       parameters:
         -
           name: id
@@ -3659,7 +3659,7 @@ paths:
       tags:
         - Profile
       summary: 'Show profile'
-      operationId: 73fd658c723e80f927b251628b9a616b
+      operationId: showProfile
       responses:
         '200':
           description: 'Successful response'
@@ -3683,7 +3683,7 @@ paths:
       tags:
         - Profile
       summary: 'Update profile'
-      operationId: c5958eea850b563b057d22dc8258efbf
+      operationId: updateProfile
       requestBody:
         required: true
         content:
@@ -3714,7 +3714,7 @@ paths:
       tags:
         - Ratings
       summary: 'Rate a cocktail'
-      operationId: c7c135615b762420f7b338e0bc744a76
+      operationId: rateCocktail
       parameters:
         -
           name: id
@@ -3755,7 +3755,7 @@ paths:
       tags:
         - Ratings
       summary: "Delete current user's cocktail rating"
-      operationId: 93d095c7348ac6ee7d0f3cb8ea1f1c36
+      operationId: deleteRating
       parameters:
         -
           name: id
@@ -3788,7 +3788,7 @@ paths:
       tags:
         - Server
       summary: 'Show server information'
-      operationId: 25784e4e494f0fd4dbbdb7b92c301b26
+      operationId: showServerVersion
       responses:
         '200':
           description: 'Successful response'
@@ -3808,7 +3808,7 @@ paths:
         - 'Users: Shelf'
       summary: 'Show a list of shelf ingredients'
       description: 'Ingredients that user saved to their shelf'
-      operationId: b34236369b075eabaacef013be799024
+      operationId: listUserIngredients
       parameters:
         -
           name: id
@@ -3860,7 +3860,7 @@ paths:
         - 'Users: Shelf'
       summary: 'Show a list shelf cocktails'
       description: 'Cocktails that the user can make with ingredients on their shelf'
-      operationId: 5a48f072f2ca1f25807838c8ae331db5
+      operationId: listUserShelfCocktails
       parameters:
         -
           name: id
@@ -3911,7 +3911,7 @@ paths:
       tags:
         - 'Users: Shelf'
       summary: 'Show a list of cocktails user has favorited'
-      operationId: 0038cb5730a723a0c58e5605fecb0ccb
+      operationId: listUserFavoriteCocktails
       parameters:
         -
           name: id
@@ -3962,7 +3962,7 @@ paths:
       tags:
         - 'Users: Shelf'
       summary: 'Batch store ingredients to the shelf'
-      operationId: 28c0db334504ef005e3704dcc80154b1
+      operationId: batchStoreUserIngredients
       parameters:
         -
           name: id
@@ -4019,7 +4019,7 @@ paths:
       tags:
         - 'Users: Shelf'
       summary: 'Delete multiple ingredients from the shelf'
-      operationId: 8effce422c8cbe13a9b273a71f9d8afc
+      operationId: batchDeleteUserIngredients
       parameters:
         -
           name: id
@@ -4076,7 +4076,7 @@ paths:
       tags:
         - 'Users: Shelf'
       summary: 'Recommend next ingredients'
-      operationId: f5e680e7f9f44a047888ad4bc8a22ba8
+      operationId: recommendIngredients
       parameters:
         -
           name: id
@@ -4132,7 +4132,7 @@ paths:
         - 'Bar Shelf'
       summary: 'Show a list of bar shelf ingredients'
       description: "Ingredients that bar has in it's shelf"
-      operationId: 0b3c5cbb1c0b8aa375aee04c1b3f021a
+      operationId: listBarShelfIngredients
       parameters:
         -
           name: id
@@ -4169,7 +4169,7 @@ paths:
       tags:
         - 'Bar Shelf'
       summary: 'Batch store bar ingredients to bar shelf'
-      operationId: 72acd54d8500a59f453864e000f51c7b
+      operationId: batchStoreBarShelfIngredients
       parameters:
         -
           name: id
@@ -4212,7 +4212,7 @@ paths:
       tags:
         - 'Bar Shelf'
       summary: 'Delete multiple ingredients from bar shelf'
-      operationId: 2a4715024c2fca55798ecd592feaf6e5
+      operationId: batchDeleteBarShelfIngredients
       parameters:
         -
           name: id
@@ -4256,7 +4256,7 @@ paths:
         - 'Bar Shelf'
       summary: 'Show a list bar shelf cocktails'
       description: 'Cocktails that the bar can make with ingredients on their shelf'
-      operationId: 40813734b16874942a79324150fb3dd1
+      operationId: listBarShelfCocktails
       parameters:
         -
           name: id
@@ -4293,7 +4293,7 @@ paths:
       tags:
         - 'Users: Shopping list'
       summary: 'Show shopping list'
-      operationId: ea114c1013eabd71064b7b33513d13cd
+      operationId: listShoppingListIngredients
       parameters:
         -
           name: id
@@ -4340,7 +4340,7 @@ paths:
       tags:
         - 'Users: Shopping list'
       summary: 'Batch add ingredients to shopping list'
-      operationId: c9dbd5fceec4406656e93b94646ea5f6
+      operationId: batchStoreShoppingListIngredients
       parameters:
         -
           name: id
@@ -4393,7 +4393,7 @@ paths:
       tags:
         - 'Users: Shopping list'
       summary: 'Batch delete ingredients from shopping list'
-      operationId: cec5d8ca07890aaad3cd264ba62a88bb
+      operationId: batchDeleteShoppingListIngredients
       parameters:
         -
           name: id
@@ -4450,7 +4450,7 @@ paths:
       tags:
         - 'Users: Shopping list'
       summary: 'Share shopping list'
-      operationId: 1d4aaec85e00ac2c559f362058f02056
+      operationId: shareShoppingList
       parameters:
         -
           name: id
@@ -4503,7 +4503,7 @@ paths:
       tags:
         - Bars
       summary: 'Show bar stats'
-      operationId: d62319d3bf13005383b7d8027e9056ec
+      operationId: showBarStats
       parameters:
         -
           name: id
@@ -4544,7 +4544,7 @@ paths:
       tags:
         - Billing
       summary: 'Get subscription status'
-      operationId: 69a9ec343d37c0baa6b984cac0c06da8
+      operationId: showSubscription
       responses:
         '200':
           description: 'Successful response'
@@ -4568,7 +4568,7 @@ paths:
       tags:
         - Billing
       summary: 'Update subscription'
-      operationId: 6b1e9ae3c684b7a71a5ab7348766e6c5
+      operationId: updateSubscription
       requestBody:
         required: true
         content:
@@ -4604,7 +4604,7 @@ paths:
       tags:
         - Tag
       summary: 'Show a list of all tags'
-      operationId: e5e1e0ec136ce6b73c6636ef9635a596
+      operationId: listTags
       parameters:
         -
           name: bar_id
@@ -4635,7 +4635,7 @@ paths:
       tags:
         - Tag
       summary: 'Create a new tag'
-      operationId: 436ed7a7115fce5026326a5d67a016ac
+      operationId: saveTag
       parameters:
         -
           name: bar_id
@@ -4686,7 +4686,7 @@ paths:
       tags:
         - Tag
       summary: 'Show a single tag'
-      operationId: df2e47c29c59436f33f9b36e4b5f30f2
+      operationId: showTag
       parameters:
         -
           name: id
@@ -4726,7 +4726,7 @@ paths:
       tags:
         - Tag
       summary: 'Update tag'
-      operationId: 3a6faf0d586a666498d08786030214c3
+      operationId: updateTag
       parameters:
         -
           name: id
@@ -4772,7 +4772,7 @@ paths:
       tags:
         - Tag
       summary: 'Delete tag'
-      operationId: 3093352bf630017b8fcf7705e9b329c4
+      operationId: deleteTag
       parameters:
         -
           name: id
@@ -4805,7 +4805,7 @@ paths:
       tags:
         - Users
       summary: 'Show a list of users of a bar'
-      operationId: 0d0cb04fffa73faf3be78b1a0b658561
+      operationId: listUsers
       parameters:
         -
           name: bar_id
@@ -4836,7 +4836,7 @@ paths:
       tags:
         - Users
       summary: 'Create a new user'
-      operationId: a53b4f22b9e0de280870f1e187f6bee3
+      operationId: saveUser
       parameters:
         -
           name: bar_id
@@ -4887,7 +4887,7 @@ paths:
       tags:
         - Users
       summary: 'Show a user'
-      operationId: 89cd377bbebe14aaf4174e3916502852
+      operationId: showUser
       parameters:
         -
           name: bar_id
@@ -4941,7 +4941,7 @@ paths:
       tags:
         - Users
       summary: 'Update a user'
-      operationId: 6972a68618aa96af50377dcc8fe79aef
+      operationId: updateUser
       parameters:
         -
           name: bar_id
@@ -5001,7 +5001,7 @@ paths:
       tags:
         - Users
       summary: 'Delete a user'
-      operationId: 0c7e7a133a818ac4b30f2d7dd1b04b91
+      operationId: deleteUser
       parameters:
         -
           name: id
@@ -5034,7 +5034,7 @@ paths:
       tags:
         - Utensils
       summary: 'Show a list of utensils'
-      operationId: 613e6e2fed96a23278a5036159e9087d
+      operationId: listUtensils
       parameters:
         -
           name: bar_id
@@ -5065,7 +5065,7 @@ paths:
       tags:
         - Utensils
       summary: 'Create a new utensil'
-      operationId: eef2f70636f45820b56cc0025448f847
+      operationId: saveUtensil
       parameters:
         -
           name: bar_id
@@ -5116,7 +5116,7 @@ paths:
       tags:
         - Utensils
       summary: 'Show utensil'
-      operationId: 1b9d7fe5ecf4a0271c20ba17654d209a
+      operationId: showUtensil
       parameters:
         -
           name: id
@@ -5156,7 +5156,7 @@ paths:
       tags:
         - Utensils
       summary: 'Update a specific utensil'
-      operationId: 0688a6a8648cdad35503bad732bba86f
+      operationId: updateUtensil
       parameters:
         -
           name: id
@@ -5202,7 +5202,7 @@ paths:
       tags:
         - Utensils
       summary: 'Delete specific utensil'
-      operationId: 2f216f7ba27dd48b73ea157501c8bc81
+      operationId: deleteUtensil
       parameters:
         -
           name: id

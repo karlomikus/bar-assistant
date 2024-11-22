@@ -16,7 +16,7 @@ use Kami\Cocktail\Http\Resources\UtensilResource;
 
 class UtensilsController extends Controller
 {
-    #[OAT\Get(path: '/utensils', tags: ['Utensils'], summary: 'Show a list of utensils', parameters: [
+    #[OAT\Get(path: '/utensils', tags: ['Utensils'], operationId: 'listUtensils', summary: 'Show a list of utensils', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
@@ -30,7 +30,7 @@ class UtensilsController extends Controller
         return UtensilResource::collection($utensils);
     }
 
-    #[OAT\Get(path: '/utensils/{id}', tags: ['Utensils'], summary: 'Show utensil', parameters: [
+    #[OAT\Get(path: '/utensils/{id}', tags: ['Utensils'], operationId: 'showUtensil', summary: 'Show utensil', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -49,7 +49,7 @@ class UtensilsController extends Controller
         return new UtensilResource($utensil);
     }
 
-    #[OAT\Post(path: '/utensils', tags: ['Utensils'], summary: 'Create a new utensil', parameters: [
+    #[OAT\Post(path: '/utensils', tags: ['Utensils'], operationId: 'saveUtensil', summary: 'Create a new utensil', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -82,7 +82,7 @@ class UtensilsController extends Controller
             ->header('Location', route('utensils.show', $utensil->id));
     }
 
-    #[OAT\Put(path: '/utensils/{id}', tags: ['Utensils'], summary: 'Update a specific utensil', parameters: [
+    #[OAT\Put(path: '/utensils/{id}', tags: ['Utensils'], operationId: 'updateUtensil', summary: 'Update a specific utensil', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -111,7 +111,7 @@ class UtensilsController extends Controller
         return new UtensilResource($utensil);
     }
 
-    #[OAT\Delete(path: '/utensils/{id}', tags: ['Utensils'], summary: 'Delete specific utensil', parameters: [
+    #[OAT\Delete(path: '/utensils/{id}', tags: ['Utensils'], operationId: 'deleteUtensil', summary: 'Delete specific utensil', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

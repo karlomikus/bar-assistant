@@ -12,7 +12,7 @@ use Kami\Cocktail\Http\Resources\ExploreCocktailResource;
 
 class ExploreController extends Controller
 {
-    #[OAT\Get(path: '/explore/cocktails/{public_id}', tags: ['Explore'], summary: 'Show a public cocktail', parameters: [
+    #[OAT\Get(path: '/explore/cocktails/{public_id}', tags: ['Explore'], operationId: 'showPublicCocktail', summary: 'Show a public cocktail', parameters: [
         new OAT\Parameter(name: 'public_id', in: 'path', required: true, description: 'Public cocktail id', schema: new OAT\Schema(type: 'string', format: 'ulid')),
     ], security: [])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [

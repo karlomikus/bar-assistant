@@ -18,7 +18,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class TagController extends Controller
 {
-    #[OAT\Get(path: '/tags', tags: ['Tag'], summary: 'Show a list of all tags', parameters: [
+    #[OAT\Get(path: '/tags', tags: ['Tag'], operationId: 'listTags', summary: 'Show a list of all tags', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
@@ -32,7 +32,7 @@ class TagController extends Controller
         return TagResource::collection($tags);
     }
 
-    #[OAT\Get(path: '/tags/{id}', tags: ['Tag'], summary: 'Show a single tag', parameters: [
+    #[OAT\Get(path: '/tags/{id}', tags: ['Tag'], operationId: 'showTag', summary: 'Show a single tag', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -51,7 +51,7 @@ class TagController extends Controller
         return new TagResource($tag);
     }
 
-    #[OAT\Post(path: '/tags', tags: ['Tag'], summary: 'Create a new tag', parameters: [
+    #[OAT\Post(path: '/tags', tags: ['Tag'], operationId: 'saveTag', summary: 'Create a new tag', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -83,7 +83,7 @@ class TagController extends Controller
             ->header('Location', route('tags.show', $tag->id));
     }
 
-    #[OAT\Put(path: '/tags/{id}', tags: ['Tag'], summary: 'Update tag', parameters: [
+    #[OAT\Put(path: '/tags/{id}', tags: ['Tag'], operationId: 'updateTag', summary: 'Update tag', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -113,7 +113,7 @@ class TagController extends Controller
         return new TagResource($tag);
     }
 
-    #[OAT\Delete(path: '/tags/{id}', tags: ['Tag'], summary: 'Delete tag', parameters: [
+    #[OAT\Delete(path: '/tags/{id}', tags: ['Tag'], operationId: 'deleteTag', summary: 'Delete tag', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

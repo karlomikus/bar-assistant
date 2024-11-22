@@ -15,7 +15,7 @@ use Kami\Cocktail\Http\Resources\SubscriptionResource;
 
 class SubscriptionController extends Controller
 {
-    #[OAT\Get(path: '/billing/subscription', tags: ['Billing'], summary: 'Get subscription status')]
+    #[OAT\Get(path: '/billing/subscription', tags: ['Billing'], operationId: 'showSubscription', summary: 'Get subscription status')]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapObjectWithData(BAO\Schemas\UserSubscription::class),
     ])]
@@ -48,7 +48,7 @@ class SubscriptionController extends Controller
         ]);
     }
 
-    #[OAT\Post(path: '/billing/subscription', tags: ['Billing'], summary: 'Update subscription', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/billing/subscription', tags: ['Billing'], operationId: 'updateSubscription', summary: 'Update subscription', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', required: ['type'], properties: [
