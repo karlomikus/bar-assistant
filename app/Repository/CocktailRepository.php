@@ -28,10 +28,11 @@ readonly class CocktailRepository
         // Basically, goes through all ingredients to match ($ingredientIds) and check if they can create complex ingredients
         // If they can, that ingredient is added to the list of ingredients to match
         if ($matchComplexIngredients) {
+            $placeholders = str_repeat('?,', count($ingredientIds) - 1) . '?';
             $rawQuery = "WITH RECURSIVE IngredientChain AS (
                     SELECT id AS matched_ingredient
                     FROM ingredients
-                    WHERE id IN (" . implode(',', $ingredientIds) . ")
+                    WHERE id IN (" . $placeholders . ")
                     UNION
                     SELECT ci.main_ingredient_id AS matched_ingredient
                     FROM complex_ingredients ci
@@ -40,7 +41,7 @@ readonly class CocktailRepository
                 SELECT DISTINCT matched_ingredient
                 FROM IngredientChain;";
 
-            $additionalIngredients = collect(DB::select($rawQuery))->pluck('matched_ingredient');
+            $additionalIngredients = collect(DB::select($rawQuery, $ingredientIds))->pluck('matched_ingredient');
             $ingredientIds = array_merge($ingredientIds, $additionalIngredients->toArray());
             $ingredientIds = array_unique($ingredientIds);
         }
