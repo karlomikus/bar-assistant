@@ -26,6 +26,9 @@ class FromDataPack
 {
     private Filesystem $uploadsDisk;
 
+    /** @var array<string> */
+    private array $barShelf = [];
+
     public function __construct()
     {
         $this->uploadsDisk = Storage::disk('uploads');
@@ -54,6 +57,8 @@ class FromDataPack
                 $this->importBaseData($table, $dataDisk->path($file), $bar->id);
             }
         }
+
+        $this->loadBarShelfFromImportData($dataDisk->path('bar_shelf.json'), $bar->id);
 
         if (in_array(BarOptionsEnum::Ingredients, $flags)) {
             $this->importIngredients($dataDisk, $bar, $user);
@@ -184,6 +189,10 @@ class FromDataPack
                 if (isset($parentIngredientId->id)) {
                     DB::table('ingredients')->where('slug', $ingredient->slug)->where('bar_id', $bar->id)->update(['parent_ingredient_id' => $parentIngredientId->id]);
                 }
+            }
+
+            if (in_array($ingredient->slug, $this->barShelf)) {
+                DB::table('bar_ingredients')->insert(['ingredient_id' => $ingredient->id, 'bar_id' => $bar->id]);
             }
         }
 
@@ -348,6 +357,15 @@ class FromDataPack
                     $diskDirPath,
                 ];
             }
+        }
+    }
+
+    private function loadBarShelfFromImportData(string $filename, int $barId): void
+    {
+        if ($data = file_get_contents($filename)) {
+            $ingredients = json_decode($data, true);
+
+            $this->barShelf = array_map(fn (string $slug) => $slug . '-' . $barId, $ingredients);
         }
     }
 }

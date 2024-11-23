@@ -10,6 +10,7 @@
 - Added `/bars/{id}/ingredients/recommend` endpoint, showing next recommended ingredients for bar
 - `BasicCocktail` schema now includes `short_ingredients` property
 - Bar shelf is included in datapack export
+- Bar shelf can be imported from datapack
 
 ## Fixes
 - Fixed missing substitute ingredient unit conversion in exports
