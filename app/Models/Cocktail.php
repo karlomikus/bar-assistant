@@ -161,10 +161,7 @@ class Cocktail extends Model implements UploadableInterface
     public function getVolume(): float
     {
         $ingredients = $this->ingredients->map(function ($i) {
-            return [
-                'amount' => $i->amount,
-                'units' => $i->units,
-            ];
+            return $i->getAmount();
         })->toArray();
 
         return Utils::calculateVolume($ingredients);

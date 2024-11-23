@@ -7,6 +7,8 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use Kami\Cocktail\Utils;
 use Kami\RecipeUtils\UnitConverter\Units;
+use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
+use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
 
 class UtilsTest extends TestCase
 {
@@ -26,13 +28,13 @@ class UtilsTest extends TestCase
     public function testCalculateVolume(): void
     {
         $ingredients = [
-            ['amount' => 30.0, 'units' => 'ml'],
-            ['amount' => 1.5, 'units' => 'cl'],
-            ['amount' => 1, 'units' => 'oz'],
-            ['amount' => 4, 'units' => 'dash'],
-            ['amount' => 500, 'units' => 'topup'],
-            ['amount' => 100, 'units' => 'unknown'],
-            ['amount' => 2, 'units' => 'barspoon'],
+            new AmountValueObject(30.0, new UnitValueObject('ml')),
+            new AmountValueObject(1.5, new UnitValueObject('cl')),
+            new AmountValueObject(1, new UnitValueObject('oz')),
+            new AmountValueObject(4, new UnitValueObject('dash')),
+            new AmountValueObject(500, new UnitValueObject('topup')),
+            new AmountValueObject(100, new UnitValueObject('unknown')),
+            new AmountValueObject(2, new UnitValueObject('barspoon')),
         ];
 
         $this->assertSame(176.25, Utils::calculateVolume($ingredients));

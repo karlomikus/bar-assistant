@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Kami\Cocktail;
 
 use Kami\RecipeUtils\UnitConverter\Units;
+use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
+use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 
 final class Utils
 {
@@ -37,54 +39,27 @@ final class Utils
     /**
      * Calculate approximate cocktail volume
      *
-     * @param array<array{amount:float|int, units: string}> $ingredients
+     * @param array<AmountValueObject> $ingredients
      * @return float
      */
     public static function calculateVolume(array $ingredients, Units $inUnits = Units::Ml): float
     {
         // Convert all amounts to single unit
         $ingredients = array_map(function ($ingredient) {
-            if ($ingredient['units'] === 'ml') {
+            if ($ingredient->units->value === 'ml') {
                 return $ingredient;
             }
 
-            if ($ingredient['units'] === 'oz') {
-                $ingredient['amount'] = $ingredient['amount'] * 30;
-                $ingredient['units'] = 'ml';
-
-                return $ingredient;
+            if ($ingredient->units->value === 'cl' || $ingredient->units->value === 'oz' || $ingredient->units->isDash() || $ingredient->units->isBarspoon()) {
+                return $ingredient->convertTo(new UnitValueObject('ml'));
             }
 
-            if ($ingredient['units'] === 'cl') {
-                $ingredient['amount'] = $ingredient['amount'] * 10;
-                $ingredient['units'] = 'ml';
-
-                return $ingredient;
-            }
-
-            if (str_starts_with($ingredient['units'], 'dash') || str_starts_with($ingredient['units'], 'drop')) {
-                $ingredient['amount'] = $ingredient['amount'] * 0.3125;
-                $ingredient['units'] = 'ml';
-
-                return $ingredient;
-            }
-
-            if (str_contains($ingredient['units'], 'spoon')) {
-                $ingredient['amount'] = $ingredient['amount'] * 5;
-                $ingredient['units'] = 'ml';
-
-                return $ingredient;
-            }
-
-            if (str_starts_with($ingredient['units'], 'topup')) {
-                $ingredient['amount'] = 90;
-                $ingredient['units'] = 'ml';
-
-                return $ingredient;
+            if ($ingredient->units->isTopup()) {
+                return new AmountValueObject(90, new UnitValueObject('ml'));
             }
         }, $ingredients);
 
-        $volume = array_sum(array_column($ingredients, 'amount'));
+        $volume = array_reduce(array_filter($ingredients), fn ($carry, $item) => $carry + $item->amountMin, 0.0);
         $volume = match ($inUnits) {
             Units::Ml => $volume,
             Units::Cl => $volume / 10,

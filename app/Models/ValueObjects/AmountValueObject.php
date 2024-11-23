@@ -47,4 +47,16 @@ final readonly class AmountValueObject implements Stringable
 
         return $str;
     }
+
+    /**
+     * @return array<string, float|string|null>
+     */
+    public function toArray(): array
+    {
+        return [
+            'amount' => $this->amountMin,
+            'units' => $this->units->value,
+            'amount_max' => $this->amountMax,
+        ];
+    }
 }

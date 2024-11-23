@@ -31,9 +31,14 @@ final readonly class UnitValueObject implements Stringable, JsonSerializable
         return Units::tryFrom($this->value);
     }
 
+    public function isTopup(): bool
+    {
+        return str_contains($this->value, 'topup') || str_contains($this->value, 'to top');
+    }
+
     public function isDash(): bool
     {
-        return str_contains($this->value, 'dash');
+        return str_contains($this->value, 'dash') || str_starts_with($this->value, 'drop');
     }
 
     public function isBarspoon(): bool
