@@ -47,7 +47,7 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
             ]),
             new AmountValueObject(
                 $sourceArray['amount'] ?? 0.0,
-                $sourceArray['units'] ?? '',
+                new UnitValueObject($sourceArray['units'] ?? ''),
                 $sourceArray['amount_max'] ?? null,
             ),
         );
@@ -72,7 +72,7 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
             ]),
             new AmountValueObject(
                 $sourceArray['amount'] ?? 0.0,
-                $sourceArray['units'] ?? '',
+                new UnitValueObject($sourceArray['units'] ?? ''),
                 $sourceArray['amount_max'] ?? null,
             ),
         );
