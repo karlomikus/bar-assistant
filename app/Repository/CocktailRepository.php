@@ -24,6 +24,10 @@ readonly class CocktailRepository
      */
     public function getCocktailsByIngredients(array $ingredientIds, ?int $limit = null, bool $useParentIngredientAsSubstitute = false, bool $matchComplexIngredients = true): Collection
     {
+        if (count($ingredientIds) === 0) {
+            return collect();
+        }
+
         // Resolve complex ingredients
         // Basically, goes through all ingredients to match ($ingredientIds) and check if they can create complex ingredients
         // If they can, that ingredient is added to the list of ingredients to match
