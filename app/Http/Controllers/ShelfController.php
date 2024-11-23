@@ -225,12 +225,12 @@ class ShelfController extends Controller
             abort(404);
         }
 
-        $possibleIngredients = $ingredientRepo->getIngredientsForPossibleCocktails(bar()->id, $barMembership->id);
+        $possibleIngredients = $ingredientRepo->getIngredientsForPossibleCocktails(bar()->id, $barMembership->userIngredients->pluck('ingredient_id')->toArray());
 
         return response()->json(['data' => $possibleIngredients]);
     }
 
-    #[OAT\Get(path: '/bars/{id}/ingredients', tags: ['Bar Shelf'], operationId: 'listBarShelfIngredients', summary: 'Show a list of bar shelf ingredients', description: 'Ingredients that bar has in it\'s shelf', parameters: [
+    #[OAT\Get(path: '/bars/{id}/ingredients', tags: ['Bars: Shelf'], operationId: 'listBarShelfIngredients', summary: 'Show a list of bar shelf ingredients', description: 'Ingredients that bar has in it\'s shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
@@ -253,7 +253,7 @@ class ShelfController extends Controller
         return IngredientBasicResource::collection($ingredients->withQueryString());
     }
 
-    #[OAT\Post(path: '/bars/{id}/ingredients/batch-store', tags: ['Bar Shelf'], operationId: 'batchStoreBarShelfIngredients', summary: 'Batch store bar ingredients to bar shelf', parameters: [
+    #[OAT\Post(path: '/bars/{id}/ingredients/batch-store', tags: ['Bars: Shelf'], operationId: 'batchStoreBarShelfIngredients', summary: 'Batch store bar ingredients to bar shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -291,7 +291,7 @@ class ShelfController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Post(path: '/bars/{id}/ingredients/batch-delete', tags: ['Bar Shelf'], operationId: 'batchDeleteBarShelfIngredients', summary: 'Delete multiple ingredients from bar shelf', parameters: [
+    #[OAT\Post(path: '/bars/{id}/ingredients/batch-delete', tags: ['Bars: Shelf'], operationId: 'batchDeleteBarShelfIngredients', summary: 'Delete multiple ingredients from bar shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -326,7 +326,7 @@ class ShelfController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/bars/{id}/cocktails', tags: ['Bar Shelf'], operationId: 'listBarShelfCocktails', summary: 'Show a list bar shelf cocktails', description: 'Cocktails that the bar can make with ingredients on their shelf', parameters: [
+    #[OAT\Get(path: '/bars/{id}/cocktails', tags: ['Bars: Shelf'], operationId: 'listBarShelfCocktails', summary: 'Show a list bar shelf cocktails', description: 'Cocktails that the bar can make with ingredients on their shelf', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
@@ -349,5 +349,25 @@ class ShelfController extends Controller
         $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->get('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails->withQueryString());
+    }
+
+    #[OAT\Get(path: '/bars/{id}/ingredients/recommend', tags: ['Bars: Shelf'], operationId: 'recommendBarIngredients', summary: 'Recommend next ingredients for bar', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 200, description: 'Successful response', content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\IngredientRecommend::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function recommendBarIngredients(Request $request, IngredientRepository $ingredientRepo, int $id): \Illuminate\Http\JsonResponse
+    {
+        $bar = Bar::findOrFail($id);
+        if ($request->user()->cannot('show', $bar)) {
+            abort(403);
+        }
+
+        $possibleIngredients = $ingredientRepo->getIngredientsForPossibleCocktails($bar->id, $bar->shelfIngredients->pluck('ingredient_id')->toArray());
+
+        return response()->json(['data' => $possibleIngredients]);
     }
 }

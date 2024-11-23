@@ -7,8 +7,9 @@
 - Added `/menu/export` endpoint
     - Exports menu as CSV
 - Added `/bars/{id}/cocktails` endpoint, showing bar shelf cocktails
+- Added `/bars/{id}/ingredients/recommend` endpoint, showing next recommended ingredients for bar
 - `BasicCocktail` schema now includes `short_ingredients` property
-- TODO: Add shelf, prices export
+- Bar shelf is included in datapack export
 
 ## Fixes
 - Fixed missing substitute ingredient unit conversion in exports

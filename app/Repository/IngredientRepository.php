@@ -30,10 +30,13 @@ readonly class IngredientRepository
     }
 
     /**
+     * @param array<int> $ingredientIds
      * @return array<int, object>
      */
-    public function getIngredientsForPossibleCocktails(int $barId, int $barMembershipId): array
+    public function getIngredientsForPossibleCocktails(int $barId, array $ingredientIds): array
     {
+        $placeholders = implode(',', array_map(fn ($id) => (int) $id, $ingredientIds));
+
         $rawQuery = "SELECT
             pi.ingredient_id as id,
             pi.ingredient_slug as slug,
@@ -56,14 +59,7 @@ readonly class IngredientRepository
                         FROM
                             ingredients i
                         WHERE
-                            i.id NOT IN (
-                                SELECT DISTINCT
-                                    ui.ingredient_id
-                                FROM
-                                    user_ingredients ui
-                                WHERE
-                                    ui.bar_membership_id = :barMembershipId
-                            )
+                            i.id NOT IN (" . $placeholders . ")
                             and bar_id = :barId
 
                         EXCEPT
@@ -77,22 +73,8 @@ readonly class IngredientRepository
                             complex_ingredients ci
                             JOIN ingredients i ON ci.main_ingredient_id = i.id
                         WHERE
-                            ci.main_ingredient_id NOT IN (
-                                SELECT DISTINCT
-                                    ui.ingredient_id
-                                FROM
-                                    user_ingredients ui
-                                WHERE
-                                    ui.bar_membership_id = :barMembershipId
-                            )
-                            AND ci.ingredient_id IN (
-                                SELECT DISTINCT
-                                    ui.ingredient_id
-                                FROM
-                                    user_ingredients ui
-                                WHERE
-                                    ui.bar_membership_id = :barMembershipId
-                            )
+                            ci.main_ingredient_id NOT IN (" . $placeholders . ")
+                            AND ci.ingredient_id IN (" . $placeholders . ")
                             AND i.bar_id = :barId
                     ) mi
                     JOIN cocktail_ingredients ci ON mi.ingredient_id = ci.ingredient_id
@@ -106,6 +88,6 @@ readonly class IngredientRepository
             pi.potential_cocktails DESC
         LIMIT 10";
 
-        return DB::select($rawQuery, ['barMembershipId' => $barMembershipId, 'barId' => $barId]);
+        return DB::select($rawQuery, ['barId' => $barId]);
     }
 }

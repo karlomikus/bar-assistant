@@ -4129,7 +4129,7 @@ paths:
   '/bars/{id}/ingredients':
     get:
       tags:
-        - 'Bar Shelf'
+        - 'Bars: Shelf'
       summary: 'Show a list of bar shelf ingredients'
       description: "Ingredients that bar has in it's shelf"
       operationId: listBarShelfIngredients
@@ -4167,7 +4167,7 @@ paths:
   '/bars/{id}/ingredients/batch-store':
     post:
       tags:
-        - 'Bar Shelf'
+        - 'Bars: Shelf'
       summary: 'Batch store bar ingredients to bar shelf'
       operationId: batchStoreBarShelfIngredients
       parameters:
@@ -4210,7 +4210,7 @@ paths:
   '/bars/{id}/ingredients/batch-delete':
     post:
       tags:
-        - 'Bar Shelf'
+        - 'Bars: Shelf'
       summary: 'Delete multiple ingredients from bar shelf'
       operationId: batchDeleteBarShelfIngredients
       parameters:
@@ -4253,7 +4253,7 @@ paths:
   '/bars/{id}/cocktails':
     get:
       tags:
-        - 'Bar Shelf'
+        - 'Bars: Shelf'
       summary: 'Show a list bar shelf cocktails'
       description: 'Cocktails that the bar can make with ingredients on their shelf'
       operationId: listBarShelfCocktails
@@ -4287,6 +4287,47 @@ paths:
                   data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
                   links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
                   meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                type: object
+  '/bars/{id}/ingredients/recommend':
+    get:
+      tags:
+        - 'Bars: Shelf'
+      summary: 'Recommend next ingredients for bar'
+      operationId: recommendBarIngredients
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/IngredientRecommend' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
                 type: object
   '/users/{id}/shopping-list':
     get:
@@ -7451,8 +7492,8 @@ tags:
     name: 'Users: Shelf'
     description: 'Users: Shelf'
   -
-    name: 'Bar Shelf'
-    description: 'Bar Shelf'
+    name: 'Bars: Shelf'
+    description: 'Bars: Shelf'
   -
     name: 'Users: Shopping list'
     description: 'Users: Shopping list'
