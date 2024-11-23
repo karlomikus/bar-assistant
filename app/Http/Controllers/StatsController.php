@@ -12,6 +12,7 @@ use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Repository\CocktailRepository;
@@ -88,6 +89,7 @@ class StatsController extends Controller
             $bar->shelfIngredients->pluck('ingredient_id')->toArray(),
         )->count();
         $stats['total_shelf_ingredients'] = UserIngredient::where('bar_membership_id', $barMembership->id)->count();
+        $stats['total_bar_shelf_ingredients'] = BarIngredient::where('bar_id', $bar->id)->count();
         $stats['most_popular_ingredients'] = $popularIngredients;
         $stats['top_rated_cocktails'] = $topRatedCocktails;
         $stats['total_collections'] = CocktailCollection::where('bar_membership_id', $barMembership->id)->count();
