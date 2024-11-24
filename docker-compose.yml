@@ -24,6 +24,7 @@ services:
     restart: unless-stopped
     environment:
       PHP_FPM_POOL_NAME: "bass-horizon"
+      APP_ROLE: "worker"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     command: ["php", "/var/www/cocktails/artisan", "horizon"]

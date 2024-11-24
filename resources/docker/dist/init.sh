@@ -4,7 +4,7 @@ set -e
 
 type=${APP_ROLE:-api}
 
-if [ "$type" == "worker" ]; then
+if [ "$type" = "worker" ]; then
     echo "[BAR-ASSISTANT] Running Bar Assistant Worker..."
 
     return 2> /dev/null; exit
