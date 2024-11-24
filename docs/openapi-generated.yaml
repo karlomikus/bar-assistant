@@ -5514,6 +5514,8 @@ components:
         - total_ingredients
         - total_favorited_cocktails
         - total_shelf_cocktails
+        - total_bar_shelf_ingredients
+        - total_bar_shelf_cocktails
         - total_shelf_ingredients
         - total_bar_members
         - total_collections
@@ -5535,6 +5537,9 @@ components:
           type: integer
           example: 1
         total_shelf_ingredients:
+          type: integer
+          example: 1
+        total_bar_shelf_ingredients:
           type: integer
           example: 1
         total_bar_shelf_cocktails:

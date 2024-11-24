@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema(required: ['total_cocktails', 'total_ingredients', 'total_favorited_cocktails', 'total_shelf_cocktails', 'total_bar_shelf_ingredients', 'total_shelf_ingredients', 'total_bar_members', 'total_collections', 'favorite_tags', 'your_top_ingredients', 'most_popular_ingredients', 'top_rated_cocktails'])]
+#[OAT\Schema(required: ['total_cocktails', 'total_ingredients', 'total_favorited_cocktails', 'total_shelf_cocktails', 'total_bar_shelf_ingredients', 'total_bar_shelf_cocktails', 'total_shelf_ingredients', 'total_bar_members', 'total_collections', 'favorite_tags', 'your_top_ingredients', 'most_popular_ingredients', 'top_rated_cocktails'])]
 class BarStats
 {
     #[OAT\Property(example: 1)]
