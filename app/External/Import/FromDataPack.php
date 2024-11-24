@@ -58,7 +58,9 @@ class FromDataPack
             }
         }
 
-        $this->loadBarShelfFromImportData($dataDisk->path('bar_shelf.json'), $bar->id);
+        if ($dataDisk->exists('bar_shelf.json')) {
+            $this->loadBarShelfFromImportData($dataDisk->path('bar_shelf.json'), $bar->id);
+        }
 
         if (in_array(BarOptionsEnum::Ingredients, $flags)) {
             $this->importIngredients($dataDisk, $bar, $user);
