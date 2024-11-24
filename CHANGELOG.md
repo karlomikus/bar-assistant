@@ -12,6 +12,7 @@
 - Bar shelf is included in datapack export
 - Bar shelf can be imported from datapack
 - Added `total_shelf_ingredients` to stats endpoint
+- You can run the app as a worker if you set `APP_ROLE=worker` env variable
 
 ## Fixes
 - Fixed missing substitute ingredient unit conversion in exports
