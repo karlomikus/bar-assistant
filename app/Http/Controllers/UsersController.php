@@ -20,7 +20,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UsersController extends Controller
 {
-    #[OAT\Get(path: '/users', tags: ['Users'], operationId: 'listUsers', summary: 'Show a list of users of a bar', parameters: [
+    #[OAT\Get(path: '/users', tags: ['Users'], operationId: 'listUsers', description: 'Show a list of all users in a bar', summary: 'List users', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
@@ -43,7 +43,7 @@ class UsersController extends Controller
         return UserResource::collection($users);
     }
 
-    #[OAT\Get(path: '/users/{id}', tags: ['Users'], operationId: 'showUser', summary: 'Show a user', parameters: [
+    #[OAT\Get(path: '/users/{id}', tags: ['Users'], operationId: 'showUser', description: 'Show a single user', summary: 'Show user', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
@@ -68,7 +68,7 @@ class UsersController extends Controller
         return new UserResource($user);
     }
 
-    #[OAT\Post(path: '/users', tags: ['Users'], operationId: 'saveUser', summary: 'Create a new user', parameters: [
+    #[OAT\Post(path: '/users', tags: ['Users'], operationId: 'saveUser', description: 'Create a new user', summary: 'Create user', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -117,7 +117,7 @@ class UsersController extends Controller
             ->header('Location', route('users.show', $user->id));
     }
 
-    #[OAT\Put(path: '/users/{id}', tags: ['Users'], operationId: 'updateUser', summary: 'Update a user', parameters: [
+    #[OAT\Put(path: '/users/{id}', tags: ['Users'], operationId: 'updateUser', description: 'Update a single user', summary: 'Update user', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
@@ -153,7 +153,7 @@ class UsersController extends Controller
         return new UserResource($user);
     }
 
-    #[OAT\Delete(path: '/users/{id}', tags: ['Users'], operationId: 'deleteUser', summary: 'Delete a user', parameters: [
+    #[OAT\Delete(path: '/users/{id}', tags: ['Users'], operationId: 'deleteUser', description: 'Delete a single user', summary: 'Delete user', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

@@ -16,7 +16,7 @@ use Kami\Cocktail\Http\Resources\PriceCategoryResource;
 
 class PriceCategoryController extends Controller
 {
-    #[OAT\Get(path: '/price-categories', tags: ['Price category'], operationId: 'listPriceCategories', summary: 'Show a list of price categories', parameters: [
+    #[OAT\Get(path: '/price-categories', tags: ['Price category'], operationId: 'listPriceCategories', description: 'List all price categories in a bar', summary: 'List price categories', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
@@ -30,7 +30,7 @@ class PriceCategoryController extends Controller
         return PriceCategoryResource::collection($priceCategories);
     }
 
-    #[OAT\Get(path: '/price-categories/{id}', tags: ['Price category'], summary: 'Show a price category', parameters: [
+    #[OAT\Get(path: '/price-categories/{id}', tags: ['Price category'], description: 'Show a single price category', summary: 'Show price category', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -49,7 +49,7 @@ class PriceCategoryController extends Controller
         return new PriceCategoryResource($priceCategory);
     }
 
-    #[OAT\Post(path: '/price-categories', tags: ['Price category'], operationId: 'savePriceCategory', summary: 'Create a new price category', parameters: [
+    #[OAT\Post(path: '/price-categories', tags: ['Price category'], operationId: 'savePriceCategory', description: 'Create a new price category', summary: 'Create price category', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -83,7 +83,7 @@ class PriceCategoryController extends Controller
             ->header('Location', route('price-categories.show', $priceCategory->id));
     }
 
-    #[OAT\Put(path: '/price-categories/{id}', tags: ['Price category'], operationId: 'updatePriceCategory', summary: 'Update price category', parameters: [
+    #[OAT\Put(path: '/price-categories/{id}', tags: ['Price category'], operationId: 'updatePriceCategory', description: 'Update a single price category', summary: 'Update price category', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -112,7 +112,7 @@ class PriceCategoryController extends Controller
         return new PriceCategoryResource($priceCategory);
     }
 
-    #[OAT\Delete(path: '/price-categories/{id}', tags: ['Price category'], operationId: 'deletePriceCategory', summary: 'Delete price category', parameters: [
+    #[OAT\Delete(path: '/price-categories/{id}', tags: ['Price category'], operationId: 'deletePriceCategory', description: 'Delete a single price category', summary: 'Delete price category', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

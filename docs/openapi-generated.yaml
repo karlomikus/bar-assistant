@@ -22,7 +22,8 @@ paths:
     post:
       tags:
         - Authentication
-      summary: 'Authenticate user and get a token'
+      summary: 'Authenticate user'
+      description: 'Authenticate user and get auth token'
       operationId: authenticate
       requestBody:
         required: true
@@ -48,7 +49,8 @@ paths:
     post:
       tags:
         - Authentication
-      summary: 'Logout currently authenticated user'
+      summary: Logout
+      description: 'Logout currently authenticated user'
       operationId: logout
       responses:
         '204':
@@ -57,7 +59,8 @@ paths:
     post:
       tags:
         - Authentication
-      summary: 'Register a new user'
+      summary: Register
+      description: 'Register a new user'
       operationId: register
       requestBody:
         required: true
@@ -89,7 +92,8 @@ paths:
     post:
       tags:
         - Authentication
-      summary: 'Request a new user password'
+      summary: 'Request password reset'
+      description: 'Request a new password reset link'
       operationId: passwordForgot
       requestBody:
         required: true
@@ -111,7 +115,8 @@ paths:
     post:
       tags:
         - Authentication
-      summary: 'Reset user password'
+      summary: 'Reset password'
+      description: 'Reset user password'
       operationId: passwordReset
       requestBody:
         required: true
@@ -144,7 +149,8 @@ paths:
     get:
       tags:
         - Authentication
-      summary: 'Confirm user account'
+      summary: 'Confirm account'
+      description: 'Confirm user account, if applicable'
       operationId: confirmAccount
       parameters:
         -
@@ -185,7 +191,7 @@ paths:
     get:
       tags:
         - Bars
-      summary: 'Show a list of bars'
+      summary: 'List bars'
       description: 'Show a list of bars user has access to. Includes bars that user has made and bars he is a member of.'
       operationId: listBars
       responses:
@@ -202,7 +208,8 @@ paths:
     post:
       tags:
         - Bars
-      summary: 'Create a new bar'
+      summary: 'Create bar'
+      description: 'Create a new bar'
       operationId: saveBar
       requestBody:
         required: true
@@ -244,7 +251,8 @@ paths:
     get:
       tags:
         - Bars
-      summary: 'Show a specific bar'
+      summary: 'Show bar'
+      description: 'Show information about a specific bar'
       operationId: showBar
       parameters:
         -
@@ -284,7 +292,8 @@ paths:
     put:
       tags:
         - Bars
-      summary: 'Update a bar'
+      summary: 'Update bar'
+      description: 'Update a specific bar'
       operationId: updateBar
       parameters:
         -
@@ -336,7 +345,8 @@ paths:
     delete:
       tags:
         - Bars
-      summary: 'Delete a bar'
+      summary: 'Delete bar'
+      description: 'Delete a specific bar'
       operationId: deleteBar
       parameters:
         -
@@ -369,7 +379,8 @@ paths:
     post:
       tags:
         - Bars
-      summary: 'Join a bar via invite code'
+      summary: 'Join a bar'
+      description: 'Join a bar via invite code'
       operationId: joinBar
       requestBody:
         required: true
@@ -412,7 +423,8 @@ paths:
     get:
       tags:
         - Bars
-      summary: 'List all members of a bar'
+      summary: 'List members'
+      description: 'List all bar members'
       operationId: listBarMembership
       parameters:
         -
@@ -452,7 +464,8 @@ paths:
     delete:
       tags:
         - Bars
-      summary: 'Leave a bar you are a member of'
+      summary: 'Leave a bar'
+      description: "Deletes a user's membership to a bar"
       operationId: leaveBar
       parameters:
         -
@@ -477,7 +490,8 @@ paths:
     delete:
       tags:
         - Bars
-      summary: 'Remove a member from a bar'
+      summary: 'Remove member'
+      description: "Removes a specific user's membership from a bar"
       operationId: removeBarMembership
       parameters:
         -
@@ -517,7 +531,8 @@ paths:
     post:
       tags:
         - Bars
-      summary: 'Transfer bar ownership'
+      summary: 'Transfer ownership'
+      description: 'Transfer a bar to another user.'
       operationId: transferBarOwnership
       parameters:
         -
@@ -561,7 +576,8 @@ paths:
     post:
       tags:
         - Bars
-      summary: 'Update bar status'
+      summary: 'Update status'
+      description: 'Update current status of a bar'
       operationId: toggleBarStatus
       parameters:
         -
@@ -603,7 +619,8 @@ paths:
     get:
       tags:
         - Cocktails
-      summary: 'Show a list of cocktails'
+      summary: 'List cocktails'
+      description: 'Show a list of all cocktails in a bar'
       operationId: listCocktails
       parameters:
         -
@@ -725,7 +742,8 @@ paths:
     post:
       tags:
         - Cocktails
-      summary: 'Create a new cocktail'
+      summary: 'Create cocktail'
+      description: 'Create a new cocktail'
       operationId: saveCocktail
       parameters:
         -
@@ -782,7 +800,8 @@ paths:
     get:
       tags:
         - Cocktails
-      summary: 'Show a specific cocktail'
+      summary: 'Show cocktail'
+      description: 'Show details of a specific cocktail'
       operationId: showCocktail
       parameters:
         -
@@ -822,7 +841,8 @@ paths:
     put:
       tags:
         - Cocktails
-      summary: 'Update a specific cocktail'
+      summary: 'Update cocktail'
+      description: 'Update a specific cocktail'
       operationId: updateCocktail
       parameters:
         -
@@ -874,7 +894,8 @@ paths:
     delete:
       tags:
         - Cocktails
-      summary: 'Delete a specific cocktail'
+      summary: 'Delete cocktail'
+      description: 'Delete a specific cocktail'
       operationId: deleteCocktail
       parameters:
         -
@@ -907,7 +928,8 @@ paths:
     post:
       tags:
         - Cocktails
-      summary: 'Toggle cocktail as favorite'
+      summary: 'Toggle favorite'
+      description: 'Marks cocktail as users favorite. Can be called again to remove the favorite.'
       operationId: toggleCocktailFavorite
       parameters:
         -
@@ -946,7 +968,8 @@ paths:
     post:
       tags:
         - Cocktails
-      summary: 'Create a public ID for cocktail'
+      summary: 'Create a public ID'
+      description: 'Create a public link that can be shared'
       operationId: createCocktailPublicLink
       parameters:
         -
@@ -986,7 +1009,8 @@ paths:
     delete:
       tags:
         - Cocktails
-      summary: 'Delete cocktail public link'
+      summary: 'Delete public link'
+      description: 'Delete a cocktail public link'
       operationId: deleteCocktailPublicLink
       parameters:
         -
@@ -1019,7 +1043,8 @@ paths:
     get:
       tags:
         - Cocktails
-      summary: 'Share a cocktail'
+      summary: 'Share cocktail'
+      description: 'Get cocktail details in a specific shareable format'
       operationId: shareCocktail
       parameters:
         -
@@ -1082,6 +1107,7 @@ paths:
       tags:
         - Cocktails
       summary: 'Show similar cocktails'
+      description: 'Shows similar cocktails to the given cocktail. Prefers cocktails with same base ingredient.'
       operationId: showSimilarCocktails
       parameters:
         -
@@ -1123,6 +1149,7 @@ paths:
       tags:
         - Cocktails
       summary: 'Copy cocktail'
+      description: 'Create a copy of a cocktail'
       operationId: copyCocktail
       parameters:
         -
@@ -1202,7 +1229,8 @@ paths:
     get:
       tags:
         - 'Cocktail method'
-      summary: 'Show a list of all methods'
+      summary: 'List methods'
+      description: 'Show a list of all cocktail methods in a bar'
       operationId: listCocktailMethods
       parameters:
         -
@@ -1233,7 +1261,8 @@ paths:
     post:
       tags:
         - 'Cocktail method'
-      summary: 'Create a new method'
+      summary: 'Create method'
+      description: 'Create a new cocktail method'
       operationId: saveCocktailMethod
       parameters:
         -
@@ -1284,7 +1313,8 @@ paths:
     get:
       tags:
         - 'Cocktail method'
-      summary: 'Show a single method'
+      summary: 'Show method'
+      description: 'Show a specific cocktail method'
       operationId: showCocktailMethod
       parameters:
         -
@@ -1324,7 +1354,8 @@ paths:
     put:
       tags:
         - 'Cocktail method'
-      summary: 'Update a specific method'
+      summary: 'Update method'
+      description: 'Update a specific cocktail method'
       operationId: updateCocktailMethod
       parameters:
         -
@@ -1370,7 +1401,8 @@ paths:
     delete:
       tags:
         - 'Cocktail method'
-      summary: 'Delete specific method'
+      summary: 'Delete method'
+      description: 'Delete a specific cocktail method'
       operationId: deleteCocktailMethod
       parameters:
         -
@@ -1403,7 +1435,8 @@ paths:
     get:
       tags:
         - Collections
-      summary: 'Show a list of collections'
+      summary: 'List collections'
+      description: 'Show a list of all user collections in a specific bar'
       operationId: listCollections
       parameters:
         -
@@ -1461,7 +1494,8 @@ paths:
     post:
       tags:
         - Collections
-      summary: 'Create a new collection'
+      summary: 'Create collection'
+      description: 'Create a new collection'
       operationId: saveCollection
       parameters:
         -
@@ -1512,7 +1546,8 @@ paths:
     get:
       tags:
         - Collections
-      summary: 'List bar shared collections'
+      summary: 'List shared collections'
+      description: 'Show a list of all collections that users shared with the bar'
       operationId: listSharedCollections
       parameters:
         -
@@ -1553,7 +1588,8 @@ paths:
     get:
       tags:
         - Collections
-      summary: 'Show a specific collection'
+      summary: 'Show collection'
+      description: 'Show a specific collection'
       operationId: showCollection
       parameters:
         -
@@ -1593,7 +1629,8 @@ paths:
     put:
       tags:
         - Collections
-      summary: 'Update a specific collection'
+      summary: 'Update collection'
+      description: 'Update a specific collection'
       operationId: updateCollection
       parameters:
         -
@@ -1639,7 +1676,8 @@ paths:
     delete:
       tags:
         - Collections
-      summary: 'Delete a specific collection'
+      summary: 'Delete collection'
+      description: 'Delete a specific collection'
       operationId: deleteCollection
       parameters:
         -
@@ -1716,7 +1754,8 @@ paths:
     get:
       tags:
         - Explore
-      summary: 'Show a public cocktail'
+      summary: 'Show cocktail'
+      description: 'Show details from a cocktail using a public id'
       operationId: showPublicCocktail
       parameters:
         -
@@ -1751,7 +1790,8 @@ paths:
     get:
       tags:
         - Exports
-      summary: 'Show a list of exports'
+      summary: 'List exports'
+      description: 'Show a list of all generated exports in a bar'
       operationId: listExports
       responses:
         '200':
@@ -1767,7 +1807,8 @@ paths:
     post:
       tags:
         - Exports
-      summary: 'Create a new export'
+      summary: 'Create export'
+      description: 'Start a new export process'
       operationId: saveExport
       requestBody:
         required: true
@@ -1799,6 +1840,7 @@ paths:
       tags:
         - Exports
       summary: 'Delete export'
+      description: 'Delete a specific export'
       operationId: deleteExport
       parameters:
         -
@@ -1832,6 +1874,7 @@ paths:
       tags:
         - Exports
       summary: 'Download export'
+      description: 'Download a specific export'
       operationId: downloadExport
       parameters:
         -
@@ -1873,7 +1916,7 @@ paths:
     post:
       tags:
         - Exports
-      summary: 'Generate download link'
+      summary: 'Generate link'
       description: 'Generates a publicly accessible download link for the export. The link will be valid for 1 minute by default.'
       operationId: generateExportDownloadLink
       parameters:
@@ -1915,7 +1958,8 @@ paths:
     get:
       tags:
         - Glasses
-      summary: 'Show a list of glass types'
+      summary: 'List glassware'
+      description: 'Show a list of all glassware in the bar'
       operationId: listGlassware
       parameters:
         -
@@ -1963,7 +2007,8 @@ paths:
     post:
       tags:
         - Glasses
-      summary: 'Create a new glass'
+      summary: 'Create glassware'
+      description: 'Create a new glassware'
       operationId: saveGlassware
       parameters:
         -
@@ -2014,7 +2059,8 @@ paths:
     get:
       tags:
         - Glasses
-      summary: 'Show glass'
+      summary: 'Show glassware'
+      description: 'Show a specific glassware'
       operationId: showGlassware
       parameters:
         -
@@ -2054,7 +2100,8 @@ paths:
     put:
       tags:
         - Glasses
-      summary: 'Update glass'
+      summary: 'Update glassware'
+      description: 'Update a specific glassware'
       operationId: updateGlassware
       parameters:
         -
@@ -2100,7 +2147,8 @@ paths:
     delete:
       tags:
         - Glasses
-      summary: 'Delete glass'
+      summary: 'Delete glassware'
+      description: 'Delete a specific glassware'
       operationId: deleteGlassware
       parameters:
         -
@@ -2133,7 +2181,7 @@ paths:
     get:
       tags:
         - Images
-      summary: 'List uploaded images'
+      summary: 'List images'
       description: 'List all images uploaded by the authenticated user'
       operationId: listImages
       parameters:
@@ -2179,7 +2227,7 @@ paths:
     post:
       tags:
         - Images
-      summary: 'Upload an image'
+      summary: 'Upload image'
       description: 'Used to upload multiple images at once. Uploaded images via this endpoint will not be attached to any resource. Images are converted to WebP format with 85% quality of the original image.'
       operationId: uploadImage
       requestBody:
@@ -2209,7 +2257,8 @@ paths:
     get:
       tags:
         - Images
-      summary: 'Show an image'
+      summary: 'Show image'
+      description: 'Show a single image'
       operationId: showImage
       parameters:
         -
@@ -2250,6 +2299,7 @@ paths:
       tags:
         - Images
       summary: 'Update image'
+      description: 'Update a specific image'
       operationId: updateImage
       parameters:
         -
@@ -2288,6 +2338,7 @@ paths:
       tags:
         - Images
       summary: 'Delete image'
+      description: 'Delete a specific image'
       operationId: deleteImage
       parameters:
         -
@@ -2320,7 +2371,8 @@ paths:
     get:
       tags:
         - Images
-      summary: 'Get a thumbnail of an image'
+      summary: 'Get thumbnail'
+      description: 'Generate a thumbnail of a specific image'
       operationId: getImageThumbnail
       parameters:
         -
@@ -2405,7 +2457,7 @@ paths:
     post:
       tags:
         - Import
-      summary: 'Scrape a recipe'
+      summary: 'Scrape recipe'
       description: 'Try to scrape a recipe from a website. Most of the well known recipe websites should work. Data returned is a valid JSON schema that you can import using import cocktail endpoint.'
       operationId: scrapeRecipe
       parameters:
@@ -2456,7 +2508,8 @@ paths:
     get:
       tags:
         - 'Ingredient category'
-      summary: 'Show a list of ingredient categories'
+      summary: 'List ingredient categories'
+      description: 'List all ingredient categories in a bar'
       operationId: listIngredientCategories
       parameters:
         -
@@ -2487,7 +2540,8 @@ paths:
     post:
       tags:
         - 'Ingredient category'
-      summary: 'Create a new ingredient category'
+      summary: 'Create ingredient category'
+      description: 'Create a specific ingredient category'
       operationId: saveIngredientCategory
       parameters:
         -
@@ -2539,6 +2593,7 @@ paths:
       tags:
         - 'Ingredient category'
       summary: 'Show ingredient category'
+      description: 'Show a specific ingredient category'
       operationId: showIngredientCategory
       parameters:
         -
@@ -2579,6 +2634,7 @@ paths:
       tags:
         - 'Ingredient category'
       summary: 'Update ingredient category'
+      description: 'Update a specific ingredient category'
       operationId: updateIngredientCategory
       parameters:
         -
@@ -2625,6 +2681,7 @@ paths:
       tags:
         - 'Ingredient category'
       summary: 'Delete ingredient category'
+      description: 'Delete a specific ingredient category'
       operationId: deleteIngredientCategory
       parameters:
         -
@@ -2657,7 +2714,8 @@ paths:
     get:
       tags:
         - Ingredients
-      summary: 'Show a list of ingredients'
+      summary: 'List ingredients'
+      description: 'Show a list of all ingredients in a bar'
       operationId: listIngredients
       parameters:
         -
@@ -2757,7 +2815,8 @@ paths:
     post:
       tags:
         - Ingredients
-      summary: 'Create an ingredient'
+      summary: 'Create ingredient'
+      description: 'Create a new ingredient'
       operationId: saveIngredient
       parameters:
         -
@@ -2808,7 +2867,8 @@ paths:
     get:
       tags:
         - Ingredients
-      summary: 'Show an ingredient'
+      summary: 'Show ingredient'
+      description: 'Show a specific ingredient'
       operationId: showIngredient
       parameters:
         -
@@ -2848,7 +2908,8 @@ paths:
     put:
       tags:
         - Ingredients
-      summary: 'Update an ingredient'
+      summary: 'Update ingredient'
+      description: 'Update a specific ingredient'
       operationId: updateIngredient
       parameters:
         -
@@ -2894,7 +2955,8 @@ paths:
     delete:
       tags:
         - Ingredients
-      summary: 'Delete an ingredient'
+      summary: 'Delete ingredient'
+      description: 'Delete a specific ingredient'
       operationId: deleteIngredient
       parameters:
         -
@@ -2927,7 +2989,8 @@ paths:
     get:
       tags:
         - Ingredients
-      summary: 'Extra cocktails you can make if you add this ingredient to your shelf'
+      summary: 'Extra cocktails'
+      description: 'Show a list of extra cocktails you can make if you add given ingredient to your shelf'
       operationId: extraIngredients
       parameters:
         -
@@ -2968,7 +3031,8 @@ paths:
     get:
       tags:
         - Ingredients
-      summary: 'List of cocktails that use this ingredient'
+      summary: 'List cocktails'
+      description: 'List all cocktails that use this ingredient'
       operationId: ingredientCocktails
       parameters:
         -
@@ -3076,6 +3140,7 @@ paths:
       tags:
         - Menu
       summary: 'Show menu'
+      description: 'Show a bar menu'
       operationId: showMenu
       parameters:
         -
@@ -3115,6 +3180,7 @@ paths:
       tags:
         - Menu
       summary: 'Update menu'
+      description: 'Update bar menu'
       operationId: updateMenu
       parameters:
         -
@@ -3160,7 +3226,8 @@ paths:
     get:
       tags:
         - Explore
-      summary: 'Show public bar menu'
+      summary: 'Show public menu'
+      description: 'Show a public bar menu details'
       operationId: publicMenu
       parameters:
         -
@@ -3231,7 +3298,8 @@ paths:
     get:
       tags:
         - Notes
-      summary: 'Show a list of all notes'
+      summary: 'List notes'
+      description: 'Show list of all user notes'
       operationId: listNotes
       parameters:
         -
@@ -3260,7 +3328,8 @@ paths:
     post:
       tags:
         - Notes
-      summary: 'Create a new note'
+      summary: 'Create note'
+      description: 'Create a new note'
       operationId: saveNote
       requestBody:
         required: true
@@ -3304,7 +3373,8 @@ paths:
     get:
       tags:
         - Notes
-      summary: 'Show a single note'
+      summary: 'Show note'
+      description: 'Show a single note'
       operationId: showNote
       parameters:
         -
@@ -3344,7 +3414,8 @@ paths:
     delete:
       tags:
         - Notes
-      summary: 'Delete a specific note'
+      summary: 'Delete note'
+      description: 'Delete a single note'
       operationId: deleteNote
       parameters:
         -
@@ -3377,7 +3448,8 @@ paths:
     get:
       tags:
         - Tokens
-      summary: 'Show a list of tokens'
+      summary: 'List tokens'
+      description: 'List all personal access tokens'
       operationId: listTokens
       responses:
         '200':
@@ -3393,7 +3465,8 @@ paths:
     post:
       tags:
         - Tokens
-      summary: 'Create new personal access token'
+      summary: 'Create token'
+      description: 'Create a new personal access token'
       operationId: saveToken
       requestBody:
         required: true
@@ -3424,7 +3497,8 @@ paths:
     delete:
       tags:
         - Tokens
-      summary: 'Revoke personal access token'
+      summary: 'Revoke token'
+      description: 'Revoke a personal access token'
       operationId: deleteToken
       parameters:
         -
@@ -3457,7 +3531,8 @@ paths:
     get:
       tags:
         - 'Price category'
-      summary: 'Show a list of price categories'
+      summary: 'List price categories'
+      description: 'List all price categories in a bar'
       operationId: listPriceCategories
       parameters:
         -
@@ -3488,7 +3563,8 @@ paths:
     post:
       tags:
         - 'Price category'
-      summary: 'Create a new price category'
+      summary: 'Create price category'
+      description: 'Create a new price category'
       operationId: savePriceCategory
       parameters:
         -
@@ -3539,7 +3615,8 @@ paths:
     get:
       tags:
         - 'Price category'
-      summary: 'Show a price category'
+      summary: 'Show price category'
+      description: 'Show a single price category'
       operationId: 10017aa4f043f641c210bafc56092997
       parameters:
         -
@@ -3580,6 +3657,7 @@ paths:
       tags:
         - 'Price category'
       summary: 'Update price category'
+      description: 'Update a single price category'
       operationId: updatePriceCategory
       parameters:
         -
@@ -3626,6 +3704,7 @@ paths:
       tags:
         - 'Price category'
       summary: 'Delete price category'
+      description: 'Delete a single price category'
       operationId: deletePriceCategory
       parameters:
         -
@@ -3659,6 +3738,7 @@ paths:
       tags:
         - Profile
       summary: 'Show profile'
+      description: 'Show current user profile information'
       operationId: showProfile
       responses:
         '200':
@@ -3683,6 +3763,7 @@ paths:
       tags:
         - Profile
       summary: 'Update profile'
+      description: 'Update user profile'
       operationId: updateProfile
       requestBody:
         required: true
@@ -3713,7 +3794,8 @@ paths:
     post:
       tags:
         - Ratings
-      summary: 'Rate a cocktail'
+      summary: 'Rate cocktail'
+      description: 'Rate a single cocktail'
       operationId: rateCocktail
       parameters:
         -
@@ -3754,7 +3836,8 @@ paths:
     delete:
       tags:
         - Ratings
-      summary: "Delete current user's cocktail rating"
+      summary: 'Delete cocktail rating'
+      description: 'Delete current user cocktail rating'
       operationId: deleteRating
       parameters:
         -
@@ -3787,7 +3870,8 @@ paths:
     get:
       tags:
         - Server
-      summary: 'Show server information'
+      summary: 'Show information'
+      description: 'Show server status and information'
       operationId: showServerVersion
       responses:
         '200':
@@ -3806,7 +3890,7 @@ paths:
     get:
       tags:
         - 'Users: Shelf'
-      summary: 'Show a list of shelf ingredients'
+      summary: 'List user ingredients'
       description: 'Ingredients that user saved to their shelf'
       operationId: listUserIngredients
       parameters:
@@ -3858,7 +3942,7 @@ paths:
     get:
       tags:
         - 'Users: Shelf'
-      summary: 'Show a list shelf cocktails'
+      summary: 'List shelf cocktails'
       description: 'Cocktails that the user can make with ingredients on their shelf'
       operationId: listUserShelfCocktails
       parameters:
@@ -3910,7 +3994,8 @@ paths:
     get:
       tags:
         - 'Users: Shelf'
-      summary: 'Show a list of cocktails user has favorited'
+      summary: 'List favorites'
+      description: 'Show a list of cocktails user has favorited'
       operationId: listUserFavoriteCocktails
       parameters:
         -
@@ -3961,7 +4046,8 @@ paths:
     post:
       tags:
         - 'Users: Shelf'
-      summary: 'Batch store ingredients to the shelf'
+      summary: 'Save user ingredients'
+      description: 'Save multiple ingredients to user shelf'
       operationId: batchStoreUserIngredients
       parameters:
         -
@@ -4018,7 +4104,8 @@ paths:
     post:
       tags:
         - 'Users: Shelf'
-      summary: 'Delete multiple ingredients from the shelf'
+      summary: 'Delete user ingredients'
+      description: 'Delete multiple ingredients from user shelf'
       operationId: batchDeleteUserIngredients
       parameters:
         -
@@ -4075,7 +4162,8 @@ paths:
     get:
       tags:
         - 'Users: Shelf'
-      summary: 'Recommend next ingredients'
+      summary: 'Recommend user ingredients'
+      description: 'Shows a list of ingredients that will increase total shelf cocktails when added to user shef'
       operationId: recommendIngredients
       parameters:
         -
@@ -4130,7 +4218,7 @@ paths:
     get:
       tags:
         - 'Bars: Shelf'
-      summary: 'Show a list of bar shelf ingredients'
+      summary: 'List bar shelf ingredients'
       description: "Ingredients that bar has in it's shelf"
       operationId: listBarShelfIngredients
       parameters:
@@ -4168,7 +4256,8 @@ paths:
     post:
       tags:
         - 'Bars: Shelf'
-      summary: 'Batch store bar ingredients to bar shelf'
+      summary: 'Save bar ingredients'
+      description: 'Save multiple ingredients to bar shelf'
       operationId: batchStoreBarShelfIngredients
       parameters:
         -
@@ -4211,7 +4300,8 @@ paths:
     post:
       tags:
         - 'Bars: Shelf'
-      summary: 'Delete multiple ingredients from bar shelf'
+      summary: 'Delete bar ingredients'
+      description: 'Delete multiple ingredients from bar shelf'
       operationId: batchDeleteBarShelfIngredients
       parameters:
         -
@@ -4254,7 +4344,7 @@ paths:
     get:
       tags:
         - 'Bars: Shelf'
-      summary: 'Show a list bar shelf cocktails'
+      summary: 'List bar shelf cocktails'
       description: 'Cocktails that the bar can make with ingredients on their shelf'
       operationId: listBarShelfCocktails
       parameters:
@@ -4292,7 +4382,8 @@ paths:
     get:
       tags:
         - 'Bars: Shelf'
-      summary: 'Recommend next ingredients for bar'
+      summary: 'Recommend bar ingredients'
+      description: 'Shows a list of ingredients that will increase total bar shelf cocktails when added to bar shef'
       operationId: recommendBarIngredients
       parameters:
         -
@@ -4334,6 +4425,7 @@ paths:
       tags:
         - 'Users: Shopping list'
       summary: 'Show shopping list'
+      description: 'List all ingredients on a shopping list'
       operationId: listShoppingListIngredients
       parameters:
         -
@@ -4380,7 +4472,8 @@ paths:
     post:
       tags:
         - 'Users: Shopping list'
-      summary: 'Batch add ingredients to shopping list'
+      summary: 'Add ingredients'
+      description: 'Add multiple ingredients to a shopping list'
       operationId: batchStoreShoppingListIngredients
       parameters:
         -
@@ -4433,7 +4526,8 @@ paths:
     post:
       tags:
         - 'Users: Shopping list'
-      summary: 'Batch delete ingredients from shopping list'
+      summary: 'Delete ingredients'
+      description: 'Remove multiple ingredients from shopping list'
       operationId: batchDeleteShoppingListIngredients
       parameters:
         -
@@ -4491,6 +4585,7 @@ paths:
       tags:
         - 'Users: Shopping list'
       summary: 'Share shopping list'
+      description: 'Get a shopping list in a specific format'
       operationId: shareShoppingList
       parameters:
         -
@@ -4544,6 +4639,7 @@ paths:
       tags:
         - Bars
       summary: 'Show bar stats'
+      description: 'Show detailed stats about a single bar'
       operationId: showBarStats
       parameters:
         -
@@ -4584,7 +4680,8 @@ paths:
     get:
       tags:
         - Billing
-      summary: 'Get subscription status'
+      summary: 'Show subscription'
+      description: 'Show a subscription status'
       operationId: showSubscription
       responses:
         '200':
@@ -4609,6 +4706,7 @@ paths:
       tags:
         - Billing
       summary: 'Update subscription'
+      description: 'Update user billing subscription'
       operationId: updateSubscription
       requestBody:
         required: true
@@ -4644,7 +4742,8 @@ paths:
     get:
       tags:
         - Tag
-      summary: 'Show a list of all tags'
+      summary: 'List tags'
+      description: 'Show a list of tags in a bar'
       operationId: listTags
       parameters:
         -
@@ -4675,7 +4774,8 @@ paths:
     post:
       tags:
         - Tag
-      summary: 'Create a new tag'
+      summary: 'Create tag'
+      description: 'Create a new tag'
       operationId: saveTag
       parameters:
         -
@@ -4726,7 +4826,8 @@ paths:
     get:
       tags:
         - Tag
-      summary: 'Show a single tag'
+      summary: 'Show tag'
+      description: 'Show a single tag'
       operationId: showTag
       parameters:
         -
@@ -4767,6 +4868,7 @@ paths:
       tags:
         - Tag
       summary: 'Update tag'
+      description: 'Update a single tag'
       operationId: updateTag
       parameters:
         -
@@ -4813,6 +4915,7 @@ paths:
       tags:
         - Tag
       summary: 'Delete tag'
+      description: 'Delete a single tag'
       operationId: deleteTag
       parameters:
         -
@@ -4845,7 +4948,8 @@ paths:
     get:
       tags:
         - Users
-      summary: 'Show a list of users of a bar'
+      summary: 'List users'
+      description: 'Show a list of all users in a bar'
       operationId: listUsers
       parameters:
         -
@@ -4876,7 +4980,8 @@ paths:
     post:
       tags:
         - Users
-      summary: 'Create a new user'
+      summary: 'Create user'
+      description: 'Create a new user'
       operationId: saveUser
       parameters:
         -
@@ -4927,7 +5032,8 @@ paths:
     get:
       tags:
         - Users
-      summary: 'Show a user'
+      summary: 'Show user'
+      description: 'Show a single user'
       operationId: showUser
       parameters:
         -
@@ -4981,7 +5087,8 @@ paths:
     put:
       tags:
         - Users
-      summary: 'Update a user'
+      summary: 'Update user'
+      description: 'Update a single user'
       operationId: updateUser
       parameters:
         -
@@ -5041,7 +5148,8 @@ paths:
     delete:
       tags:
         - Users
-      summary: 'Delete a user'
+      summary: 'Delete user'
+      description: 'Delete a single user'
       operationId: deleteUser
       parameters:
         -
@@ -5074,7 +5182,8 @@ paths:
     get:
       tags:
         - Utensils
-      summary: 'Show a list of utensils'
+      summary: 'List utensils'
+      description: 'List all utensils in a bar'
       operationId: listUtensils
       parameters:
         -
@@ -5105,7 +5214,8 @@ paths:
     post:
       tags:
         - Utensils
-      summary: 'Create a new utensil'
+      summary: 'Create utensil'
+      description: 'Create a new utensil'
       operationId: saveUtensil
       parameters:
         -
@@ -5157,6 +5267,7 @@ paths:
       tags:
         - Utensils
       summary: 'Show utensil'
+      description: 'Show a single utensil'
       operationId: showUtensil
       parameters:
         -
@@ -5196,7 +5307,8 @@ paths:
     put:
       tags:
         - Utensils
-      summary: 'Update a specific utensil'
+      summary: 'Update utensil'
+      description: 'Update a single utensil'
       operationId: updateUtensil
       parameters:
         -
@@ -5242,7 +5354,8 @@ paths:
     delete:
       tags:
         - Utensils
-      summary: 'Delete specific utensil'
+      summary: 'Delete utensil'
+      description: 'Delete a single utensil'
       operationId: deleteUtensil
       parameters:
         -
@@ -7095,18 +7208,6 @@ components:
           type: boolean
         use_parent_as_substitute:
           type: boolean
-      type: object
-    Rating:
-      properties:
-        rateable_id:
-          type: integer
-          example: 1
-        user_id:
-          type: integer
-          example: 1
-        rating:
-          type: integer
-          example: 3
       type: object
     RegisterRequest:
       required:

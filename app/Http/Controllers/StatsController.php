@@ -20,7 +20,7 @@ use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class StatsController extends Controller
 {
-    #[OAT\Get(path: '/bars/{id}/stats', tags: ['Bars'], operationId: 'showBarStats', summary: 'Show bar stats', parameters: [
+    #[OAT\Get(path: '/bars/{id}/stats', tags: ['Bars'], operationId: 'showBarStats', description: 'Show detailed stats about a single bar', summary: 'Show bar stats', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [

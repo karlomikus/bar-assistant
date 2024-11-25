@@ -18,7 +18,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class PATController extends Controller
 {
-    #[OAT\Get(path: '/tokens', tags: ['Tokens'], operationId: 'listTokens', summary: 'Show a list of tokens')]
+    #[OAT\Get(path: '/tokens', tags: ['Tokens'], operationId: 'listTokens', description: 'List all personal access tokens', summary: 'List tokens')]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\PersonalAccessToken::class),
     ])]
@@ -38,7 +38,7 @@ class PATController extends Controller
         return PATResource::collection($tokens);
     }
 
-    #[OAT\Post(path: '/tokens', tags: ['Tokens'], operationId: 'saveToken', summary: 'Create new personal access token', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/tokens', tags: ['Tokens'], operationId: 'saveToken', description: 'Create a new personal access token', summary: 'Create token', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\PersonalAccessTokenRequest::class),
@@ -70,7 +70,7 @@ class PATController extends Controller
         return new TokenResource($token);
     }
 
-    #[OAT\Delete(path: '/tokens/{id}', tags: ['Tokens'], operationId: 'deleteToken', summary: 'Revoke personal access token', parameters: [
+    #[OAT\Delete(path: '/tokens/{id}', tags: ['Tokens'], operationId: 'deleteToken', description: 'Revoke a personal access token', summary: 'Revoke token', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

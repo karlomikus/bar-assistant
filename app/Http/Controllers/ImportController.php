@@ -61,7 +61,7 @@ class ImportController extends Controller
         return new CocktailResource($cocktail);
     }
 
-    #[OAT\Post(path: '/import/scrape', tags: ['Import'], operationId: 'scrapeRecipe', summary: 'Scrape a recipe', description: 'Try to scrape a recipe from a website. Most of the well known recipe websites should work. Data returned is a valid JSON schema that you can import using import cocktail endpoint.', parameters: [
+    #[OAT\Post(path: '/import/scrape', tags: ['Import'], operationId: 'scrapeRecipe', summary: 'Scrape recipe', description: 'Try to scrape a recipe from a website. Most of the well known recipe websites should work. Data returned is a valid JSON schema that you can import using import cocktail endpoint.', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(

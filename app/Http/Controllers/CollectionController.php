@@ -20,7 +20,7 @@ use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class CollectionController extends Controller
 {
-    #[OAT\Get(path: '/collections', tags: ['Collections'], operationId: 'listCollections', summary: 'Show a list of collections', parameters: [
+    #[OAT\Get(path: '/collections', tags: ['Collections'], operationId: 'listCollections', description: 'Show a list of all user collections in a specific bar', summary: 'List collections', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
@@ -41,7 +41,7 @@ class CollectionController extends Controller
         return CollectionResource::collection($collections);
     }
 
-    #[OAT\Get(path: '/bars/{id}/collections', tags: ['Collections'], operationId: 'listSharedCollections', summary: 'List bar shared collections', parameters: [
+    #[OAT\Get(path: '/bars/{id}/collections', tags: ['Collections'], operationId: 'listSharedCollections', description: 'Show a list of all collections that users shared with the bar', summary: 'List shared collections', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -68,7 +68,7 @@ class CollectionController extends Controller
         return CollectionResource::collection($collections);
     }
 
-    #[OAT\Get(path: '/collections/{id}', tags: ['Collections'], operationId: 'showCollection', summary: 'Show a specific collection', parameters: [
+    #[OAT\Get(path: '/collections/{id}', tags: ['Collections'], operationId: 'showCollection', description: 'Show a specific collection', summary: 'Show collection', parameters: [
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'integer')),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -87,7 +87,7 @@ class CollectionController extends Controller
         return new CollectionResource($collection);
     }
 
-    #[OAT\Post(path: '/collections', tags: ['Collections'], operationId: 'saveCollection', summary: 'Create a new collection', parameters: [
+    #[OAT\Post(path: '/collections', tags: ['Collections'], operationId: 'saveCollection', description: 'Create a new collection', summary: 'Create collection', parameters: [
         new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -134,7 +134,7 @@ class CollectionController extends Controller
             ->header('Location', route('collection.show', $collection->id));
     }
 
-    #[OAT\Put(path: '/collections/{id}', tags: ['Collections'], operationId: 'updateCollection', summary: 'Update a specific collection', parameters: [
+    #[OAT\Put(path: '/collections/{id}', tags: ['Collections'], operationId: 'updateCollection', description: 'Update a specific collection', summary: 'Update collection', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -213,7 +213,7 @@ class CollectionController extends Controller
         return new CollectionResource($collection);
     }
 
-    #[OAT\Delete(path: '/collections/{id}', tags: ['Collections'], operationId: 'deleteCollection', summary: 'Delete a specific collection', parameters: [
+    #[OAT\Delete(path: '/collections/{id}', tags: ['Collections'], operationId: 'deleteCollection', description: 'Delete a specific collection', summary: 'Delete collection', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

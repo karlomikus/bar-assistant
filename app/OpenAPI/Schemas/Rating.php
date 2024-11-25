@@ -6,13 +6,13 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema()]
+// #[OAT\Schema()]
 class Rating
 {
-    #[OAT\Property(property: 'rateable_id', example: 1)]
+    // #[OAT\Property(property: 'rateable_id', example: 1)]
     public int $rateableId;
-    #[OAT\Property(property: 'user_id', example: 1)]
+    // #[OAT\Property(property: 'user_id', example: 1)]
     public int $userId;
-    #[OAT\Property(example: 3)]
+    // #[OAT\Property(example: 3)]
     public int $rating;
 }

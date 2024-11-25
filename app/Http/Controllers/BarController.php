@@ -27,7 +27,7 @@ use Kami\Cocktail\Http\Resources\BarMembershipResource;
 
 class BarController extends Controller
 {
-    #[OAT\Get(path: '/bars', tags: ['Bars'], summary: 'Show a list of bars', operationId: 'listBars', description: 'Show a list of bars user has access to. Includes bars that user has made and bars he is a member of.')]
+    #[OAT\Get(path: '/bars', tags: ['Bars'], summary: 'List bars', operationId: 'listBars', description: 'Show a list of bars user has access to. Includes bars that user has made and bars he is a member of.')]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Bar::class),
     ])]
@@ -42,7 +42,7 @@ class BarController extends Controller
         return BarResource::collection($bars);
     }
 
-    #[OAT\Get(path: '/bars/{id}', tags: ['Bars'], operationId: 'showBar', summary: 'Show a specific bar', parameters: [
+    #[OAT\Get(path: '/bars/{id}', tags: ['Bars'], operationId: 'showBar', description: 'Show information about a specific bar', summary: 'Show bar', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -68,7 +68,7 @@ class BarController extends Controller
         return new BarResource($bar);
     }
 
-    #[OAT\Post(path: '/bars', tags: ['Bars'], operationId: 'saveBar', summary: 'Create a new bar', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/bars', tags: ['Bars'], operationId: 'saveBar', description: 'Create a new bar', summary: 'Create bar', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\BarRequest::class),
@@ -143,7 +143,7 @@ class BarController extends Controller
             ->header('Location', route('bars.show', $bar->id));
     }
 
-    #[OAT\Put(path: '/bars/{id}', tags: ['Bars'], operationId: 'updateBar', summary: 'Update a bar', parameters: [
+    #[OAT\Put(path: '/bars/{id}', tags: ['Bars'], operationId: 'updateBar', description: 'Update a specific bar', summary: 'Update bar', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -210,7 +210,7 @@ class BarController extends Controller
         return new BarResource($bar);
     }
 
-    #[OAT\Delete(path: '/bars/{id}', tags: ['Bars'], operationId: 'deleteBar', summary: 'Delete a bar', parameters: [
+    #[OAT\Delete(path: '/bars/{id}', tags: ['Bars'], operationId: 'deleteBar', description: 'Delete a specific bar', summary: 'Delete bar', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
@@ -231,7 +231,7 @@ class BarController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Post(path: '/bars/join', tags: ['Bars'], operationId: 'joinBar', summary: 'Join a bar via invite code', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/bars/join', tags: ['Bars'], operationId: 'joinBar', description: 'Join a bar via invite code', summary: 'Join a bar', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
@@ -257,7 +257,7 @@ class BarController extends Controller
         return new BarResource($barToJoin);
     }
 
-    #[OAT\Delete(path: '/bars/{id}/memberships', tags: ['Bars'], operationId: 'leaveBar', summary: 'Leave a bar you are a member of', parameters: [
+    #[OAT\Delete(path: '/bars/{id}/memberships', tags: ['Bars'], operationId: 'leaveBar', description: 'Deletes a user\'s membership to a bar', summary: 'Leave a bar', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
@@ -271,7 +271,7 @@ class BarController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Delete(path: '/bars/{id}/memberships/{userId}', tags: ['Bars'], operationId: 'removeBarMembership', summary: 'Remove a member from a bar', parameters: [
+    #[OAT\Delete(path: '/bars/{id}/memberships/{userId}', tags: ['Bars'], operationId: 'removeBarMembership', description: 'Removes a specific user\'s membership from a bar', summary: 'Remove member', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new OAT\Parameter(name: 'userId', in: 'path', required: true, description: 'Database id of a user', schema: new OAT\Schema(type: 'integer')),
     ])]
@@ -295,7 +295,7 @@ class BarController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/bars/{id}/memberships', tags: ['Bars'], operationId: 'listBarMembership', summary: 'List all members of a bar', parameters: [
+    #[OAT\Get(path: '/bars/{id}/memberships', tags: ['Bars'], operationId: 'listBarMembership', description: 'List all bar members', summary: 'List members', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -316,7 +316,7 @@ class BarController extends Controller
         return BarMembershipResource::collection($bar->memberships);
     }
 
-    #[OAT\Post(path: '/bars/{id}/transfer', tags: ['Bars'], operationId: 'transferBarOwnership', summary: 'Transfer bar ownership', parameters: [
+    #[OAT\Post(path: '/bars/{id}/transfer', tags: ['Bars'], operationId: 'transferBarOwnership', description: 'Transfer a bar to another user.', summary: 'Transfer ownership', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -349,7 +349,7 @@ class BarController extends Controller
         return response()->json(status: 204);
     }
 
-    #[OAT\Post(path: '/bars/{id}/status', tags: ['Bars'], operationId: 'toggleBarStatus', summary: 'Update bar status', parameters: [
+    #[OAT\Post(path: '/bars/{id}/status', tags: ['Bars'], operationId: 'toggleBarStatus', description: 'Update current status of a bar', summary: 'Update status', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
