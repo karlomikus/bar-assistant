@@ -11,12 +11,15 @@
 - `BasicCocktail` schema now includes `short_ingredients` property
 - Bar shelf is included in datapack export
 - Bar shelf can be imported from datapack
-- Added `total_shelf_ingredients` to stats endpoint
+- Added `total_bar_shelf_ingredients` to stats endpoint
 - You can run the app as a worker if you set `APP_ROLE=worker` env variable
 
 ## Fixes
 - Fixed missing substitute ingredient unit conversion in exports
 - Fixed missing max amount when importing from export
+
+## Changes
+- Stat `total_bar_shelf_cocktails` now includes extra ingredients if `use_parent_as_substitute` flag is enabled
 
 # v4.1.0
 ## New
