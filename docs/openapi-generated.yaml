@@ -5500,13 +5500,8 @@ components:
           description: 'Enable users with invite code to join this bar. Default `false`.'
           type: boolean
         options:
+          $ref: '#/components/schemas/BarOptionsEnum'
           description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.'
-          type: array
-          items:
-            type: enum
-            enum:
-              - ingredients
-              - cocktails
       type: object
     BarStats:
       required:
