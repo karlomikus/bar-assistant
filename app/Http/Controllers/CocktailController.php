@@ -34,7 +34,6 @@ use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientSubstituteRequest as Substit
 class CocktailController extends Controller
 {
     #[OAT\Get(path: '/cocktails', tags: ['Cocktails'], operationId: 'listCocktails', description: 'Show a list of all cocktails in a bar', summary: 'List cocktails', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
@@ -110,7 +109,6 @@ class CocktailController extends Controller
     }
 
     #[OAT\Post(path: '/cocktails', tags: ['Cocktails'], operationId: 'saveCocktail', description: 'Create a new cocktail', summary: 'Create cocktail', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,

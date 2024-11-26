@@ -17,7 +17,6 @@ use Kami\Cocktail\Http\Resources\UtensilResource;
 class UtensilsController extends Controller
 {
     #[OAT\Get(path: '/utensils', tags: ['Utensils'], operationId: 'listUtensils', description: 'List all utensils in a bar', summary: 'List utensils', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -50,7 +49,6 @@ class UtensilsController extends Controller
     }
 
     #[OAT\Post(path: '/utensils', tags: ['Utensils'], operationId: 'saveUtensil', description: 'Create a new utensil', summary: 'Create utensil', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,

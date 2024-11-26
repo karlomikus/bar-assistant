@@ -21,7 +21,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class UsersController extends Controller
 {
     #[OAT\Get(path: '/users', tags: ['Users'], operationId: 'listUsers', description: 'Show a list of all users in a bar', summary: 'List users', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -44,7 +43,6 @@ class UsersController extends Controller
     }
 
     #[OAT\Get(path: '/users/{id}', tags: ['Users'], operationId: 'showUser', description: 'Show a single user', summary: 'Show user', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
@@ -69,7 +67,6 @@ class UsersController extends Controller
     }
 
     #[OAT\Post(path: '/users', tags: ['Users'], operationId: 'saveUser', description: 'Create a new user', summary: 'Create user', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -118,7 +115,6 @@ class UsersController extends Controller
     }
 
     #[OAT\Put(path: '/users/{id}', tags: ['Users'], operationId: 'updateUser', description: 'Update a single user', summary: 'Update user', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(

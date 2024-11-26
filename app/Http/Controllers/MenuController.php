@@ -18,7 +18,6 @@ use Kami\Cocktail\Http\Resources\MenuPublicResource;
 class MenuController extends Controller
 {
     #[OAT\Get(path: '/menu', tags: ['Menu'], operationId: 'showMenu', description: 'Show a bar menu', summary: 'Show menu', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -64,7 +63,6 @@ class MenuController extends Controller
     }
 
     #[OAT\Post(path: '/menu', tags: ['Menu'], operationId: 'updateMenu', description: 'Update bar menu', summary: 'Update menu', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -95,7 +93,6 @@ class MenuController extends Controller
     }
 
     #[OAT\Get(path: '/menu/export', tags: ['Menu'], operationId: 'exportMenu', summary: 'Export menu', description: 'Export menu as CSV', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [

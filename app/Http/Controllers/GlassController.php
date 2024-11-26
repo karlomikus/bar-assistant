@@ -18,7 +18,6 @@ use Kami\Cocktail\Http\Filters\GlassQueryFilter;
 class GlassController extends Controller
 {
     #[OAT\Get(path: '/glasses', tags: ['Glasses'], operationId: 'listGlassware', description: 'Show a list of all glassware in the bar', summary: 'List glassware', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
             new OAT\Property(property: 'name', type: 'string'),
@@ -55,7 +54,6 @@ class GlassController extends Controller
     }
 
     #[OAT\Post(path: '/glasses', tags: ['Glasses'], operationId: 'saveGlassware', description: 'Create a new glassware', summary: 'Create glassware', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,

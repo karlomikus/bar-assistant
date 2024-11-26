@@ -17,7 +17,6 @@ use Kami\Cocktail\Http\Resources\PriceCategoryResource;
 class PriceCategoryController extends Controller
 {
     #[OAT\Get(path: '/price-categories', tags: ['Price category'], operationId: 'listPriceCategories', description: 'List all price categories in a bar', summary: 'List price categories', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -50,7 +49,6 @@ class PriceCategoryController extends Controller
     }
 
     #[OAT\Post(path: '/price-categories', tags: ['Price category'], operationId: 'savePriceCategory', description: 'Create a new price category', summary: 'Create price category', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,

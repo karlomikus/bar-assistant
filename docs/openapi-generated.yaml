@@ -624,13 +624,6 @@ paths:
       operationId: listCocktails
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -746,13 +739,6 @@ paths:
       description: 'Create a new cocktail'
       operationId: saveCocktail
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -1234,13 +1220,6 @@ paths:
       operationId: listCocktailMethods
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -1265,13 +1244,6 @@ paths:
       description: 'Create a new cocktail method'
       operationId: saveCocktailMethod
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -1440,13 +1412,6 @@ paths:
       operationId: listCollections
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -1498,13 +1463,6 @@ paths:
       description: 'Create a new collection'
       operationId: saveCollection
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -1963,13 +1921,6 @@ paths:
       operationId: listGlassware
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -2011,13 +1962,6 @@ paths:
       description: 'Create a new glassware'
       operationId: saveGlassware
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -2408,13 +2352,6 @@ paths:
       operationId: importCocktail
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -2462,13 +2399,6 @@ paths:
       operationId: scrapeRecipe
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -2513,13 +2443,6 @@ paths:
       operationId: listIngredientCategories
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -2544,13 +2467,6 @@ paths:
       description: 'Create a specific ingredient category'
       operationId: saveIngredientCategory
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -2719,13 +2635,6 @@ paths:
       operationId: listIngredients
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -2819,13 +2728,6 @@ paths:
       description: 'Create a new ingredient'
       operationId: saveIngredient
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -3144,13 +3046,6 @@ paths:
       operationId: showMenu
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -3183,13 +3078,6 @@ paths:
       description: 'Update bar menu'
       operationId: updateMenu
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -3265,13 +3153,6 @@ paths:
       description: 'Export menu as CSV'
       operationId: exportMenu
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -3536,13 +3417,6 @@ paths:
       operationId: listPriceCategories
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -3567,13 +3441,6 @@ paths:
       description: 'Create a new price category'
       operationId: savePriceCategory
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -3902,13 +3769,6 @@ paths:
           schema:
             type: integer
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -3951,13 +3811,6 @@ paths:
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -4006,13 +3859,6 @@ paths:
           schema:
             type: integer
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -4055,13 +3901,6 @@ paths:
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -4116,13 +3955,6 @@ paths:
           schema:
             type: integer
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -4171,13 +4003,6 @@ paths:
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -4436,13 +4261,6 @@ paths:
           schema:
             type: integer
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -4481,13 +4299,6 @@ paths:
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -4535,13 +4346,6 @@ paths:
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -4593,13 +4397,6 @@ paths:
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -4747,13 +4544,6 @@ paths:
       operationId: listTags
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -4778,13 +4568,6 @@ paths:
       description: 'Create a new tag'
       operationId: saveTag
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -4953,13 +4736,6 @@ paths:
       operationId: listUsers
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -4984,13 +4760,6 @@ paths:
       description: 'Create a new user'
       operationId: saveUser
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -5036,13 +4805,6 @@ paths:
       description: 'Show a single user'
       operationId: showUser
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -5091,13 +4853,6 @@ paths:
       description: 'Update a single user'
       operationId: updateUser
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -5187,13 +4942,6 @@ paths:
       operationId: listUtensils
       parameters:
         -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
-        -
           name: Bar-Assistant-Bar-Id
           in: header
           description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
@@ -5218,13 +4966,6 @@ paths:
       description: 'Create a new utensil'
       operationId: saveUtensil
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header

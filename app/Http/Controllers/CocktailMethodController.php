@@ -17,7 +17,6 @@ use Kami\Cocktail\Http\Resources\CocktailMethodResource;
 class CocktailMethodController extends Controller
 {
     #[OAT\Get(path: '/cocktail-methods', tags: ['Cocktail method'], operationId: 'listCocktailMethods', description: 'Show a list of all cocktail methods in a bar', summary: 'List methods', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -50,7 +49,6 @@ class CocktailMethodController extends Controller
     }
 
     #[OAT\Post(path: '/cocktail-methods', tags: ['Cocktail method'], operationId: 'saveCocktailMethod', description: 'Create a new cocktail method', summary: 'Create method', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,

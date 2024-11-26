@@ -29,7 +29,6 @@ use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest as IngredientDTO;
 class IngredientController extends Controller
 {
     #[OAT\Get(path: '/ingredients', tags: ['Ingredients'], operationId: 'listIngredients', description: 'Show a list of all ingredients in a bar', summary: 'List ingredients', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
@@ -102,7 +101,6 @@ class IngredientController extends Controller
     }
 
     #[OAT\Post(path: '/ingredients', tags: ['Ingredients'], operationId: 'saveIngredient', description: 'Create a new ingredient', summary: 'Create ingredient', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,

@@ -21,7 +21,6 @@ use Kami\Cocktail\Models\Collection as CocktailCollection;
 class CollectionController extends Controller
 {
     #[OAT\Get(path: '/collections', tags: ['Collections'], operationId: 'listCollections', description: 'Show a list of all user collections in a specific bar', summary: 'List collections', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
             new OAT\Property(property: 'id', type: 'integer'),
@@ -88,7 +87,6 @@ class CollectionController extends Controller
     }
 
     #[OAT\Post(path: '/collections', tags: ['Collections'], operationId: 'saveCollection', description: 'Create a new collection', summary: 'Create collection', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,

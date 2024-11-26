@@ -17,7 +17,6 @@ use Kami\Cocktail\Http\Resources\IngredientCategoryResource;
 class IngredientCategoryController extends Controller
 {
     #[OAT\Get(path: '/ingredient-categories', tags: ['Ingredient category'], operationId: 'listIngredientCategories', description: 'List all ingredient categories in a bar', summary: 'List ingredient categories', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[OAT\Response(response: 200, description: 'Successful response', content: [
@@ -50,7 +49,6 @@ class IngredientCategoryController extends Controller
     }
 
     #[OAT\Post(path: '/ingredient-categories', tags: ['Ingredient category'], operationId: 'saveIngredientCategory', description: 'Create a specific ingredient category', summary: 'Create ingredient category', parameters: [
-        new BAO\Parameters\BarIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
