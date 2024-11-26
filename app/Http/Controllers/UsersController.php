@@ -23,7 +23,7 @@ class UsersController extends Controller
     #[OAT\Get(path: '/users', tags: ['Users'], operationId: 'listUsers', description: 'Show a list of all users in a bar', summary: 'List users', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\User::class),
     ])]
     public function index(Request $request): JsonResource
@@ -46,7 +46,7 @@ class UsersController extends Controller
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\User::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -123,7 +123,7 @@ class UsersController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\UserRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\User::class),
     ])]
     #[BAO\NotAuthorizedResponse]

@@ -19,7 +19,7 @@ class PriceCategoryController extends Controller
     #[OAT\Get(path: '/price-categories', tags: ['Price category'], operationId: 'listPriceCategories', description: 'List all price categories in a bar', summary: 'List price categories', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\PriceCategory::class),
     ])]
     public function index(): JsonResource
@@ -32,7 +32,7 @@ class PriceCategoryController extends Controller
     #[OAT\Get(path: '/price-categories/{id}', tags: ['Price category'], description: 'Show a single price category', summary: 'Show price category', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\PriceCategory::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -89,7 +89,7 @@ class PriceCategoryController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\PriceCategoryRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\PriceCategory::class),
     ])]
     #[BAO\NotAuthorizedResponse]

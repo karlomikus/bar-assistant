@@ -30,7 +30,7 @@ class CollectionController extends Controller
         new OAT\Parameter(name: 'include', in: 'query', description: 'Include additional relationships. Available relations: `cocktails`.', schema: new OAT\Schema(type: 'string')),
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`.', schema: new OAT\Schema(type: 'string')),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Collection::class),
     ])]
     public function index(): JsonResource
@@ -43,7 +43,7 @@ class CollectionController extends Controller
     #[OAT\Get(path: '/bars/{id}/collections', tags: ['Collections'], operationId: 'listSharedCollections', description: 'Show a list of all collections that users shared with the bar', summary: 'List shared collections', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Collection::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -70,7 +70,7 @@ class CollectionController extends Controller
     #[OAT\Get(path: '/collections/{id}', tags: ['Collections'], operationId: 'showCollection', description: 'Show a specific collection', summary: 'Show collection', parameters: [
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'integer')),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Collection::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -140,7 +140,7 @@ class CollectionController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\CollectionRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Collection::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -174,7 +174,7 @@ class CollectionController extends Controller
             ]),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Collection::class),
     ])]
     #[BAO\NotAuthorizedResponse]

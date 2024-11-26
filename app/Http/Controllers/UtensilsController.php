@@ -19,7 +19,7 @@ class UtensilsController extends Controller
     #[OAT\Get(path: '/utensils', tags: ['Utensils'], operationId: 'listUtensils', description: 'List all utensils in a bar', summary: 'List utensils', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Utensil::class),
     ])]
     public function index(): JsonResource
@@ -32,7 +32,7 @@ class UtensilsController extends Controller
     #[OAT\Get(path: '/utensils/{id}', tags: ['Utensils'], operationId: 'showUtensil', description: 'Show a single utensil', summary: 'Show utensil', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Utensil::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -88,7 +88,7 @@ class UtensilsController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\UtensilRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Utensil::class),
     ])]
     #[BAO\NotAuthorizedResponse]

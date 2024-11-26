@@ -19,7 +19,7 @@ class CocktailMethodController extends Controller
     #[OAT\Get(path: '/cocktail-methods', tags: ['Cocktail method'], operationId: 'listCocktailMethods', description: 'Show a list of all cocktail methods in a bar', summary: 'List methods', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\CocktailMethod::class),
     ])]
     public function index(): JsonResource
@@ -32,7 +32,7 @@ class CocktailMethodController extends Controller
     #[OAT\Get(path: '/cocktail-methods/{id}', tags: ['Cocktail method'], operationId: 'showCocktailMethod', description: 'Show a specific cocktail method', summary: 'Show method', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\CocktailMethod::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -88,7 +88,7 @@ class CocktailMethodController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\CocktailMethodRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\CocktailMethod::class),
     ])]
     #[BAO\NotAuthorizedResponse]

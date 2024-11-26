@@ -22,7 +22,7 @@ class NoteController extends Controller
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(BAO\Schemas\Note::class),
     ])]
     public function index(Request $request): JsonResource
@@ -36,7 +36,7 @@ class NoteController extends Controller
     #[OAT\Get(path: '/notes/{id}', tags: ['Notes'], operationId: 'showNote', description: 'Show a single note', summary: 'Show note', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Note::class),
     ])]
     #[BAO\NotAuthorizedResponse]

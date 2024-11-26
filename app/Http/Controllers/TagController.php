@@ -21,7 +21,7 @@ class TagController extends Controller
     #[OAT\Get(path: '/tags', tags: ['Tag'], operationId: 'listTags', description: 'Show a list of tags in a bar', summary: 'List tags', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Tag::class),
     ])]
     public function index(): JsonResource
@@ -34,7 +34,7 @@ class TagController extends Controller
     #[OAT\Get(path: '/tags/{id}', tags: ['Tag'], operationId: 'showTag', description: 'Show a single tag', summary: 'Show tag', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Tag::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -89,7 +89,7 @@ class TagController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\TagRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Tag::class),
     ])]
     #[BAO\NotAuthorizedResponse]

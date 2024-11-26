@@ -28,7 +28,7 @@ use Kami\Cocktail\Http\Resources\BarMembershipResource;
 class BarController extends Controller
 {
     #[OAT\Get(path: '/bars', tags: ['Bars'], summary: 'List bars', operationId: 'listBars', description: 'Show a list of bars user has access to. Includes bars that user has made and bars he is a member of.')]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Bar::class),
     ])]
     public function index(Request $request): JsonResource
@@ -45,7 +45,7 @@ class BarController extends Controller
     #[OAT\Get(path: '/bars/{id}', tags: ['Bars'], operationId: 'showBar', description: 'Show information about a specific bar', summary: 'Show bar', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Bar::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -151,7 +151,7 @@ class BarController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\BarRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Bar::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -239,7 +239,7 @@ class BarController extends Controller
             ]),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Bar::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -298,7 +298,7 @@ class BarController extends Controller
     #[OAT\Get(path: '/bars/{id}/memberships', tags: ['Bars'], operationId: 'listBarMembership', description: 'List all bar members', summary: 'List members', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\BarMembership::class),
     ])]
     #[BAO\NotAuthorizedResponse]

@@ -23,7 +23,7 @@ class ShoppingListController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\ShoppingList::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -133,7 +133,7 @@ class ShoppingListController extends Controller
         new BAO\Parameters\BarIdHeaderParameter(),
         new OAT\Parameter(name: 'type', in: 'query', description: 'Type of share. Available types: `markdown`.', schema: new OAT\Schema(type: 'string')),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new OAT\JsonContent(required: ['data'], properties: [
             new OAT\Property(property: 'data', type: 'object', required: ['type', 'content'], properties: [
                 new OAT\Property(property: 'type', type: 'string', example: 'markdown'),

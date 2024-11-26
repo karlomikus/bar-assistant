@@ -34,6 +34,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -71,6 +80,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -81,6 +99,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -172,6 +199,15 @@ paths:
           description: 'Account confirmed'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -180,6 +216,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -197,6 +242,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -235,6 +289,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -243,6 +306,15 @@ paths:
                 type: object
         '422':
           description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -265,6 +337,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -275,6 +356,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -283,6 +373,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -312,6 +411,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -322,6 +430,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -330,6 +447,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -338,6 +464,15 @@ paths:
                 type: object
         '422':
           description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -361,6 +496,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -369,6 +513,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -395,6 +548,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -405,6 +567,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -413,6 +584,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -437,6 +617,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -447,6 +636,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -455,6 +653,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -480,6 +687,15 @@ paths:
           description: 'Successful response'
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -513,6 +729,15 @@ paths:
           description: 'Successful response'
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -521,6 +746,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -558,6 +792,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -566,6 +809,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -601,6 +853,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -609,6 +870,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -716,6 +986,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -726,6 +1005,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -770,6 +1058,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -778,6 +1075,15 @@ paths:
                 type: object
         '422':
           description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -800,6 +1106,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -810,6 +1125,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -818,6 +1142,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -847,6 +1180,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -857,6 +1199,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -865,6 +1216,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -873,6 +1233,15 @@ paths:
                 type: object
         '422':
           description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -896,6 +1265,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -904,6 +1282,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -928,6 +1315,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -936,6 +1332,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -944,6 +1349,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -968,6 +1382,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -978,6 +1401,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -986,6 +1418,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1011,6 +1452,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1019,6 +1469,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1064,6 +1523,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1074,6 +1542,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1082,6 +1559,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1106,6 +1592,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1116,6 +1611,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1124,6 +1628,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1163,6 +1676,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1187,6 +1709,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1197,6 +1728,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1205,6 +1745,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1229,6 +1778,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1275,6 +1833,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1299,6 +1866,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1309,6 +1885,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1317,6 +1902,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1346,6 +1940,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1356,6 +1959,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1364,6 +1976,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1389,6 +2010,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1397,6 +2027,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1448,6 +2087,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1494,6 +2142,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1518,6 +2175,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1528,6 +2194,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1536,6 +2211,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1560,6 +2244,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1570,6 +2263,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1578,6 +2280,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1607,6 +2318,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1617,6 +2337,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1625,6 +2354,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1650,6 +2388,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1658,6 +2405,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1692,6 +2448,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1702,6 +2467,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1727,6 +2501,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1737,6 +2520,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1754,6 +2546,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1777,6 +2578,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1787,6 +2597,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1824,6 +2643,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1832,6 +2660,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1870,11 +2707,29 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/octet-stream:
               example: binary
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1899,6 +2754,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1909,6 +2773,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1917,6 +2790,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1958,6 +2840,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2004,6 +2895,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2028,6 +2928,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2038,6 +2947,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2046,6 +2964,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2075,6 +3002,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2085,6 +3021,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2093,6 +3038,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2118,6 +3072,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2126,6 +3089,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2155,6 +3127,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2165,6 +3146,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2173,6 +3163,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2200,6 +3199,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2226,6 +3234,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2236,6 +3253,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2244,6 +3270,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2273,6 +3308,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2283,6 +3327,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2308,6 +3361,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2316,6 +3378,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2340,6 +3411,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             image/jpg:
               schema:
@@ -2347,6 +3427,15 @@ paths:
                 format: binary
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2385,6 +3474,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2395,6 +3493,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2440,6 +3547,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2450,6 +3566,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2474,6 +3599,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2520,6 +3654,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2544,6 +3687,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2554,6 +3706,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2562,6 +3723,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2591,6 +3761,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2601,6 +3780,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2609,6 +3797,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2634,6 +3831,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2642,6 +3848,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2727,6 +3942,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2737,6 +3961,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2781,6 +4014,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2805,6 +4047,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2815,6 +4066,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2823,6 +4083,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2852,6 +4121,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2862,6 +4140,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2870,6 +4157,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2895,6 +4191,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2903,6 +4208,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2927,6 +4241,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2937,6 +4260,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2945,6 +4277,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2981,6 +4322,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2991,6 +4341,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2999,6 +4358,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3035,6 +4403,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3045,6 +4422,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3053,6 +4439,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3077,6 +4472,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3087,6 +4491,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3116,6 +4529,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3126,6 +4548,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3150,6 +4581,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3160,6 +4600,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3185,12 +4634,30 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             text/csv:
               schema:
                 type: string
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3220,6 +4687,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3258,6 +4734,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3266,6 +4751,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3290,6 +4784,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3300,6 +4803,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3308,6 +4820,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3333,6 +4854,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3341,6 +4871,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3357,6 +4896,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3390,6 +4938,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3416,6 +4973,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3424,6 +4990,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3448,6 +5023,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3494,6 +5078,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3518,6 +5111,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3528,6 +5130,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3536,6 +5147,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3565,6 +5185,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3575,6 +5204,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3583,6 +5221,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3608,6 +5255,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3616,6 +5272,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3632,6 +5297,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3642,6 +5316,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3673,6 +5356,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3708,6 +5400,15 @@ paths:
           description: 'Successful response'
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3716,6 +5417,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3741,6 +5451,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3749,6 +5468,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3765,6 +5493,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3812,6 +5549,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3857,6 +5603,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3902,6 +5657,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3947,6 +5711,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3955,6 +5728,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3998,6 +5780,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4006,6 +5797,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4037,6 +5837,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4047,6 +5856,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4055,6 +5873,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4091,6 +5918,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4129,6 +5965,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4137,6 +5982,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4173,6 +6027,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4181,6 +6044,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4217,6 +6089,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4243,6 +6124,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4253,6 +6143,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4261,6 +6160,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4292,6 +6200,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4302,6 +6219,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4341,6 +6267,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4349,6 +6284,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4392,6 +6336,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4400,6 +6353,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4437,6 +6399,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4447,6 +6418,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4471,6 +6451,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4481,6 +6470,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4489,6 +6487,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4505,6 +6512,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4515,6 +6531,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4543,6 +6568,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4551,6 +6585,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4575,6 +6618,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4621,6 +6673,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4645,6 +6706,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4655,6 +6725,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4663,6 +6742,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4692,6 +6780,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4702,6 +6799,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4710,6 +6816,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4735,6 +6850,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4743,6 +6867,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4767,6 +6900,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4813,6 +6955,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4844,6 +6995,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4854,6 +7014,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4862,6 +7031,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4898,6 +7076,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4908,6 +7095,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4916,6 +7112,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4941,6 +7146,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4949,6 +7163,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4973,6 +7196,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5019,6 +7251,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5043,6 +7284,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5053,6 +7303,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5061,6 +7320,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5090,6 +7358,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5100,6 +7377,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5108,6 +7394,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5133,6 +7428,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5141,6 +7445,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:

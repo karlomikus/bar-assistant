@@ -33,7 +33,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(BAO\Schemas\IngredientBasic::class),
     ])]
     public function ingredients(Request $request, int $id): JsonResource
@@ -61,7 +61,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
     ])]
     public function cocktails(CocktailRepository $cocktailRepo, Request $request, int $id): JsonResource
@@ -91,7 +91,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
     ])]
     public function favorites(Request $request, int $id): JsonResource
@@ -201,7 +201,7 @@ class ShelfController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\IngredientRecommend::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -229,7 +229,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(BAO\Schemas\IngredientBasic::class),
     ])]
     public function barIngredients(Request $request, int $id): JsonResource
@@ -325,7 +325,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
     ])]
     public function barCocktails(CocktailRepository $cocktailRepo, Request $request, int $id): JsonResource
@@ -348,7 +348,7 @@ class ShelfController extends Controller
     #[OAT\Get(path: '/bars/{id}/ingredients/recommend', tags: ['Bars: Shelf'], operationId: 'recommendBarIngredients', description: 'Shows a list of ingredients that will increase total bar shelf cocktails when added to bar shef', summary: 'Recommend bar ingredients', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\IngredientRecommend::class),
     ])]
     #[BAO\NotAuthorizedResponse]

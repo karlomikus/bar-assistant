@@ -34,7 +34,7 @@ class ImportController extends Controller
             ]),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -71,7 +71,7 @@ class ImportController extends Controller
             ]),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new OAT\JsonContent(type: 'object', properties: [
             new OAT\Property(property: 'data', type: 'object', properties: [
                 new OAT\Property(property: 'schema_version', type: 'string', example: 'draft2'),

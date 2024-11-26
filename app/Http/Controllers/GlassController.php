@@ -24,7 +24,7 @@ class GlassController extends Controller
         ])),
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`.', schema: new OAT\Schema(type: 'string')),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Glass::class),
     ])]
     public function index(): JsonResource
@@ -37,7 +37,7 @@ class GlassController extends Controller
     #[OAT\Get(path: '/glasses/{id}', tags: ['Glasses'], operationId: 'showGlassware', description: 'Show a specific glassware', summary: 'Show glassware', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Glass::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -91,7 +91,7 @@ class GlassController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\GlassRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Glass::class),
     ])]
     #[BAO\NotAuthorizedResponse]

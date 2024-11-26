@@ -15,7 +15,7 @@ use Kami\Cocktail\Services\VersionCheckService;
 class ServerController extends Controller
 {
     #[OAT\Get(path: '/server/version', tags: ['Server'], operationId: 'showServerVersion', description: 'Show server status and information', summary: 'Show information', security: [[]])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\ServerVersion::class),
     ])]
     public function version(VersionCheckService $versionCheckService): JsonResponse

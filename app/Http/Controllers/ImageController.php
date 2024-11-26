@@ -28,7 +28,7 @@ class ImageController extends Controller
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(BAO\Schemas\Image::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -43,7 +43,7 @@ class ImageController extends Controller
     #[OAT\Get(path: '/images/{id}', tags: ['Images'], operationId: 'showImage', description: 'Show a single image', summary: 'Show image', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Image::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -67,7 +67,7 @@ class ImageController extends Controller
             ])),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Image::class),
     ])]
     public function store(ImageService $imageservice, Request $request): JsonResource
@@ -102,7 +102,7 @@ class ImageController extends Controller
             new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(ref: BAO\Schemas\ImageRequest::class)),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Image::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -153,7 +153,7 @@ class ImageController extends Controller
     #[OAT\Get(path: '/images/{id}/thumb', tags: ['Images'], operationId: 'getImageThumbnail', description: 'Generate a thumbnail of a specific image', summary: 'Get thumbnail', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], security: [])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new OAT\MediaType(mediaType: 'image/jpg', schema: new OAT\Schema(type: 'string', format: 'binary')),
     ])]
     #[BAO\NotFoundResponse]

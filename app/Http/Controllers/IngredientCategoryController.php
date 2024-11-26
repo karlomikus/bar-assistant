@@ -19,7 +19,7 @@ class IngredientCategoryController extends Controller
     #[OAT\Get(path: '/ingredient-categories', tags: ['Ingredient category'], operationId: 'listIngredientCategories', description: 'List all ingredient categories in a bar', summary: 'List ingredient categories', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\IngredientCategory::class),
     ])]
     public function index(): JsonResource
@@ -32,7 +32,7 @@ class IngredientCategoryController extends Controller
     #[OAT\Get(path: '/ingredient-categories/{id}', tags: ['Ingredient category'], operationId: 'showIngredientCategory', description: 'Show a specific ingredient category', summary: 'Show ingredient category', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\IngredientCategory::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -88,7 +88,7 @@ class IngredientCategoryController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\IngredientCategoryRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\IngredientCategory::class),
     ])]
     #[BAO\NotAuthorizedResponse]

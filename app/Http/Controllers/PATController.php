@@ -19,7 +19,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class PATController extends Controller
 {
     #[OAT\Get(path: '/tokens', tags: ['Tokens'], operationId: 'listTokens', description: 'List all personal access tokens', summary: 'List tokens')]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\PersonalAccessToken::class),
     ])]
     public function index(Request $request): JsonResource
