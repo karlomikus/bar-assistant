@@ -460,7 +460,7 @@ class CocktailController extends Controller
             ->header('Location', route('cocktails.show', $cocktail->id));
     }
 
-    #[OAT\Get(path: '/cocktails/{id}/prices', tags: ['Cocktails'], operationId: 'getCocktailPrices', summary: 'Show cocktail prices', description: 'Shows a list of cocktail prices grouped per available price categories. Missing ingredient prices are skipped.', parameters: [
+    #[OAT\Get(path: '/cocktails/{id}/prices', tags: ['Cocktails'], operationId: 'getCocktailPrices', summary: 'Show cocktail prices', description: 'Show calculated prices categorized by bar price categories. Prices are calculated using ingredient prices. If price category is missing, the ingredients don\'t have a price in that category. If there are multiple prices in category, the minimum price is used. Keep in mind that the price is just an estimate and might not be accurate.', parameters: [
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\SuccessfulResponse(content: [
