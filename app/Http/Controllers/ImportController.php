@@ -38,6 +38,7 @@ class ImportController extends Controller
         new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
     ])]
     #[BAO\NotAuthorizedResponse]
+    #[BAO\RateLimitResponse]
     public function cocktail(ImportRequest $request): JsonResource
     {
         if ($request->user()->cannot('create', Cocktail::class)) {

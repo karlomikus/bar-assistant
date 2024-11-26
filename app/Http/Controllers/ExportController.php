@@ -45,6 +45,7 @@ class ExportController extends Controller
         new BAO\WrapObjectWithData(BAO\Schemas\Export::class),
     ])]
     #[BAO\NotAuthorizedResponse]
+    #[BAO\RateLimitResponse]
     public function store(Request $request): ExportResource
     {
         $bar = Bar::findOrFail($request->post('bar_id'));
