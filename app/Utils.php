@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Kami\Cocktail;
 
 use Kami\RecipeUtils\UnitConverter\Units;
-use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
+use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
 
 final class Utils
 {

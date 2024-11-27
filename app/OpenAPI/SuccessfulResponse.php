@@ -18,8 +18,7 @@ final class SuccessfulResponse extends OAT\Response
         ?string $description = 'Successful response',
         ?array $headers = [],
         MediaType|JsonContent|XmlContent|Attachable|array|null $content = null,
-    )
-    {
+    ) {
         $headers = array_merge([
             new OAT\Header(header: 'x-ratelimit-limit', description: 'Max number of attempts.', schema: new OAT\Schema(type: 'integer')),
             new OAT\Header(header: 'x-ratelimit-remaining', description: 'Remaining number of attempts.', schema: new OAT\Schema(type: 'integer')),
