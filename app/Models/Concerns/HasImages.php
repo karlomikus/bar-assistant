@@ -30,13 +30,13 @@ trait HasImages
         return $this->images->sortBy('sort')->first() ?? null;
     }
 
-    public function getMainImageThumbUrl(): ?string
+    public function getMainImageThumbUrl(bool $absolute = true): ?string
     {
         if (!$this->getMainImage()) {
             return null;
         }
 
-        return route('images.thumb', ['id' => $this->getMainImage()->id]);
+        return route('images.thumb', ['id' => $this->getMainImage()->id], $absolute);
     }
 
     public function deleteImages(): void

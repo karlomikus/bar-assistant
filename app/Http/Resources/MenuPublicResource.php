@@ -37,7 +37,7 @@ class MenuPublicResource extends JsonResource
                             'public_id' => $menuCocktail->cocktail->public_id,
                             'name' => $menuCocktail->cocktail->name,
                             'short_ingredients' => $menuCocktail->cocktail->getIngredientNames(),
-                            'image' => $menuCocktail->cocktail->getMainImageThumbUrl(),
+                            'image' => config('app.url') . $menuCocktail->cocktail->getMainImageThumbUrl(false),
                         ];
                     }),
                 ];
