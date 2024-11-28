@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Storage;
-use Kami\Cocktail\Models\BarStatusEnum;
 use Kami\Cocktail\External\BarOptionsEnum;
+use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
 use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
@@ -25,6 +25,9 @@ use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
 class FromDataPack
 {
     private Filesystem $uploadsDisk;
+
+    /** @var array<string> */
+    private array $barShelf = [];
 
     public function __construct()
     {
@@ -53,6 +56,10 @@ class FromDataPack
             if ($dataDisk->exists($file)) {
                 $this->importBaseData($table, $dataDisk->path($file), $bar->id);
             }
+        }
+
+        if ($dataDisk->exists('bar_shelf.json')) {
+            $this->loadBarShelfFromImportData($dataDisk->path('bar_shelf.json'), $bar->id);
         }
 
         if (in_array(BarOptionsEnum::Ingredients, $flags)) {
@@ -185,6 +192,10 @@ class FromDataPack
                     DB::table('ingredients')->where('slug', $ingredient->slug)->where('bar_id', $bar->id)->update(['parent_ingredient_id' => $parentIngredientId->id]);
                 }
             }
+
+            if (in_array($ingredient->slug, $this->barShelf)) {
+                DB::table('bar_ingredients')->insert(['ingredient_id' => $ingredient->id, 'bar_id' => $bar->id]);
+            }
         }
 
         if (count($imagesToInsert) > 0) {
@@ -270,8 +281,9 @@ class FromDataPack
                 $ciId = DB::table('cocktail_ingredients')->insertGetId([
                     'cocktail_id' => $cocktailId,
                     'ingredient_id' => $matchedIngredientId,
-                    'amount' => $cocktailIngredient->amount,
-                    'units' => $cocktailIngredient->units,
+                    'amount' => $cocktailIngredient->amount->amountMin,
+                    'amount_max' => $cocktailIngredient->amount->amountMax,
+                    'units' => $cocktailIngredient->amount->units->value,
                     'optional' => $cocktailIngredient->optional,
                     'note' => $cocktailIngredient->note,
                     'sort' => $sort,
@@ -289,9 +301,9 @@ class FromDataPack
                     DB::table('cocktail_ingredient_substitutes')->insert([
                         'cocktail_ingredient_id' => $ciId,
                         'ingredient_id' => $matchedSubIngredientId,
-                        'amount' => $substitute->amount,
-                        'amount_max' => $substitute->amountMax,
-                        'units' => $substitute->units,
+                        'amount' => $substitute->amount->amountMin,
+                        'amount_max' => $substitute->amount->amountMax,
+                        'units' => $substitute->amount->units->value,
                         'created_at' => now(),
                         'updated_at' => null,
                     ]);
@@ -347,6 +359,15 @@ class FromDataPack
                     $diskDirPath,
                 ];
             }
+        }
+    }
+
+    private function loadBarShelfFromImportData(string $filename, int $barId): void
+    {
+        if ($data = file_get_contents($filename)) {
+            $ingredients = json_decode($data, true);
+
+            $this->barShelf = array_map(fn (string $slug) => $slug . '-' . $barId, $ingredients);
         }
     }
 }

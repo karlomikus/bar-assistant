@@ -1,3 +1,26 @@
+# v4.2.0
+## New
+- Added cocktail prices
+    - Added `/cocktails/{id}/prices` endpoint
+    - Show all calculated prices per price category
+    - Automatically converts units to calculate the price if possible
+- Added `/menu/export` endpoint
+    - Exports menu as CSV
+- Added `/bars/{id}/cocktails` endpoint, showing bar shelf cocktails
+- Added `/bars/{id}/ingredients/recommend` endpoint, showing next recommended ingredients for bar
+- `BasicCocktail` schema now includes `short_ingredients` property
+- Bar shelf is included in datapack export
+- Bar shelf can be imported from datapack
+- Added `total_bar_shelf_ingredients` to stats endpoint
+- You can run the app as a worker if you set `APP_ROLE=worker` env variable
+
+## Fixes
+- Fixed missing substitute ingredient unit conversion in exports
+- Fixed missing max amount when importing from export
+
+## Changes
+- Stat `total_bar_shelf_cocktails` now includes extra ingredients if `use_parent_as_substitute` flag is enabled
+
 # v4.1.0
 ## New
 - Added bar shelf

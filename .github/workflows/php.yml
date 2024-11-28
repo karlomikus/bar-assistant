@@ -48,3 +48,7 @@ jobs:
 
     - name: Execute PHPStan
       run: vendor/bin/phpstan analyse
+
+    - uses: stoplightio/spectral-action@latest
+      with:
+        file_glob: 'docs/*.yaml'

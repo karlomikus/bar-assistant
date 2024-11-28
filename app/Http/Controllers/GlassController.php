@@ -17,15 +17,14 @@ use Kami\Cocktail\Http\Filters\GlassQueryFilter;
 
 class GlassController extends Controller
 {
-    #[OAT\Get(path: '/glasses', tags: ['Glasses'], summary: 'Show a list of glass types', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Get(path: '/glasses', tags: ['Glasses'], operationId: 'listGlassware', description: 'Show a list of all glassware in the bar', summary: 'List glassware', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
             new OAT\Property(property: 'name', type: 'string'),
         ])),
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`.', schema: new OAT\Schema(type: 'string')),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Glass::class),
     ])]
     public function index(): JsonResource
@@ -35,10 +34,10 @@ class GlassController extends Controller
         return GlassResource::collection($glasses);
     }
 
-    #[OAT\Get(path: '/glasses/{id}', tags: ['Glasses'], summary: 'Show glass', parameters: [
+    #[OAT\Get(path: '/glasses/{id}', tags: ['Glasses'], operationId: 'showGlassware', description: 'Show a specific glassware', summary: 'Show glassware', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Glass::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -54,8 +53,7 @@ class GlassController extends Controller
         return new GlassResource($glass);
     }
 
-    #[OAT\Post(path: '/glasses', tags: ['Glasses'], summary: 'Create a new glass', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Post(path: '/glasses', tags: ['Glasses'], operationId: 'saveGlassware', description: 'Create a new glassware', summary: 'Create glassware', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -85,7 +83,7 @@ class GlassController extends Controller
             ->header('Location', route('glasses.show', $glass->id));
     }
 
-    #[OAT\Put(path: '/glasses/{id}', tags: ['Glasses'], summary: 'Update glass', parameters: [
+    #[OAT\Put(path: '/glasses/{id}', tags: ['Glasses'], operationId: 'updateGlassware', description: 'Update a specific glassware', summary: 'Update glassware', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -93,7 +91,7 @@ class GlassController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\GlassRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Glass::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -115,7 +113,7 @@ class GlassController extends Controller
         return new GlassResource($glass);
     }
 
-    #[OAT\Delete(path: '/glasses/{id}', tags: ['Glasses'], summary: 'Delete glass', parameters: [
+    #[OAT\Delete(path: '/glasses/{id}', tags: ['Glasses'], operationId: 'deleteGlassware', description: 'Delete a specific glassware', summary: 'Delete glassware', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

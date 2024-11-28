@@ -16,11 +16,10 @@ use Kami\Cocktail\Http\Resources\IngredientCategoryResource;
 
 class IngredientCategoryController extends Controller
 {
-    #[OAT\Get(path: '/ingredient-categories', tags: ['Ingredient category'], summary: 'Show a list of ingredient categories', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Get(path: '/ingredient-categories', tags: ['Ingredient category'], operationId: 'listIngredientCategories', description: 'List all ingredient categories in a bar', summary: 'List ingredient categories', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\IngredientCategory::class),
     ])]
     public function index(): JsonResource
@@ -30,10 +29,10 @@ class IngredientCategoryController extends Controller
         return IngredientCategoryResource::collection($categories);
     }
 
-    #[OAT\Get(path: '/ingredient-categories/{id}', tags: ['Ingredient category'], summary: 'Show ingredient category', parameters: [
+    #[OAT\Get(path: '/ingredient-categories/{id}', tags: ['Ingredient category'], operationId: 'showIngredientCategory', description: 'Show a specific ingredient category', summary: 'Show ingredient category', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\IngredientCategory::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -49,8 +48,7 @@ class IngredientCategoryController extends Controller
         return new IngredientCategoryResource($category);
     }
 
-    #[OAT\Post(path: '/ingredient-categories', tags: ['Ingredient category'], summary: 'Create a new ingredient category', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Post(path: '/ingredient-categories', tags: ['Ingredient category'], operationId: 'saveIngredientCategory', description: 'Create a specific ingredient category', summary: 'Create ingredient category', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -82,7 +80,7 @@ class IngredientCategoryController extends Controller
             ->header('Location', route('ingredient-categories.show', $category->id));
     }
 
-    #[OAT\Put(path: '/ingredient-categories/{id}', tags: ['Ingredient category'], summary: 'Update ingredient category', parameters: [
+    #[OAT\Put(path: '/ingredient-categories/{id}', tags: ['Ingredient category'], operationId: 'updateIngredientCategory', description: 'Update a specific ingredient category', summary: 'Update ingredient category', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -90,7 +88,7 @@ class IngredientCategoryController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\IngredientCategoryRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\IngredientCategory::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -111,7 +109,7 @@ class IngredientCategoryController extends Controller
         return new IngredientCategoryResource($category);
     }
 
-    #[OAT\Delete(path: '/ingredient-categories/{id}', tags: ['Ingredient category'], summary: 'Delete ingredient category', parameters: [
+    #[OAT\Delete(path: '/ingredient-categories/{id}', tags: ['Ingredient category'], operationId: 'deleteIngredientCategory', description: 'Delete a specific ingredient category', summary: 'Delete ingredient category', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

@@ -9,8 +9,8 @@ use Laravel\Sanctum\Sanctum;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use Illuminate\Support\Facades\DB;
-use Kami\Cocktail\Models\UserRoleEnum;
 use Kami\Cocktail\Models\BarMembership;
+use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
 

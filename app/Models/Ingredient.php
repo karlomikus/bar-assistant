@@ -16,9 +16,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Ingredient extends Model
+class Ingredient extends Model implements UploadableInterface
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\IngredientFactory> */
     use HasFactory;
@@ -201,6 +202,26 @@ class Ingredient extends Model
             ->join('ingredients', 'ingredients.id', 'cocktail_ingredient_substitutes.ingredient_id')
             ->where('cocktail_ingredients.ingredient_id', $this->id)
             ->get();
+    }
+
+    /**
+     * @return Collection<int, IngredientPrice>
+     */
+    public function getPricesWithConvertedUnits(?string $toUnits): Collection
+    {
+        if ($toUnits === null) {
+            return $this->prices;
+        }
+
+        $newPrices = $this->prices->map(function (IngredientPrice $ip) use ($toUnits) {
+            $convertedAmount = $ip->getAmount()->convertTo(new UnitValueObject($toUnits));
+            $ip->amount = $convertedAmount->amountMin;
+            $ip->units = $convertedAmount->units->value;
+
+            return $ip;
+        });
+
+        return $newPrices;
     }
 
     public function delete(): ?bool

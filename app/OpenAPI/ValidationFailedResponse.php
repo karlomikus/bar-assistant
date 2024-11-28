@@ -14,6 +14,9 @@ class ValidationFailedResponse extends OAT\Response
     {
         parent::__construct(response: 422, description: 'Request validation failed.', content: [
             new OAT\JsonContent(ref: ValidationError::class),
+        ], headers: [
+            new OAT\Header(header: 'x-ratelimit-limit', description: 'Max number of attempts.', schema: new OAT\Schema(type: 'integer')),
+            new OAT\Header(header: 'x-ratelimit-remaining', description: 'Remaining number of attempts.', schema: new OAT\Schema(type: 'integer')),
         ]);
     }
 }

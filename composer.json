@@ -7,7 +7,7 @@
         "http-interop/http-factory-guzzle": "^1.2",
         "jcupitt/vips": "^2.4",
         "kalnoy/nestedset": "^6.0",
-        "karlomikus/recipe-utils": "^0.12.0",
+        "karlomikus/recipe-utils": "^0.13.0",
         "laravel/cashier-paddle": "^2.0",
         "laravel/framework": "^11.0",
         "laravel/horizon": "^5.21",

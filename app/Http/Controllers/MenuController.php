@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Menu;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
+use Kami\Cocktail\Models\MenuCocktail;
 use Kami\Cocktail\Http\Requests\MenuRequest;
 use Kami\Cocktail\Http\Resources\MenuResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -15,11 +17,10 @@ use Kami\Cocktail\Http\Resources\MenuPublicResource;
 
 class MenuController extends Controller
 {
-    #[OAT\Get(path: '/menu', tags: ['Menu'], summary: 'Show menu', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Get(path: '/menu', tags: ['Menu'], operationId: 'showMenu', description: 'Show a bar menu', summary: 'Show menu', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Menu::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -40,10 +41,10 @@ class MenuController extends Controller
         return new MenuResource($menu);
     }
 
-    #[OAT\Get(path: '/explore/menus/{slug}', tags: ['Explore'], summary: 'Show public bar menu', parameters: [
+    #[OAT\Get(path: '/explore/menus/{slug}', tags: ['Explore'], operationId: 'publicMenu', description: 'Show a public bar menu details', summary: 'Show public menu', parameters: [
         new OAT\Parameter(name: 'slug', in: 'path', required: true, description: 'Bar database slug', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\MenuExplore::class),
     ])]
     #[BAO\NotFoundResponse]
@@ -61,8 +62,7 @@ class MenuController extends Controller
         return new MenuPublicResource($menu);
     }
 
-    #[OAT\Post(path: '/menu', tags: ['Menu'], summary: 'Update menu', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Post(path: '/menu', tags: ['Menu'], operationId: 'updateMenu', description: 'Update bar menu', summary: 'Update menu', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -70,7 +70,7 @@ class MenuController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\MenuRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Menu::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -90,5 +90,54 @@ class MenuController extends Controller
         $menu->save();
 
         return new MenuResource($menu);
+    }
+
+    #[OAT\Get(path: '/menu/export', tags: ['Menu'], operationId: 'exportMenu', summary: 'Export menu', description: 'Export menu as CSV', parameters: [
+        new BAO\Parameters\BarIdHeaderParameter(),
+    ])]
+    #[BAO\SuccessfulResponse(content: [
+        new OAT\MediaType(mediaType: 'text/csv', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    public function export(Request $request): Response
+    {
+        if ($request->user()->cannot('view', Menu::class)) {
+            abort(403);
+        }
+
+        $records = [
+            [
+                'cocktail',
+                'ingredients',
+                'category',
+                'price',
+                'currency',
+                'full_price',
+            ]
+        ];
+
+        $cocktails = MenuCocktail::query()
+            ->with('cocktail.ingredients.ingredient')
+            ->join('menus', 'menus.id', '=', 'menu_cocktails.menu_id')
+            ->where('menus.bar_id', bar()->id)
+            ->get();
+
+        foreach ($cocktails as $menuCocktail) {
+            $record = [
+                e(preg_replace("/\s+/u", " ", $menuCocktail->cocktail->name)),
+                e($menuCocktail->cocktail->getIngredientNames()->implode(', ')),
+                e($menuCocktail->category_name),
+                $menuCocktail->getMoney()->getAmount()->toFloat(),
+                $menuCocktail->getMoney()->getCurrency()->getCurrencyCode(),
+                (string) $menuCocktail->getMoney(),
+            ];
+
+            $records[] = $record;
+        }
+
+        $writer = \League\Csv\Writer::createFromString();
+        $writer->insertAll($records);
+
+        return new Response($writer->toString(), 200, ['Content-Type' => 'text/csv']);
     }
 }

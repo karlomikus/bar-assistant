@@ -22,21 +22,27 @@ use OpenApi\Attributes as OAT;
 
 [Homepage](https://barassistant.app/) &middot; [Official Documentation](https://bar-assistant.github.io/docs/) &middot; [GitHub Repository](https://github.com/karlomikus/bar-assistant)
 
+## Authentication
+
+To use the API, you need to generate a token. If you have an account you can use the login endpoint to get a token, or if you have a personal access token you can use it directly. Keep in mind personal access tokens can be limited to certain scopes. Tokens generated via login endpoint expire after 14 days.
+
+Treat your token like a password and don't share it with anyone.
+
+Include your login token in the header of every request, using the following format: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.
+
+A `401 Unauthorized` status code will be returned if you attempt to access a resource without token.
+
 ## Rate Limiting
 
 The rate limit is set to 1,000 requests per minute per IP address, or per user ID if authenticated. Certain endpoints have specific rate limits, such as importing and exporting data. Exporting is limited to 1 request per minute, while importing is restricted to 2 requests per minute for users without a subscription (applicable to cloud-hosted instances).
 
 ## Content-Type
 
-Ensure that each request includes the `Content-Type: application/json` header.
-
-## Auth
-
-Include your login token in the header of every request, using the following format: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.
+Ensure that requests include the `Accept: application/json` header.
 
 ## Bar context
 
-For requests that require a reference to a specific bar, include the `bar_id` in the query string, e.g., `/cocktails?bar_id=1`, or use `Bar-Assistant-Bar-Id` header in your request.
+For requests that require a reference to a specific bar, use `Bar-Assistant-Bar-Id` header with the value set to bar id in your request.
 
 ## Authorization
 

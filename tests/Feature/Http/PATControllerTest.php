@@ -7,7 +7,7 @@ namespace Tests\Feature\Http;
 use Carbon\Carbon;
 use Tests\TestCase;
 use Kami\Cocktail\Models\User;
-use Kami\Cocktail\Models\AbilityEnum;
+use Kami\Cocktail\Models\Enums\AbilityEnum;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Kami\Cocktail\Models\PersonalAccessToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;

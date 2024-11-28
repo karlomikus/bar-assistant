@@ -18,11 +18,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class TagController extends Controller
 {
-    #[OAT\Get(path: '/tags', tags: ['Tag'], summary: 'Show a list of all tags', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Get(path: '/tags', tags: ['Tag'], operationId: 'listTags', description: 'Show a list of tags in a bar', summary: 'List tags', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Tag::class),
     ])]
     public function index(): JsonResource
@@ -32,10 +31,10 @@ class TagController extends Controller
         return TagResource::collection($tags);
     }
 
-    #[OAT\Get(path: '/tags/{id}', tags: ['Tag'], summary: 'Show a single tag', parameters: [
+    #[OAT\Get(path: '/tags/{id}', tags: ['Tag'], operationId: 'showTag', description: 'Show a single tag', summary: 'Show tag', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Tag::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -51,8 +50,7 @@ class TagController extends Controller
         return new TagResource($tag);
     }
 
-    #[OAT\Post(path: '/tags', tags: ['Tag'], summary: 'Create a new tag', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Post(path: '/tags', tags: ['Tag'], operationId: 'saveTag', description: 'Create a new tag', summary: 'Create tag', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -83,7 +81,7 @@ class TagController extends Controller
             ->header('Location', route('tags.show', $tag->id));
     }
 
-    #[OAT\Put(path: '/tags/{id}', tags: ['Tag'], summary: 'Update tag', parameters: [
+    #[OAT\Put(path: '/tags/{id}', tags: ['Tag'], operationId: 'updateTag', description: 'Update a single tag', summary: 'Update tag', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -91,7 +89,7 @@ class TagController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\TagRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Tag::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -113,7 +111,7 @@ class TagController extends Controller
         return new TagResource($tag);
     }
 
-    #[OAT\Delete(path: '/tags/{id}', tags: ['Tag'], summary: 'Delete tag', parameters: [
+    #[OAT\Delete(path: '/tags/{id}', tags: ['Tag'], operationId: 'deleteTag', description: 'Delete a single tag', summary: 'Delete tag', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

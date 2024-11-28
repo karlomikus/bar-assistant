@@ -9,8 +9,8 @@ use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\App;
-use Kami\Cocktail\Models\AbilityEnum;
 use Kami\Cocktail\Http\Requests\PATRequest;
+use Kami\Cocktail\Models\Enums\AbilityEnum;
 use Kami\Cocktail\Http\Resources\PATResource;
 use Kami\Cocktail\Models\PersonalAccessToken;
 use Kami\Cocktail\Http\Resources\TokenResource;
@@ -18,8 +18,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class PATController extends Controller
 {
-    #[OAT\Get(path: '/tokens', tags: ['Tokens'], summary: 'Show a list of tokens')]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[OAT\Get(path: '/tokens', tags: ['Tokens'], operationId: 'listTokens', description: 'List all personal access tokens', summary: 'List tokens')]
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\PersonalAccessToken::class),
     ])]
     public function index(Request $request): JsonResource
@@ -38,7 +38,7 @@ class PATController extends Controller
         return PATResource::collection($tokens);
     }
 
-    #[OAT\Post(path: '/tokens', tags: ['Tokens'], summary: 'Create new personal access token', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/tokens', tags: ['Tokens'], operationId: 'saveToken', description: 'Create a new personal access token', summary: 'Create token', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\PersonalAccessTokenRequest::class),
@@ -70,7 +70,7 @@ class PATController extends Controller
         return new TokenResource($token);
     }
 
-    #[OAT\Delete(path: '/tokens/{id}', tags: ['Tokens'], summary: 'Revoke personal access token', parameters: [
+    #[OAT\Delete(path: '/tokens/{id}', tags: ['Tokens'], operationId: 'deleteToken', description: 'Revoke a personal access token', summary: 'Revoke token', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

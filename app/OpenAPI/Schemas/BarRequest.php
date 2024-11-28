@@ -24,7 +24,6 @@ class BarRequest
     public ?string $defaultLang = null;
     #[OAT\Property(property: 'enable_invites', description: 'Enable users with invite code to join this bar. Default `false`.')]
     public bool $enableInvites = true;
-    /** @var array<mixed> */
-    #[OAT\Property(items: new OAT\Items(type: 'enum', enum: BarOptionsEnum::class), description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.')]
-    public array $options = ['ingredients', 'cocktails'];
+    #[OAT\Property(description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.')]
+    public BarOptionsEnum $options;
 }

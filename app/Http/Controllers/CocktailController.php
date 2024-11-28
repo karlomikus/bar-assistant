@@ -11,6 +11,8 @@ use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\Models\CocktailPrice;
+use Kami\Cocktail\Models\PriceCategory;
 use Illuminate\Support\Facades\Validator;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Services\CocktailService;
@@ -23,6 +25,7 @@ use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Kami\Cocktail\Http\Resources\CocktailPriceResource;
 use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest as CocktailDTO;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientRequest as IngredientDTO;
@@ -30,8 +33,7 @@ use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientSubstituteRequest as Substit
 
 class CocktailController extends Controller
 {
-    #[OAT\Get(path: '/cocktails', tags: ['Cocktails'], summary: 'Show a list of cocktails', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Get(path: '/cocktails', tags: ['Cocktails'], operationId: 'listCocktails', description: 'Show a list of all cocktails in a bar', summary: 'List cocktails', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
@@ -65,7 +67,7 @@ class CocktailController extends Controller
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `missing_bar_ingredients`, `favorited_at`.', schema: new OAT\Schema(type: 'string')),
         new OAT\Parameter(name: 'include', in: 'query', description: 'Include additional relationships. Available relations: `glass`, `method`, `user`, `navigation`, `utensils`, `createdUser`, `updatedUser`, `images`, `tags`, `ingredients.ingredient`, `ratings`.', schema: new OAT\Schema(type: 'string')),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(BAO\Schemas\Cocktail::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -83,10 +85,10 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails->withQueryString());
     }
 
-    #[OAT\Get(path: '/cocktails/{id}', tags: ['Cocktails'], summary: 'Show a specific cocktail', parameters: [
+    #[OAT\Get(path: '/cocktails/{id}', tags: ['Cocktails'], operationId: 'showCocktail', description: 'Show details of a specific cocktail', summary: 'Show cocktail', parameters: [
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -106,8 +108,7 @@ class CocktailController extends Controller
         return new CocktailResource($cocktail);
     }
 
-    #[OAT\Post(path: '/cocktails', tags: ['Cocktails'], summary: 'Create a new cocktail', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Post(path: '/cocktails', tags: ['Cocktails'], operationId: 'saveCocktail', description: 'Create a new cocktail', summary: 'Create cocktail', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -148,7 +149,7 @@ class CocktailController extends Controller
             ->header('Location', route('cocktails.show', $cocktail->id));
     }
 
-    #[OAT\Put(path: '/cocktails/{id}', tags: ['Cocktails'], summary: 'Update a specific cocktail', parameters: [
+    #[OAT\Put(path: '/cocktails/{id}', tags: ['Cocktails'], operationId: 'updateCocktail', description: 'Update a specific cocktail', summary: 'Update cocktail', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -156,7 +157,7 @@ class CocktailController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\CocktailRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -189,7 +190,7 @@ class CocktailController extends Controller
         return new CocktailResource($cocktail);
     }
 
-    #[OAT\Delete(path: '/cocktails/{id}', tags: ['Cocktails'], summary: 'Delete a specific cocktail', parameters: [
+    #[OAT\Delete(path: '/cocktails/{id}', tags: ['Cocktails'], operationId: 'deleteCocktail', description: 'Delete a specific cocktail', summary: 'Delete cocktail', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
@@ -208,10 +209,10 @@ class CocktailController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Post(path: '/cocktails/{id}/toggle-favorite', tags: ['Cocktails'], summary: 'Toggle cocktail as favorite', parameters: [
+    #[OAT\Post(path: '/cocktails/{id}/toggle-favorite', tags: ['Cocktails'], operationId: 'toggleCocktailFavorite', description: 'Marks cocktail as users favorite. Can be called again to remove the favorite.', summary: 'Toggle favorite', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new OAT\JsonContent(properties: [new OAT\Property(property: 'data', type: 'object', properties: [
             new OAT\Property(property: 'id', type: 'integer', example: 1),
             new OAT\Property(property: 'is_favorited', type: 'boolean', example: true),
@@ -228,10 +229,10 @@ class CocktailController extends Controller
         ]);
     }
 
-    #[OAT\Post(path: '/cocktails/{id}/public-link', tags: ['Cocktails'], summary: 'Create a public ID for cocktail', parameters: [
+    #[OAT\Post(path: '/cocktails/{id}/public-link', tags: ['Cocktails'], operationId: 'createCocktailPublicLink', description: 'Create a public link that can be shared', summary: 'Create a public ID', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -255,7 +256,7 @@ class CocktailController extends Controller
         return new CocktailResource($cocktail);
     }
 
-    #[OAT\Delete(path: '/cocktails/{id}/public-link', tags: ['Cocktails'], summary: 'Delete cocktail public link', parameters: [
+    #[OAT\Delete(path: '/cocktails/{id}/public-link', tags: ['Cocktails'], operationId: 'deleteCocktailPublicLink', description: 'Delete a cocktail public link', summary: 'Delete public link', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
@@ -276,12 +277,12 @@ class CocktailController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/cocktails/{id}/share', tags: ['Cocktails'], summary: 'Share a cocktail', parameters: [
+    #[OAT\Get(path: '/cocktails/{id}/share', tags: ['Cocktails'], operationId: 'shareCocktail', description: 'Get cocktail details in a specific shareable format', summary: 'Share cocktail', parameters: [
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
         new OAT\Parameter(name: 'type', in: 'query', description: 'Share format', schema: new OAT\Schema(type: 'string', enum: ['json', 'json-ld', 'yaml', 'yml', 'xml', 'text', 'markdown', 'md'])),
         new OAT\Parameter(name: 'units', in: 'query', description: 'Units of measurement', schema: new OAT\Schema(type: 'string')),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new OAT\JsonContent(required: ['data'], properties: [
             new OAT\Property(property: 'data', type: 'object', required: ['type', 'content'], properties: [
                 new OAT\Property(property: 'type', type: 'string', example: 'json'),
@@ -343,10 +344,10 @@ class CocktailController extends Controller
         ]);
     }
 
-    #[OAT\Get(path: '/cocktails/{id}/similar', tags: ['Cocktails'], summary: 'Show similar cocktails', parameters: [
+    #[OAT\Get(path: '/cocktails/{id}/similar', tags: ['Cocktails'], operationId: 'showSimilarCocktails', description: 'Shows similar cocktails to the given cocktail. Prefers cocktails with same base ingredient.', summary: 'Show similar cocktails', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Cocktail::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -364,7 +365,7 @@ class CocktailController extends Controller
         return CocktailResource::collection($relatedCocktails);
     }
 
-    #[OAT\Post(path: '/cocktails/{id}/copy', tags: ['Cocktails'], summary: 'Copy cocktail', parameters: [
+    #[OAT\Post(path: '/cocktails/{id}/copy', tags: ['Cocktails'], operationId: 'copyCocktail', description: 'Create a copy of a cocktail', summary: 'Copy cocktail', parameters: [
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
@@ -457,5 +458,36 @@ class CocktailController extends Controller
             ->response()
             ->setStatusCode(201)
             ->header('Location', route('cocktails.show', $cocktail->id));
+    }
+
+    #[OAT\Get(path: '/cocktails/{id}/prices', tags: ['Cocktails'], operationId: 'getCocktailPrices', summary: 'Show cocktail prices', description: 'Show calculated prices categorized by bar price categories. Prices are calculated using ingredient prices. If price category is missing, the ingredients don\'t have a price in that category. If there are multiple prices in category, the minimum price is used. Keep in mind that the price is just an estimate and might not be accurate.', parameters: [
+        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[BAO\SuccessfulResponse(content: [
+        new BAO\WrapItemsWithData(BAO\Schemas\CocktailPrice::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function prices(Request $request, string $idOrSlug): JsonResource
+    {
+        $cocktail = Cocktail::where('slug', $idOrSlug)
+            ->orWhere('id', $idOrSlug)
+            ->firstOrFail()
+            ->load(['ingredients.ingredient.prices.priceCategory']);
+
+        if ($request->user()->cannot('show', $cocktail)) {
+            abort(403);
+        }
+
+        $results = [];
+        $categories = PriceCategory::where('bar_id', $cocktail->bar_id)->get();
+
+        foreach ($categories as $category) {
+            $result = new CocktailPriceResource(new CocktailPrice($category, $cocktail));
+
+            $results[] = $result;
+        }
+
+        return CocktailPriceResource::collection($results);
     }
 }

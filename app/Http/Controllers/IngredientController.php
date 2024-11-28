@@ -28,8 +28,7 @@ use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest as IngredientDTO;
 
 class IngredientController extends Controller
 {
-    #[OAT\Get(path: '/ingredients', tags: ['Ingredients'], summary: 'Show a list of ingredients', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Get(path: '/ingredients', tags: ['Ingredients'], operationId: 'listIngredients', description: 'Show a list of all ingredients in a bar', summary: 'List ingredients', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
@@ -51,7 +50,7 @@ class IngredientController extends Controller
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `strength`, `total_cocktails`.', schema: new OAT\Schema(type: 'string')),
         new OAT\Parameter(name: 'include', in: 'query', description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `prices`, `ingredientParts`, `category`, `images`.', schema: new OAT\Schema(type: 'string')),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(BAO\Schemas\Ingredient::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -67,10 +66,10 @@ class IngredientController extends Controller
         return IngredientResource::collection($ingredients->withQueryString());
     }
 
-    #[OAT\Get(path: '/ingredients/{id}', tags: ['Ingredients'], summary: 'Show an ingredient', parameters: [
+    #[OAT\Get(path: '/ingredients/{id}', tags: ['Ingredients'], operationId: 'showIngredient', description: 'Show a specific ingredient', summary: 'Show ingredient', parameters: [
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Ingredient::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -101,8 +100,7 @@ class IngredientController extends Controller
         return new IngredientResource($ingredient);
     }
 
-    #[OAT\Post(path: '/ingredients', tags: ['Ingredients'], summary: 'Create an ingredient', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Post(path: '/ingredients', tags: ['Ingredients'], operationId: 'saveIngredient', description: 'Create a new ingredient', summary: 'Create ingredient', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -137,7 +135,7 @@ class IngredientController extends Controller
             ->header('Location', route('ingredients.show', $ingredient->id));
     }
 
-    #[OAT\Put(path: '/ingredients/{id}', tags: ['Ingredients'], summary: 'Update an ingredient', parameters: [
+    #[OAT\Put(path: '/ingredients/{id}', tags: ['Ingredients'], operationId: 'updateIngredient', description: 'Update a specific ingredient', summary: 'Update ingredient', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -145,7 +143,7 @@ class IngredientController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\IngredientRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Ingredient::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -171,7 +169,7 @@ class IngredientController extends Controller
         return new IngredientResource($ingredient);
     }
 
-    #[OAT\Delete(path: '/ingredients/{id}', tags: ['Ingredients'], summary: 'Delete an ingredient', parameters: [
+    #[OAT\Delete(path: '/ingredients/{id}', tags: ['Ingredients'], operationId: 'deleteIngredient', description: 'Delete a specific ingredient', summary: 'Delete ingredient', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
@@ -190,10 +188,10 @@ class IngredientController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/ingredients/{id}/extra', tags: ['Ingredients'], summary: 'Extra cocktails you can make if you add this ingredient to your shelf', parameters: [
+    #[OAT\Get(path: '/ingredients/{id}/extra', tags: ['Ingredients'], operationId: 'extraIngredients', description: 'Show a list of extra cocktails you can make if you add given ingredient to your shelf', summary: 'Extra cocktails', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\CocktailBasic::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -227,12 +225,12 @@ class IngredientController extends Controller
         ]);
     }
 
-    #[OAT\Get(path: '/ingredients/{id}/cocktails', tags: ['Ingredients'], summary: 'List of cocktails that use this ingredient', parameters: [
+    #[OAT\Get(path: '/ingredients/{id}/cocktails', tags: ['Ingredients'], operationId: 'ingredientCocktails', description: 'List all cocktails that use this ingredient', summary: 'List cocktails', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -259,17 +257,17 @@ class IngredientController extends Controller
             )
             ->pluck('cocktail_id');
 
-        $cocktails = Cocktail::whereIn('id', $cocktailIds)->orderBy('name')->paginate($request->get('per_page', 100));
+        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->orderBy('name')->paginate($request->get('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails);
     }
 
-    #[OAT\Get(path: '/ingredients/{id}/substitutes', tags: ['Ingredients'], summary: 'List ingredient substitutes', description: 'Show a list of ingredients that are used as a substitute for this ingredient in cocktail recipes.', parameters: [
+    #[OAT\Get(path: '/ingredients/{id}/substitutes', tags: ['Ingredients'], operationId: 'ingredientSubstitutes', summary: 'List ingredient substitutes', description: 'Show a list of ingredients that are used as a substitute for this ingredient in cocktail recipes.', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(BAO\Schemas\IngredientBasic::class),
     ])]
     #[BAO\NotAuthorizedResponse]

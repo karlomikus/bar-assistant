@@ -24,11 +24,11 @@ use Kami\Cocktail\Services\Image\ImageThumbnailService;
 
 class ImageController extends Controller
 {
-    #[OAT\Get(path: '/images', tags: ['Images'], summary: 'List uploaded images', description: 'List all images uploaded by the authenticated user', parameters: [
+    #[OAT\Get(path: '/images', tags: ['Images'], operationId: 'listImages', summary: 'List images', description: 'List all images uploaded by the authenticated user', parameters: [
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(BAO\Schemas\Image::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -40,10 +40,10 @@ class ImageController extends Controller
         return ImageResource::collection($images->withQueryString());
     }
 
-    #[OAT\Get(path: '/images/{id}', tags: ['Images'], summary: 'Show an image', parameters: [
+    #[OAT\Get(path: '/images/{id}', tags: ['Images'], operationId: 'showImage', description: 'Show a single image', summary: 'Show image', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Image::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -59,7 +59,7 @@ class ImageController extends Controller
         return new ImageResource($image);
     }
 
-    #[OAT\Post(path: '/images', tags: ['Images'], summary: 'Upload an image', description: 'Used to upload multiple images at once. Uploaded images via this endpoint will not be attached to any resource. Images are converted to WebP format with 85% quality of the original image.', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/images', tags: ['Images'], operationId: 'uploadImage', summary: 'Upload image', description: 'Used to upload multiple images at once. Uploaded images via this endpoint will not be attached to any resource. Images are converted to WebP format with 85% quality of the original image.', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(type: 'object', required: ['images'], properties: [
@@ -67,7 +67,7 @@ class ImageController extends Controller
             ])),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Image::class),
     ])]
     public function store(ImageService $imageservice, Request $request): JsonResource
@@ -94,7 +94,7 @@ class ImageController extends Controller
         return ImageResource::collection($images);
     }
 
-    #[OAT\Post(path: '/images/{id}', tags: ['Images'], summary: 'Update image', parameters: [
+    #[OAT\Post(path: '/images/{id}', tags: ['Images'], operationId: 'updateImage', description: 'Update a specific image', summary: 'Update image', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -102,7 +102,7 @@ class ImageController extends Controller
             new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(ref: BAO\Schemas\ImageRequest::class)),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Image::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -131,7 +131,7 @@ class ImageController extends Controller
         return new ImageResource($image);
     }
 
-    #[OAT\Delete(path: '/images/{id}', tags: ['Images'], summary: 'Delete image', parameters: [
+    #[OAT\Delete(path: '/images/{id}', tags: ['Images'], operationId: 'deleteImage', description: 'Delete a specific image', summary: 'Delete image', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
@@ -150,10 +150,10 @@ class ImageController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/images/{id}/thumb', tags: ['Images'], summary: 'Get a thumbnail of an image', parameters: [
+    #[OAT\Get(path: '/images/{id}/thumb', tags: ['Images'], operationId: 'getImageThumbnail', description: 'Generate a thumbnail of a specific image', summary: 'Get thumbnail', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], security: [])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new OAT\MediaType(mediaType: 'image/jpg', schema: new OAT\Schema(type: 'string', format: 'binary')),
     ])]
     #[BAO\NotFoundResponse]

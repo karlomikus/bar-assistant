@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use Kami\Cocktail\Models\UserRoleEnum;
+use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

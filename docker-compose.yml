@@ -24,6 +24,7 @@ services:
     restart: unless-stopped
     environment:
       PHP_FPM_POOL_NAME: "bass-horizon"
+      APP_ROLE: "worker"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     command: ["php", "/var/www/cocktails/artisan", "horizon"]
@@ -48,7 +49,7 @@ services:
     restart: unless-stopped
 
   meilisearch:
-    image: getmeili/meilisearch:v1.7
+    image: getmeili/meilisearch:v1.11
     environment:
       - MEILI_MASTER_KEY=masterKeyThatIsReallyReallyLong4Real
     restart: unless-stopped

@@ -11,9 +11,9 @@ use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
-use Kami\Cocktail\Models\UserRoleEnum;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\External\BarOptionsEnum;
+use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Kami\Cocktail\External\Import\FromDataPack;
 
 class BarImportRecipes extends Command

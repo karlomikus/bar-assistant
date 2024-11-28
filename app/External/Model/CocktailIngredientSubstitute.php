@@ -8,28 +8,29 @@ use Illuminate\Support\Str;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\External\SupportsDataPack;
-use Kami\Cocktail\Models\CocktailIngredientFormatter;
+use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
+use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute as CocktailIngredientSubstituteModel;
 
 readonly class CocktailIngredientSubstitute implements SupportsDataPack, SupportsDraft2
 {
     private function __construct(
         public IngredientBasic $ingredient,
-        public ?float $amount = null,
-        public ?string $units = null,
-        public ?float $amountMax = null,
-        public ?CocktailIngredientFormatter $formatter = null,
+        public ?AmountValueObject $amount = null,
     ) {
     }
 
     public static function fromModel(CocktailIngredientSubstituteModel $model, ?Units $toUnits = null): self
     {
+        $amount = $model->getAmount();
+
+        if ($toUnits && !$amount->units->isDash()) {
+            $amount = $amount->convertTo(new UnitValueObject($toUnits->value));
+        }
+
         return new self(
             IngredientBasic::fromModel($model->ingredient),
-            $model->amount,
-            $model->units,
-            $model->amount_max,
-            $model->getConvertedTo($toUnits),
+            $amount,
         );
     }
 
@@ -44,9 +45,11 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
                 'origin' => $sourceArray['origin'] ?? null,
                 'category' => $sourceArray['category'] ?? null,
             ]),
-            $sourceArray['amount'] ?? null,
-            $sourceArray['units'] ?? null,
-            $sourceArray['amount_max'] ?? null,
+            new AmountValueObject(
+                $sourceArray['amount'] ?? 0.0,
+                new UnitValueObject($sourceArray['units'] ?? ''),
+                $sourceArray['amount_max'] ?? null,
+            ),
         );
     }
 
@@ -54,9 +57,9 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
     {
         return [
             ...$this->ingredient->toDataPackArray(),
-            'amount' => $this->formatter?->getAmount() ?? $this->amount,
-            'units' => $this->formatter?->getUnits() ?? $this->units,
-            'amount_max' => $this->formatter?->getMaxAmount() ?? $this->amountMax,
+            'amount' => $this->amount->amountMin <= 0.0 ? null : $this->amount->amountMin,
+            'units' => $this->amount->units->value === '' ? null : $this->amount->units->value,
+            'amount_max' => $this->amount->amountMax,
         ];
     }
 
@@ -67,9 +70,11 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
                 '_id' => $sourceArray['_id'],
                 'name' => $sourceArray['name'] ?? '',
             ]),
-            $sourceArray['amount'] ?? null,
-            $sourceArray['units'] ?? null,
-            $sourceArray['amount_max'] ?? null,
+            new AmountValueObject(
+                $sourceArray['amount'] ?? 0.0,
+                new UnitValueObject($sourceArray['units'] ?? ''),
+                $sourceArray['amount_max'] ?? null,
+            ),
         );
     }
 
@@ -77,9 +82,9 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
     {
         return [
             '_id' => $this->ingredient->id,
-            'amount' => $this->formatter?->getAmount() ?? $this->amount,
-            'units' => $this->formatter?->getUnits() ?? $this->units,
-            'amount_max' => $this->formatter?->getMaxAmount() ?? $this->amountMax,
+            'amount' => $this->amount->amountMin <= 0.0 ? null : $this->amount->amountMin,
+            'units' => $this->amount->units->value === '' ? null : $this->amount->units->value,
+            'amount_max' => $this->amount->amountMax,
         ];
     }
 }

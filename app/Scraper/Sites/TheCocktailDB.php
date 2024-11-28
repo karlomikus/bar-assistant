@@ -98,7 +98,6 @@ class TheCocktailDB extends AbstractSiteExtractor
                 $recipeIngredient->amount,
                 $recipeIngredient->units,
                 $recipeIngredient->source,
-                $recipeIngredient->originalAmount,
                 $recipeIngredient->comment,
                 $recipeIngredient->amountMax
             );

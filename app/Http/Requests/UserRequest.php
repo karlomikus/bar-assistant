@@ -7,8 +7,8 @@ namespace Kami\Cocktail\Http\Requests;
 use Kami\Cocktail\Models\User;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
-use Kami\Cocktail\Models\UserRoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Kami\Cocktail\Models\Enums\UserRoleEnum;
 
 class UserRequest extends FormRequest
 {

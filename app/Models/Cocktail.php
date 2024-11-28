@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Carbon\Carbon;
+use Brick\Money\Money;
 use Kami\Cocktail\Utils;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
@@ -160,10 +161,7 @@ class Cocktail extends Model implements UploadableInterface
     public function getVolume(): float
     {
         $ingredients = $this->ingredients->map(function ($i) {
-            return [
-                'amount' => $i->amount,
-                'units' => $i->units,
-            ];
+            return $i->getAmount();
         })->toArray();
 
         return Utils::calculateVolume($ingredients);
@@ -373,5 +371,23 @@ class Cocktail extends Model implements UploadableInterface
                 return $ci->amount . ' ' . $ci->units . ' ' . $ci->ingredient->name;
             }),
         ];
+    }
+
+    public function calculatePrice(PriceCategory $priceCategory): Money
+    {
+        $totalPrice = Money::of(0, $priceCategory->getCurrency()->value);
+
+        /** @var CocktailIngredient */
+        foreach ($this->ingredients as $cocktailIngredient) {
+            $pricePerPour = $cocktailIngredient->getConvertedPricePerUse($priceCategory);
+
+            if ($pricePerPour === null) {
+                continue;
+            }
+
+            $totalPrice = $totalPrice->plus($pricePerPour);
+        }
+
+        return $totalPrice;
     }
 }

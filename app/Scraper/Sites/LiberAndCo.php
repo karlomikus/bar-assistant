@@ -20,12 +20,12 @@ class LiberAndCo extends AbstractSiteExtractor
 
     public function name(): string
     {
-        return $this->crawler->filter('.product .product_name')->first()->text();
+        return $this->crawler->filter('.product__title')->first()->text();
     }
 
     public function description(): ?string
     {
-        return $this->crawler->filter('.product .description p:first-of-type')->text();
+        return $this->crawler->filter('.product__description p:first-of-type')->text();
     }
 
     public function source(): ?string
@@ -86,7 +86,6 @@ class LiberAndCo extends AbstractSiteExtractor
                 $amount,
                 $recipeIngredient->units,
                 $recipeIngredient->source,
-                $recipeIngredient->originalAmount,
                 $recipeIngredient->comment,
                 $recipeIngredient->amountMax
             );
@@ -106,7 +105,8 @@ class LiberAndCo extends AbstractSiteExtractor
         }
 
         try {
-            $imageUrl = trim($this->crawler->filter('.product .product__images img')->first()->attr('data-src'));
+            $srcUrl = trim($this->crawler->filter('.product-gallery img')->first()->attr('src'));
+            $imageUrl = substr($srcUrl, 0, (int) strrpos($srcUrl, "?"));
             if (str_starts_with($imageUrl, '//')) {
                 $imageUrl = 'https:' . $imageUrl;
             }

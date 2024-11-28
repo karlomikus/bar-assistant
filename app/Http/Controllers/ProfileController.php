@@ -14,8 +14,8 @@ use Kami\Cocktail\Http\Requests\UpdateUserRequest;
 
 class ProfileController extends Controller
 {
-    #[OAT\Get(path: '/profile', tags: ['Profile'], summary: 'Show profile')]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[OAT\Get(path: '/profile', tags: ['Profile'], operationId: 'showProfile', description: 'Show current user profile information', summary: 'Show profile')]
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Profile::class),
     ])]
     #[BAO\NotFoundResponse]
@@ -24,7 +24,7 @@ class ProfileController extends Controller
         return new ProfileResource($request->user());
     }
 
-    #[OAT\Post(path: '/profile', tags: ['Profile'], summary: 'Update profile', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/profile', tags: ['Profile'], operationId: 'updateProfile', description: 'Update user profile', summary: 'Update profile', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\ProfileRequest::class),

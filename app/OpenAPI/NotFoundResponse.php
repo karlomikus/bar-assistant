@@ -14,6 +14,9 @@ class NotFoundResponse extends OAT\Response
     {
         parent::__construct(response: 404, description: 'Resource record not found.', content: [
             new OAT\JsonContent(properties: [new OAT\Property(property: 'data', type: 'object', ref: APIError::class)]),
+        ], headers: [
+            new OAT\Header(header: 'x-ratelimit-limit', description: 'Max number of attempts.', schema: new OAT\Schema(type: 'integer')),
+            new OAT\Header(header: 'x-ratelimit-remaining', description: 'Remaining number of attempts.', schema: new OAT\Schema(type: 'integer')),
         ]);
     }
 }

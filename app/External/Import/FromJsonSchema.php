@@ -109,21 +109,21 @@ class FromJsonSchema
                             $foundExternalSubIngredient->origin
                         )
                     ),
-                    $substitute->amount,
-                    $substitute->amountMax,
-                    $substitute->units,
+                    $substitute->amount->amountMin,
+                    $substitute->amount->amountMax,
+                    $substitute->amount->units->value,
                 );
             }
 
             $ingredient = new CocktailIngredientDTO(
                 $ingredientId,
                 $externalIngredients->firstWhere('id', $scrapedIngredient->ingredient->id)->name,
-                $scrapedIngredient->amount,
-                $scrapedIngredient->units,
+                $scrapedIngredient->amount->amountMin,
+                $scrapedIngredient->amount->units->value,
                 $sort,
                 $scrapedIngredient->optional,
                 $substitutes,
-                $scrapedIngredient->amountMax,
+                $scrapedIngredient->amount->amountMax,
                 $scrapedIngredient->note,
             );
 

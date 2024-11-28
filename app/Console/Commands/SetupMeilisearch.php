@@ -2,6 +2,7 @@
 
 namespace Kami\Cocktail\Console\Commands;
 
+use Kami\Cocktail\Models\Bar;
 use Illuminate\Console\Command;
 use Laravel\Scout\EngineManager;
 use Illuminate\Support\Facades\DB;
@@ -112,6 +113,14 @@ class SetupMeilisearch extends Command
         } else {
             file_put_contents($envFile, $envContents . PHP_EOL . 'MEILISEARCH_API_KEY_UID=' . $searchApiKey->getUid());
         }
+
+        $this->line('Updating search tokens for bars...');
+        DB::transaction(function () {
+            $bars = Bar::all();
+            foreach ($bars as $bar) {
+                $bar->updateSearchToken();
+            }
+        });
 
         $this->info('Meilisearch setup done!');
 

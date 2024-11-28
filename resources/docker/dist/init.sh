@@ -2,6 +2,14 @@
 
 set -e
 
+type=${APP_ROLE:-api}
+
+if [ "$type" = "worker" ]; then
+    echo "[BAR-ASSISTANT] Running Bar Assistant Worker..."
+
+    return 2> /dev/null; exit
+fi
+
 # Create default bar assistant directories
 mkdir -p "$APP_BASE_DIR"/storage/bar-assistant/uploads/cocktails
 mkdir -p "$APP_BASE_DIR"/storage/bar-assistant/uploads/ingredients
@@ -60,4 +68,5 @@ echo '
 '
 
 echo " 🍸 Check our managed service at https://barassistant.app/ 🍸 "
+echo " If you enjoy this project, please consider supporting the project: https://github.com/karlomikus/bar-assistant?tab=readme-ov-file#support-and-donations "
 echo "[BAR-ASSISTANT] Bar Assistant API ready [listening on port: 8080]"

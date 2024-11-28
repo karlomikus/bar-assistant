@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
-use Kami\Cocktail\Models\Price;
 use Kami\Cocktail\Models\MenuCocktail;
+use Kami\Cocktail\Models\ValueObjects\Price;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -37,7 +37,7 @@ class MenuPublicResource extends JsonResource
                             'public_id' => $menuCocktail->cocktail->public_id,
                             'name' => $menuCocktail->cocktail->name,
                             'short_ingredients' => $menuCocktail->cocktail->getIngredientNames(),
-                            'image' => $menuCocktail->cocktail->getMainImageUrl(),
+                            'image' => config('app.url') . $menuCocktail->cocktail->getMainImageThumbUrl(false),
                         ];
                     }),
                 ];

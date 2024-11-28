@@ -18,11 +18,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class NoteController extends Controller
 {
-    #[OAT\Get(path: '/notes', tags: ['Notes'], summary: 'Show a list of all notes', parameters: [
+    #[OAT\Get(path: '/notes', tags: ['Notes'], operationId: 'listNotes', description: 'Show list of all user notes', summary: 'List notes', parameters: [
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(BAO\Schemas\Note::class),
     ])]
     public function index(Request $request): JsonResource
@@ -33,10 +33,10 @@ class NoteController extends Controller
         return NoteResource::collection($notes->withQueryString());
     }
 
-    #[OAT\Get(path: '/notes/{id}', tags: ['Notes'], summary: 'Show a single note', parameters: [
+    #[OAT\Get(path: '/notes/{id}', tags: ['Notes'], operationId: 'showNote', description: 'Show a single note', summary: 'Show note', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Note::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -52,7 +52,7 @@ class NoteController extends Controller
         return new NoteResource($note);
     }
 
-    #[OAT\Post(path: '/notes', tags: ['Notes'], summary: 'Create a new note', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/notes', tags: ['Notes'], operationId: 'saveNote', description: 'Create a new note', summary: 'Create note', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\NoteRequest::class),
@@ -87,7 +87,7 @@ class NoteController extends Controller
             ->header('Location', route('notes.show', $note->id));
     }
 
-    #[OAT\Delete(path: '/notes/{id}', tags: ['Notes'], summary: 'Delete a specific note', parameters: [
+    #[OAT\Delete(path: '/notes/{id}', tags: ['Notes'], operationId: 'deleteNote', description: 'Delete a single note', summary: 'Delete note', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

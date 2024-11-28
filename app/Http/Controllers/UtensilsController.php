@@ -16,11 +16,10 @@ use Kami\Cocktail\Http\Resources\UtensilResource;
 
 class UtensilsController extends Controller
 {
-    #[OAT\Get(path: '/utensils', tags: ['Utensils'], summary: 'Show a list of utensils', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Get(path: '/utensils', tags: ['Utensils'], operationId: 'listUtensils', description: 'List all utensils in a bar', summary: 'List utensils', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Utensil::class),
     ])]
     public function index(): JsonResource
@@ -30,10 +29,10 @@ class UtensilsController extends Controller
         return UtensilResource::collection($utensils);
     }
 
-    #[OAT\Get(path: '/utensils/{id}', tags: ['Utensils'], summary: 'Show utensil', parameters: [
+    #[OAT\Get(path: '/utensils/{id}', tags: ['Utensils'], operationId: 'showUtensil', description: 'Show a single utensil', summary: 'Show utensil', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Utensil::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -49,8 +48,7 @@ class UtensilsController extends Controller
         return new UtensilResource($utensil);
     }
 
-    #[OAT\Post(path: '/utensils', tags: ['Utensils'], summary: 'Create a new utensil', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Post(path: '/utensils', tags: ['Utensils'], operationId: 'saveUtensil', description: 'Create a new utensil', summary: 'Create utensil', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -82,7 +80,7 @@ class UtensilsController extends Controller
             ->header('Location', route('utensils.show', $utensil->id));
     }
 
-    #[OAT\Put(path: '/utensils/{id}', tags: ['Utensils'], summary: 'Update a specific utensil', parameters: [
+    #[OAT\Put(path: '/utensils/{id}', tags: ['Utensils'], operationId: 'updateUtensil', description: 'Update a single utensil', summary: 'Update utensil', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -90,7 +88,7 @@ class UtensilsController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\UtensilRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Utensil::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -111,7 +109,7 @@ class UtensilsController extends Controller
         return new UtensilResource($utensil);
     }
 
-    #[OAT\Delete(path: '/utensils/{id}', tags: ['Utensils'], summary: 'Delete specific utensil', parameters: [
+    #[OAT\Delete(path: '/utensils/{id}', tags: ['Utensils'], operationId: 'deleteUtensil', description: 'Delete a single utensil', summary: 'Delete utensil', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

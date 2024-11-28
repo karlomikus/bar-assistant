@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'Bar Assistant API'
-  description: "**Bar Assistant** is all-in-one solution for managing your home bar. Compared to other recipe management software that usually tries to be more for general use, Bar Assistant is made specifically for managing cocktail recipes. This means that there are a lot of cocktail-oriented features, like ingredient substitutes, first-class ingredients, ABV calculations, unit switching and more.\n\n[Homepage](https://barassistant.app/) &middot; [Official Documentation](https://bar-assistant.github.io/docs/) &middot; [GitHub Repository](https://github.com/karlomikus/bar-assistant)\n\n## Rate Limiting\n\nThe rate limit is set to 1,000 requests per minute per IP address, or per user ID if authenticated. Certain endpoints have specific rate limits, such as importing and exporting data. Exporting is limited to 1 request per minute, while importing is restricted to 2 requests per minute for users without a subscription (applicable to cloud-hosted instances).\n\n## Content-Type\n\nEnsure that each request includes the `Content-Type: application/json` header.\n\n## Auth\n\nInclude your login token in the header of every request, using the following format: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.\n\n## Bar context\n\nFor requests that require a reference to a specific bar, include the `bar_id` in the query string, e.g., `/cocktails?bar_id=1`, or use `Bar-Assistant-Bar-Id` header in your request.\n\n## Authorization\n\nA `403 Forbidden` status code will be returned if you attempt to access a resource without the necessary permissions.\n\n## Sorting\n\nCertain endpoints support sorting by specific attributes. Prepend `-` to an attribute for descending order, or omit it for ascending order. For example, `?sort=name` sorts by the `name` attribute in ascending order. Multiple sorts can be applied by separating attributes with a comma.\n\n## Includes\n\nSome endpoints support the inclusion of related data on demand. To include multiple relationships, separate them with a comma. For example, `?include=notes,user` will include additional data for both notes and the user.\n\n## Pagination\n\nTo paginate results, use the `?per_page=30` parameter to limit the number of results per request. To navigate to a specific page, use `?page=3`.\n\n## Filtering\n\nCertain endpoints allow filtering by specific attributes. For example, `?filter[attribute_name]=value` filters results based on the given attribute. Multiple filter values can be separated by commas, e.g., `?filter[attribute_name]=value1,value2`."
+  description: "**Bar Assistant** is all-in-one solution for managing your home bar. Compared to other recipe management software that usually tries to be more for general use, Bar Assistant is made specifically for managing cocktail recipes. This means that there are a lot of cocktail-oriented features, like ingredient substitutes, first-class ingredients, ABV calculations, unit switching and more.\n\n[Homepage](https://barassistant.app/) &middot; [Official Documentation](https://bar-assistant.github.io/docs/) &middot; [GitHub Repository](https://github.com/karlomikus/bar-assistant)\n\n## Authentication\n\nTo use the API, you need to generate a token. If you have an account you can use the login endpoint to get a token, or if you have a personal access token you can use it directly. Keep in mind personal access tokens can be limited to certain scopes. Tokens generated via login endpoint expire after 14 days.\n\nTreat your token like a password and don't share it with anyone.\n\nInclude your login token in the header of every request, using the following format: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.\n\nA `401 Unauthorized` status code will be returned if you attempt to access a resource without token.\n\n## Rate Limiting\n\nThe rate limit is set to 1,000 requests per minute per IP address, or per user ID if authenticated. Certain endpoints have specific rate limits, such as importing and exporting data. Exporting is limited to 1 request per minute, while importing is restricted to 2 requests per minute for users without a subscription (applicable to cloud-hosted instances).\n\n## Content-Type\n\nEnsure that requests include the `Accept: application/json` header.\n\n## Bar context\n\nFor requests that require a reference to a specific bar, use `Bar-Assistant-Bar-Id` header with the value set to bar id in your request.\n\n## Authorization\n\nA `403 Forbidden` status code will be returned if you attempt to access a resource without the necessary permissions.\n\n## Sorting\n\nCertain endpoints support sorting by specific attributes. Prepend `-` to an attribute for descending order, or omit it for ascending order. For example, `?sort=name` sorts by the `name` attribute in ascending order. Multiple sorts can be applied by separating attributes with a comma.\n\n## Includes\n\nSome endpoints support the inclusion of related data on demand. To include multiple relationships, separate them with a comma. For example, `?include=notes,user` will include additional data for both notes and the user.\n\n## Pagination\n\nTo paginate results, use the `?per_page=30` parameter to limit the number of results per request. To navigate to a specific page, use `?page=3`.\n\n## Filtering\n\nCertain endpoints allow filtering by specific attributes. For example, `?filter[attribute_name]=value` filters results based on the given attribute. Multiple filter values can be separated by commas, e.g., `?filter[attribute_name]=value1,value2`."
   contact:
     name: 'Bar Assistant'
     url: 'https://barassistant.app'
@@ -22,8 +22,9 @@ paths:
     post:
       tags:
         - Authentication
-      summary: 'Authenticate user and get a token'
-      operationId: ff0821f3f5e448e9be30bed07cac39a3
+      summary: 'Authenticate user'
+      description: 'Authenticate user and get auth token'
+      operationId: authenticate
       requestBody:
         required: true
         content:
@@ -33,6 +34,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -48,8 +58,9 @@ paths:
     post:
       tags:
         - Authentication
-      summary: 'Logout currently authenticated user'
-      operationId: 7faef09646fa779e3f4eb458d4472c75
+      summary: Logout
+      description: 'Logout currently authenticated user'
+      operationId: logout
       responses:
         '204':
           description: 'Successful response'
@@ -57,8 +68,9 @@ paths:
     post:
       tags:
         - Authentication
-      summary: 'Register a new user'
-      operationId: 26578afaf886b858f56e5e1b8fc3403b
+      summary: Register
+      description: 'Register a new user'
+      operationId: register
       requestBody:
         required: true
         content:
@@ -68,6 +80,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -78,6 +99,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -89,8 +119,9 @@ paths:
     post:
       tags:
         - Authentication
-      summary: 'Request a new user password'
-      operationId: 7a6f983e087620ddd905bd4925f83983
+      summary: 'Request password reset'
+      description: 'Request a new password reset link'
+      operationId: passwordForgot
       requestBody:
         required: true
         content:
@@ -111,8 +142,9 @@ paths:
     post:
       tags:
         - Authentication
-      summary: 'Reset user password'
-      operationId: 5000f083616176e5a4edc804f813aecc
+      summary: 'Reset password'
+      description: 'Reset user password'
+      operationId: passwordReset
       requestBody:
         required: true
         content:
@@ -144,8 +176,9 @@ paths:
     get:
       tags:
         - Authentication
-      summary: 'Confirm user account'
-      operationId: 46fe45b80f30383e9f9fe664be4d5dff
+      summary: 'Confirm account'
+      description: 'Confirm user account, if applicable'
+      operationId: confirmAccount
       parameters:
         -
           name: id
@@ -166,6 +199,15 @@ paths:
           description: 'Account confirmed'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -174,6 +216,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -185,12 +236,21 @@ paths:
     get:
       tags:
         - Bars
-      summary: 'Show a list of bars'
+      summary: 'List bars'
       description: 'Show a list of bars user has access to. Includes bars that user has made and bars he is a member of.'
-      operationId: 8e4aff1910c2f6b973c0bcff7ac77418
+      operationId: listBars
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -202,8 +262,9 @@ paths:
     post:
       tags:
         - Bars
-      summary: 'Create a new bar'
-      operationId: af500d926f43cd1cd146adc9c46f8e41
+      summary: 'Create bar'
+      description: 'Create a new bar'
+      operationId: saveBar
       requestBody:
         required: true
         content:
@@ -228,6 +289,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -236,6 +306,15 @@ paths:
                 type: object
         '422':
           description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -244,8 +323,9 @@ paths:
     get:
       tags:
         - Bars
-      summary: 'Show a specific bar'
-      operationId: 6e92536f11339d30675019e6e93f9ce4
+      summary: 'Show bar'
+      description: 'Show information about a specific bar'
+      operationId: showBar
       parameters:
         -
           name: id
@@ -257,6 +337,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -267,6 +356,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -275,6 +373,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -284,8 +391,9 @@ paths:
     put:
       tags:
         - Bars
-      summary: 'Update a bar'
-      operationId: 06fb0f42934fc2cd15b00b25027494d1
+      summary: 'Update bar'
+      description: 'Update a specific bar'
+      operationId: updateBar
       parameters:
         -
           name: id
@@ -303,6 +411,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -313,6 +430,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -321,6 +447,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -329,6 +464,15 @@ paths:
                 type: object
         '422':
           description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -336,8 +480,9 @@ paths:
     delete:
       tags:
         - Bars
-      summary: 'Delete a bar'
-      operationId: dac7d15bfe40981c358d5a52c8a9e31b
+      summary: 'Delete bar'
+      description: 'Delete a specific bar'
+      operationId: deleteBar
       parameters:
         -
           name: id
@@ -351,6 +496,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -359,6 +513,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -369,8 +532,9 @@ paths:
     post:
       tags:
         - Bars
-      summary: 'Join a bar via invite code'
-      operationId: 825a1e86cd76f3ca07ad2f11ea45f648
+      summary: 'Join a bar'
+      description: 'Join a bar via invite code'
+      operationId: joinBar
       requestBody:
         required: true
         content:
@@ -384,6 +548,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -394,6 +567,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -402,6 +584,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -412,8 +603,9 @@ paths:
     get:
       tags:
         - Bars
-      summary: 'List all members of a bar'
-      operationId: 7a49e26fb4754edae7aa107fd1e35205
+      summary: 'List members'
+      description: 'List all bar members'
+      operationId: listBarMembership
       parameters:
         -
           name: id
@@ -425,6 +617,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -435,6 +636,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -443,6 +653,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -452,8 +671,9 @@ paths:
     delete:
       tags:
         - Bars
-      summary: 'Leave a bar you are a member of'
-      operationId: c3986ac9cf5fe6e4090b993e323480ad
+      summary: 'Leave a bar'
+      description: "Deletes a user's membership to a bar"
+      operationId: leaveBar
       parameters:
         -
           name: id
@@ -467,6 +687,15 @@ paths:
           description: 'Successful response'
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -477,8 +706,9 @@ paths:
     delete:
       tags:
         - Bars
-      summary: 'Remove a member from a bar'
-      operationId: 74df840e62b14107dd9d65b49ed84b27
+      summary: 'Remove member'
+      description: "Removes a specific user's membership from a bar"
+      operationId: removeBarMembership
       parameters:
         -
           name: id
@@ -499,6 +729,15 @@ paths:
           description: 'Successful response'
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -507,6 +746,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -517,8 +765,9 @@ paths:
     post:
       tags:
         - Bars
-      summary: 'Transfer bar ownership'
-      operationId: 208f8a6850027fe0ea9f3b304975fa30
+      summary: 'Transfer ownership'
+      description: 'Transfer a bar to another user.'
+      operationId: transferBarOwnership
       parameters:
         -
           name: id
@@ -543,6 +792,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -551,6 +809,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -561,8 +828,9 @@ paths:
     post:
       tags:
         - Bars
-      summary: 'Update bar status'
-      operationId: 200c1aba9ada2cd66a7d0b7a4ec90a8e
+      summary: 'Update status'
+      description: 'Update current status of a bar'
+      operationId: toggleBarStatus
       parameters:
         -
           name: id
@@ -585,6 +853,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -593,6 +870,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -603,16 +889,10 @@ paths:
     get:
       tags:
         - Cocktails
-      summary: 'Show a list of cocktails'
-      operationId: 4400982243630124406e8675b4632a32
+      summary: 'List cocktails'
+      description: 'Show a list of all cocktails in a bar'
+      operationId: listCocktails
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -706,6 +986,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -716,6 +1005,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -725,16 +1023,10 @@ paths:
     post:
       tags:
         - Cocktails
-      summary: 'Create a new cocktail'
-      operationId: cbc4c3f93b89c16a916c7cc574ca118e
+      summary: 'Create cocktail'
+      description: 'Create a new cocktail'
+      operationId: saveCocktail
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -766,6 +1058,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -774,6 +1075,15 @@ paths:
                 type: object
         '422':
           description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -782,8 +1092,9 @@ paths:
     get:
       tags:
         - Cocktails
-      summary: 'Show a specific cocktail'
-      operationId: 9286466f1f4b710e7f06c79f947ec7b0
+      summary: 'Show cocktail'
+      description: 'Show details of a specific cocktail'
+      operationId: showCocktail
       parameters:
         -
           name: id
@@ -795,6 +1106,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -805,6 +1125,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -813,6 +1142,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -822,8 +1160,9 @@ paths:
     put:
       tags:
         - Cocktails
-      summary: 'Update a specific cocktail'
-      operationId: ca968c657169055c33bc68a1b08b6eaa
+      summary: 'Update cocktail'
+      description: 'Update a specific cocktail'
+      operationId: updateCocktail
       parameters:
         -
           name: id
@@ -841,6 +1180,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -851,6 +1199,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -859,6 +1216,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -867,6 +1233,15 @@ paths:
                 type: object
         '422':
           description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -874,8 +1249,9 @@ paths:
     delete:
       tags:
         - Cocktails
-      summary: 'Delete a specific cocktail'
-      operationId: c642d725c11d12c781fbfad353ba7bcb
+      summary: 'Delete cocktail'
+      description: 'Delete a specific cocktail'
+      operationId: deleteCocktail
       parameters:
         -
           name: id
@@ -889,6 +1265,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -897,6 +1282,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -907,8 +1301,9 @@ paths:
     post:
       tags:
         - Cocktails
-      summary: 'Toggle cocktail as favorite'
-      operationId: 89742b5d96b9183518a473d9e640db6e
+      summary: 'Toggle favorite'
+      description: 'Marks cocktail as users favorite. Can be called again to remove the favorite.'
+      operationId: toggleCocktailFavorite
       parameters:
         -
           name: id
@@ -920,6 +1315,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -928,6 +1332,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -936,6 +1349,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -946,8 +1368,9 @@ paths:
     post:
       tags:
         - Cocktails
-      summary: 'Create a public ID for cocktail'
-      operationId: 191e2ca5633e6d5f7c25430fddbbd9c8
+      summary: 'Create a public ID'
+      description: 'Create a public link that can be shared'
+      operationId: createCocktailPublicLink
       parameters:
         -
           name: id
@@ -959,6 +1382,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -969,6 +1401,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -977,6 +1418,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -986,8 +1436,9 @@ paths:
     delete:
       tags:
         - Cocktails
-      summary: 'Delete cocktail public link'
-      operationId: a4a90713002827189fef279434f86791
+      summary: 'Delete public link'
+      description: 'Delete a cocktail public link'
+      operationId: deleteCocktailPublicLink
       parameters:
         -
           name: id
@@ -1001,6 +1452,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1009,6 +1469,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1019,8 +1488,9 @@ paths:
     get:
       tags:
         - Cocktails
-      summary: 'Share a cocktail'
-      operationId: c2af4839cdc102afb67b7be674895e8c
+      summary: 'Share cocktail'
+      description: 'Get cocktail details in a specific shareable format'
+      operationId: shareCocktail
       parameters:
         -
           name: id
@@ -1053,6 +1523,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1063,6 +1542,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1071,6 +1559,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1082,7 +1579,8 @@ paths:
       tags:
         - Cocktails
       summary: 'Show similar cocktails'
-      operationId: 3e08ff7e8e549570aadbaf5b727eaa2a
+      description: 'Shows similar cocktails to the given cocktail. Prefers cocktails with same base ingredient.'
+      operationId: showSimilarCocktails
       parameters:
         -
           name: id
@@ -1094,6 +1592,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1104,6 +1611,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1112,6 +1628,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1123,7 +1648,8 @@ paths:
       tags:
         - Cocktails
       summary: 'Copy cocktail'
-      operationId: d7c826954ef1111d8a897c62e27df861
+      description: 'Create a copy of a cocktail'
+      operationId: copyCocktail
       parameters:
         -
           name: id
@@ -1150,6 +1676,84 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/cocktails/{id}/prices':
+    get:
+      tags:
+        - Cocktails
+      summary: 'Show cocktail prices'
+      description: "Show calculated prices categorized by bar price categories. Prices are calculated using ingredient prices. If price category is missing, the ingredients don't have a price in that category. If there are multiple prices in category, the minimum price is used. Keep in mind that the price is just an estimate and might not be accurate."
+      operationId: getCocktailPrices
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id or slug of a resource'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailPrice' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1160,16 +1764,10 @@ paths:
     get:
       tags:
         - 'Cocktail method'
-      summary: 'Show a list of all methods'
-      operationId: 14008654b6c5780b9e826e4e2fcf237a
+      summary: 'List methods'
+      description: 'Show a list of all cocktail methods in a bar'
+      operationId: listCocktailMethods
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -1180,6 +1778,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1191,16 +1798,10 @@ paths:
     post:
       tags:
         - 'Cocktail method'
-      summary: 'Create a new method'
-      operationId: 4b70b5048cbee429f002bf3f270c8a94
+      summary: 'Create method'
+      description: 'Create a new cocktail method'
+      operationId: saveCocktailMethod
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -1232,6 +1833,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1242,8 +1852,9 @@ paths:
     get:
       tags:
         - 'Cocktail method'
-      summary: 'Show a single method'
-      operationId: f1714d10fa6232a1cc65c88929b26bb8
+      summary: 'Show method'
+      description: 'Show a specific cocktail method'
+      operationId: showCocktailMethod
       parameters:
         -
           name: id
@@ -1255,6 +1866,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1265,6 +1885,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1273,6 +1902,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1282,8 +1920,9 @@ paths:
     put:
       tags:
         - 'Cocktail method'
-      summary: 'Update a specific method'
-      operationId: 7507b8dac0ec7199fc2c229a2c127a4e
+      summary: 'Update method'
+      description: 'Update a specific cocktail method'
+      operationId: updateCocktailMethod
       parameters:
         -
           name: id
@@ -1301,6 +1940,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1311,6 +1959,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1319,6 +1976,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1328,8 +1994,9 @@ paths:
     delete:
       tags:
         - 'Cocktail method'
-      summary: 'Delete specific method'
-      operationId: 42b0ceafc9fa786c4984ff1508868ec3
+      summary: 'Delete method'
+      description: 'Delete a specific cocktail method'
+      operationId: deleteCocktailMethod
       parameters:
         -
           name: id
@@ -1343,6 +2010,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1351,6 +2027,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1361,16 +2046,10 @@ paths:
     get:
       tags:
         - Collections
-      summary: 'Show a list of collections'
-      operationId: 308d0156539f4be8f650f7ed64ed3d7f
+      summary: 'List collections'
+      description: 'Show a list of all user collections in a specific bar'
+      operationId: listCollections
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -1408,6 +2087,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1419,16 +2107,10 @@ paths:
     post:
       tags:
         - Collections
-      summary: 'Create a new collection'
-      operationId: a2c6fd135d182cbeeadbc042b35b0a80
+      summary: 'Create collection'
+      description: 'Create a new collection'
+      operationId: saveCollection
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -1460,6 +2142,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1470,8 +2161,9 @@ paths:
     get:
       tags:
         - Collections
-      summary: 'List bar shared collections'
-      operationId: a15fa7e1679d8b4eafed56112a63da76
+      summary: 'List shared collections'
+      description: 'Show a list of all collections that users shared with the bar'
+      operationId: listSharedCollections
       parameters:
         -
           name: id
@@ -1483,6 +2175,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1493,6 +2194,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1501,6 +2211,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1511,8 +2230,9 @@ paths:
     get:
       tags:
         - Collections
-      summary: 'Show a specific collection'
-      operationId: 621b31f704cec7566d650351f0907df6
+      summary: 'Show collection'
+      description: 'Show a specific collection'
+      operationId: showCollection
       parameters:
         -
           name: id
@@ -1524,6 +2244,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1534,6 +2263,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1542,6 +2280,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1551,8 +2298,9 @@ paths:
     put:
       tags:
         - Collections
-      summary: 'Update a specific collection'
-      operationId: 7497163b1fe8e97bae47a3904200722a
+      summary: 'Update collection'
+      description: 'Update a specific collection'
+      operationId: updateCollection
       parameters:
         -
           name: id
@@ -1570,6 +2318,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1580,6 +2337,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1588,6 +2354,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1597,8 +2372,9 @@ paths:
     delete:
       tags:
         - Collections
-      summary: 'Delete a specific collection'
-      operationId: 00390f2c5b043adc54cc72165bc3eccb
+      summary: 'Delete collection'
+      description: 'Delete a specific collection'
+      operationId: deleteCollection
       parameters:
         -
           name: id
@@ -1612,6 +2388,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1620,6 +2405,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1632,7 +2426,7 @@ paths:
         - Collections
       summary: 'Sync cocktails in a collection'
       description: 'Used to updated/add/delete cocktails in a collection. To delete all cocktails pass an empty array.'
-      operationId: 934e63129e4bf90dd91eccc108f51f40
+      operationId: syncCocktailsInCollection
       parameters:
         -
           name: id
@@ -1654,6 +2448,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1664,6 +2467,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1674,8 +2486,9 @@ paths:
     get:
       tags:
         - Explore
-      summary: 'Show a public cocktail'
-      operationId: 83841be3da52f7694d8382c5f5b13d8e
+      summary: 'Show cocktail'
+      description: 'Show details from a cocktail using a public id'
+      operationId: showPublicCocktail
       parameters:
         -
           name: public_id
@@ -1688,6 +2501,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1698,6 +2520,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1709,11 +2540,21 @@ paths:
     get:
       tags:
         - Exports
-      summary: 'Show a list of exports'
-      operationId: 5bc2aea6bb7fb81d2a426faccbb4b4d7
+      summary: 'List exports'
+      description: 'Show a list of all generated exports in a bar'
+      operationId: listExports
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1725,8 +2566,9 @@ paths:
     post:
       tags:
         - Exports
-      summary: 'Create a new export'
-      operationId: 1bedc78fd0edd24fdcc408977166e8cb
+      summary: 'Create export'
+      description: 'Start a new export process'
+      operationId: saveExport
       requestBody:
         required: true
         content:
@@ -1736,6 +2578,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1746,18 +2597,39 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '429':
+          description: 'Reached rate limit.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
   '/exports/{id}':
     delete:
       tags:
         - Exports
       summary: 'Delete export'
-      operationId: 6566cf7c2310f6d0f77d6be65bb36868
+      description: 'Delete a specific export'
+      operationId: deleteExport
       parameters:
         -
           name: id
@@ -1771,6 +2643,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1779,6 +2660,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1790,7 +2680,8 @@ paths:
       tags:
         - Exports
       summary: 'Download export'
-      operationId: df14ed9175061d3560c934ca7c89b47a
+      description: 'Download a specific export'
+      operationId: downloadExport
       parameters:
         -
           name: id
@@ -1816,11 +2707,29 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/octet-stream:
               example: binary
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1831,9 +2740,9 @@ paths:
     post:
       tags:
         - Exports
-      summary: 'Generate download link'
+      summary: 'Generate link'
       description: 'Generates a publicly accessible download link for the export. The link will be valid for 1 minute by default.'
-      operationId: 48e1c2637c22de5ec50f90272526b454
+      operationId: generateExportDownloadLink
       parameters:
         -
           name: id
@@ -1845,6 +2754,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1855,6 +2773,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1863,6 +2790,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1873,16 +2809,10 @@ paths:
     get:
       tags:
         - Glasses
-      summary: 'Show a list of glass types'
-      operationId: aa68a5da541be756aa65f07353e63cdf
+      summary: 'List glassware'
+      description: 'Show a list of all glassware in the bar'
+      operationId: listGlassware
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -1910,6 +2840,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1921,16 +2860,10 @@ paths:
     post:
       tags:
         - Glasses
-      summary: 'Create a new glass'
-      operationId: b81ce1bc5d5988d9221774a715a90950
+      summary: 'Create glassware'
+      description: 'Create a new glassware'
+      operationId: saveGlassware
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -1962,6 +2895,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1972,8 +2914,9 @@ paths:
     get:
       tags:
         - Glasses
-      summary: 'Show glass'
-      operationId: aca8ea95b45a17cfe2a0442cde2f53ad
+      summary: 'Show glassware'
+      description: 'Show a specific glassware'
+      operationId: showGlassware
       parameters:
         -
           name: id
@@ -1985,6 +2928,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -1995,6 +2947,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2003,6 +2964,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2012,8 +2982,9 @@ paths:
     put:
       tags:
         - Glasses
-      summary: 'Update glass'
-      operationId: c9c1cb0561aa1222cc78654eaceb9a62
+      summary: 'Update glassware'
+      description: 'Update a specific glassware'
+      operationId: updateGlassware
       parameters:
         -
           name: id
@@ -2031,6 +3002,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2041,6 +3021,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2049,6 +3038,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2058,8 +3056,9 @@ paths:
     delete:
       tags:
         - Glasses
-      summary: 'Delete glass'
-      operationId: 876925de63d0a9bf6b8d2337661f135a
+      summary: 'Delete glassware'
+      description: 'Delete a specific glassware'
+      operationId: deleteGlassware
       parameters:
         -
           name: id
@@ -2073,6 +3072,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2081,6 +3089,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2091,9 +3108,9 @@ paths:
     get:
       tags:
         - Images
-      summary: 'List uploaded images'
+      summary: 'List images'
       description: 'List all images uploaded by the authenticated user'
-      operationId: 3ac02bbdafb65e59d8b5c6d5aaf9806d
+      operationId: listImages
       parameters:
         -
           name: page
@@ -2110,6 +3127,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2120,6 +3146,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2128,6 +3163,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2137,9 +3181,9 @@ paths:
     post:
       tags:
         - Images
-      summary: 'Upload an image'
+      summary: 'Upload image'
       description: 'Used to upload multiple images at once. Uploaded images via this endpoint will not be attached to any resource. Images are converted to WebP format with 85% quality of the original image.'
-      operationId: d889115b2fa2ccddce23e39df958cc47
+      operationId: uploadImage
       requestBody:
         required: true
         content:
@@ -2155,6 +3199,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2167,8 +3220,9 @@ paths:
     get:
       tags:
         - Images
-      summary: 'Show an image'
-      operationId: 02d07ad762ad36175a8b4c2cdf4eef03
+      summary: 'Show image'
+      description: 'Show a single image'
+      operationId: showImage
       parameters:
         -
           name: id
@@ -2180,6 +3234,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2190,6 +3253,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2198,6 +3270,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2208,7 +3289,8 @@ paths:
       tags:
         - Images
       summary: 'Update image'
-      operationId: 18a765565c4f43cc01167738ab8ff7cd
+      description: 'Update a specific image'
+      operationId: updateImage
       parameters:
         -
           name: id
@@ -2226,6 +3308,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2236,6 +3327,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2246,7 +3346,8 @@ paths:
       tags:
         - Images
       summary: 'Delete image'
-      operationId: 99a6b84660d0881a68e57435afb2e6ea
+      description: 'Delete a specific image'
+      operationId: deleteImage
       parameters:
         -
           name: id
@@ -2260,6 +3361,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2268,6 +3378,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2278,8 +3397,9 @@ paths:
     get:
       tags:
         - Images
-      summary: 'Get a thumbnail of an image'
-      operationId: f3fac097ef10296417650431b970d7b3
+      summary: 'Get thumbnail'
+      description: 'Generate a thumbnail of a specific image'
+      operationId: getImageThumbnail
       parameters:
         -
           name: id
@@ -2291,6 +3411,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             image/jpg:
               schema:
@@ -2298,6 +3427,15 @@ paths:
                 format: binary
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2311,15 +3449,8 @@ paths:
         - Import
       summary: 'Import recipe'
       description: 'Import a recipe from a JSON structure that follows Bar Assistant recipe JSON schema. Supported schemas include [Draft 2](https://barassistant.app/cocktail-02.schema.json) and [Draft 1](https://barassistant.app/cocktail-01.schema.json).'
-      operationId: f46bb44c14109f5d529b854e81d57150
+      operationId: importCocktail
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -2343,6 +3474,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2353,27 +3493,40 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '429':
+          description: 'Reached rate limit.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
   /import/scrape:
     post:
       tags:
         - Import
-      summary: 'Scrape a recipe'
+      summary: 'Scrape recipe'
       description: 'Try to scrape a recipe from a website. Most of the well known recipe websites should work. Data returned is a valid JSON schema that you can import using import cocktail endpoint.'
-      operationId: 33b756be1976d85e9b0e8e734beed74f
+      operationId: scrapeRecipe
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -2394,6 +3547,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2404,6 +3566,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2414,16 +3585,10 @@ paths:
     get:
       tags:
         - 'Ingredient category'
-      summary: 'Show a list of ingredient categories'
-      operationId: 9c5a332d2fd9a695a6805451249a0c28
+      summary: 'List ingredient categories'
+      description: 'List all ingredient categories in a bar'
+      operationId: listIngredientCategories
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -2434,6 +3599,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2445,16 +3619,10 @@ paths:
     post:
       tags:
         - 'Ingredient category'
-      summary: 'Create a new ingredient category'
-      operationId: beef561152a333f7c81fec58a7590f37
+      summary: 'Create ingredient category'
+      description: 'Create a specific ingredient category'
+      operationId: saveIngredientCategory
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -2486,6 +3654,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2497,7 +3674,8 @@ paths:
       tags:
         - 'Ingredient category'
       summary: 'Show ingredient category'
-      operationId: cca43ededebdf742491f0f8eb0dcfab5
+      description: 'Show a specific ingredient category'
+      operationId: showIngredientCategory
       parameters:
         -
           name: id
@@ -2509,6 +3687,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2519,6 +3706,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2527,6 +3723,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2537,7 +3742,8 @@ paths:
       tags:
         - 'Ingredient category'
       summary: 'Update ingredient category'
-      operationId: bdd96c56bc078a0dbdbc9cb71b1bd503
+      description: 'Update a specific ingredient category'
+      operationId: updateIngredientCategory
       parameters:
         -
           name: id
@@ -2555,6 +3761,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2565,6 +3780,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2573,6 +3797,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2583,7 +3816,8 @@ paths:
       tags:
         - 'Ingredient category'
       summary: 'Delete ingredient category'
-      operationId: 5190ba80efae47305bdbcf1a68de6fd7
+      description: 'Delete a specific ingredient category'
+      operationId: deleteIngredientCategory
       parameters:
         -
           name: id
@@ -2597,6 +3831,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2605,6 +3848,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2615,16 +3867,10 @@ paths:
     get:
       tags:
         - Ingredients
-      summary: 'Show a list of ingredients'
-      operationId: 1638cf5bb5113e3ca4793347b9ca84ed
+      summary: 'List ingredients'
+      description: 'Show a list of all ingredients in a bar'
+      operationId: listIngredients
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -2696,6 +3942,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2706,6 +3961,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2715,16 +3979,10 @@ paths:
     post:
       tags:
         - Ingredients
-      summary: 'Create an ingredient'
-      operationId: efa43043e488624a2f3d8e8123a2d9be
+      summary: 'Create ingredient'
+      description: 'Create a new ingredient'
+      operationId: saveIngredient
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -2756,6 +4014,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2766,8 +4033,9 @@ paths:
     get:
       tags:
         - Ingredients
-      summary: 'Show an ingredient'
-      operationId: 0ede5ee7aaed9fd2c985386b7a13e005
+      summary: 'Show ingredient'
+      description: 'Show a specific ingredient'
+      operationId: showIngredient
       parameters:
         -
           name: id
@@ -2779,6 +4047,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2789,6 +4066,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2797,6 +4083,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2806,8 +4101,9 @@ paths:
     put:
       tags:
         - Ingredients
-      summary: 'Update an ingredient'
-      operationId: f9433e9c103e95ceebcf99171a11e81d
+      summary: 'Update ingredient'
+      description: 'Update a specific ingredient'
+      operationId: updateIngredient
       parameters:
         -
           name: id
@@ -2825,6 +4121,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2835,6 +4140,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2843,6 +4157,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2852,8 +4175,9 @@ paths:
     delete:
       tags:
         - Ingredients
-      summary: 'Delete an ingredient'
-      operationId: 31e064558b854ed32ba5f29a76aee385
+      summary: 'Delete ingredient'
+      description: 'Delete a specific ingredient'
+      operationId: deleteIngredient
       parameters:
         -
           name: id
@@ -2867,6 +4191,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2875,6 +4208,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2885,8 +4227,9 @@ paths:
     get:
       tags:
         - Ingredients
-      summary: 'Extra cocktails you can make if you add this ingredient to your shelf'
-      operationId: ff324ec47870a7091f125afea3f7e664
+      summary: 'Extra cocktails'
+      description: 'Show a list of extra cocktails you can make if you add given ingredient to your shelf'
+      operationId: extraIngredients
       parameters:
         -
           name: id
@@ -2898,6 +4241,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2908,6 +4260,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2916,6 +4277,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2926,8 +4296,9 @@ paths:
     get:
       tags:
         - Ingredients
-      summary: 'List of cocktails that use this ingredient'
-      operationId: aba5fae0baf2ce1fc02a691412c8a6ab
+      summary: 'List cocktails'
+      description: 'List all cocktails that use this ingredient'
+      operationId: ingredientCocktails
       parameters:
         -
           name: id
@@ -2951,6 +4322,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2961,6 +4341,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2969,6 +4358,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -2981,7 +4379,7 @@ paths:
         - Ingredients
       summary: 'List ingredient substitutes'
       description: 'Show a list of ingredients that are used as a substitute for this ingredient in cocktail recipes.'
-      operationId: fccb6b72c41f8a78ab604bc86a879c27
+      operationId: ingredientSubstitutes
       parameters:
         -
           name: id
@@ -3005,6 +4403,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3015,6 +4422,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3023,6 +4439,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3034,15 +4459,9 @@ paths:
       tags:
         - Menu
       summary: 'Show menu'
-      operationId: 15005db445c5ccad445e198729cc4e22
+      description: 'Show a bar menu'
+      operationId: showMenu
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -3053,6 +4472,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3063,6 +4491,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3073,15 +4510,9 @@ paths:
       tags:
         - Menu
       summary: 'Update menu'
-      operationId: 9ac6e03b541a1351a5d691b2aa232283
+      description: 'Update bar menu'
+      operationId: updateMenu
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -3098,6 +4529,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3108,6 +4548,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3118,8 +4567,9 @@ paths:
     get:
       tags:
         - Explore
-      summary: 'Show public bar menu'
-      operationId: c2dee2186390212153a41c0527ddb728
+      summary: 'Show public menu'
+      description: 'Show a public bar menu details'
+      operationId: publicMenu
       parameters:
         -
           name: slug
@@ -3131,6 +4581,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3141,6 +4600,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3148,12 +4616,61 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
+  /menu/export:
+    get:
+      tags:
+        - Menu
+      summary: 'Export menu'
+      description: 'Export menu as CSV'
+      operationId: exportMenu
+      parameters:
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            text/csv:
+              schema:
+                type: string
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /notes:
     get:
       tags:
         - Notes
-      summary: 'Show a list of all notes'
-      operationId: 8b1d23cbbf81842599e3e9463477cb58
+      summary: 'List notes'
+      description: 'Show list of all user notes'
+      operationId: listNotes
       parameters:
         -
           name: page
@@ -3170,6 +4687,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3181,8 +4707,9 @@ paths:
     post:
       tags:
         - Notes
-      summary: 'Create a new note'
-      operationId: a0c90a217efa521e80b3b94c1a4bf3a7
+      summary: 'Create note'
+      description: 'Create a new note'
+      operationId: saveNote
       requestBody:
         required: true
         content:
@@ -3207,6 +4734,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3215,6 +4751,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3225,8 +4770,9 @@ paths:
     get:
       tags:
         - Notes
-      summary: 'Show a single note'
-      operationId: c46ec527098402aba4a10b074a7b4047
+      summary: 'Show note'
+      description: 'Show a single note'
+      operationId: showNote
       parameters:
         -
           name: id
@@ -3238,6 +4784,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3248,6 +4803,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3256,6 +4820,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3265,8 +4838,9 @@ paths:
     delete:
       tags:
         - Notes
-      summary: 'Delete a specific note'
-      operationId: 075f33453cc8e1e0d26bd8f07b2c5d59
+      summary: 'Delete note'
+      description: 'Delete a single note'
+      operationId: deleteNote
       parameters:
         -
           name: id
@@ -3280,6 +4854,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3288,6 +4871,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3298,11 +4890,21 @@ paths:
     get:
       tags:
         - Tokens
-      summary: 'Show a list of tokens'
-      operationId: 68b9d61d5bd7070a04356cf10d75f151
+      summary: 'List tokens'
+      description: 'List all personal access tokens'
+      operationId: listTokens
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3314,8 +4916,9 @@ paths:
     post:
       tags:
         - Tokens
-      summary: 'Create new personal access token'
-      operationId: d91a0f74be09f52fd56164e7c58e7795
+      summary: 'Create token'
+      description: 'Create a new personal access token'
+      operationId: saveToken
       requestBody:
         required: true
         content:
@@ -3335,6 +4938,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3345,8 +4957,9 @@ paths:
     delete:
       tags:
         - Tokens
-      summary: 'Revoke personal access token'
-      operationId: e3638ffac30ab37a8015b26a88b7bad9
+      summary: 'Revoke token'
+      description: 'Revoke a personal access token'
+      operationId: deleteToken
       parameters:
         -
           name: id
@@ -3360,6 +4973,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3368,6 +4990,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3378,16 +5009,10 @@ paths:
     get:
       tags:
         - 'Price category'
-      summary: 'Show a list of price categories'
-      operationId: 8ffdcf8e07576f57714428563d35c0ff
+      summary: 'List price categories'
+      description: 'List all price categories in a bar'
+      operationId: listPriceCategories
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -3398,6 +5023,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3409,16 +5043,10 @@ paths:
     post:
       tags:
         - 'Price category'
-      summary: 'Create a new price category'
-      operationId: 000ce8107dfa5fe811876785a0f24308
+      summary: 'Create price category'
+      description: 'Create a new price category'
+      operationId: savePriceCategory
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -3450,6 +5078,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3460,7 +5097,8 @@ paths:
     get:
       tags:
         - 'Price category'
-      summary: 'Show a price category'
+      summary: 'Show price category'
+      description: 'Show a single price category'
       operationId: 10017aa4f043f641c210bafc56092997
       parameters:
         -
@@ -3473,6 +5111,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3483,6 +5130,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3491,6 +5147,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3501,7 +5166,8 @@ paths:
       tags:
         - 'Price category'
       summary: 'Update price category'
-      operationId: 86fc70306463caa72b7bfd33553393be
+      description: 'Update a single price category'
+      operationId: updatePriceCategory
       parameters:
         -
           name: id
@@ -3519,6 +5185,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3529,6 +5204,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3537,6 +5221,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3547,7 +5240,8 @@ paths:
       tags:
         - 'Price category'
       summary: 'Delete price category'
-      operationId: 9f109b6442b874b6de95a9b1b400d1fb
+      description: 'Delete a single price category'
+      operationId: deletePriceCategory
       parameters:
         -
           name: id
@@ -3561,6 +5255,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3569,6 +5272,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3580,10 +5292,20 @@ paths:
       tags:
         - Profile
       summary: 'Show profile'
-      operationId: 73fd658c723e80f927b251628b9a616b
+      description: 'Show current user profile information'
+      operationId: showProfile
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3594,6 +5316,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3604,7 +5335,8 @@ paths:
       tags:
         - Profile
       summary: 'Update profile'
-      operationId: c5958eea850b563b057d22dc8258efbf
+      description: 'Update user profile'
+      operationId: updateProfile
       requestBody:
         required: true
         content:
@@ -3624,6 +5356,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3634,8 +5375,9 @@ paths:
     post:
       tags:
         - Ratings
-      summary: 'Rate a cocktail'
-      operationId: c7c135615b762420f7b338e0bc744a76
+      summary: 'Rate cocktail'
+      description: 'Rate a single cocktail'
+      operationId: rateCocktail
       parameters:
         -
           name: id
@@ -3658,6 +5400,15 @@ paths:
           description: 'Successful response'
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3666,6 +5417,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3675,8 +5435,9 @@ paths:
     delete:
       tags:
         - Ratings
-      summary: "Delete current user's cocktail rating"
-      operationId: 93d095c7348ac6ee7d0f3cb8ea1f1c36
+      summary: 'Delete cocktail rating'
+      description: 'Delete current user cocktail rating'
+      operationId: deleteRating
       parameters:
         -
           name: id
@@ -3690,6 +5451,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3698,6 +5468,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3708,11 +5487,21 @@ paths:
     get:
       tags:
         - Server
-      summary: 'Show server information'
-      operationId: 25784e4e494f0fd4dbbdb7b92c301b26
+      summary: 'Show information'
+      description: 'Show server status and information'
+      operationId: showServerVersion
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3727,22 +5516,15 @@ paths:
     get:
       tags:
         - 'Users: Shelf'
-      summary: 'Show a list of shelf ingredients'
+      summary: 'List user ingredients'
       description: 'Ingredients that user saved to their shelf'
-      operationId: b34236369b075eabaacef013be799024
+      operationId: listUserIngredients
       parameters:
         -
           name: id
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -3767,6 +5549,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3779,22 +5570,15 @@ paths:
     get:
       tags:
         - 'Users: Shelf'
-      summary: 'Show a list shelf cocktails'
+      summary: 'List shelf cocktails'
       description: 'Cocktails that the user can make with ingredients on their shelf'
-      operationId: 5a48f072f2ca1f25807838c8ae331db5
+      operationId: listUserShelfCocktails
       parameters:
         -
           name: id
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -3819,6 +5603,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3831,21 +5624,15 @@ paths:
     get:
       tags:
         - 'Users: Shelf'
-      summary: 'Show a list of cocktails user has favorited'
-      operationId: 0038cb5730a723a0c58e5605fecb0ccb
+      summary: 'List favorites'
+      description: 'Show a list of cocktails user has favorited'
+      operationId: listUserFavoriteCocktails
       parameters:
         -
           name: id
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -3870,6 +5657,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3882,21 +5678,15 @@ paths:
     post:
       tags:
         - 'Users: Shelf'
-      summary: 'Batch store ingredients to the shelf'
-      operationId: 28c0db334504ef005e3704dcc80154b1
+      summary: 'Save user ingredients'
+      description: 'Save multiple ingredients to user shelf'
+      operationId: batchStoreUserIngredients
       parameters:
         -
           name: id
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -3921,6 +5711,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3929,6 +5728,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3939,21 +5747,15 @@ paths:
     post:
       tags:
         - 'Users: Shelf'
-      summary: 'Delete multiple ingredients from the shelf'
-      operationId: 8effce422c8cbe13a9b273a71f9d8afc
+      summary: 'Delete user ingredients'
+      description: 'Delete multiple ingredients from user shelf'
+      operationId: batchDeleteUserIngredients
       parameters:
         -
           name: id
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -3978,6 +5780,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3986,6 +5797,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -3996,21 +5816,15 @@ paths:
     get:
       tags:
         - 'Users: Shelf'
-      summary: 'Recommend next ingredients'
-      operationId: f5e680e7f9f44a047888ad4bc8a22ba8
+      summary: 'Recommend user ingredients'
+      description: 'Shows a list of ingredients that will increase total shelf cocktails when added to user shef'
+      operationId: recommendIngredients
       parameters:
         -
           name: id
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -4023,6 +5837,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4033,6 +5856,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4041,6 +5873,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4050,10 +5891,10 @@ paths:
   '/bars/{id}/ingredients':
     get:
       tags:
-        - 'Bar Shelf'
-      summary: 'Show a list of bar shelf ingredients'
+        - 'Bars: Shelf'
+      summary: 'List bar shelf ingredients'
       description: "Ingredients that bar has in it's shelf"
-      operationId: 0b3c5cbb1c0b8aa375aee04c1b3f021a
+      operationId: listBarShelfIngredients
       parameters:
         -
           name: id
@@ -4077,6 +5918,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4088,9 +5938,10 @@ paths:
   '/bars/{id}/ingredients/batch-store':
     post:
       tags:
-        - 'Bar Shelf'
-      summary: 'Batch store bar ingredients to bar shelf'
-      operationId: 72acd54d8500a59f453864e000f51c7b
+        - 'Bars: Shelf'
+      summary: 'Save bar ingredients'
+      description: 'Save multiple ingredients to bar shelf'
+      operationId: batchStoreBarShelfIngredients
       parameters:
         -
           name: id
@@ -4114,6 +5965,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4122,6 +5982,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4131,9 +6000,10 @@ paths:
   '/bars/{id}/ingredients/batch-delete':
     post:
       tags:
-        - 'Bar Shelf'
-      summary: 'Delete multiple ingredients from bar shelf'
-      operationId: 2a4715024c2fca55798ecd592feaf6e5
+        - 'Bars: Shelf'
+      summary: 'Delete bar ingredients'
+      description: 'Delete multiple ingredients from bar shelf'
+      operationId: batchDeleteBarShelfIngredients
       parameters:
         -
           name: id
@@ -4157,6 +6027,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4165,6 +6044,131 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/bars/{id}/cocktails':
+    get:
+      tags:
+        - 'Bars: Shelf'
+      summary: 'List bar shelf cocktails'
+      description: 'Cocktails that the bar can make with ingredients on their shelf'
+      operationId: listBarShelfCocktails
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                type: object
+  '/bars/{id}/ingredients/recommend':
+    get:
+      tags:
+        - 'Bars: Shelf'
+      summary: 'Recommend bar ingredients'
+      description: 'Shows a list of ingredients that will increase total bar shelf cocktails when added to bar shef'
+      operationId: recommendBarIngredients
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/IngredientRecommend' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4176,20 +6180,14 @@ paths:
       tags:
         - 'Users: Shopping list'
       summary: 'Show shopping list'
-      operationId: ea114c1013eabd71064b7b33513d13cd
+      description: 'List all ingredients on a shopping list'
+      operationId: listShoppingListIngredients
       parameters:
         -
           name: id
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -4202,6 +6200,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4212,6 +6219,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4222,21 +6238,15 @@ paths:
     post:
       tags:
         - 'Users: Shopping list'
-      summary: 'Batch add ingredients to shopping list'
-      operationId: c9dbd5fceec4406656e93b94646ea5f6
+      summary: 'Add ingredients'
+      description: 'Add multiple ingredients to a shopping list'
+      operationId: batchStoreShoppingListIngredients
       parameters:
         -
           name: id
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -4257,6 +6267,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4265,6 +6284,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4275,21 +6303,15 @@ paths:
     post:
       tags:
         - 'Users: Shopping list'
-      summary: 'Batch delete ingredients from shopping list'
-      operationId: cec5d8ca07890aaad3cd264ba62a88bb
+      summary: 'Delete ingredients'
+      description: 'Remove multiple ingredients from shopping list'
+      operationId: batchDeleteShoppingListIngredients
       parameters:
         -
           name: id
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -4314,6 +6336,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4322,6 +6353,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4333,20 +6373,14 @@ paths:
       tags:
         - 'Users: Shopping list'
       summary: 'Share shopping list'
-      operationId: 1d4aaec85e00ac2c559f362058f02056
+      description: 'Get a shopping list in a specific format'
+      operationId: shareShoppingList
       parameters:
         -
           name: id
           in: path
           description: 'Database id of a resource'
           required: true
-          schema:
-            type: integer
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
           schema:
             type: integer
         -
@@ -4365,6 +6399,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4375,6 +6418,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4386,7 +6438,8 @@ paths:
       tags:
         - Bars
       summary: 'Show bar stats'
-      operationId: d62319d3bf13005383b7d8027e9056ec
+      description: 'Show detailed stats about a single bar'
+      operationId: showBarStats
       parameters:
         -
           name: id
@@ -4398,6 +6451,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4408,6 +6470,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4416,6 +6487,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4426,11 +6506,21 @@ paths:
     get:
       tags:
         - Billing
-      summary: 'Get subscription status'
-      operationId: 69a9ec343d37c0baa6b984cac0c06da8
+      summary: 'Show subscription'
+      description: 'Show a subscription status'
+      operationId: showSubscription
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4441,6 +6531,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4451,7 +6550,8 @@ paths:
       tags:
         - Billing
       summary: 'Update subscription'
-      operationId: 6b1e9ae3c684b7a71a5ab7348766e6c5
+      description: 'Update user billing subscription'
+      operationId: updateSubscription
       requestBody:
         required: true
         content:
@@ -4468,6 +6568,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4476,6 +6585,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4486,16 +6604,10 @@ paths:
     get:
       tags:
         - Tag
-      summary: 'Show a list of all tags'
-      operationId: e5e1e0ec136ce6b73c6636ef9635a596
+      summary: 'List tags'
+      description: 'Show a list of tags in a bar'
+      operationId: listTags
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -4506,6 +6618,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4517,16 +6638,10 @@ paths:
     post:
       tags:
         - Tag
-      summary: 'Create a new tag'
-      operationId: 436ed7a7115fce5026326a5d67a016ac
+      summary: 'Create tag'
+      description: 'Create a new tag'
+      operationId: saveTag
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -4558,6 +6673,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4568,8 +6692,9 @@ paths:
     get:
       tags:
         - Tag
-      summary: 'Show a single tag'
-      operationId: df2e47c29c59436f33f9b36e4b5f30f2
+      summary: 'Show tag'
+      description: 'Show a single tag'
+      operationId: showTag
       parameters:
         -
           name: id
@@ -4581,6 +6706,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4591,6 +6725,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4599,6 +6742,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4609,7 +6761,8 @@ paths:
       tags:
         - Tag
       summary: 'Update tag'
-      operationId: 3a6faf0d586a666498d08786030214c3
+      description: 'Update a single tag'
+      operationId: updateTag
       parameters:
         -
           name: id
@@ -4627,6 +6780,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4637,6 +6799,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4645,6 +6816,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4655,7 +6835,8 @@ paths:
       tags:
         - Tag
       summary: 'Delete tag'
-      operationId: 3093352bf630017b8fcf7705e9b329c4
+      description: 'Delete a single tag'
+      operationId: deleteTag
       parameters:
         -
           name: id
@@ -4669,6 +6850,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4677,6 +6867,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4687,16 +6886,10 @@ paths:
     get:
       tags:
         - Users
-      summary: 'Show a list of users of a bar'
-      operationId: 0d0cb04fffa73faf3be78b1a0b658561
+      summary: 'List users'
+      description: 'Show a list of all users in a bar'
+      operationId: listUsers
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -4707,6 +6900,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4718,16 +6920,10 @@ paths:
     post:
       tags:
         - Users
-      summary: 'Create a new user'
-      operationId: a53b4f22b9e0de280870f1e187f6bee3
+      summary: 'Create user'
+      description: 'Create a new user'
+      operationId: saveUser
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -4759,6 +6955,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4769,16 +6974,10 @@ paths:
     get:
       tags:
         - Users
-      summary: 'Show a user'
-      operationId: 89cd377bbebe14aaf4174e3916502852
+      summary: 'Show user'
+      description: 'Show a single user'
+      operationId: showUser
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -4796,6 +6995,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4806,6 +7014,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4814,6 +7031,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4823,16 +7049,10 @@ paths:
     put:
       tags:
         - Users
-      summary: 'Update a user'
-      operationId: 6972a68618aa96af50377dcc8fe79aef
+      summary: 'Update user'
+      description: 'Update a single user'
+      operationId: updateUser
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -4856,6 +7076,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4866,6 +7095,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4874,6 +7112,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4883,8 +7130,9 @@ paths:
     delete:
       tags:
         - Users
-      summary: 'Delete a user'
-      operationId: 0c7e7a133a818ac4b30f2d7dd1b04b91
+      summary: 'Delete user'
+      description: 'Delete a single user'
+      operationId: deleteUser
       parameters:
         -
           name: id
@@ -4898,6 +7146,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4906,6 +7163,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4916,16 +7182,10 @@ paths:
     get:
       tags:
         - Utensils
-      summary: 'Show a list of utensils'
-      operationId: 613e6e2fed96a23278a5036159e9087d
+      summary: 'List utensils'
+      description: 'List all utensils in a bar'
+      operationId: listUtensils
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -4936,6 +7196,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4947,16 +7216,10 @@ paths:
     post:
       tags:
         - Utensils
-      summary: 'Create a new utensil'
-      operationId: eef2f70636f45820b56cc0025448f847
+      summary: 'Create utensil'
+      description: 'Create a new utensil'
+      operationId: saveUtensil
       parameters:
-        -
-          name: bar_id
-          in: query
-          description: 'Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header.'
-          required: false
-          schema:
-            type: integer
         -
           name: Bar-Assistant-Bar-Id
           in: header
@@ -4988,6 +7251,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -4999,7 +7271,8 @@ paths:
       tags:
         - Utensils
       summary: 'Show utensil'
-      operationId: 1b9d7fe5ecf4a0271c20ba17654d209a
+      description: 'Show a single utensil'
+      operationId: showUtensil
       parameters:
         -
           name: id
@@ -5011,6 +7284,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5021,6 +7303,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5029,6 +7320,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5038,8 +7338,9 @@ paths:
     put:
       tags:
         - Utensils
-      summary: 'Update a specific utensil'
-      operationId: 0688a6a8648cdad35503bad732bba86f
+      summary: 'Update utensil'
+      description: 'Update a single utensil'
+      operationId: updateUtensil
       parameters:
         -
           name: id
@@ -5057,6 +7358,15 @@ paths:
       responses:
         '200':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5067,6 +7377,15 @@ paths:
                 type: object
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5075,6 +7394,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5084,8 +7412,9 @@ paths:
     delete:
       tags:
         - Utensils
-      summary: 'Delete specific utensil'
-      operationId: 2f216f7ba27dd48b73ea157501c8bc81
+      summary: 'Delete utensil'
+      description: 'Delete a single utensil'
+      operationId: deleteUtensil
       parameters:
         -
           name: id
@@ -5099,6 +7428,15 @@ paths:
           description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5107,6 +7445,15 @@ paths:
                 type: object
         '404':
           description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
           content:
             application/json:
               schema:
@@ -5342,13 +7689,8 @@ components:
           description: 'Enable users with invite code to join this bar. Default `false`.'
           type: boolean
         options:
+          $ref: '#/components/schemas/BarOptionsEnum'
           description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.'
-          type: array
-          items:
-            type: enum
-            enum:
-              - ingredients
-              - cocktails
       type: object
     BarStats:
       required:
@@ -5356,6 +7698,8 @@ components:
         - total_ingredients
         - total_favorited_cocktails
         - total_shelf_cocktails
+        - total_bar_shelf_ingredients
+        - total_bar_shelf_cocktails
         - total_shelf_ingredients
         - total_bar_members
         - total_collections
@@ -5377,6 +7721,9 @@ components:
           type: integer
           example: 1
         total_shelf_ingredients:
+          type: integer
+          example: 1
+        total_bar_shelf_ingredients:
           type: integer
           example: 1
         total_bar_shelf_cocktails:
@@ -5680,6 +8027,11 @@ components:
         name:
           type: string
           example: 'Old fashioned'
+        short_ingredients:
+          type: array
+          items:
+            type: string
+            example: Vodka
       type: object
     CocktailExplore:
       properties:
@@ -6038,6 +8390,44 @@ components:
         dilution_percentage:
           type: integer
           example: 20
+      type: object
+    CocktailPrice:
+      required:
+        - missing_prices_count
+        - price_category
+        - total_price
+        - prices_per_ingredient
+      properties:
+        missing_prices_count:
+          description: 'Number of ingredients that are missing defined prices in this category'
+          type: integer
+          example: 1
+        price_category:
+          $ref: '#/components/schemas/PriceCategory'
+        total_price:
+          $ref: '#/components/schemas/Price'
+          description: 'Total cocktail price, sum of `price_per_pour` amounts'
+        prices_per_ingredient:
+          type: array
+          items:
+            required:
+              - ingredient
+              - price_per_unit
+              - price_per_use
+              - units
+            properties:
+              ingredient:
+                $ref: '#/components/schemas/IngredientBasic'
+              units:
+                description: 'Units used for price calculation'
+                type: string
+              price_per_unit:
+                $ref: '#/components/schemas/Price'
+                description: 'Price per 1 unit of ingredient amount'
+              price_per_use:
+                $ref: '#/components/schemas/Price'
+                description: 'Price per cocktail ingredient part'
+            type: object
       type: object
     CocktailRequest:
       required:
@@ -6895,18 +9285,6 @@ components:
         use_parent_as_substitute:
           type: boolean
       type: object
-    Rating:
-      properties:
-        rateable_id:
-          type: integer
-          example: 1
-        user_id:
-          type: integer
-          example: 1
-        rating:
-          type: integer
-          example: 3
-      type: object
     RegisterRequest:
       required:
         - email
@@ -7291,8 +9669,8 @@ tags:
     name: 'Users: Shelf'
     description: 'Users: Shelf'
   -
-    name: 'Bar Shelf'
-    description: 'Bar Shelf'
+    name: 'Bars: Shelf'
+    description: 'Bars: Shelf'
   -
     name: 'Users: Shopping list'
     description: 'Users: Shopping list'

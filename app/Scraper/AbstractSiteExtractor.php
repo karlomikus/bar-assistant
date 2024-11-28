@@ -162,7 +162,6 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
                 'amount_max' => $recipeIngredient->amountMax,
                 'units' => $recipeIngredient->units === '' ? null : $recipeIngredient->units,
                 'note' => $recipeIngredient->comment === '' ? null : $recipeIngredient->comment,
-                'original_amount' => $recipeIngredient->originalAmount,
                 'source' => $this->clean($recipeIngredient->source),
                 'optional' => false,
                 'sort' => $sort + 1,
@@ -173,7 +172,6 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             return [
                 '_id' => $org['_id'],
                 'source' => $org['source'],
-                'original_amount' => $org['original_amount'],
             ];
         }, $ingredients);
 

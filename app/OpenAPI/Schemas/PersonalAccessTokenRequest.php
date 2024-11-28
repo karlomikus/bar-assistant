@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\Models\AbilityEnum;
+use Kami\Cocktail\Models\Enums\AbilityEnum;
 
 #[OAT\Schema(required: ['abilities'])]
 class PersonalAccessTokenRequest

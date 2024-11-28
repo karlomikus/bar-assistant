@@ -13,7 +13,7 @@ use Kami\Cocktail\Http\Requests\RatingRequest;
 
 class RatingController extends Controller
 {
-    #[OAT\Post(path: '/cocktails/{id}/ratings', tags: ['Ratings'], summary: 'Rate a cocktail', parameters: [
+    #[OAT\Post(path: '/cocktails/{id}/ratings', tags: ['Ratings'], operationId: 'rateCocktail', description: 'Rate a single cocktail', summary: 'Rate cocktail', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -44,7 +44,7 @@ class RatingController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Delete(path: '/cocktails/{id}/ratings', tags: ['Ratings'], summary: 'Delete current user\'s cocktail rating', parameters: [
+    #[OAT\Delete(path: '/cocktails/{id}/ratings', tags: ['Ratings'], operationId: 'deleteRating', description: 'Delete current user cocktail rating', summary: 'Delete cocktail rating', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

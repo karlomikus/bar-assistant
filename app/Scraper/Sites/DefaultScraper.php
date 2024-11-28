@@ -149,7 +149,6 @@ class DefaultScraper extends AbstractSiteExtractor
                 (float) number_format($recipeIngredient->amount, 2, '.', ''),
                 $recipeIngredient->units,
                 $recipeIngredient->source,
-                $recipeIngredient->originalAmount,
                 $recipeIngredient->comment,
                 $recipeIngredient->amountMax
             );

@@ -8,7 +8,7 @@ use Tests\TestCase;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Image;
-use Kami\Cocktail\Models\UserRoleEnum;
+use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class BarControllerTest extends TestCase

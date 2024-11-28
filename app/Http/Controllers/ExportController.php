@@ -21,8 +21,8 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ExportController extends Controller
 {
-    #[OAT\Get(path: '/exports', tags: ['Exports'], summary: 'Show a list of exports')]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[OAT\Get(path: '/exports', tags: ['Exports'], operationId: 'listExports', description: 'Show a list of all generated exports in a bar', summary: 'List exports')]
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\Export::class),
     ])]
     public function index(Request $request): JsonResource
@@ -35,16 +35,17 @@ class ExportController extends Controller
         return ExportResource::collection($exports);
     }
 
-    #[OAT\Post(path: '/exports', tags: ['Exports'], summary: 'Create a new export', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/exports', tags: ['Exports'], operationId: 'saveExport', description: 'Start a new export process', summary: 'Create export', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\ExportRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Export::class),
     ])]
     #[BAO\NotAuthorizedResponse]
+    #[BAO\RateLimitResponse]
     public function store(Request $request): ExportResource
     {
         $bar = Bar::findOrFail($request->post('bar_id'));
@@ -70,7 +71,7 @@ class ExportController extends Controller
         return new ExportResource($export);
     }
 
-    #[OAT\Delete(path: '/exports/{id}', tags: ['Exports'], summary: 'Delete export', parameters: [
+    #[OAT\Delete(path: '/exports/{id}', tags: ['Exports'], operationId: 'deleteExport', description: 'Delete a specific export', summary: 'Delete export', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
@@ -89,12 +90,12 @@ class ExportController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/exports/{id}/download', tags: ['Exports'], summary: 'Download export', parameters: [
+    #[OAT\Get(path: '/exports/{id}/download', tags: ['Exports'], operationId: 'downloadExport', description: 'Download a specific export', summary: 'Download export', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new OAT\Parameter(name: 't', in: 'query', description: 'Token', required: true, schema: new OAT\Schema(type: 'string')),
         new OAT\Parameter(name: 'e', in: 'query', description: 'Timestamp', required: true, schema: new OAT\Schema(type: 'string')),
     ], security: [])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new OAT\MediaType(mediaType: 'application/octet-stream', example: 'binary'),
     ])]
     #[BAO\NotFoundResponse]
@@ -113,10 +114,10 @@ class ExportController extends Controller
         return response()->download($export->getFullPath());
     }
 
-    #[OAT\Post(path: '/exports/{id}/download', tags: ['Exports'], summary: 'Generate download link', description: 'Generates a publicly accessible download link for the export. The link will be valid for 1 minute by default.', parameters: [
+    #[OAT\Post(path: '/exports/{id}/download', tags: ['Exports'], operationId: 'generateExportDownloadLink', summary: 'Generate link', description: 'Generates a publicly accessible download link for the export. The link will be valid for 1 minute by default.', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\FileDownloadLink::class),
     ])]
     #[BAO\NotAuthorizedResponse]

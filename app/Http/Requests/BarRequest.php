@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Requests;
 
 use Illuminate\Validation\Rule;
-use Kami\Cocktail\Models\BarStatusEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Kami\Cocktail\Models\Enums\BarStatusEnum;
 
 class BarRequest extends FormRequest
 {

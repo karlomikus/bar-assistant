@@ -11,6 +11,7 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\BarIngredient;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
@@ -124,6 +125,8 @@ class ToDataPack
             'base_ingredient_categories' => DB::table('ingredient_categories')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
             'base_price_categories' => DB::table('price_categories')->select('name', 'currency', 'description')->where('bar_id', $barId)->get()->toArray(),
         ];
+
+        $baseDataFiles['bar_shelf'] = BarIngredient::where('bar_id', $barId)->with('ingredient')->get()->map(fn ($bi) => $bi->ingredient->getExternalId())->toArray();
 
         foreach ($baseDataFiles as $file => $data) {
             $exportData = $this->prepareDataOutput($data);

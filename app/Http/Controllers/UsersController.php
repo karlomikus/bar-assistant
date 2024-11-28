@@ -20,11 +20,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UsersController extends Controller
 {
-    #[OAT\Get(path: '/users', tags: ['Users'], summary: 'Show a list of users of a bar', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Get(path: '/users', tags: ['Users'], operationId: 'listUsers', description: 'Show a list of all users in a bar', summary: 'List users', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\User::class),
     ])]
     public function index(Request $request): JsonResource
@@ -43,12 +42,11 @@ class UsersController extends Controller
         return UserResource::collection($users);
     }
 
-    #[OAT\Get(path: '/users/{id}', tags: ['Users'], summary: 'Show a user', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Get(path: '/users/{id}', tags: ['Users'], operationId: 'showUser', description: 'Show a single user', summary: 'Show user', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\User::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -68,8 +66,7 @@ class UsersController extends Controller
         return new UserResource($user);
     }
 
-    #[OAT\Post(path: '/users', tags: ['Users'], summary: 'Create a new user', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Post(path: '/users', tags: ['Users'], operationId: 'saveUser', description: 'Create a new user', summary: 'Create user', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -117,8 +114,7 @@ class UsersController extends Controller
             ->header('Location', route('users.show', $user->id));
     }
 
-    #[OAT\Put(path: '/users/{id}', tags: ['Users'], summary: 'Update a user', parameters: [
-        new BAO\Parameters\BarIdParameter(),
+    #[OAT\Put(path: '/users/{id}', tags: ['Users'], operationId: 'updateUser', description: 'Update a single user', summary: 'Update user', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -127,7 +123,7 @@ class UsersController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\UserRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 200, description: 'Successful response', content: [
+    #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\User::class),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -153,7 +149,7 @@ class UsersController extends Controller
         return new UserResource($user);
     }
 
-    #[OAT\Delete(path: '/users/{id}', tags: ['Users'], summary: 'Delete a user', parameters: [
+    #[OAT\Delete(path: '/users/{id}', tags: ['Users'], operationId: 'deleteUser', description: 'Delete a single user', summary: 'Delete user', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
