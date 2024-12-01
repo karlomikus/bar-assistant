@@ -269,6 +269,15 @@ class Cocktail extends Model implements UploadableInterface
     }
 
     /**
+     * @param \Illuminate\Database\Eloquent\Collection<int, Cocktail> $models
+     * @return \Illuminate\Database\Eloquent\Collection<int, Cocktail>
+     */
+    public function makeSearchableUsing(Collection $models): Collection
+    {
+        return $models->load('ingredients.ingredient', 'tags', 'images');
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function toSearchableArray(): array
