@@ -36,6 +36,8 @@ class SetupMeilisearch extends Command
             return Command::INVALID;
         }
 
+        $isNewMeilisearchKey = true;
+
         try {
             $this->line('Setting up Meilisearch client keys...');
             /** @var \Meilisearch\Client */
@@ -46,6 +48,7 @@ class SetupMeilisearch extends Command
             /** @var \Meilisearch\Endpoints\Keys */
             foreach ($keys->getResults() as $key) {
                 if ($key->getName() === 'bar-assistant') {
+                    $isNewMeilisearchKey = false;
                     $searchApiKey = $key;
                 }
             }
@@ -64,6 +67,12 @@ class SetupMeilisearch extends Command
             $this->error('Unable to request Meilisearch keys. Skipping.');
 
             return Command::INVALID;
+        }
+
+        if (!$isNewMeilisearchKey) {
+            $this->line('Skipping Meilisearch setup. Key did not change.');
+
+            return Command::SUCCESS;
         }
 
         $this->line('Clearing existing search tokens from bars...');
