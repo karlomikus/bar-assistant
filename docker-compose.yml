@@ -7,8 +7,6 @@ services:
         GROUP_ID: 1000
     container_name: app
     restart: unless-stopped
-    environment:
-      PHP_FPM_POOL_NAME: "bass-php"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
@@ -23,7 +21,6 @@ services:
         GROUP_ID: 1000
     restart: unless-stopped
     environment:
-      PHP_FPM_POOL_NAME: "bass-horizon"
       APP_ROLE: "worker"
     extra_hosts:
       - "host.docker.internal:host-gateway"
