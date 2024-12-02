@@ -2,6 +2,7 @@
 ## Fixed
 - Improved search indexing on larger datasets
 - Meilisearch tokens are now updated on docker restart only if the key has changed
+- Fixed personal access token middleware handling
 
 # v4.2.0
 ## New

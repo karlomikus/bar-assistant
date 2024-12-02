@@ -68,4 +68,23 @@ class PATControllerTest extends TestCase
         $response->assertNoContent();
         $this->assertDatabaseMissing('personal_access_tokens', ['id' => $token->id]);
     }
+
+    public function test_token_ability(): void
+    {
+        $barMembership = $this->setupBarMembership();
+        $token = $barMembership->user->createToken(
+            'My new token',
+            [AbilityEnum::IngredientsRead->value],
+            Carbon::now()->addMonth()
+        );
+
+        $response = $this->getJson('/api/cocktails', ['Authorization' => 'Bearer ' . $token->plainTextToken, 'Bar-Assistant-Bar-Id' => $barMembership->bar->id]);
+        $response->assertForbidden();
+
+        $response = $this->getJson('/api/ingredient-categories', ['Authorization' => 'Bearer ' . $token->plainTextToken, 'Bar-Assistant-Bar-Id' => $barMembership->bar->id]);
+        $response->assertForbidden();
+
+        $response = $this->getJson('/api/ingredients', ['Authorization' => 'Bearer ' . $token->plainTextToken, 'Bar-Assistant-Bar-Id' => $barMembership->bar->id]);
+        $response->assertSuccessful();
+    }
 }
