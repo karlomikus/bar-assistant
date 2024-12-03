@@ -2,6 +2,7 @@
 ## Fixed
 - Login endpoint now requires confirmation if `mail_require_confirmation` is enabled
 - Meilisearch tokens are now updated on docker restart only if the key has changed
+- Ingredient and Bar `images` now have size validation
 
 # v4.2.1
 ## Fixed
