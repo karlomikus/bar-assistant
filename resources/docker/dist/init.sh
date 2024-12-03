@@ -35,6 +35,8 @@ cd "$APP_BASE_DIR"
 php artisan key:generate
 php artisan migrate --force
 php artisan storage:link
+# Clear config cache so new ENV settings get picked up
+php artisan config:clear
 # Setup Meilisearch ENV variables
 php artisan bar:setup-meilisearch
 php artisan scout:sync-index-settings

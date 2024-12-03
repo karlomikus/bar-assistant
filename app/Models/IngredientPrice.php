@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Brick\Money\Money;
-use Brick\Math\RoundingMode;
+use Brick\Money\RationalMoney;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -43,13 +43,13 @@ class IngredientPrice extends Model
         return new AmountValueObject($this->amount, new UnitValueObject($this->units));
     }
 
-    public function getPricePerUnit(?string $units = null): Money
+    public function getPricePerUnit(?string $units = null): RationalMoney
     {
         $amount = $this->getAmount()->amountMin;
         if ($units) {
             $amount = $this->getAmount()->convertTo(new UnitValueObject($units))->amountMin;
         }
 
-        return $this->getMoney()->dividedBy($amount, RoundingMode::HALF_EVEN);
+        return $this->getMoney()->toRational()->dividedBy($amount);
     }
 }

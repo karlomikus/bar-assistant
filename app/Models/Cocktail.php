@@ -8,12 +8,14 @@ use Carbon\Carbon;
 use Brick\Money\Money;
 use Kami\Cocktail\Utils;
 use Illuminate\Support\Str;
+use Brick\Math\RoundingMode;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Kami\RecipeUtils\Converter;
 use Symfony\Component\Uid\Ulid;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Collection;
+use Brick\Money\Context\DefaultContext;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Kami\RecipeUtils\UnitConverter\Units;
@@ -269,6 +271,15 @@ class Cocktail extends Model implements UploadableInterface
     }
 
     /**
+     * @param \Illuminate\Database\Eloquent\Collection<int, Cocktail> $models
+     * @return \Illuminate\Database\Eloquent\Collection<int, Cocktail>
+     */
+    public function makeSearchableUsing(Collection $models): Collection
+    {
+        return $models->load('ingredients.ingredient', 'tags', 'images');
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function toSearchableArray(): array
@@ -375,7 +386,7 @@ class Cocktail extends Model implements UploadableInterface
 
     public function calculatePrice(PriceCategory $priceCategory): Money
     {
-        $totalPrice = Money::of(0, $priceCategory->getCurrency()->value);
+        $totalPrice = Money::of(0, $priceCategory->getCurrency()->value)->toRational();
 
         /** @var CocktailIngredient */
         foreach ($this->ingredients as $cocktailIngredient) {
@@ -388,6 +399,6 @@ class Cocktail extends Model implements UploadableInterface
             $totalPrice = $totalPrice->plus($pricePerPour);
         }
 
-        return $totalPrice;
+        return $totalPrice->to(new DefaultContext(), RoundingMode::DOWN);
     }
 }

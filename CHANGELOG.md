@@ -1,3 +1,11 @@
+# v4.2.1
+## Fixed
+- Fixed issues with search tokens not clearing correctly
+- Improved search indexing on larger datasets
+- Meilisearch tokens are now updated on docker restart only if the key has changed
+- Fixed personal access token middleware handling
+- Price calculations should be more accurate now
+
 # v4.2.0
 ## New
 - Added cocktail prices

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
+use Brick\Math\RoundingMode;
+use Brick\Money\Context\DefaultContext;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\ValueObjects\Price;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -30,8 +32,8 @@ class CocktailPriceResource extends JsonResource
             return [
                 'units' => $minIngredientPrice->getAmount()->units,
                 'ingredient' => new IngredientBasicResource($cocktailIngredient->ingredient),
-                'price_per_unit' => new PriceResource(new Price($minIngredientPrice->getPricePerUnit($cocktailIngredient->units))),
-                'price_per_use' => new PriceResource(new Price($cocktailIngredient->getConvertedPricePerUse($this->priceCategory))),
+                'price_per_unit' => new PriceResource(new Price($minIngredientPrice->getPricePerUnit($cocktailIngredient->units)->to(new DefaultContext(), RoundingMode::DOWN))),
+                'price_per_use' => new PriceResource(new Price($cocktailIngredient->getConvertedPricePerUse($this->priceCategory)->to(new DefaultContext(), RoundingMode::DOWN))),
             ];
         })->filter()->values();
 

@@ -208,4 +208,22 @@ class AuthControllerTest extends TestCase
                 ->where('data.status', true)
         );
     }
+
+    // public function test_confirm_account_verify_response(): void
+    // {
+    //     Config::set('bar-assistant.mail_require_confirmation', true);
+
+    //     $user = User::factory()->create([
+    //         'email' => 'test@test.com',
+    //         'password' => Hash::make('my-test-password'),
+    //         'email_verified_at' => null,
+    //     ]);
+
+    //     $response = $this->postJson('/api/auth/login', [
+    //         'email' => $user->email,
+    //         'password' => 'my-test-password'
+    //     ]);
+
+    //     $response->dump();
+    // }
 }

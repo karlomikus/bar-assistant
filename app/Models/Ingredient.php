@@ -232,6 +232,15 @@ class Ingredient extends Model implements UploadableInterface
     }
 
     /**
+     * @param \Illuminate\Database\Eloquent\Collection<int, Cocktail> $models
+     * @return \Illuminate\Database\Eloquent\Collection<int, Cocktail>
+     */
+    public function makeSearchableUsing(Collection $models): Collection
+    {
+        return $models->load('category', 'images');
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function toSearchableArray(): array
