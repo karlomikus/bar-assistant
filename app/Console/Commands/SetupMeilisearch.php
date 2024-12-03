@@ -69,11 +69,12 @@ class SetupMeilisearch extends Command
             return Command::INVALID;
         }
 
-        if (!$isNewMeilisearchKey) {
-            $this->line('Skipping Meilisearch setup. Key did not change.');
+        // TODO: Uncomment this next minor release
+        // if (!$isNewMeilisearchKey) {
+        //     $this->line('Skipping Meilisearch setup. Key did not change.');
 
-            return Command::SUCCESS;
-        }
+        //     return Command::SUCCESS;
+        // }
 
         $this->line('Clearing existing search tokens from bars...');
         DB::transaction(function () {
