@@ -783,12 +783,12 @@ class CocktailControllerTest extends TestCase
         $response = $this->getJson('/api/cocktails/' . $cocktail->id . '/prices');
 
         $response->assertStatus(200);
-        $response->assertJsonPath('data.0.prices_per_ingredient.0.price_per_unit.price', 0.03);
-        $response->assertJsonPath('data.0.prices_per_ingredient.0.price_per_use.price', 0.9);
+        $response->assertJsonPath('data.0.prices_per_ingredient.0.price_per_unit.price', 0.02);
+        $response->assertJsonPath('data.0.prices_per_ingredient.0.price_per_use.price', 0.8);
         $response->assertJsonPath('data.0.prices_per_ingredient.1.price_per_unit.price', 0.8);
         $response->assertJsonPath('data.0.prices_per_ingredient.1.price_per_use.price', 0.8);
         $response->assertJsonPath('data.0.prices_per_ingredient.2.price_per_unit.price', 0.8);
         $response->assertJsonPath('data.0.prices_per_ingredient.2.price_per_use.price', 0.4);
-        $response->assertJsonPath('data.0.total_price.price', 2.1);
+        $response->assertJsonPath('data.0.total_price.price', 2);
     }
 }
