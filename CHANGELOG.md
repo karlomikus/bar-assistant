@@ -1,5 +1,6 @@
-# v4.2.1
+# v4.3.1
 ## Fixed
+- Price calculations should be more accurate now
 - Improved search indexing on larger datasets
 - Meilisearch tokens are now updated on docker restart only if the key has changed
 - Fixed personal access token middleware handling

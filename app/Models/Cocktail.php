@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Brick\Math\RoundingMode;
+use Brick\Money\Context\DefaultContext;
 use Carbon\Carbon;
 use Brick\Money\Money;
 use Kami\Cocktail\Utils;
@@ -384,7 +386,7 @@ class Cocktail extends Model implements UploadableInterface
 
     public function calculatePrice(PriceCategory $priceCategory): Money
     {
-        $totalPrice = Money::of(0, $priceCategory->getCurrency()->value);
+        $totalPrice = Money::of(0, $priceCategory->getCurrency()->value)->toRational();
 
         /** @var CocktailIngredient */
         foreach ($this->ingredients as $cocktailIngredient) {
@@ -397,6 +399,6 @@ class Cocktail extends Model implements UploadableInterface
             $totalPrice = $totalPrice->plus($pricePerPour);
         }
 
-        return $totalPrice;
+        return $totalPrice->to(new DefaultContext(), RoundingMode::DOWN);
     }
 }

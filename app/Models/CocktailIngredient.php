@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Brick\Money\Money;
-use Brick\Math\RoundingMode;
+use Brick\Money\RationalMoney;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -124,9 +123,8 @@ class CocktailIngredient extends Model
      * Converts ingredient amount to match the price amount if possible.
      *
      * @param PriceCategory $priceCategory
-     * @return null|Money
      */
-    public function getConvertedPricePerUse(PriceCategory $priceCategory): ?Money
+    public function getConvertedPricePerUse(PriceCategory $priceCategory): ?RationalMoney
     {
         // Price already converted to cocktail ingredient units
         $ingredientPrice = $this->getMinConvertedPriceInCategory($priceCategory);
@@ -139,7 +137,7 @@ class CocktailIngredient extends Model
         $convertedLocalAmount = $this->getAmount()->convertTo(new UnitValueObject($ingredientPrice->units));
 
         try {
-            $pricePerUse = $ingredientPrice->getPricePerUnit()->multipliedBy($convertedLocalAmount->amountMin, RoundingMode::HALF_EVEN);
+            $pricePerUse = $ingredientPrice->getPricePerUnit()->multipliedBy($convertedLocalAmount->amountMin);
         } catch (\Throwable) {
             return null;
         }
