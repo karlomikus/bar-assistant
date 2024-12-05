@@ -7,11 +7,13 @@ namespace Kami\Cocktail\Models;
 use Spatie\Sluggable\HasSlug;
 use Laravel\Scout\EngineManager;
 use Spatie\Sluggable\SlugOptions;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Kami\Cocktail\Services\Image\ImageService;
+use Kami\Cocktail\Services\MeilisearchService;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -38,19 +40,22 @@ class Bar extends Model implements UploadableInterface
         static::retrieved(function (Bar $bar) {
             if (
                 $bar->search_token ||
-                config('scout.driver') === null ||
-                config('scout.meilisearch.api_key_uid') === null ||
-                config('scout.meilisearch.api_key') === null
+                config('scout.driver') === null
             ) {
                 return;
             }
 
-            $bar->updateSearchToken();
+            $meilisearch = resolve(MeilisearchService::class);
+            $searchApiKey = $meilisearch->getSearchAPIKey();
+
+            $bar->updateSearchToken($searchApiKey->getUid(), $searchApiKey->getKey());
         });
     }
 
-    public function updateSearchToken(): void
+    public function updateSearchToken(string $apiKeyUid, string $apiKey): void
     {
+        Log::debug('Updating search token for bar ' . $this->id);
+
         /** @var \Meilisearch\Client */
         $meilisearch = resolve(EngineManager::class)->engine();
 
@@ -61,9 +66,9 @@ class Bar extends Model implements UploadableInterface
         ];
 
         $tenantToken = $meilisearch->generateTenantToken(
-            config('scout.meilisearch.api_key_uid'),
+            $apiKeyUid,
             $rules,
-            ['apiKey' => config('scout.meilisearch.api_key')]
+            ['apiKey' => $apiKey]
         );
 
         $this->search_token = $tenantToken;

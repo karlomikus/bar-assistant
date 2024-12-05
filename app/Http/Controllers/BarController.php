@@ -131,8 +131,6 @@ class BarController extends Controller
 
         $bar->load('createdUser', 'updatedUser', 'images');
 
-        $bar->updateSearchToken();
-
         $request->user()->joinBarAs($bar, UserRoleEnum::Admin);
 
         SetupBar::dispatch($bar, $request->user(), $barOptions);
