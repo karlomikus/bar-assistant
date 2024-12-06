@@ -33,6 +33,7 @@ class IngredientRequest extends FormRequest
             'prices.*.amount' => 'required|numeric|gte:0',
             'prices.*.units' => 'required',
             'prices.*.price_category_id' => 'int|required',
+            'images' => 'array|max:1',
         ];
     }
 }

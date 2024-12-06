@@ -40,7 +40,11 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        if (config('bar-assistant.mail_require_confirmation') === true) {
+            $user = User::where('email', $request->email)->where('email_verified_at', '<>', null)->first();
+        } else {
+            $user = User::where('email', $request->email)->first();
+        }
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             if (config('bar-assistant.mail_require_confirmation') === true) {

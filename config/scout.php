@@ -132,8 +132,8 @@ return [
     'meilisearch' => [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY', null),
-        'api_key' => env('MEILISEARCH_API_KEY', null),
-        'api_key_uid' => env('MEILISEARCH_API_KEY_UID', null),
+        // 'api_key' => env('MEILISEARCH_API_KEY', null),
+        // 'api_key_uid' => env('MEILISEARCH_API_KEY_UID', null),
         'index-settings' => [
             \Kami\Cocktail\Models\Cocktail::class => [
                 'filterableAttributes' => ['tags', 'bar_id'],

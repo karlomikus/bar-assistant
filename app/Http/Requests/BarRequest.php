@@ -37,6 +37,7 @@ class BarRequest extends FormRequest
                 Rule::enum(BarStatusEnum::class),
                 'nullable',
             ],
+            'images' => 'array|max:1',
         ];
     }
 }

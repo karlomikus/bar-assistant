@@ -70,7 +70,7 @@ Route::prefix('explore')->group(function () {
     Route::get('/menus/{barSlug}', [MenuController::class, 'show']);
 });
 
-Route::prefix('exports')->middleware(['ability:*'])->group(function () {
+Route::prefix('exports')->group(function () {
     Route::get('/{id}/download', [ExportController::class, 'download'])->name('exports.download');
 });
 
