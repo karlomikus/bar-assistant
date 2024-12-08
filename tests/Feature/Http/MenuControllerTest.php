@@ -92,4 +92,16 @@ class MenuControllerTest extends TestCase
 
         $response->assertSuccessful();
     }
+
+    public function test_menu_has_null_currency(): void
+    {
+        $menu = Menu::factory()->for($this->barMembership->bar)->create(['is_enabled' => true]);
+        MenuCocktail::factory()->recycle($menu)->create([
+            'currency' => null,
+        ]);
+
+        $response = $this->getJson('/api/menu', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+
+        $response->assertSuccessful();
+    }
 }

@@ -44,12 +44,16 @@ class MenuCocktail extends Model
 
     public function getMoney(): Money
     {
-        try {
-            $currency = Currency::of($this->currency);
-        } catch (UnknownCurrencyException) {
-            // Prior to inclusion of Money object, currency could be any string
-            // To handle migration cases, we'll fallback to EUR
+        if ($this->currency === null) {
             $currency = 'EUR';
+        } else {
+            try {
+                $currency = Currency::of($this->currency);
+            } catch (UnknownCurrencyException) {
+                // Prior to inclusion of Money object, currency could be any string
+                // To handle migration cases, we'll fallback to EUR
+                $currency = 'EUR';
+            }
         }
 
         return Money::ofMinor($this->price, $currency);

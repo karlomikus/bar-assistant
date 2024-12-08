@@ -27,6 +27,7 @@ fi
 # Enable WAL mode
 echo "[BAR-ASSISTANT] Enabling database WAL mode..."
 sqlite3 "$db_file" 'pragma journal_mode=wal;'
+sqlite3 "$db_file" 'pragma synchronous=NORMAL;'
 
 # Start running artisan commands
 cd "$APP_BASE_DIR"
