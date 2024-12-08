@@ -1,3 +1,7 @@
+# v4.2.3
+## Fixed
+- Fix unhandled exception when menu cocktail has `null` as currency
+
 # v4.2.2
 ## Fixed
 - Login endpoint now requires confirmation if `mail_require_confirmation` is enabled
