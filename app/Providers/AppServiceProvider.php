@@ -2,7 +2,7 @@
 
 namespace Kami\Cocktail\Providers;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Model::preventLazyLoading(!app()->isProduction());
+        DB::statement('
+            PRAGMA temp_store = memory;
+            PRAGMA cache_size = -20000;
+            PRAGMA mmap_size = 2147483648;
+        ');
     }
 }

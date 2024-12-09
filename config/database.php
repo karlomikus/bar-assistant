@@ -40,7 +40,10 @@ return [
             'url' => env('DATABASE_URL'),
             'database' => env('DB_DATABASE', storage_path('bar-assistant/database.ba3.sqlite')),
             'prefix' => '',
+            'journal_mode' => 'wal',
             'foreign_key_constraints' => true,
+            'busy_timeout' => 5000,
+            'synchronous' => 'NORMAL',
         ],
 
         'sqlite_import_from_v2' => [
