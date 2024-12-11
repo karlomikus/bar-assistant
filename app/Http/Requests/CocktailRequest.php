@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Kami\Cocktail\Rules\SubscriberImagesCount;
 
 class CocktailRequest extends FormRequest
 {
@@ -29,7 +30,11 @@ class CocktailRequest extends FormRequest
             'name' => 'required',
             'instructions' => 'required',
             'ingredients' => 'array',
-            'images' => 'array|max:10',
+            'images' => [
+                'array',
+                new SubscriberImagesCount(1, $this->user()),
+                'max:10',
+            ],
             'images.*' => 'integer',
             'ingredients.*.ingredient_id' => 'required|integer',
             'ingredients.*.units' => 'required_with:ingredients.*.amount',

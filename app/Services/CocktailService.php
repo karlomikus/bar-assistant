@@ -94,7 +94,7 @@ final class CocktailService
                 $imageModels = Image::findOrFail($cocktailDTO->images);
                 $cocktail->attachImages($imageModels);
             } catch (Throwable $e) {
-                throw new ImagesNotAttachedException();
+                throw new ImagesNotAttachedException('Unable to attach images to cocktail');
             }
         }
 
