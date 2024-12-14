@@ -1,3 +1,13 @@
+# v4.2.4
+## Changes
+- Optimized ingredients list query
+- Moved SQLite optimizations from bash to backend
+
+## Fixed
+- Fixed missing rate limit for imports
+- Fixed missing max images validation fro cloud instance
+- Fixed markdown export encoding special characters
+
 # v4.2.3
 ## Fixed
 - Fix unhandled exception when menu cocktail has `null` as currency
