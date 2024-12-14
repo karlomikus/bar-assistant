@@ -52,15 +52,19 @@ class BarController extends Controller
     #[BAO\NotFoundResponse]
     public function show(Request $request, int $id): JsonResource
     {
-        $bar = Bar::findOrFail($id);
+        $bar = Cache::remember('ba:bar:' . $id, 60 * 60 * 24, function () use ($id) {
+            $bar = Bar::findOrFail($id);
+
+            if (!$bar->slug) {
+                $bar->generateSlug();
+                $bar->save();
+            }
+
+            return $bar;
+        });
 
         if ($request->user()->cannot('show', $bar)) {
             abort(403);
-        }
-
-        if (!$bar->slug) {
-            $bar->generateSlug();
-            $bar->save();
         }
 
         $bar->load('createdUser', 'updatedUser', 'images');
