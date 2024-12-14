@@ -7,6 +7,7 @@
 - Fixed missing rate limit for imports
 - Fixed missing max images validation fro cloud instance
 - Fixed markdown export encoding special characters
+- Fixed missing complex ingredients on import
 
 # v4.2.3
 ## Fixed

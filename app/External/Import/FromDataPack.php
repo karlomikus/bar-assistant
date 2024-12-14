@@ -122,6 +122,7 @@ class FromDataPack
 
         $ingredientsToInsert = [];
         $parentIngredientsToInsert = [];
+        $ingredientPartsToInsert = [];
         $imagesToInsert = [];
         $barImagesDir = $bar->getIngredientsDirectory();
         $this->uploadsDisk->makeDirectory($barImagesDir);
@@ -152,6 +153,10 @@ class FromDataPack
 
             if ($externalIngredient->parentId) {
                 $parentIngredientsToInsert[$slug] = $externalIngredient->parentId . '-' . $bar->id;
+            }
+
+            foreach ($externalIngredient->ingredientParts as $ingredientPart) {
+                $ingredientPartsToInsert[$slug][] = $ingredientPart->id . '-' . $bar->id;
             }
 
             // For performance, manually copy the files and create image references
@@ -190,6 +195,15 @@ class FromDataPack
                 $parentIngredientId = DB::table('ingredients')->where('slug', $parentSlug)->where('bar_id', $bar->id)->first('id');
                 if (isset($parentIngredientId->id)) {
                     DB::table('ingredients')->where('slug', $ingredient->slug)->where('bar_id', $bar->id)->update(['parent_ingredient_id' => $parentIngredientId->id]);
+                }
+            }
+
+            if (array_key_exists($ingredient->slug, $ingredientPartsToInsert)) {
+                foreach ($ingredientPartsToInsert[$ingredient->slug] as $partSlug) {
+                    $ingredientPartId = DB::table('ingredients')->where('slug', $partSlug)->where('bar_id', $bar->id)->first('id');
+                    if (isset($ingredientPartId->id)) {
+                        DB::table('complex_ingredients')->insert(['main_ingredient_id' => $ingredient->id, 'ingredient_id' => $ingredientPartId->id]);
+                    }
                 }
             }
 
