@@ -4,7 +4,7 @@ namespace Kami\Cocktail\Rules;
 
 use Closure;
 use Throwable;
-use PrinsFrank\Standards\Currency\CurrencyAlpha3;
+use Brick\Money\Currency;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class ValidCurrency implements ValidationRule
@@ -17,7 +17,7 @@ class ValidCurrency implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         try {
-            CurrencyAlpha3::from($value);
+            Currency::of($value);
         } catch (Throwable) {
             $fail('Currency must be in ISO 4217 (Alpha3) format');
         }

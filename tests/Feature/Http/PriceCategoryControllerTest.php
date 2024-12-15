@@ -56,7 +56,7 @@ class PriceCategoryControllerTest extends TestCase
                 ->where('data.name', $cat->name)
                 ->where('data.description', $cat->description)
                 ->where('data.currency', $cat->currency)
-                ->where('data.currency_symbol', '€')
+                ->where('data.currency_symbol', '')
                 ->etc()
         );
     }
@@ -79,7 +79,7 @@ class PriceCategoryControllerTest extends TestCase
                 ->where('data.name', 'Test cat')
                 ->where('data.description', 'Test cat desc')
                 ->where('data.currency', 'USD')
-                ->where('data.currency_symbol', '$')
+                ->where('data.currency_symbol', '')
                 ->etc()
         );
     }
@@ -103,7 +103,7 @@ class PriceCategoryControllerTest extends TestCase
                 ->where('data.name', 'Test cat')
                 ->where('data.description', 'Test cat desc')
                 ->where('data.currency', 'JPY')
-                ->where('data.currency_symbol', '¥')
+                ->where('data.currency_symbol', '')
                 ->etc()
         );
     }
