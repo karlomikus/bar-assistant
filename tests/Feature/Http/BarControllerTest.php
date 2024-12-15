@@ -8,6 +8,7 @@ use Tests\TestCase;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Image;
+use Illuminate\Support\Facades\Config;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -205,5 +206,25 @@ class BarControllerTest extends TestCase
 
         $response->assertOk();
         $this->assertSame(1, $bar->memberships()->count());
+    }
+
+    public function test_limits_bar_count_for_unsubscribed_users(): void
+    {
+        Config::set('bar-assistant.enable_billing', true);
+
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->postJson('/api/bars', [
+            'name' => 'Test bar name'
+        ]);
+
+        $response->assertCreated();
+
+        $response = $this->postJson('/api/bars', [
+            'name' => 'Test bar name'
+        ]);
+
+        $response->assertForbidden();
     }
 }

@@ -10,10 +10,12 @@ use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\Models\Image;
+use Laravel\Paddle\Subscription;
 use Illuminate\Http\UploadedFile;
 use Kami\Cocktail\Models\Utensil;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\PriceCategory;
 use Kami\Cocktail\Models\CocktailMethod;
@@ -30,6 +32,8 @@ class CocktailControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Config::set('bar-assistant.enable_billing', false);
 
         $this->actingAs(
             User::factory()->create()
@@ -790,5 +794,78 @@ class CocktailControllerTest extends TestCase
         $response->assertJsonPath('data.0.prices_per_ingredient.2.price_per_unit.price', 0.8);
         $response->assertJsonPath('data.0.prices_per_ingredient.2.price_per_use.price', 0.4);
         $response->assertJsonPath('data.0.total_price.price', 2);
+    }
+
+    public function test_max_images_validation(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $images = Image::factory()->count(11)->create();
+
+        $response = $this->postJson('/api/cocktails', [
+            'name' => "Cocktail name",
+            'instructions' => "1. Step\n2. Step",
+            'description' => "Cocktail description",
+            'images' => $images->pluck('id')->toArray(),
+        ]);
+        $response->assertUnprocessable();
+
+        $response = $this->postJson('/api/cocktails', [
+            'name' => "Cocktail name",
+            'instructions' => "1. Step\n2. Step",
+            'description' => "Cocktail description",
+            'images' => $images->take(10)->pluck('id')->toArray(),
+        ]);
+        $response->assertCreated();
+    }
+
+    public function test_limits_cocktails_images_limit_for_unsubscribed_users(): void
+    {
+        Config::set('bar-assistant.enable_billing', true);
+
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $image1 = Image::factory()->create();
+        $image2 = Image::factory()->create();
+        $image3 = Image::factory()->create();
+
+        $response = $this->postJson('/api/cocktails', [
+            'name' => "Cocktail name",
+            'instructions' => "1. Step\n2. Step",
+            'description' => "Cocktail description",
+            'images' => [$image1->id, $image2->id, $image3->id],
+        ]);
+
+        $response->assertUnprocessable();
+
+        $response = $this->postJson('/api/cocktails', [
+            'name' => "Cocktail name",
+            'instructions' => "1. Step\n2. Step",
+            'description' => "Cocktail description",
+            'images' => [$image1->id],
+        ]);
+
+        $response->assertCreated();
+
+        $membership->user->subscriptions()->create([
+            'type' => 'default',
+            'paddle_id' => 'sub_12345',
+            'status' => Subscription::STATUS_ACTIVE,
+        ]);
+        $membership->user->refresh();
+
+        $response = $this->postJson('/api/cocktails', [
+            'name' => "Cocktail name",
+            'instructions' => "1. Step\n2. Step",
+            'description' => "Cocktail description",
+            'images' => [$image1->id, $image2->id, $image3->id],
+        ]);
+        $response->assertCreated();
     }
 }

@@ -386,7 +386,7 @@ class Cocktail extends Model implements UploadableInterface
 
     public function calculatePrice(PriceCategory $priceCategory): Money
     {
-        $totalPrice = Money::of(0, $priceCategory->getCurrency()->value)->toRational();
+        $totalPrice = Money::of(0, $priceCategory->getCurrency())->toRational();
 
         /** @var CocktailIngredient */
         foreach ($this->ingredients as $cocktailIngredient) {

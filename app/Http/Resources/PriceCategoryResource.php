@@ -24,7 +24,7 @@ class PriceCategoryResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'currency' => $this->currency,
-            'currency_symbol' => $this->getCurrency()->getSymbol(),
+            'currency_symbol' => '', // TODO:...
         ];
     }
 }

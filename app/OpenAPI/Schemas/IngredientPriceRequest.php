@@ -34,7 +34,7 @@ readonly class IngredientPriceRequest
         $category = PriceCategory::findOrFail((int) $source['price_category_id']);
         $price = Money::of(
             $source['price'],
-            $category->getCurrency()->value,
+            $category->getCurrency(),
             roundingMode: RoundingMode::UP
         )->getMinorAmount()->toInt();
 
