@@ -1,11 +1,15 @@
+# v4.2.5
+## Fixes
+- Added missing filter `missing_bar_ingredients` attribute to `/cocktails` endpoint
+
 # v4.2.4
 ## Changes
 - Optimized ingredients list query
-- Moved SQLite optimizations from bash to backend
+- Moved SQLite optimizations from docker entry point to api
 
 ## Fixed
 - Fixed missing rate limit for imports
-- Fixed missing max images validation fro cloud instance
+- Fixed missing max images validation for cloud instance
 - Fixed markdown export encoding special characters
 - Fixed missing complex ingredients on import
 

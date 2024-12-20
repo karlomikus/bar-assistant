@@ -966,6 +966,8 @@ paths:
                 type: string
               missing_ingredients:
                 type: string
+              missing_bar_ingredients:
+                type: string
               specific_ingredients:
                 type: string
               ignore_ingredients:
