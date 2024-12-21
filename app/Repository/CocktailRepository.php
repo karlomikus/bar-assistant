@@ -50,28 +50,33 @@ readonly class CocktailRepository
             $ingredientIds = array_unique($ingredientIds);
         }
 
-        $query = $this->db->table('cocktails AS c')
-            ->select('c.id')
-            ->join('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'c.id')
-            ->join('ingredients AS i', 'i.id', '=', 'ci.ingredient_id')
-            ->leftJoin('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')
-            ->where('optional', false)
-            ->where(function ($query) use ($ingredientIds, $useParentIngredientAsSubstitute) {
-                $query->whereIn('i.id', $ingredientIds)->orWhereIn('cis.ingredient_id', $ingredientIds);
-
-                // Experimental, not the best solution, hard to follow/explain/show
-                if ($useParentIngredientAsSubstitute) {
-                    $query->orWhereIn('i.id', function ($parentSubquery) use ($ingredientIds) {
-                        $parentSubquery
-                            ->select('parent_ingredient_id')
-                            ->from('ingredients')
-                            ->whereIn('id', $ingredientIds)
-                            ->whereNotNull('parent_ingredient_id');
-                    });
-                }
-            })
-            ->groupBy('c.id')
-            ->havingRaw('COUNT(*) >= (SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_id = c.id AND optional = false)');
+        $query = $this->db->table('cocktails')
+            ->select('cocktails.id')
+            ->selectRaw('
+                COUNT(DISTINCT CASE
+                    WHEN ingredients.id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN ingredients.id
+                    WHEN cocktail_ingredient_substitutes.ingredient_id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN cocktail_ingredient_substitutes.ingredient_id
+                    WHEN ? = true AND ingredients.id IN (
+                        SELECT parent_ingredient_id 
+                        FROM ingredients 
+                        WHERE id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?)
+                        AND parent_ingredient_id IS NOT NULL
+                    ) THEN ingredients.id
+                    ELSE NULL
+                END) as matching_ingredients',
+                [...$ingredientIds, ...$ingredientIds, $useParentIngredientAsSubstitute, ...$ingredientIds]
+            )
+            ->join('cocktail_ingredients', 'cocktails.id', '=', 'cocktail_ingredients.cocktail_id')
+            ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
+            ->leftJoin('cocktail_ingredient_substitutes', 'cocktail_ingredient_substitutes.cocktail_ingredient_id', '=', 'cocktail_ingredients.id')
+            ->where('cocktail_ingredients.optional', false)
+            ->groupBy('cocktails.id')
+            ->havingRaw('matching_ingredients >= (
+                SELECT COUNT(*)
+                FROM cocktail_ingredients ci2
+                WHERE ci2.cocktail_id = cocktails.id
+                AND ci2.optional = false
+            )');
 
         if ($limit) {
             $query->limit($limit);
