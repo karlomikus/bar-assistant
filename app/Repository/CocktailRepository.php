@@ -52,7 +52,8 @@ readonly class CocktailRepository
 
         $query = $this->db->table('cocktails')
             ->select('cocktails.id')
-            ->selectRaw('
+            ->selectRaw(
+                '
                 COUNT(DISTINCT CASE
                     WHEN ingredients.id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN ingredients.id
                     WHEN cocktail_ingredient_substitutes.ingredient_id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN cocktail_ingredient_substitutes.ingredient_id
