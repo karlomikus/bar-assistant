@@ -61,6 +61,7 @@ class CocktailController extends Controller
             new OAT\Property(property: 'main_ingredient_id', type: 'string'),
             new OAT\Property(property: 'total_ingredients', type: 'string'),
             new OAT\Property(property: 'missing_ingredients', type: 'string'),
+            new OAT\Property(property: 'missing_bar_ingredients', type: 'string'),
             new OAT\Property(property: 'specific_ingredients', type: 'string'),
             new OAT\Property(property: 'ignore_ingredients', type: 'string'),
         ])),

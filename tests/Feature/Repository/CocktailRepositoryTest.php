@@ -101,6 +101,7 @@ class CocktailRepositoryTest extends TestCase
         $ingredient1 = Ingredient::factory()->for($membership->bar)->create();
         $ingredient2 = Ingredient::factory()->for($membership->bar)->create();
         $ingredient3 = Ingredient::factory()->for($membership->bar)->create();
+        $ingredient4 = Ingredient::factory()->for($membership->bar)->create();
 
         Cocktail::factory()
             ->for($membership->bar)
@@ -109,6 +110,7 @@ class CocktailRepositoryTest extends TestCase
                     ->state(['optional' => false])
                     ->for($ingredient1)
                     ->has(CocktailIngredientSubstitute::factory()->for($ingredient2), 'substitutes')
+                    ->has(CocktailIngredientSubstitute::factory()->for($ingredient4), 'substitutes')
                     ->recycle($membership->bar),
                 'ingredients'
             )
