@@ -1,5 +1,6 @@
 # v4.2.5
 ## Fixes
+- Fixed overcounting ingredients which led to incorrect recipe matching if multiple substitutes were used
 - Added missing filter `missing_bar_ingredients` attribute to `/cocktails` endpoint
 
 # v4.2.4
