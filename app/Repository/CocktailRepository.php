@@ -50,13 +50,17 @@ readonly class CocktailRepository
             $ingredientIds = array_unique($ingredientIds);
         }
 
+        // This query should handle the following cases:
+        // Correctly count one match when either the main ingredient OR any of its substitutes match
+        // Not overcount when multiple substitutes exist for the same ingredient
+        // If enabled, also match parent ingredients of the specified ingredients
+        // If an ingredient can be matched either directly or through a substitute, it should only count once
         $query = $this->db->table('cocktails')
             ->select('cocktails.id')
             ->selectRaw(
-                '
-                COUNT(DISTINCT CASE
+                'COUNT(DISTINCT CASE
                     WHEN ingredients.id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN ingredients.id
-                    WHEN cocktail_ingredient_substitutes.ingredient_id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN cocktail_ingredient_substitutes.ingredient_id
+                    WHEN cocktail_ingredient_substitutes.ingredient_id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN ingredients.id
                     WHEN ? = true AND ingredients.id IN (
                         SELECT parent_ingredient_id 
                         FROM ingredients 

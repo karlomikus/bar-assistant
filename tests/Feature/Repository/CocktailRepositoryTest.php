@@ -132,6 +132,53 @@ class CocktailRepositoryTest extends TestCase
         $this->assertSame([1], $cocktails->toArray());
     }
 
+    public function test_correctly_counts_substitutes_match(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $ingredient1 = Ingredient::factory()->for($membership->bar)->create();
+        $ingredient2 = Ingredient::factory()->for($membership->bar)->create();
+        $ingredient3 = Ingredient::factory()->for($membership->bar)->create();
+        $ingredient4 = Ingredient::factory()->for($membership->bar)->create();
+        $ingredient5 = Ingredient::factory()->for($membership->bar)->create();
+
+        Cocktail::factory()
+            ->for($membership->bar)
+            ->has(
+                CocktailIngredient::factory()
+                    ->state(['optional' => false])
+                    ->for($ingredient1)
+                    ->has(CocktailIngredientSubstitute::factory()->for($ingredient2), 'substitutes')
+                    ->has(CocktailIngredientSubstitute::factory()->for($ingredient5), 'substitutes')
+                    ->recycle($membership->bar),
+                'ingredients'
+            )
+            ->has(
+                CocktailIngredient::factory()
+                    ->state(['optional' => false])
+                    ->for($ingredient3)
+                    ->recycle($membership->bar),
+                'ingredients'
+            )
+            ->has(
+                CocktailIngredient::factory()
+                    ->state(['optional' => false])
+                    ->for($ingredient4)
+                    ->recycle($membership->bar),
+                'ingredients'
+            )
+            ->create();
+
+        Ingredient::factory()->for($membership->bar)->count(10)->create();
+        Cocktail::factory()->recycle($membership->bar)->count(10)->create();
+
+        $repository = resolve(CocktailRepository::class);
+        $cocktails = $repository->getCocktailsByIngredients([$ingredient2->id, $ingredient3->id, $ingredient5->id]);
+
+        $this->assertCount(0, $cocktails->toArray());
+    }
+
     public function test_gets_cocktails_that_can_be_made_with_complex_ingredients(): void
     {
         $membership = $this->setupBarMembership();
