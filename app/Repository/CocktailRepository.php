@@ -52,9 +52,8 @@ readonly class CocktailRepository
 
         // This query should handle the following cases:
         // Correctly count one match when either the main ingredient OR any of its substitutes match
-        // Not overcount when multiple substitutes exist for the same ingredient
-        // If enabled, also match parent ingredients of the specified ingredients
         // If an ingredient can be matched either directly or through a substitute, it should only count once
+        // If enabled, also match parent ingredients of the specified ingredients
         $query = $this->db->table('cocktails')
             ->select('cocktails.id')
             ->selectRaw(

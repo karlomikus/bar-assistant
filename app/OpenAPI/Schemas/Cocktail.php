@@ -115,6 +115,9 @@ class Cocktail
     #[OAT\Property(property: 'in_bar_shelf')]
     public bool $inBarShelf = false;
 
+    #[OAT\Property(property: 'is_favorited')]
+    public bool $isFavorited = false;
+
     /** @var array<mixed> */
     #[OAT\Property(type: 'object', required: ['can_edit', 'can_delete', 'can_rate', 'can_add_note'], properties: [
         new OAT\Property(type: 'boolean', property: 'can_edit', example: true),

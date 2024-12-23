@@ -1,3 +1,14 @@
+# v4.3.0
+## New
+- Added `is_favorited` to cocktail schema
+
+## Fixes
+- Properties `in_shelf` and `in_bar_shelf` on cocktail schema correctly match substitute and complex ingredients
+
+# v4.2.6
+## Fixes
+- Fixed wrong substitutes ingredient id counting
+
 # v4.2.5
 ## Fixes
 - Fixed overcounting ingredients which led to incorrect recipe matching if multiple substitutes were used

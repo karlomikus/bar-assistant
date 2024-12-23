@@ -7976,6 +7976,8 @@ components:
           type: boolean
         in_bar_shelf:
           type: boolean
+        is_favorited:
+          type: boolean
         access:
           required:
             - can_edit
