@@ -1777,6 +1777,17 @@ paths:
           required: false
           schema:
             type: integer
+        -
+          name: filter
+          in: query
+          description: 'Filter by attributes'
+          style: deepObject
+          explode: true
+          schema:
+            properties:
+              name:
+                type: string
+            type: object
       responses:
         '200':
           description: 'Successful response'

@@ -1,6 +1,7 @@
 # v4.3.0
 ## New
 - Added `is_favorited` to cocktail schema
+- Added filter by `name` to `/cocktail-methods` endpoint
 
 ## Fixes
 - Properties `in_shelf` and `in_bar_shelf` on cocktail schema correctly match substitute and complex ingredients

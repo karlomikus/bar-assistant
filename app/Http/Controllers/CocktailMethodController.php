@@ -13,18 +13,22 @@ use Kami\Cocktail\Models\CocktailMethod;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailMethodRequest;
 use Kami\Cocktail\Http\Resources\CocktailMethodResource;
+use Kami\Cocktail\Http\Filters\CocktailMethodQueryFilter;
 
 class CocktailMethodController extends Controller
 {
     #[OAT\Get(path: '/cocktail-methods', tags: ['Cocktail method'], operationId: 'listCocktailMethods', description: 'Show a list of all cocktail methods in a bar', summary: 'List methods', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
+        new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
+            new OAT\Property(property: 'name', type: 'string'),
+        ])),
     ])]
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BAO\Schemas\CocktailMethod::class),
     ])]
     public function index(): JsonResource
     {
-        $methods = CocktailMethod::orderBy('id')->withCount('cocktails')->filterByBar()->get();
+        $methods = (new CocktailMethodQueryFilter())->get();
 
         return CocktailMethodResource::collection($methods);
     }
