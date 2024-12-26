@@ -7537,7 +7537,6 @@ components:
         - status
         - access
         - invite_code
-        - active
         - settings
         - search_host
         - search_token
@@ -9256,7 +9255,9 @@ components:
       required:
         - id
         - name
-        - cocktails_count
+        - email
+        - is_subscribed
+        - memberships
       properties:
         id:
           type: integer

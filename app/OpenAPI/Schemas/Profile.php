@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema(required: ['id', 'name', 'cocktails_count'])]
+#[OAT\Schema(required: ['id', 'name', 'email', 'is_subscribed', 'memberships'])]
 class Profile
 {
     #[OAT\Property(example: 1)]
