@@ -14,6 +14,7 @@ use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\Services\MeilisearchService;
+use Kami\Cocktail\Repository\CocktailRepository;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -181,5 +182,21 @@ class Bar extends Model implements UploadableInterface
     public function getIngredientsDirectory(): string
     {
         return 'ingredients/' . $this->id . '/';
+    }
+
+    /**
+     * @return array<int>
+     */
+    public function getShelfCocktailsOnce(bool $useParentIngredientAsSubstitute): array
+    {
+        return once(function () use ($useParentIngredientAsSubstitute) {
+            $cocktailRepo = resolve(CocktailRepository::class);
+            $userShelfIngredients = $this->shelfIngredients->pluck('ingredient_id')->toArray();
+
+            return $cocktailRepo->getCocktailsByIngredients(
+                ingredientIds: $userShelfIngredients,
+                useParentIngredientAsSubstitute: $useParentIngredientAsSubstitute
+            )->values()->toArray();
+        });
     }
 }

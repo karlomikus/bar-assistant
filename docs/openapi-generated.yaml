@@ -1777,6 +1777,17 @@ paths:
           required: false
           schema:
             type: integer
+        -
+          name: filter
+          in: query
+          description: 'Filter by attributes'
+          style: deepObject
+          explode: true
+          schema:
+            properties:
+              name:
+                type: string
+            type: object
       responses:
         '200':
           description: 'Successful response'
@@ -3566,6 +3577,55 @@ paths:
                 properties:
                   data: { required: [schema_version, schema, scraper_meta], properties: { schema_version: { type: string, example: draft2 }, schema: { $ref: 'https://barassistant.app/cocktail-02.schema.json' }, scraper_meta: { type: array, items: { required: [_id, source], properties: { _id: { type: string }, source: { type: string } }, type: object } } }, type: object }
                 type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /import/ingredients:
+    post:
+      tags:
+        - Import
+      summary: 'Import ingredients'
+      description: 'Import ingredients from a CSV source'
+      operationId: importIngredients
+      parameters:
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          text/csv: {  }
+          multipart/form-data:
+            schema:
+              required:
+                - source
+              properties:
+                source:
+                  description: 'CSV file'
+                  type: string
+                  format: binary
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -7526,7 +7586,6 @@ components:
         - status
         - access
         - invite_code
-        - active
         - settings
         - search_host
         - search_token
@@ -7975,6 +8034,8 @@ components:
         in_shelf:
           type: boolean
         in_bar_shelf:
+          type: boolean
+        is_favorited:
           type: boolean
         access:
           required:
@@ -9243,7 +9304,9 @@ components:
       required:
         - id
         - name
-        - cocktails_count
+        - email
+        - is_subscribed
+        - memberships
       properties:
         id:
           type: integer

@@ -207,6 +207,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::post('/scrape', [ImportController::class, 'scrape'])->middleware(EnsureRequestHasBarQuery::class)->name('import.scrape');
         Route::post('/cocktail', [ImportController::class, 'cocktail'])->middleware(EnsureRequestHasBarQuery::class)->name('import.cocktail');
         Route::post('/file', [ImportController::class, 'file'])->middleware(EnsureRequestHasBarQuery::class)->name('import.file');
+        Route::post('/ingredients', [ImportController::class, 'ingredients'])->middleware(EnsureRequestHasBarQuery::class)->name('import.ingredients');
     });
 
     Route::prefix('bars')->middleware(['ability:*'])->group(function () {

@@ -5,18 +5,24 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Throwable;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Scraper\Manager;
+use Kami\Cocktail\Models\Ingredient;
+use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\External\Model\Schema;
+use Illuminate\Support\Facades\Validator;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
 use Kami\Cocktail\Http\Requests\ImportRequest;
 use Kami\Cocktail\Http\Requests\ScrapeRequest;
 use Kami\Cocktail\Services\Image\ImageService;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Jobs\StartIngredientCSVImport;
 use Kami\Cocktail\External\Import\FromJsonSchema;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\External\Import\DuplicateActionsEnum;
@@ -84,7 +90,7 @@ class ImportController extends Controller
         ], required: ['data']),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function scrape(ScrapeRequest $request): JsonResponse|JsonResource
+    public function scrape(ScrapeRequest $request): JsonResponse
     {
         if ($request->user()->cannot('create', Cocktail::class)) {
             abort(403);
@@ -101,6 +107,44 @@ class ImportController extends Controller
         return response()->json([
             'data' => $dataToImport,
         ]);
+    }
+
+    #[OAT\Post(path: '/import/ingredients', tags: ['Import'], operationId: 'importIngredients', summary: 'Import ingredients', description: 'Import ingredients from a CSV source', parameters: [
+        new BAO\Parameters\BarIdHeaderParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\MediaType(mediaType: 'text/csv'),
+            new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(type: 'object', required: ['source'], properties: [
+                new OAT\Property(property: 'source', type: 'string', format: 'binary', description: 'CSV file'),
+            ])),
+        ]
+    ))]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    public function ingredients(Request $request): JsonResponse
+    {
+        if ($request->user()->cannot('create', Ingredient::class)) {
+            abort(403);
+        }
+
+        if ($request->hasFile('source')) {
+            Validator::make($request->all(), [
+                'source' => 'required|file|mimes:csv|max:1048576',
+            ])->validate();
+
+            $file = $request->source->store('', 'temp-uploads');
+        } else {
+            $file = Str::random(10) . '.csv';
+            $csv = $request->getContent();
+            if (!Storage::disk('temp-uploads')->put($file, $csv)) {
+                abort(500, 'Unable to store uploaded file');
+            }
+        }
+
+        StartIngredientCSVImport::dispatch(bar()->id, $request->user()->id, $file);
+
+        return response()->json(status: 204);
     }
 
     // #[OAT\Post(path: '/import/file', tags: ['Import'], summary: 'Import from zip file', requestBody: new OAT\RequestBody(

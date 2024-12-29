@@ -7,7 +7,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 
-#[OAT\Schema(required: ['id', 'slug', 'name', 'subtitle', 'description', 'status', 'access', 'invite_code', 'active', 'settings', 'search_host', 'search_token', 'created_at', 'updated_at'])]
+#[OAT\Schema(required: ['id', 'slug', 'name', 'subtitle', 'description', 'status', 'access', 'invite_code', 'settings', 'search_host', 'search_token', 'created_at', 'updated_at'])]
 class Bar
 {
     #[OAT\Property(example: 1)]

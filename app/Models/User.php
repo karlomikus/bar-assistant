@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Kami\Cocktail\Repository\CocktailRepository;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -178,6 +179,22 @@ class User extends Authenticatable implements MustVerifyEmail
     public function activateBars(): void
     {
         $this->ownedBars()->update(['status' => BarStatusEnum::Active->value]);
+    }
+
+    /**
+     * @return array<int>
+     */
+    public function getShelfCocktailsOnce(int $barId, bool $useParentIngredientAsSubstitute): array
+    {
+        return once(function () use ($barId, $useParentIngredientAsSubstitute) {
+            $cocktailRepo = resolve(CocktailRepository::class);
+            $userShelfIngredients = $this->getShelfIngredients($barId)->pluck('ingredient_id')->toArray();
+
+            return $cocktailRepo->getCocktailsByIngredients(
+                ingredientIds: $userShelfIngredients,
+                useParentIngredientAsSubstitute: $useParentIngredientAsSubstitute
+            )->values()->toArray();
+        });
     }
 
     private function hasBarRole(int $barId, UserRoleEnum $role): bool

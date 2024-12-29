@@ -1,3 +1,17 @@
+# v4.3.0
+## New
+- Added `/import/ingredients` endpoint to import multiple ingredients from a CSV file
+- Added `is_favorited` to cocktail schema
+- Added filter by `name` to `/cocktail-methods` endpoint
+- Added support for Sentry error reporting via `SENTRY_LARAVEL_DSN` env variable
+
+## Fixes
+- Properties `in_shelf` and `in_bar_shelf` on cocktail schema correctly match substitute and complex ingredients
+
+# v4.2.6
+## Fixes
+- Fixed wrong substitutes ingredient id counting
+
 # v4.2.5
 ## Fixes
 - Fixed overcounting ingredients which led to incorrect recipe matching if multiple substitutes were used
