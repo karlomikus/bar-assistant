@@ -6,6 +6,7 @@ namespace Tests\Feature\Http;
 
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
+use Kami\Cocktail\Models\IngredientCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ImportControllerTest extends TestCase
@@ -49,6 +50,10 @@ class ImportControllerTest extends TestCase
 
         $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
 
+        $existingCategory = IngredientCategory::factory()->for($membership->bar)->create([
+            'name' => 'Liquers'
+        ]);
+
         $source = file_get_contents(base_path('tests/fixtures/ingredients.csv'));
 
         $response = $this->postJson('/api/import/ingredients', [
@@ -57,11 +62,12 @@ class ImportControllerTest extends TestCase
 
         $response->assertSuccessful();
 
-        $this->assertDatabaseCount('ingredients', 2);
+        $this->assertDatabaseCount('ingredients', 4);
+        $this->assertDatabaseCount('ingredient_categories', 2);
         $this->assertDatabaseHas('ingredients', [
             'name' => 'Campari',
             'slug' => 'campari-' . $membership->bar_id,
-            'ingredient_category_id' => null,
+            'ingredient_category_id' => $existingCategory->id,
             'strength' => 40,
             'description' => 'Bitter liquer',
             'origin' => 'Italy',
@@ -72,8 +78,30 @@ class ImportControllerTest extends TestCase
         $this->assertDatabaseHas('ingredients', [
             'name' => 'gin',
             'slug' => 'gin-' . $membership->bar_id,
-            'ingredient_category_id' => null,
+            'ingredient_category_id' => 2,
             'strength' => 23.3,
+            'description' => null,
+            'origin' => null,
+            'color' => null,
+            'bar_id' => $membership->bar_id,
+            'created_user_id' => $membership->user_id,
+        ]);
+        $this->assertDatabaseHas('ingredients', [
+            'name' => 'Whiskey',
+            'slug' => 'whiskey-' . $membership->bar_id,
+            'ingredient_category_id' => 2,
+            'strength' => 0,
+            'description' => null,
+            'origin' => null,
+            'color' => null,
+            'bar_id' => $membership->bar_id,
+            'created_user_id' => $membership->user_id,
+        ]);
+        $this->assertDatabaseHas('ingredients', [
+            'name' => 'empty',
+            'slug' => 'empty-' . $membership->bar_id,
+            'ingredient_category_id' => null,
+            'strength' => 0,
             'description' => null,
             'origin' => null,
             'color' => null,

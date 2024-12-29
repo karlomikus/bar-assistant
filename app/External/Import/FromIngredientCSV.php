@@ -23,14 +23,29 @@ class FromIngredientCSV
         string $imageDirectoryBasePath = '',
     ): void {
         DB::transaction(function () use ($filepath) {
+            $categories = DB::table('ingredient_categories')->select('id', 'name')->where('bar_id', $this->barId)->get();
+
             Reader::createFromPath($filepath)
                 ->setHeaderOffset(0)
-                ->each(function (array $record) {
+                ->each(function (array $record) use ($categories) {
                     $ingredientExternal = IngredientExternal::fromCSV($record);
+                    $category = $categories->firstWhere('name', $ingredientExternal->category);
+
+                    if (!$category && $ingredientExternal->category) {
+                        $categoryId = DB::table('ingredient_categories')->insertGetId([
+                            'name' => $ingredientExternal->category,
+                            'bar_id' => $this->barId,
+                            'created_at' => now(),
+                            'updated_at' => null,
+                        ]);
+                        $category = (object) ['id' => $categoryId, 'name' => $ingredientExternal->category];
+                        $categories->push($category);
+                    }
 
                     DB::table('ingredients')->insert([
                         'bar_id' => $this->barId,
                         'slug' => Str::slug($ingredientExternal->name) . '-' . $this->barId,
+                        'ingredient_category_id' => $category?->id,
                         'name' => $ingredientExternal->name,
                         'strength' => $ingredientExternal->strength,
                         'description' => $ingredientExternal->description,
