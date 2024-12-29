@@ -3594,6 +3594,55 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /import/ingredients:
+    post:
+      tags:
+        - Import
+      summary: 'Import ingredients'
+      description: 'Import ingredients from a CSV source'
+      operationId: importIngredients
+      parameters:
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          text/csv: {  }
+          multipart/form-data:
+            schema:
+              required:
+                - source
+              properties:
+                source:
+                  description: 'CSV file'
+                  type: string
+                  format: binary
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /ingredient-categories:
     get:
       tags:

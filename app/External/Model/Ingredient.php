@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\External\Model;
 
+use Kami\Cocktail\External\SupportsCSV;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Image as ImageModel;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 use Kami\Cocktail\Models\IngredientPrice as IngredientPriceModel;
 
-readonly class Ingredient implements SupportsDataPack
+readonly class Ingredient implements SupportsDataPack, SupportsCSV
 {
     /**
      * @param array<Image> $images
@@ -110,5 +111,26 @@ readonly class Ingredient implements SupportsDataPack
             'ingredient_parts' => array_map(fn ($model) => $model->toDataPackArray(), $this->ingredientParts),
             'prices' => array_map(fn ($model) => $model->toDataPackArray(), $this->prices),
         ];
+    }
+
+    public static function fromCSV(array $sourceArray): self
+    {
+        $images = [];
+        $ingredientParts = [];
+
+        return new self(
+            'CSV',
+            $sourceArray['name'],
+            null,
+            isset($sourceArray['strength']) ? floatval($sourceArray['strength']) : 0.0,
+            blank($sourceArray['description']) ? null : $sourceArray['description'],
+            blank($sourceArray['origin']) ? null : $sourceArray['origin'],
+            blank($sourceArray['color']) ? null : $sourceArray['color'],
+            blank($sourceArray['category']) ? null : $sourceArray['category'],
+            null,
+            null,
+            $images,
+            $ingredientParts,
+        );
     }
 }
