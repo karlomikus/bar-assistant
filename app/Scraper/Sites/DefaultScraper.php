@@ -138,7 +138,7 @@ class DefaultScraper extends AbstractSiteExtractor
         foreach ($ingredients as $ingredient) {
             $ingredient = html_entity_decode($ingredient, ENT_SUBSTITUTE | ENT_HTML5); // Convert entities to correct chars
             $ingredient = e(trim($ingredient, " \n\r\t\v\x00\"\'"));
-            $recipeIngredient = $this->ingredientParser->parseLine($ingredient, $this->defaultConvertTo, [Units::Dash]);
+            $recipeIngredient = $this->ingredientParser->parseLine($ingredient, $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
 
             if (empty($recipeIngredient->amount) || empty($recipeIngredient->name) || empty($recipeIngredient->units)) {
                 continue;

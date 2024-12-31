@@ -78,7 +78,7 @@ class HausAlpenz extends AbstractSiteExtractor
     {
         $result = [];
         $this->crawler->filter("p.measure")->each(function ($node) use (&$result) {
-            $result[] = $this->ingredientParser->parseLine($node->text(), $this->defaultConvertTo, [Units::Dash]);
+            $result[] = $this->ingredientParser->parseLine($node->text(), $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
         });
 
         return $result;
