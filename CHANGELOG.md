@@ -1,4 +1,12 @@
-# v4.3.0
+# v4.2.8
+## New
+- Added `bar:migrate-shelf` command for server owners
+- Added `org.opencontainers.image.source` label to docker image
+
+## Fixes
+- Fixed unit parsing for scraping and importing cocktails
+
+# v4.2.7
 ## New
 - Added `/import/ingredients` endpoint to import multiple ingredients from a CSV file
 - Added `is_favorited` to cocktail schema
