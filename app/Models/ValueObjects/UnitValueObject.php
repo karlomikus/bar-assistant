@@ -13,9 +13,9 @@ final readonly class UnitValueObject implements Stringable, JsonSerializable
     public string $value;
 
     public function __construct(
-        string $value,
+        ?string $value,
     ) {
-        $this->value = trim(mb_strtolower($value));
+        $this->value = trim(mb_strtolower($value ?? ''));
     }
 
     public function getAsEnum(): ?Units
