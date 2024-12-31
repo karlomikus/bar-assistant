@@ -10,6 +10,8 @@ RUN rm -r .git
 
 FROM serversideup/php:8.3-fpm-nginx AS php-base
 
+LABEL org.opencontainers.image.source="https://github.com/karlomikus/bar-assistant"
+
 ENV S6_CMD_WAIT_FOR_SERVICES=1
 ENV APP_BASE_DIR=/var/www/cocktails
 ENV NGINX_WEBROOT=/var/www/cocktails/public
