@@ -81,7 +81,7 @@ class ImbibeMagazine extends DefaultScraper
         $schemaIngredients = $this->getRecipeSchema()['recipeIngredient'] ?? [];
 
         foreach ($schemaIngredients as $ingredient) {
-            $result[] = $this->ingredientParser->parseLine($ingredient['ingredient'], $this->defaultConvertTo, [Units::Dash]);
+            $result[] = $this->ingredientParser->parseLine($ingredient['ingredient'], $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
         }
 
         if (empty($result)) {
@@ -89,7 +89,7 @@ class ImbibeMagazine extends DefaultScraper
                 if (str_starts_with($line, 'Tools:') || str_starts_with($line, 'Garnish:') || str_starts_with($line, 'Glass:')) {
                     continue;
                 }
-                $result[] = $this->ingredientParser->parseLine($line, $this->defaultConvertTo, [Units::Dash]);
+                $result[] = $this->ingredientParser->parseLine($line, $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
             }
         }
 

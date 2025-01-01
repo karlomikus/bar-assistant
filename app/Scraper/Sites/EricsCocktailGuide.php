@@ -50,7 +50,7 @@ class EricsCocktailGuide extends AbstractSiteExtractor
     {
         $result = [];
         $this->crawler->filterXPath("//ol[contains(@class, 'recipe_recipeIngredients__')]")->filter('li')->each(function ($node) use (&$result) {
-            $result[] = $this->ingredientParser->parseLine($node->text(), $this->defaultConvertTo, [Units::Dash]);
+            $result[] = $this->ingredientParser->parseLine($node->text(), $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
         });
 
         return $result;

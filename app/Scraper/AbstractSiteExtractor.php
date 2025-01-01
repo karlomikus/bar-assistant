@@ -175,6 +175,12 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             ];
         }, $ingredients);
 
+        $image = $this->convertImagesToDataUri();
+        $images = [];
+        if ($image['uri']) {
+            $images[] = $image;
+        }
+
         $cocktail = Cocktail::fromDraft2Array([
             'name' => $this->clean($this->name()),
             'instructions' => $this->instructions(),
@@ -184,9 +190,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             'garnish' => $this->clean($this->garnish()),
             'tags' => $this->tags(),
             'method' => $this->method(),
-            'images' => [
-                $this->convertImagesToDataUri()
-            ],
+            'images' => $images,
             'ingredients' => $ingredients,
         ]);
 
@@ -241,7 +245,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
     private function convertImagesToDataUri(): array
     {
         $image = $this->image();
-        if ($image['uri']) {
+        if ($image['uri'] && !blank($image['uri'])) {
             $url = parse_url($image['uri']);
             $cleanUrl = ($url['scheme'] ?? '') . '://' . ($url['host'] ?? '') . (isset($url['path']) ? $url['path'] : '');
 

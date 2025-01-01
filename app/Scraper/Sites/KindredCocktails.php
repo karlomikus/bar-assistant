@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
+use Exception;
 use Throwable;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Symfony\Component\DomCrawler\Crawler;
@@ -54,7 +55,7 @@ class KindredCocktails extends AbstractSiteExtractor
             $ingredientString = $node->text();
 
             if (!str_contains($ingredientString, 'as garnish')) {
-                $result[] = $this->ingredientParser->parseLine($ingredientString, $this->defaultConvertTo, [Units::Dash]);
+                $result[] = $this->ingredientParser->parseLine($ingredientString, $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
             }
         });
 
@@ -70,6 +71,11 @@ class KindredCocktails extends AbstractSiteExtractor
 
         try {
             $result['uri'] = $this->crawler->filterXPath('//img[@property="schema:image"]')->first()->attr('src');
+
+            if (blank($result['uri'])) {
+                throw new Exception('No image found');
+            }
+
             if (!str_starts_with($result['uri'], 'http')) {
                 $result['uri'] = 'https://kindredcocktails.com' . $result['uri'];
             }
@@ -78,6 +84,10 @@ class KindredCocktails extends AbstractSiteExtractor
 
         try {
             $result['copyright'] = trim($this->crawler->filter('figcaption.caption')->first()->text());
+
+            if (blank($result['copyright'])) {
+                throw new Exception('No copyright found');
+            }
         } catch (Throwable) {
         }
 
