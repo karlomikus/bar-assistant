@@ -1,20 +1,19 @@
-# v4.2.8
-## New
-- Added `bar:migrate-shelf` command for server owners
-- Added `org.opencontainers.image.source` label to docker image
-
-## Fixes
-- Fixed unit parsing for scraping and importing cocktails
-
-# v4.2.7
+# v4.3.0
 ## New
 - Added `/import/ingredients` endpoint to import multiple ingredients from a CSV file
 - Added `is_favorited` to cocktail schema
 - Added filter by `name` to `/cocktail-methods` endpoint
 - Added support for Sentry error reporting via `SENTRY_LARAVEL_DSN` env variable
+- Added `bar:migrate-shelf` command for server owners
+- Added `org.opencontainers.image.source` label to docker image
 
 ## Fixes
 - Properties `in_shelf` and `in_bar_shelf` on cocktail schema correctly match substitute and complex ingredients
+- Fixed unit parsing for scraping and importing cocktails
+
+# v4.2.7
+
+Ignored, mistake in release protocol
 
 # v4.2.6
 ## Fixes
