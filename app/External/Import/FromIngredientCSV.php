@@ -7,8 +7,8 @@ namespace Kami\Cocktail\External\Import;
 use Throwable;
 use League\Csv\Reader;
 use Illuminate\Support\Facades\DB;
-use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
 
 class FromIngredientCSV
 {
