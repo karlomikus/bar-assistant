@@ -124,7 +124,7 @@ class ImportController extends Controller
     #[BAO\NotAuthorizedResponse]
     public function ingredients(Request $request): JsonResponse
     {
-        if ($request->user()->cannot('create', Ingredient::class)) {
+        if ($request->user()->cannot('bulkImport', Ingredient::class)) {
             abort(403);
         }
 

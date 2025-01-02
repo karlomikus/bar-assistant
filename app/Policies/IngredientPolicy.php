@@ -21,6 +21,11 @@ class IngredientPolicy
             || $user->isBarGeneral($barId);
     }
 
+    public function bulkImport(User $user): bool
+    {
+        return $this->create($user) && $user->hasActiveSubscription();
+    }
+
     public function show(User $user, Ingredient $ingredient): bool
     {
         return $user->hasBarMembership($ingredient->bar_id);

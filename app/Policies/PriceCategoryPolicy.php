@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Policies;
 
 use Kami\Cocktail\Models\User;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\PriceCategory;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -14,8 +15,12 @@ class PriceCategoryPolicy
 
     public function create(User $user): bool
     {
-        return $user->isBarAdmin(bar()->id)
-            || $user->isBarModerator(bar()->id);
+        $hasReachedMax = true;
+        if (!$user->hasActiveSubscription()) {
+            $hasReachedMax = DB::table('price_categories')->where('bar_id', bar()->id)->count() < 1;
+        }
+
+        return $hasReachedMax && ($user->isBarAdmin(bar()->id) || $user->isBarModerator(bar()->id));
     }
 
     public function show(User $user, PriceCategory $model): bool

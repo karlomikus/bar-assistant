@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\External\Import;
 
+use Throwable;
 use League\Csv\Reader;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
 
 class FromIngredientCSV
@@ -22,14 +23,19 @@ class FromIngredientCSV
         DuplicateActionsEnum $duplicateAction = DuplicateActionsEnum::None,
         string $imageDirectoryBasePath = '',
     ): void {
-        DB::transaction(function () use ($filepath) {
-            $categories = DB::table('ingredient_categories')->select('id', 'name')->where('bar_id', $this->barId)->get();
+        DB::beginTransaction();
+        try {
+            $categories = DB::table('ingredient_categories')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $this->barId)->get();
 
             Reader::createFromPath($filepath)
                 ->setHeaderOffset(0)
                 ->each(function (array $record) use ($categories) {
                     $ingredientExternal = IngredientExternal::fromCSV($record);
-                    $category = $categories->firstWhere('name', $ingredientExternal->category);
+
+                    $category = null;
+                    if ($ingredientExternal->category) {
+                        $category = $categories->firstWhere('name', mb_strtolower($ingredientExternal->category));
+                    }
 
                     if (!$category && $ingredientExternal->category) {
                         $categoryId = DB::table('ingredient_categories')->insertGetId([
@@ -38,24 +44,26 @@ class FromIngredientCSV
                             'created_at' => now(),
                             'updated_at' => null,
                         ]);
-                        $category = (object) ['id' => $categoryId, 'name' => $ingredientExternal->category];
+                        $category = (object) ['id' => $categoryId, 'name' => mb_strtolower($ingredientExternal->category)];
                         $categories->push($category);
                     }
 
-                    DB::table('ingredients')->insert([
-                        'bar_id' => $this->barId,
-                        'slug' => Str::slug($ingredientExternal->name) . '-' . $this->barId,
-                        'ingredient_category_id' => $category?->id,
-                        'name' => $ingredientExternal->name,
-                        'strength' => $ingredientExternal->strength,
-                        'description' => $ingredientExternal->description,
-                        'origin' => $ingredientExternal->origin,
-                        'color' => $ingredientExternal->color,
-                        'created_user_id' => $this->userId,
-                        'created_at' => now(),
-                        'updated_at' => null,
-                    ]);
+                    $ingredient = new Ingredient();
+                    $ingredient->bar_id = $this->barId;
+                    $ingredient->ingredient_category_id = $category?->id;
+                    $ingredient->name = $ingredientExternal->name;
+                    $ingredient->strength = $ingredientExternal->strength;
+                    $ingredient->description = $ingredientExternal->description;
+                    $ingredient->origin = $ingredientExternal->origin;
+                    $ingredient->color = $ingredientExternal->color;
+                    $ingredient->created_user_id = $this->userId;
+                    $ingredient->created_at = now();
+                    $ingredient->save();
                 });
-        });
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+        DB::commit();
     }
 }
