@@ -1,3 +1,7 @@
+# v4.3.1
+## Fixes
+- CSV import now matches categories by case-insensitive name
+
 # v4.3.0
 ## New
 - Added `/import/ingredients` endpoint to import multiple ingredients from a CSV file
