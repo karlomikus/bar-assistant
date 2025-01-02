@@ -115,6 +115,8 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
 
     public static function fromCSV(array $sourceArray): self
     {
+        $sourceArray = array_change_key_case($sourceArray, CASE_LOWER);
+
         $images = [];
         $ingredientParts = [];
 
