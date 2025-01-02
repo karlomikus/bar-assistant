@@ -31,7 +31,11 @@ class FromIngredientCSV
                 ->setHeaderOffset(0)
                 ->each(function (array $record) use ($categories) {
                     $ingredientExternal = IngredientExternal::fromCSV($record);
-                    $category = $categories->firstWhere('name', mb_strtolower($ingredientExternal->category));
+
+                    $category = null;
+                    if ($ingredientExternal->category) {
+                        $category = $categories->firstWhere('name', mb_strtolower($ingredientExternal->category));
+                    }
 
                     if (!$category && $ingredientExternal->category) {
                         $categoryId = DB::table('ingredient_categories')->insertGetId([
@@ -46,7 +50,7 @@ class FromIngredientCSV
 
                     $ingredient = new Ingredient();
                     $ingredient->bar_id = $this->barId;
-                    $ingredient->ingredient_category_id = $category->id;
+                    $ingredient->ingredient_category_id = $category?->id;
                     $ingredient->name = $ingredientExternal->name;
                     $ingredient->strength = $ingredientExternal->strength;
                     $ingredient->description = $ingredientExternal->description;
