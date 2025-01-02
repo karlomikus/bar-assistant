@@ -44,7 +44,7 @@ class FromIngredientCSV
                             'created_at' => now(),
                             'updated_at' => null,
                         ]);
-                        $category = (object) ['id' => $categoryId, 'name' => $ingredientExternal->category];
+                        $category = (object) ['id' => $categoryId, 'name' => mb_strtolower($ingredientExternal->category)];
                         $categories->push($category);
                     }
 
