@@ -16,6 +16,7 @@ use Symfony\Component\BrowserKit\HttpBrowser;
 use Kami\Cocktail\External\Model\IngredientBasic;
 use Symfony\Component\HttpKernel\HttpCache\Store;
 use Symfony\Component\HttpClient\CachingHttpClient;
+use Kami\Cocktail\Exceptions\ScraperMissingException;
 use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
 
 abstract class AbstractSiteExtractor implements SiteExtractorContract
@@ -181,8 +182,13 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             $images[] = $image;
         }
 
+        $name = $this->clean($this->name());
+        if (!$name) {
+            throw new ScraperMissingException('Unsupported site or no recipes found');
+        }
+
         $cocktail = Cocktail::fromDraft2Array([
-            'name' => $this->clean($this->name()),
+            'name' => $name,
             'instructions' => $this->instructions(),
             'description' => $this->cleanDescription($this->description()),
             'source' => $this->source(),
