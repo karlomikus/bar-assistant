@@ -1,3 +1,7 @@
+# v4.3.2
+## Fixes
+- Improve error handling when scraping recipes from unsupported sites
+
 # v4.3.1
 ## Fixes
 - CSV import now matches categories by case-insensitive name
