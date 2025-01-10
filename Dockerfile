@@ -44,6 +44,8 @@ COPY --chmod=755 ./resources/docker/dist/init.sh /etc/entrypoint.d/99-bass.sh
 
 COPY --chmod=755 --chown=www-data:www-data ./resources/docker/dist/nginx.conf /etc/nginx/server-opts.d/99-bass.conf
 
+COPY --chmod=600 --chown=www-data:www-data ./resources/oauth/providers.json ./resources/oauth/providers.json
+
 USER root
 
 RUN docker-php-serversideup-s6-init

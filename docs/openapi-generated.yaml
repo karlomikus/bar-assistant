@@ -18,6 +18,34 @@ servers:
     url: 'https://api.barassistant.app/api'
     description: Production
 paths:
+  /auth/config:
+    get:
+      tags:
+        - Authentication
+      summary: 'Get auth config'
+      description: 'Get local and OAuth configuration'
+      operationId: auth-config
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/AuthConfig' }
+                type: object
+      security: []
   /auth/login:
     post:
       tags:
@@ -4948,6 +4976,104 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /oauth/login:
+    post:
+      tags:
+        - OAuth
+      summary: 'Authenticate user with OAuth'
+      description: 'Authenticate user with OAuth login and get auth token'
+      operationId: oauth-login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthLoginRequest'
+      responses:
+        '204':
+          description: 'Successful response'
+        '400':
+          description: 'Unable to authenticate'
+      security: []
+  /oauth/accounts:
+    get:
+      tags:
+        - OAuth
+      summary: 'List OAuth accounts'
+      description: 'Show list of all user OAuth accounts'
+      operationId: listOAuthAccounts
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/UserOAuthAccount' } }
+                type: object
+  '/oauth/accounts/{id}':
+    delete:
+      tags:
+        - OAuth
+      summary: 'Unlink OAuth Account'
+      description: 'Unlink an OAuth account'
+      operationId: unlinkOAuthAccount
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /tokens:
     get:
       tags:
@@ -7576,6 +7702,31 @@ components:
           type: string
           example: 'Resource record not found.'
       type: object
+    AuthConfig:
+      required:
+        - allowRegistration
+        - localLoginEnabled
+        - oauthLoginEnabled
+        - oauthLoginSelfRegistrationEnabled
+        - providers
+      properties:
+        allowRegistration:
+          type: boolean
+          example: true|false
+        localLoginEnabled:
+          type: boolean
+          example: true|false
+        oauthLoginEnabled:
+          type: boolean
+          example: true|false
+        oauthLoginSelfRegistrationEnabled:
+          type: boolean
+          example: true|false
+        oauthProviders:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthProvider'
+      type: object
     Bar:
       required:
         - id
@@ -9189,6 +9340,61 @@ components:
           type: string
           example: cocktail
       type: object
+    OAuthLoginRequest:
+      required:
+        - providerId
+        - state
+        - code
+      properties:
+        providerId:
+          type: string
+          example: google|facebook|keycloak
+        code:
+          type: string
+          example: 52f8b40c-7a71-4041-95fb-d115a82530cf.4206bcef-ca2a-4228-a5ca-aae12d5aac7b.d3edfb2b-5046-472f-aa12-857b78e6011d
+        codeVerifier:
+          type: string
+          example: 479107e2ddb341a4a177bda6194ab6c9bea4a6e6be3440cbb930af9d66aec5bb14eff15738c7467c92324e2eab4278b0
+      type: object
+    OAuthProvider:
+      required:
+        - id
+        - clientId
+        - type
+        - icon
+        - displayName
+        - authority
+        - authorizationEndpoint
+        - tokenEndpoint
+        - userInfoEndpoint
+        - redirectUri
+        - scope
+      properties:
+        id:
+          type: string
+          example: google|facebook|keycloak
+        clientId:
+          type: string
+          example: bar-assistant
+        type:
+          type: string
+          example: google|facebook|keycloak|oidc
+        icon:
+          type: string
+          example: google.svg|facebook.svg|oidc.png
+        name:
+          type: string
+          example: Google|Facebook|Keycloak
+        authority:
+          type: string
+          example: 'https://example.com/auth'
+        redirectUri:
+          type: string
+          example: 'https://example.com/login/callback'
+        scope:
+          type: string
+          example: 'openid profile email'
+      type: object
     PersonalAccessToken:
       properties:
         id:
@@ -9568,6 +9774,25 @@ components:
           type: string
           example: Bartender
       type: object
+    UserOAuthAccount:
+      properties:
+        id:
+          type: integer
+          example: 1
+        icon:
+          type: string
+          example: oidc.svg
+        name:
+          type: integer
+          example: Google|Facebook|Keycloak
+        userId:
+          type: integer
+          example: 1|faaf-fawefa-ffawef-awef
+        createdAt:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00+00:00'
+      type: object
     UserRequest:
       required:
         - role_id
@@ -9715,6 +9940,9 @@ tags:
   -
     name: Notes
     description: Notes
+  -
+    name: OAuth
+    description: OAuth
   -
     name: Tokens
     description: Tokens

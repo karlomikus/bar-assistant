@@ -27,6 +27,7 @@ return [
         'ALLOW_REGISTRATION',
         true
     ),
+    'local_login_enabled' => env('LOCAL_LOGIN_ENABLED', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -65,4 +66,20 @@ return [
 
     'enable_billing' => env('ENABLE_BILLING', false),
     'prices' => explode('|', env('BILLING_PRODUCT_PRICES', '')),
+
+    /*
+    |--------------------------------------------------------------------------
+    | OAuth login
+    |--------------------------------------------------------------------------
+    |
+    | OAuth login configuration
+    |
+    */
+    'oauth_login_enabled' => env('OAUTH_LOGIN_ENABLED', false),
+    'oauth_login_providers' => \Kami\Cocktail\Utils::parseJsonFile(
+        base_path(env('OAUTH_LOGIN_PROVIDERS_FILE', 'resources/oauth/providers.json')),
+        [],
+        fn($data) => \Kami\Cocktail\OAuth\OAuthProvider::fromArray($data, env('OAUTH_LOGIN_REDIRECT_URI', ''))
+    ),
+    'oauth_login_redirect_uri' => env('OAUTH_LOGIN_REDIRECT_URI', ''),
 ];

@@ -15,6 +15,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/scout": "^10.4",
         "league/csv": "^9.0",
+        "league/oauth2-client": "^2.8",
         "meilisearch/meilisearch-php": "^1.0",
         "sentry/sentry-laravel": "^4.10",
         "spatie/array-to-xml": "^3.1",

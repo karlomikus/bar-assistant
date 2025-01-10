@@ -1,0 +1,43 @@
+[
+    {
+        "id": "google",
+        "clientId": "123456789",
+        "clientSecret": "123456789",
+        "type": "google",
+        "icon": "google.svg",
+        "name": "Google",
+        "userIdKey": "sub",
+        "nameKey": "name",
+        "authority": "https://accounts.google.com",
+        "authorizationEndpoint": "https://accounts.google.com/o/oauth2/v2/auth",
+        "tokenEndpoint": "https://oauth2.googleapis.com/token",
+        "userInfoEndpoint": "https://openidconnect.googleapis.com/v1/userinfo",
+        "scope": "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile openid"
+    },
+    {
+        "id": "google2",
+        "clientId": "123456789",
+        "clientSecret": "123456789",
+        "type": "google",
+        "icon": "google.svg",
+        "name": "Another Google",
+        "userIdKey": "sub",
+        "nameKey": "name",
+        "authority": "https://accounts.google.com",
+        "authorizationEndpoint": "https://accounts.google.com/o/oauth2/v2/auth",
+        "tokenEndpoint": "https://oauth2.googleapis.com/token",
+        "userInfoEndpoint": "https://openidconnect.googleapis.com/v1/userinfo",
+        "scope": "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile openid"
+    },
+    {
+        "id": "keycloak",
+        "clientId": "bar-assistant",
+        "clientSecret": "fawfa3foiua23oifja2w",
+        "name": "Keycloak",
+        "authority": "https://keycloak.example.com/realms/myrealm",
+        "authorizationEndpoint": "https://keycloak.example.com/realms/myrealm/protocol/openid-connect/auth",
+        "tokenEndpoint": "https://keycloak.example.com/realms/myrealm/protocol/openid-connect/token",
+        "userInfoEndpoint": "https://keycloak.example.com/realms/myrealm/protocol/openid-connect/userinfo",
+        "scope": "openid email profile"
+    }
+]

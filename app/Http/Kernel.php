@@ -39,6 +39,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Kami\Cocktail\Http\Middleware\DisablePostOnDemoEnv::class,
             'throttle:api',
             // \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -53,6 +54,7 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
+        'oauth.or.sanctum' => \Kami\Cocktail\Http\Middleware\OAuthOrSanctum::class,
         'auth' => \Kami\Cocktail\Http\Middleware\Authenticate::class,
         // 'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         // 'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
@@ -64,7 +66,7 @@ class Kernel extends HttpKernel
         // 'throttle' => \Illuminate\Routing\Middleware\ThrottleRequestsWithRedis::class, // TODO: Fix tests
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
-        'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
+        'abilities' => \Kami\Cocktail\Http\Middleware\CheckAbilities::class,
+        'ability' => \Kami\Cocktail\Http\Middleware\CheckForAnyAbility::class,
     ];
 }
