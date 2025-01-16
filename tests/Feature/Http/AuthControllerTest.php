@@ -21,6 +21,17 @@ class AuthControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_auth_config_response(): void
+    {
+        $response = $this->getJson('/api/auth/config');
+
+        $response->assertSuccessful();
+        $response->assertJsonPath('data.allowRegistration', true);
+        $response->assertJsonPath('data.localLoginEnabled', true);
+        $response->assertJsonPath('data.oauthLoginEnabled', true);
+        $this->assertNotEmpty($response['data']['oauthProviders']);
+    }
+
     public function test_authenticate_response(): void
     {
         $user = User::factory()->create([
@@ -50,6 +61,23 @@ class AuthControllerTest extends TestCase
         ]);
 
         $response->assertBadRequest();
+    }
+
+    public function test_local_login_disabled(): void
+    {
+        Config::set('bar-assistant.local_login_enabled', false);
+
+        User::factory()->create([
+            'email' => 'test@test.com',
+            'password' => Hash::make('my-test-password'),
+        ]);
+
+        $response = $this->postJson('/api/auth/login', [
+            'email' => 'test@test2.com',
+            'password' => 'my-test-password'
+        ]);
+
+        $response->assertForbidden();
     }
 
     public function test_logout_response(): void
@@ -94,6 +122,19 @@ class AuthControllerTest extends TestCase
         });
     }
 
+    public function test_register_local_login_disabled(): void
+    {
+        Config::set('bar-assistant.local_login_enabled', false);
+
+        $response = $this->postJson('/api/auth/register', [
+            'email' => 'test@test.com',
+            'password' => 'test-password',
+            'name' => 'Test Guy',
+        ]);
+
+        $response->assertForbidden();
+    }
+
     public function test_forgot_password_response(): void
     {
         Mail::fake();
@@ -124,6 +165,17 @@ class AuthControllerTest extends TestCase
         Mail::assertNotQueued(PasswordReset::class);
 
         $response->assertBadRequest();
+    }
+
+    public function test_forgot_password_local_login_disabled(): void
+    {
+        Config::set('bar-assistant.local_login_enabled', false);
+
+        $response = $this->postJson('/api/auth/forgot-password', [
+            'email' => 'a@test.com'
+        ]);
+
+        $response->assertForbidden();
     }
 
     public function test_reset_password_response(): void
@@ -166,6 +218,26 @@ class AuthControllerTest extends TestCase
         $response->assertBadRequest();
     }
 
+    public function test_reset_password_local_login_disabled(): void
+    {
+        Config::set('bar-assistant.local_login_enabled', false);
+
+        $user = User::factory()->create([
+            'email' => 'test@test.com',
+            'password' => Hash::make('my-test-password'),
+        ]);
+        Password::createToken($user);
+
+        $response = $this->postJson('/api/auth/reset-password', [
+            'token' => Str::random(8),
+            'email' => 'test@test.com',
+            'password' => 'new_password_1234',
+            'password_confirmation' => 'new_password_1234'
+        ]);
+
+        $response->assertForbidden();
+    }
+
     public function test_confirm_account_response(): void
     {
         Config::set('bar-assistant.mail_require_confirmation', true);
@@ -185,6 +257,22 @@ class AuthControllerTest extends TestCase
         $response->assertSuccessful();
     }
 
+    public function test_confirm_acount_local_login_disabled(): void
+    {
+        Config::set('bar-assistant.local_login_enabled', false);
+
+        $user = User::factory()->create([
+            'email' => 'test@test.com',
+            'password' => Hash::make('my-test-password'),
+            'email_verified_at' => null,
+        ]);
+        $hash = sha1('test@test.com');
+
+        $response = $this->getJson('/api/auth/verify/' . $user->id . '/' . $hash);
+
+        $response->assertForbidden();
+    }
+
     public function test_password_check_response(): void
     {
         $user = User::factory()->create([
@@ -196,17 +284,33 @@ class AuthControllerTest extends TestCase
 
         $response = $this->postJson('/api/password-check', ['password' => 'wrongPassw0rd']);
         $response->assertJson(
-            fn (AssertableJson $json) =>
+            fn(AssertableJson $json) =>
             $json
                 ->where('data.status', false)
         );
 
         $response = $this->postJson('/api/password-check', ['password' => 'my-test-password']);
         $response->assertJson(
-            fn (AssertableJson $json) =>
+            fn(AssertableJson $json) =>
             $json
                 ->where('data.status', true)
         );
+    }
+
+    public function test_password_check_local_login_disabled(): void
+    {
+        Config::set('bar-assistant.local_login_enabled', false);
+
+        $user = User::factory()->create([
+            'email' => 'test@test.com',
+            'password' => Hash::make('my-test-password'),
+            'email_verified_at' => null,
+        ]);
+        $this->actingAs($user);
+
+        $response = $this->postJson('/api/password-check', ['password' => 'wrongPassw0rd']);
+
+        $response->assertForbidden();
     }
 
     public function test_login_requires_confirmation(): void

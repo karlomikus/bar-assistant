@@ -59,7 +59,7 @@ final class Utils
             }
         }, $ingredients);
 
-        $volume = array_reduce(array_filter($ingredients), fn ($carry, $item) => $carry + $item->amountMin, 0.0);
+        $volume = array_reduce(array_filter($ingredients), fn($carry, $item) => $carry + $item->amountMin, 0.0);
         $volume = match ($inUnits) {
             Units::Ml => $volume,
             Units::Cl => $volume / 10,
@@ -68,5 +68,43 @@ final class Utils
         };
 
         return round($volume, 2);
+    }
+
+    /**
+     * Parse a JSON file and return parsed data or default value if the file is invalid.
+     *
+     * @template T
+     * @param string $path Path to the JSON file
+     * @param mixed $default Default value to return if the file doesn't exist or is invalid
+     * @param callable|null $mapper Optional mapper function to transform parsed data
+     * @return mixed|T|array<T> Parsed data (single object, array of objects, or default value)
+     */
+    public static function parseJsonFile(string $path, mixed $default = [], ?callable $mapper = null): mixed
+    {
+        if (!file_exists($path)) {
+            return $default;
+        }
+
+        $content = file_get_contents($path);
+
+        if ($content === false) {
+            return $default;
+        }
+
+        $json = json_decode($content, true);
+
+        if ($json === null) {
+            return $default;
+        }
+
+        if (is_array($json) && !isset($json[0])) {
+            return $mapper ? $mapper($json) : $json;
+        }
+
+        if (is_array($json)) {
+            return $mapper ? array_map($mapper, $json) : $json;
+        }
+
+        return $default;
     }
 }

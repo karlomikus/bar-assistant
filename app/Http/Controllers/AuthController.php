@@ -20,9 +20,35 @@ use Kami\Cocktail\Http\Resources\TokenResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\RegisterRequest;
 use Kami\Cocktail\Http\Resources\ProfileResource;
+use Kami\Cocktail\OAuth\OAuthUtils;
 
 class AuthController extends Controller
 {
+    #[OAT\Get(path: '/auth/config', tags: ['Authentication'], operationId: 'auth-config', summary: 'Get auth config', description: 'Get local and OAuth configuration', security: [])]
+    #[BAO\SuccessfulResponse(content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\AuthConfig::class),
+    ])]
+    public function authConfig(): JsonResource
+    {
+        $providers = config('bar-assistant.oauth_login_providers');
+
+        // DANGER! IMPORTANT!
+        // MAP TO HIDE CLIENT SECRET
+        $transformedProviders = array_map(
+            fn($provider) => \Kami\Cocktail\OpenAPI\Schemas\OAuthProvider::fromOAuthProvider($provider),
+            $providers
+        );
+
+        return new JsonResource([
+            'data' => [
+                'allowRegistration' => config('bar-assistant.allow_registration'),
+                'localLoginEnabled' => config('bar-assistant.local_login_enabled'),
+                'oauthLoginEnabled' => config('bar-assistant.oauth_login_enabled'),
+                'oauthProviders' => $transformedProviders,
+            ]
+        ]);
+    }
+
     #[OAT\Post(path: '/auth/login', tags: ['Authentication'], operationId: 'authenticate', summary: 'Authenticate user', description: 'Authenticate user and get auth token', requestBody: new OAT\RequestBody(
         required: true,
         content: [
@@ -66,9 +92,12 @@ class AuthController extends Controller
     {
         /** @var \Laravel\Sanctum\PersonalAccessToken */
         $currentAccessToken = $request->user()->currentAccessToken();
-        $currentAccessToken->delete();
 
-        return response()->json(status: 204);
+        if ($currentAccessToken) {
+            $currentAccessToken->delete();
+        }
+
+        return OAuthUtils::forgetOAuthCookies(response()->json(status: 204));
     }
 
     #[OAT\Post(path: '/auth/register', tags: ['Authentication'], operationId: 'register', description: 'Register a new user', summary: 'Register', requestBody: new OAT\RequestBody(

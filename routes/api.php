@@ -28,9 +28,12 @@ use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
 use Kami\Cocktail\Http\Controllers\SubscriptionController;
 use Kami\Cocktail\Http\Controllers\PriceCategoryController;
+use Kami\Cocktail\Http\Controllers\OAuthController;
 use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
 use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
+use Kami\Cocktail\Http\Middleware\LocalLoginEnabled;
+use Kami\Cocktail\Http\Middleware\OAuthLoginEnabled;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,17 +46,18 @@ use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
 |
 */
 
-$apiMiddleware = ['auth:sanctum'];
+$apiMiddleware = ['oauth.or.sanctum'];
 if (config('bar-assistant.mail_require_confirmation') === true) {
     $apiMiddleware[] = 'verified';
 }
 
 Route::prefix('auth')->group(function () {
-    Route::post('login', [AuthController::class, 'authenticate'])->name('auth.login');
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('forgot-password', [AuthController::class, 'passwordForgot']);
-    Route::post('reset-password', [AuthController::class, 'passwordReset']);
-    Route::get('verify/{id}/{hash}', [AuthController::class, 'confirmAccount']);
+    Route::get('config', [AuthController::class, 'authConfig']);
+    Route::post('login', [AuthController::class, 'authenticate'])->name('auth.login')->middleware(LocalLoginEnabled::class);
+    Route::post('register', [AuthController::class, 'register'])->middleware(LocalLoginEnabled::class);
+    Route::post('forgot-password', [AuthController::class, 'passwordForgot'])->middleware(LocalLoginEnabled::class);
+    Route::post('reset-password', [AuthController::class, 'passwordReset'])->middleware(LocalLoginEnabled::class);
+    Route::get('verify/{id}/{hash}', [AuthController::class, 'confirmAccount'])->middleware(LocalLoginEnabled::class);
 });
 
 Route::prefix('server')->group(function () {
@@ -76,7 +80,7 @@ Route::prefix('exports')->group(function () {
 
 Route::middleware($apiMiddleware)->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware(['ability:*']);
-    Route::post('password-check', [AuthController::class, 'passwordCheck'])->middleware(['ability:*']);
+    Route::post('password-check', [AuthController::class, 'passwordCheck'])->middleware(['ability:*', LocalLoginEnabled::class]);
 
     Route::get('/profile', [ProfileController::class, 'show'])->middleware(['ability:*']);
     Route::post('/profile', [ProfileController::class, 'update'])->middleware(['ability:*']);
@@ -261,6 +265,15 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/{id}', [PriceCategoryController::class, 'show'])->name('price-categories.show');
         Route::put('/{id}', [PriceCategoryController::class, 'update']);
         Route::delete('/{id}', [PriceCategoryController::class, 'delete']);
+    });
+
+    Route::prefix('oauth')->group(function () {
+        Route::post('/login', [OAuthController::class, 'login'])->middleware(OAuthLoginEnabled::class);
+    });
+
+    Route::prefix('oauth')->middleware(['ability:*'])->group(function () {
+        Route::get('/accounts', [OAuthController::class, 'accounts']);
+        Route::delete('/accounts/{id}', [OAuthController::class, 'unlinkAccount']);
     });
 });
 

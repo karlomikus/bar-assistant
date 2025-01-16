@@ -204,4 +204,12 @@ class User extends Authenticatable implements MustVerifyEmail
             ->where('user_role_id', $role->value)
             ->count() > 0;
     }
+
+    /**
+     * @return HasMany<UserOAuthAccount, $this>
+     */
+    public function oauthAccounts(): HasMany
+    {
+        return $this->hasMany(UserOAuthAccount::class);
+    }
 }
