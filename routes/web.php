@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Kami\Cocktail\Http\Controllers\MetricsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,6 @@ Route::get('/', function () {
 Route::get('/docs', function () {
     return view('elements');
 });
+
+
+Route::get('/metrics', [MetricsController::class, 'index'])->name('metrics');

@@ -195,6 +195,7 @@ return [
         Kami\Cocktail\Providers\EventServiceProvider::class,
         Kami\Cocktail\Providers\HorizonServiceProvider::class,
         Kami\Cocktail\Providers\RouteServiceProvider::class,
+        Kami\Cocktail\Metrics\MetricsServiceProvider::class,
 
     ],
 
