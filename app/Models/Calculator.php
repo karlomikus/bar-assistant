@@ -57,6 +57,7 @@ class Calculator extends Model
     {
         $calculatorResult = new CalculatorResult();
         $executor = new MathExecutor();
+        $executor->setDivisionByZeroIsZero();
 
         foreach ($this->getInputs() as $block) {
             $value = $input->inputs[$block->variable_name] ?? $block->value;

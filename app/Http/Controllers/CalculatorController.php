@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use NXP\MathExecutor;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
@@ -13,7 +12,6 @@ use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Calculator;
 use Kami\Cocktail\Models\CalculatorBlock;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\OpenAPI\Schemas\CalculatorResult;
 use Kami\Cocktail\Http\Resources\CalculatorResource;
 use Kami\Cocktail\OpenAPI\Schemas\CalculatorRequest;
 use Kami\Cocktail\OpenAPI\Schemas\CalculatorSolveRequest;
