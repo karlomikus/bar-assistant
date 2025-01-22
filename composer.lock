@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ac3b92c07b1c84e579e0389d3bb3ffb0",
+    "content-hash": "def2238bafc499416ff052bc55023066",
     "packages": [
         {
             "name": "brick/math",
@@ -1172,16 +1172,16 @@
         },
         {
             "name": "jcupitt/vips",
-            "version": "v2.4.0",
+            "version": "v2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/libvips/php-vips.git",
-                "reference": "69c343e0bc7bac6dc82f4f16f985d8d6a15eb05a"
+                "reference": "256575d7c5247d4fb3e98bf10ab1e10a571684c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/libvips/php-vips/zipball/69c343e0bc7bac6dc82f4f16f985d8d6a15eb05a",
-                "reference": "69c343e0bc7bac6dc82f4f16f985d8d6a15eb05a",
+                "url": "https://api.github.com/repos/libvips/php-vips/zipball/256575d7c5247d4fb3e98bf10ab1e10a571684c7",
+                "reference": "256575d7c5247d4fb3e98bf10ab1e10a571684c7",
                 "shasum": ""
             },
             "require": {
@@ -1227,9 +1227,9 @@
             ],
             "support": {
                 "issues": "https://github.com/libvips/php-vips/issues",
-                "source": "https://github.com/libvips/php-vips/tree/v2.4.0"
+                "source": "https://github.com/libvips/php-vips/tree/v2.4.1"
             },
-            "time": "2024-04-09T09:27:18+00:00"
+            "time": "2025-01-13T16:58:09+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -1404,16 +1404,16 @@
         },
         {
             "name": "laravel/cashier-paddle",
-            "version": "v2.5.4",
+            "version": "v2.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/cashier-paddle.git",
-                "reference": "b89895ab619bc504019879d30dce21de8bd48aa7"
+                "reference": "2cd94c846369fbe436e08c6315265f951c6ba582"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/cashier-paddle/zipball/b89895ab619bc504019879d30dce21de8bd48aa7",
-                "reference": "b89895ab619bc504019879d30dce21de8bd48aa7",
+                "url": "https://api.github.com/repos/laravel/cashier-paddle/zipball/2cd94c846369fbe436e08c6315265f951c6ba582",
+                "reference": "2cd94c846369fbe436e08c6315265f951c6ba582",
                 "shasum": ""
             },
             "require": {
@@ -1482,20 +1482,20 @@
                 "issues": "https://github.com/laravel/cashier-paddle/issues",
                 "source": "https://github.com/laravel/cashier-paddle"
             },
-            "time": "2024-12-12T15:54:20+00:00"
+            "time": "2025-01-14T15:43:12+00:00"
         },
         {
             "name": "laravel/framework",
-            "version": "v11.37.0",
+            "version": "v11.38.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "6cb103d2024b087eae207654b3f4b26646119ba5"
+                "reference": "9d290aa90fcad44048bedca5219d2b872e98772a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/6cb103d2024b087eae207654b3f4b26646119ba5",
-                "reference": "6cb103d2024b087eae207654b3f4b26646119ba5",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/9d290aa90fcad44048bedca5219d2b872e98772a",
+                "reference": "9d290aa90fcad44048bedca5219d2b872e98772a",
                 "shasum": ""
             },
             "require": {
@@ -1696,20 +1696,20 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2025-01-02T20:10:21+00:00"
+            "time": "2025-01-15T00:06:46+00:00"
         },
         {
             "name": "laravel/horizon",
-            "version": "v5.30.1",
+            "version": "v5.30.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/horizon.git",
-                "reference": "77177646679ef2f2acf71d4d4b16036d18002040"
+                "reference": "baef526f036717b0090754cbd9c9b67f879739fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/horizon/zipball/77177646679ef2f2acf71d4d4b16036d18002040",
-                "reference": "77177646679ef2f2acf71d4d4b16036d18002040",
+                "url": "https://api.github.com/repos/laravel/horizon/zipball/baef526f036717b0090754cbd9c9b67f879739fd",
+                "reference": "baef526f036717b0090754cbd9c9b67f879739fd",
                 "shasum": ""
             },
             "require": {
@@ -1774,9 +1774,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/horizon/issues",
-                "source": "https://github.com/laravel/horizon/tree/v5.30.1"
+                "source": "https://github.com/laravel/horizon/tree/v5.30.2"
             },
-            "time": "2024-12-13T14:08:51+00:00"
+            "time": "2025-01-13T16:51:22+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -1902,16 +1902,16 @@
         },
         {
             "name": "laravel/scout",
-            "version": "v10.11.9",
+            "version": "v10.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/scout.git",
-                "reference": "8b3aaf369c5948957b3d504f8999d1a27d9fd800"
+                "reference": "0002cee68236e298b10122cf9e01c17f4a88948d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/scout/zipball/8b3aaf369c5948957b3d504f8999d1a27d9fd800",
-                "reference": "8b3aaf369c5948957b3d504f8999d1a27d9fd800",
+                "url": "https://api.github.com/repos/laravel/scout/zipball/0002cee68236e298b10122cf9e01c17f4a88948d",
+                "reference": "0002cee68236e298b10122cf9e01c17f4a88948d",
                 "shasum": ""
             },
             "require": {
@@ -1979,7 +1979,7 @@
                 "issues": "https://github.com/laravel/scout/issues",
                 "source": "https://github.com/laravel/scout"
             },
-            "time": "2024-12-10T16:19:43+00:00"
+            "time": "2025-01-14T15:53:41+00:00"
         },
         {
             "name": "laravel/serializable-closure",
@@ -2233,16 +2233,16 @@
         },
         {
             "name": "league/csv",
-            "version": "9.20.1",
+            "version": "9.21.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/csv.git",
-                "reference": "491d1e79e973a7370c7571dc0fe4a7241f4936ee"
+                "reference": "72196d11ebba22d868954cb39c0c7346207430cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/csv/zipball/491d1e79e973a7370c7571dc0fe4a7241f4936ee",
-                "reference": "491d1e79e973a7370c7571dc0fe4a7241f4936ee",
+                "url": "https://api.github.com/repos/thephpleague/csv/zipball/72196d11ebba22d868954cb39c0c7346207430cc",
+                "reference": "72196d11ebba22d868954cb39c0c7346207430cc",
                 "shasum": ""
             },
             "require": {
@@ -2316,7 +2316,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-12-18T10:11:15+00:00"
+            "time": "2025-01-08T19:27:58+00:00"
         },
         {
             "name": "league/flysystem",
@@ -3010,12 +3010,12 @@
             "version": "3.8.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/briannesbitt/Carbon.git",
+                "url": "https://github.com/CarbonPHP/carbon.git",
                 "reference": "129700ed449b1f02d70272d2ac802357c8c30c58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/129700ed449b1f02d70272d2ac802357c8c30c58",
+                "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/129700ed449b1f02d70272d2ac802357c8c30c58",
                 "reference": "129700ed449b1f02d70272d2ac802357c8c30c58",
                 "shasum": ""
             },
@@ -3345,6 +3345,64 @@
                 }
             ],
             "time": "2024-11-21T10:39:51+00:00"
+        },
+        {
+            "name": "nxp/math-executor",
+            "version": "v2.3.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/neonxp/MathExecutor.git",
+                "reference": "b3b9351b28672f87b47522fb6b6eab05ff258fae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/neonxp/MathExecutor/zipball/b3b9351b28672f87b47522fb6b6eab05ff258fae",
+                "reference": "b3b9351b28672f87b47522fb6b6eab05ff258fae",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0 <8.5"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.8",
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpunit": ">=9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "NXP\\": "src/NXP"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexander 'NeonXP' Kiryukhin",
+                    "email": "a.kiryukhin@mail.ru"
+                },
+                {
+                    "name": "Bruce Wells",
+                    "email": "brucekwells@gmail.com"
+                }
+            ],
+            "description": "Simple math expressions calculator",
+            "homepage": "http://github.com/NeonXP/MathExecutor",
+            "keywords": [
+                "calculator",
+                "expression",
+                "formula",
+                "math",
+                "mathmatics",
+                "parser"
+            ],
+            "support": {
+                "issues": "https://github.com/neonxp/MathExecutor/issues",
+                "source": "https://github.com/neonxp/MathExecutor/tree/v2.3.7"
+            },
+            "time": "2024-10-28T19:41:33+00:00"
         },
         {
             "name": "nyholm/psr7",
@@ -8824,16 +8882,16 @@
         },
         {
             "name": "laravel/pint",
-            "version": "v1.19.0",
+            "version": "v1.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/pint.git",
-                "reference": "8169513746e1bac70c85d6ea1524d9225d4886f0"
+                "reference": "53072e8ea22213a7ed168a8a15b96fbb8b82d44b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/pint/zipball/8169513746e1bac70c85d6ea1524d9225d4886f0",
-                "reference": "8169513746e1bac70c85d6ea1524d9225d4886f0",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/53072e8ea22213a7ed168a8a15b96fbb8b82d44b",
+                "reference": "53072e8ea22213a7ed168a8a15b96fbb8b82d44b",
                 "shasum": ""
             },
             "require": {
@@ -8886,7 +8944,7 @@
                 "issues": "https://github.com/laravel/pint/issues",
                 "source": "https://github.com/laravel/pint"
             },
-            "time": "2024-12-30T16:20:10+00:00"
+            "time": "2025-01-14T16:20:53+00:00"
         },
         {
             "name": "maximebf/debugbar",
@@ -9840,16 +9898,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.5.40",
+            "version": "10.5.41",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "e6ddda95af52f69c1e0c7b4f977cccb58048798c"
+                "reference": "e76586fa3d49714f230221734b44892e384109d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e6ddda95af52f69c1e0c7b4f977cccb58048798c",
-                "reference": "e6ddda95af52f69c1e0c7b4f977cccb58048798c",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e76586fa3d49714f230221734b44892e384109d7",
+                "reference": "e76586fa3d49714f230221734b44892e384109d7",
                 "shasum": ""
             },
             "require": {
@@ -9921,7 +9979,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.40"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.41"
             },
             "funding": [
                 {
@@ -9937,7 +9995,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-12-21T05:49:06+00:00"
+            "time": "2025-01-13T09:33:05+00:00"
         },
         {
             "name": "sebastian/cli-parser",
