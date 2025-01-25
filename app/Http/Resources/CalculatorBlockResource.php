@@ -20,7 +20,6 @@ class CalculatorBlockResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
             'label' => $this->label,
             'variable_name' => $this->variable_name,
             'value' => $this->value,
