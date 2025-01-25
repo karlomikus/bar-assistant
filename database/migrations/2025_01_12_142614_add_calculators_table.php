@@ -29,6 +29,10 @@ return new class () extends Migration {
             $table->text('description')->nullable();
             $table->json('settings')->default('{}');
         });
+
+        Schema::table('ingredients', function (Blueprint $table) {
+            $table->foreignId('calculator_id')->nullable()->constrained()->onDelete('cascade');
+        });
     }
 
     /**
@@ -36,6 +40,9 @@ return new class () extends Migration {
      */
     public function down(): void
     {
+        Schema::table('ingredients', function (Blueprint $table) {
+            $table->dropColumn('calculator_id');
+        });
         Schema::dropIfExists('calculator_blocks');
         Schema::dropIfExists('calculators');
     }

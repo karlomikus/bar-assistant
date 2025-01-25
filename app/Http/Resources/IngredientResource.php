@@ -69,6 +69,7 @@ class IngredientResource extends JsonResource
             'prices' => $this->when($this->relationLoaded('prices'), function () {
                 return IngredientPriceResource::collection($this->prices);
             }),
+            'calculator_id' => $this->calculator_id,
         ];
     }
 }

@@ -9376,6 +9376,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IngredientBasic'
+        calculator_id:
+          type:
+            - integer
+            - 'null'
       type: object
     IngredientBasic:
       description: 'Minimal ingredient information'
@@ -9547,6 +9551,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IngredientPriceRequest'
+        calculator_id:
+          description: 'Calculator you want to attach to this ingredient'
+          type:
+            - integer
+            - 'null'
+          example: 1
       type: object
     LoginRequest:
       required:

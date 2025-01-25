@@ -41,6 +41,7 @@ final class IngredientService
             $ingredient->color = $dto->color;
             $ingredient->parent_ingredient_id = $dto->parentIngredientId;
             $ingredient->created_user_id = $dto->userId;
+            $ingredient->calculator_id = $dto->calculatorId;
             $ingredient->save();
 
             foreach ($dto->complexIngredientParts as $ingredientPartId) {
@@ -103,6 +104,7 @@ final class IngredientService
             $ingredient->parent_ingredient_id = $dto->parentIngredientId;
             $ingredient->updated_user_id = $dto->userId;
             $ingredient->updated_at = now();
+            $ingredient->calculator_id = $dto->calculatorId;
             $ingredient->save();
 
             Model::unguard();
