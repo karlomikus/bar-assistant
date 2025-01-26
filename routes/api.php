@@ -23,6 +23,7 @@ use Kami\Cocktail\Http\Controllers\ProfileController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\UtensilsController;
 use Laravel\Paddle\Http\Controllers\WebhookController;
+use Kami\Cocktail\Http\Controllers\CalculatorController;
 use Kami\Cocktail\Http\Controllers\CollectionController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
@@ -261,6 +262,15 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/{id}', [PriceCategoryController::class, 'show'])->name('price-categories.show');
         Route::put('/{id}', [PriceCategoryController::class, 'update']);
         Route::delete('/{id}', [PriceCategoryController::class, 'delete']);
+    });
+
+    Route::prefix('calculators')->middleware(['ability:*'])->group(function () {
+        Route::get('/', [CalculatorController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/', [CalculatorController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/{id}', [CalculatorController::class, 'show'])->name('calculators.show');
+        Route::put('/{id}', [CalculatorController::class, 'update']);
+        Route::delete('/{id}', [CalculatorController::class, 'delete']);
+        Route::post('/{id}/solve', [CalculatorController::class, 'solve']);
     });
 });
 

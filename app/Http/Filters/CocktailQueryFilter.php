@@ -196,6 +196,9 @@ final class CocktailQueryFilter extends QueryBuilder
                         ->where('cf.bar_membership_id', $barMembership->id)
                         ->orderBy('cf.updated_at', $direction);
                 }),
+                AllowedSort::callback('random', function ($query) {
+                    $query->inRandomOrder();
+                }),
             ])
             ->allowedIncludes([
                 'glass',

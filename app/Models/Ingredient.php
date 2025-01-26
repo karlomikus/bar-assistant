@@ -110,6 +110,14 @@ class Ingredient extends Model implements UploadableInterface
     }
 
     /**
+     * @return BelongsTo<Calculator, $this>
+     */
+    public function calculator(): BelongsTo
+    {
+        return $this->belongsTo(Calculator::class);
+    }
+
+    /**
      * @return HasMany<CocktailIngredientSubstitute, $this>
      */
     public function cocktailIngredientSubstitutes(): HasMany

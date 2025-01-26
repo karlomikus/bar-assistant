@@ -36,6 +36,8 @@ class IngredientRequest
         /** @var IngredientPriceRequest[] */
         #[OAT\Property(items: new OAT\Items(type: IngredientPriceRequest::class))]
         public array $prices = [],
+        #[OAT\Property(property: 'calculator_id', example: 1, description: 'Calculator you want to attach to this ingredient')]
+        public ?int $calculatorId = null,
     ) {
     }
 
@@ -63,6 +65,7 @@ class IngredientRequest
             $request->input('images', []),
             $request->input('complex_ingredient_part_ids', []),
             $prices,
+            $request->filled('calculator_id') ? $request->integer('calculator_id') : null,
         );
     }
 }

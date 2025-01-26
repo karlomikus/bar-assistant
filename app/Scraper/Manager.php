@@ -30,6 +30,7 @@ final class Manager
         \Kami\Cocktail\Scraper\Sites\LiquorCom::class,
         \Kami\Cocktail\Scraper\Sites\MakeMeACocktail::class,
         \Kami\Cocktail\Scraper\Sites\KindredCocktails::class,
+        \Kami\Cocktail\Scraper\Sites\CraftedPour::class,
     ];
 
     public function __construct(private readonly string $url, private readonly Units $defaultConvertTo = Units::Ml)
