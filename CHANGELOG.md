@@ -1,3 +1,12 @@
+# v4.4.0
+## New
+- Added calculators, unleash your inner Kevin Kos
+    - Add inputs and formulas to calculate your favorite syrups, batches, juices, etc.
+    - Added `/calculators` endpoint
+    - Added `calculator_id` to ingredient schema
+- Added scrape support for recipes from `Crafted Pour`
+- Added `random` sort attribute to `/cocktails` endpoint
+
 # v4.3.2
 ## Fixes
 - Improve error handling when scraping recipes from unsupported sites
