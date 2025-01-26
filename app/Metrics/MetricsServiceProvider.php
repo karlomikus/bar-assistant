@@ -8,25 +8,32 @@ use Throwable;
 use Prometheus\Storage\Redis;
 use Prometheus\CollectorRegistry;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Facades\Redis as LaravelRedis;
+use Kami\Cocktail\Http\Middleware\TracksRequestMetric;
 
 class MetricsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->scoped(CollectorRegistry::class, function (Application $app) {
-            return new CollectorRegistry(new Redis([
-                'host' => config('database.redis.default.host', 'localhost'),
-                'port' => config('database.redis.default.port', 6379),
-                'password' => config('database.redis.default.password', null),
-                'user' => config('database.redis.default.username', null),
-            ]));
+        if (config('bar-assistant.metrics.enabled') === false) {
+            return;
+        }
+
+        $this->app->scoped(CollectorRegistry::class, function () {
+            return new CollectorRegistry(Redis::fromExistingConnection(LaravelRedis::connection()->client()));
         });
     }
 
     public function boot(): void
     {
+        if (config('bar-assistant.metrics.enabled') === false) {
+            return;
+        }
+
+        $this->app[Kernel::class]->pushMiddleware(TracksRequestMetric::class);
+
         $metrics = collect([
             TotalBars::class,
             TotalActiveUsers::class,
