@@ -32,7 +32,7 @@ class TracksRequestMetric
 
         try {
             $metric = new ApiRequestDuration($this->registry);
-            $metric(microtime(true) - $startTime, (string) $request->route()->uri(), $request->method());
+            $metric(microtime(true) - $startTime, (string) $request->route()->uri(), $request->method(), $response->getStatusCode());
         } catch (Throwable $e) {
             Log::error('Unable to register metric: ' . ApiRequestDuration::class . '. Error: ' . $e->getMessage());
         }
