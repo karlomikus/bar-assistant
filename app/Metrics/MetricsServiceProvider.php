@@ -12,6 +12,7 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Redis as LaravelRedis;
 use Kami\Cocktail\Http\Middleware\TracksRequestMetric;
+use Kami\Cocktail\Http\Middleware\TrackSQLQueriesMetric;
 
 class MetricsServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,7 @@ class MetricsServiceProvider extends ServiceProvider
             return;
         }
 
+        // $this->app[Kernel::class]->pushMiddleware(TrackSQLQueriesMetric::class);
         $this->app[Kernel::class]->pushMiddleware(TracksRequestMetric::class);
 
         $metrics = collect([
