@@ -91,6 +91,8 @@ class BarController extends Controller
             abort(403, 'You can not create anymore bars');
         }
 
+        Cache::forget('metrics_bass_total_bars');
+
         $request->validate([
             'slug' => 'nullable|unique:bars,slug',
         ]);
@@ -226,6 +228,7 @@ class BarController extends Controller
             abort(403);
         }
 
+        Cache::forget('metrics_bass_total_bars');
         Cache::forget('ba:bar:' . $bar->id);
 
         $bar->delete();
@@ -371,6 +374,8 @@ class BarController extends Controller
         if ($request->user()->cannot('edit', $bar)) {
             abort(403);
         }
+
+        Cache::forget('metrics_bass_total_bars');
 
         $newStatus = $request->post('status');
 

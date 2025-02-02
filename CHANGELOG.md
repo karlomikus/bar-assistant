@@ -8,7 +8,7 @@
 - Added `random` sort attribute to `/cocktails` endpoint
 - Added prometheus metrics
     - Added `/metrics` endpoint
-    - Added `METRICS_ENABLE` environment variable
+    - Added `METRICS_ENABLED` environment variable
         - To enable metrics redis is required
     - Added `METRICS_ALLOWED_IPS` environment variable
         - If you enable metrics, you need to specify allowed IPs to access the `/metrics` endpoint
