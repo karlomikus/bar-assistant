@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\IpUtils;
 
-class AllowIps
+class CheckMetricsAccess
 {
     /**
      * Handle an incoming request.

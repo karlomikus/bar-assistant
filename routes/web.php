@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Kami\Cocktail\Http\Middleware\AllowIps;
+use Kami\Cocktail\Http\Middleware\CheckMetricsAccess;
 use Kami\Cocktail\Http\Controllers\MetricsController;
 
 /*
@@ -24,5 +24,5 @@ Route::get('/docs', function () {
 });
 
 if (config('bar-assistant.metrics.enabled') === true) {
-    Route::get('/metrics', [MetricsController::class, 'index'])->name('metrics')->middleware(AllowIps::class);
+    Route::get('/metrics', [MetricsController::class, 'index'])->name('metrics')->middleware(CheckMetricsAccess::class);
 }
