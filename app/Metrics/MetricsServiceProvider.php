@@ -22,6 +22,11 @@ class MetricsServiceProvider extends ServiceProvider
             return;
         }
 
+        if (config('bar-assistant.metrics.enabled') === true && config('cache.default') !== 'redis') {
+            Log::warning('Metrics are enabled, but the cache driver is not set to redis. Metrics will not be available.');
+            return;
+        }
+
         $this->app->scoped(CollectorRegistry::class, function () {
             return new CollectorRegistry(Redis::fromExistingConnection(LaravelRedis::connection()->client()));
         });
@@ -30,6 +35,10 @@ class MetricsServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if (config('bar-assistant.metrics.enabled') === false) {
+            return;
+        }
+
+        if (config('cache.default') !== 'redis') {
             return;
         }
 
