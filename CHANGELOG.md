@@ -1,3 +1,25 @@
+# v4.4.0
+## New
+- Added calculators, unleash your inner Kevin Kos
+    - Add inputs and formulas to calculate your favorite syrups, batches, juices, etc.
+    - Added `/calculators` endpoint
+    - Added `calculator_id` to ingredient schema
+- Added scrape support for recipes from `Crafted Pour`
+- Added `random` sort attribute to `/cocktails` endpoint
+- Added prometheus metrics
+    - Added `/metrics` endpoint
+    - Added `METRICS_ENABLED` environment variable
+        - To enable metrics redis is required
+    - Added `METRICS_ALLOWED_IPS` environment variable
+        - If you enable metrics, you need to specify allowed IPs to access the `/metrics` endpoint
+        - Define multiple IPs separated by commas
+    - Added `php artisan bar:clear-metrics` command
+    - Added `provisioning_bars_total` metric
+    - Added `active_bars_total` metric
+    - Added `deactivated_bars_total` metric
+    - Added `active_users_total` metric
+    - Added `api_request_processing_milliseconds` metric
+
 # v4.3.2
 ## Fixes
 - Improve error handling when scraping recipes from unsupported sites
