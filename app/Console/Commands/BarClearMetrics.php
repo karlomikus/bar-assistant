@@ -21,17 +21,20 @@ class BarClearMetrics extends Command
      */
     protected $description = 'Clears metrics redis storage';
 
-    public function __construct(private readonly CollectorRegistry $registry)
-    {
-        parent::__construct();
-    }
-
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
-        $this->registry->wipeStorage();
+        if (config('bar-assistant.metrics.enabled') !== true) {
+            $this->error('Metrics are not enabled');
+
+            return;
+        }
+
+        /** @var CollectorRegistry */
+        $registry = resolve(CollectorRegistry::class);
+        $registry->wipeStorage();
 
         $this->info('Metrics storage cleared!');
     }

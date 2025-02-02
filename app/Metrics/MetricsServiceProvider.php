@@ -42,8 +42,11 @@ class MetricsServiceProvider extends ServiceProvider
             return;
         }
 
-        // $this->app[Kernel::class]->pushMiddleware(TrackSQLQueriesMetric::class);
-        $this->app[Kernel::class]->pushMiddleware(TracksRequestMetric::class);
+        /** @var \Kami\Cocktail\Http\Kernel */
+        $kernel = $this->app->get(Kernel::class);
+
+        // $kernel->pushMiddleware(TrackSQLQueriesMetric::class);
+        $kernel->pushMiddleware(TracksRequestMetric::class);
 
         $metrics = collect([
             TotalBars::class,

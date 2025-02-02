@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Metrics;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 
 class TotalBars extends BaseMetrics

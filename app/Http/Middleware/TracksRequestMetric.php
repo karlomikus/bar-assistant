@@ -26,7 +26,7 @@ class TracksRequestMetric
      */
     public function handle(Request $request, Closure $next)
     {
-        $startTime = $request->server('REQUEST_TIME_FLOAT');
+        $startTime = floatval($request->server('REQUEST_TIME_FLOAT'));
 
         $response = $next($request);
 

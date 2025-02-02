@@ -16,6 +16,6 @@ class ApiRequestDuration extends BaseMetrics
             [100, 250, 500, 1000, 2500, 5000, 10000]
         );
 
-        $metric->observe($time * 1000, ['/' . $route, $method, $status]);
+        $metric->observe($time * 1000, ['/' . $route, $method, (string) $status]);
     }
 }

@@ -16,7 +16,7 @@ class MetricsController extends Controller
     {
         $renderer = new RenderTextFormat();
 
-        try{
+        try {
             $result = $renderer->render($registry->getMetricFamilySamples());
         } catch (Throwable $e) {
             Log::error('Unable to render metrics: ' . $e->getMessage());

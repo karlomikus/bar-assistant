@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Kami\Cocktail\Http\Middleware\CheckMetricsAccess;
 use Kami\Cocktail\Http\Controllers\MetricsController;
+use Kami\Cocktail\Http\Middleware\CheckMetricsAccess;
 
 /*
 |--------------------------------------------------------------------------
