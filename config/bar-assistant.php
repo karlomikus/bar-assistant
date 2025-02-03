@@ -67,7 +67,7 @@ return [
     'prices' => explode('|', env('BILLING_PRODUCT_PRICES', '')),
 
     'metrics' => [
-        'enabled' => (bool) env('METRICS_ENABLED', true),
+        'enabled' => (bool) env('METRICS_ENABLED', false),
         'allowed_ips' => explode(',', env('METRICS_ALLOWED_IPS', '')),
     ]
 ];
