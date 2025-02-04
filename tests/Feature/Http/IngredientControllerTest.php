@@ -419,4 +419,60 @@ class IngredientControllerTest extends TestCase
         $response = $this->postJson('/api/ingredients?bar_id=1', ['name' => 'Test']);
         $response->assertCreated();
     }
+
+    public function test_parent_ingredient_descendants_filtering(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $spirits = Ingredient::factory()->for($membership->bar)->create([
+            'name' => 'Spirits',
+            'materialized_path' => null,
+        ]);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $response = $this->postJson('/api/ingredients/', [
+            'name' => "Genever",
+            'parent_ingredient_id' => $spirits->id,
+        ]);
+
+        $genever = Ingredient::find($response->json('data.id'));
+
+        $response = $this->postJson('/api/ingredients/', [
+            'name' => "Gin",
+            'parent_ingredient_id' => $genever->id,
+        ]);
+
+        $gin = Ingredient::find($response->json('data.id'));
+
+        $response = $this->postJson('/api/ingredients/', [
+            'name' => "Bombay Sapphire",
+            'parent_ingredient_id' => $gin->id,
+        ]);
+
+        $response = $this->postJson('/api/ingredients/', [
+            'name' => "Old tom gin",
+            'parent_ingredient_id' => $genever->id,
+        ]);
+
+        $response = $this->postJson('/api/ingredients/', [
+            'name' => "Grain based",
+            'parent_ingredient_id' => $spirits->id,
+        ]);
+
+        $grain = Ingredient::find($response->json('data.id'));
+
+        $response = $this->getJson('/api/ingredients?filter[parent_ingredient_id]=' . $genever->id);
+        $response->assertJsonCount(3, 'data');
+        $response->assertJsonPath('data.0.name', 'Bombay Sapphire');
+        $response->assertJsonPath('data.1.name', 'Gin');
+        $response->assertJsonPath('data.2.name', 'Old tom gin');
+
+        $response = $this->getJson('/api/ingredients?filter[parent_ingredient_id]=' . $grain->id);
+        $response->assertJsonCount(0, 'data');
+
+        $response = $this->getJson('/api/ingredients?filter[parent_ingredient_id]=' . $gin->id);
+        $response->assertJsonCount(1, 'data');
+    }
 }

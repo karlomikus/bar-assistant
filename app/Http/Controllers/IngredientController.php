@@ -46,6 +46,7 @@ class IngredientController extends Controller
             new OAT\Property(property: 'strength_max', type: 'float'),
             new OAT\Property(property: 'main_ingredients', type: 'string'),
             new OAT\Property(property: 'complex', type: 'boolean'),
+            new OAT\Property(property: 'parent_ingredient_id', type: 'integer'),
         ])),
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `strength`, `total_cocktails`.', schema: new OAT\Schema(type: 'string')),
         new OAT\Parameter(name: 'include', in: 'query', description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `prices`, `ingredientParts`, `category`, `images`.', schema: new OAT\Schema(type: 'string')),

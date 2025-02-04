@@ -39,7 +39,10 @@ final class IngredientService
             $ingredient->description = $dto->description;
             $ingredient->origin = $dto->origin;
             $ingredient->color = $dto->color;
-            $ingredient->parent_ingredient_id = $dto->parentIngredientId;
+            if ($dto->parentIngredientId !== null) {
+                $parentIngredient = Ingredient::findOrFail($dto->parentIngredientId);
+                $ingredient->withMaterializedPath($parentIngredient);
+            }
             $ingredient->created_user_id = $dto->userId;
             $ingredient->calculator_id = $dto->calculatorId;
             $ingredient->save();

@@ -10,6 +10,7 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Kami\Cocktail\Models\ValueObjects\MaterializedPath;
 
 class Ingredient extends Model implements UploadableInterface
 {
@@ -40,9 +42,15 @@ class Ingredient extends Model implements UploadableInterface
         'parent_ingredient_id',
     ];
 
-    protected $casts = [
-        'strength' => 'float',
-    ];
+    /**
+     * @return array{strength: 'float'}
+     */
+    protected function casts(): array
+    {
+        return [
+            'strength' => 'float',
+        ];
+    }
 
     public function getUploadPath(): string
     {
@@ -262,5 +270,22 @@ class Ingredient extends Model implements UploadableInterface
             'category' => $this->category?->name ?? null,
             'bar_id' => $this->bar_id,
         ];
+    }
+
+    public function withMaterializedPath(Ingredient $parentIngredient): void
+    {
+        $path = MaterializedPath::fromString($parentIngredient->materialized_path);
+        $path = $path->append($parentIngredient->id);
+
+        $this->parent_ingredient_id = $parentIngredient->id;
+        $this->materialized_path = $path->toStringPath();
+    }
+
+    /**
+     * @return Builder<self>
+     */
+    public function pathDescendants(): Builder
+    {
+        return $this->newQuery()->whereLike('materialized_path', $this->materialized_path . $this->id . '/%');
     }
 }

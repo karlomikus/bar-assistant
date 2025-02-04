@@ -65,6 +65,13 @@ final class IngredientQueryFilter extends QueryBuilder
                         $query->whereHas('ingredientParts');
                     }
                 }),
+                AllowedFilter::callback('parent_ingredient_id', function ($query, $value) {
+                    $query->where('materialized_path', 'like', function ($query) use ($value) {
+                        $query->selectRaw("materialized_path || id || '/%'")
+                            ->from('ingredients')
+                            ->where('id', $value);
+                    });
+                }),
             ])
             ->defaultSort('name')
             ->allowedSorts([
