@@ -28,6 +28,7 @@ class IngredientResource extends JsonResource
             'origin' => $this->origin,
             'created_at' => $this->created_at->toAtomString(),
             'updated_at' => $this->updated_at?->toAtomString(),
+            'materialized_path' => $this->getMaterializedPathAsString(),
             'images' => $this->when(
                 $this->relationLoaded('images'),
                 fn () => ImageResource::collection($this->images)
