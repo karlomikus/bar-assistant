@@ -885,6 +885,363 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /calculators:
+    get:
+      tags:
+        - Calculator
+      summary: 'List calculators'
+      description: 'Show a list of all calculators in a bar'
+      operationId: listCalculators
+      parameters:
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Calculator' } }
+                type: object
+    post:
+      tags:
+        - Calculator
+      summary: 'Create calculator'
+      description: 'Create a new calculator'
+      operationId: saveCalculator
+      parameters:
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalculatorRequest'
+      responses:
+        '201':
+          description: 'Successful response'
+          headers:
+            Location:
+              description: 'URL of the new resource'
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/Calculator' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/calculators/{id}':
+    get:
+      tags:
+        - Calculator
+      summary: 'Show calculator'
+      description: 'Show a specific calculator'
+      operationId: showCalculator
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/Calculator' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    put:
+      tags:
+        - Calculator
+      summary: 'Update calculator'
+      description: 'Update a specific calculator'
+      operationId: updateCalculator
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalculatorRequest'
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/Calculator' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    delete:
+      tags:
+        - Calculator
+      summary: 'Delete calculator'
+      description: 'Delete a specific calculator'
+      operationId: deleteCalculator
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/calculators/{id}/solve':
+    post:
+      tags:
+        - Calculator
+      summary: 'Solve calculator'
+      description: 'Solve calculator expressions. Takes a JSON body with the calculator input variables names as keys and their values as values and solves the defined evaluations. Results are objects with evaluation variable names as keys and solved expression result as values.'
+      operationId: solveCalculator
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalculatorSolveRequest'
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/CalculatorResult' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /cocktails:
     get:
       tags:
@@ -976,7 +1333,7 @@ paths:
         -
           name: sort
           in: query
-          description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `missing_bar_ingredients`, `favorited_at`.'
+          description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `missing_bar_ingredients`, `favorited_at`, `random`.'
           schema:
             type: string
         -
@@ -7564,6 +7921,11 @@ components:
         - provisioning
         - active
         - deactivated
+    CalculatorBlockTypeEnum:
+      type: string
+      enum:
+        - input
+        - eval
     APIError:
       required:
         - type
@@ -7884,6 +8246,140 @@ components:
                 type: integer
                 example: 42
             type: object
+      type: object
+    Calculator:
+      required:
+        - id
+        - name
+        - blocks
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Calculator name'
+        description:
+          type:
+            - string
+            - 'null'
+          example: 'Calculator description'
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalculatorBlock'
+      type: object
+    CalculatorBlock:
+      required:
+        - sort
+        - label
+        - variable_name
+        - value
+        - description
+        - settings
+      properties:
+        sort:
+          type: integer
+          example: 1
+        label:
+          type: string
+          example: 'Short label'
+        variable_name:
+          type: string
+          example: var-name
+        value:
+          type: string
+          example: 'sugar * 2'
+        type:
+          $ref: '#/components/schemas/CalculatorBlockTypeEnum'
+        description:
+          type:
+            - string
+            - 'null'
+          example: 'Short description'
+        settings:
+          $ref: '#/components/schemas/CalculatorBlockSettings'
+      type: object
+    CalculatorBlockRequest:
+      required:
+        - label
+        - variable_name
+        - value
+        - type
+        - settings
+        - sort
+      properties:
+        label:
+          type: string
+        variable_name:
+          type: string
+        value:
+          type: string
+        type:
+          $ref: '#/components/schemas/CalculatorBlockTypeEnum'
+        settings:
+          $ref: '#/components/schemas/CalculatorBlockSettings'
+        description:
+          type:
+            - string
+            - 'null'
+        sort:
+          type: integer
+      type: object
+    CalculatorBlockSettings:
+      properties:
+        suffix:
+          type:
+            - string
+            - 'null'
+        prefix:
+          type:
+            - string
+            - 'null'
+        decimal_places:
+          type:
+            - string
+            - 'null'
+      type: object
+    CalculatorRequest:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalculatorBlockRequest'
+        description:
+          type:
+            - string
+            - 'null'
+      type: object
+    CalculatorResult:
+      required:
+        - inputs
+        - results
+      properties:
+        inputs:
+          description: string>
+          type: object
+          additionalProperties:
+            type: string
+        results:
+          description: string>
+          type: object
+          additionalProperties:
+            type: string
+      type: object
+    CalculatorSolveRequest:
+      required:
+        - inputs
+      properties:
+        inputs:
+          type: object
+          additionalProperties:
+            type: string
       type: object
     Cocktail:
       required:
@@ -8880,6 +9376,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IngredientBasic'
+        calculator_id:
+          type:
+            - integer
+            - 'null'
       type: object
     IngredientBasic:
       description: 'Minimal ingredient information'
@@ -9051,6 +9551,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IngredientPriceRequest'
+        calculator_id:
+          description: 'Calculator you want to attach to this ingredient'
+          type:
+            - integer
+            - 'null'
+          example: 1
       type: object
     LoginRequest:
       required:
@@ -9679,6 +10185,9 @@ tags:
   -
     name: Bars
     description: Bars
+  -
+    name: Calculator
+    description: Calculator
   -
     name: Cocktails
     description: Cocktails

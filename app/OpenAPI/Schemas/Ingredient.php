@@ -98,4 +98,7 @@ class Ingredient
     /** @var IngredientBasic[] */
     #[OAT\Property(property: 'can_be_substituted_with')]
     public array $canBeSubstitutedWith = [];
+
+    #[OAT\Property(property: 'calculator_id')]
+    public ?int $calculatorId = null;
 }

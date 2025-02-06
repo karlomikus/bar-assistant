@@ -55,6 +55,13 @@ services:
     volumes:
       - meilidata:/meili_data
 
+  metrics:
+    image: prom/prometheus
+    volumes:
+      - ./resources/docker/localdev/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
 volumes:
   meilidata:
   miniiodata:
