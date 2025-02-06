@@ -53,22 +53,31 @@ readonly class CocktailRepository
         // This query should handle the following cases:
         // Correctly count one match when either the main ingredient OR any of its substitutes match
         // If an ingredient can be matched either directly or through a substitute, it should only count once
-        // If enabled, also match parent ingredients of the specified ingredients
+        // Match any of descendant ingredients as possible substitute
         $query = $this->db->table('cocktails')
             ->select('cocktails.id')
             ->selectRaw(
                 'COUNT(DISTINCT CASE
                     WHEN ingredients.id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN ingredients.id
                     WHEN cocktail_ingredient_substitutes.ingredient_id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN ingredients.id
-                    WHEN ? = true AND ingredients.id IN (
+                    WHEN ingredients.id IN (
                         SELECT parent_ingredient_id 
                         FROM ingredients 
                         WHERE id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?)
                         AND parent_ingredient_id IS NOT NULL
                     ) THEN ingredients.id
+                    WHEN EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            ingredients
+                        WHERE
+                            materialized_path LIKE cocktail_ingredients.ingredient_id || \'/%\'
+                            AND id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?)
+                    ) THEN ingredients.id
                     ELSE NULL
                 END) as matching_ingredients',
-                [...$ingredientIds, ...$ingredientIds, $useParentIngredientAsSubstitute, ...$ingredientIds]
+                [...$ingredientIds, ...$ingredientIds, ...$ingredientIds, ...$ingredientIds]
             )
             ->join('cocktail_ingredients', 'cocktails.id', '=', 'cocktail_ingredients.cocktail_id')
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
