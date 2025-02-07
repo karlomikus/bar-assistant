@@ -267,7 +267,7 @@ class Ingredient extends Model implements UploadableInterface
             'name' => $this->name,
             'image_url' => $this->getMainImageUrl(),
             'description' => $this->description,
-            'category' => $this->category?->name ?? null,
+            'category' => $this->getMaterializedPathAsString(),
             'bar_id' => $this->bar_id,
         ];
     }
@@ -304,5 +304,15 @@ class Ingredient extends Model implements UploadableInterface
     public function pathDescendants(): Builder
     {
         return $this->newQuery()->whereLike('materialized_path', $this->materialized_path . $this->id . '/%');
+    }
+
+    public function isDescendantOf(Ingredient $ingredient): bool
+    {
+        return $this->materialized_path && str_starts_with($this->materialized_path, $ingredient->materialized_path . $ingredient->id);
+    }
+
+    public function isAncestorOf(Ingredient $ingredient): bool
+    {
+        return $ingredient->isDescendantOf($this);
     }
 }
