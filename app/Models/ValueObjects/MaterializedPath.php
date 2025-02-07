@@ -39,6 +39,9 @@ final readonly class MaterializedPath
         return new self($newPath);
     }
 
+    /**
+     * @return array<int> $basePath
+     */
     public function toArray(): array
     {
         return $this->basePath ?? [];
