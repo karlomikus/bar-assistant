@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Brick\Money\RationalMoney;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -94,7 +95,14 @@ class CocktailIngredient extends Model
             }
         }
 
-        return false;
+        return $this->barHasVariantInShelf();
+    }
+
+    public function barHasVariantInShelf(): bool
+    {
+        $currentShelf = $this->ingredient->bar->shelfIngredients;
+
+        return $this->ingredient->pathDescendants()->whereIn('id', $currentShelf->pluck('ingredient_id'))->count() > 0;
     }
 
     public function barHasInShelfAsComplexIngredient(): bool
@@ -158,5 +166,25 @@ class CocktailIngredient extends Model
             ->where('price_category_id', $priceCategory->id)
             ->where('units', $this->units)
             ->first();
+    }
+
+    /**
+     * @return Collection<int, CocktailIngredientSubstitute>
+     */
+    public function getPossibleSubstitutes(): \Illuminate\Support\Collection
+    {
+        $specificSubstitutes = $this->substitutes;
+
+        $currentShelf = $this->ingredient->bar->shelfIngredients;
+        $variants = $this->ingredient->pathDescendants()->whereIn('id', $currentShelf->pluck('ingredient_id'))->get();
+
+        foreach ($variants as $variant) {
+            $extraSub = new CocktailIngredientSubstitute();
+            $extraSub->ingredient_id = $variant->id;
+
+            $specificSubstitutes->push($extraSub);
+        }
+
+        return $specificSubstitutes->unique('ingredient_id');
     }
 }

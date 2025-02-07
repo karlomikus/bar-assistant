@@ -29,6 +29,7 @@ class IngredientResource extends JsonResource
             'created_at' => $this->created_at->toAtomString(),
             'updated_at' => $this->updated_at?->toAtomString(),
             'materialized_path' => $this->getMaterializedPathAsString(),
+            'ancestors' => IngredientBasicResource::collection($this->pathAncestors()->get()->reverse()),
             'images' => $this->when(
                 $this->relationLoaded('images'),
                 fn () => ImageResource::collection($this->images)
@@ -37,7 +38,7 @@ class IngredientResource extends JsonResource
                 return new IngredientBasicResource($this->parentIngredient);
             }),
             'color' => $this->color,
-            'category' => new IngredientCategoryResource($this->whenLoaded('category')),
+            // 'category' => new IngredientCategoryResource($this->whenLoaded('category')),
             'cocktails_count' => $this->whenCounted('cocktails'),
             'cocktails_as_substitute_count' => $this->when(
                 $this->relationLoaded('cocktailIngredientSubstitutes'),

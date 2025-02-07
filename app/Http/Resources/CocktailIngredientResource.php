@@ -26,7 +26,7 @@ class CocktailIngredientResource extends JsonResource
             'units' => $this->units,
             'optional' => (bool) $this->optional,
             'ingredient' => new IngredientBasicResource($this->ingredient),
-            'substitutes' => CocktailIngredientSubstituteResource::collection($this->whenLoaded('substitutes')),
+            'substitutes' => $this->when($this->relationLoaded('substitutes'), fn () => CocktailIngredientSubstituteResource::collection($this->getPossibleSubstitutes())),
             'note' => $this->note,
             'formatted' => new AmountFormats($this->resource),
             'in_shelf' => $this->when($this->relationLoaded('substitutes'), fn () => $this->userHasInShelf($request->user())),
