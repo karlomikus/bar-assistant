@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External\Import;
 
 use Generator;
+use Throwable;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Tag;
@@ -20,6 +21,7 @@ use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
+use Kami\Cocktail\External\Model\Calculator as CalculatorExternal;
 use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
 
 class FromDataPack
@@ -28,6 +30,9 @@ class FromDataPack
 
     /** @var array<string> */
     private array $barShelf = [];
+
+    /** @var array<string, int> */
+    private array $ingredientCalculators = [];
 
     public function __construct()
     {
@@ -60,6 +65,10 @@ class FromDataPack
 
         if ($dataDisk->exists('bar_shelf.json')) {
             $this->loadBarShelfFromImportData($dataDisk->path('bar_shelf.json'), $bar->id);
+        }
+
+        if ($dataDisk->exists('calculators.json')) {
+            $this->importCalculators($dataDisk->path('calculators.json'), $bar->id);
         }
 
         if (in_array(BarOptionsEnum::Ingredients, $flags)) {
@@ -113,6 +122,49 @@ class FromDataPack
         DB::table($tableName)->insert($importData);
     }
 
+    private function importCalculators(string $filepath, int $barId): void
+    {
+        if ($fileContents = file_get_contents($filepath)) {
+            $data = json_decode($fileContents, true);
+        } else {
+            $data = [];
+        }
+
+        DB::beginTransaction();
+        try {
+            foreach ($data as $calculator) {
+                $externalCalculator = CalculatorExternal::fromDataPackArray($calculator);
+                $calculatorId = DB::table('calculators')->insertGetId([
+                    'name' => $externalCalculator->name,
+                    'description' => $externalCalculator->description,
+                    'bar_id' => $barId,
+                    'created_at' => now(),
+                    'updated_at' => null,
+                ]);
+                $this->ingredientCalculators[$externalCalculator->id] = $calculatorId;
+
+                $blocksToInsert = [];
+                foreach ($calculator['blocks'] as $cBlock) {
+                    $blocksToInsert[] = [
+                        'calculator_id' => $calculatorId,
+                        'type' => $cBlock['type'],
+                        'label' => $cBlock['label'],
+                        'variable_name' => $cBlock['variable_name'],
+                        'value' => $cBlock['value'],
+                        'sort' => $cBlock['sort'],
+                        'description' => $cBlock['description'],
+                        'settings' => json_encode($cBlock['settings']),
+                    ];
+                }
+
+                DB::table('calculator_blocks')->insert($blocksToInsert);
+            }
+        } catch (Throwable) {
+            DB::rollBack();
+        }
+        DB::commit();
+    }
+
     private function importIngredients(Filesystem $dataDisk, Bar $bar, User $user): void
     {
         $categories = DB::table('ingredient_categories')->select('id', 'name')->where('bar_id', $bar->id)->get();
@@ -149,6 +201,7 @@ class FromDataPack
                 'created_user_id' => $user->id,
                 'created_at' => $externalIngredient->createdAt ?? now(),
                 'updated_at' => $externalIngredient->updatedAt,
+                'calculator_id' => $externalIngredient->calculatorId ? $this->ingredientCalculators[$externalIngredient->calculatorId] : null,
             ];
 
             if ($externalIngredient->parentId) {

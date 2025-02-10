@@ -34,7 +34,7 @@ class CheckMetricsAccess
             abort(404);
         }
 
-        if (IpUtils::checkIp($request->ip(), $whitelist)) {
+        if (IpUtils::checkIp($request->ip(), $whitelist) || in_array('*', $whitelist)) {
             return $next($request);
         }
 

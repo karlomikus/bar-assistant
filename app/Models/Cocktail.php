@@ -23,6 +23,7 @@ use Kami\Cocktail\Models\Concerns\HasNotes;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasRating;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
+use Kami\Cocktail\Models\Concerns\IsExternalized;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,7 +31,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
-class Cocktail extends Model implements UploadableInterface
+class Cocktail extends Model implements UploadableInterface, IsExternalized
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\CocktailFactory> */
     use HasFactory;

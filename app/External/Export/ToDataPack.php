@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
+use Kami\Cocktail\Models\Calculator;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
 use Kami\RecipeUtils\UnitConverter\Units;
@@ -17,6 +18,7 @@ use Kami\Cocktail\External\ForceUnitConvertEnum;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
 use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
+use Kami\Cocktail\External\Model\Calculator as CalculatorExternal;
 use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
 
 /**
@@ -64,6 +66,7 @@ class ToDataPack
         $this->dumpCocktails($barId, $zip, $toUnits);
         $this->dumpIngredients($barId, $zip);
         $this->dumpBaseData($barId, $zip);
+        $this->dumpCalculators($barId, $zip);
 
         if ($metaContent = json_encode($meta)) {
             $zip->addFromString('_meta.json', $metaContent);
@@ -99,7 +102,7 @@ class ToDataPack
     {
         $ingredients = Ingredient::with(['images' => function ($query) {
             $query->orderBy('sort');
-        }])->where('bar_id', $barId)->get();
+        }, 'calculator', 'category', 'prices', 'ingredientParts'])->where('bar_id', $barId)->get();
 
         /** @var Ingredient $ingredient */
         foreach ($ingredients as $ingredient) {
@@ -114,6 +117,21 @@ class ToDataPack
 
             $zip->addFromString('ingredients/' . $ingredient->getExternalId() . '/data.json', $ingredientExportData);
         }
+    }
+
+    private function dumpCalculators(int $barId, ZipArchive &$zip): void
+    {
+        $calculators = Calculator::with('blocks')->where('bar_id', $barId)->get();
+        $calculatorExportData = [];
+
+        /** @var Calculator $calculator */
+        foreach ($calculators as $calculator) {
+            $data = CalculatorExternal::fromModel($calculator);
+
+            $calculatorExportData[] = $data->toDataPackArray();
+        }
+
+        $zip->addFromString('calculators.json', $this->prepareDataOutput($calculatorExportData));
     }
 
     private function dumpBaseData(int $barId, ZipArchive &$zip): void
