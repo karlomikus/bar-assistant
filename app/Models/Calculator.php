@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use NXP\MathExecutor;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Kami\Cocktail\Models\Concerns\IsExternalized;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Kami\Cocktail\OpenAPI\Schemas\CalculatorResult;
@@ -15,11 +17,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\Enums\CalculatorBlockTypeEnum;
 use Kami\Cocktail\OpenAPI\Schemas\CalculatorSolveRequest;
 
-class Calculator extends Model
+class Calculator extends Model implements IsExternalized
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\CalculatorFactory> */
     use HasFactory;
     use HasBarAwareScope;
+
+    public function getExternalId(): string
+    {
+        return Str::slug($this->name . ' ' . $this->id);
+    }
 
     /**
      * @return BelongsTo<Bar, $this>
