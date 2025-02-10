@@ -32,6 +32,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
         public array $images = [],
         public array $ingredientParts = [],
         public array $prices = [],
+        public ?string $calculatorId = null,
     ) {
     }
 
@@ -63,6 +64,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             $images,
             $ingredientParts,
             $ingredientPrices,
+            $model->calculator->getExternalId(),
         );
     }
 
@@ -91,6 +93,8 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             $sourceArray['updated_at'] ?? null,
             $images,
             $ingredientParts,
+            [],
+            null,
         );
     }
 
@@ -110,6 +114,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             'images' => array_map(fn ($model) => $model->toDataPackArray(), $this->images),
             'ingredient_parts' => array_map(fn ($model) => $model->toDataPackArray(), $this->ingredientParts),
             'prices' => array_map(fn ($model) => $model->toDataPackArray(), $this->prices),
+            'calculator_id' => $this->calculatorId,
         ];
     }
 
