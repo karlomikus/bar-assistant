@@ -281,8 +281,12 @@ class Ingredient extends Model implements UploadableInterface
         $this->materialized_path = $path->toStringPath();
     }
 
-    public function getMaterializedPathAsString(): string
+    public function getMaterializedPathAsString(): ?string
     {
+        if ($this->materialized_path === null) {
+            return null;
+        }
+
         $pathIngredients = $this->pathAncestors()->get();
 
         return $pathIngredients->reverse()->map(fn ($i) => $i->name)->implode(' > ');
