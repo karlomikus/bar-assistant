@@ -1,3 +1,7 @@
+# v4.4.1
+## Changes
+- You can now use `*` in `METRICS_ALLOWED_IPS` to allow all IPs
+
 # v4.4.0
 ## New
 - Added calculators, unleash your inner Kevin Kos
