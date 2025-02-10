@@ -61,7 +61,7 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
 
     public function getExternalId(): string
     {
-        return Str::slug($this->name . ' ' . $this->id);
+        return Str::slug($this->name);
     }
 
     /**

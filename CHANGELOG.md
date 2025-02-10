@@ -1,6 +1,7 @@
 # v4.4.1
 ## Changes
 - You can now use `*` in `METRICS_ALLOWED_IPS` to allow all IPs
+- Calculators are now included in `datapack` export
 
 # v4.4.0
 ## New

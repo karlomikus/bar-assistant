@@ -64,7 +64,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             $images,
             $ingredientParts,
             $ingredientPrices,
-            $model->calculator->getExternalId(),
+            $model->calculator?->getExternalId(),
         );
     }
 
@@ -94,7 +94,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             $images,
             $ingredientParts,
             [],
-            null,
+            $sourceArray['calculator_id'] ?? null,
         );
     }
 

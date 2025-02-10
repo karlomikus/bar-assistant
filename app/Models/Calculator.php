@@ -25,7 +25,7 @@ class Calculator extends Model implements IsExternalized
 
     public function getExternalId(): string
     {
-        return Str::slug($this->name);
+        return Str::slug($this->name . ' ' . $this->id);
     }
 
     /**
