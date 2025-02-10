@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\External\Model;
 
-use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\CalculatorBlock;
+use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Calculator as CalculatorModel;
 
 readonly class Calculator implements SupportsDataPack
