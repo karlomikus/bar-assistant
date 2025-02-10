@@ -29,14 +29,15 @@ class IngredientResource extends JsonResource
             'created_at' => $this->created_at->toAtomString(),
             'updated_at' => $this->updated_at?->toAtomString(),
             'materialized_path' => $this->getMaterializedPathAsString(),
-            'ancestors' => IngredientBasicResource::collection($this->pathAncestors()->get()->reverse()),
+            'relationships' => [
+                'ancestors' => IngredientBasicResource::collection($this->pathAncestors()->get()->reverse()),
+                'descendants' => IngredientBasicResource::collection($this->pathDescendants()->get()->reverse()),
+                'parent' => $this->parent_ingredient_id,
+            ],
             'images' => $this->when(
                 $this->relationLoaded('images'),
                 fn () => ImageResource::collection($this->images)
             ),
-            'parent_ingredient' => $this->when($this->relationLoaded('parentIngredient') && $this->parent_ingredient_id !== null, function () {
-                return new IngredientBasicResource($this->parentIngredient);
-            }),
             'color' => $this->color,
             // 'category' => new IngredientCategoryResource($this->whenLoaded('category')),
             'cocktails_count' => $this->whenCounted('cocktails'),
@@ -44,9 +45,9 @@ class IngredientResource extends JsonResource
                 $this->relationLoaded('cocktailIngredientSubstitutes'),
                 fn () => $this->cocktailsAsSubstituteIngredient()->count()
             ),
-            'varieties' => $this->when($this->relationLoaded('varieties') && $this->relationLoaded('parentIngredient'), function () {
-                return IngredientBasicResource::collection($this->getAllRelatedIngredients());
-            }),
+            // 'varieties' => $this->when($this->relationLoaded('varieties') && $this->relationLoaded('parentIngredient'), function () {
+            //     return IngredientBasicResource::collection($this->getAllRelatedIngredients());
+            // }),
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
             'access' => $this->when(true, fn () => [
