@@ -56,6 +56,10 @@ final readonly class MaterializedPath
 
     public function toStringPath(): string
     {
+        if (empty($this->basePath)) {
+            return '';
+        }
+
         return implode(self::SEPARATOR, $this->basePath) . '/';
     }
 }
