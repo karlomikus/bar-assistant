@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models\ValueObjects;
 
+use Kami\Cocktail\Exceptions\IngredientPathTooDeepException;
+
 final readonly class MaterializedPath
 {
     private const SEPARATOR = '/';
+    private const TAXONOMY_MAX_DEPTH = 10;
 
     /**
-     * @param null|array<int> $basePath
+     * @param array<int> $basePath
      */
-    private function __construct(private ?array $basePath = null)
+    private function __construct(private array $basePath = [])
     {
     }
 
@@ -26,17 +29,21 @@ final readonly class MaterializedPath
         return new self($basePath);
     }
 
-    public function isRoot(): bool
-    {
-        return $this->basePath === null;
-    }
-
     public function append(int $id): self
     {
+        if ($this->getDepth() === self::TAXONOMY_MAX_DEPTH) {
+            throw new IngredientPathTooDeepException('Ingredient has too many descendants, max depth is ' . self::TAXONOMY_MAX_DEPTH);
+        }
+
         $newPath = $this->basePath;
         $newPath[] = $id;
 
         return new self($newPath);
+    }
+
+    public function getDepth(): int
+    {
+        return count($this->basePath);
     }
 
     /**
@@ -44,7 +51,7 @@ final readonly class MaterializedPath
      */
     public function toArray(): array
     {
-        return $this->basePath ?? [];
+        return $this->basePath;
     }
 
     public function toStringPath(): string
