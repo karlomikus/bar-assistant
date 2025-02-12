@@ -35,6 +35,8 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     use HasBarAwareScope;
     use HasAuthors;
 
+    protected $appends = ['path_ancestors'];
+
     protected $fillable = [
         'name',
         'strength',
@@ -290,6 +292,16 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     }
 
     /**
+     * Gets pretty print of ancestors added by SQL query via alias
+     *
+     * @return null|string 
+     */
+    public function getPathAncestors(): ?string
+    {
+        return isset($this->path_ancestors) ? $this->path_ancestors : null;
+    }
+
+    /**
      * @return Builder<self>
      */
     public function queryAncestors(): Builder
@@ -361,6 +373,19 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     public function isAncestorOf(Ingredient $ingredient): bool
     {
         return $ingredient->isDescendantOf($this);
+    }
+
+    /**
+     * @param Builder<self> $query
+     * @return Builder<self>
+     */
+    public function scopeAddPathAncestorsColumn(Builder $query): Builder
+    {
+        return $query
+            ->addSelect('ingredients.*')
+            ->addSelect(DB::raw('COALESCE(GROUP_CONCAT(ancestor.name, \' > \'), null) AS path_ancestors'))
+            ->leftJoin('ingredients AS ancestor', DB::raw("('/' || ingredients.materialized_path || '/')"), 'LIKE', DB::raw("'%/' || ancestor.id || '/%'"))
+            ->groupBy('ingredients.id');
     }
 
     /**

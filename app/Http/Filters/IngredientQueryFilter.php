@@ -26,7 +26,6 @@ final class IngredientQueryFilter extends QueryBuilder
                 AllowedFilter::exact('id'),
                 AllowedFilter::custom('name', new FilterNameSearch()),
                 AllowedFilter::beginsWithStrict('name_exact', 'name'),
-                AllowedFilter::exact('category_id', 'ingredient_category_id'),
                 AllowedFilter::partial('origin'),
                 AllowedFilter::exact('created_user_id'),
                 AllowedFilter::callback('on_shopping_list', function ($query, $value) use ($barMembership) {
@@ -89,6 +88,7 @@ final class IngredientQueryFilter extends QueryBuilder
                 }),
             ])
             ->allowedIncludes(['parentIngredient', 'varieties', 'prices', 'category', 'ingredientParts', 'images'])
+            ->addPathAncestorsColumn()
             ->withCount('cocktails')
             ->filterByBar('ingredients')
             ->with('bar.shelfIngredients');
