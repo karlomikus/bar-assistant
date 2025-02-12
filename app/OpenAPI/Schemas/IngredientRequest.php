@@ -15,8 +15,6 @@ class IngredientRequest
         #[OAT\Property(example: 'Gin')]
         public string $name,
         public int $userId,
-        #[OAT\Property(property: 'ingredient_category_id', example: 1)]
-        public ?int $ingredientCategoryId = null,
         #[OAT\Property(example: 40.0)]
         public float $strength = 0.0,
         #[OAT\Property(example: 'Gin is a type of alcoholic spirit')]
@@ -56,7 +54,6 @@ class IngredientRequest
             $barId,
             $request->input('name'),
             $request->user()->id,
-            $request->filled('ingredient_category_id') ? $request->integer('ingredient_category_id') : null,
             $request->float('strength'),
             $request->input('description'),
             $request->input('origin'),
