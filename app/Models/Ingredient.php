@@ -9,6 +9,8 @@ use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Kami\Cocktail\Models\Concerns\HasImages;
@@ -17,10 +19,11 @@ use Kami\Cocktail\Models\Concerns\IsExternalized;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Kami\Cocktail\Exceptions\IngredientMoveException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Kami\Cocktail\Models\ValueObjects\MaterializedPath;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ingredient extends Model implements UploadableInterface, IsExternalized
 {
@@ -243,6 +246,10 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
 
     public function delete(): ?bool
     {
+        $this->varieties->each(function (Ingredient $child) {
+            $child->appendAsChildOf(null);
+        });
+
         $this->deleteImages();
 
         return parent::delete();
@@ -273,13 +280,66 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         ];
     }
 
-    public function withMaterializedPath(Ingredient $parentIngredient): void
+    public function getMaterializedPath(): MaterializedPath
     {
-        $path = MaterializedPath::fromString($parentIngredient->materialized_path);
-        $path = $path->append($parentIngredient->id);
+        if ($this->isRoot()) {
+            return MaterializedPath::fromString(null);
+        }
 
-        $this->parent_ingredient_id = $parentIngredient->id;
-        $this->materialized_path = $path->toStringPath();
+        return MaterializedPath::fromString($this->materialized_path);
+    }
+
+    /**
+     * @return Builder<self>
+     */
+    public function queryAncestors(): Builder
+    {
+        return $this->newQuery()->whereIn('id', $this->getMaterializedPath()->toArray());
+    }
+
+    /**
+     * @return Builder<self>
+     */
+    public function queryDescendants(): Builder
+    {
+        $pathQuery = $this->getMaterializedPath()->append($this->id)->toStringPath() . '%';
+
+        return $this->newQuery()->whereLike('materialized_path', $pathQuery);
+    }
+
+    public function isRoot(): bool
+    {
+        return $this->parent_ingredient_id === null;
+    }
+
+    public function appendAsChildOf(?Ingredient $parentIngredient): void
+    {
+        if ($this->parent_ingredient_id === null && $parentIngredient === null) {
+            return;
+        }
+
+        if ($parentIngredient && $parentIngredient->isDescendantOf($this)) {
+            throw new IngredientMoveException('Cannot move ingredient under its own descendant.');
+        }
+
+        if (!DB::connection()->getPdo()->inTransaction()) {
+            Log::warning('Ingredient move called outside of a transaction');
+        }
+
+        $oldPath = $this->materialized_path;
+        $descendants = $this->queryDescendants()->get();
+
+        $this->withMaterializedPath($parentIngredient);
+        $newPath = $this->materialized_path;
+
+        $descendants->each(function (Ingredient $descendant) use ($oldPath, $newPath) {
+            if (!blank($oldPath)) {
+                $descendant->materialized_path = str_replace($oldPath, $newPath ?? '', $descendant->materialized_path);
+                $descendant->save();
+            }
+        });
+
+        $this->save();
     }
 
     public function getMaterializedPathAsString(): ?string
@@ -288,27 +348,9 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
             return null;
         }
 
-        $pathIngredients = $this->pathAncestors()->get();
+        $pathIngredients = $this->queryAncestors()->get();
 
-        return $pathIngredients->reverse()->map(fn ($i) => $i->name)->implode(' > ');
-    }
-
-    /**
-     * @return Builder<self>
-     */
-    public function pathAncestors(): Builder
-    {
-        $path = MaterializedPath::fromString($this->materialized_path);
-
-        return $this->newQuery()->whereIn('id', $path->toArray());
-    }
-
-    /**
-     * @return Builder<self>
-     */
-    public function pathDescendants(): Builder
-    {
-        return $this->newQuery()->whereLike('materialized_path', $this->materialized_path . $this->id . '/%');
+        return $pathIngredients->map(fn ($i) => $i->name)->implode(' > ');
     }
 
     public function isDescendantOf(Ingredient $ingredient): bool
@@ -319,5 +361,26 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     public function isAncestorOf(Ingredient $ingredient): bool
     {
         return $ingredient->isDescendantOf($this);
+    }
+
+    /**
+     * Sets parent ID and complete materialized path for the ingredient
+     * Does not save the ingredient
+     * Will throw exception if the ingredient has too many descendants
+     */
+    private function withMaterializedPath(?Ingredient $parentIngredient): void
+    {
+        if ($parentIngredient === null) {
+            $this->materialized_path = null;
+            $this->parent_ingredient_id = null;
+
+            return;
+        }
+
+        $path = $parentIngredient->getMaterializedPath();
+        $path = $path->append($parentIngredient->id);
+
+        $this->parent_ingredient_id = $parentIngredient->id;
+        $this->materialized_path = $path->toStringPath();
     }
 }
