@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Repository;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Database\DatabaseManager;
 
 readonly class IngredientRepository
@@ -27,6 +28,37 @@ readonly class IngredientRepository
             ->groupBy('cocktail_id')
             ->orderBy('cocktails.name', 'desc')
             ->get();
+    }
+
+    /**
+     * Collect all descendants of the given ingredients and manually set the relation
+     * Used for optimizing the query when querying for ingredients
+     *
+     * @param Collection<int, Ingredient> $ingredients
+     * @return Collection<int, mixed>
+     */
+    public function addHierarchyDataToIngredients(Collection $ingredients): Collection
+    {
+        $onlyRootIngredients = $ingredients->filter(fn ($ingredient) => $ingredient->isRoot());
+
+        // Collect all descendants without root ingredients
+        $ingredientDescendants = Ingredient::select('ingredients.id as _root_id', 'descendant.*')
+            ->join('ingredients AS descendant', 'descendant.materialized_path', 'LIKE', DB::raw("ingredients.id || '/%'"))
+            ->whereNull('ingredients.parent_ingredient_id')
+            ->whereIn('ingredients.id', $onlyRootIngredients->pluck('id'))
+            ->get();
+
+        // Manually set eloquent relations
+        $ingredients->map(function ($ingredient) use ($ingredientDescendants) {
+            $descendants = $ingredientDescendants->filter(function ($possibleDescendant) use ($ingredient) {
+                return $possibleDescendant->isDescendantOf($ingredient);
+            });
+            $ingredient->setRelation('varieties', $descendants);
+
+            return $ingredient;
+        });
+
+        return $ingredients;
     }
 
     /**

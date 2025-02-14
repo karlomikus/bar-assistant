@@ -87,7 +87,7 @@ final class IngredientQueryFilter extends QueryBuilder
                         ->orderBy('cocktails_count', $direction);
                 }),
             ])
-            ->allowedIncludes(['parentIngredient', 'varieties', 'prices', 'category', 'ingredientParts', 'images'])
+            ->allowedIncludes(['parentIngredient', 'prices', 'category', 'ingredientParts', 'images'])
             ->addPathAncestorsColumn()
             ->withCount('cocktails')
             ->filterByBar('ingredients')

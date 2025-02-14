@@ -28,26 +28,22 @@ class IngredientResource extends JsonResource
             'origin' => $this->origin,
             'created_at' => $this->created_at->toAtomString(),
             'updated_at' => $this->updated_at?->toAtomString(),
-            'materialized_path' => $this->getMaterializedPathAsString(),
-            'relationships' => [
-                'ancestors' => IngredientBasicResource::collection($this->pathAncestors()->get()->reverse()),
-                'descendants' => IngredientBasicResource::collection($this->pathDescendants()->get()->reverse()),
-                'parent' => $this->parent_ingredient_id,
+            'materialized_path' => $this->materialized_path,
+            'hierarchy' => [
+                'path_to_self' => $this->getPathAncestors(),
+                'parent_ingredient' => $this->whenLoaded('parentIngredient', fn () => new IngredientBasicResource($this->parentIngredient)),
+                'descendants' => IngredientBasicResource::collection($this->whenLoaded('varieties')),
             ],
             'images' => $this->when(
                 $this->relationLoaded('images'),
                 fn () => ImageResource::collection($this->images)
             ),
             'color' => $this->color,
-            // 'category' => new IngredientCategoryResource($this->whenLoaded('category')),
             'cocktails_count' => $this->whenCounted('cocktails'),
             'cocktails_as_substitute_count' => $this->when(
                 $this->relationLoaded('cocktailIngredientSubstitutes'),
                 fn () => $this->cocktailsAsSubstituteIngredient()->count()
             ),
-            // 'varieties' => $this->when($this->relationLoaded('varieties') && $this->relationLoaded('parentIngredient'), function () {
-            //     return IngredientBasicResource::collection($this->getAllRelatedIngredients());
-            // }),
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
             'access' => $this->when(true, fn () => [

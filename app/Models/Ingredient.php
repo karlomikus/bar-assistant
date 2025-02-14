@@ -35,8 +35,6 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     use HasBarAwareScope;
     use HasAuthors;
 
-    protected $appends = ['path_ancestors'];
-
     protected $fillable = [
         'name',
         'strength',

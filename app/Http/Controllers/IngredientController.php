@@ -60,6 +60,8 @@ class IngredientController extends Controller
         try {
             /** @var \Illuminate\Pagination\LengthAwarePaginator<Ingredient> */
             $ingredients = (new IngredientQueryFilter($ingredientQuery))->paginate($request->get('per_page', 50));
+            // Manually set relations to avoid n+1 eager loading
+            $ingredients->setCollection($ingredientQuery->addHierarchyDataToIngredients($ingredients->getCollection()));
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }
