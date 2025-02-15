@@ -92,7 +92,7 @@ class DefaultScraper extends AbstractSiteExtractor
         $instructions = array_map(function ($instructionStep) {
             if (is_string($instructionStep)) {
                 return $instructionStep;
-            } else if (is_array($instructionStep) && array_key_exists('text', $instructionStep)) {
+            } elseif (is_array($instructionStep) && array_key_exists('text', $instructionStep)) {
                 return $instructionStep['text'];
             } else {
                 return null;
