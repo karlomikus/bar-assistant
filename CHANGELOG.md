@@ -3,6 +3,9 @@
 - You can now use `*` in `METRICS_ALLOWED_IPS` to allow all IPs
 - Calculators are now included in `datapack` export
 
+## Fixes
+- Fixed diffords guide scraper missing instructions
+
 # v4.4.0
 ## New
 - Added calculators, unleash your inner Kevin Kos
