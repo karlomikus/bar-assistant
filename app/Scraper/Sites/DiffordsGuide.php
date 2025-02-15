@@ -32,7 +32,17 @@ class DiffordsGuide extends DefaultScraper
     public function garnish(): ?string
     {
         try {
-            return $this->crawler->filterXPath('//h3[contains(text(), \'Garnish:\')]/../p')->text();
+            // Try with the parsed objects first
+            $instructions = $this->schemaModel?->instructions ?? [];
+
+            $garnish = null;
+            foreach ($instructions as $instructionStep) {
+                if (isset($instructionStep['name']) && mb_strtolower($instructionStep['name']) === 'garnish') {
+                    $garnish = $instructionStep['text'];
+                }
+            }
+
+            return $garnish ?? $this->crawler->filterXPath('//h3[contains(text(), \'Garnish:\')]/../p')->text();
         } catch (Throwable) {
             return null;
         }
