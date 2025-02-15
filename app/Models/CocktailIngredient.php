@@ -95,14 +95,14 @@ class CocktailIngredient extends Model
             }
         }
 
-        return $this->barHasVariantInShelf();
+        return false;
     }
 
     public function barHasVariantInShelf(): bool
     {
         $currentShelf = $this->ingredient->bar->shelfIngredients;
 
-        return $this->ingredient->pathDescendants()->whereIn('id', $currentShelf->pluck('ingredient_id'))->count() > 0;
+        return $this->ingredient->queryDescendants()->whereIn('id', $currentShelf->pluck('ingredient_id'))->count() > 0;
     }
 
     public function barHasInShelfAsComplexIngredient(): bool
@@ -176,7 +176,7 @@ class CocktailIngredient extends Model
         $specificSubstitutes = $this->substitutes;
 
         $currentShelf = $this->ingredient->bar->shelfIngredients;
-        $variants = $this->ingredient->pathDescendants()->whereIn('id', $currentShelf->pluck('ingredient_id'))->get();
+        $variants = $this->ingredient->queryDescendants()->whereIn('id', $currentShelf->pluck('ingredient_id'))->get();
 
         foreach ($variants as $variant) {
             $extraSub = new CocktailIngredientSubstitute();
