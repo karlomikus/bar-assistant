@@ -77,7 +77,7 @@ class IngredientController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function show(Request $request, string $id): JsonResource
+    public function show(IngredientRepository $ingredientQuery, Request $request, string $id): JsonResource
     {
         $ingredient = Ingredient::with(
             'cocktails',
@@ -95,6 +95,8 @@ class IngredientController extends Controller
             ->where('id', $id)
             ->orWhere('slug', $id)
             ->firstOrFail();
+
+        $ingredient = $ingredientQuery->addHierarchyDataToIngredients(collect([$ingredient]))->first();
 
         if ($request->user()->cannot('show', $ingredient)) {
             abort(403);
