@@ -106,9 +106,18 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     }
 
     /**
+     * // TODO Rename
      * @return HasMany<Ingredient, $this>
      */
     public function varieties(): HasMany
+    {
+        return $this->hasMany(Ingredient::class, 'parent_ingredient_id', 'id');
+    }
+
+    /**
+     * @return HasMany<Ingredient, $this>
+     */
+    public function ancestors(): HasMany
     {
         return $this->hasMany(Ingredient::class, 'parent_ingredient_id', 'id');
     }
@@ -379,9 +388,10 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
      */
     public function scopeAddPathAncestorsColumn(Builder $query): Builder
     {
+        // Will work in future sqlite versions
         return $query
             ->addSelect('ingredients.*')
-            ->addSelect(DB::raw('COALESCE(GROUP_CONCAT(ancestor.name, \' > \'), null) AS path_ancestors'))
+            // ->addSelect(DB::raw('COALESCE(GROUP_CONCAT(ancestor.name, \' > \') OVER (ORDER BY INSTR(\'/\' || ingredients.materialized_path || \'/\', \'/\' || ancestor.id || \'/\')), null) AS path_ancestors'))
             ->leftJoin('ingredients AS ancestor', DB::raw("('/' || ingredients.materialized_path || '/')"), 'LIKE', DB::raw("'%/' || ancestor.id || '/%'"))
             ->groupBy('ingredients.id');
     }

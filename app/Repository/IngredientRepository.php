@@ -48,12 +48,32 @@ readonly class IngredientRepository
             ->whereIn('ingredients.id', $onlyRootIngredients->pluck('id'))
             ->get();
 
+        $ingredientAncestors = Ingredient::select('ingredients.id as leaf_id', 'ancestor.*')
+            ->join('ingredients AS ancestor', DB::raw("instr('/' || ingredients.materialized_path || '/', '/' || ancestor.id || '/')"), '>', DB::raw('0'))
+            ->whereIn('ingredients.id', $ingredients->pluck('id'))
+            ->whereNotNull('ingredients.materialized_path')
+            ->orderBy('leaf_id')
+            ->orderBy('ancestor.id')
+            ->get();
+
         // Manually set eloquent relations
-        $ingredients->map(function ($ingredient) use ($ingredientDescendants) {
+        $ingredients->map(function ($ingredient) use ($ingredientDescendants, $ingredientAncestors) {
             $descendants = $ingredientDescendants->filter(function ($possibleDescendant) use ($ingredient) {
                 return $possibleDescendant->isDescendantOf($ingredient);
             });
             $ingredient->setRelation('varieties', $descendants);
+
+            $ancestors = $ingredientAncestors->filter(function ($possibleAncestor) use ($ingredient) {
+                return $possibleAncestor['leaf_id'] === $ingredient->id;
+            })->sort(function ($a, $b) use ($ingredient) {
+                // Sort by position in materialized path
+                $path = $ingredient->getMaterializedPath()->toArray();
+                $posA = (int) array_search($a['id'], $path);
+                $posB = (int) array_search($b['id'], $path);
+
+                return $posA - $posB;
+            });
+            $ingredient->setRelation('ancestors', $ancestors);
 
             return $ingredient;
         });

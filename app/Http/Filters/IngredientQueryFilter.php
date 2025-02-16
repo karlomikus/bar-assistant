@@ -88,7 +88,6 @@ final class IngredientQueryFilter extends QueryBuilder
                 }),
             ])
             ->allowedIncludes(['parentIngredient', 'prices', 'category', 'ingredientParts', 'images'])
-            ->addPathAncestorsColumn()
             ->withCount('cocktails')
             ->filterByBar('ingredients')
             ->with('bar.shelfIngredients');
