@@ -120,6 +120,7 @@ class FromJsonSchema
                 $scrapedIngredient->amount->units->value,
                 $sort,
                 $scrapedIngredient->optional,
+                false,
                 $substitutes,
                 $scrapedIngredient->amount->amountMax,
                 $scrapedIngredient->note,

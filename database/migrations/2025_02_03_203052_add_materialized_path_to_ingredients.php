@@ -17,6 +17,10 @@ return new class extends Migration
             $table->string('materialized_path')->nullable()->index('ing_path_index');
         });
 
+        Schema::table('cocktail_ingredients', function (Blueprint $table) {
+            $table->boolean('is_specified')->default(false);
+        });
+
         DB::transaction(function () {
             $categoryToIngredientMap = [];
 
@@ -69,6 +73,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('cocktail_ingredients', function (Blueprint $table) {
+            $table->dropColumn('is_specified');
+        });
+
         Schema::table('ingredients', function (Blueprint $table) {
             $table->dropIndex('ing_path_index');
             $table->dropColumn('materialized_path');

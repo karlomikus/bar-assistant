@@ -426,6 +426,7 @@ class CocktailController extends Controller
                 $ingredient->units,
                 $ingredient->sort,
                 $ingredient->optional,
+                $ingredient->is_specified,
                 $substitutes,
                 $ingredient->amount_max,
                 $ingredient->note
