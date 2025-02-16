@@ -13,6 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::table('bar_memberships', function (Blueprint $table) {
+            $table->dropColumn('use_parent_as_substitute');
+        });
+
         Schema::table('ingredients', function (Blueprint $table) {
             $table->string('materialized_path')->nullable()->index('ing_path_index');
         });
@@ -73,6 +77,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('bar_memberships', function (Blueprint $table) {
+            $table->boolean('use_parent_as_substitute')->default(false);
+        });
+
         Schema::table('cocktail_ingredients', function (Blueprint $table) {
             $table->dropColumn('is_specified');
         });

@@ -22,7 +22,7 @@ readonly class CocktailRepository
      * @param array<int> $ingredientIds
      * @return \Illuminate\Support\Collection<string, mixed>
      */
-    public function getCocktailsByIngredients(array $ingredientIds, ?int $limit = null, bool $useParentIngredientAsSubstitute = false, bool $matchComplexIngredients = true): Collection
+    public function getCocktailsByIngredients(array $ingredientIds, ?int $limit = null, bool $matchComplexIngredients = true): Collection
     {
         if (count($ingredientIds) === 0) {
             return collect();
