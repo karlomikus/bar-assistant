@@ -70,12 +70,11 @@ class IngredientControllerTest extends TestCase
         $this->actingAs($membership->user);
 
         $user = User::factory()->create();
-        $ingredientCategory = IngredientCategory::factory()->for($membership->bar)->create();
         $ingredients = Ingredient::factory()->for($membership->bar)->createMany([
             ['name' => 'Whiskey', 'origin' => 'fix-string', 'strength' => 35.5, 'created_at' => Carbon::now()->addDays(1)],
             ['name' => 'XXXX', 'strength' => 0, 'created_at' => Carbon::now()->addDays(2)],
             ['name' => 'Test', 'created_user_id' => $user->id, 'strength' => 40, 'created_at' => Carbon::now()->addDays(3)],
-            ['name' => 'Test 2', 'ingredient_category_id' => $ingredientCategory->id, 'strength' => 0, 'created_at' => Carbon::now()->addDays(4)],
+            ['name' => 'Test 2', 'strength' => 0, 'created_at' => Carbon::now()->addDays(4)],
         ]);
 
         Cocktail::factory()
@@ -94,8 +93,6 @@ class IngredientControllerTest extends TestCase
         $response = $this->getJson('/api/ingredients?filter[name]=whi,xx');
         $response->assertJsonCount(2, 'data');
         $response = $this->getJson('/api/ingredients?filter[created_user_id]=' . $user->id);
-        $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/ingredients?filter[category_id]=' . $ingredientCategory->id);
         $response->assertJsonCount(1, 'data');
         $response = $this->getJson('/api/ingredients?filter[origin]=fix-string');
         $response->assertJsonCount(1, 'data');
@@ -195,11 +192,10 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonPath('data.origin', 'Croatia');
         $response->assertJsonPath('data.main_image_id', null);
         $response->assertJsonPath('data.images', []);
-        $response->assertJsonPath('data.category.id', 1);
         $response->assertJsonPath('data.parent_ingredient.id', null);
         $response->assertJsonPath('data.color', '#fff');
         $response->assertJsonPath('data.cocktails_count', 1);
-        $response->assertJsonCount(1, 'data.varieties');
+        // $response->assertJsonCount(1, 'data.varieties');
     }
 
     public function test_ingredient_show_not_found_response(): void

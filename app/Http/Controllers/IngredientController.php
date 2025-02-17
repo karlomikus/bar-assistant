@@ -118,7 +118,7 @@ class IngredientController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(IngredientService $ingredientService, IngredientRequest $request): JsonResponse
+    public function store(IngredientRepository $ingredientQuery, IngredientService $ingredientService, IngredientRequest $request): JsonResponse
     {
         Validator::make($request->all(), [
             'complex_ingredient_part_ids' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
@@ -132,6 +132,8 @@ class IngredientController extends Controller
         $ingredient = $ingredientService->createIngredient(
             IngredientDTO::fromIlluminateRequest($request, bar()->id)
         );
+
+        $ingredient = $ingredientQuery->loadHierarchy(collect([$ingredient]))->first();
 
         return (new IngredientResource($ingredient))
             ->response()
@@ -152,7 +154,7 @@ class IngredientController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(IngredientService $ingredientService, IngredientRequest $request, int $id): JsonResource
+    public function update(IngredientRepository $ingredientQuery, IngredientService $ingredientService, IngredientRequest $request, int $id): JsonResource
     {
         $ingredient = Ingredient::findOrFail($id);
 
@@ -169,6 +171,8 @@ class IngredientController extends Controller
             $id,
             IngredientDTO::fromIlluminateRequest($request, $ingredient->bar_id)
         );
+
+        $ingredient = $ingredientQuery->loadHierarchy(collect([$ingredient]))->first();
 
         return new IngredientResource($ingredient);
     }

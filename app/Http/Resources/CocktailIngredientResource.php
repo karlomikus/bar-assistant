@@ -53,6 +53,7 @@ class CocktailIngredientResource extends JsonResource
                 $this->ingredient->relationLoaded('ingredientParts'),
                 fn () => $this->ingredient->barHasInShelfAsComplexIngredient()
             ),
+            'in_bar_shelf_as_variant' => $this->ingredient->getDescendants(),
         ];
     }
 }
