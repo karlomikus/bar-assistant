@@ -30,6 +30,7 @@ use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest as CocktailDTO;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientRequest as IngredientDTO;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientSubstituteRequest as SubstituteDTO;
+use Kami\Cocktail\Repository\IngredientRepository;
 
 class CocktailController extends Controller
 {
@@ -94,17 +95,25 @@ class CocktailController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function show(string $idOrSlug, Request $request): JsonResource
+    public function show(string $idOrSlug, Request $request, IngredientRepository $ingredientQuery): JsonResource
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)
             ->withRatings($request->user()->id)
-            ->firstOrFail()
-            ->load(['ingredients.ingredient.ingredientParts', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings']);
+            ->firstOrFail();
 
         if ($request->user()->cannot('show', $cocktail)) {
             abort(403);
         }
+
+        $cocktail->load(['ingredients.ingredient.ingredientParts', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings', 'ingredients.ingredient.bar.ingredients']);
+
+        $descendants = $ingredientQuery->getDescendants($cocktail->ingredients->pluck('ingredient_id')->toArray())->groupBy('_root_id');
+        $cocktail->ingredients->map(function ($ci) use ($descendants) {
+            $ci->ingredient->setDescendants($descendants->get($ci->ingredient_id, collect()));
+
+            return $ci;
+        });
 
         return new CocktailResource($cocktail);
     }

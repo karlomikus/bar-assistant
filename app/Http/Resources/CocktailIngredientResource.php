@@ -27,6 +27,7 @@ class CocktailIngredientResource extends JsonResource
             'optional' => (bool) $this->optional,
             'ingredient' => new IngredientBasicResource($this->ingredient),
             'substitutes' => CocktailIngredientSubstituteResource::collection($this->whenLoaded('substitutes')),
+            'variants_in_shelf' => $this->when($this->ingredient->hasLoadedDescendants(), fn () => IngredientBasicResource::collection($this->ingredient->barShelfVariants())),
             'note' => $this->note,
             'formatted' => new AmountFormats($this->resource),
             'in_shelf' => $this->when(
@@ -52,6 +53,10 @@ class CocktailIngredientResource extends JsonResource
             'in_bar_shelf_as_complex_ingredient' => $this->when(
                 $this->ingredient->relationLoaded('ingredientParts'),
                 fn () => $this->ingredient->barHasInShelfAsComplexIngredient()
+            ),
+            'in_bar_shelf_as_variant' => $this->when(
+                $this->ingredient->hasLoadedDescendants(),
+                fn () => $this->ingredient->barShelfVariants()->count() > 0
             ),
         ];
     }

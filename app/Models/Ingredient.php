@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Exception;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Kami\Cocktail\Models\ValueObjects\MaterializedPath;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use InvalidArgumentException;
 
 class Ingredient extends Model implements UploadableInterface, IsExternalized
 {
@@ -409,6 +411,11 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         return $this;
     }
 
+    public function hasLoadedDescendants(): bool
+    {
+        return $this->descendants !== null;
+    }
+
     /**
      * @param Collection<array-key, self> $ancestors
      */
@@ -441,6 +448,17 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         }
 
         return $this->ancestors;
+    }
+
+    /**
+     * @return Collection<array-key, self>
+     */
+    public function barShelfVariants(): Collection
+    {
+        $descendantIds = $this->getDescendants()->pluck('id');
+        $shelfIngredientIds = $this->bar->shelfIngredients->pluck('ingredient_id');
+
+        return $this->getDescendants()->whereIn('id', $descendantIds->intersect($shelfIngredientIds));
     }
 
     /**

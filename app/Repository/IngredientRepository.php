@@ -83,6 +83,18 @@ readonly class IngredientRepository
 
     /**
      * @param array<int> $ingredientIds
+     * @return Collection<array-key, Ingredient>
+     */
+    public function getDescendants(array $ingredientIds): Collection
+    {
+        return Ingredient::select('ingredients.id AS _root_id', 'descendant.*')
+            ->join('ingredients AS descendant', DB::raw("('/' || descendant.materialized_path || '/')"), 'LIKE', DB::raw("'%/' || ingredients.id || '/%'"))
+            ->whereIn('ingredients.id', $ingredientIds)
+            ->get();
+    }
+
+    /**
+     * @param array<int> $ingredientIds
      * @return array<int, object>
      */
     public function getIngredientsForPossibleCocktails(int $barId, array $ingredientIds): array
