@@ -462,6 +462,17 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     }
 
     /**
+     * @return Collection<array-key, self>
+     */
+    public function userShelfVariants(User $user): Collection
+    {
+        $descendantIds = $this->getDescendants()->pluck('id');
+        $shelfIngredientIds = $user->getShelfIngredients($this->bar_id)->pluck('ingredient_id');
+
+        return $this->getDescendants()->whereIn('id', $descendantIds->intersect($shelfIngredientIds))->sortBy('name');
+    }
+
+    /**
      * Sets parent ID and complete materialized path for the ingredient
      * Does not save the ingredient
      * Will throw exception if the ingredient has too many descendants

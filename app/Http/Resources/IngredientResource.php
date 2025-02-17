@@ -52,7 +52,9 @@ class IngredientResource extends JsonResource
                 'can_delete' => $request->user()->can('delete', $this->resource),
             ]),
             'in_shelf' => $this->userHasInShelf($request->user()),
+            'in_shelf_as_variant' => $this->userShelfVariants($request->user())->count() > 0,
             'in_bar_shelf' => $this->barHasInShelf(),
+            'in_bar_shelf_as_variant' => $this->barShelfVariants()->count() > 0,
             'in_shopping_list' => $this->userHasInShoppingList($request->user()),
             'used_as_substitute_for' => $this->when(
                 $this->relationLoaded('cocktailIngredientSubstitutes'),

@@ -34,6 +34,10 @@ class CocktailIngredientResource extends JsonResource
                 $this->relationLoaded('ingredient'),
                 fn () => $this->ingredient->userHasInShelf($request->user())
             ),
+            'in_shelf_as_variant' => $this->when(
+                $this->ingredient->hasLoadedDescendants(),
+                fn () => $this->ingredient->userShelfVariants($request->user())->count() > 0
+            ),
             'in_shelf_as_substitute' => $this->when(
                 $this->relationLoaded('substitutes'),
                 fn () => $this->userHasInShelfAsSubstitute($request->user())
