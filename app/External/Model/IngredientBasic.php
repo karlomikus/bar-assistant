@@ -16,7 +16,6 @@ readonly class IngredientBasic implements SupportsDraft2, SupportsDataPack
         public float $strength = 0.0,
         public ?string $description = null,
         public ?string $origin = null,
-        public ?string $category = null,
     ) {
     }
 
@@ -28,7 +27,6 @@ readonly class IngredientBasic implements SupportsDraft2, SupportsDataPack
             $model->strength,
             $model->description,
             $model->origin,
-            $model->category?->name
         );
     }
 
@@ -40,7 +38,6 @@ readonly class IngredientBasic implements SupportsDraft2, SupportsDataPack
             $sourceArray['strength'] ?? 0.0,
             $sourceArray['description'] ?? null,
             $sourceArray['origin'] ?? null,
-            $sourceArray['category'] ?? null,
         );
     }
 
@@ -52,7 +49,6 @@ readonly class IngredientBasic implements SupportsDraft2, SupportsDataPack
             'strength' => $this->strength,
             'description' => $this->description,
             'origin' => $this->origin,
-            'category' => $this->category,
         ];
     }
 

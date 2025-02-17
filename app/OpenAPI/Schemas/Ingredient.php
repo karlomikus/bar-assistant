@@ -43,9 +43,6 @@ class Ingredient
     #[OAT\Property(example: '#ffffff')]
     public string $color;
 
-    #[OAT\Property()]
-    public ?IngredientCategory $category = null;
-
     #[OAT\Property(property: 'cocktails_count', example: 12)]
     public int $cocktailsCount;
 

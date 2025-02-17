@@ -87,7 +87,6 @@ class IngredientController extends Controller
             'updatedUser',
             'ingredientParts.ingredient',
             'prices.priceCategory',
-            'category',
             'cocktailIngredientSubstitutes.cocktailIngredient.ingredient'
         )
             ->withCount('cocktails')

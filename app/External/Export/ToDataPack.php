@@ -102,7 +102,7 @@ class ToDataPack
     {
         $ingredients = Ingredient::with(['images' => function ($query) {
             $query->orderBy('sort');
-        }, 'calculator', 'category', 'prices', 'ingredientParts'])->where('bar_id', $barId)->get();
+        }, 'calculator', 'prices', 'ingredientParts'])->where('bar_id', $barId)->get();
 
         /** @var Ingredient $ingredient */
         foreach ($ingredients as $ingredient) {

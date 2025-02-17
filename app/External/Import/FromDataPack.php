@@ -53,7 +53,6 @@ class FromDataPack
             'glasses' => 'base_glasses.json',
             'cocktail_methods' => 'base_methods.json',
             'utensils' => 'base_utensils.json',
-            'ingredient_categories' => 'base_ingredient_categories.json',
             'price_categories' => 'base_price_categories.json',
         ];
 
@@ -82,7 +81,7 @@ class FromDataPack
         $bar->setStatus(BarStatusEnum::Active)->save();
 
         /** @phpstan-ignore-next-line */
-        Ingredient::where('bar_id', $bar->id)->with('category', 'images')->searchable();
+        Ingredient::where('bar_id', $bar->id)->with('images')->searchable();
         /** @phpstan-ignore-next-line */
         Cocktail::where('bar_id', $bar->id)->with('ingredients.ingredient', 'tags', 'images')->searchable();
 
@@ -167,7 +166,6 @@ class FromDataPack
 
     private function importIngredients(Filesystem $dataDisk, Bar $bar, User $user): void
     {
-        $categories = DB::table('ingredient_categories')->select('id', 'name')->where('bar_id', $bar->id)->get();
         $existingIngredients = DB::table('ingredients')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(function ($ingredient) {
             return Str::slug($ingredient->name);
         });
@@ -187,13 +185,11 @@ class FromDataPack
                 continue;
             }
 
-            $category = $categories->firstWhere('name', $externalIngredient->category);
             $slug = $externalIngredient->id . '-' . $bar->id;
             $ingredientsToInsert[] = [
                 'bar_id' => $bar->id,
                 'slug' => $slug,
                 'name' => $externalIngredient->name,
-                'ingredient_category_id' => $category?->id,
                 'strength' => $externalIngredient->strength,
                 'description' => $externalIngredient->description,
                 'origin' => $externalIngredient->origin,

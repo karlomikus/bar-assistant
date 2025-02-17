@@ -69,7 +69,7 @@ class ToRecipeType
         $cocktails = Cocktail::with([
             'ingredients.ingredient',
             'ingredients.substitutes.ingredient',
-            'ingredients.ingredient.category',
+            'ingredients.ingredient',
             'images.imageable',
             'glass',
             'method',

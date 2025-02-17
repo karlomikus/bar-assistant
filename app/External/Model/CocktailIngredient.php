@@ -69,7 +69,6 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
                 'strength' => $sourceArray['strength'] ?? 0.0,
                 'description' => $sourceArray['description'] ?? null,
                 'origin' => $sourceArray['origin'] ?? null,
-                'category' => $sourceArray['category'] ?? null,
             ]),
             new AmountValueObject(
                 $sourceArray['amount'] ?? 0.0,

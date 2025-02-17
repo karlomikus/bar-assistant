@@ -309,7 +309,7 @@ class CocktailController extends Controller
             ->firstOrFail()
             ->load(['ingredients.ingredient', 'images' => function ($query) {
                 $query->orderBy('sort');
-            }, 'ingredients.substitutes', 'ingredients.ingredient.category']);
+            }, 'ingredients.substitutes', 'ingredients.ingredient']);
 
         if ($request->user()->cannot('show', $cocktail)) {
             abort(403);

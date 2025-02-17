@@ -49,7 +49,6 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         'history',
         'origin',
         'color',
-        'ingredient_category_id',
         'parent_ingredient_id',
     ];
 
@@ -78,14 +77,6 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     public function getExternalId(): string
     {
         return Str::slug($this->name);
-    }
-
-    /**
-     * @return BelongsTo<IngredientCategory, $this>
-     */
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(IngredientCategory::class, 'ingredient_category_id', 'id');
     }
 
     /**
@@ -275,7 +266,7 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
      */
     public function makeSearchableUsing(Collection $models): Collection
     {
-        return $models->load('category', 'images');
+        return $models->load('images');
     }
 
     /**
