@@ -458,7 +458,7 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         $descendantIds = $this->getDescendants()->pluck('id');
         $shelfIngredientIds = $this->bar->shelfIngredients->pluck('ingredient_id');
 
-        return $this->getDescendants()->whereIn('id', $descendantIds->intersect($shelfIngredientIds));
+        return $this->getDescendants()->whereIn('id', $descendantIds->intersect($shelfIngredientIds))->sortBy('name');
     }
 
     /**

@@ -85,11 +85,13 @@ readonly class IngredientRepository
      * @param array<int> $ingredientIds
      * @return Collection<array-key, Ingredient>
      */
-    public function getDescendants(array $ingredientIds): Collection
+    public function getDescendants(array $ingredientIds, int $limit = 50): Collection
     {
         return Ingredient::select('ingredients.id AS _root_id', 'descendant.*')
             ->join('ingredients AS descendant', DB::raw("('/' || descendant.materialized_path || '/')"), 'LIKE', DB::raw("'%/' || ingredients.id || '/%'"))
             ->whereIn('ingredients.id', $ingredientIds)
+            ->limit($limit)
+            ->orderBy('ingredients.name')
             ->get();
     }
 
