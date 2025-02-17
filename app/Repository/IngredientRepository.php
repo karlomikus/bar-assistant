@@ -39,32 +39,25 @@ readonly class IngredientRepository
      */
     public function loadHierarchy(Collection $ingredients): Collection
     {
-        $onlyRootIngredients = $ingredients->filter(fn ($ingredient) => $ingredient->isRoot());
-
-        // Collect all descendants without root ingredients
-        $ingredientDescendants = Ingredient::select('ingredients.id as _root_id', 'descendant.*')
-            ->join('ingredients AS descendant', 'descendant.materialized_path', 'LIKE', DB::raw("ingredients.id || '/%'"))
-            ->whereNull('ingredients.parent_ingredient_id')
-            ->whereIn('ingredients.id', $onlyRootIngredients->pluck('id'))
-            ->get();
-
-        $ingredientAncestors = Ingredient::select('ingredients.id as leaf_id', 'ancestor.*')
-            ->join('ingredients AS ancestor', DB::raw("instr('/' || ingredients.materialized_path || '/', '/' || ancestor.id || '/')"), '>', DB::raw('0'))
-            ->whereIn('ingredients.id', $ingredients->pluck('id'))
-            ->whereNotNull('ingredients.materialized_path')
-            ->orderBy('leaf_id')
-            ->orderBy('ancestor.id')
-            ->get();
+        $ingredientDescendants = $this->getDescendants($ingredients->pluck('id')->toArray());
+        $ingredientAncestors = $this->getAncestors($ingredients->pluck('id')->toArray());
 
         // Manually set eloquent relations
         $ingredients->map(function ($ingredient) use ($ingredientDescendants, $ingredientAncestors) {
             $descendants = $ingredientDescendants->filter(function ($possibleDescendant) use ($ingredient) {
-                return $possibleDescendant->isDescendantOf($ingredient);
+                return $possibleDescendant['_root_id'] === $ingredient->id;
+            })->sort(function ($a, $b) use ($ingredient) {
+                // Sort by position in materialized path
+                $path = $ingredient->getMaterializedPath()->toArray();
+                $posA = (int) array_search($a['id'], $path);
+                $posB = (int) array_search($b['id'], $path);
+
+                return $posA - $posB;
             });
             $ingredient->setDescendants($descendants);
 
             $ancestors = $ingredientAncestors->filter(function ($possibleAncestor) use ($ingredient) {
-                return $possibleAncestor['leaf_id'] === $ingredient->id;
+                return $possibleAncestor['_leaf_id'] === $ingredient->id;
             })->sort(function ($a, $b) use ($ingredient) {
                 // Sort by position in materialized path
                 $path = $ingredient->getMaterializedPath()->toArray();
@@ -92,6 +85,22 @@ readonly class IngredientRepository
             ->whereIn('ingredients.id', $ingredientIds)
             ->limit($limit)
             ->orderBy('ingredients.name')
+            ->get();
+    }
+
+    /**
+     * @param array<int> $ingredientIds
+     * @return Collection<array-key, Ingredient>
+     */
+    public function getAncestors(array $ingredientIds, int $limit = 50): Collection
+    {
+        return Ingredient::select('ingredients.id as _leaf_id', 'ancestor.*')
+            ->join('ingredients AS ancestor', DB::raw("instr('/' || ingredients.materialized_path || '/', '/' || ancestor.id || '/')"), '>', DB::raw('0'))
+            ->whereIn('ingredients.id', $ingredientIds)
+            ->whereNotNull('ingredients.materialized_path')
+            ->limit($limit)
+            ->orderBy('ingredients.name')
+            ->orderBy('_leaf_id')
             ->get();
     }
 
