@@ -35,6 +35,11 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     use HasBarAwareScope;
     use HasAuthors;
 
+    /** @var Collection<array-key, self> */
+    private ?Collection $descendants = null;
+    /** @var Collection<array-key, self> */
+    private ?Collection $ancestors = null;
+
     protected $fillable = [
         'name',
         'strength',
@@ -106,18 +111,9 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     }
 
     /**
-     * // TODO Rename
      * @return HasMany<Ingredient, $this>
      */
-    public function varieties(): HasMany
-    {
-        return $this->hasMany(Ingredient::class, 'parent_ingredient_id', 'id');
-    }
-
-    /**
-     * @return HasMany<Ingredient, $this>
-     */
-    public function ancestors(): HasMany
+    public function children(): HasMany
     {
         return $this->hasMany(Ingredient::class, 'parent_ingredient_id', 'id');
     }
@@ -177,9 +173,33 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         return $items->contains('ingredient_id', $this->id);
     }
 
+    public function userHasInShelfAsComplexIngredient(User $user): bool
+    {
+        $requiredIngredientIds = $this->ingredientParts->pluck('ingredient_id');
+        if ($requiredIngredientIds->isEmpty()) {
+            return false;
+        }
+
+        $shelfIngredients = $user->getShelfIngredients($this->bar_id)->pluck('ingredient_id');
+
+        return $requiredIngredientIds->every(fn ($id) => $shelfIngredients->contains($id));
+    }
+
     public function barHasInShelf(): bool
     {
         return $this->bar->shelfIngredients->contains('ingredient_id', $this->id);
+    }
+
+    public function barHasInShelfAsComplexIngredient(): bool
+    {
+        $requiredIngredientIds = $this->ingredientParts->pluck('ingredient_id');
+        if ($requiredIngredientIds->isEmpty()) {
+            return false;
+        }
+
+        $currentShelf = $this->bar->shelfIngredients->pluck('ingredient_id');
+
+        return $requiredIngredientIds->every(fn ($id) => $currentShelf->contains($id));
     }
 
     public function userHasInShoppingList(User $user): bool
@@ -187,23 +207,6 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         $items = $user->getShoppingListIngredients($this->bar_id);
 
         return $items->contains('ingredient_id', $this->id);
-    }
-
-    /**
-     * @return Collection<int, Ingredient>
-     */
-    public function getAllRelatedIngredients(): Collection
-    {
-        // This creates "Related" group of the ingredients "on-the-fly"
-        if ($this->parent_ingredient_id !== null) {
-            return $this->parentIngredient
-                ->varieties
-                ->sortBy('name')
-                ->filter(fn ($ing) => $ing->id !== $this->id)
-                ->push($this->parentIngredient);
-        }
-
-        return $this->varieties;
     }
 
     /**
@@ -255,7 +258,7 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
 
     public function delete(): ?bool
     {
-        $this->varieties->each(function (Ingredient $child) {
+        $this->children->each(function (Ingredient $child) {
             $child->appendAsChildOf(null);
         });
 
@@ -394,6 +397,50 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
             // ->addSelect(DB::raw('COALESCE(GROUP_CONCAT(ancestor.name, \' > \') OVER (ORDER BY INSTR(\'/\' || ingredients.materialized_path || \'/\', \'/\' || ancestor.id || \'/\')), null) AS path_ancestors'))
             ->leftJoin('ingredients AS ancestor', DB::raw("('/' || ingredients.materialized_path || '/')"), 'LIKE', DB::raw("'%/' || ancestor.id || '/%'"))
             ->groupBy('ingredients.id');
+    }
+
+    /**
+     * @param Collection<array-key, self> $descendants
+     */
+    public function setDescendants(Collection $descendants): self
+    {
+        $this->descendants = $descendants;
+
+        return $this;
+    }
+
+    /**
+     * @param Collection<array-key, self> $ancestors
+     */
+    public function setAncestors(Collection $ancestors): self
+    {
+        $this->ancestors = $ancestors;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getDescendants()
+    {
+        if ($this->descendants === null) {
+            throw new \Exception('Descendants are not loaded. Use loadHierarchy() to load them.');
+        }
+
+        return $this->descendants;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getAncestors()
+    {
+        if ($this->ancestors === null) {
+            throw new \Exception('Ancestors not loaded');
+        }
+
+        return $this->ancestors;
     }
 
     /**

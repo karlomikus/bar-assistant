@@ -37,7 +37,7 @@ readonly class IngredientRepository
      * @param Collection<int, Ingredient> $ingredients
      * @return Collection<int, mixed>
      */
-    public function addHierarchyDataToIngredients(Collection $ingredients): Collection
+    public function loadHierarchy(Collection $ingredients): Collection
     {
         $onlyRootIngredients = $ingredients->filter(fn ($ingredient) => $ingredient->isRoot());
 
@@ -61,7 +61,7 @@ readonly class IngredientRepository
             $descendants = $ingredientDescendants->filter(function ($possibleDescendant) use ($ingredient) {
                 return $possibleDescendant->isDescendantOf($ingredient);
             });
-            $ingredient->setRelation('varieties', $descendants);
+            $ingredient->setDescendants($descendants);
 
             $ancestors = $ingredientAncestors->filter(function ($possibleAncestor) use ($ingredient) {
                 return $possibleAncestor['leaf_id'] === $ingredient->id;
@@ -73,7 +73,7 @@ readonly class IngredientRepository
 
                 return $posA - $posB;
             });
-            $ingredient->setRelation('ancestors', $ancestors);
+            $ingredient->setAncestors($ancestors);
 
             return $ingredient;
         });

@@ -61,7 +61,7 @@ class IngredientController extends Controller
             /** @var \Illuminate\Pagination\LengthAwarePaginator<Ingredient> */
             $ingredients = (new IngredientQueryFilter($ingredientQuery))->paginate($request->get('per_page', 50));
             // Manually set relations to avoid n+1 eager loading
-            $ingredients->setCollection($ingredientQuery->addHierarchyDataToIngredients($ingredients->getCollection()));
+            $ingredients->setCollection($ingredientQuery->loadHierarchy($ingredients->getCollection()));
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }
@@ -82,7 +82,6 @@ class IngredientController extends Controller
         $ingredient = Ingredient::with(
             'cocktails',
             'images',
-            'varieties',
             'parentIngredient',
             'createdUser',
             'updatedUser',
@@ -96,7 +95,7 @@ class IngredientController extends Controller
             ->orWhere('slug', $id)
             ->firstOrFail();
 
-        $ingredient = $ingredientQuery->addHierarchyDataToIngredients(collect([$ingredient]))->first();
+        $ingredient = $ingredientQuery->loadHierarchy(collect([$ingredient]))->first();
 
         if ($request->user()->cannot('show', $ingredient)) {
             abort(403);
