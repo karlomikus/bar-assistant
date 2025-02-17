@@ -26,7 +26,6 @@ class CocktailIngredientSubstituteResource extends JsonResource
             'units' => $this->units,
             'in_shelf' => $this->userHasInShelf($request->user()),
             'in_bar_shelf' => $this->barHasInShelf(),
-            'as_variant' => $this->id === null,
         ];
     }
 }

@@ -24,6 +24,7 @@ use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasRating;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Concerns\IsExternalized;
+use Kami\Cocktail\Repository\IngredientRepository;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -401,5 +402,17 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
         }
 
         return $totalPrice->to(new DefaultContext(), RoundingMode::DOWN);
+    }
+
+    public function loadDescendants(IngredientRepository $ingredientQuery): self
+    {
+        $descendants = $ingredientQuery->getDescendants($this->ingredients->pluck('ingredient_id')->toArray())->groupBy('_root_id');
+        $this->ingredients->map(function ($ci) use ($descendants) {
+            $ci->ingredient->setDescendants($descendants->get($ci->ingredient_id, collect()));
+
+            return $ci;
+        });
+
+        return $this;
     }
 }

@@ -107,13 +107,7 @@ class CocktailController extends Controller
         }
 
         $cocktail->load(['ingredients.ingredient.ingredientParts', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings', 'ingredients.ingredient.bar.ingredients']);
-
-        $descendants = $ingredientQuery->getDescendants($cocktail->ingredients->pluck('ingredient_id')->toArray())->groupBy('_root_id');
-        $cocktail->ingredients->map(function ($ci) use ($descendants) {
-            $ci->ingredient->setDescendants($descendants->get($ci->ingredient_id, collect()));
-
-            return $ci;
-        });
+        $cocktail->loadDescendants($ingredientQuery);
 
         return new CocktailResource($cocktail);
     }
@@ -133,7 +127,7 @@ class CocktailController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\ValidationFailedResponse]
-    public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
+    public function store(CocktailService $cocktailService, CocktailRequest $request, IngredientRepository $ingredientQuery): JsonResponse
     {
         Validator::make($request->input('ingredients', []), [
             '*.ingredient_id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
@@ -151,7 +145,8 @@ class CocktailController extends Controller
             abort(500, $e->getMessage());
         }
 
-        $cocktail->load(['ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings']);
+        $cocktail->load(['ingredients.ingredient.ingredientParts', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings', 'ingredients.ingredient.bar.ingredients']);
+        $cocktail->loadDescendants($ingredientQuery);
 
         return (new CocktailResource($cocktail))
             ->response()
@@ -173,7 +168,7 @@ class CocktailController extends Controller
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     #[BAO\ValidationFailedResponse]
-    public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): JsonResource
+    public function update(CocktailService $cocktailService, CocktailRequest $request, int $id, IngredientRepository $ingredientQuery): JsonResource
     {
         $cocktail = Cocktail::findOrFail($id);
 
@@ -196,6 +191,7 @@ class CocktailController extends Controller
         $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
             $query->orderBy('sort');
         }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
+        $cocktail->loadDescendants($ingredientQuery);
 
         return new CocktailResource($cocktail);
     }
