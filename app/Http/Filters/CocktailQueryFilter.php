@@ -220,7 +220,7 @@ final class CocktailQueryFilter extends QueryBuilder
             })
             ->groupBy('cocktails.id')
             ->filterByBar('cocktails')
-            ->with('bar.shelfIngredients')
+            ->with(['bar.shelfIngredients', 'ingredients.ingredient.bar'])
             ->withRatings($this->request->user()->id);
     }
 }

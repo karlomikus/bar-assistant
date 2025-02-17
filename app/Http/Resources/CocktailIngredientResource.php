@@ -27,16 +27,32 @@ class CocktailIngredientResource extends JsonResource
             'optional' => (bool) $this->optional,
             'ingredient' => new IngredientBasicResource($this->ingredient),
             'substitutes' => CocktailIngredientSubstituteResource::collection($this->whenLoaded('substitutes')),
-            // 'varieties' => IngredientBasicResource::collection($this->ingredient->queryDescendants()->get()),
-            'varieties' => [],
             'note' => $this->note,
             'formatted' => new AmountFormats($this->resource),
-            'in_shelf' => $this->when($this->relationLoaded('substitutes'), fn () => $this->ingredient->userHasInShelf($request->user())),
-            'in_shelf_as_substitute' => $this->when($this->relationLoaded('substitutes'), fn () => $this->userHasInShelfAsSubstitute($request->user())),
-            'in_shelf_as_complex_ingredient' => $this->when($this->relationLoaded('substitutes'), fn () => $this->ingredient->userHasInShelfAsComplexIngredient($request->user())),
-            'in_bar_shelf' => $this->when($this->relationLoaded('substitutes'), fn () => $this->ingredient->barHasInShelf()),
-            'in_bar_shelf_as_substitute' => $this->when($this->relationLoaded('substitutes'), fn () => $this->barHasInShelfAsSubstitute()),
-            'in_bar_shelf_as_complex_ingredient' => $this->when($this->relationLoaded('substitutes'), fn () => $this->ingredient->barHasInShelfAsComplexIngredient()),
+            'in_shelf' => $this->when(
+                $this->relationLoaded('ingredient'),
+                fn () => $this->ingredient->userHasInShelf($request->user())
+            ),
+            'in_shelf_as_substitute' => $this->when(
+                $this->relationLoaded('substitutes'),
+                fn () => $this->userHasInShelfAsSubstitute($request->user())
+            ),
+            'in_shelf_as_complex_ingredient' => $this->when(
+                $this->ingredient->relationLoaded('ingredientParts'),
+                fn () => $this->ingredient->userHasInShelfAsComplexIngredient($request->user())
+            ),
+            'in_bar_shelf' => $this->when(
+                $this->relationLoaded('ingredient'),
+                fn () => $this->ingredient->barHasInShelf()
+            ),
+            'in_bar_shelf_as_substitute' => $this->when(
+                $this->relationLoaded('substitutes'),
+                fn () => $this->barHasInShelfAsSubstitute()
+            ),
+            'in_bar_shelf_as_complex_ingredient' => $this->when(
+                $this->ingredient->relationLoaded('ingredientParts'),
+                fn () => $this->ingredient->barHasInShelfAsComplexIngredient()
+            ),
         ];
     }
 }

@@ -100,7 +100,7 @@ class CocktailController extends Controller
             ->orWhere('id', $idOrSlug)
             ->withRatings($request->user()->id)
             ->firstOrFail()
-            ->load(['ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings']);
+            ->load(['ingredients.ingredient.ingredientParts', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings']);
 
         if ($request->user()->cannot('show', $cocktail)) {
             abort(403);
