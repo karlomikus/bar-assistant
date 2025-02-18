@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Exception;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
@@ -19,13 +18,14 @@ use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Concerns\IsExternalized;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
+use Kami\Cocktail\Models\Relations\HasManyAncestors;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Kami\Cocktail\Exceptions\IngredientMoveException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Kami\Cocktail\Models\Relations\HasManyDescendants;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Kami\Cocktail\Models\ValueObjects\MaterializedPath;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use InvalidArgumentException;
 
 class Ingredient extends Model implements UploadableInterface, IsExternalized
 {
@@ -36,11 +36,6 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     use HasSlug;
     use HasBarAwareScope;
     use HasAuthors;
-
-    /** @var Collection<array-key, self> */
-    private ?Collection $descendants = null;
-    /** @var Collection<array-key, self> */
-    private ?Collection $ancestors = null;
 
     protected $fillable = [
         'name',
@@ -109,6 +104,22 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     public function children(): HasMany
     {
         return $this->hasMany(Ingredient::class, 'parent_ingredient_id', 'id');
+    }
+
+    /**
+     * @return HasManyDescendants<$this, $this>
+     */
+    public function descendants(): HasManyDescendants
+    {
+        return new HasManyDescendants(self::query(), $this, 'materialized_path', 'id');
+    }
+
+    /**
+     * @return HasManyAncestors<$this, $this>
+     */
+    public function ancestors(): HasManyAncestors
+    {
+        return new HasManyAncestors(self::query(), $this, 'materialized_path', 'id');
     }
 
     /**
@@ -294,34 +305,6 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         return MaterializedPath::fromString($this->materialized_path);
     }
 
-    /**
-     * Gets pretty print of ancestors added by SQL query via alias
-     *
-     * @return null|string 
-     */
-    public function getPathAncestors(): ?string
-    {
-        return isset($this->path_ancestors) ? $this->path_ancestors : null;
-    }
-
-    /**
-     * @return Builder<self>
-     */
-    public function queryAncestors(): Builder
-    {
-        return $this->newQuery()->whereIn('id', $this->getMaterializedPath()->toArray());
-    }
-
-    /**
-     * @return Builder<self>
-     */
-    public function queryDescendants(): Builder
-    {
-        $pathQuery = $this->getMaterializedPath()->append($this->id)->toStringPath() . '%';
-
-        return $this->newQuery()->whereLike('materialized_path', $pathQuery);
-    }
-
     public function isRoot(): bool
     {
         return $this->parent_ingredient_id === null;
@@ -342,12 +325,11 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         }
 
         $oldPath = $this->materialized_path;
-        $descendants = $this->queryDescendants()->get();
 
         $this->withMaterializedPath($parentIngredient);
         $newPath = $this->materialized_path;
 
-        $descendants->each(function (Ingredient $descendant) use ($oldPath, $newPath) {
+        $this->descendants->each(function (Ingredient $descendant) use ($oldPath, $newPath) {
             if (!blank($oldPath)) {
                 $descendant->materialized_path = str_replace($oldPath, $newPath ?? '', $descendant->materialized_path);
                 $descendant->save();
@@ -363,9 +345,7 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
             return null;
         }
 
-        $pathIngredients = $this->queryAncestors()->get();
-
-        return $pathIngredients->map(fn ($i) => $i->name)->implode(' > ');
+        return $this->ancestors->map(fn ($i) => $i->name)->implode(' > ');
     }
 
     public function isDescendantOf(Ingredient $ingredient): bool
@@ -379,88 +359,25 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     }
 
     /**
-     * @param Builder<self> $query
-     * @return Builder<self>
-     */
-    public function scopeAddPathAncestorsColumn(Builder $query): Builder
-    {
-        // Will work in future sqlite versions
-        return $query
-            ->addSelect('ingredients.*')
-            // ->addSelect(DB::raw('COALESCE(GROUP_CONCAT(ancestor.name, \' > \') OVER (ORDER BY INSTR(\'/\' || ingredients.materialized_path || \'/\', \'/\' || ancestor.id || \'/\')), null) AS path_ancestors'))
-            ->leftJoin('ingredients AS ancestor', DB::raw("('/' || ingredients.materialized_path || '/')"), 'LIKE', DB::raw("'%/' || ancestor.id || '/%'"))
-            ->groupBy('ingredients.id');
-    }
-
-    /**
-     * @param Collection<array-key, self> $descendants
-     */
-    public function setDescendants(Collection $descendants): self
-    {
-        $this->descendants = $descendants;
-
-        return $this;
-    }
-
-    public function hasLoadedDescendants(): bool
-    {
-        return $this->descendants !== null;
-    }
-
-    /**
-     * @param Collection<array-key, self> $ancestors
-     */
-    public function setAncestors(Collection $ancestors): self
-    {
-        $this->ancestors = $ancestors;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, self>
-     */
-    public function getDescendants()
-    {
-        if ($this->descendants === null) {
-            throw new \Exception('Descendants are not loaded. Use loadHierarchy() to load them.');
-        }
-
-        return $this->descendants;
-    }
-
-    /**
-     * @return Collection<int, self>
-     */
-    public function getAncestors()
-    {
-        if ($this->ancestors === null) {
-            throw new \Exception('Ancestors not loaded');
-        }
-
-        return $this->ancestors;
-    }
-
-    /**
-     * @return Collection<array-key, self>
+     * @return Collection<array-key, $this>
      */
     public function barShelfVariants(): Collection
     {
-        $descendantIds = $this->getDescendants()->pluck('id');
+        $descendantIds = $this->descendants->pluck('id');
         $shelfIngredientIds = $this->bar->shelfIngredients->pluck('ingredient_id');
 
-        return $this->getDescendants()->whereIn('id', $descendantIds->intersect($shelfIngredientIds))->sortBy('name');
+        return $this->descendants->whereIn('id', $descendantIds->intersect($shelfIngredientIds))->sortBy('name');
     }
 
     /**
-     * @return Collection<array-key, self>
+     * @return Collection<array-key, $this>
      */
     public function userShelfVariants(User $user): Collection
     {
-        $descendantIds = $this->getDescendants()->pluck('id');
+        $descendantIds = $this->descendants->pluck('id');
         $shelfIngredientIds = $user->getShelfIngredients($this->bar_id)->pluck('ingredient_id');
 
-        return $this->getDescendants()->whereIn('id', $descendantIds->intersect($shelfIngredientIds))->sortBy('name');
+        return $this->descendants->whereIn('id', $descendantIds->intersect($shelfIngredientIds))->sortBy('name');
     }
 
     /**

@@ -106,8 +106,21 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $cocktail->load(['ingredients.ingredient.ingredientParts', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings', 'ingredients.ingredient.bar.ingredients']);
-        $cocktail->loadDescendants($ingredientQuery);
+        $cocktail->load([
+            'ingredients.ingredient.ingredientParts',
+            'images',
+            'tags',
+            'glass',
+            'ingredients.substitutes',
+            'method',
+            'createdUser',
+            'updatedUser',
+            'collections',
+            'utensils',
+            'ratings',
+            'ingredients.ingredient.bar.shelfIngredients',
+            'ingredients.ingredient.descendants',
+        ]);
 
         return new CocktailResource($cocktail);
     }
@@ -146,7 +159,6 @@ class CocktailController extends Controller
         }
 
         $cocktail->load(['ingredients.ingredient.ingredientParts', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings', 'ingredients.ingredient.bar.ingredients']);
-        $cocktail->loadDescendants($ingredientQuery);
 
         return (new CocktailResource($cocktail))
             ->response()
@@ -191,7 +203,6 @@ class CocktailController extends Controller
         $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
             $query->orderBy('sort');
         }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
-        $cocktail->loadDescendants($ingredientQuery);
 
         return new CocktailResource($cocktail);
     }

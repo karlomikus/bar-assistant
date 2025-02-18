@@ -31,50 +31,6 @@ readonly class IngredientRepository
     }
 
     /**
-     * Collect all descendants of the given ingredients and manually set the relation
-     * Used for optimizing the query when querying for ingredients
-     *
-     * @param Collection<int, Ingredient> $ingredients
-     * @return Collection<int, mixed>
-     */
-    public function loadHierarchy(Collection $ingredients): Collection
-    {
-        $ingredientDescendants = $this->getDescendants($ingredients->pluck('id')->toArray());
-        $ingredientAncestors = $this->getAncestors($ingredients->pluck('id')->toArray());
-
-        // Manually set eloquent relations
-        $ingredients->map(function ($ingredient) use ($ingredientDescendants, $ingredientAncestors) {
-            $descendants = $ingredientDescendants->filter(function ($possibleDescendant) use ($ingredient) {
-                return $possibleDescendant['_root_id'] === $ingredient->id;
-            })->sort(function ($a, $b) use ($ingredient) {
-                // Sort by position in materialized path
-                $path = $ingredient->getMaterializedPath()->toArray();
-                $posA = (int) array_search($a['id'], $path);
-                $posB = (int) array_search($b['id'], $path);
-
-                return $posA - $posB;
-            });
-            $ingredient->setDescendants($descendants);
-
-            $ancestors = $ingredientAncestors->filter(function ($possibleAncestor) use ($ingredient) {
-                return $possibleAncestor['_leaf_id'] === $ingredient->id;
-            })->sort(function ($a, $b) use ($ingredient) {
-                // Sort by position in materialized path
-                $path = $ingredient->getMaterializedPath()->toArray();
-                $posA = (int) array_search($a['id'], $path);
-                $posB = (int) array_search($b['id'], $path);
-
-                return $posA - $posB;
-            });
-            $ingredient->setAncestors($ancestors);
-
-            return $ingredient;
-        });
-
-        return $ingredients;
-    }
-
-    /**
      * @param array<int> $ingredientIds
      * @return Collection<array-key, Ingredient>
      */

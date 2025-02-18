@@ -60,8 +60,6 @@ class IngredientController extends Controller
         try {
             /** @var \Illuminate\Pagination\LengthAwarePaginator<Ingredient> */
             $ingredients = (new IngredientQueryFilter($ingredientQuery))->paginate($request->get('per_page', 50));
-            // Manually set relations to avoid n+1 eager loading
-            $ingredients->setCollection($ingredientQuery->loadHierarchy($ingredients->getCollection()));
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }
@@ -77,7 +75,7 @@ class IngredientController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function show(IngredientRepository $ingredientQuery, Request $request, string $id): JsonResource
+    public function show(Request $request, string $id): JsonResource
     {
         $ingredient = Ingredient::with(
             'cocktails',
@@ -87,14 +85,14 @@ class IngredientController extends Controller
             'updatedUser',
             'ingredientParts.ingredient',
             'prices.priceCategory',
-            'cocktailIngredientSubstitutes.cocktailIngredient.ingredient'
+            'cocktailIngredientSubstitutes.cocktailIngredient.ingredient',
+            'descendants',
+            'ancestors'
         )
             ->withCount('cocktails')
             ->where('id', $id)
             ->orWhere('slug', $id)
             ->firstOrFail();
-
-        $ingredient = $ingredientQuery->loadHierarchy(collect([$ingredient]))->first();
 
         if ($request->user()->cannot('show', $ingredient)) {
             abort(403);
@@ -117,7 +115,7 @@ class IngredientController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(IngredientRepository $ingredientQuery, IngredientService $ingredientService, IngredientRequest $request): JsonResponse
+    public function store(IngredientService $ingredientService, IngredientRequest $request): JsonResponse
     {
         Validator::make($request->all(), [
             'complex_ingredient_part_ids' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
@@ -131,8 +129,6 @@ class IngredientController extends Controller
         $ingredient = $ingredientService->createIngredient(
             IngredientDTO::fromIlluminateRequest($request, bar()->id)
         );
-
-        $ingredient = $ingredientQuery->loadHierarchy(collect([$ingredient]))->first();
 
         return (new IngredientResource($ingredient))
             ->response()
@@ -153,7 +149,7 @@ class IngredientController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(IngredientRepository $ingredientQuery, IngredientService $ingredientService, IngredientRequest $request, int $id): JsonResource
+    public function update(IngredientService $ingredientService, IngredientRequest $request, int $id): JsonResource
     {
         $ingredient = Ingredient::findOrFail($id);
 
@@ -170,8 +166,6 @@ class IngredientController extends Controller
             $id,
             IngredientDTO::fromIlluminateRequest($request, $ingredient->bar_id)
         );
-
-        $ingredient = $ingredientQuery->loadHierarchy(collect([$ingredient]))->first();
 
         return new IngredientResource($ingredient);
     }

@@ -403,16 +403,4 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
 
         return $totalPrice->to(new DefaultContext(), RoundingMode::DOWN);
     }
-
-    public function loadDescendants(IngredientRepository $ingredientQuery): self
-    {
-        $descendants = $ingredientQuery->getDescendants($this->ingredients->pluck('ingredient_id')->toArray())->groupBy('_root_id');
-        $this->ingredients->map(function ($ci) use ($descendants) {
-            $ci->ingredient->setDescendants($descendants->get($ci->ingredient_id, collect()));
-
-            return $ci;
-        });
-
-        return $this;
-    }
 }

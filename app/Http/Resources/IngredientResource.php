@@ -30,10 +30,10 @@ class IngredientResource extends JsonResource
             'updated_at' => $this->updated_at?->toAtomString(),
             'materialized_path' => $this->materialized_path,
             'hierarchy' => [
-                'path_to_self' => $this->when($this->whenLoaded('ancestors'), fn () => $this->getAncestors()->pluck('name')->implode(' > ')),
+                'path_to_self' => $this->when($this->whenLoaded('ancestors'), fn () => $this->ancestors->pluck('name')->implode(' > ')),
                 'parent_ingredient' => $this->whenLoaded('parentIngredient', fn () => new IngredientBasicResource($this->parentIngredient)),
-                'descendants' => IngredientBasicResource::collection($this->getDescendants()),
-                'ancestors' => IngredientBasicResource::collection($this->getAncestors()),
+                'descendants' => IngredientBasicResource::collection($this->whenLoaded('descendants')),
+                'ancestors' => IngredientBasicResource::collection($this->whenLoaded('ancestors')),
             ],
             'images' => $this->when(
                 $this->relationLoaded('images'),
