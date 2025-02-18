@@ -12,9 +12,9 @@ use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\IngredientPrice;
 use Kami\Cocktail\Models\ComplexIngredient;
-use Kami\Cocktail\Exceptions\IngredientValidationException;
 use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest;
 use Kami\Cocktail\Exceptions\ImagesNotAttachedException;
+use Kami\Cocktail\Exceptions\IngredientValidationException;
 
 final class IngredientService
 {

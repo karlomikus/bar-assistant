@@ -23,6 +23,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Http\Resources\CocktailResource;
+use Kami\Cocktail\Repository\IngredientRepository;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\CocktailPriceResource;
@@ -30,7 +31,6 @@ use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest as CocktailDTO;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientRequest as IngredientDTO;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientSubstituteRequest as SubstituteDTO;
-use Kami\Cocktail\Repository\IngredientRepository;
 
 class CocktailController extends Controller
 {
