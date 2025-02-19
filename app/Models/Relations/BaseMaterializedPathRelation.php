@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
  */
 abstract class BaseMaterializedPathRelation extends Relation
 {
-    protected string $pathColumn;
+    private string $pathColumn;
 
     /**
      * @param Ingredient $parent In our case the root ingredient
@@ -43,5 +43,10 @@ abstract class BaseMaterializedPathRelation extends Relation
     public function getResults()
     {
         return $this->query->get();
+    }
+
+    protected function getPathColumn(): string
+    {
+        return $this->pathColumn;
     }
 }

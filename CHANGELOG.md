@@ -1,3 +1,12 @@
+# v5.0.0
+
+# Breaking changes
+- Removed ingredient categories
+    - Existing ingredient categories will be migrated to nested ingredient hierarchy
+
+## New
+- Added nested ingredient hierarchy
+
 # v4.4.1
 ## Changes
 - You can now use `*` in `METRICS_ALLOWED_IPS` to allow all IPs

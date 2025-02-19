@@ -16,7 +16,9 @@ class HasManyDescendants extends BaseMaterializedPathRelation
             $query = $this->getRelationQuery();
 
             $query->where(function ($query) {
-                $query->where('materialized_path', 'like', $this->parent->materialized_path . $this->parent->id . '/%');
+                $operatorValue = $this->parent->getMaterializedPath()->append($this->parent->id)->toStringPath();
+
+                $query->where($this->getPathColumn(), 'like', $operatorValue . '%');
             });
         }
     }
@@ -26,8 +28,10 @@ class HasManyDescendants extends BaseMaterializedPathRelation
     {
         $ids = collect($rootIngredients)->pluck('id');
 
+        // Query all possible descendants of the given ingredients
+        // Save the root ingredient of relation as _root_id so we can match it later
         $this->query->select('ingredients.id AS _root_id', 'descendant.*')
-            ->join('ingredients AS descendant', DB::raw("('/' || descendant.materialized_path || '/')"), 'LIKE', DB::raw("'%/' || ingredients.id || '/%'"))
+            ->join('ingredients AS descendant', DB::raw("('/' || descendant." . $this->getPathColumn() . " || '/')"), 'LIKE', DB::raw("'%/' || ingredients.id || '/%'"))
             ->whereIn('ingredients.id', $ids)
             ->get();
     }
