@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema(description: 'Minimal ingredient information', required: ['id', 'slug', 'name'])]
+#[OAT\Schema(description: 'Minimal ingredient information', required: ['id', 'slug', 'name', 'materialized_path'])]
 class IngredientBasic
 {
     #[OAT\Property(example: 1)]
@@ -15,4 +15,6 @@ class IngredientBasic
     public string $slug;
     #[OAT\Property(example: 'Gin')]
     public string $name;
+    #[OAT\Property(example: '1/2/3/', property: 'materialized_path')]
+    public ?string $materializedPath = null;
 }
