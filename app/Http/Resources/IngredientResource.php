@@ -30,7 +30,7 @@ class IngredientResource extends JsonResource
             'updated_at' => $this->updated_at?->toAtomString(),
             'materialized_path' => $this->materialized_path,
             'hierarchy' => [
-                'path_to_self' => $this->when($this->whenLoaded('ancestors'), fn () => $this->ancestors->pluck('name')->implode(' > ')),
+                'path_to_self' => $this->when($this->relationLoaded('ancestors'), fn () => $this->ancestors->pluck('name')->implode(' > ')),
                 'parent_ingredient' => $this->whenLoaded('parentIngredient', fn () => new IngredientBasicResource($this->parentIngredient)),
                 'descendants' => IngredientBasicResource::collection($this->whenLoaded('descendants')),
                 'ancestors' => IngredientBasicResource::collection($this->whenLoaded('ancestors')),
@@ -52,9 +52,9 @@ class IngredientResource extends JsonResource
                 'can_delete' => $request->user()->can('delete', $this->resource),
             ]),
             'in_shelf' => $this->userHasInShelf($request->user()),
-            'in_shelf_as_variant' => $this->userShelfVariants($request->user())->count() > 0,
+            'in_shelf_as_variant' => $this->when($this->relationLoaded('descendants'), fn () => $this->userShelfVariants($request->user())->count() > 0),
             'in_bar_shelf' => $this->barHasInShelf(),
-            'in_bar_shelf_as_variant' => $this->barShelfVariants()->count() > 0,
+            'in_bar_shelf_as_variant' => $this->when($this->relationLoaded('descendants'), fn () => $this->barShelfVariants()->count() > 0),
             'in_shopping_list' => $this->userHasInShoppingList($request->user()),
             'used_as_substitute_for' => $this->when(
                 $this->relationLoaded('cocktailIngredientSubstitutes'),

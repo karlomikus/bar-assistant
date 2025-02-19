@@ -21,7 +21,7 @@ class HasManyAncestors extends BaseMaterializedPathRelation
     /** @inheritDoc */
     public function addEagerConstraints(array $models)
     {
-        $ids = collect($models)->pluck('id');
+        $ids = collect($models)->pluck('id')->unique();
 
         $this->query->select('ingredients.id as _leaf_id', 'ancestor.*')
             ->join('ingredients AS ancestor', DB::raw("instr('/' || ingredients.materialized_path || '/', '/' || ancestor.id || '/')"), '>', DB::raw('0'))
