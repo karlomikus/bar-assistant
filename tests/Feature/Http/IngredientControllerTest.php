@@ -13,7 +13,6 @@ use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\UserShoppingList;
 use Kami\Cocktail\Models\CocktailIngredient;
-use Kami\Cocktail\Models\IngredientCategory;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -214,7 +213,6 @@ class IngredientControllerTest extends TestCase
     public function test_ingredient_store_response(): void
     {
         $this->setupBar();
-        $ingCat = IngredientCategory::factory()->create(['bar_id' => 1]);
 
         $response = $this->postJson('/api/ingredients?bar_id=1', [
             'name' => "Ingredient name",
@@ -222,7 +220,6 @@ class IngredientControllerTest extends TestCase
             'description' => "Description text",
             'origin' => "Worldwide",
             'color' => "#000000",
-            'ingredient_category_id' => $ingCat->id,
             'parent_ingredient_id' => null
         ]);
 
@@ -277,7 +274,6 @@ class IngredientControllerTest extends TestCase
             'description' => "Description text",
             'origin' => "Worldwide",
             'color' => "#000000",
-            'ingredient_category_id' => 1,
             'parent_ingredient_id' => null
         ]);
 

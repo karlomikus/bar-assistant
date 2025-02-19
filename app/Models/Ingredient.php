@@ -105,20 +105,14 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         return $this->hasMany(Ingredient::class, 'parent_ingredient_id', 'id');
     }
 
-    /**
-     * @return HasManyDescendants<$this, $this>
-     */
     public function descendants(): HasManyDescendants
     {
-        return new HasManyDescendants(self::query(), $this, 'materialized_path', 'id');
+        return new HasManyDescendants($this, 'materialized_path');
     }
 
-    /**
-     * @return HasManyAncestors<$this, $this>
-     */
     public function ancestors(): HasManyAncestors
     {
-        return new HasManyAncestors(self::query(), $this, 'materialized_path', 'id');
+        return new HasManyAncestors($this, 'materialized_path');
     }
 
     /**
@@ -261,9 +255,9 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
 
     public function delete(): ?bool
     {
-        $this->children->each(function (Ingredient $child) {
+        foreach ($this->children as $child) {
             $child->appendAsChildOf(null);
-        });
+        }
 
         $this->deleteImages();
 
@@ -309,33 +303,47 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         return $this->parent_ingredient_id === null;
     }
 
-    public function appendAsChildOf(?Ingredient $parentIngredient): void
+    public function appendAsChildOf(?Ingredient $parentIngredient): self
     {
+        // If we're moving to a root parent and we are already root, do nothing
         if ($this->parent_ingredient_id === null && $parentIngredient === null) {
-            return;
+            return $this;
         }
 
+        // If we're moving to a descendant, throw an exception
+        // In future this could be a valid move, but for now we're just going to throw an exception
         if ($parentIngredient && $parentIngredient->isDescendantOf($this)) {
             throw new IngredientMoveException('Cannot move ingredient under its own descendant.');
         }
 
+        // We want hierarchical moves to be atomic, so we need to wrap this in a transaction
         if (!DB::connection()->getPdo()->inTransaction()) {
             Log::warning('Ingredient move called outside of a transaction');
         }
 
+        // Remember the old path so we can use string replace to update descendants
         $oldPath = $this->materialized_path;
-
+        // Remember the original descendants since we will update the path in next step
+        // and this will change our SQL query matching
+        $descendants = $this->descendants;
+        // Update current ingredient materialized path
         $this->withMaterializedPath($parentIngredient);
+        // Set new path that we'll use to update descendants
         $newPath = $this->materialized_path;
 
-        $this->descendants->each(function (Ingredient $descendant) use ($oldPath, $newPath) {
+        foreach ($descendants as $descendant) {
             if (!blank($oldPath)) {
                 $descendant->materialized_path = str_replace($oldPath, $newPath ?? '', $descendant->materialized_path);
                 $descendant->save();
             }
-        });
+        }
 
         $this->save();
+
+        // We need to refresh the parent ingredient to make sure it's relations are up to date
+        $parentIngredient?->refresh();
+
+        return $this;
     }
 
     public function getMaterializedPathAsString(): ?string
@@ -358,7 +366,7 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     }
 
     /**
-     * @return Collection<array-key, $this>
+     * @return Collection<array-key, self>
      */
     public function barShelfVariants(): Collection
     {
@@ -369,7 +377,7 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     }
 
     /**
-     * @return Collection<array-key, $this>
+     * @return Collection<array-key, self>
      */
     public function userShelfVariants(User $user): Collection
     {

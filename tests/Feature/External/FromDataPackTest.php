@@ -63,7 +63,6 @@ class FromDataPackTest extends TestCase
             'description' => 'Description of ingredient',
             'origin' => 'French Guiana',
             'color' => '#b474de',
-            'ingredient_category_id' => 1,
             'created_at' => '1976-01-23T22:25:11+00:00',
             'updated_at' => '1998-01-08T13:41:44+00:00'
         ]);

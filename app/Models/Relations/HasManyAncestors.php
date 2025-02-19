@@ -5,32 +5,24 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models\Relations;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
-/**
- * @template TRelatedModel of \Kami\Cocktail\Models\Ingredient
- * @template TDeclaringModel of \Kami\Cocktail\Models\Ingredient
- *
- * @extends HasMany<TRelatedModel,TDeclaringModel>
- */
-class HasManyAncestors extends HasMany
+class HasManyAncestors extends BaseMaterializedPathRelation
 {
     public function addConstraints()
     {
         if (static::$constraints) {
             $query = $this->getRelationQuery();
 
-            $query->select('ancestor.*')
-                ->join('ingredients AS ancestor', DB::raw("'/' || ingredients.materialized_path || '/'"), 'LIKE', DB::raw("'%/' || ancestor.id || '/%'"))
-                ->where('ingredients.id', $this->getParentKey());
+            $query->whereIn('id', $this->parent->getMaterializedPath()->toArray());
         }
     }
 
     /** @inheritDoc */
     public function addEagerConstraints(array $models)
     {
-        $ids = collect($models)->pluck($this->getLocalKeyName());
+        $ids = collect($models)->pluck('id');
+
         $this->query->select('ingredients.id as _leaf_id', 'ancestor.*')
             ->join('ingredients AS ancestor', DB::raw("instr('/' || ingredients.materialized_path || '/', '/' || ancestor.id || '/')"), '>', DB::raw('0'))
             ->whereIn('ingredients.id', $ids)
