@@ -70,7 +70,6 @@ class ToDataPackTest extends TestCase
         $expectedFiles = [
             '_meta.json',
             'base_glasses.json',
-            'base_ingredient_categories.json',
             'base_methods.json',
             'base_price_categories.json',
             'base_utensils.json',

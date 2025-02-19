@@ -26,7 +26,6 @@ class FromDataPackTest extends TestCase
         ]);
 
         $this->assertDatabaseEmpty('glasses');
-        $this->assertDatabaseEmpty('ingredient_categories');
         $this->assertDatabaseEmpty('cocktail_methods');
         $this->assertDatabaseEmpty('price_categories');
         $this->assertDatabaseEmpty('utensils');
@@ -36,9 +35,6 @@ class FromDataPackTest extends TestCase
 
         $this->assertDatabaseHas('glasses', ['name' => 'glass 1', 'description' => 'glass 1 description']);
         $this->assertDatabaseHas('glasses', ['name' => 'glass 2', 'description' => null]);
-
-        $this->assertDatabaseHas('ingredient_categories', ['name' => 'category 1', 'description' => 'category description']);
-        $this->assertDatabaseHas('ingredient_categories', ['name' => 'category 2', 'description' => null]);
 
         $this->assertDatabaseHas('cocktail_methods', ['name' => 'method 1', 'dilution_percentage' => 15]);
         $this->assertDatabaseHas('cocktail_methods', ['name' => 'method 2', 'dilution_percentage' => 0]);

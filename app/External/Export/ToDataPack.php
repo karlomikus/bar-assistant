@@ -140,7 +140,6 @@ class ToDataPack
             'base_glasses' => DB::table('glasses')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
             'base_methods' => DB::table('cocktail_methods')->select('name', 'dilution_percentage')->where('bar_id', $barId)->get()->toArray(),
             'base_utensils' => DB::table('utensils')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
-            'base_ingredient_categories' => DB::table('ingredient_categories')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
             'base_price_categories' => DB::table('price_categories')->select('name', 'currency', 'description')->where('bar_id', $barId)->get()->toArray(),
         ];
 

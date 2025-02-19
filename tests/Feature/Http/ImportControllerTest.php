@@ -58,7 +58,6 @@ class ImportControllerTest extends TestCase
         $response->assertSuccessful();
 
         $this->assertDatabaseCount('ingredients', 4);
-        $this->assertDatabaseCount('ingredient_categories', 2);
         $this->assertDatabaseHas('ingredients', [
             'name' => 'Campari',
             'slug' => 'campari-' . $membership->bar_id,
