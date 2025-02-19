@@ -65,8 +65,8 @@ final class IngredientQueryFilter extends QueryBuilder
                     }
                 }),
                 AllowedFilter::callback('parent_ingredient_id', function ($query, $value) {
-                    $query->where('materialized_path', 'like', function ($query) use ($value) {
-                        $query->selectRaw("materialized_path || id || '/%'")
+                    $query->where('ingredients.materialized_path', 'LIKE', function ($query) use ($value) {
+                        $query->selectRaw("COALESCE(materialized_path, '') || id || '/%'")
                             ->from('ingredients')
                             ->where('id', $value);
                     });
