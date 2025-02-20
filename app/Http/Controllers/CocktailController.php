@@ -359,7 +359,15 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $relatedCocktails = $cocktailRepo->getSimilarCocktails($cocktail, $request->get('limit', 5));
+        $relatedCocktailIds = $cocktailRepo->getSimilarCocktails($cocktail, $request->get('limit', 5));
+        $relatedCocktails = Cocktail::whereIn('id', $relatedCocktailIds)
+            ->with(
+                'images',
+                'ratings',
+                'ingredients.ingredient.bar',
+                'bar.shelfIngredients',
+            )
+            ->get();
 
         return CocktailResource::collection($relatedCocktails);
     }

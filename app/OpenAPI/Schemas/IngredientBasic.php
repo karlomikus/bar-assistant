@@ -15,6 +15,4 @@ class IngredientBasic
     public string $slug;
     #[OAT\Property(example: 'Gin')]
     public string $name;
-    #[OAT\Property(example: '1/2/3/', property: 'materialized_path')]
-    public ?string $materializedPath = null;
 }

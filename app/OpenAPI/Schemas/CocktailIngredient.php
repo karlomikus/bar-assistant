@@ -21,6 +21,8 @@ class CocktailIngredient
     public string $units;
     #[OAT\Property(example: false)]
     public bool $optional;
+    #[OAT\Property(property: 'is_specified', example: false)]
+    public bool $isSpecified;
     /** @var CocktailIngredientSubstitute[] */
     #[OAT\Property()]
     public array $substitutes = [];

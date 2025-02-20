@@ -8438,6 +8438,9 @@ components:
         optional:
           type: boolean
           example: false
+        is_specified:
+          type: boolean
+          example: false
         substitutes:
           type: array
           items:
@@ -9127,11 +9130,6 @@ components:
         name:
           type: string
           example: Gin
-        materialized_path:
-          type:
-            - string
-            - 'null'
-          example: 1/2/3/
       type: object
     IngredientHierarchy:
       description: 'Ingredient hierarchy'

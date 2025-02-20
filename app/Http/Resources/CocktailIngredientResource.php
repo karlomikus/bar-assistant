@@ -29,7 +29,7 @@ class CocktailIngredientResource extends JsonResource
             'substitutes' => CocktailIngredientSubstituteResource::collection($this->whenLoaded('substitutes')),
             'variants_in_shelf' => $this->when($this->ingredient->relationLoaded('descendants'), fn () => IngredientBasicResource::collection($this->ingredient->barShelfVariants())),
             'note' => $this->note,
-            'is_specified' => $this->is_specified,
+            'is_specified' => (bool) $this->is_specified,
             'formatted' => new AmountFormats($this->resource),
             'in_shelf' => $this->when(
                 $this->relationLoaded('ingredient'),

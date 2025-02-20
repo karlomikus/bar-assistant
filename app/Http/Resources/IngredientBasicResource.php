@@ -23,7 +23,6 @@ class IngredientBasicResource extends JsonResource
             'id' => $this->id,
             'slug' => $this->slug,
             'name' => $this->name,
-            'materialized_path' => $this->materialized_path,
         ];
     }
 }

@@ -107,12 +107,13 @@ readonly class CocktailRepository
     {
         $ingredients = $cocktailReference->ingredients->filter(fn ($ci) => $ci->optional === false)->pluck('ingredient_id');
 
-        $relatedCocktails = \collect();
+        $relatedCocktails = collect();
         while ($ingredients->count() > 0) {
             $ingredients->pop();
-            $possibleRelatedCocktails = Cocktail::where('cocktails.id', '<>', $cocktailReference->id)
+            $possibleRelatedCocktails = DB::table('cocktails')
+                ->select('cocktails.id')
+                ->where('cocktails.id', '<>', $cocktailReference->id)
                 ->where('bar_id', $cocktailReference->bar_id)
-                ->with('ingredients.ingredient', 'images', 'tags', 'ratings')
                 ->whereIn('cocktails.id', function ($query) use ($ingredients) {
                     $query->select('ci.cocktail_id')
                         ->from('cocktail_ingredients AS ci')
@@ -130,6 +131,6 @@ readonly class CocktailRepository
             }
         }
 
-        return $relatedCocktails;
+        return $relatedCocktails->pluck('id');
     }
 }
