@@ -83,12 +83,10 @@ class StatsController extends Controller
         $stats['total_shelf_cocktails'] = $cocktailRepo->getCocktailsByIngredients(
             $barMembership->userIngredients->pluck('ingredient_id')->toArray(),
             null,
-            $barMembership->use_parent_as_substitute,
         )->count();
         $stats['total_bar_shelf_cocktails'] = $cocktailRepo->getCocktailsByIngredients(
             $bar->shelfIngredients->pluck('ingredient_id')->toArray(),
             null,
-            $barMembership->use_parent_as_substitute,
         )->count();
         $stats['total_shelf_ingredients'] = UserIngredient::where('bar_membership_id', $barMembership->id)->count();
         $stats['total_bar_shelf_ingredients'] = BarIngredient::where('bar_id', $bar->id)->count();

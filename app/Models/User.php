@@ -184,15 +184,14 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * @return array<int>
      */
-    public function getShelfCocktailsOnce(int $barId, bool $useParentIngredientAsSubstitute): array
+    public function getShelfCocktailsOnce(int $barId): array
     {
-        return once(function () use ($barId, $useParentIngredientAsSubstitute) {
+        return once(function () use ($barId) {
             $cocktailRepo = resolve(CocktailRepository::class);
             $userShelfIngredients = $this->getShelfIngredients($barId)->pluck('ingredient_id')->toArray();
 
             return $cocktailRepo->getCocktailsByIngredients(
                 ingredientIds: $userShelfIngredients,
-                useParentIngredientAsSubstitute: $useParentIngredientAsSubstitute
             )->values()->toArray();
         });
     }

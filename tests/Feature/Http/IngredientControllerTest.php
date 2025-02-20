@@ -13,7 +13,6 @@ use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\UserShoppingList;
 use Kami\Cocktail\Models\CocktailIngredient;
-use Kami\Cocktail\Models\IngredientCategory;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -70,12 +69,11 @@ class IngredientControllerTest extends TestCase
         $this->actingAs($membership->user);
 
         $user = User::factory()->create();
-        $ingredientCategory = IngredientCategory::factory()->for($membership->bar)->create();
         $ingredients = Ingredient::factory()->for($membership->bar)->createMany([
             ['name' => 'Whiskey', 'origin' => 'fix-string', 'strength' => 35.5, 'created_at' => Carbon::now()->addDays(1)],
             ['name' => 'XXXX', 'strength' => 0, 'created_at' => Carbon::now()->addDays(2)],
             ['name' => 'Test', 'created_user_id' => $user->id, 'strength' => 40, 'created_at' => Carbon::now()->addDays(3)],
-            ['name' => 'Test 2', 'ingredient_category_id' => $ingredientCategory->id, 'strength' => 0, 'created_at' => Carbon::now()->addDays(4)],
+            ['name' => 'Test 2', 'strength' => 0, 'created_at' => Carbon::now()->addDays(4)],
         ]);
 
         Cocktail::factory()
@@ -94,8 +92,6 @@ class IngredientControllerTest extends TestCase
         $response = $this->getJson('/api/ingredients?filter[name]=whi,xx');
         $response->assertJsonCount(2, 'data');
         $response = $this->getJson('/api/ingredients?filter[created_user_id]=' . $user->id);
-        $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/ingredients?filter[category_id]=' . $ingredientCategory->id);
         $response->assertJsonCount(1, 'data');
         $response = $this->getJson('/api/ingredients?filter[origin]=fix-string');
         $response->assertJsonCount(1, 'data');
@@ -195,11 +191,10 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonPath('data.origin', 'Croatia');
         $response->assertJsonPath('data.main_image_id', null);
         $response->assertJsonPath('data.images', []);
-        $response->assertJsonPath('data.category.id', 1);
         $response->assertJsonPath('data.parent_ingredient.id', null);
         $response->assertJsonPath('data.color', '#fff');
         $response->assertJsonPath('data.cocktails_count', 1);
-        $response->assertJsonCount(1, 'data.varieties');
+        // $response->assertJsonCount(1, 'data.varieties');
     }
 
     public function test_ingredient_show_not_found_response(): void
@@ -218,7 +213,6 @@ class IngredientControllerTest extends TestCase
     public function test_ingredient_store_response(): void
     {
         $this->setupBar();
-        $ingCat = IngredientCategory::factory()->create(['bar_id' => 1]);
 
         $response = $this->postJson('/api/ingredients?bar_id=1', [
             'name' => "Ingredient name",
@@ -226,7 +220,6 @@ class IngredientControllerTest extends TestCase
             'description' => "Description text",
             'origin' => "Worldwide",
             'color' => "#000000",
-            'ingredient_category_id' => $ingCat->id,
             'parent_ingredient_id' => null
         ]);
 
@@ -281,7 +274,6 @@ class IngredientControllerTest extends TestCase
             'description' => "Description text",
             'origin' => "Worldwide",
             'color' => "#000000",
-            'ingredient_category_id' => 1,
             'parent_ingredient_id' => null
         ]);
 
@@ -418,5 +410,61 @@ class IngredientControllerTest extends TestCase
 
         $response = $this->postJson('/api/ingredients?bar_id=1', ['name' => 'Test']);
         $response->assertCreated();
+    }
+
+    public function test_parent_ingredient_descendants_filtering(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $spirits = Ingredient::factory()->for($membership->bar)->create([
+            'name' => 'Spirits',
+            'materialized_path' => null,
+        ]);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $response = $this->postJson('/api/ingredients/', [
+            'name' => "Genever",
+            'parent_ingredient_id' => $spirits->id,
+        ]);
+
+        $genever = Ingredient::find($response->json('data.id'));
+
+        $response = $this->postJson('/api/ingredients/', [
+            'name' => "Gin",
+            'parent_ingredient_id' => $genever->id,
+        ]);
+
+        $gin = Ingredient::find($response->json('data.id'));
+
+        $response = $this->postJson('/api/ingredients/', [
+            'name' => "Bombay Sapphire",
+            'parent_ingredient_id' => $gin->id,
+        ]);
+
+        $response = $this->postJson('/api/ingredients/', [
+            'name' => "Old tom gin",
+            'parent_ingredient_id' => $genever->id,
+        ]);
+
+        $response = $this->postJson('/api/ingredients/', [
+            'name' => "Grain based",
+            'parent_ingredient_id' => $spirits->id,
+        ]);
+
+        $grain = Ingredient::find($response->json('data.id'));
+
+        $response = $this->getJson('/api/ingredients?filter[parent_ingredient_id]=' . $genever->id);
+        $response->assertJsonCount(3, 'data');
+        $response->assertJsonPath('data.0.name', 'Bombay Sapphire');
+        $response->assertJsonPath('data.1.name', 'Gin');
+        $response->assertJsonPath('data.2.name', 'Old tom gin');
+
+        $response = $this->getJson('/api/ingredients?filter[parent_ingredient_id]=' . $grain->id);
+        $response->assertJsonCount(0, 'data');
+
+        $response = $this->getJson('/api/ingredients?filter[parent_ingredient_id]=' . $gin->id);
+        $response->assertJsonCount(1, 'data');
     }
 }

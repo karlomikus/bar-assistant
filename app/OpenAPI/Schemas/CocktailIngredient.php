@@ -21,9 +21,14 @@ class CocktailIngredient
     public string $units;
     #[OAT\Property(example: false)]
     public bool $optional;
+    #[OAT\Property(property: 'is_specified', example: false)]
+    public bool $isSpecified;
     /** @var CocktailIngredientSubstitute[] */
     #[OAT\Property()]
     public array $substitutes = [];
+    /** @var IngredientBasic[] */
+    #[OAT\Property(property: 'variants_in_shelf')]
+    public array $variantsInShelf = [];
     #[OAT\Property(example: 'Additional notes')]
     public ?string $note = null;
     /** @var array<mixed> */
@@ -56,6 +61,8 @@ class CocktailIngredient
     public array $formatted = [];
     #[OAT\Property(property: 'in_shelf', example: true)]
     public bool $inShelf = false;
+    #[OAT\Property(property: 'in_shelf_as_variant', example: true)]
+    public bool $inShelfAsVariant = false;
     #[OAT\Property(property: 'in_shelf_as_substitute', example: true)]
     public bool $inShelfAsSubstitute = false;
     #[OAT\Property(property: 'in_shelf_as_complex_ingredient', example: true)]
@@ -66,4 +73,6 @@ class CocktailIngredient
     public bool $inBarShelfAsSubstitute = false;
     #[OAT\Property(property: 'in_bar_shelf_as_complex_ingredient', example: true)]
     public bool $inBarShelfAsComplexIngredient = false;
+    #[OAT\Property(property: 'in_bar_shelf_as_variant', example: true)]
+    public bool $inBarShelfAsVariant = false;
 }

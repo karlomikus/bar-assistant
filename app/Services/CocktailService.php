@@ -52,6 +52,7 @@ final class CocktailService
                 $cIngredient->sort = $ingredient->sort;
                 $cIngredient->amount_max = $ingredient->amountMax;
                 $cIngredient->note = $ingredient->note;
+                $cIngredient->is_specified = $ingredient->isSpecified;
 
                 $cocktail->ingredients()->save($cIngredient);
 
@@ -139,6 +140,7 @@ final class CocktailService
                     'sort' => $ingredient->sort,
                     'amount_max' => $ingredient->amountMax,
                     'note' => $ingredient->note,
+                    'is_specified' => $ingredient->isSpecified,
                 ]);
 
                 // Substitutes

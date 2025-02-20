@@ -19,6 +19,4 @@ class ProfileRequest
     public ?string $password = null;
     #[OAT\Property(property: 'is_shelf_public')]
     public bool $isShellfPublic = false;
-    #[OAT\Property(property: 'use_parent_as_substitute')]
-    public bool $useParentAsSubstitute = false;
 }

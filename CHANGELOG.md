@@ -1,3 +1,22 @@
+# v5.0.0
+This is a new major release. Here's a quick summary of the more interesting changes:
+
+- Added nested ingredient hierarchy and removed ingredient categories. You can now assign parent child relationships for ingredients and use all descendants of a given ingredient as a possible substitute.
+- This gives option for users to manage more complex ingredient taxonomies, like "Spirits > Rum - Blended > Rum - Blended Lightly Aged"
+
+# Breaking changes
+- Removed ingredient categories
+    - Existing ingredient categories will be migrated to nested ingredient hierarchy
+- Removed "Track parent ingredients as a substitutes" option
+    - This is now default behavior
+
+## New
+- Added nested ingredient hierarchy
+    - Updated `Ingredient` and `CocktailIngredient` schemas to reflect the new structure
+    - All descendants of a given ingredient are now considered as possible substitutes
+    - You can specify if you want to use all descendants of a given ingredient as a possible substitute
+    - Max nesting level is 10
+
 # v4.4.1
 ## Changes
 - You can now use `*` in `METRICS_ALLOWED_IPS` to allow all IPs

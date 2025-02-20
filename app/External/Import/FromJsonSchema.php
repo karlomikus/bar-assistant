@@ -87,7 +87,6 @@ class FromJsonSchema
                     $this->barId,
                     $foundExternalIngredient->name,
                     $this->userId,
-                    null,
                     $foundExternalIngredient->strength,
                     $foundExternalIngredient->description,
                     $foundExternalIngredient->origin
@@ -103,7 +102,6 @@ class FromJsonSchema
                             $this->barId,
                             $foundExternalSubIngredient->name,
                             $this->userId,
-                            null,
                             $foundExternalSubIngredient->strength,
                             $foundExternalSubIngredient->description,
                             $foundExternalSubIngredient->origin
@@ -122,6 +120,7 @@ class FromJsonSchema
                 $scrapedIngredient->amount->units->value,
                 $sort,
                 $scrapedIngredient->optional,
+                false,
                 $substitutes,
                 $scrapedIngredient->amount->amountMax,
                 $scrapedIngredient->note,

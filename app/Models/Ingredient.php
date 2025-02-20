@@ -9,15 +9,21 @@ use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Concerns\IsExternalized;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
+use Kami\Cocktail\Models\Relations\HasManyAncestors;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Kami\Cocktail\Exceptions\IngredientMoveException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Kami\Cocktail\Models\Relations\HasManyDescendants;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
+use Kami\Cocktail\Models\ValueObjects\MaterializedPath;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ingredient extends Model implements UploadableInterface, IsExternalized
@@ -37,13 +43,18 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         'history',
         'origin',
         'color',
-        'ingredient_category_id',
         'parent_ingredient_id',
     ];
 
-    protected $casts = [
-        'strength' => 'float',
-    ];
+    /**
+     * @return array{strength: 'float'}
+     */
+    protected function casts(): array
+    {
+        return [
+            'strength' => 'float',
+        ];
+    }
 
     public function getUploadPath(): string
     {
@@ -60,14 +71,6 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     public function getExternalId(): string
     {
         return Str::slug($this->name);
-    }
-
-    /**
-     * @return BelongsTo<IngredientCategory, $this>
-     */
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(IngredientCategory::class, 'ingredient_category_id', 'id');
     }
 
     /**
@@ -97,9 +100,19 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     /**
      * @return HasMany<Ingredient, $this>
      */
-    public function varieties(): HasMany
+    public function children(): HasMany
     {
         return $this->hasMany(Ingredient::class, 'parent_ingredient_id', 'id');
+    }
+
+    public function descendants(): HasManyDescendants
+    {
+        return new HasManyDescendants($this, 'materialized_path');
+    }
+
+    public function ancestors(): HasManyAncestors
+    {
+        return new HasManyAncestors($this, 'materialized_path');
     }
 
     /**
@@ -157,9 +170,33 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         return $items->contains('ingredient_id', $this->id);
     }
 
+    public function userHasInShelfAsComplexIngredient(User $user): bool
+    {
+        $requiredIngredientIds = $this->ingredientParts->pluck('ingredient_id');
+        if ($requiredIngredientIds->isEmpty()) {
+            return false;
+        }
+
+        $shelfIngredients = $user->getShelfIngredients($this->bar_id)->pluck('ingredient_id');
+
+        return $requiredIngredientIds->every(fn ($id) => $shelfIngredients->contains($id));
+    }
+
     public function barHasInShelf(): bool
     {
         return $this->bar->shelfIngredients->contains('ingredient_id', $this->id);
+    }
+
+    public function barHasInShelfAsComplexIngredient(): bool
+    {
+        $requiredIngredientIds = $this->ingredientParts->pluck('ingredient_id');
+        if ($requiredIngredientIds->isEmpty()) {
+            return false;
+        }
+
+        $currentShelf = $this->bar->shelfIngredients->pluck('ingredient_id');
+
+        return $requiredIngredientIds->every(fn ($id) => $currentShelf->contains($id));
     }
 
     public function userHasInShoppingList(User $user): bool
@@ -167,23 +204,6 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         $items = $user->getShoppingListIngredients($this->bar_id);
 
         return $items->contains('ingredient_id', $this->id);
-    }
-
-    /**
-     * @return Collection<int, Ingredient>
-     */
-    public function getAllRelatedIngredients(): Collection
-    {
-        // This creates "Related" group of the ingredients "on-the-fly"
-        if ($this->parent_ingredient_id !== null) {
-            return $this->parentIngredient
-                ->varieties
-                ->sortBy('name')
-                ->filter(fn ($ing) => $ing->id !== $this->id)
-                ->push($this->parentIngredient);
-        }
-
-        return $this->varieties;
     }
 
     /**
@@ -235,6 +255,10 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
 
     public function delete(): ?bool
     {
+        foreach ($this->children as $child) {
+            $child->appendAsChildOf(null);
+        }
+
         $this->deleteImages();
 
         return parent::delete();
@@ -246,7 +270,7 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
      */
     public function makeSearchableUsing(Collection $models): Collection
     {
-        return $models->load('category', 'images');
+        return $models->load('images');
     }
 
     /**
@@ -260,8 +284,127 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
             'name' => $this->name,
             'image_url' => $this->getMainImageUrl(),
             'description' => $this->description,
-            'category' => $this->category?->name ?? null,
+            'category' => $this->getMaterializedPathAsString(),
             'bar_id' => $this->bar_id,
         ];
+    }
+
+    public function getMaterializedPath(): MaterializedPath
+    {
+        if ($this->isRoot()) {
+            return MaterializedPath::fromString(null);
+        }
+
+        return MaterializedPath::fromString($this->materialized_path);
+    }
+
+    public function isRoot(): bool
+    {
+        return $this->parent_ingredient_id === null;
+    }
+
+    public function appendAsChildOf(?Ingredient $parentIngredient): self
+    {
+        // If we're moving to a root parent and we are already root, do nothing
+        if ($this->parent_ingredient_id === null && $parentIngredient === null) {
+            return $this;
+        }
+
+        // If we're moving to a descendant, throw an exception
+        // In future this could be a valid move, but for now we're just going to throw an exception
+        if ($parentIngredient && $parentIngredient->isDescendantOf($this)) {
+            throw new IngredientMoveException('Cannot move ingredient under its own descendant.');
+        }
+
+        // We want hierarchical moves to be atomic, so we need to wrap this in a transaction
+        if (!DB::connection()->getPdo()->inTransaction()) {
+            Log::warning('Ingredient move called outside of a transaction');
+        }
+
+        // Remember the old path so we can use string replace to update descendants
+        $oldPath = $this->materialized_path;
+        // Remember the original descendants since we will update the path in next step
+        // and this will change our SQL query matching
+        $descendants = $this->descendants;
+        // Update current ingredient materialized path
+        $this->withMaterializedPath($parentIngredient);
+        // Set new path that we'll use to update descendants
+        $newPath = $this->materialized_path;
+
+        foreach ($descendants as $descendant) {
+            if (!blank($oldPath)) {
+                $descendant->materialized_path = str_replace($oldPath, $newPath ?? '', $descendant->materialized_path);
+                $descendant->save();
+            }
+        }
+
+        $this->save();
+
+        // We need to refresh the parent ingredient to make sure it's relations are up to date
+        $parentIngredient?->refresh();
+
+        return $this;
+    }
+
+    public function getMaterializedPathAsString(): ?string
+    {
+        if ($this->materialized_path === null) {
+            return null;
+        }
+
+        return $this->ancestors->map(fn ($i) => $i->name)->implode(' > ');
+    }
+
+    public function isDescendantOf(Ingredient $ingredient): bool
+    {
+        return $this->materialized_path && str_starts_with($this->materialized_path, $ingredient->materialized_path . $ingredient->id);
+    }
+
+    public function isAncestorOf(Ingredient $ingredient): bool
+    {
+        return $ingredient->isDescendantOf($this);
+    }
+
+    /**
+     * @return Collection<array-key, self>
+     */
+    public function barShelfVariants(): Collection
+    {
+        $descendantIds = $this->descendants->pluck('id');
+        $shelfIngredientIds = $this->bar->shelfIngredients->pluck('ingredient_id');
+
+        return $this->descendants->whereIn('id', $descendantIds->intersect($shelfIngredientIds))->sortBy('name');
+    }
+
+    /**
+     * @return Collection<array-key, self>
+     */
+    public function userShelfVariants(User $user): Collection
+    {
+        $descendantIds = $this->descendants->pluck('id');
+        $shelfIngredientIds = $user->getShelfIngredients($this->bar_id)->pluck('ingredient_id');
+
+        return $this->descendants->whereIn('id', $descendantIds->intersect($shelfIngredientIds))->sortBy('name');
+    }
+
+    /**
+     * Sets parent ID and complete materialized path for the ingredient
+     * Does not save the ingredient
+     * Will throw exception if the ingredient has too many descendants
+     */
+    private function withMaterializedPath(?Ingredient $parentIngredient): void
+    {
+        if ($parentIngredient === null) {
+            $this->materialized_path = null;
+            $this->parent_ingredient_id = null;
+
+            return;
+        }
+
+        $path = $parentIngredient->getMaterializedPath();
+        $path = $path->append($parentIngredient->id);
+
+        $this->parent_ingredient_id = $parentIngredient->id;
+        $this->materialized_path = $path->toStringPath();
     }
 }
