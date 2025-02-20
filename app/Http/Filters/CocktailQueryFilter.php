@@ -28,7 +28,6 @@ final class CocktailQueryFilter extends QueryBuilder
                 AllowedFilter::exact('id'),
                 AllowedFilter::custom('name', new FilterNameSearch()),
                 AllowedFilter::partial('ingredient_name', 'ingredients.ingredient.name'),
-                // AllowedFilter::exact('ingredient_id', 'ingredients.ingredient.id'),
                 AllowedFilter::exact('ingredient_substitute_id', 'ingredients.substitutes.ingredient.id'),
                 AllowedFilter::callback('ingredient_id', function ($query, $value) {
                     if (!is_array($value)) {

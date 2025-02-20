@@ -24,6 +24,13 @@ final class IngredientQueryFilter extends QueryBuilder
         $this
             ->allowedFilters([
                 AllowedFilter::exact('id'),
+                AllowedFilter::callback('parent_ingredient_id', function ($query, $value) {
+                    if ($value === 'null') {
+                        $query->whereNull('parent_ingredient_id');
+                    } else {
+                        $query->where('parent_ingredient_id', $value);
+                    }
+                }),
                 AllowedFilter::custom('name', new FilterNameSearch()),
                 AllowedFilter::beginsWithStrict('name_exact', 'name'),
                 AllowedFilter::partial('origin'),
@@ -64,12 +71,19 @@ final class IngredientQueryFilter extends QueryBuilder
                         $query->whereHas('ingredientParts');
                     }
                 }),
-                AllowedFilter::callback('parent_ingredient_id', function ($query, $value) {
-                    $query->where('ingredients.materialized_path', 'LIKE', function ($query) use ($value) {
-                        $query->selectRaw("COALESCE(materialized_path, '') || id || '/%'")
-                            ->from('ingredients')
-                            ->where('id', $value);
-                    });
+                AllowedFilter::callback('descendants_of', function ($query, $value) {
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
+
+                    // TODO: Move to sqlite LIKE ANY when supported
+                    foreach ($value as $id) {
+                        $query->orWhere('ingredients.materialized_path', 'LIKE', function ($query) use ($id) {
+                            $query->selectRaw("COALESCE(materialized_path, '') || id || '/%'")
+                                ->from('ingredients')
+                                ->where('id', $id);
+                        });
+                    }
                 }),
             ])
             ->defaultSort('name')

@@ -23,7 +23,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Http\Resources\CocktailResource;
-use Kami\Cocktail\Repository\IngredientRepository;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\CocktailPriceResource;
@@ -95,7 +94,7 @@ class CocktailController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function show(string $idOrSlug, Request $request, IngredientRepository $ingredientQuery): JsonResource
+    public function show(string $idOrSlug, Request $request): JsonResource
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)
@@ -106,21 +105,7 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $cocktail->load([
-            'ingredients.ingredient.ingredientParts',
-            'images',
-            'tags',
-            'glass',
-            'ingredients.substitutes',
-            'method',
-            'createdUser',
-            'updatedUser',
-            'collections',
-            'utensils',
-            'ratings',
-            'ingredients.ingredient.bar.shelfIngredients',
-            'ingredients.ingredient.descendants',
-        ]);
+        $cocktail->loadDefaultRelations();
 
         return new CocktailResource($cocktail);
     }
@@ -140,7 +125,7 @@ class CocktailController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\ValidationFailedResponse]
-    public function store(CocktailService $cocktailService, CocktailRequest $request, IngredientRepository $ingredientQuery): JsonResponse
+    public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
     {
         Validator::make($request->input('ingredients', []), [
             '*.ingredient_id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
@@ -158,7 +143,7 @@ class CocktailController extends Controller
             abort(500, $e->getMessage());
         }
 
-        $cocktail->load(['ingredients.ingredient.ingredientParts', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings', 'ingredients.ingredient.bar.ingredients']);
+        $cocktail->loadDefaultRelations();
 
         return (new CocktailResource($cocktail))
             ->response()
@@ -180,7 +165,7 @@ class CocktailController extends Controller
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     #[BAO\ValidationFailedResponse]
-    public function update(CocktailService $cocktailService, CocktailRequest $request, int $id, IngredientRepository $ingredientQuery): JsonResource
+    public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): JsonResource
     {
         $cocktail = Cocktail::findOrFail($id);
 
@@ -200,9 +185,7 @@ class CocktailController extends Controller
             abort(500, $e->getMessage());
         }
 
-        $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
-            $query->orderBy('sort');
-        }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
+        $cocktail->loadDefaultRelations();
 
         return new CocktailResource($cocktail);
     }
@@ -313,14 +296,13 @@ class CocktailController extends Controller
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
-            ->firstOrFail()
-            ->load(['ingredients.ingredient', 'images' => function ($query) {
-                $query->orderBy('sort');
-            }, 'ingredients.substitutes', 'ingredients.ingredient']);
+            ->firstOrFail();
 
         if ($request->user()->cannot('show', $cocktail)) {
             abort(403);
         }
+
+        $cocktail->loadDefaultRelations();
 
         $type = $request->get('type', 'json');
         $units = Units::tryFrom($request->get('units', ''));
@@ -395,12 +377,13 @@ class CocktailController extends Controller
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)
-            ->firstOrFail()
-            ->load(['ingredients.ingredient', 'images', 'tags', 'ingredients.substitutes', 'utensils']);
+            ->firstOrFail();
 
         if ($request->user()->cannot('show', $cocktail) || $request->user()->cannot('create', Cocktail::class)) {
             abort(403);
         }
+
+        $cocktail->loadDefaultRelations();
 
         // Copy images
         $imageDTOs = [];

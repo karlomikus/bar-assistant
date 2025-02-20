@@ -4041,8 +4041,6 @@ paths:
                 type: string
               name_exact:
                 type: string
-              category_id:
-                type: integer
               origin:
                 type: string
               created_user_id:
@@ -4060,10 +4058,16 @@ paths:
                 type: number
                 format: float
               main_ingredients:
+                description: 'Show only ingredients that are used as main ingredients in cocktails'
                 type: string
               complex:
+                description: 'Show only ingredients that can be made with other ingredients'
                 type: boolean
               parent_ingredient_id:
+                description: 'Show only direct children of given ingredient. Use null as value to get ingredients without parent ingredient'
+                type: integer
+              descendants_of:
+                description: 'Show all descendants of given ingredient'
                 type: integer
             type: object
         -
@@ -4075,7 +4079,7 @@ paths:
         -
           name: include
           in: query
-          description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `prices`, `ingredientParts`, `category`, `images`.'
+          description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `prices`, `ingredientParts`, `descendants`, `ancestors`, `images`.'
           schema:
             type: string
       responses:
@@ -8438,6 +8442,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CocktailIngredientSubstitute'
+        variants_in_shelf:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientBasic'
         note:
           type:
             - string
@@ -8521,6 +8529,9 @@ components:
         in_shelf:
           type: boolean
           example: true
+        in_shelf_as_variant:
+          type: boolean
+          example: true
         in_shelf_as_substitute:
           type: boolean
           example: true
@@ -8534,6 +8545,9 @@ components:
           type: boolean
           example: true
         in_bar_shelf_as_complex_ingredient:
+          type: boolean
+          example: true
+        in_bar_shelf_as_variant:
           type: boolean
           example: true
       type: object
