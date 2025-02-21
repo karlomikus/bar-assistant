@@ -4,9 +4,11 @@ namespace Kami\Cocktail\Providers;
 
 use Illuminate\Auth\Events\Registered;
 use Kami\Cocktail\Listeners\ActivateBars;
+use Kami\Cocktail\Events\IngredientUpdated;
 use Kami\Cocktail\Listeners\DeactivateBars;
 use Laravel\Paddle\Events\SubscriptionCreated;
 use Laravel\Paddle\Events\SubscriptionCanceled;
+use Kami\Cocktail\Listeners\ClearSingleIngredientCache;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -26,6 +28,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         SubscriptionCreated::class => [
             ActivateBars::class,
+        ],
+        IngredientUpdated::class => [
+            ClearSingleIngredientCache::class,
         ],
     ];
 

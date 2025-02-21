@@ -11,6 +11,7 @@ use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
+use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Models\CocktailPrice;
 use Kami\Cocktail\Models\PriceCategory;
 use Illuminate\Support\Facades\Validator;
@@ -30,6 +31,7 @@ use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest as CocktailDTO;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientRequest as IngredientDTO;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientSubstituteRequest as SubstituteDTO;
+use Kami\Cocktail\Services\CacheService;
 
 class CocktailController extends Controller
 {
@@ -353,21 +355,28 @@ class CocktailController extends Controller
     #[BAO\NotFoundResponse]
     public function similar(CocktailRepository $cocktailRepo, Request $request, string $idOrSlug): JsonResource
     {
-        $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->with('ingredients.ingredient')->firstOrFail();
+        $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->firstOrFail();
+        $limit = $request->get('limit', 5);
 
         if ($request->user()->cannot('show', $cocktail)) {
             abort(403);
         }
 
-        $relatedCocktailIds = $cocktailRepo->getSimilarCocktails($cocktail, $request->get('limit', 5));
-        $relatedCocktails = Cocktail::whereIn('id', $relatedCocktailIds)
-            ->with(
-                'images',
-                'ratings',
-                'ingredients.ingredient.bar',
-                'bar.shelfIngredients',
-            )
-            ->get();
+        $cacheKey = sprintf(CacheService::SIMILAR_COCKTAILS, $cocktail->id);
+        $cocktail->load('ingredients.ingredient');
+
+        $relatedCocktails = Cache::remember($cacheKey, 60 * 60 * 24, function () use ($cocktail, $cocktailRepo, $limit) {
+            $relatedCocktailIds = $cocktailRepo->getSimilarCocktails($cocktail, $limit);
+
+            return Cocktail::whereIn('id', $relatedCocktailIds)
+                ->with(
+                    'images',
+                    'ratings',
+                    'ingredients.ingredient.bar',
+                    'bar.shelfIngredients',
+                )
+                ->get();
+        });
 
         return CocktailResource::collection($relatedCocktails);
     }

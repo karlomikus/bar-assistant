@@ -12,6 +12,7 @@ use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\DatabaseManager;
+use Kami\Cocktail\Events\CocktailUpdated;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
@@ -199,6 +200,8 @@ final class CocktailService
         $cocktail->abv = $cocktail->getABV();
         // Upsert scout index
         $cocktail->save();
+
+        CocktailUpdated::dispatch($id);
 
         return $cocktail;
     }

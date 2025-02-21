@@ -90,20 +90,12 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::prefix('ingredients')->group(function () {
         Route::get('/', [IngredientController::class, 'index'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.read']);
         Route::post('/', [IngredientController::class, 'store'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.write']);
-        Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show')->middleware(['ability:ingredients.read']);
+        Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show')->middleware(['ability:ingredients.read', \Kami\Cocktail\Http\Middleware\CacheRouteResponse::class]);
         Route::put('/{id}', [IngredientController::class, 'update'])->middleware(['ability:ingredients.write']);
         Route::delete('/{id}', [IngredientController::class, 'delete'])->middleware(['ability:ingredients.write']);
         Route::get('/{id}/extra', [IngredientController::class, 'extra'])->middleware(['ability:ingredients.read']);
         Route::get('/{id}/cocktails', [IngredientController::class, 'cocktails'])->middleware(['ability:ingredients.read']);
         Route::get('/{id}/substitutes', [IngredientController::class, 'substitutes'])->middleware(['ability:ingredients.read']);
-    });
-
-    Route::prefix('ingredient-categories')->middleware(['ability:*'])->group(function () {
-        Route::get('/', [IngredientCategoryController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/', [IngredientCategoryController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/{id}', [IngredientCategoryController::class, 'show'])->name('ingredient-categories.show');
-        Route::put('/{id}', [IngredientCategoryController::class, 'update']);
-        Route::delete('/{id}', [IngredientCategoryController::class, 'delete']);
     });
 
     Route::prefix('cocktails')->group(function () {

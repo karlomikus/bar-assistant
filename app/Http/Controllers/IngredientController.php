@@ -77,7 +77,16 @@ class IngredientController extends Controller
     #[BAO\NotFoundResponse]
     public function show(Request $request, string $id): JsonResource
     {
-        $ingredient = Ingredient::with(
+        $ingredient = Ingredient::withCount('cocktails')
+            ->where('id', $id)
+            ->orWhere('slug', $id)
+            ->firstOrFail();
+
+        if ($request->user()->cannot('show', $ingredient)) {
+            abort(403);
+        }
+
+        $ingredient->load(
             'cocktails',
             'images',
             'parentIngredient',
@@ -88,15 +97,7 @@ class IngredientController extends Controller
             'cocktailIngredientSubstitutes.cocktailIngredient.ingredient',
             'descendants',
             'ancestors'
-        )
-            ->withCount('cocktails')
-            ->where('id', $id)
-            ->orWhere('slug', $id)
-            ->firstOrFail();
-
-        if ($request->user()->cannot('show', $ingredient)) {
-            abort(403);
-        }
+        );
 
         return new IngredientResource($ingredient);
     }
