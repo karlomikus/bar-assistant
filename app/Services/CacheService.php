@@ -15,44 +15,10 @@ final class CacheService
     public const TAG_INGREDIENT_SHOW = 'ingredients.show.%s';
 
     /**
-     * @var array<string, array<string>>
-     */
-    public array $routeTags = [
-        'route:ingredients.show' => [self::TAG_INGREDIENT_SHOW],
-    ];
-
-    public function getRouteKey(Request $request): ?string
-    {
-        $name = (string) $request->route()->getName();
-
-        if (!$this->isCacheable($request)) {
-            return null;
-        }
-
-        $params = $this->serializeParameters($request->route()->parameters());
-        $userId = (string) $request->user()->id;
-
-        $key = implode('.', [$name, $params, $userId]);
-
-        return $key;
-    }
-
-    public function isCacheable(Request $request): bool
-    {
-        return array_key_exists($this->getKey($request), $this->routeTags);
-    }
-
-    /**
-     * @return array<string>
-     */
-    public function getRouteTags(Request $request): array
-    {
-        $tagTemplates = $this->routeTags[$this->getKey($request)] ?? [];
-
-        return array_map(fn ($tagTemplate) => sprintf($tagTemplate, $this->serializeParameters($request->route()->parameters())), $tagTemplates);
-    }
-
-    /**
+     * This is not the best approach, but instead of trying to make
+     * everything dynamic and configurable, for a few routes that we cache
+     * doing cache logic procedurally is easier.
+     *
      * @template TCacheValue
      *
      * @param \Closure(): TCacheValue $callback
@@ -60,10 +26,18 @@ final class CacheService
      */
     public function cacheRouteResponse(Request $request, int $ttl, Closure $callback): mixed
     {
-        $key = $this->getRouteKey($request);
-        $tags = $this->getRouteTags($request);
+        $name = (string) $request->route()->getName();
+        $params = $this->serializeParameters($request->route()->parameters());
+        $userId = (string) $request->user()->id;
 
-        return Cache::tags($tags)->remember($key, $ttl, $callback);
+        if ($name === 'ingredients.show') {
+            $tags = [sprintf(self::TAG_INGREDIENT_SHOW, $params)];
+            $key = implode('.', [$name, $params, $userId]);
+
+            return Cache::tags($tags)->remember($key, $ttl, $callback);
+        }
+
+        throw new \Exception('No cache config for route ' . $name);
     }
 
     /**
@@ -72,10 +46,5 @@ final class CacheService
     private function serializeParameters(array $parameters): string
     {
         return implode('-', $parameters);
-    }
-
-    private function getKey(Request $request): string
-    {
-        return 'route:' . $request->route()->getName();
     }
 }

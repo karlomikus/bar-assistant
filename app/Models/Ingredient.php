@@ -56,6 +56,13 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::updated(function (Ingredient $ingredient) {
+            \Kami\Cocktail\Events\IngredientUpdated::dispatch($ingredient->id, $ingredient->slug);
+        });
+    }
+
     public function getUploadPath(): string
     {
         return 'ingredients/' . $this->bar_id . '/';

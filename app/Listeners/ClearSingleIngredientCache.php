@@ -17,8 +17,6 @@ class ClearSingleIngredientCache
     public function handle(IngredientUpdated $event): void
     {
         Cache::tags([sprintf(CacheService::TAG_INGREDIENT_SHOW, $event->id)])->flush();
-        if ($event->slug) {
-            Cache::tags([sprintf(CacheService::TAG_INGREDIENT_SHOW, $event->slug)])->flush();
-        }
+        Cache::tags([sprintf(CacheService::TAG_INGREDIENT_SHOW, $event->slug)])->flush();
     }
 }

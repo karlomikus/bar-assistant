@@ -98,12 +98,10 @@ final class IngredientService
         }
 
         $originalStrength = null;
-        $originalSlug = null;
 
         try {
             $ingredient = Ingredient::findOrFail($id);
             $originalStrength = $ingredient->strength;
-            $originalSlug = $ingredient->slug;
             $ingredient->name = $dto->name;
             $ingredient->strength = $dto->strength;
             $ingredient->description = $dto->description;
@@ -179,8 +177,6 @@ final class IngredientService
         }
 
         $ingredient->cocktails->each(fn ($cocktail) => $cocktail->searchable());
-
-        IngredientUpdated::dispatch($id, $originalSlug);
 
         return $ingredient;
     }
