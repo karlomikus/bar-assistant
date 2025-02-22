@@ -87,6 +87,7 @@ class MenuController extends Controller
         }
         $menu->updated_at = now();
         $menu->syncCocktails($request->input('cocktails', []));
+        $menu->syncIngredients($request->input('ingredients', []));
         $menu->save();
 
         return new MenuResource($menu);
