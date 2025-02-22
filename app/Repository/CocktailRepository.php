@@ -66,7 +66,7 @@ readonly class CocktailRepository
                         WHERE id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?)
                         AND parent_ingredient_id IS NOT NULL
                     ) THEN ingredients.id
-                    WHEN EXISTS (
+                    WHEN cocktail_ingredients.is_specified IS FALSE AND EXISTS (
                         SELECT
                             1
                         FROM
