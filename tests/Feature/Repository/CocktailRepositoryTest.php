@@ -237,6 +237,7 @@ class CocktailRepositoryTest extends TestCase
         $this->assertSame([1], $cocktails->toArray());
     }
 
+    /** legacy test, before ingredient taxonomies */
     public function test_gets_cocktails_that_can_be_made_with_ingredients_include_parent_ingredients(): void
     {
         $membership = $this->setupBarMembership();
@@ -317,6 +318,63 @@ class CocktailRepositoryTest extends TestCase
         $repository = resolve(CocktailRepository::class);
         $cocktails = $repository->getSimilarCocktails($boulvardier);
 
-        $this->assertSame($negroni->id, $cocktails->first()->id);
+        $this->assertSame($negroni->id, $cocktails[0]);
+    }
+
+    public function test_gets_cocktails_that_can_be_made_with_variants(): void
+    {
+        $membership = $this->setupBarMembership();
+
+        $ing1 = Ingredient::factory()->for($membership->bar)->create();
+        $ing12 = Ingredient::factory()->for($membership->bar)->create();
+        $ing12->appendAsChildOf($ing1);
+        $ing123 = Ingredient::factory()->for($membership->bar)->create();
+        $ing123->appendAsChildOf($ing12);
+
+        $cocktail = Cocktail::factory()->for($membership->bar)->has(
+            CocktailIngredient::factory()
+                ->state(['optional' => false])
+                ->for($ing1)
+                ->recycle($membership->bar),
+            'ingredients'
+        )->create();
+
+        $repository = resolve(CocktailRepository::class);
+        $cocktails = $repository->getCocktailsByIngredients([$ing123->id], null, true);
+
+        $this->assertSame([$cocktail->id], $cocktails->toArray());
+    }
+
+    public function test_gets_cocktails_that_can_be_ignores_variants_for_specified_ingredient(): void
+    {
+        $membership = $this->setupBarMembership();
+
+        $ing1 = Ingredient::factory()->for($membership->bar)->create();
+        $ing12 = Ingredient::factory()->for($membership->bar)->create();
+        $ing12->appendAsChildOf($ing1);
+        $ing123 = Ingredient::factory()->for($membership->bar)->create();
+        $ing123->appendAsChildOf($ing12);
+
+        Cocktail::factory()->for($membership->bar)
+            ->has(
+                CocktailIngredient::factory()
+                    ->state(['optional' => false, 'is_specified' => true])
+                    ->for($ing1)
+                    ->recycle($membership->bar),
+                'ingredients'
+            )
+            ->has(
+                CocktailIngredient::factory()
+                    ->state(['optional' => false])
+                    ->for($ing12)
+                    ->recycle($membership->bar),
+                'ingredients'
+            )
+        ->create();
+
+        $repository = resolve(CocktailRepository::class);
+        $cocktails = $repository->getCocktailsByIngredients([$ing123->id], null, true);
+
+        $this->assertSame([], $cocktails->toArray());
     }
 }
