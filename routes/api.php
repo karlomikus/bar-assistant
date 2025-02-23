@@ -96,14 +96,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/{id}/extra', [IngredientController::class, 'extra'])->middleware(['ability:ingredients.read']);
         Route::get('/{id}/cocktails', [IngredientController::class, 'cocktails'])->middleware(['ability:ingredients.read']);
         Route::get('/{id}/substitutes', [IngredientController::class, 'substitutes'])->middleware(['ability:ingredients.read']);
-    });
-
-    Route::prefix('ingredient-categories')->middleware(['ability:*'])->group(function () {
-        Route::get('/', [IngredientCategoryController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/', [IngredientCategoryController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/{id}', [IngredientCategoryController::class, 'show'])->name('ingredient-categories.show');
-        Route::put('/{id}', [IngredientCategoryController::class, 'update']);
-        Route::delete('/{id}', [IngredientCategoryController::class, 'delete']);
+        Route::get('/{id}/tree', [IngredientController::class, 'tree'])->middleware(['ability:ingredients.read']);
     });
 
     Route::prefix('cocktails')->group(function () {

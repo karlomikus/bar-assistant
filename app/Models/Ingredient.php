@@ -105,6 +105,14 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         return $this->hasMany(Ingredient::class, 'parent_ingredient_id', 'id');
     }
 
+    /**
+     * @return HasMany<Ingredient, $this>
+     */
+    public function allChildren(): HasMany
+    {
+        return $this->hasMany(Ingredient::class, 'parent_ingredient_id', 'id')->with('allChildren');
+    }
+
     public function descendants(): HasManyDescendants
     {
         return new HasManyDescendants($this, 'materialized_path');
