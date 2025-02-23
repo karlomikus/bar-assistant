@@ -348,6 +348,7 @@ class FromDataPack
                     'amount_max' => $cocktailIngredient->amount->amountMax,
                     'units' => $cocktailIngredient->amount->units->value,
                     'optional' => $cocktailIngredient->optional,
+                    'is_specified' => $cocktailIngredient->isSpecified,
                     'note' => $cocktailIngredient->note,
                     'sort' => $sort,
                 ]);
