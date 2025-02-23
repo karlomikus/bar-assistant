@@ -24,6 +24,7 @@ recipe:
       amount: 45.0
       units: ml
       optional: false
+      is_specified: false
       amount_max: 60.0
       note: 'Ingredient note'
       substitutes: {  }

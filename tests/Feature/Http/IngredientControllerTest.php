@@ -455,16 +455,16 @@ class IngredientControllerTest extends TestCase
 
         $grain = Ingredient::find($response->json('data.id'));
 
-        $response = $this->getJson('/api/ingredients?filter[parent_ingredient_id]=' . $genever->id);
+        $response = $this->getJson('/api/ingredients?filter[descendants_of]=' . $genever->id);
         $response->assertJsonCount(3, 'data');
         $response->assertJsonPath('data.0.name', 'Bombay Sapphire');
         $response->assertJsonPath('data.1.name', 'Gin');
         $response->assertJsonPath('data.2.name', 'Old tom gin');
 
-        $response = $this->getJson('/api/ingredients?filter[parent_ingredient_id]=' . $grain->id);
+        $response = $this->getJson('/api/ingredients?filter[descendants_of]=' . $grain->id);
         $response->assertJsonCount(0, 'data');
 
-        $response = $this->getJson('/api/ingredients?filter[parent_ingredient_id]=' . $gin->id);
+        $response = $this->getJson('/api/ingredients?filter[descendants_of]=' . $gin->id);
         $response->assertJsonCount(1, 'data');
     }
 }
