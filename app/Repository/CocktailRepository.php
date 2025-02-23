@@ -60,24 +60,18 @@ readonly class CocktailRepository
                 'COUNT(DISTINCT CASE
                     WHEN ingredients.id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN ingredients.id
                     WHEN cocktail_ingredient_substitutes.ingredient_id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN ingredients.id
-                    WHEN ingredients.id IN (
-                        SELECT parent_ingredient_id 
-                        FROM ingredients 
-                        WHERE id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?)
-                        AND parent_ingredient_id IS NOT NULL
-                    ) THEN ingredients.id
                     WHEN cocktail_ingredients.is_specified IS FALSE AND EXISTS (
                         SELECT
                             1
                         FROM
                             ingredients
                         WHERE
-                            materialized_path LIKE cocktail_ingredients.ingredient_id || \'/%\'
+                            (ingredients.parent_ingredient_id = cocktail_ingredients.ingredient_id OR materialized_path LIKE cocktail_ingredients.ingredient_id || \'/%\')
                             AND id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?)
                     ) THEN ingredients.id
                     ELSE NULL
                 END) as matching_ingredients',
-                [...$ingredientIds, ...$ingredientIds, ...$ingredientIds, ...$ingredientIds]
+                [...$ingredientIds, ...$ingredientIds, ...$ingredientIds]
             )
             ->join('cocktail_ingredients', 'cocktails.id', '=', 'cocktail_ingredients.cocktail_id')
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')

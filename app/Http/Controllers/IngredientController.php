@@ -23,6 +23,7 @@ use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Filters\IngredientQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\CocktailBasicResource;
+use Kami\Cocktail\Http\Resources\IngredientTreeResource;
 use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest as IngredientDTO;
 
@@ -293,5 +294,27 @@ class IngredientController extends Controller
         $cocktails = Ingredient::whereIn('id', $ids)->orderBy('name')->paginate($request->get('per_page', 100));
 
         return IngredientBasicResource::collection($cocktails);
+    }
+
+    #[OAT\Get(path: '/ingredients/{id}/tree', tags: ['Ingredients'], operationId: 'showIngredientTree', description: 'Show a ingredient hierarchy as a tree', summary: 'Show tree', parameters: [
+        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[BAO\SuccessfulResponse(content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\IngredientTree::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function tree(Request $request, string $id): IngredientTreeResource
+    {
+        $ingredient = Ingredient::with('allChildren')
+            ->where('id', $id)
+            ->orWhere('slug', $id)
+            ->firstOrFail();
+
+        if ($request->user()->cannot('show', $ingredient)) {
+            abort(403);
+        }
+
+        return new IngredientTreeResource($ingredient);
     }
 }

@@ -4597,6 +4597,75 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/ingredients/{id}/tree':
+    get:
+      tags:
+        - Ingredients
+      summary: 'Show tree'
+      description: 'Show a ingredient hierarchy as a tree'
+      operationId: showIngredientTree
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id or slug of a resource'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/IngredientTree' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /menu:
     get:
       tags:
@@ -9271,6 +9340,18 @@ components:
             - integer
             - 'null'
           example: 1
+      type: object
+    IngredientTree:
+      required:
+        - ingredient
+        - children
+      properties:
+        ingredient:
+          $ref: '#/components/schemas/IngredientBasic'
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientTree'
       type: object
     LoginRequest:
       required:

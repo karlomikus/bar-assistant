@@ -10,6 +10,7 @@ use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\IngredientPrice;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest;
@@ -25,6 +26,8 @@ final class IngredientService
 
     public function createIngredient(IngredientRequest $dto): Ingredient
     {
+        DB::beginTransaction();
+
         try {
             if (blank($dto->name)) {
                 throw new IngredientValidationException('Invalid ingredient name');
@@ -66,8 +69,12 @@ final class IngredientService
         } catch (Throwable $e) {
             $this->log->error('[INGREDIENT_SERVICE] ' . $e->getMessage());
 
+            DB::rollBack();
+
             throw $e;
         }
+
+        DB::commit();
 
         if (count($dto->images) > 0) {
             try {
@@ -98,6 +105,8 @@ final class IngredientService
 
         $originalStrength = null;
 
+        DB::beginTransaction();
+
         try {
             $ingredient = Ingredient::findOrFail($id);
             $originalStrength = $ingredient->strength;
@@ -111,7 +120,7 @@ final class IngredientService
             $ingredient->calculator_id = $dto->calculatorId;
             $ingredient->save();
 
-            if ($dto->parentIngredientId !== null) {
+            if ($dto->parentIngredientId !== null && $dto->parentIngredientId !== $ingredient->parent_ingredient_id) {
                 $parentIngredient = Ingredient::find($dto->parentIngredientId);
                 $ingredient->appendAsChildOf($parentIngredient);
             } else {
@@ -145,9 +154,12 @@ final class IngredientService
 
         } catch (Throwable $e) {
             $this->log->error('[INGREDIENT_SERVICE] ' . $e->getMessage());
+            DB::rollBack();
 
             throw $e;
         }
+
+        DB::commit();
 
         if (count($dto->images) > 0) {
             try {

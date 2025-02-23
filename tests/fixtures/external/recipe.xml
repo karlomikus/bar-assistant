@@ -25,6 +25,7 @@
       <amount>45</amount>
       <units>ml</units>
       <optional></optional>
+      <is_specified></is_specified>
       <amount_max>60</amount_max>
       <note>Ingredient note</note>
       <substitutes/>
