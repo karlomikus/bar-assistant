@@ -6,8 +6,10 @@ namespace Kami\Cocktail\Models;
 
 use Brick\Money\Money;
 use Brick\Math\RoundingMode;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Kami\Cocktail\Models\ValueObjects\MenuItem;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -45,6 +47,17 @@ class Menu extends Model
     public function bar(): BelongsTo
     {
         return $this->belongsTo(Bar::class);
+    }
+
+    /**
+     * @return Collection<array-key, MenuItem>
+     */
+    public function getMenuItems(): Collection
+    {
+        $cocktails = $this->menuCocktails->map(fn (MenuCocktail $menuCocktail) => MenuItem::fromMenuCocktail($menuCocktail));
+        $ingredients = $this->menuIngredients->map(fn (MenuIngredient $menuIngredient) => MenuItem::fromMenuIngredient($menuIngredient));
+
+        return $cocktails->merge($ingredients)->values();
     }
 
     /**
@@ -96,7 +109,7 @@ class Menu extends Model
         $validIngredients = DB::table('ingredients')
             ->select('id')
             ->where('bar_id', $this->bar_id)
-            ->whereIn('id', array_column($cocktailMenuItems, 'cocktail_id'))
+            ->whereIn('id', array_column($cocktailMenuItems, 'ingredient_id'))
             ->pluck('id')
             ->toArray();
 

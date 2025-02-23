@@ -9,6 +9,8 @@ This is a new major release. Here's a quick summary of the more interesting chan
     - Existing ingredient categories will be migrated to nested ingredient hierarchy
 - Removed "Track parent ingredients as a substitutes" option
     - This is now default behavior
+- Updated Menu schema
+    - Added MenuItem schema to support multiple menu item types
 
 ## New
 - Added nested ingredient hierarchy
@@ -16,6 +18,7 @@ This is a new major release. Here's a quick summary of the more interesting chan
     - All descendants of a given ingredient are now considered as possible substitutes
     - You can specify if you want to use all descendants of a given ingredient as a possible substitute
     - Max nesting level is 10
+- You can now add ingredients to the menu
 
 # v4.4.1
 ## Changes
