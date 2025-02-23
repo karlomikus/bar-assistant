@@ -12,6 +12,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Concerns\IsExternalized;
@@ -192,7 +193,29 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
 
     public function barHasInShelf(): bool
     {
+        if (isset($this->in_bar_shelf)) {
+            return (bool) $this->in_bar_shelf;
+        }
+
         return $this->bar->shelfIngredients->contains('ingredient_id', $this->id);
+    }
+
+    /**
+     * Add a column to the query indicating if the ingredient is in the current bar's shelf
+     *
+     * @param Builder<self> $query
+     * @return Builder<self>
+     */
+    public function scopeAddInBarShelfColumn(Builder $query): Builder
+    {
+        return $query
+            ->leftJoin('bar_ingredients', function ($join) {
+                $join->on('ingredients.id', '=', 'bar_ingredients.ingredient_id')
+                    ->on('ingredients.bar_id', '=', 'bar_ingredients.bar_id');
+            })
+            ->addSelect('ingredients.*')
+            ->addSelect(DB::raw('CASE WHEN bar_ingredients.id IS NOT NULL THEN true ELSE false END AS in_bar_shelf'))
+            ->groupBy('ingredients.id');
     }
 
     public function barHasInShelfAsComplexIngredient(): bool
