@@ -13,6 +13,7 @@ use Kami\Cocktail\Models\ValueObjects\MenuItem;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 
 class Menu extends Model
 {
@@ -61,84 +62,47 @@ class Menu extends Model
     }
 
     /**
-     * @param array<int, array<string, mixed>> $cocktailMenuItems
+     * @param array<int, array<string, mixed>> $menuItems
      */
-    public function syncCocktails(array $cocktailMenuItems): void
+    public function syncItems(array $menuItems): void
     {
-        $validCocktails = DB::table('cocktails')
-            ->select('id')
-            ->where('bar_id', $this->bar_id)
-            ->whereIn('id', array_column($cocktailMenuItems, 'cocktail_id'))
-            ->pluck('id')
-            ->toArray();
+        $currentIngredientMenuItems = [];
+        $currentCocktailMenuItems = [];
 
-        $currentMenuItems = [];
-        foreach ($cocktailMenuItems as $cocktailMenuItem) {
-            if (!in_array($cocktailMenuItem['cocktail_id'], $validCocktails)) {
-                continue;
-            }
-
+        foreach ($menuItems as $menuItem) {
             $price = 0;
-            if ($cocktailMenuItem['price'] ?? false) {
+            if ($menuItem['price'] ?? false) {
                 $price = Money::of(
-                    $cocktailMenuItem['price'],
-                    $cocktailMenuItem['currency'],
+                    $menuItem['price'],
+                    $menuItem['currency'],
                     roundingMode: RoundingMode::UP
                 )->getMinorAmount()->toInt();
             }
 
-            $currentMenuItems[] = $cocktailMenuItem['cocktail_id'];
-            $this->menuCocktails()->updateOrCreate([
-                'cocktail_id' => $cocktailMenuItem['cocktail_id']
-            ], [
-                'category_name' => $cocktailMenuItem['category_name'],
-                'sort' => $cocktailMenuItem['sort'] ?? 0,
-                'price' => $price,
-                'currency' => $cocktailMenuItem['currency'] ?? null,
-            ]);
+            if (MenuItemTypeEnum::from($menuItem['type']) === MenuItemTypeEnum::Ingredient) {
+                $currentIngredientMenuItems[] = $menuItem['id'];
+                $this->menuIngredients()->updateOrCreate([
+                    'ingredient_id' => $menuItem['id']
+                ], [
+                    'category_name' => $menuItem['category_name'],
+                    'sort' => $menuItem['sort'] ?? 0,
+                    'price' => $price,
+                    'currency' => $menuItem['currency'] ?? null,
+                ]);
+            } else {
+                $currentCocktailMenuItems[] = $menuItem['id'];
+                $this->menuCocktails()->updateOrCreate([
+                    'cocktail_id' => $menuItem['id']
+                ], [
+                    'category_name' => $menuItem['category_name'],
+                    'sort' => $menuItem['sort'] ?? 0,
+                    'price' => $price,
+                    'currency' => $menuItem['currency'] ?? null,
+                ]);
+            }
         }
 
-        $this->menuCocktails()->whereNotIn('cocktail_id', $currentMenuItems)->delete();
-    }
-
-    /**
-     * @param array<int, array<string, mixed>> $cocktailMenuItems
-     */
-    public function syncIngredients(array $cocktailMenuItems): void
-    {
-        $validIngredients = DB::table('ingredients')
-            ->select('id')
-            ->where('bar_id', $this->bar_id)
-            ->whereIn('id', array_column($cocktailMenuItems, 'ingredient_id'))
-            ->pluck('id')
-            ->toArray();
-
-        $currentMenuItems = [];
-        foreach ($cocktailMenuItems as $cocktailMenuItem) {
-            if (!in_array($cocktailMenuItem['ingredient_id'], $validIngredients)) {
-                continue;
-            }
-
-            $price = 0;
-            if ($cocktailMenuItem['price'] ?? false) {
-                $price = Money::of(
-                    $cocktailMenuItem['price'],
-                    $cocktailMenuItem['currency'],
-                    roundingMode: RoundingMode::UP
-                )->getMinorAmount()->toInt();
-            }
-
-            $currentMenuItems[] = $cocktailMenuItem['ingredient_id'];
-            $this->menuIngredients()->updateOrCreate([
-                'ingredient_id' => $cocktailMenuItem['ingredient_id']
-            ], [
-                'category_name' => $cocktailMenuItem['category_name'],
-                'sort' => $cocktailMenuItem['sort'] ?? 0,
-                'price' => $price,
-                'currency' => $cocktailMenuItem['currency'] ?? null,
-            ]);
-        }
-
-        $this->menuIngredients()->whereNotIn('ingredient_id', $currentMenuItems)->delete();
+        $this->menuIngredients()->whereNotIn('ingredient_id', $currentIngredientMenuItems)->delete();
+        $this->menuCocktails()->whereNotIn('cocktail_id', $currentCocktailMenuItems)->delete();
     }
 }

@@ -19,6 +19,7 @@ This is a new major release. Here's a quick summary of the more interesting chan
     - You can specify if you want to use all descendants of a given ingredient as a possible substitute
     - Max nesting level is 10
 - You can now add ingredients to the menu
+- Public menu schema now contains bar images and bar shelf status
 
 # v4.4.1
 ## Changes

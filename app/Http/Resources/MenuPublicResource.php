@@ -25,11 +25,15 @@ class MenuPublicResource extends JsonResource
                 'name' => $this->bar->name,
                 'subtitle' => $this->bar->subtitle,
                 'description' => $this->bar->description,
+                'images' => $this->when(
+                    $this->bar->relationLoaded('images'),
+                    fn () => ImageResource::collection($this->bar->images)
+                ),
             ],
-            'categories' => $this->getMenuItems()->groupBy('categoryName')->map(function ($categoryCocktails, $name) {
+            'categories' => $this->getMenuItems()->groupBy('categoryName')->map(function ($items, $name) {
                 return [
                     'name' => $name,
-                    'items' => $categoryCocktails->sortBy(fn ($menuItem) => $menuItem->sort)->values()->map(function (MenuItem $menuItem) {
+                    'items' => $items->sortBy(fn ($menuItem) => $menuItem->sort)->values()->map(function (MenuItem $menuItem) {
                         return [
                             'in_bar_shelf' => false,
                             'type' => $menuItem->type->value,

@@ -7719,6 +7719,11 @@ components:
       enum:
         - input
         - eval
+    MenuItemTypeEnum:
+      type: string
+      enum:
+        - cocktail
+        - ingredient
     APIError:
       required:
         - type
@@ -9393,10 +9398,10 @@ components:
               name:
                 type: string
                 example: 'Category name'
-              cocktails:
+              items:
                 type: array
                 items:
-                  properties: { id: { type: integer, example: 1 }, slug: { type: string, example: cocktail-name-1 }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, currency: { type: string, example: EUR }, name: { type: string, example: 'Cocktail name' }, short_ingredients: { type: array, items: { type: string, example: Vodka } } }
+                  properties: { id: { type: integer, example: 1 }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, name: { type: string, example: 'Cocktail name' }, description: { type: array, items: { type: string, example: Vodka } } }
                   type: object
             type: object
       type: object
