@@ -154,8 +154,7 @@ class ShoppingListController extends Controller
 
         $shoppingListIngredients = $barMembership
             ->shoppingListIngredients
-            ->load('ingredient.category')
-            ->groupBy('ingredient.category.name');
+            ->load('ingredient');
 
         if ($type === 'markdown' || $type === 'md') {
             return response()->json([
