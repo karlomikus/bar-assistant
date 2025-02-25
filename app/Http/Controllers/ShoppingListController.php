@@ -67,9 +67,14 @@ class ShoppingListController extends Controller
             ->whereIn('id', $requestIngredients->pluck('id'))
             ->pluck('id');
 
+        $existingShoppingListIngredients = UserShoppingList::where('bar_membership_id', $barMembership->id)
+            ->whereIn('ingredient_id', $ingredients)
+            ->get()
+            ->keyBy('ingredient_id');
+
         $models = [];
         foreach ($ingredients as $ingId) {
-            if ($usl = UserShoppingList::where('bar_membership_id', $barMembership->id)->where('ingredient_id', $ingId)->first()) {
+            if ($usl = $existingShoppingListIngredients[$ingId] ?? null) {
                 $usl->quantity = $requestIngredients->where('id', $ingId)->first()['quantity'] ?? 1;
                 $usl->save();
             } else {
