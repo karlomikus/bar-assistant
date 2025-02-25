@@ -83,8 +83,11 @@ class MenuController extends Controller
             abort(403);
         }
 
-        $ingredients = collect($request->input('items'))->where('type', MenuItemTypeEnum::Ingredient->value)->values()->toArray();
-        $cocktails = collect($request->input('items'))->where('type', MenuItemTypeEnum::Cocktail->value)->values()->toArray();
+        /** @var array<mixed> */
+        $items = $request->input('items', []);
+
+        $ingredients = collect($items)->where('type', MenuItemTypeEnum::Ingredient->value)->values()->toArray();
+        $cocktails = collect($items)->where('type', MenuItemTypeEnum::Cocktail->value)->values()->toArray();
 
         Validator::make($ingredients, [
             '*.id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
@@ -100,7 +103,7 @@ class MenuController extends Controller
             $menu->created_at = now();
         }
         $menu->updated_at = now();
-        $menu->syncItems($request->input('items', []));
+        $menu->syncItems($items);
         $menu->save();
 
         return new MenuResource($menu);
