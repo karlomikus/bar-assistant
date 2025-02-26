@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use League\Csv\Writer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Menu;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
-use Kami\Cocktail\Models\MenuCocktail;
 use Illuminate\Support\Facades\Validator;
 use Kami\Cocktail\Http\Requests\MenuRequest;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
@@ -122,10 +122,21 @@ class MenuController extends Controller
             abort(403);
         }
 
+        $menu = Menu::where('bar_id', bar()->id)
+            ->with(
+                'menuCocktails.cocktail.ingredients.ingredient',
+                'menuCocktails.cocktail.images',
+                'menuIngredients.ingredient',
+                'menuIngredients.ingredient.ancestors',
+                'menuIngredients.ingredient.images',
+            )
+            ->firstOrFail();
+
         $records = [
             [
-                'cocktail',
-                'ingredients',
+                'type',
+                'item',
+                'description',
                 'category',
                 'price',
                 'currency',
@@ -133,26 +144,22 @@ class MenuController extends Controller
             ]
         ];
 
-        $cocktails = MenuCocktail::query()
-            ->with('cocktail.ingredients.ingredient')
-            ->join('menus', 'menus.id', '=', 'menu_cocktails.menu_id')
-            ->where('menus.bar_id', bar()->id)
-            ->get();
-
-        foreach ($cocktails as $menuCocktail) {
+        /** @var \Kami\Cocktail\Models\ValueObjects\MenuItem $menuItem */
+        foreach ($menu->getMenuItems() as $menuItem) {
             $record = [
-                e(preg_replace("/\s+/u", " ", $menuCocktail->cocktail->name)),
-                e($menuCocktail->cocktail->getIngredientNames()->implode(', ')),
-                e($menuCocktail->category_name),
-                $menuCocktail->getMoney()->getAmount()->toFloat(),
-                $menuCocktail->getMoney()->getCurrency()->getCurrencyCode(),
-                (string) $menuCocktail->getMoney(),
+                $menuItem->type->value,
+                e(preg_replace("/\s+/u", " ", $menuItem->name)),
+                e($menuItem->description),
+                e($menuItem->categoryName),
+                $menuItem->price->getMoney()->getAmount()->toFloat(),
+                $menuItem->price->getMoney()->getCurrency()->getCurrencyCode(),
+                (string) $menuItem->price->getMoney(),
             ];
 
             $records[] = $record;
         }
 
-        $writer = \League\Csv\Writer::createFromString();
+        $writer = Writer::createFromString();
         $writer->insertAll($records);
 
         return new Response($writer->toString(), 200, ['Content-Type' => 'text/csv']);
