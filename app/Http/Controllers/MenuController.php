@@ -10,9 +10,12 @@ use Kami\Cocktail\Models\Menu;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\MenuCocktail;
+use Illuminate\Support\Facades\Validator;
 use Kami\Cocktail\Http\Requests\MenuRequest;
+use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Kami\Cocktail\Http\Resources\MenuResource;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 use Kami\Cocktail\Http\Resources\MenuPublicResource;
 
 class MenuController extends Controller
@@ -80,13 +83,27 @@ class MenuController extends Controller
             abort(403);
         }
 
+        /** @var array<mixed> */
+        $items = $request->input('items', []);
+
+        $ingredients = collect($items)->where('type', MenuItemTypeEnum::Ingredient->value)->values()->toArray();
+        $cocktails = collect($items)->where('type', MenuItemTypeEnum::Cocktail->value)->values()->toArray();
+
+        Validator::make($ingredients, [
+            '*.id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
+        ])->validate();
+
+        Validator::make($cocktails, [
+            '*.id' => [new ResourceBelongsToBar(bar()->id, 'cocktails')],
+        ])->validate();
+
         $menu = Menu::firstOrCreate(['bar_id' => bar()->id]);
         $menu->is_enabled = $request->boolean('is_enabled');
         if (!$menu->created_at) {
             $menu->created_at = now();
         }
         $menu->updated_at = now();
-        $menu->syncCocktails($request->input('cocktails', []));
+        $menu->syncItems($items);
         $menu->save();
 
         return new MenuResource($menu);

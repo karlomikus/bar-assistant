@@ -237,6 +237,7 @@ class CocktailRepositoryTest extends TestCase
         $this->assertSame([1], $cocktails->toArray());
     }
 
+    /** legacy test, before ingredient taxonomies */
     public function test_gets_cocktails_that_can_be_made_with_ingredients_include_parent_ingredients(): void
     {
         $membership = $this->setupBarMembership();

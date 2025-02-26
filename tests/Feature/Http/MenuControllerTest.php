@@ -6,6 +6,8 @@ namespace Tests\Feature\Http;
 
 use Tests\TestCase;
 use Kami\Cocktail\Models\Menu;
+use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\MenuCocktail;
 use Kami\Cocktail\Models\BarMembership;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -58,6 +60,9 @@ class MenuControllerTest extends TestCase
 
     public function test_update_menu(): void
     {
+        Cocktail::factory()->for($this->barMembership->bar)->create();
+        Cocktail::factory()->for($this->barMembership->bar)->create();
+        Ingredient::factory()->for($this->barMembership->bar)->create();
         Menu::factory()->for($this->barMembership->bar)->create(['is_enabled' => true]);
 
         $response = $this->postJson('/api/menu', [
@@ -65,22 +70,56 @@ class MenuControllerTest extends TestCase
             'cocktails' => [
                 [
                     'cocktail_id' => 1,
-                    'price' => 20,
+                    'price' => 20.00,
                     'category_name' => 'Test 1',
                     'sort' => '1',
                     'currency' => 'EUR',
                 ],
                 [
                     'cocktail_id' => 2,
-                    'price' => 10,
+                    'price' => 10.50,
                     'category_name' => 'Test 1',
                     'sort' => '2',
                     'currency' => 'USD',
                 ],
             ],
+            'ingredients' => [
+                [
+                    'ingredient_id' => 1,
+                    'price' => 12.99,
+                    'category_name' => 'Test 1',
+                    'sort' => '1',
+                    'currency' => 'EUR',
+                ]
+            ],
         ], ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
         $response->assertSuccessful();
+
+        $this->assertDatabaseHas('menu_cocktails', [
+            'menu_id' => $response->json('data.id'),
+            'cocktail_id' => 1,
+            'price' => 2000,
+            'category_name' => 'Test 1',
+            'sort' => '1',
+            'currency' => 'EUR',
+        ]);
+        $this->assertDatabaseHas('menu_cocktails', [
+            'menu_id' => $response->json('data.id'),
+            'cocktail_id' => 2,
+            'price' => 1050,
+            'category_name' => 'Test 1',
+            'sort' => '2',
+            'currency' => 'USD',
+        ]);
+        $this->assertDatabaseHas('menu_ingredients', [
+            'menu_id' => $response->json('data.id'),
+            'ingredient_id' => 1,
+            'price' => 1299,
+            'category_name' => 'Test 1',
+            'sort' => '1',
+            'currency' => 'EUR',
+        ]);
     }
 
     public function test_export_menu(): void

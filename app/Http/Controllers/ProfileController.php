@@ -21,6 +21,11 @@ class ProfileController extends Controller
     #[BAO\NotFoundResponse]
     public function show(Request $request): JsonResource
     {
+        $user = $request->user();
+        $user->load([
+            'memberships' => fn ($memberships) => $memberships->chaperone(),
+        ]);
+
         return new ProfileResource($request->user());
     }
 
