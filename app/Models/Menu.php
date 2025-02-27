@@ -7,13 +7,12 @@ namespace Kami\Cocktail\Models;
 use Brick\Money\Money;
 use Brick\Math\RoundingMode;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\ValueObjects\MenuItem;
+use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 
 class Menu extends Model
 {

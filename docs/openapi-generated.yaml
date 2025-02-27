@@ -5695,6 +5695,111 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/auth/sso/{provider}/callback':
+    get:
+      tags:
+        - Authentication
+      summary: 'SSO callback'
+      description: 'Callback for SSO login'
+      operationId: ssoCallback
+      parameters:
+        -
+          name: provider
+          in: path
+          description: 'Provider ID'
+          required: true
+          schema:
+            type: string
+        -
+          name: code
+          in: query
+          description: 'Oauth token'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/Token' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
+  /auth/sso/providers:
+    get:
+      tags:
+        - Authentication
+      summary: 'SSO providers'
+      description: 'Configured SSO providers'
+      operationId: ssoProviders
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/SSOProvider' } }
+                type: object
+      security: []
   /server/version:
     get:
       tags:
@@ -7701,6 +7806,23 @@ components:
         - none
         - skip
         - overwrite
+    SSOProvider:
+      description: 'SSO Provider information'
+      required:
+        - name
+        - display_name
+        - enabled
+      properties:
+        name:
+          type: string
+          example: github
+        display_name:
+          type: string
+          example: GitHub
+        enabled:
+          type: boolean
+          example: true
+      type: object
     AbilityEnum:
       type: string
       enum:
@@ -9401,7 +9523,7 @@ components:
               items:
                 type: array
                 items:
-                  properties: { id: { type: integer, example: 1 }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, name: { type: string, example: 'Cocktail name' }, description: { type: array, items: { type: string, example: Vodka } } }
+                  properties: { id: { type: integer, example: 1 }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, name: { type: string, example: 'Cocktail name' }, description: { type: string } }
                   type: object
             type: object
       type: object
@@ -9969,6 +10091,16 @@ components:
             items:
               type: string
       type: object
+    Providers:
+      description: 'Provides a list of supported SSO providers.'
+      type: string
+      enum:
+        - github
+        - google
+        - gitlab
+        - authentik
+        - authelia
+        - keycloak
   securitySchemes:
     user_token:
       type: http

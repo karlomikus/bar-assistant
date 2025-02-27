@@ -85,6 +85,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(BarMembership::class);
     }
 
+    /**
+     * @return HasMany<OauthCredential, $this>
+     */
+    public function oauthCredentials(): HasMany
+    {
+        return $this->hasMany(OauthCredential::class);
+    }
+
     public function joinBarAs(Bar $bar, UserRoleEnum $role = UserRoleEnum::General): BarMembership
     {
         $existingMembership = $this->getBarMembership($bar->id);
@@ -157,6 +165,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->created_at = now();
         $this->updated_at = now();
         $this->memberships()->delete();
+        $this->oauthCredentials()->delete();
         $this->deactivateBars();
 
         return $this;
