@@ -24,6 +24,7 @@ class ProfileController extends Controller
         $user = $request->user();
         $user->load([
             'memberships' => fn ($memberships) => $memberships->chaperone(),
+            'oauthCredentials',
         ]);
 
         return new ProfileResource($request->user());

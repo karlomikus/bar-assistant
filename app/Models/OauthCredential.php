@@ -21,6 +21,11 @@ class OauthCredential extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function getProviderEnum(): OauthProvider
+    {
+        return OauthProvider::from($this->provider);
+    }
+
     /**
      * @return array<SSOProvider>
      */

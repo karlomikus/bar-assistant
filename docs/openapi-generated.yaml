@@ -7842,6 +7842,24 @@ components:
         - none
         - skip
         - overwrite
+    OauthCredential:
+      description: 'OAuth Credential information'
+      required:
+        - provider
+        - created_at
+        - updated_at
+      properties:
+        provider:
+          $ref: '#/components/schemas/OauthProvider'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+      type: object
     SSOProvider:
       description: 'SSO Provider information'
       required:
@@ -9787,6 +9805,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BarMembership'
+        oauth_credentials:
+          type: array
+          items:
+            $ref: '#/components/schemas/OauthCredential'
       type: object
     ProfileRequest:
       required:
