@@ -117,6 +117,7 @@ class UsersControllerTest extends TestCase
             'name' => 'Initial Name',
         ]);
         DB::table('bar_memberships')->insert(['bar_id' => 1, 'user_id' => $user->id, 'user_role_id' => UserRoleEnum::General->value]);
+        DB::table('oauth_credentials')->insert(['user_id' => $user->id, 'provider' => 'github', 'provider_id' => 1]);
 
         $this->actingAs($user);
 
@@ -125,6 +126,7 @@ class UsersControllerTest extends TestCase
         $response->assertNoContent();
 
         $this->assertDatabaseMissing('bar_memberships', ['user_id' => $user->id]);
+        $this->assertDatabaseMissing('oauth_credentials', ['user_id' => $user->id]);
         $anonUser = DB::table('users')->find($user->id);
         $this->assertSame('Deleted User', $anonUser->name);
         $this->assertSame('deleted', $anonUser->password);

@@ -20,6 +20,7 @@ use Kami\Cocktail\Http\Controllers\RatingController;
 use Kami\Cocktail\Http\Controllers\ServerController;
 use Kami\Cocktail\Http\Controllers\ExploreController;
 use Kami\Cocktail\Http\Controllers\ProfileController;
+use Kami\Cocktail\Http\Controllers\SSOAuthController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\UtensilsController;
 use Laravel\Paddle\Http\Controllers\WebhookController;
@@ -31,7 +32,6 @@ use Kami\Cocktail\Http\Controllers\SubscriptionController;
 use Kami\Cocktail\Http\Controllers\PriceCategoryController;
 use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
-use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +55,9 @@ Route::prefix('auth')->group(function () {
     Route::post('forgot-password', [AuthController::class, 'passwordForgot']);
     Route::post('reset-password', [AuthController::class, 'passwordReset']);
     Route::get('verify/{id}/{hash}', [AuthController::class, 'confirmAccount']);
+    Route::get('sso/{provider}/redirect', [SSOAuthController::class, 'redirect']);
+    Route::get('sso/{provider}/callback', [SSOAuthController::class, 'callback']);
+    Route::get('sso/providers', [SSOAuthController::class, 'list']);
 });
 
 Route::prefix('server')->group(function () {
@@ -81,6 +84,7 @@ Route::middleware($apiMiddleware)->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show'])->middleware(['ability:*']);
     Route::post('/profile', [ProfileController::class, 'update'])->middleware(['ability:*']);
+    Route::delete('/profile/sso/{provider}', [ProfileController::class, 'deleteSSOProvider'])->middleware(['ability:*']);
 
     Route::prefix('shelf')->middleware(['ability:*'])->group(function () {
         Route::post('/ingredients/batch-store', [ShelfController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
