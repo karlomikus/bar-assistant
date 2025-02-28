@@ -7,7 +7,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Http\Resources\OauthCredentialResource;
 
-#[OAT\Schema(required: ['id', 'name', 'email', 'is_subscribed', 'memberships'])]
+#[OAT\Schema(required: ['id', 'name', 'email', 'is_subscribed', 'memberships', 'oauth_credentials'])]
 class Profile
 {
     #[OAT\Property(example: 1)]

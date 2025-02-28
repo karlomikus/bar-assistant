@@ -6,19 +6,20 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
-use Kami\Cocktail\Services\Auth\OauthProvider;
+use Kami\Cocktail\Models\OauthCredential;
 use Kami\Cocktail\Services\Auth\SSOService;
+use Kami\Cocktail\Services\Auth\OauthProvider;
 use Kami\Cocktail\Http\Resources\TokenResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\SSOProviderResource;
-use Kami\Cocktail\Models\OauthCredential;
 
 class SSOAuthController extends Controller
 {
     #[OAT\Get(path: '/auth/sso/{provider}/redirect', tags: ['Authentication'], operationId: 'ssoRedirect', description: 'Redirect to SSO authentication', summary: 'SSO redirect', parameters: [
-        new OAT\Parameter(name: 'provider', in: 'path', required: true, description: 'Provider ID', schema: new OAT\Schema(type: 'string')),
+        new OAT\Parameter(name: 'provider', in: 'path', required: true, description: 'Provider ID', schema: new OAT\Schema(ref: OauthProvider::class)),
     ], security: [])]
     #[OAT\Response(response: 302, description: 'Redirect response')]
     #[BAO\NotFoundResponse]
@@ -34,7 +35,7 @@ class SSOAuthController extends Controller
     }
 
     #[OAT\Get(path: '/auth/sso/{provider}/callback', tags: ['Authentication'], operationId: 'ssoCallback', description: 'Callback for SSO login', summary: 'SSO callback', parameters: [
-        new OAT\Parameter(name: 'provider', in: 'path', required: true, description: 'Provider ID', schema: new OAT\Schema(type: 'string')),
+        new OAT\Parameter(name: 'provider', in: 'path', required: true, description: 'Provider ID', schema: new OAT\Schema(ref: OauthProvider::class)),
         new OAT\Parameter(name: 'code', in: 'query', required: true, description: 'Oauth token', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
     #[BAO\SuccessfulResponse(content: [
@@ -56,7 +57,15 @@ class SSOAuthController extends Controller
             abort(403, $e->getMessage());
         }
 
-        $credentials = $ssoService->findOrCreateCredential($socialiteUser, $validProvider);
+        try {
+            $credentials = $ssoService->findOrCreateCredential($socialiteUser, $validProvider);
+        } catch (\Exception $e) {
+            Log::error('Unable to create SSO credentials for user id: ' . $socialiteUser->getId() . ' provider: ' . $validProvider->value . ' error: ' . $e->getMessage());
+            abort(500, 'Unable to create SSO credentials');
+        }
+
+        Log::info('Created SSO credentials for user id: ' . $credentials->user->id);
+
         $token = $credentials->user->createToken('SSO Login via: ' . $validProvider->value, expiresAt: now()->addDays(14));
 
         return new TokenResource($token);

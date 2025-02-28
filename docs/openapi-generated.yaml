@@ -5583,6 +5583,58 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/profile/sso/{provider}':
+    delete:
+      tags:
+        - Profile
+      summary: 'Delete SSO provider'
+      description: "Delete user's SSO provider"
+      operationId: deleteSSO
+      parameters:
+        -
+          name: provider
+          in: path
+          description: 'Provider ID'
+          required: true
+          schema:
+            $ref: '#/components/schemas/OauthProvider'
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   '/cocktails/{id}/ratings':
     post:
       tags:
@@ -5709,7 +5761,7 @@ paths:
           description: 'Provider ID'
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/OauthProvider'
       responses:
         '302':
           description: 'Redirect response'
@@ -5745,7 +5797,7 @@ paths:
           description: 'Provider ID'
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/OauthProvider'
         -
           name: code
           in: query
@@ -7850,7 +7902,7 @@ components:
         - updated_at
       properties:
         provider:
-          $ref: '#/components/schemas/OauthProvider'
+          $ref: '#/components/schemas/SSOProvider'
         created_at:
           type: string
           format: date-time
@@ -7874,6 +7926,7 @@ components:
           type: string
           example: GitHub
         enabled:
+          description: 'Whether the provider is configured and enabled by server'
           type: boolean
           example: true
       type: object
@@ -9789,6 +9842,7 @@ components:
         - email
         - is_subscribed
         - memberships
+        - oauth_credentials
       properties:
         id:
           type: integer

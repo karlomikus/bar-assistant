@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Hash;
+use Kami\Cocktail\Services\Auth\OauthProvider;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\ProfileResource;
 use Kami\Cocktail\Http\Requests\UpdateUserRequest;
@@ -65,5 +67,23 @@ class ProfileController extends Controller
         $currentUser->save();
 
         return new ProfileResource($request->user());
+    }
+
+    #[OAT\Delete(path: '/profile/sso/{provider}', tags: ['Profile'], operationId: 'deleteSSO', description: 'Delete user\'s SSO provider', summary: 'Delete SSO provider', parameters: [
+        new OAT\Parameter(name: 'provider', in: 'path', required: true, description: 'Provider ID', schema: new OAT\Schema(ref: OauthProvider::class)),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function deleteSSOProvider(Request $request, string $provider): Response
+    {
+        $validProvider = OauthProvider::tryFrom($provider);
+        if ($validProvider === null) {
+            abort(404, 'Unsupported provider');
+        }
+
+        $request->user()->oauthCredentials()->where('provider', $validProvider->value)->delete();
+
+        return new Response(null, 204);
     }
 }

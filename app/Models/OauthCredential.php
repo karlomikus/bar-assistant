@@ -26,6 +26,15 @@ class OauthCredential extends Model
         return OauthProvider::from($this->provider);
     }
 
+    public function getAsSSOProvider(): SSOProvider
+    {
+        return new SSOProvider(
+            $this->getProviderEnum(),
+            $this->getProviderEnum()->getPrettyName(),
+            self::isProviderConfigured($this->getProviderEnum())
+        );
+    }
+
     /**
      * @return array<SSOProvider>
      */

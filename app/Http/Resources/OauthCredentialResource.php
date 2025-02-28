@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Resources;
 
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\Services\Auth\OauthProvider;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -15,7 +14,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
     schema: 'OauthCredential',
     description: 'OAuth Credential information',
     properties: [
-        new OAT\Property(property: 'provider', ref: OauthProvider::class),
+        new OAT\Property(property: 'provider', ref: SSOProviderResource::class),
         new OAT\Property(property: 'created_at', type: 'string', format: 'date-time'),
         new OAT\Property(property: 'updated_at', type: 'string', format: 'date-time', nullable: true),
     ],
@@ -32,7 +31,7 @@ class OauthCredentialResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'provider' => $this->getProviderEnum()->value,
+            'provider' => new SSOProviderResource($this->getAsSSOProvider()),
             'created_at' => $this->created_at->toAtomString(),
             'updated_at' => $this->updated_at?->toAtomString(),
         ];

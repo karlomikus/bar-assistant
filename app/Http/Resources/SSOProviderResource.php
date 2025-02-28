@@ -16,7 +16,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
     properties: [
         new OAT\Property(property: 'name', type: 'string', example: 'github'),
         new OAT\Property(property: 'display_name', type: 'string', example: 'GitHub'),
-        new OAT\Property(property: 'enabled', type: 'boolean', example: true),
+        new OAT\Property(property: 'enabled', description: 'Whether the provider is configured and enabled by server', type: 'boolean', example: true),
     ],
     required: ['name', 'display_name', 'enabled'],
 )]
