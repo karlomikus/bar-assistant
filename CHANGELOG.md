@@ -3,6 +3,7 @@ This is a new major release. Here's a quick summary of the more interesting chan
 
 - Added nested ingredient hierarchy and removed ingredient categories. You can now assign parent child relationships for ingredients and use all descendants of a given ingredient as a possible substitute.
 - This gives option for users to manage more complex ingredient taxonomies, like "Spirits > Rum - Blended > Rum - Blended Lightly Aged"
+- Added SSO support
 
 # Breaking changes
 - Removed ingredient categories
@@ -20,6 +21,14 @@ This is a new major release. Here's a quick summary of the more interesting chan
     - Max nesting level is 10
 - You can now add ingredients to the menu
 - Public menu schema now contains bar images and bar shelf status
+- Added SSO support
+    - You can now login via OAuth2 if the server is properly configured
+    - Currently supports: Google, GitHub, GitLab, Keycloak, Authentik, Authelia
+    - Added GET `sso/providers` endpoint to list available SSO providers
+    - Added GET `sso/{provider}/redirect` endpoint to redirect to SSO provider
+    - Added GET `sso/{provider}/callback` endpoint to handle SSO callback
+    - Added DELETE `profile/sso/{provider}` endpoint to remove SSO credentials from user
+    - Updated `Profile` schema
 
 # v4.4.1
 ## Changes
