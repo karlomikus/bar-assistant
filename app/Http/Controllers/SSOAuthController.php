@@ -12,8 +12,8 @@ use Kami\Cocktail\Services\Auth\OauthProvider;
 use Kami\Cocktail\Services\Auth\SSOService;
 use Kami\Cocktail\Http\Resources\TokenResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\Models\ValueObjects\SSOProvider;
 use Kami\Cocktail\Http\Resources\SSOProviderResource;
+use Kami\Cocktail\Models\OauthCredential;
 
 class SSOAuthController extends Controller
 {
@@ -25,7 +25,7 @@ class SSOAuthController extends Controller
     public function redirect(string $provider): RedirectResponse
     {
         $validProvider = OauthProvider::tryFrom($provider);
-        if ($validProvider === null) {
+        if ($validProvider === null || !OauthCredential::isProviderConfigured($validProvider)) {
             abort(404, 'Unsupported provider');
         }
 
@@ -45,7 +45,7 @@ class SSOAuthController extends Controller
     public function callback(string $provider, SSOService $ssoService): TokenResource
     {
         $validProvider = OauthProvider::tryFrom($provider);
-        if ($validProvider === null) {
+        if ($validProvider === null || !OauthCredential::isProviderConfigured($validProvider)) {
             abort(400, 'Unsupported provider');
         }
 
@@ -68,16 +68,7 @@ class SSOAuthController extends Controller
     ])]
     public function list(): JsonResource
     {
-        $providers = OauthProvider::cases();
-
-        $enabledProviders = [];
-        foreach ($providers as $provider) {
-            $enabledProviders[] = new SSOProvider(
-                $provider,
-                $provider->getPrettyName(),
-                !blank(config("services.{$provider->value}.client_id")),
-            );
-        }
+        $enabledProviders = OauthCredential::getAvailableProviders();
 
         return SSOProviderResource::collection($enabledProviders);
     }
