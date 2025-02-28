@@ -5695,6 +5695,42 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/auth/sso/{provider}/redirect':
+    get:
+      tags:
+        - Authentication
+      summary: 'SSO redirect'
+      description: 'Redirect to SSO authentication'
+      operationId: ssoRedirect
+      parameters:
+        -
+          name: provider
+          in: path
+          description: 'Provider ID'
+          required: true
+          schema:
+            type: string
+      responses:
+        '302':
+          description: 'Redirect response'
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
   '/auth/sso/{provider}/callback':
     get:
       tags:
@@ -10091,7 +10127,7 @@ components:
             items:
               type: string
       type: object
-    Providers:
+    OauthProvider:
       description: 'Provides a list of supported SSO providers.'
       type: string
       enum:

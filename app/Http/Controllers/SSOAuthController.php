@@ -8,8 +8,8 @@ use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
-use Kami\Cocktail\Services\SSO\Providers;
-use Kami\Cocktail\Services\SSO\SSOService;
+use Kami\Cocktail\Services\Auth\OauthProvider;
+use Kami\Cocktail\Services\Auth\SSOService;
 use Kami\Cocktail\Http\Resources\TokenResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Models\ValueObjects\SSOProvider;
@@ -17,9 +17,14 @@ use Kami\Cocktail\Http\Resources\SSOProviderResource;
 
 class SSOAuthController extends Controller
 {
+    #[OAT\Get(path: '/auth/sso/{provider}/redirect', tags: ['Authentication'], operationId: 'ssoRedirect', description: 'Redirect to SSO authentication', summary: 'SSO redirect', parameters: [
+        new OAT\Parameter(name: 'provider', in: 'path', required: true, description: 'Provider ID', schema: new OAT\Schema(type: 'string')),
+    ], security: [])]
+    #[OAT\Response(response: 302, description: 'Redirect response')]
+    #[BAO\NotFoundResponse]
     public function redirect(string $provider): RedirectResponse
     {
-        $validProvider = Providers::tryFrom($provider);
+        $validProvider = OauthProvider::tryFrom($provider);
         if ($validProvider === null) {
             abort(404, 'Unsupported provider');
         }
@@ -39,7 +44,7 @@ class SSOAuthController extends Controller
     #[BAO\NotFoundResponse]
     public function callback(string $provider, SSOService $ssoService): TokenResource
     {
-        $validProvider = Providers::tryFrom($provider);
+        $validProvider = OauthProvider::tryFrom($provider);
         if ($validProvider === null) {
             abort(400, 'Unsupported provider');
         }
@@ -63,7 +68,7 @@ class SSOAuthController extends Controller
     ])]
     public function list(): JsonResource
     {
-        $providers = Providers::cases();
+        $providers = OauthProvider::cases();
 
         $enabledProviders = [];
         foreach ($providers as $provider) {

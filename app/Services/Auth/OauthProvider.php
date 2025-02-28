@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Services\SSO;
+namespace Kami\Cocktail\Services\Auth;
 
 use OpenApi\Attributes as OAT;
 
@@ -10,7 +10,7 @@ use OpenApi\Attributes as OAT;
 /**
  * Provides a list of supported SSO providers.
  */
-enum Providers: string
+enum OauthProvider: string
 {
     case GitHub = 'github';
     case Google = 'google';

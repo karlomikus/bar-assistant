@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Services;
+namespace Kami\Cocktail\Services\Auth;
 
 use Kami\Cocktail\Models\User;
 use Illuminate\Support\Facades\Mail;

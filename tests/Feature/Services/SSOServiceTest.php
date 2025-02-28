@@ -6,8 +6,8 @@ namespace Tests\Feature\Services;
 
 use Tests\TestCase;
 use Kami\Cocktail\Models\User;
-use Kami\Cocktail\Services\SSO\Providers;
-use Kami\Cocktail\Services\SSO\SSOService;
+use Kami\Cocktail\Services\Auth\OauthProvider;
+use Kami\Cocktail\Services\Auth\SSOService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 
@@ -22,7 +22,7 @@ class SSOServiceTest extends TestCase
 
         $ssoUser = $this->getDummyUser();
 
-        $credentials = $service->findOrCreateCredential($ssoUser, Providers::Authentik);
+        $credentials = $service->findOrCreateCredential($ssoUser, OauthProvider::Authentik);
 
         $this->assertSame(1, $credentials->user->id);
         $this->assertSame('dummy', $credentials->user->name);
@@ -40,7 +40,7 @@ class SSOServiceTest extends TestCase
         $user = User::factory()->create(['id' => 7, 'email' => 'dummy@example.com', 'name' => 'Existing name']);
         $ssoUser = $this->getDummyUser();
 
-        $credentials = $service->findOrCreateCredential($ssoUser, Providers::Authentik);
+        $credentials = $service->findOrCreateCredential($ssoUser, OauthProvider::Authentik);
 
         $this->assertSame(7, $credentials->user->id);
         $this->assertSame('Existing name', $credentials->user->name);

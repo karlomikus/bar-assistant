@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\Services\SSO;
+namespace Kami\Cocktail\Services\Auth;
 
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\OauthCredential;
-use Kami\Cocktail\Services\RegisterUserService;
+use Kami\Cocktail\Services\Auth\RegisterUserService;
 use Kami\Cocktail\OpenAPI\Schemas\RegisterRequest;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 
@@ -16,7 +16,7 @@ final class SSOService
     {
     }
 
-    public function findOrCreateCredential(SocialiteUser $socialiteUser, Providers $provider): OauthCredential
+    public function findOrCreateCredential(SocialiteUser $socialiteUser, OauthProvider $provider): OauthCredential
     {
         $existingCredentials = OauthCredential::where('provider', $provider->value)
             ->where('provider_id', $socialiteUser->getId())
