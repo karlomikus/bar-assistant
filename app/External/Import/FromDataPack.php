@@ -291,6 +291,7 @@ class FromDataPack
 
         $imagesToInsert = [];
         $tagsToInsert = [];
+        $cocktailTagsMap = [];
         $cocktailUtensilsToInsert = [];
         $barImagesDir = 'cocktails/' . $bar->id . '/';
         $this->uploadsDisk->makeDirectory($barImagesDir);
@@ -324,14 +325,9 @@ class FromDataPack
             ]);
 
             foreach ($externalCocktail->tags as $tag) {
-                $tag = Tag::firstOrCreate([
-                    'name' => trim($tag),
-                    'bar_id' => $bar->id,
-                ]);
-                $tagsToInsert[] = [
-                    'tag_id' => $tag->id,
-                    'cocktail_id' => $cocktailId,
-                ];
+                $tag = trim($tag);
+                $tagsToInsert[$tag] = ['name' => $tag, 'bar_id' => $bar->id];
+                $cocktailTagsMap[$tag][] = ['cocktail_id' => $cocktailId];
             }
 
             foreach ($externalCocktail->utensils as $utensil) {
@@ -410,8 +406,18 @@ class FromDataPack
         }
         DB::commit();
 
+        DB::table('tags')->insert(array_values($tagsToInsert));
+        $cocktailTagsToInsert = [];
+        $newTags = DB::table('tags')->where('bar_id', $bar->id)->select('id', 'name')->get()->keyBy('name');
+        foreach ($cocktailTagsMap as $tagName => $cocktailIds) {
+            $cocktailIds = array_map(function ($row) use ($newTags, $tagName) {
+                $row['tag_id'] = $newTags[$tagName]->id;
+                return $row;
+            }, $cocktailIds);
+            $cocktailTagsToInsert = array_merge($cocktailTagsToInsert, $cocktailIds);
+        }
         DB::table('images')->insert($imagesToInsert);
-        DB::table('cocktail_tag')->insert($tagsToInsert);
+        DB::table('cocktail_tag')->insert($cocktailTagsToInsert);
     }
 
     private function copyResourceImage(Filesystem $dataDisk, string $baseSrcImagePath, string $targetImagePath): void

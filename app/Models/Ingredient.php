@@ -301,7 +301,7 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
      */
     public function makeSearchableUsing(Collection $models): Collection
     {
-        return $models->load('images');
+        return $models->load('images', 'ancestors');
     }
 
     /**
