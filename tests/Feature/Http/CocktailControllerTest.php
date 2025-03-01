@@ -92,7 +92,7 @@ class CocktailControllerTest extends TestCase
             'name' => 'a test',
             'abv' => 33.3,
         ]);
-        $cocktailFavorited = Cocktail::factory()->recycle($membership->bar)->create(['abv' => 10]);
+        $cocktailFavorited = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'nonan', 'abv' => 10]);
         CocktailFavorite::factory()->recycle($cocktailFavorited, $membership)->create();
 
         $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
