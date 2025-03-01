@@ -81,9 +81,9 @@ class FromDataPack
         $bar->setStatus(BarStatusEnum::Active)->save();
 
         /** @phpstan-ignore-next-line */
-        Ingredient::where('bar_id', $bar->id)->with('images')->searchable();
+        Ingredient::where('bar_id', $bar->id)->searchable();
         /** @phpstan-ignore-next-line */
-        Cocktail::where('bar_id', $bar->id)->with('ingredients.ingredient', 'tags', 'images')->searchable();
+        Cocktail::where('bar_id', $bar->id)->searchable();
 
         $timerEnd = microtime(true);
 
@@ -177,7 +177,6 @@ class FromDataPack
         $barImagesDir = $bar->getIngredientsDirectory();
         $this->uploadsDisk->makeDirectory($barImagesDir);
 
-        DB::beginTransaction();
         foreach ($this->getDataFromDir('ingredients', $dataDisk) as $fromYield) {
             [$externalIngredient, $filePath] = $fromYield;
             $externalIngredient = IngredientExternal::fromDataPackArray($externalIngredient);
@@ -229,9 +228,14 @@ class FromDataPack
             }
         }
 
+        // Start inserting
+        DB::beginTransaction();
+
         DB::table('ingredients')->insert($ingredientsToInsert);
 
         $ingredients = DB::table('ingredients')->where('bar_id', $bar->id)->get();
+        $barShelfIngredientsToInsert = [];
+        $complexIngredientsToInsert = [];
 
         foreach ($ingredients as $ingredient) {
             if (array_key_exists($ingredient->slug, $imagesToInsert)) {
@@ -241,7 +245,7 @@ class FromDataPack
 
             if (array_key_exists($ingredient->slug, $parentIngredientsToInsert)) {
                 $parentSlug = $parentIngredientsToInsert[$ingredient->slug];
-                $parentIngredientId = DB::table('ingredients')->where('slug', $parentSlug)->where('bar_id', $bar->id)->first('id');
+                $parentIngredientId = $ingredients->firstWhere('slug', $parentSlug);
                 if (isset($parentIngredientId->id)) {
                     DB::table('ingredients')->where('slug', $ingredient->slug)->where('bar_id', $bar->id)->update(['parent_ingredient_id' => $parentIngredientId->id]);
                 }
@@ -249,16 +253,24 @@ class FromDataPack
 
             if (array_key_exists($ingredient->slug, $ingredientPartsToInsert)) {
                 foreach ($ingredientPartsToInsert[$ingredient->slug] as $partSlug) {
-                    $ingredientPartId = DB::table('ingredients')->where('slug', $partSlug)->where('bar_id', $bar->id)->first('id');
+                    $ingredientPartId = $ingredients->firstWhere('slug', $partSlug);
                     if (isset($ingredientPartId->id)) {
-                        DB::table('complex_ingredients')->insert(['main_ingredient_id' => $ingredient->id, 'ingredient_id' => $ingredientPartId->id]);
+                        $complexIngredientsToInsert[] = ['main_ingredient_id' => $ingredient->id, 'ingredient_id' => $ingredientPartId->id];
                     }
                 }
             }
 
             if (in_array($ingredient->slug, $this->barShelf)) {
-                DB::table('bar_ingredients')->insert(['ingredient_id' => $ingredient->id, 'bar_id' => $bar->id]);
+                $barShelfIngredientsToInsert[] = ['ingredient_id' => $ingredient->id, 'bar_id' => $bar->id];
             }
+        }
+
+        if (count($complexIngredientsToInsert) > 0) {
+            DB::table('complex_ingredients')->insert($complexIngredientsToInsert);
+        }
+
+        if (count($barShelfIngredientsToInsert) > 0) {
+            DB::table('bar_ingredients')->insert($barShelfIngredientsToInsert);
         }
 
         if (count($imagesToInsert) > 0) {
