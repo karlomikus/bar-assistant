@@ -6,8 +6,8 @@ namespace Tests\Feature\Services;
 
 use Tests\TestCase;
 use Kami\Cocktail\Models\User;
-use Kami\Cocktail\Services\Auth\OauthProvider;
 use Kami\Cocktail\Services\Auth\SSOService;
+use Kami\Cocktail\Services\Auth\OauthProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 
@@ -53,20 +53,25 @@ class SSOServiceTest extends TestCase
 
     private function getDummyUser(): SocialiteUser
     {
-        return new class implements SocialiteUser {
-            public function getId() {
+        return new class () implements SocialiteUser {
+            public function getId()
+            {
                 return 801;
             }
-            public function getNickname() {
+            public function getNickname()
+            {
                 return 'dummy';
             }
-            public function getName() {
+            public function getName()
+            {
                 return 'Dummy User';
             }
-            public function getEmail() {
+            public function getEmail()
+            {
                 return 'dummy@example.com';
             }
-            public function getAvatar() {
+            public function getAvatar()
+            {
                 return 'https://example.com/avatar.png';
             }
         };
