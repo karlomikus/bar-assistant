@@ -31,7 +31,7 @@ class IngredientResource extends JsonResource
             'materialized_path' => $this->materialized_path,
             'hierarchy' => [
                 'root_ingredient_id' => $this->getMaterializedPath()->toArray()[0] ?? null,
-                'path_to_self' => $this->when($this->relationLoaded('ancestors'), fn () => $this->ancestors->pluck('name')->implode(' > ')),
+                'path_to_self' => $this->when($this->relationLoaded('ancestors') && $this->parent_ingredient_id, fn () => $this->ancestors->pluck('name')->implode(' > ')),
                 'parent_ingredient' => $this->whenLoaded('parentIngredient', fn () => new IngredientBasicResource($this->parentIngredient)),
                 'descendants' => IngredientBasicResource::collection($this->whenLoaded('descendants')),
                 'ancestors' => IngredientBasicResource::collection($this->whenLoaded('ancestors')),
