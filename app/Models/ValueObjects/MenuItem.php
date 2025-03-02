@@ -20,6 +20,7 @@ readonly class MenuItem
         public ?string $description = null,
         public ?string $publicId = null,
         public ?string $image = null,
+        public bool $inShelf = false,
     ) {
     }
 
@@ -35,6 +36,7 @@ readonly class MenuItem
             description: $menuCocktail->cocktail->getIngredientNames()->implode(', '),
             publicId: $menuCocktail->cocktail->public_id,
             image: config('app.url') . $menuCocktail->cocktail->getMainImageThumbUrl(false),
+            inShelf: $menuCocktail->cocktail->inBarShelf(),
         );
     }
 
@@ -50,6 +52,7 @@ readonly class MenuItem
             description: $menuIngredient->ingredient->getMaterializedPathAsString(),
             publicId: null,
             image: config('app.url') . $menuIngredient->ingredient->getMainImageThumbUrl(false),
+            inShelf: $menuIngredient->ingredient->barHasInShelf(),
         );
     }
 }

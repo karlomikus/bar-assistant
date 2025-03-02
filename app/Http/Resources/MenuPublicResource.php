@@ -35,7 +35,7 @@ class MenuPublicResource extends JsonResource
                     'name' => $name,
                     'items' => $items->sortBy(fn ($menuItem) => $menuItem->sort)->values()->map(function (MenuItem $menuItem) {
                         return [
-                            'in_bar_shelf' => false,
+                            'in_bar_shelf' => $menuItem->inShelf,
                             'type' => $menuItem->type->value,
                             'sort' => $menuItem->sort,
                             'price' => new PriceResource($menuItem->price),

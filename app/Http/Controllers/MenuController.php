@@ -59,7 +59,15 @@ class MenuController extends Controller
             ->join('bars', 'bars.id', '=', 'menus.bar_id')
             ->join('menu_cocktails', 'menu_cocktails.menu_id', '=', 'menus.id')
             ->orderBy('menu_cocktails.sort', 'asc')
-            ->with('menuCocktails.cocktail')
+            ->with(
+                'bar',
+                'menuCocktails.cocktail.ingredients.ingredient',
+                'menuCocktails.cocktail.images',
+                'menuCocktails.cocktail.bar.shelfIngredients',
+                'menuIngredients.ingredient.ancestors',
+                'menuIngredients.ingredient.images',
+                'menuIngredients.ingredient.bar.shelfIngredients',
+            )
             ->firstOrFail();
 
         return new MenuPublicResource($menu);
