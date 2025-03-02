@@ -130,21 +130,23 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
     {
         $sourceArray = array_change_key_case($sourceArray, CASE_LOWER);
 
-        $images = [];
-        $ingredientParts = [];
-
         return new self(
-            'CSV',
-            $sourceArray['name'],
-            null,
-            isset($sourceArray['strength']) ? floatval($sourceArray['strength']) : 0.0,
-            blank($sourceArray['description']) ? null : $sourceArray['description'],
-            blank($sourceArray['origin']) ? null : $sourceArray['origin'],
-            blank($sourceArray['color']) ? null : $sourceArray['color'],
-            null,
-            null,
-            $images,
-            $ingredientParts,
+            id: 'CSV',
+            name: $sourceArray['name'],
+            parentId: null,
+            strength: isset($sourceArray['strength']) ? floatval($sourceArray['strength']) : 0.0,
+            description: blank($sourceArray['description']) ? null : $sourceArray['description'],
+            origin: blank($sourceArray['origin']) ? null : $sourceArray['origin'],
+            color: blank($sourceArray['color']) ? null : $sourceArray['color'],
+            createdAt: null,
+            updatedAt: null,
+            images: [],
+            ingredientParts: [],
+            prices: [],
+            calculatorId: null,
+            sugarContent: blank($sourceArray['sugar_g_per_ml']) ? null : $sourceArray['sugar_g_per_ml'],
+            acidity: blank($sourceArray['acidity']) ? null : $sourceArray['acidity'],
+            distillery: blank($sourceArray['distillery']) ? null : $sourceArray['distillery'],
         );
     }
 }

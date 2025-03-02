@@ -39,6 +39,9 @@ class FromIngredientCSV
                     $ingredient->color = $ingredientExternal->color;
                     $ingredient->created_user_id = $this->userId;
                     $ingredient->created_at = now();
+                    $ingredient->sugar_g_per_ml = $ingredientExternal->sugarContent;
+                    $ingredient->acidity = $ingredientExternal->acidity;
+                    $ingredient->distillery = $ingredientExternal->distillery;
                     $ingredient->save();
                 });
         } catch (Throwable $e) {
