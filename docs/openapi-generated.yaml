@@ -9574,6 +9574,23 @@ components:
             - integer
             - 'null'
           example: 1
+        sugar_g_per_ml:
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 0.24
+        acidity:
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 0.1
+        distillery:
+          type:
+            - string
+            - 'null'
+          example: 'Buffalo trace'
       type: object
     IngredientTree:
       required:
