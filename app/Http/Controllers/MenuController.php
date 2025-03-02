@@ -39,7 +39,14 @@ class MenuController extends Controller
             $bar->save();
         }
 
-        $menu = Menu::with('menuCocktails.cocktail.ingredients.ingredient')->firstOrCreate(['bar_id' => $bar->id]);
+        $menu = Menu::with(
+            'menuCocktails.cocktail.ingredients.ingredient',
+            'menuCocktails.cocktail.images',
+            'menuCocktails.cocktail.bar.shelfIngredients',
+            'menuIngredients.ingredient.ancestors',
+            'menuIngredients.ingredient.images',
+            'menuIngredients.ingredient.bar.shelfIngredients',
+        )->firstOrCreate(['bar_id' => $bar->id]);
 
         return new MenuResource($menu);
     }
