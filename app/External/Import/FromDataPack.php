@@ -195,6 +195,9 @@ class FromDataPack
                 'created_at' => $externalIngredient->createdAt ?? now(),
                 'updated_at' => $externalIngredient->updatedAt,
                 'calculator_id' => $externalIngredient->calculatorId ? $this->ingredientCalculators[$externalIngredient->calculatorId] : null,
+                'sugar_g_per_ml' => $externalIngredient->sugarContent,
+                'acidity' => $externalIngredient->acidity,
+                'distillery' => $externalIngredient->distillery,
             ];
 
             if ($externalIngredient->parentId) {

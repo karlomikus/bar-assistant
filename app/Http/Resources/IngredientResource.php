@@ -73,6 +73,9 @@ class IngredientResource extends JsonResource
                 return IngredientPriceResource::collection($this->prices);
             }),
             'calculator_id' => $this->calculator_id,
+            'sugar_g_per_ml' => $this->sugar_g_per_ml,
+            'acidity' => $this->acidity,
+            'distillery' => $this->distillery,
         ];
     }
 }

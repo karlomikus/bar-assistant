@@ -48,12 +48,14 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     ];
 
     /**
-     * @return array{strength: 'float'}
+     * @return array{strength: 'float', sugar_g_per_ml: 'float', acidity: 'float'}
      */
     protected function casts(): array
     {
         return [
             'strength' => 'float',
+            'sugar_g_per_ml' => 'float',
+            'acidity' => 'float',
         ];
     }
 

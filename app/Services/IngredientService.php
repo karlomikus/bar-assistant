@@ -42,6 +42,9 @@ final class IngredientService
             $ingredient->color = $dto->color;
             $ingredient->created_user_id = $dto->userId;
             $ingredient->calculator_id = $dto->calculatorId;
+            $ingredient->sugar_g_per_ml = $dto->sugarContent;
+            $ingredient->acidity = $dto->acidity;
+            $ingredient->distillery = $dto->distillery;
             $ingredient->save();
 
             if ($dto->parentIngredientId !== null) {
@@ -118,6 +121,9 @@ final class IngredientService
             $ingredient->updated_user_id = $dto->userId;
             $ingredient->updated_at = now();
             $ingredient->calculator_id = $dto->calculatorId;
+            $ingredient->sugar_g_per_ml = $dto->sugarContent;
+            $ingredient->acidity = $dto->acidity;
+            $ingredient->distillery = $dto->distillery;
             $ingredient->save();
 
             if ($dto->parentIngredientId !== null && $dto->parentIngredientId !== $ingredient->parent_ingredient_id) {

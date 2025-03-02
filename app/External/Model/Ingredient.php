@@ -32,6 +32,9 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
         public array $ingredientParts = [],
         public array $prices = [],
         public ?string $calculatorId = null,
+        public ?float $sugarContent = null,
+        public ?float $acidity = null,
+        public ?string $distillery = null,
     ) {
     }
 
@@ -63,6 +66,9 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             $ingredientParts,
             $ingredientPrices,
             $model->calculator?->getExternalId(),
+            $model->sugar_g_per_ml,
+            $model->acidity,
+            $model->distillery,
         );
     }
 
@@ -92,6 +98,9 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             $ingredientParts,
             [],
             $sourceArray['calculator_id'] ?? null,
+            $sourceArray['sugar_g_per_ml'] ?? null,
+            $sourceArray['acidity'] ?? null,
+            $sourceArray['distillery'] ?? null,
         );
     }
 
@@ -111,6 +120,9 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             'ingredient_parts' => array_map(fn ($model) => $model->toDataPackArray(), $this->ingredientParts),
             'prices' => array_map(fn ($model) => $model->toDataPackArray(), $this->prices),
             'calculator_id' => $this->calculatorId,
+            'sugar_g_per_ml' => $this->sugarContent,
+            'acidity' => $this->acidity,
+            'distillery' => $this->distillery,
         ];
     }
 
