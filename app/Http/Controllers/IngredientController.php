@@ -207,8 +207,8 @@ class IngredientController extends Controller
         }
 
         $currentShelfIngredients = $request->user()->getShelfIngredients($ingredient->bar_id)->pluck('ingredient_id');
-        $currentShelfCocktails = $cocktailRepo->getCocktailsByIngredients($currentShelfIngredients->toArray())->values();
-        $extraShelfCocktails = $cocktailRepo->getCocktailsByIngredients($currentShelfIngredients->push($ingredient->id)->toArray())->values();
+        $currentShelfCocktails = $cocktailRepo->getCocktailsByIngredients($currentShelfIngredients->toArray(), $ingredient->bar_id)->values();
+        $extraShelfCocktails = $cocktailRepo->getCocktailsByIngredients($currentShelfIngredients->push($ingredient->id)->toArray(), $ingredient->bar_id)->values();
 
         if ($currentShelfCocktails->count() === $extraShelfCocktails->count()) {
             return response()->json(['data' => []]);

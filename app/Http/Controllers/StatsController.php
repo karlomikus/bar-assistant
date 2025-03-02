@@ -82,10 +82,12 @@ class StatsController extends Controller
         $stats['total_favorited_cocktails'] = CocktailFavorite::where('bar_membership_id', $barMembership->id)->count();
         $stats['total_shelf_cocktails'] = $cocktailRepo->getCocktailsByIngredients(
             $barMembership->userIngredients->pluck('ingredient_id')->toArray(),
+            $bar->id,
             null,
         )->count();
         $stats['total_bar_shelf_cocktails'] = $cocktailRepo->getCocktailsByIngredients(
             $bar->shelfIngredients->pluck('ingredient_id')->toArray(),
+            $bar->id,
             null,
         )->count();
         $stats['total_shelf_ingredients'] = UserIngredient::where('bar_membership_id', $barMembership->id)->count();

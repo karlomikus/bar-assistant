@@ -201,6 +201,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
             return $cocktailRepo->getCocktailsByIngredients(
                 ingredientIds: $userShelfIngredients,
+                barId: $barId,
             )->values()->toArray();
         });
     }

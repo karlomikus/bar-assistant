@@ -22,7 +22,7 @@ readonly class CocktailRepository
      * @param array<int> $ingredientIds
      * @return \Illuminate\Support\Collection<string, mixed>
      */
-    public function getCocktailsByIngredients(array $ingredientIds, ?int $limit = null, bool $matchComplexIngredients = true): Collection
+    public function getCocktailsByIngredients(array $ingredientIds, int $barId, ?int $limit = null, bool $matchComplexIngredients = true): Collection
     {
         if (count($ingredientIds) === 0) {
             return collect();
@@ -77,6 +77,7 @@ readonly class CocktailRepository
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
             ->leftJoin('cocktail_ingredient_substitutes', 'cocktail_ingredient_substitutes.cocktail_ingredient_id', '=', 'cocktail_ingredients.id')
             ->where('cocktail_ingredients.optional', false)
+            ->where('cocktails.bar_id', $barId) // This uses index on table to skip SCAN on whole cocktails table
             ->groupBy('cocktails.id')
             ->havingRaw('matching_ingredients >= (
                 SELECT COUNT(*)

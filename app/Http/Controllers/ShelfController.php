@@ -75,6 +75,7 @@ class ShelfController extends Controller
 
         $cocktailIds = $cocktailRepo->getCocktailsByIngredients(
             $barMembership->userIngredients->pluck('ingredient_id')->toArray(),
+            bar()->id,
             null,
         );
 
@@ -336,6 +337,7 @@ class ShelfController extends Controller
 
         $cocktailIds = $cocktailRepo->getCocktailsByIngredients(
             $bar->shelfIngredients->pluck('ingredient_id')->toArray(),
+            $bar->id,
         );
 
         /** @var \Illuminate\Pagination\LengthAwarePaginator<Cocktail> */

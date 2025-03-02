@@ -195,6 +195,7 @@ class Bar extends Model implements UploadableInterface
 
             return $cocktailRepo->getCocktailsByIngredients(
                 ingredientIds: $userShelfIngredients,
+                barId: $this->id,
             )->values()->toArray();
         });
     }

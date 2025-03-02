@@ -70,7 +70,7 @@ final class CocktailQueryFilter extends QueryBuilder
                         $query->whereIn('cocktails.id', bar()->getShelfCocktailsOnce());
                     }
                 }),
-                AllowedFilter::callback('user_shelves', function ($query, $value) use ($cocktailRepo) {
+                AllowedFilter::callback('user_shelves', function ($query, $value) use ($cocktailRepo, $barMembership) {
                     if (!is_array($value)) {
                         $value = [$value];
                     }
@@ -85,15 +85,17 @@ final class CocktailQueryFilter extends QueryBuilder
 
                     $query->whereIn('cocktails.id', $cocktailRepo->getCocktailsByIngredients(
                         $ingredients->pluck('ingredient_id')->toArray(),
+                        $barMembership->bar_id,
                     ));
                 }),
-                AllowedFilter::callback('shelf_ingredients', function ($query, $value) use ($cocktailRepo) {
+                AllowedFilter::callback('shelf_ingredients', function ($query, $value) use ($cocktailRepo, $barMembership) {
                     if (!is_array($value)) {
                         $value = [$value];
                     }
 
                     $query->whereIn('cocktails.id', $cocktailRepo->getCocktailsByIngredients(
                         $value,
+                        $barMembership->bar_id,
                     ));
                 }),
                 AllowedFilter::callback('is_public', function ($query, $value) {
