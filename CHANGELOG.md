@@ -12,6 +12,8 @@ This is a new major release. Here's a quick summary of the more interesting chan
     - This is now default behavior
 - Updated Menu schema
     - Added MenuItem schema to support multiple menu item types
+- Removed `bar_id` query param support
+    - Use `Bar-Assistant-Bar-Id` header instead
 
 ## New
 - Added nested ingredient hierarchy

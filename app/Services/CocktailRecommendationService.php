@@ -12,7 +12,7 @@ use Kami\Cocktail\Models\BarMembership;
 class CocktailRecommendationService
 {
     private const TAG_MATCH_WEIGHT = 0.8;
-    private const INGREDIENT_MATCH_WEIGHT = 0.3;
+    private const INGREDIENT_MATCH_WEIGHT = 0.5;
     // private const FAVORITES_MATCH_WEIGHT = 0.2; // TODO
 
     /**
@@ -50,7 +50,9 @@ class CocktailRecommendationService
             ->orderBy('cocktails_count', 'DESC')
             ->get();
 
+        // TODO: Prefer shelf cocktails
         // TODO: Find cocktail tags with poor ratings
+        // TODO: Take in account number of ingredients
 
         $potentialCocktails = Cocktail::query()
             ->select('cocktails.*', DB::raw('0 AS recommendation_score'))
