@@ -29,6 +29,8 @@ This is a new major release. Here's a quick summary of the more interesting chan
     - Added GET `sso/{provider}/callback` endpoint to handle SSO callback
     - Added DELETE `profile/sso/{provider}` endpoint to remove SSO credentials from user
     - Updated `Profile` schema
+- Added `recommender/cocktails` endpoint
+    - You can now get recommendations based on your favorite cocktails
 
 # v4.4.1
 ## Changes

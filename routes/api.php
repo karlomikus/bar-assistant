@@ -27,6 +27,7 @@ use Laravel\Paddle\Http\Controllers\WebhookController;
 use Kami\Cocktail\Http\Controllers\CalculatorController;
 use Kami\Cocktail\Http\Controllers\CollectionController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
+use Kami\Cocktail\Http\Controllers\RecommenderController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
 use Kami\Cocktail\Http\Controllers\SubscriptionController;
 use Kami\Cocktail\Http\Controllers\PriceCategoryController;
@@ -268,6 +269,10 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::put('/{id}', [CalculatorController::class, 'update']);
         Route::delete('/{id}', [CalculatorController::class, 'delete']);
         Route::post('/{id}/solve', [CalculatorController::class, 'solve']);
+    });
+
+    Route::prefix('recommender')->middleware(['ability:*'])->group(function () {
+        Route::get('/cocktails', [RecommenderController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);
     });
 });
 

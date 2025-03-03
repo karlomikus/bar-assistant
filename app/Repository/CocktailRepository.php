@@ -128,4 +128,37 @@ readonly class CocktailRepository
 
         return $relatedCocktails->pluck('id');
     }
+
+    /**
+     * @return Collection<array-key, mixed>
+     */
+    public function getTopRatedCocktails(int $barId, int $limit = 10): Collection
+    {
+        return DB::table('ratings')
+            ->select('rateable_id AS id', 'cocktails.name as name', 'cocktails.slug as slug', DB::raw('AVG(rating) AS avg_rating'), DB::raw('COUNT(*) AS votes'))
+            ->join('cocktails', 'cocktails.id', '=', 'ratings.rateable_id')
+            ->where('rateable_type', Cocktail::class)
+            ->where('cocktails.bar_id', $barId)
+            ->groupBy('rateable_id')
+            ->orderBy('avg_rating', 'desc')
+            ->orderBy('votes', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * @return Collection<array-key, mixed>
+     */
+    public function getMemberFavoriteCocktailTags(int $barMembershipId, int $limit = 15): Collection
+    {
+        return DB::table('tags')
+            ->selectRaw('tags.id, tags.name, COUNT(cocktail_favorites.cocktail_id) AS cocktails_count')
+            ->join('cocktail_tag', 'cocktail_tag.tag_id', '=', 'tags.id')
+            ->join('cocktail_favorites', 'cocktail_favorites.cocktail_id', '=', 'cocktail_tag.cocktail_id')
+            ->where('cocktail_favorites.bar_membership_id', $barMembershipId)
+            ->groupBy('tags.id')
+            ->orderBy('cocktails_count', 'DESC')
+            ->limit($limit)
+            ->get();
+    }
 }
