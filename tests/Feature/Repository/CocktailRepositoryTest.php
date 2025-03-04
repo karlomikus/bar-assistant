@@ -88,7 +88,7 @@ class CocktailRepositoryTest extends TestCase
         Cocktail::factory()->recycle($membership->bar)->count(10)->create();
 
         $repository = resolve(CocktailRepository::class);
-        $cocktails = $repository->getCocktailsByIngredients([$ingredient1->id, $ingredient3->id]);
+        $cocktails = $repository->getCocktailsByIngredients([$ingredient1->id, $ingredient3->id], $membership->bar_id);
 
         $this->assertSame([1, 3, 4], $cocktails->toArray());
     }
@@ -127,7 +127,7 @@ class CocktailRepositoryTest extends TestCase
         Cocktail::factory()->recycle($membership->bar)->count(10)->create();
 
         $repository = resolve(CocktailRepository::class);
-        $cocktails = $repository->getCocktailsByIngredients([$ingredient2->id, $ingredient3->id]);
+        $cocktails = $repository->getCocktailsByIngredients([$ingredient2->id, $ingredient3->id], $membership->bar_id);
 
         $this->assertSame([1], $cocktails->toArray());
     }
@@ -174,7 +174,7 @@ class CocktailRepositoryTest extends TestCase
         Cocktail::factory()->recycle($membership->bar)->count(10)->create();
 
         $repository = resolve(CocktailRepository::class);
-        $cocktails = $repository->getCocktailsByIngredients([$ingredient2->id, $ingredient3->id, $ingredient5->id]);
+        $cocktails = $repository->getCocktailsByIngredients([$ingredient2->id, $ingredient3->id, $ingredient5->id], $membership->bar_id);
 
         $this->assertCount(0, $cocktails->toArray());
     }
@@ -232,7 +232,7 @@ class CocktailRepositoryTest extends TestCase
         Cocktail::factory()->recycle($membership->bar)->count(10)->create();
 
         $repository = resolve(CocktailRepository::class);
-        $cocktails = $repository->getCocktailsByIngredients([$gin->id, $lemon->id]);
+        $cocktails = $repository->getCocktailsByIngredients([$gin->id, $lemon->id], $membership->bar_id);
 
         $this->assertSame([1], $cocktails->toArray());
     }
@@ -253,7 +253,7 @@ class CocktailRepositoryTest extends TestCase
         )->create();
 
         $repository = resolve(CocktailRepository::class);
-        $cocktails = $repository->getCocktailsByIngredients([$subIngredient->id], null, true);
+        $cocktails = $repository->getCocktailsByIngredients([$subIngredient->id], $membership->bar_id, null, true);
 
         $this->assertSame([$cocktail->id], $cocktails->toArray());
     }
@@ -340,7 +340,7 @@ class CocktailRepositoryTest extends TestCase
         )->create();
 
         $repository = resolve(CocktailRepository::class);
-        $cocktails = $repository->getCocktailsByIngredients([$ing123->id], null, true);
+        $cocktails = $repository->getCocktailsByIngredients([$ing123->id], $membership->bar_id, null, true);
 
         $this->assertSame([$cocktail->id], $cocktails->toArray());
     }
@@ -373,7 +373,7 @@ class CocktailRepositoryTest extends TestCase
         ->create();
 
         $repository = resolve(CocktailRepository::class);
-        $cocktails = $repository->getCocktailsByIngredients([$ing123->id], null, true);
+        $cocktails = $repository->getCocktailsByIngredients([$ing123->id], $membership->bar_id, null, true);
 
         $this->assertSame([], $cocktails->toArray());
     }

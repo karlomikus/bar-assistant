@@ -58,7 +58,8 @@ class IngredientControllerTest extends TestCase
         Bar::factory()->create(['id' => 2]);
         Ingredient::factory()->count(1)->create();
 
-        $response = $this->getJson('/api/ingredients?bar_id=2');
+        $this->withHeader('Bar-Assistant-Bar-Id', '2');
+        $response = $this->getJson('/api/ingredients');
 
         $response->assertForbidden();
     }
@@ -125,7 +126,8 @@ class IngredientControllerTest extends TestCase
         }
         Ingredient::factory()->count(5)->create(['bar_id' => $bar->id]);
 
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[on_shopping_list]=true');
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $bar->id);
+        $response = $this->getJson('/api/ingredients?filter[on_shopping_list]=true');
 
         $response->assertStatus(200);
         $response->assertJsonCount(5, 'data');
@@ -143,7 +145,8 @@ class IngredientControllerTest extends TestCase
         }
         Ingredient::factory()->count(5)->create(['bar_id' => $bar->id]);
 
-        $response = $this->getJson('/api/ingredients?bar_id=1&filter[on_shelf]=true');
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $bar->id);
+        $response = $this->getJson('/api/ingredients?filter[on_shelf]=true');
 
         $response->assertStatus(200);
         $response->assertJsonCount(5, 'data');
@@ -212,9 +215,10 @@ class IngredientControllerTest extends TestCase
 
     public function test_ingredient_store_response(): void
     {
-        $this->setupBar();
+        $bar = $this->setupBar();
 
-        $response = $this->postJson('/api/ingredients?bar_id=1', [
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $bar->id);
+        $response = $this->postJson('/api/ingredients', [
             'name' => "Ingredient name",
             'strength' => 12.2,
             'description' => "Description text",
@@ -239,9 +243,10 @@ class IngredientControllerTest extends TestCase
 
     public function test_ingredient_store_fails_validation_response(): void
     {
-        $this->setupBar();
+        $bar = $this->setupBar();
 
-        $response = $this->postJson('/api/ingredients?bar_id=1', [
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $bar->id);
+        $response = $this->postJson('/api/ingredients', [
             'strength' => 12.2,
         ]);
 
@@ -377,9 +382,10 @@ class IngredientControllerTest extends TestCase
             $user,
             abilities: ['unknown.read']
         );
-        $this->setupBar();
+        $bar = $this->setupBar();
 
-        $response = $this->getJson('/api/ingredients?bar_id=1');
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $bar->id);
+        $response = $this->getJson('/api/ingredients');
         $response->assertForbidden();
 
         $this->actingAs(
@@ -387,7 +393,7 @@ class IngredientControllerTest extends TestCase
             abilities: ['ingredients.read']
         );
 
-        $response = $this->getJson('/api/ingredients?bar_id=1');
+        $response = $this->getJson('/api/ingredients');
         $response->assertOk();
     }
 
@@ -398,9 +404,10 @@ class IngredientControllerTest extends TestCase
             $user,
             abilities: ['ingredients.read']
         );
-        $this->setupBar();
+        $bar = $this->setupBar();
 
-        $response = $this->postJson('/api/ingredients?bar_id=1', []);
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $bar->id);
+        $response = $this->postJson('/api/ingredients', []);
         $response->assertForbidden();
 
         $this->actingAs(
@@ -408,7 +415,7 @@ class IngredientControllerTest extends TestCase
             abilities: ['ingredients.write']
         );
 
-        $response = $this->postJson('/api/ingredients?bar_id=1', ['name' => 'Test']);
+        $response = $this->postJson('/api/ingredients', ['name' => 'Test']);
         $response->assertCreated();
     }
 
