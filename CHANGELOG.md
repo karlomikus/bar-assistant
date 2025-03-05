@@ -33,6 +33,12 @@ This is a new major release. Here's a quick summary of the more interesting chan
     - Updated `Profile` schema
 - Added `recommender/cocktails` endpoint
     - You can now get recommendations based on your favorite cocktails
+- Added user profile settings
+    - Used to store default settings like language and theme
+- Added support for default bar currency
+
+## Changes
+- Updated Laravel to version 12
 
 # v4.4.1
 ## Changes
