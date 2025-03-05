@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
+use Kami\Cocktail\Http\Resources\OauthCredentialResource;
 
-#[OAT\Schema(required: ['id', 'name', 'email', 'is_subscribed', 'memberships'])]
+#[OAT\Schema(required: ['id', 'name', 'email', 'is_subscribed', 'memberships', 'oauth_credentials', 'settings'])]
 class Profile
 {
     #[OAT\Property(example: 1)]
@@ -20,4 +21,9 @@ class Profile
     /** @var BarMembership[] */
     #[OAT\Property()]
     public array $memberships;
+    /** @var OauthCredentialResource[] */
+    #[OAT\Property(property: 'oauth_credentials')]
+    public array $oauthCredentials;
+    #[OAT\Property()]
+    public ?ProfileSettings $settings = null;
 }

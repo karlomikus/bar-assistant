@@ -27,6 +27,7 @@
                 "amount": 45,
                 "units": "ml",
                 "optional": false,
+                "is_specified": false,
                 "amount_max": 60,
                 "note": "Ingredient note",
                 "substitutes": [],
@@ -40,8 +41,7 @@
             "name": "Gin",
             "strength": 40,
             "description": "Test description",
-            "origin": "London",
-            "category": "spirits"
+            "origin": "London"
         }
     ]
 }

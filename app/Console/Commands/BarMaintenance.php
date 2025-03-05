@@ -79,14 +79,14 @@ class BarMaintenance extends Command
 
     private function fixSort(int $barId): void
     {
-        DB::table('cocktails')->where('bar_id', $barId)->orderBy('id')->lazy()->each(function ($cocktail) {
-            $ingredients = DB::table('cocktail_ingredients')->where('cocktail_id', $cocktail->id)->get();
-            $i = 1;
-            foreach ($ingredients as $ci) {
-                DB::table('cocktail_ingredients')->where('id', $ci->id)->orderBy('id')->update(['sort' => $i]);
-                $i++;
-            }
-        });
+        // DB::table('cocktails')->where('bar_id', $barId)->orderBy('id')->lazy()->each(function ($cocktail) {
+        //     $ingredients = DB::table('cocktail_ingredients')->where('cocktail_id', $cocktail->id)->get();
+        //     $i = 1;
+        //     foreach ($ingredients as $ci) {
+        //         DB::table('cocktail_ingredients')->where('id', $ci->id)->orderBy('id')->update(['sort' => $i]);
+        //         $i++;
+        //     }
+        // });
     }
 
     private function deleteUnusedImages(): void

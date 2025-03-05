@@ -1,3 +1,45 @@
+# v5.0.0
+This is a new major release. Here's a quick summary of the more interesting changes:
+
+- Added nested ingredient hierarchy and removed ingredient categories. You can now assign parent child relationships for ingredients and use all descendants of a given ingredient as a possible substitute.
+- This gives option for users to manage more complex ingredient taxonomies, like "Spirits > Rum - Blended > Rum - Blended Lightly Aged"
+- Added SSO support
+
+# Breaking changes
+- Removed ingredient categories
+    - Existing ingredient categories will be migrated to nested ingredient hierarchy
+- Removed "Track parent ingredients as a substitutes" option
+    - This is now default behavior
+- Updated Menu schema
+    - Added MenuItem schema to support multiple menu item types
+- Removed `bar_id` query param support
+    - Use `Bar-Assistant-Bar-Id` header instead
+
+## New
+- Added nested ingredient hierarchy
+    - Updated `Ingredient` and `CocktailIngredient` schemas to reflect the new structure
+    - All descendants of a given ingredient are now considered as possible substitutes
+    - You can specify if you want to use all descendants of a given ingredient as a possible substitute
+    - Max nesting level is 10
+- You can now add ingredients to the menu
+- Public menu schema now contains bar images and bar shelf status
+- Added SSO support
+    - You can now login via OAuth2 if the server is properly configured
+    - Currently supports: Google, GitHub, GitLab, Keycloak, Authentik, Authelia
+    - Added GET `sso/providers` endpoint to list available SSO providers
+    - Added GET `sso/{provider}/redirect` endpoint to redirect to SSO provider
+    - Added GET `sso/{provider}/callback` endpoint to handle SSO callback
+    - Added DELETE `profile/sso/{provider}` endpoint to remove SSO credentials from user
+    - Updated `Profile` schema
+- Added `recommender/cocktails` endpoint
+    - You can now get recommendations based on your favorite cocktails
+- Added user profile settings
+    - Used to store default settings like language and theme
+- Added support for default bar currency
+
+## Changes
+- Updated Laravel to version 12
+
 # v4.4.1
 ## Changes
 - You can now use `*` in `METRICS_ALLOWED_IPS` to allow all IPs

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
+use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 
 #[OAT\Schema()]
 class Menu
@@ -20,14 +21,13 @@ class Menu
     /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
         new OAT\Property(type: 'string', property: 'name', example: 'Category name'),
-        new OAT\Property(type: 'array', property: 'cocktails', items: new OAT\Items(type: 'object', properties: [
+        new OAT\Property(type: 'array', property: 'items', items: new OAT\Items(type: 'object', properties: [
             new OAT\Property(type: 'integer', property: 'id', example: 1),
-            new OAT\Property(type: 'string', property: 'slug', example: 'cocktail-name-1'),
+            new OAT\Property(property: 'type', ref: MenuItemTypeEnum::class),
             new OAT\Property(type: 'integer', property: 'sort', example: 1),
             new OAT\Property(property: 'price', ref: Price::class),
-            new OAT\Property(type: 'string', property: 'currency', example: 'EUR'),
             new OAT\Property(type: 'string', property: 'name', example: 'Cocktail name'),
-            new OAT\Property(type: 'array', property: 'short_ingredients', items: new OAT\Items(type: 'string', example: 'Vodka')),
+            new OAT\Property(type: 'string', property: 'description'),
         ])),
     ]))]
     public array $categories;

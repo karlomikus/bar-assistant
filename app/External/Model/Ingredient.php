@@ -26,13 +26,15 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
         public ?string $description = null,
         public ?string $origin = null,
         public ?string $color = null,
-        public ?string $category = null,
         public ?string $createdAt = null,
         public ?string $updatedAt = null,
         public array $images = [],
         public array $ingredientParts = [],
         public array $prices = [],
         public ?string $calculatorId = null,
+        public ?float $sugarContent = null,
+        public ?float $acidity = null,
+        public ?string $distillery = null,
     ) {
     }
 
@@ -58,13 +60,15 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             $model->description,
             $model->origin,
             $model->color,
-            $model->category?->name ?? null,
             $model->created_at->toAtomString(),
             $model->updated_at?->toAtomString(),
             $images,
             $ingredientParts,
             $ingredientPrices,
             $model->calculator?->getExternalId(),
+            $model->sugar_g_per_ml,
+            $model->acidity,
+            $model->distillery,
         );
     }
 
@@ -88,13 +92,15 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             $sourceArray['description'] ?? null,
             $sourceArray['origin'] ?? null,
             $sourceArray['color'] ?? null,
-            $sourceArray['category'] ?? null,
             $sourceArray['created_at'] ?? null,
             $sourceArray['updated_at'] ?? null,
             $images,
             $ingredientParts,
             [],
             $sourceArray['calculator_id'] ?? null,
+            $sourceArray['sugar_g_per_ml'] ?? null,
+            $sourceArray['acidity'] ?? null,
+            $sourceArray['distillery'] ?? null,
         );
     }
 
@@ -108,13 +114,15 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             'description' => $this->description,
             'origin' => $this->origin,
             'color' => $this->color,
-            'category' => $this->category,
             'created_at' => $this->createdAt,
             'updated_at' => $this->updatedAt,
             'images' => array_map(fn ($model) => $model->toDataPackArray(), $this->images),
             'ingredient_parts' => array_map(fn ($model) => $model->toDataPackArray(), $this->ingredientParts),
             'prices' => array_map(fn ($model) => $model->toDataPackArray(), $this->prices),
             'calculator_id' => $this->calculatorId,
+            'sugar_g_per_ml' => $this->sugarContent,
+            'acidity' => $this->acidity,
+            'distillery' => $this->distillery,
         ];
     }
 
@@ -122,22 +130,23 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
     {
         $sourceArray = array_change_key_case($sourceArray, CASE_LOWER);
 
-        $images = [];
-        $ingredientParts = [];
-
         return new self(
-            'CSV',
-            $sourceArray['name'],
-            null,
-            isset($sourceArray['strength']) ? floatval($sourceArray['strength']) : 0.0,
-            blank($sourceArray['description']) ? null : $sourceArray['description'],
-            blank($sourceArray['origin']) ? null : $sourceArray['origin'],
-            blank($sourceArray['color']) ? null : $sourceArray['color'],
-            blank($sourceArray['category']) ? null : $sourceArray['category'],
-            null,
-            null,
-            $images,
-            $ingredientParts,
+            id: 'CSV',
+            name: $sourceArray['name'],
+            parentId: null,
+            strength: isset($sourceArray['strength']) ? floatval($sourceArray['strength']) : 0.0,
+            description: blank($sourceArray['description']) ? null : $sourceArray['description'],
+            origin: blank($sourceArray['origin']) ? null : $sourceArray['origin'],
+            color: blank($sourceArray['color']) ? null : $sourceArray['color'],
+            createdAt: null,
+            updatedAt: null,
+            images: [],
+            ingredientParts: [],
+            prices: [],
+            calculatorId: null,
+            sugarContent: blank($sourceArray['sugar_g_per_ml']) ? null : $sourceArray['sugar_g_per_ml'],
+            acidity: blank($sourceArray['acidity']) ? null : $sourceArray['acidity'],
+            distillery: blank($sourceArray['distillery']) ? null : $sourceArray['distillery'],
         );
     }
 }

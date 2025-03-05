@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
-use Kami\Cocktail\Models\MenuCocktail;
-use Kami\Cocktail\Models\ValueObjects\Price;
+use Kami\Cocktail\Models\ValueObjects\MenuItem;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -26,20 +25,26 @@ class MenuPublicResource extends JsonResource
                 'name' => $this->bar->name,
                 'subtitle' => $this->bar->subtitle,
                 'description' => $this->bar->description,
+                'images' => $this->when(
+                    $this->bar->relationLoaded('images'),
+                    fn () => ImageResource::collection($this->bar->images)
+                ),
             ],
-            'categories' => $this->menuCocktails->groupBy('category_name')->map(function ($categoryCocktails, $name) {
+            'categories' => $this->getMenuItems()->groupBy('categoryName')->map(function ($items, $name) {
                 return [
                     'name' => $name,
-                    'cocktails' => $categoryCocktails->map(function (MenuCocktail $menuCocktail) {
+                    'items' => $items->sortBy(fn ($menuItem) => $menuItem->sort)->values()->map(function (MenuItem $menuItem) {
                         return [
-                            'sort' => $menuCocktail->sort,
-                            'price' => new PriceResource(new Price($menuCocktail->getMoney())),
-                            'public_id' => $menuCocktail->cocktail->public_id,
-                            'name' => $menuCocktail->cocktail->name,
-                            'short_ingredients' => $menuCocktail->cocktail->getIngredientNames(),
-                            'image' => config('app.url') . $menuCocktail->cocktail->getMainImageThumbUrl(false),
+                            'in_bar_shelf' => $menuItem->inShelf,
+                            'type' => $menuItem->type->value,
+                            'sort' => $menuItem->sort,
+                            'price' => new PriceResource($menuItem->price),
+                            'public_id' => $menuItem->publicId,
+                            'name' => $menuItem->name,
+                            'description' => $menuItem->description,
+                            'image' => $menuItem->image,
                         ];
-                    }),
+                    })->toArray(),
                 ];
             })->values()
         ];

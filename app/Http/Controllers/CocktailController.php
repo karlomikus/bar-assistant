@@ -99,12 +99,13 @@ class CocktailController extends Controller
         $cocktail = Cocktail::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)
             ->withRatings($request->user()->id)
-            ->firstOrFail()
-            ->load(['ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings']);
+            ->firstOrFail();
 
         if ($request->user()->cannot('show', $cocktail)) {
             abort(403);
         }
+
+        $cocktail->loadDefaultRelations();
 
         return new CocktailResource($cocktail);
     }
@@ -142,7 +143,7 @@ class CocktailController extends Controller
             abort(500, $e->getMessage());
         }
 
-        $cocktail->load(['ingredients.ingredient', 'images', 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils', 'ratings']);
+        $cocktail->loadDefaultRelations();
 
         return (new CocktailResource($cocktail))
             ->response()
@@ -184,9 +185,7 @@ class CocktailController extends Controller
             abort(500, $e->getMessage());
         }
 
-        $cocktail->load(['ingredients.ingredient', 'images' => function ($query) {
-            $query->orderBy('sort');
-        }, 'tags', 'glass', 'ingredients.substitutes', 'method', 'createdUser', 'updatedUser', 'collections', 'utensils']);
+        $cocktail->loadDefaultRelations();
 
         return new CocktailResource($cocktail);
     }
@@ -297,14 +296,13 @@ class CocktailController extends Controller
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
-            ->firstOrFail()
-            ->load(['ingredients.ingredient', 'images' => function ($query) {
-                $query->orderBy('sort');
-            }, 'ingredients.substitutes', 'ingredients.ingredient.category']);
+            ->firstOrFail();
 
         if ($request->user()->cannot('show', $cocktail)) {
             abort(403);
         }
+
+        $cocktail->loadDefaultRelations();
 
         $type = $request->get('type', 'json');
         $units = Units::tryFrom($request->get('units', ''));
@@ -361,7 +359,15 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $relatedCocktails = $cocktailRepo->getSimilarCocktails($cocktail, $request->get('limit', 5));
+        $relatedCocktailIds = $cocktailRepo->getSimilarCocktails($cocktail, $request->get('limit', 5));
+        $relatedCocktails = Cocktail::whereIn('id', $relatedCocktailIds)
+            ->with(
+                'images',
+                'ratings',
+                'ingredients.ingredient.bar',
+                'bar.shelfIngredients',
+            )
+            ->get();
 
         return CocktailResource::collection($relatedCocktails);
     }
@@ -379,12 +385,13 @@ class CocktailController extends Controller
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)
-            ->firstOrFail()
-            ->load(['ingredients.ingredient', 'images', 'tags', 'ingredients.substitutes', 'utensils']);
+            ->firstOrFail();
 
         if ($request->user()->cannot('show', $cocktail) || $request->user()->cannot('create', Cocktail::class)) {
             abort(403);
         }
+
+        $cocktail->loadDefaultRelations();
 
         // Copy images
         $imageDTOs = [];
@@ -426,6 +433,7 @@ class CocktailController extends Controller
                 $ingredient->units,
                 $ingredient->sort,
                 $ingredient->optional,
+                $ingredient->is_specified,
                 $substitutes,
                 $ingredient->amount_max,
                 $ingredient->note

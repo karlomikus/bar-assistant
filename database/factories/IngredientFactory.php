@@ -23,7 +23,6 @@ class IngredientFactory extends Factory
             'description' => fake()->paragraph(),
             'color' => fake()->hexColor(),
             'strength' => fake()->randomFloat(2, 0, 100),
-            'ingredient_category_id' => \Kami\Cocktail\Models\IngredientCategory::factory(),
             'created_user_id' => \Kami\Cocktail\Models\User::factory(),
             'bar_id' => \Kami\Cocktail\Models\Bar::factory(),
             'created_at' => fake()->dateTime(),
