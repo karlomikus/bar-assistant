@@ -9929,6 +9929,7 @@ components:
         - is_subscribed
         - memberships
         - oauth_credentials
+        - settings
       properties:
         id:
           type: integer
@@ -9949,22 +9950,34 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OauthCredential'
+        settings:
+          oneOf:
+            -
+              $ref: '#/components/schemas/ProfileSettings'
+            -
+              type: 'null'
       type: object
     ProfileRequest:
       required:
         - name
         - email
       properties:
-        bar_id:
-          type:
-            - integer
-            - 'null'
         name:
           type: string
           example: 'Bar Tender'
         email:
           type: string
           example: new@email.com
+        settings:
+          oneOf:
+            -
+              $ref: '#/components/schemas/ProfileSettings'
+            -
+              type: 'null'
+        bar_id:
+          type:
+            - integer
+            - 'null'
         password:
           type:
             - string
@@ -9973,6 +9986,17 @@ components:
           example: newpassword
         is_shelf_public:
           type: boolean
+      type: object
+    ProfileSettings:
+      properties:
+        language:
+          type:
+            - string
+            - 'null'
+        theme:
+          type:
+            - string
+            - 'null'
       type: object
     RegisterRequest:
       required:

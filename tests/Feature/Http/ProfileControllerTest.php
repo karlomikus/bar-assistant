@@ -97,4 +97,34 @@ class ProfileControllerTest extends TestCase
 
         $response->assertUnprocessable();
     }
+
+    public function test_update_current_user_settings_response(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->postJson('/api/profile', [
+            'email' => 'new@example.com',
+            'name' => 'Test Guy',
+            'settings' => [
+                'language' => 'en',
+                'theme' => 'dark',
+                'unsupported' => 'test',
+            ],
+        ]);
+
+        $response->assertOk();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data')
+                ->where('data.id', $user->id)
+                ->where('data.email', 'new@example.com')
+                ->where('data.name', 'Test Guy')
+                ->where('data.settings.language', 'en')
+                ->where('data.settings.theme', 'dark')
+                ->missing('data.settings.unsupported')
+                ->etc()
+        );
+    }
 }

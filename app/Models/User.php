@@ -14,6 +14,7 @@ use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Kami\Cocktail\Repository\CocktailRepository;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -37,13 +38,15 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
+     * @return array{email_verified_at: 'datetime', settings: 'Illuminate\Database\Eloquent\Casts\AsArrayObject'}
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'settings' => AsArrayObject::class,
+        ];
+    }
 
     /**
      * @return Collection<int, UserIngredient>
