@@ -37,7 +37,7 @@ class MenuResource extends JsonResource
                             'name' => $menuItem->name,
                             'description' => $menuItem->description,
                         ];
-                    }),
+                    })->toArray(),
                 ];
             })->values()
         ];

@@ -44,7 +44,7 @@ class MenuPublicResource extends JsonResource
                             'description' => $menuItem->description,
                             'image' => $menuItem->image,
                         ];
-                    }),
+                    })->toArray(),
                 ];
             })->values()
         ];
