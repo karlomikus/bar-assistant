@@ -106,8 +106,6 @@ final class IngredientService
             throw new IngredientValidationException('Invalid ingredient name');
         }
 
-        $originalStrength = null;
-
         DB::beginTransaction();
 
         try {
@@ -185,7 +183,7 @@ final class IngredientService
 
         $ingredient->loadMissing('cocktails.ingredients.ingredient');
 
-        if ($originalStrength !== null && $originalStrength !== $ingredient->strength) {
+        if ($originalStrength !== $ingredient->strength) {
             $this->log->debug('[INGREDIENT_SERVICE] Updated ingredient strength, updating ' . $ingredient->cocktails->count() . ' cocktails.');
             $ingredient->cocktails->each(function (Cocktail $cocktail) {
                 $cocktail->abv = $cocktail->getABV();

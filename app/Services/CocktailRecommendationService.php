@@ -67,11 +67,11 @@ class CocktailRecommendationService
             $score = 0;
 
             foreach ($cocktail->tags->pluck('id') as $tagId) {
-                $score += $memberFavoriteTags->firstWhere('id', $tagId)?->weight ?? 0;
+                $score += $memberFavoriteTags->firstWhere('id', $tagId)->weight ?? 0;
             }
 
             foreach ($cocktail->ingredients->pluck('ingredient_id') as $ingredientId) {
-                $score += $memberFavoriteIngredients->firstWhere('id', $ingredientId)?->weight ?? 0;
+                $score += $memberFavoriteIngredients->firstWhere('id', $ingredientId)->weight ?? 0;
             }
 
             $cocktail['recommendation_score'] = $score;

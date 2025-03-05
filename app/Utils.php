@@ -39,7 +39,7 @@ final class Utils
     /**
      * Calculate approximate cocktail volume
      *
-     * @param array<AmountValueObject> $ingredients
+     * @param array<AmountValueObject|null> $ingredients
      * @return float
      */
     public static function calculateVolume(array $ingredients, Units $inUnits = Units::Ml): float

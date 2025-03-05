@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Resources;
 
 use Kami\Cocktail\Models\Image;
+use Kami\Cocktail\Models\CocktailIngredient;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 
 /**
  * @mixin \Kami\Cocktail\Models\Cocktail

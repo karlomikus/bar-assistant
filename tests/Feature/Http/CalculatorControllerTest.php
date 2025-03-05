@@ -194,6 +194,14 @@ class CalculatorControllerTest extends TestCase
             'type' => 'eval',
             'settings' => ['decimal_places' => 2],
         ]);
+        CalculatorBlock::factory()->for($calc)->create([
+            'label' => 'label 4',
+            'variable_name' => 'eval4',
+            'value' => 'input1',
+            'sort' => 4,
+            'type' => 'eval',
+            'settings' => null,
+        ]);
 
         $response = $this->postJson('/api/calculators/' . $calc->id . '/solve', [
             'inputs' => [

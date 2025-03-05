@@ -25,22 +25,12 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable;
     use Billable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -63,7 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail
         /** @var Collection<int, UserIngredient> */
         $emptyCollection = new Collection();
 
-        return $this->getBarMembership($barId)?->userIngredients ?? $emptyCollection;
+        return $this->getBarMembership($barId)->userIngredients ?? $emptyCollection;
     }
 
     /**
@@ -74,7 +64,7 @@ class User extends Authenticatable implements MustVerifyEmail
         /** @var Collection<int, UserShoppingList> */
         $emptyCollection = new Collection();
 
-        return $this->getBarMembership($barId)?->shoppingListIngredients ?? $emptyCollection;
+        return $this->getBarMembership($barId)->shoppingListIngredients ?? $emptyCollection;
     }
 
     /**
