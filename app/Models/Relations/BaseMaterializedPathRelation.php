@@ -21,9 +21,9 @@ abstract class BaseMaterializedPathRelation extends Relation
      */
     public function __construct(Ingredient $parent, string $pathColumn)
     {
-        $this->pathColumn = $pathColumn;
-
         parent::__construct(Ingredient::query(), $parent);
+
+        $this->pathColumn = $pathColumn;
     }
 
     /** @inheritDoc */

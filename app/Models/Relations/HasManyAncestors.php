@@ -21,6 +21,7 @@ class HasManyAncestors extends BaseMaterializedPathRelation
     /** @inheritDoc */
     public function addEagerConstraints(array $models)
     {
+        $barId = $models[0]->bar_id;
         $ids = collect($models)->pluck('id')->unique();
 
         // Query all possible ancestors of the given ingredients
@@ -29,7 +30,7 @@ class HasManyAncestors extends BaseMaterializedPathRelation
             ->join('ingredients AS ancestor', DB::raw("instr('/' || ingredients." . $this->getPathColumn() . " || '/', '/' || ancestor.id || '/')"), '>', DB::raw('0'))
             ->whereIn('ingredients.id', $ids)
             ->whereNotNull('ingredients.' . $this->getPathColumn())
-            ->where('ingredients.bar_id', $this->parent->bar_id)
+            ->where('ingredients.bar_id', $barId)
             ->get();
     }
 

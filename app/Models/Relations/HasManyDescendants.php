@@ -26,6 +26,7 @@ class HasManyDescendants extends BaseMaterializedPathRelation
     /** @inheritDoc */
     public function addEagerConstraints(array $rootIngredients)
     {
+        $barId = $rootIngredients[0]->bar_id;
         $ids = collect($rootIngredients)->pluck('id');
 
         // Query all possible descendants of the given ingredients
@@ -33,7 +34,7 @@ class HasManyDescendants extends BaseMaterializedPathRelation
         $this->query->select('ingredients.id AS _root_id', 'descendant.*')
             ->join('ingredients AS descendant', DB::raw("('/' || descendant." . $this->getPathColumn() . " || '/')"), 'LIKE', DB::raw("'%/' || ingredients.id || '/%'"))
             ->whereIn('ingredients.id', $ids)
-            ->where('ingredients.bar_id', $this->parent->bar_id)
+            ->where('ingredients.bar_id', $barId)
             ->get();
     }
 

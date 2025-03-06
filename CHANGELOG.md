@@ -4,16 +4,17 @@ This is a new major release. Here's a quick summary of the more interesting chan
 - Added nested ingredient hierarchy and removed ingredient categories. You can now assign parent child relationships for ingredients and use all descendants of a given ingredient as a possible substitute.
 - This gives option for users to manage more complex ingredient taxonomies, like "Spirits > Rum - Blended > Rum - Blended Lightly Aged"
 - Added SSO support
+- Various query optimizations, the app should now be faster and more efficient on large datasets
 
 # Breaking changes
 - Removed ingredient categories
-    - Existing ingredient categories will be migrated to nested ingredient hierarchy
+    - Existing ingredient categories will be migrated to nested ingredient hierarchy, with ingredient category as the root node
 - Removed "Track parent ingredients as a substitutes" option
     - This is now default behavior
 - Updated Menu schema
     - Added MenuItem schema to support multiple menu item types
 - Removed `bar_id` query param support
-    - Use `Bar-Assistant-Bar-Id` header instead
+    - Use `Bar-Assistant-Bar-Id` request header instead
 
 ## New
 - Added nested ingredient hierarchy
