@@ -29,6 +29,7 @@ class HasManyAncestors extends BaseMaterializedPathRelation
             ->join('ingredients AS ancestor', DB::raw("instr('/' || ingredients." . $this->getPathColumn() . " || '/', '/' || ancestor.id || '/')"), '>', DB::raw('0'))
             ->whereIn('ingredients.id', $ids)
             ->whereNotNull('ingredients.' . $this->getPathColumn())
+            ->where('ingredients.bar_id', $this->parent->bar_id)
             ->get();
     }
 
