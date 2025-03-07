@@ -1,9 +1,10 @@
 # v5.0.0
-This is a new major release. Here's a quick summary of the more interesting changes:
+⚠️ This is a new major release. This updated includes big database schema updates that are not backwards compatible. I tried to cover all possible issues related to data migration but I recommend that you backup your current database before updating.
 
-- Added nested ingredient hierarchy and removed ingredient categories. You can now assign parent child relationships for ingredients and use all descendants of a given ingredient as a possible substitute.
-- This gives option for users to manage more complex ingredient taxonomies, like "Spirits > Rum - Blended > Rum - Blended Lightly Aged"
+Here's a quick summary of the more interesting changes:
+
 - Added SSO support
+- Added nested ingredient hierarchy and removed ingredient categories. You can now assign parent child relationships for ingredients and use all descendants of a given ingredient as a possible substitute. This gives option for users to manage more complex ingredient taxonomies, like "Spirits > Rum - Blended > Rum - Blended Lightly Aged"
 - Various query optimizations, the app should now be faster and more efficient on large datasets
 
 # Breaking changes
@@ -22,6 +23,7 @@ This is a new major release. Here's a quick summary of the more interesting chan
     - All descendants of a given ingredient are now considered as possible substitutes
     - You can specify if you want to use all descendants of a given ingredient as a possible substitute
     - Max nesting level is 10
+    - Added `ingredients/{id}/tree` endpoint to show ingredient hierarchy
 - You can now add ingredients to the menu
 - Public menu schema now contains bar images and bar shelf status
 - Added SSO support

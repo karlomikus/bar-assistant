@@ -26,6 +26,8 @@ readonly class MenuItem
 
     public static function fromMenuCocktail(MenuCocktail $menuCocktail): self
     {
+        $thumbnail = $menuCocktail->cocktail->getMainImageThumbUrl(false);
+
         return new self(
             id: $menuCocktail->cocktail_id,
             type: MenuItemTypeEnum::Cocktail,
@@ -35,13 +37,15 @@ readonly class MenuItem
             categoryName: $menuCocktail->category_name,
             description: $menuCocktail->cocktail->getIngredientNames()->implode(', '),
             publicId: $menuCocktail->cocktail->public_id,
-            image: config('app.url') . $menuCocktail->cocktail->getMainImageThumbUrl(false),
+            image: $thumbnail ? config('app.url') . $thumbnail : null,
             inShelf: $menuCocktail->cocktail->inBarShelf(),
         );
     }
 
     public static function fromMenuIngredient(MenuIngredient $menuIngredient): self
     {
+        $thumbnail = $menuIngredient->ingredient->getMainImageThumbUrl(false);
+
         return new self(
             id: $menuIngredient->ingredient_id,
             type: MenuItemTypeEnum::Ingredient,
@@ -51,7 +55,7 @@ readonly class MenuItem
             categoryName: $menuIngredient->category_name,
             description: $menuIngredient->ingredient->getMaterializedPathAsString(),
             publicId: null,
-            image: config('app.url') . $menuIngredient->ingredient->getMainImageThumbUrl(false),
+            image: $thumbnail ? config('app.url') . $thumbnail : null,
             inShelf: $menuIngredient->ingredient->barHasInShelf(),
         );
     }
