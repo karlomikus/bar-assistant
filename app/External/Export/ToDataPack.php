@@ -15,6 +15,7 @@ use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
+use Kami\Cocktail\Exceptions\ImageFileNotFoundException;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
 use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
@@ -79,9 +80,15 @@ class ToDataPack
 
     private function dumpCocktails(int $barId, ZipArchive &$zip, ?Units $toUnits = null): void
     {
-        $cocktails = Cocktail::with(['ingredients.ingredient', 'ingredients.substitutes', 'images' => function ($query) {
-            $query->orderBy('sort');
-        }, 'glass', 'method', 'tags'])->where('bar_id', $barId)->get();
+        $cocktails = Cocktail::with(
+            'ingredients.ingredient',
+            'ingredients.substitutes.ingredient',
+            'images.imageable',
+            'glass',
+            'method',
+            'tags',
+            'utensils'
+        )->where('bar_id', $barId)->get();
 
         /** @var Cocktail $cocktail */
         foreach ($cocktails as $cocktail) {
@@ -89,7 +96,11 @@ class ToDataPack
 
             /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($cocktail->images as $img) {
-                $zip->addFile($img->getPath(), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getFileName());
+                try {
+                    $zip->addFile($img->getPath(), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getFileName());
+                } catch (ImageFileNotFoundException $e) {
+                    Log::warning($e->getMessage());
+                }
             }
 
             $cocktailExportData = $this->prepareDataOutput($data->toDataPackArray());
@@ -100,9 +111,7 @@ class ToDataPack
 
     private function dumpIngredients(int $barId, ZipArchive &$zip): void
     {
-        $ingredients = Ingredient::with(['images' => function ($query) {
-            $query->orderBy('sort');
-        }, 'calculator', 'prices', 'ingredientParts'])->where('bar_id', $barId)->get();
+        $ingredients = Ingredient::with('images', 'calculator', 'prices.priceCategory', 'ingredientParts.ingredient', 'ancestors', 'parentIngredient')->where('bar_id', $barId)->get();
 
         /** @var Ingredient $ingredient */
         foreach ($ingredients as $ingredient) {
