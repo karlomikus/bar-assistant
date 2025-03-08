@@ -8077,10 +8077,7 @@ components:
         status:
           $ref: '#/components/schemas/BarStatusEnum'
         settings:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
+          $ref: '#/components/schemas/BarSettings'
         search_host:
           type:
             - string
@@ -8106,25 +8103,23 @@ components:
             -
               type: 'null'
         access:
-          type: array
-          items:
-            properties:
-              role_id:
-                type: integer
-                example: 1
-              can_edit:
-                type: boolean
-                example: true
-              can_delete:
-                type: boolean
-                example: true
-              can_activate:
-                type: boolean
-                example: true
-              can_deactivate:
-                type: boolean
-                example: true
-            type: object
+          properties:
+            role_id:
+              type: integer
+              example: 1
+            can_edit:
+              type: boolean
+              example: true
+            can_delete:
+              type: boolean
+              example: true
+            can_activate:
+              type: boolean
+              example: true
+            can_deactivate:
+              type: boolean
+              example: true
+          type: object
       type: object
     BarBasic:
       required:
@@ -8194,18 +8189,29 @@ components:
             - cl
             - oz
           example: ml
-        default_lang:
-          description: 'Locale code, used only as a setting for client apps, does not change language of the API.'
+        default_currency:
+          description: 'ISO 4217 format of currency. Used only as a setting for client apps.'
           type:
             - string
             - 'null'
-          example: en-US
+          example: EUR
         enable_invites:
           description: 'Enable users with invite code to join this bar. Default `false`.'
           type: boolean
         options:
           $ref: '#/components/schemas/BarOptionsEnum'
           description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.'
+      type: object
+    BarSettings:
+      properties:
+        default_units:
+          type:
+            - string
+            - 'null'
+        default_currency:
+          type:
+            - string
+            - 'null'
       type: object
     BarStats:
       required:
