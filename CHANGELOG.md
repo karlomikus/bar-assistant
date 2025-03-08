@@ -1,3 +1,10 @@
+# v4.4.2
+## Changes
+- Publish image to GitHub Container Registry
+
+## Fixes
+- Fix security issue in dependencies
+
 # v4.4.1
 ## Changes
 - You can now use `*` in `METRICS_ALLOWED_IPS` to allow all IPs
