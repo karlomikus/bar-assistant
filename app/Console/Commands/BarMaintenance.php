@@ -57,8 +57,8 @@ class BarMaintenance extends Command
         });
 
         // Fix sort
-        $this->info('Fixing cocktail ingredients sort order...');
-        $this->fixSort($barId);
+        // $this->info('Fixing cocktail ingredients sort order...');
+        // $this->fixSort($barId);
 
         // Clear unused images
         $this->info('Clearing unused images...');
@@ -77,17 +77,17 @@ class BarMaintenance extends Command
         return Command::SUCCESS;
     }
 
-    private function fixSort(int $barId): void
-    {
-        DB::table('cocktails')->where('bar_id', $barId)->orderBy('id')->lazy()->each(function ($cocktail) {
-            $ingredients = DB::table('cocktail_ingredients')->where('cocktail_id', $cocktail->id)->get();
-            $i = 1;
-            foreach ($ingredients as $ci) {
-                DB::table('cocktail_ingredients')->where('id', $ci->id)->orderBy('id')->update(['sort' => $i]);
-                $i++;
-            }
-        });
-    }
+    // private function fixSort(int $barId): void
+    // {
+    //     DB::table('cocktails')->where('bar_id', $barId)->orderBy('id')->lazy()->each(function ($cocktail) {
+    //         $ingredients = DB::table('cocktail_ingredients')->where('cocktail_id', $cocktail->id)->get();
+    //         $i = 1;
+    //         foreach ($ingredients as $ci) {
+    //             DB::table('cocktail_ingredients')->where('id', $ci->id)->orderBy('id')->update(['sort' => $i]);
+    //             $i++;
+    //         }
+    //     });
+    // }
 
     private function deleteUnusedImages(): void
     {

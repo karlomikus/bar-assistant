@@ -49,6 +49,16 @@ This repository only contains the API server, if you are looking for easy to use
 - Support for multiple ingredient prices
 - Automatic cocktail price calculation based on ingredients
 
+## Container images
+
+Bar Assistant is available as a Docker image on [Docker Hub](https://hub.docker.com/r/barassistant/server) and [GitHub Container Registry](https://github.com/karlomikus/bar-assistant/pkgs/container/barassistant). There is no `latest` tag, so you need to specify version in the tag. For example:
+
+- `barassistant/server:v4.4.1` - This will pull the exact version
+- `barassistant/server:v4.4` - This will pull the latest minor release
+- `barassistant/server:v4` - This will pull the latest major release
+
+We recommend that you always use the latest major release, as it will always be the most stable version.
+
 ## Managed instance
 
 Bar Assistant will always be open-source and MIT-licensed, but if you want to support the project or don't want to self-host, you can try officialy managed instance. Visit [barassistant.app](https://barassistant.app/) for more information about our cloud offering.
