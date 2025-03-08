@@ -15,7 +15,6 @@ use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\PriceCategory;
 use Kami\Cocktail\Models\CocktailMethod;
-use Kami\Cocktail\Models\IngredientCategory;
 use Kami\Cocktail\External\Export\ToDataPack;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -39,7 +38,6 @@ class ToDataPackTest extends TestCase
 
         $membership = $this->setupBarMembership();
         Glass::factory()->for($membership->bar)->count(3)->create();
-        IngredientCategory::factory()->for($membership->bar)->count(3)->create();
         CocktailMethod::factory()->for($membership->bar)->count(3)->create();
         PriceCategory::factory()->for($membership->bar)->count(3)->create();
         Utensil::factory()->for($membership->bar)->count(3)->create();
@@ -72,7 +70,6 @@ class ToDataPackTest extends TestCase
         $expectedFiles = [
             '_meta.json',
             'base_glasses.json',
-            'base_ingredient_categories.json',
             'base_methods.json',
             'base_price_categories.json',
             'base_utensils.json',

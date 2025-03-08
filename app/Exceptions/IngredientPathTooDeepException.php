@@ -6,6 +6,6 @@ namespace Kami\Cocktail\Exceptions;
 
 use Exception;
 
-class IngredientException extends Exception
+class IngredientPathTooDeepException extends Exception
 {
 }

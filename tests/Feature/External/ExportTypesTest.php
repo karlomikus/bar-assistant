@@ -12,7 +12,6 @@ use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\Models\CocktailIngredient;
-use Kami\Cocktail\Models\IngredientCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\External\Model\Schema as SchemaExternal;
 
@@ -82,7 +81,7 @@ class ExportTypesTest extends TestCase
                 'copyright' => 'Exported copyright',
                 'file_path' => 'tests/non_existing_image.jpg',
             ])->count(1))
-            ->has(CocktailIngredient::factory()->for(Ingredient::factory()->for(IngredientCategory::factory()->create(['name' => 'spirits']), 'category')->for($membership->bar)->create([
+            ->has(CocktailIngredient::factory()->for(Ingredient::factory()->for($membership->bar)->create([
                 'slug' => 'gin-1',
                 'name' => 'Gin',
                 'strength' => 40.0,

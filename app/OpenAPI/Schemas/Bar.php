@@ -24,9 +24,8 @@ class Bar
     public ?string $inviteCode;
     #[OAT\Property(example: 'active')]
     public BarStatusEnum $status;
-    /** @var array<mixed> */
-    #[OAT\Property(items: new OAT\Items(type: 'object', additionalProperties: true))]
-    public array $settings = [];
+    #[OAT\Property()]
+    public BarSettings $settings;
     #[OAT\Property(property: 'search_host')]
     public ?string $searchHost = null;
     #[OAT\Property(property: 'search_token')]
@@ -40,12 +39,12 @@ class Bar
     #[OAT\Property(property: 'updated_user')]
     public ?UserBasic $updatedUser = null;
     /** @var array<mixed> */
-    #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
+    #[OAT\Property(type: 'object', properties: [
         new OAT\Property(type: 'integer', property: 'role_id', example: 1),
         new OAT\Property(type: 'boolean', property: 'can_edit', example: true),
         new OAT\Property(type: 'boolean', property: 'can_delete', example: true),
         new OAT\Property(type: 'boolean', property: 'can_activate', example: true),
         new OAT\Property(type: 'boolean', property: 'can_deactivate', example: true),
-    ]))]
+    ])]
     public array $access;
 }

@@ -23,9 +23,11 @@ class UtensilControllerTest extends TestCase
 
     public function test_list_all_utensils_response(): void
     {
-        $this->setupBar();
+        $bar = $this->setupBar();
         Utensil::factory()->count(10)->create(['bar_id' => 1]);
-        $response = $this->getJson('/api/utensils?bar_id=1');
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $bar->id);
+        $response = $this->getJson('/api/utensils');
 
         $response->assertOk();
         $response->assertJson(
@@ -60,8 +62,10 @@ class UtensilControllerTest extends TestCase
 
     public function test_save_utensil_response(): void
     {
-        $this->setupBar();
-        $response = $this->postJson('/api/utensils?bar_id=1', [
+        $bar = $this->setupBar();
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $bar->id);
+        $response = $this->postJson('/api/utensils', [
             'name' => 'Utensil 1',
             'description' => 'Utensil 1 Description',
         ]);

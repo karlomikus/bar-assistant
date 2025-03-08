@@ -15,6 +15,11 @@ class CocktailIngredientSubstitute extends Model
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\CocktailIngredientSubstituteFactory> */
     use HasFactory;
 
+    protected $casts = [
+        'amount' => 'float',
+        'amount_max' => 'float',
+    ];
+
     /**
      * @return BelongsTo<CocktailIngredient, $this>
      */

@@ -4000,288 +4000,6 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /ingredient-categories:
-    get:
-      tags:
-        - 'Ingredient category'
-      summary: 'List ingredient categories'
-      description: 'List all ingredient categories in a bar'
-      operationId: listIngredientCategories
-      parameters:
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
-          required: false
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/IngredientCategory' } }
-                type: object
-    post:
-      tags:
-        - 'Ingredient category'
-      summary: 'Create ingredient category'
-      description: 'Create a specific ingredient category'
-      operationId: saveIngredientCategory
-      parameters:
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
-          required: false
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IngredientCategoryRequest'
-      responses:
-        '201':
-          description: 'Successful response'
-          headers:
-            Location:
-              description: 'URL of the new resource'
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/IngredientCategory' }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/ingredient-categories/{id}':
-    get:
-      tags:
-        - 'Ingredient category'
-      summary: 'Show ingredient category'
-      description: 'Show a specific ingredient category'
-      operationId: showIngredientCategory
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/IngredientCategory' }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-    put:
-      tags:
-        - 'Ingredient category'
-      summary: 'Update ingredient category'
-      description: 'Update a specific ingredient category'
-      operationId: updateIngredientCategory
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IngredientCategoryRequest'
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/IngredientCategory' }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-    delete:
-      tags:
-        - 'Ingredient category'
-      summary: 'Delete ingredient category'
-      description: 'Delete a specific ingredient category'
-      operationId: deleteIngredientCategory
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-      responses:
-        '204':
-          description: 'Successful response'
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
   /ingredients:
     get:
       tags:
@@ -4323,8 +4041,6 @@ paths:
                 type: string
               name_exact:
                 type: string
-              category_id:
-                type: integer
               origin:
                 type: string
               created_user_id:
@@ -4342,9 +4058,17 @@ paths:
                 type: number
                 format: float
               main_ingredients:
+                description: 'Show only ingredients that are used as main ingredients in cocktails'
                 type: string
               complex:
+                description: 'Show only ingredients that can be made with other ingredients'
                 type: boolean
+              parent_ingredient_id:
+                description: 'Show only direct children of given ingredient. Use null as value to get ingredients without parent ingredient'
+                type: integer
+              descendants_of:
+                description: 'Show all descendants of given ingredient'
+                type: integer
             type: object
         -
           name: sort
@@ -4355,7 +4079,7 @@ paths:
         -
           name: include
           in: query
-          description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `prices`, `ingredientParts`, `category`, `images`.'
+          description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `prices`, `ingredientParts`, `descendants`, `ancestors`, `images`.'
           schema:
             type: string
       responses:
@@ -4838,6 +4562,75 @@ paths:
                   data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
                   links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
                   meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/ingredients/{id}/tree':
+    get:
+      tags:
+        - Ingredients
+      summary: 'Show tree'
+      description: 'Show a ingredient hierarchy as a tree'
+      operationId: showIngredientTree
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id or slug of a resource'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/IngredientTree' }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -5790,6 +5583,58 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/profile/sso/{provider}':
+    delete:
+      tags:
+        - Profile
+      summary: 'Delete SSO provider'
+      description: "Delete user's SSO provider"
+      operationId: deleteSSO
+      parameters:
+        -
+          name: provider
+          in: path
+          description: 'Provider ID'
+          required: true
+          schema:
+            $ref: '#/components/schemas/OauthProvider'
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   '/cocktails/{id}/ratings':
     post:
       tags:
@@ -5902,6 +5747,216 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /recommender/cocktails:
+    get:
+      tags:
+        - Recommender
+      summary: 'Recommend cocktails'
+      description: 'Recommends cocktails based on bar member favorites.'
+      operationId: recommendCocktails
+      parameters:
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/auth/sso/{provider}/redirect':
+    get:
+      tags:
+        - Authentication
+      summary: 'SSO redirect'
+      description: 'Redirect to SSO authentication'
+      operationId: ssoRedirect
+      parameters:
+        -
+          name: provider
+          in: path
+          description: 'Provider ID'
+          required: true
+          schema:
+            $ref: '#/components/schemas/OauthProvider'
+      responses:
+        '302':
+          description: 'Redirect response'
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
+  '/auth/sso/{provider}/callback':
+    get:
+      tags:
+        - Authentication
+      summary: 'SSO callback'
+      description: 'Callback for SSO login'
+      operationId: ssoCallback
+      parameters:
+        -
+          name: provider
+          in: path
+          description: 'Provider ID'
+          required: true
+          schema:
+            $ref: '#/components/schemas/OauthProvider'
+        -
+          name: code
+          in: query
+          description: 'Oauth token'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/Token' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
+  /auth/sso/providers:
+    get:
+      tags:
+        - Authentication
+      summary: 'SSO providers'
+      description: 'Configured SSO providers'
+      operationId: ssoProviders
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/SSOProvider' } }
+                type: object
+      security: []
   /server/version:
     get:
       tags:
@@ -7908,6 +7963,42 @@ components:
         - none
         - skip
         - overwrite
+    OauthCredential:
+      description: 'OAuth Credential information'
+      required:
+        - provider
+        - created_at
+        - updated_at
+      properties:
+        provider:
+          $ref: '#/components/schemas/SSOProvider'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+      type: object
+    SSOProvider:
+      description: 'SSO Provider information'
+      required:
+        - name
+        - display_name
+        - enabled
+      properties:
+        name:
+          type: string
+          example: github
+        display_name:
+          type: string
+          example: GitHub
+        enabled:
+          description: 'Whether the provider is configured and enabled by server'
+          type: boolean
+          example: true
+      type: object
     AbilityEnum:
       type: string
       enum:
@@ -7926,6 +8017,11 @@ components:
       enum:
         - input
         - eval
+    MenuItemTypeEnum:
+      type: string
+      enum:
+        - cocktail
+        - ingredient
     APIError:
       required:
         - type
@@ -7981,10 +8077,7 @@ components:
         status:
           $ref: '#/components/schemas/BarStatusEnum'
         settings:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
+          $ref: '#/components/schemas/BarSettings'
         search_host:
           type:
             - string
@@ -8010,25 +8103,23 @@ components:
             -
               type: 'null'
         access:
-          type: array
-          items:
-            properties:
-              role_id:
-                type: integer
-                example: 1
-              can_edit:
-                type: boolean
-                example: true
-              can_delete:
-                type: boolean
-                example: true
-              can_activate:
-                type: boolean
-                example: true
-              can_deactivate:
-                type: boolean
-                example: true
-            type: object
+          properties:
+            role_id:
+              type: integer
+              example: 1
+            can_edit:
+              type: boolean
+              example: true
+            can_delete:
+              type: boolean
+              example: true
+            can_activate:
+              type: boolean
+              example: true
+            can_deactivate:
+              type: boolean
+              example: true
+          type: object
       type: object
     BarBasic:
       required:
@@ -8056,7 +8147,6 @@ components:
         - user_name
         - bar_id
         - is_shelf_public
-        - use_parent_as_substitute
       properties:
         user_id:
           type: integer
@@ -8068,9 +8158,6 @@ components:
           type: integer
           example: 1
         is_shelf_public:
-          type: boolean
-          example: true
-        use_parent_as_substitute:
           type: boolean
           example: true
       type: object
@@ -8102,18 +8189,29 @@ components:
             - cl
             - oz
           example: ml
-        default_lang:
-          description: 'Locale code, used only as a setting for client apps, does not change language of the API.'
+        default_currency:
+          description: 'ISO 4217 format of currency. Used only as a setting for client apps.'
           type:
             - string
             - 'null'
-          example: en-US
+          example: EUR
         enable_invites:
           description: 'Enable users with invite code to join this bar. Default `false`.'
           type: boolean
         options:
           $ref: '#/components/schemas/BarOptionsEnum'
           description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.'
+      type: object
+    BarSettings:
+      properties:
+        default_units:
+          type:
+            - string
+            - 'null'
+        default_currency:
+          type:
+            - string
+            - 'null'
       type: object
     BarStats:
       required:
@@ -8718,10 +8816,17 @@ components:
         optional:
           type: boolean
           example: false
+        is_specified:
+          type: boolean
+          example: false
         substitutes:
           type: array
           items:
             $ref: '#/components/schemas/CocktailIngredientSubstitute'
+        variants_in_shelf:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientBasic'
         note:
           type:
             - string
@@ -8805,6 +8910,9 @@ components:
         in_shelf:
           type: boolean
           example: true
+        in_shelf_as_variant:
+          type: boolean
+          example: true
         in_shelf_as_substitute:
           type: boolean
           example: true
@@ -8818,6 +8926,9 @@ components:
           type: boolean
           example: true
         in_bar_shelf_as_complex_ingredient:
+          type: boolean
+          example: true
+        in_bar_shelf_as_variant:
           type: boolean
           example: true
       type: object
@@ -8843,6 +8954,9 @@ components:
         sort:
           type: integer
         optional:
+          type: boolean
+        is_specified:
+          description: 'Ignores descendants as possible substitutes'
           type: boolean
         substitutes:
           type: array
@@ -9263,6 +9377,8 @@ components:
         - created_at
         - updated_at
         - strength
+        - hierarchy
+        - materialized_path
       properties:
         id:
           type: integer
@@ -9295,32 +9411,20 @@ components:
             - string
             - 'null'
           format: date-time
+        materialized_path:
+          type:
+            - string
+            - 'null'
         images:
           type: array
           items:
             $ref: '#/components/schemas/Image'
-        parent_ingredient:
-          oneOf:
-            -
-              $ref: '#/components/schemas/IngredientBasic'
-            -
-              type: 'null'
         color:
           type: string
           example: '#ffffff'
-        category:
-          oneOf:
-            -
-              $ref: '#/components/schemas/IngredientCategory'
-            -
-              type: 'null'
         cocktails_count:
           type: integer
           example: 12
-        varieties:
-          type: array
-          items:
-            $ref: '#/components/schemas/IngredientBasic'
         cocktails:
           type: array
           items:
@@ -9337,6 +9441,8 @@ components:
             type: object
         created_user:
           $ref: '#/components/schemas/UserBasic'
+        hierarchy:
+          $ref: '#/components/schemas/IngredientHierarchy'
         updated_user:
           oneOf:
             -
@@ -9364,9 +9470,13 @@ components:
             $ref: '#/components/schemas/IngredientPrice'
         in_shelf:
           type: boolean
+        in_shelf_as_variant:
+          type: boolean
         in_bar_shelf:
           type: boolean
         in_shopping_list:
+          type: boolean
+        in_bar_shelf_as_variant:
           type: boolean
         used_as_substitute_for:
           type: array
@@ -9387,6 +9497,7 @@ components:
         - id
         - slug
         - name
+        - materialized_path
       properties:
         id:
           type: integer
@@ -9398,40 +9509,26 @@ components:
           type: string
           example: Gin
       type: object
-    IngredientCategory:
-      required:
-        - id
-        - name
-        - description
-        - ingredients_count
+    IngredientHierarchy:
+      description: 'Ingredient hierarchy'
       properties:
-        id:
+        path_to_self:
           type: integer
-          example: 1
-        name:
-          type: string
-          example: Spirits
-        description:
-          type:
-            - string
-            - 'null'
-          example: 'Category of base spirits'
-        ingredients_count:
-          type: integer
-          example: 32
-      type: object
-    IngredientCategoryRequest:
-      required:
-        - name
-      properties:
-        name:
-          type: string
-          example: Spirits
-        description:
-          type:
-            - string
-            - 'null'
-          example: 'Category of base spirits'
+          example: 'Spirits > Gin'
+        parent_ingredient:
+          oneOf:
+            -
+              $ref: '#/components/schemas/IngredientBasic'
+            -
+              type: 'null'
+        descendants:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientBasic'
+        ancestors:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientBasic'
       type: object
     IngredientPrice:
       required:
@@ -9508,11 +9605,6 @@ components:
         name:
           type: string
           example: Gin
-        ingredient_category_id:
-          type:
-            - integer
-            - 'null'
-          example: 1
         strength:
           type: number
           format: float
@@ -9557,6 +9649,35 @@ components:
             - integer
             - 'null'
           example: 1
+        sugar_g_per_ml:
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 0.24
+        acidity:
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 0.1
+        distillery:
+          type:
+            - string
+            - 'null'
+          example: 'Buffalo trace'
+      type: object
+    IngredientTree:
+      required:
+        - ingredient
+        - children
+      properties:
+        ingredient:
+          $ref: '#/components/schemas/IngredientBasic'
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientTree'
       type: object
     LoginRequest:
       required:
@@ -9598,10 +9719,10 @@ components:
               name:
                 type: string
                 example: 'Category name'
-              cocktails:
+              items:
                 type: array
                 items:
-                  properties: { id: { type: integer, example: 1 }, slug: { type: string, example: cocktail-name-1 }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, currency: { type: string, example: EUR }, name: { type: string, example: 'Cocktail name' }, short_ingredients: { type: array, items: { type: string, example: Vodka } } }
+                  properties: { id: { type: integer, example: 1 }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, name: { type: string, example: 'Cocktail name' }, description: { type: string } }
                   type: object
             type: object
       type: object
@@ -9813,6 +9934,8 @@ components:
         - email
         - is_subscribed
         - memberships
+        - oauth_credentials
+        - settings
       properties:
         id:
           type: integer
@@ -9829,22 +9952,38 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BarMembership'
+        oauth_credentials:
+          type: array
+          items:
+            $ref: '#/components/schemas/OauthCredential'
+        settings:
+          oneOf:
+            -
+              $ref: '#/components/schemas/ProfileSettings'
+            -
+              type: 'null'
       type: object
     ProfileRequest:
       required:
         - name
         - email
       properties:
-        bar_id:
-          type:
-            - integer
-            - 'null'
         name:
           type: string
           example: 'Bar Tender'
         email:
           type: string
           example: new@email.com
+        settings:
+          oneOf:
+            -
+              $ref: '#/components/schemas/ProfileSettings'
+            -
+              type: 'null'
+        bar_id:
+          type:
+            - integer
+            - 'null'
         password:
           type:
             - string
@@ -9853,8 +9992,17 @@ components:
           example: newpassword
         is_shelf_public:
           type: boolean
-        use_parent_as_substitute:
-          type: boolean
+      type: object
+    ProfileSettings:
+      properties:
+        language:
+          type:
+            - string
+            - 'null'
+        theme:
+          type:
+            - string
+            - 'null'
       type: object
     RegisterRequest:
       required:
@@ -10171,6 +10319,16 @@ components:
             items:
               type: string
       type: object
+    OauthProvider:
+      description: 'Provides a list of supported SSO providers.'
+      type: string
+      enum:
+        - github
+        - google
+        - gitlab
+        - authentik
+        - authelia
+        - keycloak
   securitySchemes:
     user_token:
       type: http
@@ -10213,9 +10371,6 @@ tags:
     name: Import
     description: Import
   -
-    name: 'Ingredient category'
-    description: 'Ingredient category'
-  -
     name: Ingredients
     description: Ingredients
   -
@@ -10236,6 +10391,9 @@ tags:
   -
     name: Ratings
     description: Ratings
+  -
+    name: Recommender
+    description: Recommender
   -
     name: Server
     description: Server

@@ -23,6 +23,7 @@ use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Filters\IngredientQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\CocktailBasicResource;
+use Kami\Cocktail\Http\Resources\IngredientTreeResource;
 use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest as IngredientDTO;
 
@@ -36,7 +37,6 @@ class IngredientController extends Controller
             new OAT\Property(property: 'id', type: 'integer'),
             new OAT\Property(property: 'name', type: 'string'),
             new OAT\Property(property: 'name_exact', type: 'string'),
-            new OAT\Property(property: 'category_id', type: 'integer'),
             new OAT\Property(property: 'origin', type: 'string'),
             new OAT\Property(property: 'created_user_id', type: 'integer'),
             new OAT\Property(property: 'on_shopping_list', type: 'boolean'),
@@ -44,11 +44,13 @@ class IngredientController extends Controller
             new OAT\Property(property: 'bar_shelf', type: 'boolean'),
             new OAT\Property(property: 'strength_min', type: 'float'),
             new OAT\Property(property: 'strength_max', type: 'float'),
-            new OAT\Property(property: 'main_ingredients', type: 'string'),
-            new OAT\Property(property: 'complex', type: 'boolean'),
+            new OAT\Property(property: 'main_ingredients', type: 'string', description: 'Show only ingredients that are used as main ingredients in cocktails'),
+            new OAT\Property(property: 'complex', type: 'boolean', description: 'Show only ingredients that can be made with other ingredients'),
+            new OAT\Property(property: 'parent_ingredient_id', type: 'integer', description: 'Show only direct children of given ingredient. Use null as value to get ingredients without parent ingredient'),
+            new OAT\Property(property: 'descendants_of', type: 'integer', description: 'Show all descendants of given ingredient'),
         ])),
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `strength`, `total_cocktails`.', schema: new OAT\Schema(type: 'string')),
-        new OAT\Parameter(name: 'include', in: 'query', description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `prices`, `ingredientParts`, `category`, `images`.', schema: new OAT\Schema(type: 'string')),
+        new OAT\Parameter(name: 'include', in: 'query', description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `prices`, `ingredientParts`, `descendants`, `ancestors`, `images`.', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(BAO\Schemas\Ingredient::class),
@@ -79,14 +81,14 @@ class IngredientController extends Controller
         $ingredient = Ingredient::with(
             'cocktails',
             'images',
-            'varieties',
             'parentIngredient',
             'createdUser',
             'updatedUser',
             'ingredientParts.ingredient',
             'prices.priceCategory',
-            'category',
-            'cocktailIngredientSubstitutes.cocktailIngredient.ingredient'
+            'cocktailIngredientSubstitutes.cocktailIngredient.ingredient',
+            'descendants',
+            'ancestors'
         )
             ->withCount('cocktails')
             ->where('id', $id)
@@ -205,8 +207,8 @@ class IngredientController extends Controller
         }
 
         $currentShelfIngredients = $request->user()->getShelfIngredients($ingredient->bar_id)->pluck('ingredient_id');
-        $currentShelfCocktails = $cocktailRepo->getCocktailsByIngredients($currentShelfIngredients->toArray())->values();
-        $extraShelfCocktails = $cocktailRepo->getCocktailsByIngredients($currentShelfIngredients->push($ingredient->id)->toArray())->values();
+        $currentShelfCocktails = $cocktailRepo->getCocktailsByIngredients($currentShelfIngredients->toArray(), $ingredient->bar_id)->values();
+        $extraShelfCocktails = $cocktailRepo->getCocktailsByIngredients($currentShelfIngredients->push($ingredient->id)->toArray(), $ingredient->bar_id)->values();
 
         if ($currentShelfCocktails->count() === $extraShelfCocktails->count()) {
             return response()->json(['data' => []]);
@@ -292,5 +294,27 @@ class IngredientController extends Controller
         $cocktails = Ingredient::whereIn('id', $ids)->orderBy('name')->paginate($request->get('per_page', 100));
 
         return IngredientBasicResource::collection($cocktails);
+    }
+
+    #[OAT\Get(path: '/ingredients/{id}/tree', tags: ['Ingredients'], operationId: 'showIngredientTree', description: 'Show a ingredient hierarchy as a tree', summary: 'Show tree', parameters: [
+        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
+    ])]
+    #[BAO\SuccessfulResponse(content: [
+        new BAO\WrapObjectWithData(BAO\Schemas\IngredientTree::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function tree(Request $request, string $id): IngredientTreeResource
+    {
+        $ingredient = Ingredient::with('allChildren')
+            ->where('id', $id)
+            ->orWhere('slug', $id)
+            ->firstOrFail();
+
+        if ($request->user()->cannot('show', $ingredient)) {
+            abort(403);
+        }
+
+        return new IngredientTreeResource($ingredient);
     }
 }

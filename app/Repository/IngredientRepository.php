@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Repository;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Database\DatabaseManager;
 
 readonly class IngredientRepository
@@ -26,6 +27,36 @@ readonly class IngredientRepository
             ->where('cocktails.bar_id', $barId)
             ->groupBy('cocktail_id')
             ->orderBy('cocktails.name', 'desc')
+            ->get();
+    }
+
+    /**
+     * @param array<int> $ingredientIds
+     * @return Collection<array-key, Ingredient>
+     */
+    public function getDescendants(array $ingredientIds, int $limit = 50): Collection
+    {
+        return Ingredient::select('ingredients.id AS _root_id', 'descendant.*')
+            ->join('ingredients AS descendant', DB::raw("('/' || descendant.materialized_path || '/')"), 'LIKE', DB::raw("'%/' || ingredients.id || '/%'"))
+            ->whereIn('ingredients.id', $ingredientIds)
+            ->limit($limit)
+            ->orderBy('ingredients.name')
+            ->get();
+    }
+
+    /**
+     * @param array<int> $ingredientIds
+     * @return Collection<array-key, Ingredient>
+     */
+    public function getAncestors(array $ingredientIds, int $limit = 50): Collection
+    {
+        return Ingredient::select('ingredients.id as _leaf_id', 'ancestor.*')
+            ->join('ingredients AS ancestor', DB::raw("instr('/' || ingredients.materialized_path || '/', '/' || ancestor.id || '/')"), '>', DB::raw('0'))
+            ->whereIn('ingredients.id', $ingredientIds)
+            ->whereNotNull('ingredients.materialized_path')
+            ->limit($limit)
+            ->orderBy('ingredients.name')
+            ->orderBy('_leaf_id')
             ->get();
     }
 

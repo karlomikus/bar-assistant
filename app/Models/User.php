@@ -14,6 +14,7 @@ use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Kami\Cocktail\Repository\CocktailRepository;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -25,35 +26,27 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable;
     use Billable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
+     * @return array{email_verified_at: 'datetime', settings: 'Illuminate\Database\Eloquent\Casts\AsArrayObject'}
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'settings' => AsArrayObject::class,
+        ];
+    }
 
     /**
      * @return Collection<int, UserIngredient>
@@ -63,7 +56,7 @@ class User extends Authenticatable implements MustVerifyEmail
         /** @var Collection<int, UserIngredient> */
         $emptyCollection = new Collection();
 
-        return $this->getBarMembership($barId)?->userIngredients ?? $emptyCollection;
+        return $this->getBarMembership($barId)->userIngredients ?? $emptyCollection;
     }
 
     /**
@@ -74,7 +67,7 @@ class User extends Authenticatable implements MustVerifyEmail
         /** @var Collection<int, UserShoppingList> */
         $emptyCollection = new Collection();
 
-        return $this->getBarMembership($barId)?->shoppingListIngredients ?? $emptyCollection;
+        return $this->getBarMembership($barId)->shoppingListIngredients ?? $emptyCollection;
     }
 
     /**
@@ -83,6 +76,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function memberships(): HasMany
     {
         return $this->hasMany(BarMembership::class);
+    }
+
+    /**
+     * @return HasMany<OauthCredential, $this>
+     */
+    public function oauthCredentials(): HasMany
+    {
+        return $this->hasMany(OauthCredential::class);
     }
 
     public function joinBarAs(Bar $bar, UserRoleEnum $role = UserRoleEnum::General): BarMembership
@@ -157,6 +158,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->created_at = now();
         $this->updated_at = now();
         $this->memberships()->delete();
+        $this->oauthCredentials()->delete();
         $this->deactivateBars();
 
         return $this;
@@ -184,15 +186,15 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * @return array<int>
      */
-    public function getShelfCocktailsOnce(int $barId, bool $useParentIngredientAsSubstitute): array
+    public function getShelfCocktailsOnce(int $barId): array
     {
-        return once(function () use ($barId, $useParentIngredientAsSubstitute) {
+        return once(function () use ($barId) {
             $cocktailRepo = resolve(CocktailRepository::class);
             $userShelfIngredients = $this->getShelfIngredients($barId)->pluck('ingredient_id')->toArray();
 
             return $cocktailRepo->getCocktailsByIngredients(
                 ingredientIds: $userShelfIngredients,
-                useParentIngredientAsSubstitute: $useParentIngredientAsSubstitute
+                barId: $barId,
             )->values()->toArray();
         });
     }

@@ -18,7 +18,7 @@ class EnsureRequestHasBarQuery
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $barId = $request->header('Bar-Assistant-Bar-Id', null) ?? $request->get('bar_id', null);
+        $barId = $request->header('Bar-Assistant-Bar-Id', null);
 
         if (!$barId) {
             abort(400, sprintf("Missing required bar reference while requesting '%s'. Use 'Bar-Assistant-Bar-Id' header to specify bar id.", $request->path()));

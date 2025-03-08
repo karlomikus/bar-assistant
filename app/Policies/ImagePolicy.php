@@ -14,7 +14,7 @@ class ImagePolicy
 
     public function show(User $user, Image $image): bool
     {
-        $barId = $image->imageable?->bar_id ?? null;
+        $barId = $image->imageable->bar_id ?? null;
 
         if (!$barId) {
             return $user->id === $image->created_user_id;
@@ -27,7 +27,7 @@ class ImagePolicy
 
     public function edit(User $user, Image $image): bool
     {
-        $barId = $image->imageable?->bar_id ?? null;
+        $barId = $image->imageable->bar_id ?? null;
 
         if (!$barId) {
             return $user->id === $image->created_user_id;
@@ -40,7 +40,7 @@ class ImagePolicy
 
     public function delete(User $user, Image $image): bool
     {
-        $barId = $image->imageable?->bar_id ?? null;
+        $barId = $image->imageable->bar_id ?? null;
 
         if (!$barId) {
             return $user->id === $image->created_user_id;
