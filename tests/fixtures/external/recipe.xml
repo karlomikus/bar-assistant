@@ -38,5 +38,6 @@
     <strength>40</strength>
     <description>Test description</description>
     <origin>London</origin>
+    <category></category>
   </ingredients>
 </draft2>

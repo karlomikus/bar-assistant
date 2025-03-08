@@ -41,7 +41,8 @@
             "name": "Gin",
             "strength": 40,
             "description": "Test description",
-            "origin": "London"
+            "origin": "London",
+            "category": null
         }
     ]
 }

@@ -7,10 +7,12 @@ namespace Kami\Cocktail\External\Export;
 use ZipArchive;
 use Carbon\Carbon;
 use Kami\Cocktail\Models\Cocktail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\ExportTypeEnum;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
+use Kami\Cocktail\Exceptions\ImageFileNotFoundException;
 use Kami\Cocktail\External\Model\Schema as SchemaExternal;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
@@ -68,6 +70,7 @@ class ToRecipeType
     {
         $cocktails = Cocktail::with([
             'ingredients.ingredient',
+            'ingredients.ingredient.parentIngredient',
             'ingredients.substitutes.ingredient',
             'ingredients.ingredient',
             'images.imageable',
@@ -80,7 +83,11 @@ class ToRecipeType
         /** @var Cocktail $cocktail */
         foreach ($cocktails as $cocktail) {
             foreach ($cocktail->images as $img) {
-                $zip->addFile($img->getPath(), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getFileName());
+                try {
+                    $zip->addFile($img->getPath(), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getFileName());
+                } catch (ImageFileNotFoundException $e) {
+                    Log::warning($e->getMessage());
+                }
             }
 
             $externalSchema = SchemaExternal::fromCocktailModel($cocktail, $toUnits);
