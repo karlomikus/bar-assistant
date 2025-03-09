@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Kami\Cocktail\Repository\IngredientRepository;
 use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
 use Kami\Cocktail\External\Model\Calculator as CalculatorExternal;
 use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
@@ -32,7 +33,7 @@ class FromDataPack
     /** @var array<string, int> */
     private array $ingredientCalculators = [];
 
-    public function __construct()
+    public function __construct(private readonly IngredientRepository $ingredientRepository)
     {
         $this->uploadsDisk = Storage::disk('uploads');
     }
@@ -279,6 +280,8 @@ class FromDataPack
         }
 
         DB::commit();
+
+        $this->ingredientRepository->rebuildMaterializedPath($bar->id);
     }
 
     private function importBaseCocktails(Filesystem $dataDisk, Bar $bar, User $user): void
