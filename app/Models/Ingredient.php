@@ -336,6 +336,15 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         return $this->parent_ingredient_id === null;
     }
 
+    public function recursiveRebuild(): void
+    {
+        foreach ($this->children as $child) {
+            $child->appendAsChildOf($this);
+            $child->save();
+            $child->recursiveRebuild();
+        }
+    }
+
     public function appendAsChildOf(?Ingredient $parentIngredient): self
     {
         // If we're moving to a root parent and we are already root, do nothing

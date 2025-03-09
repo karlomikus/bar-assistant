@@ -121,4 +121,56 @@ readonly class IngredientRepository
 
         return DB::select($rawQuery, ['barId' => $barId]);
     }
+
+    public function rebuildMaterializedPath(int $barId): void
+    {
+        $ingredients = DB::table('ingredients')
+            ->where('bar_id', $barId)
+            ->orderBy('parent_ingredient_id') // Ensures parents are processed before children
+            ->get()
+            ->keyBy('id');
+
+        // Create an empty array to store materialized paths
+        $paths = [];
+
+        // Function to recursively build paths
+        $buildPath = function ($ingredientId) use (&$ingredients, &$paths, &$buildPath) {
+            if (!isset($ingredients[$ingredientId])) {
+                return null; // If ingredient not found, return null
+            }
+
+            $ingredient = $ingredients[$ingredientId];
+
+            // If root node, path is null
+            if (!$ingredient->parent_ingredient_id) {
+                return null;
+            }
+
+            // If path is already computed, return it
+            if (isset($paths[$ingredientId])) {
+                return $paths[$ingredientId];
+            }
+
+            // Recursively get parent path
+            $parentPath = $buildPath($ingredient->parent_ingredient_id);
+            $path = ($parentPath ? $parentPath . $ingredient->parent_ingredient_id . '/' : $ingredient->parent_ingredient_id . '/');
+
+            // Store the computed path
+            $paths[$ingredientId] = $path;
+
+            return $path;
+        };
+
+        // Compute paths for all ingredients
+        foreach ($ingredients as $ingredient) {
+            $paths[$ingredient->id] = $buildPath($ingredient->id);
+        }
+
+        // Bulk update all materialized paths in the database
+        DB::transaction(function () use ($paths) {
+            foreach ($paths as $ingredientId => $path) {
+                DB::table('ingredients')->where('id', $ingredientId)->update(['materialized_path' => $path]);
+            }
+        });
+    }
 }
