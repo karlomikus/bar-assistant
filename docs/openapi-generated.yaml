@@ -9497,7 +9497,6 @@ components:
         - id
         - slug
         - name
-        - materialized_path
       properties:
         id:
           type: integer
@@ -9671,7 +9670,6 @@ components:
     IngredientTree:
       required:
         - ingredient
-        - children
       properties:
         ingredient:
           $ref: '#/components/schemas/IngredientBasic'

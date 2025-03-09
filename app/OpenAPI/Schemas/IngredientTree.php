@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema(required: ['ingredient', 'children'])]
+#[OAT\Schema(required: ['ingredient'])]
 class IngredientTree
 {
     #[OAT\Property()]
