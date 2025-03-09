@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-- [ ] I have read [the FAQ](https://bar-assistant.github.io/docs/faq/).
+- [ ] I have read [the FAQ](https://docs.barassistant.app/faq/).
 
 **Describe the bug**
 [A clear and concise description of what the bug is.]

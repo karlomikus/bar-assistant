@@ -26,19 +26,15 @@ class FromDataPackTest extends TestCase
         ]);
 
         $this->assertDatabaseEmpty('glasses');
-        $this->assertDatabaseEmpty('ingredient_categories');
         $this->assertDatabaseEmpty('cocktail_methods');
         $this->assertDatabaseEmpty('price_categories');
         $this->assertDatabaseEmpty('utensils');
 
-        $importer = new FromDataPack();
+        $importer = resolve(FromDataPack::class);
         $importer->process($datapackFolder, $membership->bar, $membership->user, [BarOptionsEnum::Ingredients, BarOptionsEnum::Cocktails]);
 
         $this->assertDatabaseHas('glasses', ['name' => 'glass 1', 'description' => 'glass 1 description']);
         $this->assertDatabaseHas('glasses', ['name' => 'glass 2', 'description' => null]);
-
-        $this->assertDatabaseHas('ingredient_categories', ['name' => 'category 1', 'description' => 'category description']);
-        $this->assertDatabaseHas('ingredient_categories', ['name' => 'category 2', 'description' => null]);
 
         $this->assertDatabaseHas('cocktail_methods', ['name' => 'method 1', 'dilution_percentage' => 15]);
         $this->assertDatabaseHas('cocktail_methods', ['name' => 'method 2', 'dilution_percentage' => 0]);
@@ -63,7 +59,6 @@ class FromDataPackTest extends TestCase
             'description' => 'Description of ingredient',
             'origin' => 'French Guiana',
             'color' => '#b474de',
-            'ingredient_category_id' => 1,
             'created_at' => '1976-01-23T22:25:11+00:00',
             'updated_at' => '1998-01-08T13:41:44+00:00'
         ]);

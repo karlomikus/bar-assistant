@@ -15,7 +15,6 @@ use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\PriceCategory;
 use Kami\Cocktail\Models\CocktailMethod;
-use Kami\Cocktail\Models\IngredientCategory;
 use Kami\Cocktail\External\Export\ToRecipeType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -39,7 +38,6 @@ class ToRecipeTypeTest extends TestCase
 
         $membership = $this->setupBarMembership();
         Glass::factory()->for($membership->bar)->count(3)->create();
-        IngredientCategory::factory()->for($membership->bar)->count(3)->create();
         CocktailMethod::factory()->for($membership->bar)->count(3)->create();
         PriceCategory::factory()->for($membership->bar)->count(3)->create();
         Utensil::factory()->for($membership->bar)->count(3)->create();

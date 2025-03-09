@@ -49,11 +49,6 @@ class CocktailIngredient extends Model
         return $this->hasMany(CocktailIngredientSubstitute::class);
     }
 
-    public function userHasInShelf(User $user): bool
-    {
-        return $this->ingredient->userHasInShelf($user);
-    }
-
     public function userHasInShelfAsSubstitute(User $user): bool
     {
         $currentShelf = $user->getShelfIngredients($this->ingredient->bar_id);
@@ -67,23 +62,6 @@ class CocktailIngredient extends Model
         return false;
     }
 
-    public function userHasInShelfAsComplexIngredient(User $user): bool
-    {
-        $requiredIngredientIds = $this->ingredient->ingredientParts->pluck('ingredient_id');
-        if ($requiredIngredientIds->isEmpty()) {
-            return false;
-        }
-
-        $currentShelf = $user->getShelfIngredients($this->ingredient->bar_id)->pluck('ingredient_id');
-
-        return $requiredIngredientIds->every(fn ($id) => $currentShelf->contains($id));
-    }
-
-    public function barHasInShelf(): bool
-    {
-        return $this->ingredient->barHasInShelf();
-    }
-
     public function barHasInShelfAsSubstitute(): bool
     {
         $currentShelf = $this->ingredient->bar->shelfIngredients;
@@ -95,18 +73,6 @@ class CocktailIngredient extends Model
         }
 
         return false;
-    }
-
-    public function barHasInShelfAsComplexIngredient(): bool
-    {
-        $requiredIngredientIds = $this->ingredient->ingredientParts->pluck('ingredient_id');
-        if ($requiredIngredientIds->isEmpty()) {
-            return false;
-        }
-
-        $currentShelf = $this->ingredient->bar->shelfIngredients->pluck('ingredient_id');
-
-        return $requiredIngredientIds->every(fn ($id) => $currentShelf->contains($id));
     }
 
     public function getAmount(): AmountValueObject

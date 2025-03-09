@@ -402,4 +402,25 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
 
         return $totalPrice->to(new DefaultContext(), RoundingMode::DOWN);
     }
+
+    public function loadDefaultRelations(): self
+    {
+        $this->load([
+            'ingredients.ingredient.ingredientParts',
+            'images',
+            'tags',
+            'glass',
+            'ingredients.substitutes',
+            'method',
+            'createdUser',
+            'updatedUser',
+            'collections',
+            'utensils',
+            'ratings',
+            'ingredients.ingredient.bar.shelfIngredients',
+            'ingredients.ingredient.descendants',
+        ]);
+
+        return $this;
+    }
 }

@@ -25,6 +25,8 @@ readonly class CocktailIngredientRequest
         public int $sort = 0,
         #[OAT\Property()]
         public bool $optional = false,
+        #[OAT\Property(property: 'is_specified', description: 'Ignores descendants as possible substitutes')]
+        public bool $isSpecified = false,
         #[OAT\Property(items: new OAT\Items(type: CocktailIngredientSubstituteRequest::class))]
         public array $substitutes = [],
         #[OAT\Property(property: 'amount_max', example: 60)]
@@ -51,6 +53,7 @@ readonly class CocktailIngredientRequest
             $source['units'],
             (int) $source['sort'],
             $source['optional'] ?? false,
+            $source['is_specified'] ?? false,
             $substitutes,
             ($source['amount_max'] ?? null) !== null ? (float) $source['amount_max'] : null,
             $source['note'] ?? null

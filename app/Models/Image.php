@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Kami\Cocktail\Exceptions\ImageFileNotFoundException;
 
 class Image extends Model
 {
@@ -76,7 +77,7 @@ class Image extends Model
             return $disk->path($this->file_path);
         }
 
-        throw new \Exception('Image not found');
+        throw new ImageFileNotFoundException('Image not found at path: ' . $this->file_path);
     }
 
     /**

@@ -25,7 +25,7 @@ class TotalBars extends BaseMetrics
                 $status->value . '_bars_total',
                 'Total number of ' . $status->value . ' bars'
             );
-            $metric->set($counts[$status->value]?->total ?? 0);
+            $metric->set($counts[$status->value]->total ?? 0);
         }
     }
 }
