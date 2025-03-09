@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Hash;
 use Kami\Cocktail\Services\Auth\OauthProvider;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\ProfileResource;
-use Kami\Cocktail\Http\Requests\UpdateUserRequest;
 use Kami\Cocktail\OpenAPI\Schemas\ProfileRequest;
+use Kami\Cocktail\Http\Requests\UpdateUserRequest;
 
 class ProfileController extends Controller
 {
