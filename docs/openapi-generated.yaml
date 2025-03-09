@@ -9513,7 +9513,8 @@ components:
       description: 'Ingredient hierarchy'
       properties:
         path_to_self:
-          type: integer
+          description: 'Path to the current ingredient from the root'
+          type: string
           example: 'Spirits > Gin'
         parent_ingredient:
           oneOf:
