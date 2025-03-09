@@ -124,11 +124,13 @@ final class IngredientService
             $ingredient->distillery = $dto->distillery;
             $ingredient->save();
 
-            if ($dto->parentIngredientId !== null && $dto->parentIngredientId !== $ingredient->parent_ingredient_id) {
-                $parentIngredient = Ingredient::find($dto->parentIngredientId);
-                $ingredient->appendAsChildOf($parentIngredient);
-            } else {
-                $ingredient->appendAsChildOf(null);
+            if ($dto->parentIngredientId !== $ingredient->parent_ingredient_id) {
+                if ($dto->parentIngredientId === null) {
+                    $ingredient->appendAsChildOf(null);
+                } else {
+                    $parentIngredient = Ingredient::find($dto->parentIngredientId);
+                    $ingredient->appendAsChildOf($parentIngredient);
+                }
             }
 
             Model::unguard();
