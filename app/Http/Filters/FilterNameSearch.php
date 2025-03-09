@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class FilterNameSearch implements Filter
 {
-    public function __invoke(Builder $query, $value, string $property)
+    public function __invoke(Builder $query, mixed $value, string $property)
     {
         if (!is_array($value)) {
             $value = [$value];

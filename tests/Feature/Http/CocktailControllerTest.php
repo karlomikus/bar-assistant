@@ -92,7 +92,7 @@ class CocktailControllerTest extends TestCase
             'name' => 'a test',
             'abv' => 33.3,
         ]);
-        $cocktailFavorited = Cocktail::factory()->recycle($membership->bar)->create(['abv' => 10]);
+        $cocktailFavorited = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'nonan', 'abv' => 10]);
         CocktailFavorite::factory()->recycle($cocktailFavorited, $membership)->create();
 
         $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
@@ -534,9 +534,11 @@ class CocktailControllerTest extends TestCase
             $user,
             abilities: ['cocktails.write']
         );
-        $this->setupBar();
+        $bar = $this->setupBar();
 
-        $response = $this->getJson('/api/cocktails?bar_id=1');
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $bar->id);
+
+        $response = $this->getJson('/api/cocktails');
         $response->assertForbidden();
 
         $this->actingAs(
@@ -544,7 +546,7 @@ class CocktailControllerTest extends TestCase
             abilities: ['cocktails.read']
         );
 
-        $response = $this->getJson('/api/cocktails?bar_id=1');
+        $response = $this->getJson('/api/cocktails');
         $response->assertOk();
     }
 
@@ -555,9 +557,11 @@ class CocktailControllerTest extends TestCase
             $user,
             abilities: ['cocktails.read']
         );
-        $this->setupBar();
+        $bar = $this->setupBar();
 
-        $response = $this->postJson('/api/cocktails?bar_id=1', []);
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $bar->id);
+
+        $response = $this->postJson('/api/cocktails', []);
         $response->assertForbidden();
 
         $this->actingAs(
@@ -565,19 +569,21 @@ class CocktailControllerTest extends TestCase
             abilities: ['cocktails.write']
         );
 
-        $response = $this->postJson('/api/cocktails?bar_id=1', ['name' => 'Test', 'instructions' => 'Test']);
+        $response = $this->postJson('/api/cocktails', ['name' => 'Test', 'instructions' => 'Test']);
         $response->assertCreated();
     }
 
     public function test_cocktail_creation_fails_with_unowned_bar_ingredients(): void
     {
-        $this->setupBar();
+        $bar = $this->setupBar();
         $user2 = User::factory()->create();
         $bar2 = Bar::factory()->create(['created_user_id' => $user2->id]);
 
         $ingredientFromAnotherBar = Ingredient::factory()->create(['bar_id' => $bar2->id]);
 
-        $response = $this->postJson('/api/cocktails?bar_id=1', [
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $bar->id);
+
+        $response = $this->postJson('/api/cocktails', [
             'name' => "Cocktail name",
             'instructions' => "Test",
             'description' => null,

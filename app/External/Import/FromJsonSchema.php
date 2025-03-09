@@ -82,31 +82,57 @@ class FromJsonSchema
         $sort = 1;
         foreach ($cocktailExternal->cocktail->ingredients as $scrapedIngredient) {
             $foundExternalIngredient = $externalIngredients->firstWhere('id', $scrapedIngredient->ingredient->id);
+
+            $parentId = null;
+            if ($foundExternalIngredient->category !== null) {
+                Log::debug('Trying to match parent ingredient by category name: ' . $foundExternalIngredient->category);
+                $parentId = $this->matcher->matchOrCreateIngredientByName(
+                    new IngredientDTO(
+                        $this->barId,
+                        $foundExternalIngredient->category,
+                        $this->userId,
+                    ),
+                );
+            }
+
             $ingredientId = $this->matcher->matchOrCreateIngredientByName(
                 new IngredientDTO(
-                    $this->barId,
-                    $foundExternalIngredient->name,
-                    $this->userId,
-                    null,
-                    $foundExternalIngredient->strength,
-                    $foundExternalIngredient->description,
-                    $foundExternalIngredient->origin
+                    barId: $this->barId,
+                    name: $foundExternalIngredient->name,
+                    userId: $this->userId,
+                    strength: $foundExternalIngredient->strength,
+                    description: $foundExternalIngredient->description,
+                    origin: $foundExternalIngredient->origin,
+                    parentIngredientId: $parentId,
                 ),
             );
 
             $substitutes = [];
             foreach ($scrapedIngredient->substitutes as $substitute) {
                 $foundExternalSubIngredient = $externalIngredients->firstWhere('id', $substitute->ingredient->id);
+
+                $parentId = null;
+                if ($foundExternalSubIngredient->category !== null) {
+                    Log::debug('Trying to match substitute parent ingredient by category name: ' . $foundExternalSubIngredient->category);
+                    $parentId = $this->matcher->matchOrCreateIngredientByName(
+                        new IngredientDTO(
+                            $this->barId,
+                            $foundExternalSubIngredient->category,
+                            $this->userId,
+                        ),
+                    );
+                }
+
                 $substitutes[] = new SubstituteDTO(
                     $this->matcher->matchOrCreateIngredientByName(
                         new IngredientDTO(
-                            $this->barId,
-                            $foundExternalSubIngredient->name,
-                            $this->userId,
-                            null,
-                            $foundExternalSubIngredient->strength,
-                            $foundExternalSubIngredient->description,
-                            $foundExternalSubIngredient->origin
+                            barId: $this->barId,
+                            name: $foundExternalSubIngredient->name,
+                            userId: $this->userId,
+                            strength: $foundExternalSubIngredient->strength,
+                            description: $foundExternalSubIngredient->description,
+                            origin: $foundExternalSubIngredient->origin,
+                            parentIngredientId: $parentId,
                         )
                     ),
                     $substitute->amount->amountMin,
@@ -122,6 +148,7 @@ class FromJsonSchema
                 $scrapedIngredient->amount->units->value,
                 $sort,
                 $scrapedIngredient->optional,
+                false,
                 $substitutes,
                 $scrapedIngredient->amount->amountMax,
                 $scrapedIngredient->note,

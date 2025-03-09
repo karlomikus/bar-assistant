@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Resources;
 
 use Kami\Cocktail\Models\Image;
+use Kami\Cocktail\Models\CocktailIngredient;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 
 /**
  * @mixin \Kami\Cocktail\Models\Cocktail
@@ -40,7 +42,7 @@ class ExploreCocktailResource extends JsonResource
                 ];
             }),
             'abv' => $this->abv,
-            'ingredients' => $this->ingredients->map(function ($cocktailIngredient) {
+            'ingredients' => $this->ingredients->map(function (CocktailIngredient $cocktailIngredient) {
                 return [
                     'ingredient' => [
                         'name' => $cocktailIngredient->ingredient->name,
@@ -50,7 +52,7 @@ class ExploreCocktailResource extends JsonResource
                     'units' => $cocktailIngredient->units,
                     'optional' => (bool) $cocktailIngredient->optional,
                     'note' => $cocktailIngredient->note,
-                    'substitutes' => $cocktailIngredient->substitutes->map(function ($substitute) {
+                    'substitutes' => $cocktailIngredient->substitutes->map(function (CocktailIngredientSubstitute $substitute) {
                         return [
                             'ingredient' => [
                                 'name' => $substitute->ingredient->name,
@@ -59,7 +61,7 @@ class ExploreCocktailResource extends JsonResource
                             'amount_max' => $substitute->amount_max,
                             'units' => $substitute->units,
                         ];
-                    })
+                    })->toArray(),
                 ];
             }),
         ];

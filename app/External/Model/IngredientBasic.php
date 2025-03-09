@@ -28,7 +28,7 @@ readonly class IngredientBasic implements SupportsDraft2, SupportsDataPack
             $model->strength,
             $model->description,
             $model->origin,
-            $model->category?->name
+            $model->parentIngredient?->name,
         );
     }
 

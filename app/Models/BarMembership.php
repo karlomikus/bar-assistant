@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +18,6 @@ class BarMembership extends Model
 
     protected $casts = [
         'is_shelf_public' => 'boolean',
-        'use_parent_as_substitute' => 'boolean',
     ];
 
     /**

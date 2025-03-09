@@ -187,15 +187,15 @@ class Bar extends Model implements UploadableInterface
     /**
      * @return array<int>
      */
-    public function getShelfCocktailsOnce(bool $useParentIngredientAsSubstitute): array
+    public function getShelfCocktailsOnce(): array
     {
-        return once(function () use ($useParentIngredientAsSubstitute) {
+        return once(function () {
             $cocktailRepo = resolve(CocktailRepository::class);
             $userShelfIngredients = $this->shelfIngredients->pluck('ingredient_id')->toArray();
 
             return $cocktailRepo->getCocktailsByIngredients(
                 ingredientIds: $userShelfIngredients,
-                useParentIngredientAsSubstitute: $useParentIngredientAsSubstitute
+                barId: $this->id,
             )->values()->toArray();
         });
     }

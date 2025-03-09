@@ -15,8 +15,6 @@ class IngredientRequest
         #[OAT\Property(example: 'Gin')]
         public string $name,
         public int $userId,
-        #[OAT\Property(property: 'ingredient_category_id', example: 1)]
-        public ?int $ingredientCategoryId = null,
         #[OAT\Property(example: 40.0)]
         public float $strength = 0.0,
         #[OAT\Property(example: 'Gin is a type of alcoholic spirit')]
@@ -38,6 +36,12 @@ class IngredientRequest
         public array $prices = [],
         #[OAT\Property(property: 'calculator_id', example: 1, description: 'Calculator you want to attach to this ingredient')]
         public ?int $calculatorId = null,
+        #[OAT\Property(property: 'sugar_g_per_ml', example: 0.24)]
+        public ?float $sugarContent = null,
+        #[OAT\Property(property: 'acidity', example: 0.10)]
+        public ?float $acidity = null,
+        #[OAT\Property(property: 'distillery', example: 'Buffalo trace')]
+        public ?string $distillery = null,
     ) {
     }
 
@@ -56,7 +60,6 @@ class IngredientRequest
             $barId,
             $request->input('name'),
             $request->user()->id,
-            $request->filled('ingredient_category_id') ? $request->integer('ingredient_category_id') : null,
             $request->float('strength'),
             $request->input('description'),
             $request->input('origin'),
@@ -66,6 +69,9 @@ class IngredientRequest
             $request->input('complex_ingredient_part_ids', []),
             $prices,
             $request->filled('calculator_id') ? $request->integer('calculator_id') : null,
+            $request->filled('sugar_g_per_ml') ? $request->float('sugar_g_per_ml') : null,
+            $request->filled('acidity') ? $request->float('acidity') : null,
+            $request->input('distillery'),
         );
     }
 }

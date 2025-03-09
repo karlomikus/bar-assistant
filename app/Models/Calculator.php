@@ -75,8 +75,8 @@ class Calculator extends Model implements IsExternalized
 
         foreach ($this->getEvaluations() as $block) {
             $result = $executor->execute($block->value);
-            $formattedResult = number_format(floatval($result), $block->settings?->decimal_places ?? 0);
-            $formattedResult = trim(sprintf('%s %s %s', $block->settings?->prefix ?? '', $formattedResult, $block->settings?->suffix ?? ''));
+            $formattedResult = number_format(floatval($result), $block->settings->decimal_places ?? 0);
+            $formattedResult = trim(sprintf('%s %s %s', $block->settings->prefix ?? '', $formattedResult, $block->settings->suffix ?? ''));
 
             $calculatorResult->results[$block->variable_name] = $formattedResult;
 

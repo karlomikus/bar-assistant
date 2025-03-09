@@ -33,7 +33,7 @@ class DiffordsGuide extends DefaultScraper
     {
         try {
             // Try with the parsed objects first
-            $instructions = $this->schemaModel?->instructions ?? [];
+            $instructions = $this->schemaModel->instructions ?? [];
 
             $garnish = null;
             foreach ($instructions as $instructionStep) {

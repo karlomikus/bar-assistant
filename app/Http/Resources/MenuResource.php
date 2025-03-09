@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
-use Kami\Cocktail\Models\MenuCocktail;
-use Kami\Cocktail\Models\ValueObjects\Price;
+use Kami\Cocktail\Models\ValueObjects\MenuItem;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -26,19 +25,19 @@ class MenuResource extends JsonResource
             'is_enabled' => (bool) $this->is_enabled,
             'created_at' => $this->created_at->toAtomString(),
             'updated_at' => $this->updated_at?->toAtomString(),
-            'categories' => $this->menuCocktails->groupBy('category_name')->map(function ($categoryCocktails, $name) {
+            'categories' => $this->getMenuItems()->groupBy('categoryName')->map(function ($items, $name) {
                 return [
                     'name' => $name,
-                    'cocktails' => $categoryCocktails->map(function (MenuCocktail $menuCocktail) {
+                    'items' => $items->sortBy(fn ($menuItem) => $menuItem->sort)->values()->map(function (MenuItem $menuItem) {
                         return [
-                            'id' => $menuCocktail->cocktail_id,
-                            'slug' => $menuCocktail->cocktail->slug,
-                            'sort' => $menuCocktail->sort,
-                            'price' => new PriceResource(new Price($menuCocktail->getMoney())),
-                            'name' => $menuCocktail->cocktail->name,
-                            'short_ingredients' => $menuCocktail->cocktail->getIngredientNames(),
+                            'id' => $menuItem->id,
+                            'type' => $menuItem->type->value,
+                            'sort' => $menuItem->sort,
+                            'price' => new PriceResource($menuItem->price),
+                            'name' => $menuItem->name,
+                            'description' => $menuItem->description,
                         ];
-                    }),
+                    })->toArray(),
                 ];
             })->values()
         ];

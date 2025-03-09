@@ -117,8 +117,8 @@ class BarController extends Controller
         if ($defaultUnits = $request->input('default_units')) {
             $settings['default_units'] = Units::tryFrom($defaultUnits)?->value;
         }
-        if ($defaultLanguage = $request->input('default_language')) {
-            $settings['default_lang'] = $defaultLanguage;
+        if ($defaultCurrency = $request->input('default_currency')) {
+            $settings['default_currency'] = $defaultCurrency;
         }
         $bar->settings = $settings;
 
@@ -184,6 +184,7 @@ class BarController extends Controller
 
         $settings = $bar->settings;
         $settings['default_units'] = Units::tryFrom($request->input('default_units') ?? '')?->value;
+        $settings['default_currency'] = $request->input('default_currency');
         $bar->settings = $settings;
 
         if ($request->filled('slug')) {

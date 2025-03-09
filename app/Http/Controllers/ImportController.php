@@ -62,7 +62,11 @@ class ImportController extends Controller
             $request->user()->id,
         );
 
-        $cocktail = $importer->process(json_decode($source, true), $duplicateAction);
+        if (is_array($source)) {
+            $cocktail = $importer->process($source, $duplicateAction);
+        } else {
+            $cocktail = $importer->process(json_decode($source, true), $duplicateAction);
+        }
 
         return new CocktailResource($cocktail);
     }

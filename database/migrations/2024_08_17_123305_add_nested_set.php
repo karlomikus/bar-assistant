@@ -10,14 +10,14 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::table('ingredient_categories', function (Blueprint $table) {
-            $table->nestedSet();
-        });
+        // Schema::table('ingredient_categories', function (Blueprint $table) {
+        //     $table->nestedSet();
+        // });
 
-        $bars = \Illuminate\Support\Facades\DB::table('bars')->pluck('id');
-        foreach ($bars as $barId) {
-            \Kami\Cocktail\Models\IngredientCategory::scoped(['bar_id' => $barId])->fixTree();
-        }
+        // $bars = \Illuminate\Support\Facades\DB::table('bars')->pluck('id');
+        // foreach ($bars as $barId) {
+        //     \Kami\Cocktail\Models\IngredientCategory::scoped(['bar_id' => $barId])->fixTree();
+        // }
     }
 
     /**
@@ -25,8 +25,8 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::table('ingredient_categories', function (Blueprint $table) {
-            $table->dropNestedSet();
-        });
+        // Schema::table('ingredient_categories', function (Blueprint $table) {
+        //     $table->dropNestedSet();
+        // });
     }
 };
