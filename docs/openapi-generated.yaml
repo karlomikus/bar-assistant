@@ -8035,6 +8035,7 @@ components:
           example: 'Resource record not found.'
       type: object
     Bar:
+      description: 'Details about a bar'
       required:
         - id
         - slug
@@ -8051,58 +8052,74 @@ components:
         - updated_at
       properties:
         id:
+          description: 'Unique number that can be used to reference a specific bar.'
           type: integer
           example: 1
         slug:
+          description: 'Unique string that can be used to reference a specific bar.'
           type: string
           example: bar-name-1
         name:
+          description: 'Name of the bar'
           type: string
           example: 'Bar name'
         subtitle:
+          description: 'Optional short quip about the bar'
           type:
             - string
             - 'null'
           example: 'A short subtitle of a bar'
         description:
+          description: 'Description of the bar'
           type:
             - string
             - 'null'
           example: 'Bar description'
         invite_code:
+          description: 'Random code used to invite people to the bar'
           type:
             - string
             - 'null'
           example: 01H8S3VH2HTEB3D893AW8NTBBC
         status:
           $ref: '#/components/schemas/BarStatusEnum'
+          description: 'Current status of the bar'
         settings:
           $ref: '#/components/schemas/BarSettings'
+          description: 'Settings for the bar'
         search_host:
+          description: "Host URL used to access the bar's search engine"
           type:
             - string
             - 'null'
         search_token:
+          description: "Auth token used to access the bar's search engine"
           type:
             - string
             - 'null'
         created_at:
+          description: 'Date and time when the bar was created'
           type: string
           format: date-time
         updated_at:
+          description: 'Date and time when the bar was last updated'
           type:
             - string
             - 'null'
           format: date-time
         created_user:
           $ref: '#/components/schemas/UserBasic'
+          description: 'User who created the bar'
         updated_user:
           oneOf:
             -
               $ref: '#/components/schemas/UserBasic'
+              description: 'User who last updated the bar'
             -
               type: 'null'
+          description: 'User who last updated the bar'
         access:
+          description: 'User access rights for the bar'
           properties:
             role_id:
               type: integer
