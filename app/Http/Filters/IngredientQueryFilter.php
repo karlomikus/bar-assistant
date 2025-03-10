@@ -26,7 +26,12 @@ final class IngredientQueryFilter extends QueryBuilder
                 AllowedFilter::exact('id'),
                 AllowedFilter::callback('parent_ingredient_id', function ($query, $value) {
                     if ($value === 'null') {
-                        $query->whereNull('parent_ingredient_id');
+                        $query->whereNull('parent_ingredient_id')->whereExists(function ($query) {
+                            $query->select('1')
+                                ->from('ingredients as children')
+                                ->where('children.bar_id', bar()->id)
+                                ->whereColumn('children.parent_ingredient_id', 'ingredients.id');
+                        });
                     } else {
                         $query->where('parent_ingredient_id', $value);
                     }
