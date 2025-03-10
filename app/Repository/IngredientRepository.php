@@ -126,17 +126,16 @@ readonly class IngredientRepository
     {
         $ingredients = DB::table('ingredients')
             ->where('bar_id', $barId)
-            ->orderBy('parent_ingredient_id') // Ensures parents are processed before children
+            ->orderBy('parent_ingredient_id')
             ->get()
             ->keyBy('id');
 
-        // Create an empty array to store materialized paths
         $paths = [];
 
         // Function to recursively build paths
         $buildPath = function ($ingredientId) use (&$ingredients, &$paths, &$buildPath) {
             if (!isset($ingredients[$ingredientId])) {
-                return null; // If ingredient not found, return null
+                return null;
             }
 
             $ingredient = $ingredients[$ingredientId];
@@ -166,7 +165,6 @@ readonly class IngredientRepository
             $paths[$ingredient->id] = $buildPath($ingredient->id);
         }
 
-        // Bulk update all materialized paths in the database
         DB::transaction(function () use ($paths) {
             foreach ($paths as $ingredientId => $path) {
                 DB::table('ingredients')->where('id', $ingredientId)->update(['materialized_path' => $path]);
