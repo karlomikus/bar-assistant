@@ -20,8 +20,8 @@ class BarRequest
     public string $slug;
     #[OAT\Property(property: 'default_units', example: 'ml', type: 'string', enum: ['ml', 'cl', 'oz'], description: 'Used only as a setting for client apps.')]
     public ?string $defaultUnits = null;
-    #[OAT\Property(property: 'default_lang', example: 'en-US', description: 'Locale code, used only as a setting for client apps, does not change language of the API.')]
-    public ?string $defaultLang = null;
+    #[OAT\Property(property: 'default_currency', example: 'EUR', description: 'ISO 4217 format of currency. Used only as a setting for client apps.')]
+    public ?string $defaultCurrency = null;
     #[OAT\Property(property: 'enable_invites', description: 'Enable users with invite code to join this bar. Default `false`.')]
     public bool $enableInvites = true;
     #[OAT\Property(description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.')]

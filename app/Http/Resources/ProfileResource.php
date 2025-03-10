@@ -25,6 +25,8 @@ class ProfileResource extends JsonResource
             'email' => $this->email,
             'is_subscribed' => $this->hasActiveSubscription(),
             'memberships' => BarMembershipResource::collection($this->memberships),
+            'oauth_credentials' => OauthCredentialResource::collection($this->oauthCredentials),
+            'settings' => $this->settings?->toArray(),
         ];
     }
 }

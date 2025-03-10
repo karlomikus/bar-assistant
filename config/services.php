@@ -31,4 +31,43 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'github' => [
+        'client_id' => env('GITHUB_CLIENT_ID'),
+        'client_secret' => env('GITHUB_CLIENT_SECRET'),
+        'redirect' => env('GITHUB_REDIRECT_URI'),
+    ],
+
+    'gitlab' => [
+        'client_id' => env('GITLAB_CLIENT_ID'),
+        'client_secret' => env('GITLAB_CLIENT_SECRET'),
+        'redirect' => env('GITLAB_REDIRECT_URI')
+    ],
+
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI')
+    ],
+
+    'authentik' => [
+        'base_url' => env('AUTHENTIK_BASE_URL'),
+        'client_id' => env('AUTHENTIK_CLIENT_ID'),
+        'client_secret' => env('AUTHENTIK_CLIENT_SECRET'),
+        'redirect' => env('AUTHENTIK_REDIRECT_URI'),
+    ],
+
+    'authelia' => [
+        'base_url' => env('AUTHELIA_BASE_URL'),
+        'client_id' => env('AUTHELIA_CLIENT_ID'),
+        'client_secret' => env('AUTHELIA_CLIENT_SECRET'),
+        'redirect' => env('AUTHELIA_REDIRECT_URI')
+    ],
+
+    'keycloak' => [
+        'client_id' => env('KEYCLOAK_CLIENT_ID'),
+        'client_secret' => env('KEYCLOAK_CLIENT_SECRET'),
+        'redirect' => env('KEYCLOAK_REDIRECT_URI'),
+        'base_url' => env('KEYCLOAK_BASE_URL'),
+        'realms' => env('KEYCLOAK_REALM'),
+    ],
 ];

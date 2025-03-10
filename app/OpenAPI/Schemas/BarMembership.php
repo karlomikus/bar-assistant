@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema(required: ['user_id', 'user_name', 'bar_id', 'is_shelf_public', 'use_parent_as_substitute'])]
+#[OAT\Schema(required: ['user_id', 'user_name', 'bar_id', 'is_shelf_public'])]
 class BarMembership
 {
     #[OAT\Property(property: 'user_id', example: 1)]
@@ -17,6 +17,4 @@ class BarMembership
     public int $barId;
     #[OAT\Property(property: 'is_shelf_public', example: true)]
     public bool $isShelfPublic;
-    #[OAT\Property(property: 'use_parent_as_substitute', example: true)]
-    public bool $usParentAsSubstitute;
 }

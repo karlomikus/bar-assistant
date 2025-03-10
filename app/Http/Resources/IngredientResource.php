@@ -28,23 +28,24 @@ class IngredientResource extends JsonResource
             'origin' => $this->origin,
             'created_at' => $this->created_at->toAtomString(),
             'updated_at' => $this->updated_at?->toAtomString(),
+            'materialized_path' => $this->materialized_path,
+            'hierarchy' => [
+                'root_ingredient_id' => $this->getMaterializedPath()->toArray()[0] ?? null,
+                'path_to_self' => $this->when($this->relationLoaded('ancestors') && $this->parent_ingredient_id, fn () => $this->ancestors->pluck('name')->implode(' > ')),
+                'parent_ingredient' => $this->whenLoaded('parentIngredient', fn () => new IngredientBasicResource($this->parentIngredient)),
+                'descendants' => IngredientBasicResource::collection($this->whenLoaded('descendants')),
+                'ancestors' => IngredientBasicResource::collection($this->whenLoaded('ancestors')),
+            ],
             'images' => $this->when(
                 $this->relationLoaded('images'),
                 fn () => ImageResource::collection($this->images)
             ),
-            'parent_ingredient' => $this->when($this->relationLoaded('parentIngredient') && $this->parent_ingredient_id !== null, function () {
-                return new IngredientBasicResource($this->parentIngredient);
-            }),
             'color' => $this->color,
-            'category' => new IngredientCategoryResource($this->whenLoaded('category')),
             'cocktails_count' => $this->whenCounted('cocktails'),
             'cocktails_as_substitute_count' => $this->when(
                 $this->relationLoaded('cocktailIngredientSubstitutes'),
                 fn () => $this->cocktailsAsSubstituteIngredient()->count()
             ),
-            'varieties' => $this->when($this->relationLoaded('varieties') && $this->relationLoaded('parentIngredient'), function () {
-                return IngredientBasicResource::collection($this->getAllRelatedIngredients());
-            }),
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
             'access' => $this->when(true, fn () => [
@@ -52,7 +53,9 @@ class IngredientResource extends JsonResource
                 'can_delete' => $request->user()->can('delete', $this->resource),
             ]),
             'in_shelf' => $this->userHasInShelf($request->user()),
+            'in_shelf_as_variant' => $this->when($this->relationLoaded('descendants'), fn () => $this->userShelfVariants($request->user())->count() > 0),
             'in_bar_shelf' => $this->barHasInShelf(),
+            'in_bar_shelf_as_variant' => $this->when($this->relationLoaded('descendants'), fn () => $this->barShelfVariants()->count() > 0),
             'in_shopping_list' => $this->userHasInShoppingList($request->user()),
             'used_as_substitute_for' => $this->when(
                 $this->relationLoaded('cocktailIngredientSubstitutes'),
@@ -70,6 +73,9 @@ class IngredientResource extends JsonResource
                 return IngredientPriceResource::collection($this->prices);
             }),
             'calculator_id' => $this->calculator_id,
+            'sugar_g_per_ml' => $this->sugar_g_per_ml,
+            'acidity' => $this->acidity,
+            'distillery' => $this->distillery,
         ];
     }
 }
