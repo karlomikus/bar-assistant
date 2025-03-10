@@ -10,6 +10,7 @@ Here's a quick summary of the more interesting changes:
 # Breaking changes
 - Removed ingredient categories
     - Existing ingredient categories will be migrated to nested ingredient hierarchy, with ingredient category as the root node
+    - Removed `category_id` from ingredient filters
 - Removed "Track parent ingredients as a substitutes" option
     - This is now default behavior
 - Updated Menu schema
@@ -24,10 +25,12 @@ Here's a quick summary of the more interesting changes:
     - You can specify if you want to use all descendants of a given ingredient as a possible substitute
     - Max nesting level is 10
     - Added `ingredients/{id}/tree` endpoint to show ingredient hierarchy
+    - Added `bar:rebuild-hierarchy {barId}` artisan command to rebuild ingredient hierarchy
+    - Added `parent_ingredient_id`, `descendants_of` filters to `ingredients` endpoint
 - You can now add ingredients to the menu
-- Public menu schema now contains bar images and bar shelf status
+- Public menu schema now contains item images and bar shelf status
 - Added SSO support
-    - You can now login via OAuth2 if the server is properly configured
+    - You can now login via SSO if the server is properly configured
     - Currently supports: Google, GitHub, GitLab, Keycloak, Authentik, Authelia
     - Added GET `sso/providers` endpoint to list available SSO providers
     - Added GET `sso/{provider}/redirect` endpoint to redirect to SSO provider
@@ -39,9 +42,11 @@ Here's a quick summary of the more interesting changes:
 - Added user profile settings
     - Used to store default settings like language and theme
 - Added support for default bar currency
+- Added `sugar_g_per_ml`, `acidity`, `distillery` properties to `Ingredient` schema
 
 ## Changes
 - Updated Laravel to version 12
+- Import `source` property can now be JSON object
 
 # v4.4.2
 ## Changes

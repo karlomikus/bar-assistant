@@ -9507,6 +9507,20 @@ components:
           type:
             - integer
             - 'null'
+        sugar_g_per_ml:
+          type:
+            - number
+            - 'null'
+          format: float
+        acidity:
+          type:
+            - number
+            - 'null'
+          format: float
+        distillery:
+          type:
+            - string
+            - 'null'
       type: object
     IngredientBasic:
       description: 'Minimal ingredient information'

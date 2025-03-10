@@ -103,4 +103,13 @@ class Ingredient
 
     #[OAT\Property(property: 'calculator_id')]
     public ?int $calculatorId = null;
+
+    #[OAT\Property(property: 'sugar_g_per_ml')]
+    public ?float $sugarGPerMl = null;
+
+    #[OAT\Property(property: 'acidity')]
+    public ?float $acidity = null;
+
+    #[OAT\Property(property: 'distillery')]
+    public ?string $distillery = null;
 }
