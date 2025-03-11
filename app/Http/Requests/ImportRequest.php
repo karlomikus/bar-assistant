@@ -28,7 +28,7 @@ class ImportRequest extends FormRequest
     public function rules()
     {
         return [
-            'source' => 'required|string',
+            'source' => 'required',
             'duplicate_actions' => Rule::enum(DuplicateActionsEnum::class),
         ];
     }

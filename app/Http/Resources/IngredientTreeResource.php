@@ -7,9 +7,9 @@ namespace Kami\Cocktail\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \Kami\Cocktail\Models\IngredientCategory
+ * @mixin \Kami\Cocktail\Models\Ingredient
  */
-class IngredientCategoryResource extends JsonResource
+class IngredientTreeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,10 +20,8 @@ class IngredientCategoryResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
-            'ingredients_count' => $this->whenCounted('ingredients'),
+            'ingredient' => new IngredientBasicResource($this),
+            'children' => $this->allChildren->isNotEmpty() ? self::collection($this->allChildren) : [],
         ];
     }
 }

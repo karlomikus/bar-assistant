@@ -45,16 +45,7 @@ class StatsController extends Controller
             ->limit($limit)
             ->get();
 
-        $topRatedCocktails = DB::table('ratings')
-            ->select('rateable_id AS id', 'cocktails.name as name', 'cocktails.slug as slug', DB::raw('AVG(rating) AS avg_rating'), DB::raw('COUNT(*) AS votes'))
-            ->join('cocktails', 'cocktails.id', '=', 'ratings.rateable_id')
-            ->where('rateable_type', Cocktail::class)
-            ->where('cocktails.bar_id', $bar->id)
-            ->groupBy('rateable_id')
-            ->orderBy('avg_rating', 'desc')
-            ->orderBy('votes', 'desc')
-            ->limit($limit)
-            ->get();
+        $topRatedCocktails = $cocktailRepo->getTopRatedCocktails($bar->id, $limit);
 
         $userFavoriteIngredients = DB::table('cocktail_ingredients')
             ->selectRaw('ingredients.id, ingredients.slug, ingredients.name, COUNT(cocktail_id) AS cocktails_count')
@@ -67,28 +58,20 @@ class StatsController extends Controller
             ->limit($limit)
             ->get();
 
-        $favoriteTags = DB::table('tags')
-            ->selectRaw('tags.id, tags.name, COUNT(cocktail_favorites.cocktail_id) AS cocktails_count')
-            ->join('cocktail_tag', 'cocktail_tag.tag_id', '=', 'tags.id')
-            ->join('cocktail_favorites', 'cocktail_favorites.cocktail_id', '=', 'cocktail_tag.cocktail_id')
-            ->where('cocktail_favorites.bar_membership_id', $barMembership->id)
-            ->groupBy('tags.id')
-            ->orderBy('cocktails_count', 'DESC')
-            ->limit($limit)
-            ->get();
+        $favoriteTags = $cocktailRepo->getMemberFavoriteCocktailTags($barMembership->id, $limit);
 
         $stats['total_cocktails'] = Cocktail::where('bar_id', $bar->id)->count();
         $stats['total_ingredients'] = Ingredient::where('bar_id', $bar->id)->count();
         $stats['total_favorited_cocktails'] = CocktailFavorite::where('bar_membership_id', $barMembership->id)->count();
         $stats['total_shelf_cocktails'] = $cocktailRepo->getCocktailsByIngredients(
             $barMembership->userIngredients->pluck('ingredient_id')->toArray(),
+            $bar->id,
             null,
-            $barMembership->use_parent_as_substitute,
         )->count();
         $stats['total_bar_shelf_cocktails'] = $cocktailRepo->getCocktailsByIngredients(
             $bar->shelfIngredients->pluck('ingredient_id')->toArray(),
+            $bar->id,
             null,
-            $barMembership->use_parent_as_substitute,
         )->count();
         $stats['total_shelf_ingredients'] = UserIngredient::where('bar_membership_id', $barMembership->id)->count();
         $stats['total_bar_shelf_ingredients'] = BarIngredient::where('bar_id', $bar->id)->count();

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Kami\Cocktail\Rules\ValidCurrency;
 use Illuminate\Foundation\Http\FormRequest;
+use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 
 class MenuRequest extends FormRequest
 {
@@ -28,10 +30,11 @@ class MenuRequest extends FormRequest
     {
         return [
             'is_enabled' => 'required|boolean',
-            'cocktails' => 'required|array',
-            'cocktails.*.cocktail_id' => 'required',
-            'cocktails.*.sort' => 'required|integer',
-            'cocktails.*.currency' => ['required_with:cocktails.*.price', 'size:3', new ValidCurrency()],
+            'items' => 'required|array',
+            'items.*.id' => 'required|integer',
+            'items.*.type' => ['required', Rule::enum(MenuItemTypeEnum::class)],
+            'items.*.sort' => 'required|integer',
+            'items.*.currency' => ['required_with:items.*.price', 'size:3', new ValidCurrency()],
         ];
     }
 }

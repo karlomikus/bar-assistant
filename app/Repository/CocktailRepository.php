@@ -22,7 +22,7 @@ readonly class CocktailRepository
      * @param array<int> $ingredientIds
      * @return \Illuminate\Support\Collection<string, mixed>
      */
-    public function getCocktailsByIngredients(array $ingredientIds, ?int $limit = null, bool $useParentIngredientAsSubstitute = false, bool $matchComplexIngredients = true): Collection
+    public function getCocktailsByIngredients(array $ingredientIds, int $barId, ?int $limit = null, bool $matchComplexIngredients = true): Collection
     {
         if (count($ingredientIds) === 0) {
             return collect();
@@ -53,27 +53,31 @@ readonly class CocktailRepository
         // This query should handle the following cases:
         // Correctly count one match when either the main ingredient OR any of its substitutes match
         // If an ingredient can be matched either directly or through a substitute, it should only count once
-        // If enabled, also match parent ingredients of the specified ingredients
+        // Match any of descendant ingredients as possible substitute
         $query = $this->db->table('cocktails')
             ->select('cocktails.id')
             ->selectRaw(
                 'COUNT(DISTINCT CASE
                     WHEN ingredients.id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN ingredients.id
                     WHEN cocktail_ingredient_substitutes.ingredient_id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN ingredients.id
-                    WHEN ? = true AND ingredients.id IN (
-                        SELECT parent_ingredient_id 
-                        FROM ingredients 
-                        WHERE id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?)
-                        AND parent_ingredient_id IS NOT NULL
+                    WHEN cocktail_ingredients.is_specified IS FALSE AND EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            ingredients
+                        WHERE
+                            (ingredients.parent_ingredient_id = cocktail_ingredients.ingredient_id OR materialized_path LIKE cocktail_ingredients.ingredient_id || \'/%\')
+                            AND id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?)
                     ) THEN ingredients.id
                     ELSE NULL
                 END) as matching_ingredients',
-                [...$ingredientIds, ...$ingredientIds, $useParentIngredientAsSubstitute, ...$ingredientIds]
+                [...$ingredientIds, ...$ingredientIds, ...$ingredientIds]
             )
             ->join('cocktail_ingredients', 'cocktails.id', '=', 'cocktail_ingredients.cocktail_id')
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
             ->leftJoin('cocktail_ingredient_substitutes', 'cocktail_ingredient_substitutes.cocktail_ingredient_id', '=', 'cocktail_ingredients.id')
             ->where('cocktail_ingredients.optional', false)
+            ->where('cocktails.bar_id', $barId) // This uses index on table to skip SCAN on whole cocktails table
             ->groupBy('cocktails.id')
             ->havingRaw('matching_ingredients >= (
                 SELECT COUNT(*)
@@ -98,12 +102,13 @@ readonly class CocktailRepository
     {
         $ingredients = $cocktailReference->ingredients->filter(fn ($ci) => $ci->optional === false)->pluck('ingredient_id');
 
-        $relatedCocktails = \collect();
+        $relatedCocktails = collect();
         while ($ingredients->count() > 0) {
             $ingredients->pop();
-            $possibleRelatedCocktails = Cocktail::where('cocktails.id', '<>', $cocktailReference->id)
+            $possibleRelatedCocktails = DB::table('cocktails')
+                ->select('cocktails.id')
+                ->where('cocktails.id', '<>', $cocktailReference->id)
                 ->where('bar_id', $cocktailReference->bar_id)
-                ->with('ingredients.ingredient', 'images', 'tags', 'ratings')
                 ->whereIn('cocktails.id', function ($query) use ($ingredients) {
                     $query->select('ci.cocktail_id')
                         ->from('cocktail_ingredients AS ci')
@@ -121,6 +126,39 @@ readonly class CocktailRepository
             }
         }
 
-        return $relatedCocktails;
+        return $relatedCocktails->pluck('id');
+    }
+
+    /**
+     * @return Collection<array-key, mixed>
+     */
+    public function getTopRatedCocktails(int $barId, int $limit = 10): Collection
+    {
+        return DB::table('ratings')
+            ->select('rateable_id AS id', 'cocktails.name as name', 'cocktails.slug as slug', DB::raw('AVG(rating) AS avg_rating'), DB::raw('COUNT(*) AS votes'))
+            ->join('cocktails', 'cocktails.id', '=', 'ratings.rateable_id')
+            ->where('rateable_type', Cocktail::class)
+            ->where('cocktails.bar_id', $barId)
+            ->groupBy('rateable_id')
+            ->orderBy('avg_rating', 'desc')
+            ->orderBy('votes', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * @return Collection<array-key, mixed>
+     */
+    public function getMemberFavoriteCocktailTags(int $barMembershipId, int $limit = 15): Collection
+    {
+        return DB::table('tags')
+            ->selectRaw('tags.id, tags.name, COUNT(cocktail_favorites.cocktail_id) AS cocktails_count')
+            ->join('cocktail_tag', 'cocktail_tag.tag_id', '=', 'tags.id')
+            ->join('cocktail_favorites', 'cocktail_favorites.cocktail_id', '=', 'cocktail_tag.cocktail_id')
+            ->where('cocktail_favorites.bar_membership_id', $barMembershipId)
+            ->groupBy('tags.id')
+            ->orderBy('cocktails_count', 'DESC')
+            ->limit($limit)
+            ->get();
     }
 }

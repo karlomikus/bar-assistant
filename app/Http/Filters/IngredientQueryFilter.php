@@ -24,9 +24,20 @@ final class IngredientQueryFilter extends QueryBuilder
         $this
             ->allowedFilters([
                 AllowedFilter::exact('id'),
+                AllowedFilter::callback('parent_ingredient_id', function ($query, $value) {
+                    if ($value === 'null') {
+                        $query->whereNull('parent_ingredient_id')->whereExists(function ($query) {
+                            $query->select('1')
+                                ->from('ingredients as children')
+                                ->where('children.bar_id', bar()->id)
+                                ->whereColumn('children.parent_ingredient_id', 'ingredients.id');
+                        });
+                    } else {
+                        $query->where('parent_ingredient_id', $value);
+                    }
+                }),
                 AllowedFilter::custom('name', new FilterNameSearch()),
                 AllowedFilter::beginsWithStrict('name_exact', 'name'),
-                AllowedFilter::exact('category_id', 'ingredient_category_id'),
                 AllowedFilter::partial('origin'),
                 AllowedFilter::exact('created_user_id'),
                 AllowedFilter::callback('on_shopping_list', function ($query, $value) use ($barMembership) {
@@ -65,6 +76,20 @@ final class IngredientQueryFilter extends QueryBuilder
                         $query->whereHas('ingredientParts');
                     }
                 }),
+                AllowedFilter::callback('descendants_of', function ($query, $value) {
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
+
+                    // TODO: Move to sqlite LIKE ANY when supported
+                    foreach ($value as $id) {
+                        $query->orWhere('ingredients.materialized_path', 'LIKE', function ($query) use ($id) {
+                            $query->selectRaw("COALESCE(materialized_path, '') || id || '/%'")
+                                ->from('ingredients')
+                                ->where('id', $id);
+                        });
+                    }
+                }),
             ])
             ->defaultSort('name')
             ->allowedSorts([
@@ -81,9 +106,10 @@ final class IngredientQueryFilter extends QueryBuilder
                         ->orderBy('cocktails_count', $direction);
                 }),
             ])
-            ->allowedIncludes(['parentIngredient', 'varieties', 'prices', 'category', 'ingredientParts', 'images'])
+            ->allowedIncludes(['parentIngredient', 'prices', 'ingredientParts', 'images', 'descendants', 'ancestors'])
             ->withCount('cocktails')
             ->filterByBar('ingredients')
+            ->addInBarShelfColumn()
             ->with('bar.shelfIngredients');
     }
 }

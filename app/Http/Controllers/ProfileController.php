@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Hash;
+use Kami\Cocktail\Services\Auth\OauthProvider;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\ProfileResource;
+use Kami\Cocktail\OpenAPI\Schemas\ProfileRequest;
 use Kami\Cocktail\Http\Requests\UpdateUserRequest;
 
 class ProfileController extends Controller
@@ -21,6 +24,12 @@ class ProfileController extends Controller
     #[BAO\NotFoundResponse]
     public function show(Request $request): JsonResource
     {
+        $user = $request->user();
+        $user->load([
+            'memberships' => fn ($memberships) => $memberships->chaperone(),
+            'oauthCredentials',
+        ]);
+
         return new ProfileResource($request->user());
     }
 
@@ -36,29 +45,49 @@ class ProfileController extends Controller
     #[BAO\NotAuthorizedResponse]
     public function update(UpdateUserRequest $request): JsonResource
     {
-        $barId = $request->post('bar_id', null);
-        $currentUser = $request->user();
-        $currentUser->name = $request->post('name');
-        $currentUser->email = $request->post('email');
+        $profileRequest = ProfileRequest::fromIlluminateRequest($request);
 
-        if ($request->has('password') && $request->post('password') !== null) {
-            $currentUser->password = Hash::make($request->input('password'));
+        $currentUser = $request->user();
+        $currentUser->name = $profileRequest->name;
+        $currentUser->email = $profileRequest->email;
+
+        if ($request->has('password') && $profileRequest->password !== null) {
+            $currentUser->password = Hash::make($profileRequest->password);
 
             $currentUser->tokens()->delete();
         }
 
         // If there is a bar context
-        if ($barId !== null) {
-            $barMembership = $currentUser->getBarMembership((int) $barId);
+        if ($profileRequest->barId !== null) {
+            $barMembership = $currentUser->getBarMembership($profileRequest->barId);
             if ($barMembership) {
-                $barMembership->is_shelf_public = (bool) $request->post('is_shelf_public');
-                $barMembership->use_parent_as_substitute = (bool) $request->post('use_parent_as_substitute');
+                $barMembership->is_shelf_public = $profileRequest->isShelfPublic;
                 $barMembership->save();
             }
         }
 
+        $currentUser->settings = $profileRequest->settings->toArray();
+
         $currentUser->save();
 
         return new ProfileResource($request->user());
+    }
+
+    #[OAT\Delete(path: '/profile/sso/{provider}', tags: ['Profile'], operationId: 'deleteSSO', description: 'Delete user\'s SSO provider', summary: 'Delete SSO provider', parameters: [
+        new OAT\Parameter(name: 'provider', in: 'path', required: true, description: 'Provider ID', schema: new OAT\Schema(ref: OauthProvider::class)),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function deleteSSOProvider(Request $request, string $provider): Response
+    {
+        $validProvider = OauthProvider::tryFrom($provider);
+        if ($validProvider === null) {
+            abort(404, 'Unsupported provider');
+        }
+
+        $request->user()->oauthCredentials()->where('provider', $validProvider->value)->delete();
+
+        return new Response(null, 204);
     }
 }

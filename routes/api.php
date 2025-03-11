@@ -20,18 +20,19 @@ use Kami\Cocktail\Http\Controllers\RatingController;
 use Kami\Cocktail\Http\Controllers\ServerController;
 use Kami\Cocktail\Http\Controllers\ExploreController;
 use Kami\Cocktail\Http\Controllers\ProfileController;
+use Kami\Cocktail\Http\Controllers\SSOAuthController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
 use Kami\Cocktail\Http\Controllers\UtensilsController;
 use Laravel\Paddle\Http\Controllers\WebhookController;
 use Kami\Cocktail\Http\Controllers\CalculatorController;
 use Kami\Cocktail\Http\Controllers\CollectionController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
+use Kami\Cocktail\Http\Controllers\RecommenderController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
 use Kami\Cocktail\Http\Controllers\SubscriptionController;
 use Kami\Cocktail\Http\Controllers\PriceCategoryController;
 use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
-use Kami\Cocktail\Http\Controllers\IngredientCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +56,9 @@ Route::prefix('auth')->group(function () {
     Route::post('forgot-password', [AuthController::class, 'passwordForgot']);
     Route::post('reset-password', [AuthController::class, 'passwordReset']);
     Route::get('verify/{id}/{hash}', [AuthController::class, 'confirmAccount']);
+    Route::get('sso/{provider}/redirect', [SSOAuthController::class, 'redirect']);
+    Route::get('sso/{provider}/callback', [SSOAuthController::class, 'callback']);
+    Route::get('sso/providers', [SSOAuthController::class, 'list']);
 });
 
 Route::prefix('server')->group(function () {
@@ -81,6 +85,7 @@ Route::middleware($apiMiddleware)->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show'])->middleware(['ability:*']);
     Route::post('/profile', [ProfileController::class, 'update'])->middleware(['ability:*']);
+    Route::delete('/profile/sso/{provider}', [ProfileController::class, 'deleteSSOProvider'])->middleware(['ability:*']);
 
     Route::prefix('shelf')->middleware(['ability:*'])->group(function () {
         Route::post('/ingredients/batch-store', [ShelfController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
@@ -96,14 +101,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/{id}/extra', [IngredientController::class, 'extra'])->middleware(['ability:ingredients.read']);
         Route::get('/{id}/cocktails', [IngredientController::class, 'cocktails'])->middleware(['ability:ingredients.read']);
         Route::get('/{id}/substitutes', [IngredientController::class, 'substitutes'])->middleware(['ability:ingredients.read']);
-    });
-
-    Route::prefix('ingredient-categories')->middleware(['ability:*'])->group(function () {
-        Route::get('/', [IngredientCategoryController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/', [IngredientCategoryController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/{id}', [IngredientCategoryController::class, 'show'])->name('ingredient-categories.show');
-        Route::put('/{id}', [IngredientCategoryController::class, 'update']);
-        Route::delete('/{id}', [IngredientCategoryController::class, 'delete']);
+        Route::get('/{id}/tree', [IngredientController::class, 'tree'])->middleware(['ability:ingredients.read']);
     });
 
     Route::prefix('cocktails')->group(function () {
@@ -271,6 +269,10 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::put('/{id}', [CalculatorController::class, 'update']);
         Route::delete('/{id}', [CalculatorController::class, 'delete']);
         Route::post('/{id}/solve', [CalculatorController::class, 'solve']);
+    });
+
+    Route::prefix('recommender')->middleware(['ability:*'])->group(function () {
+        Route::get('/cocktails', [RecommenderController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);
     });
 });
 

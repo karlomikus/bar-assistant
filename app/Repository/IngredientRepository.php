@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Repository;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Database\DatabaseManager;
 
 readonly class IngredientRepository
@@ -26,6 +27,36 @@ readonly class IngredientRepository
             ->where('cocktails.bar_id', $barId)
             ->groupBy('cocktail_id')
             ->orderBy('cocktails.name', 'desc')
+            ->get();
+    }
+
+    /**
+     * @param array<int> $ingredientIds
+     * @return Collection<array-key, Ingredient>
+     */
+    public function getDescendants(array $ingredientIds, int $limit = 50): Collection
+    {
+        return Ingredient::select('ingredients.id AS _root_id', 'descendant.*')
+            ->join('ingredients AS descendant', DB::raw("('/' || descendant.materialized_path || '/')"), 'LIKE', DB::raw("'%/' || ingredients.id || '/%'"))
+            ->whereIn('ingredients.id', $ingredientIds)
+            ->limit($limit)
+            ->orderBy('ingredients.name')
+            ->get();
+    }
+
+    /**
+     * @param array<int> $ingredientIds
+     * @return Collection<array-key, Ingredient>
+     */
+    public function getAncestors(array $ingredientIds, int $limit = 50): Collection
+    {
+        return Ingredient::select('ingredients.id as _leaf_id', 'ancestor.*')
+            ->join('ingredients AS ancestor', DB::raw("instr('/' || ingredients.materialized_path || '/', '/' || ancestor.id || '/')"), '>', DB::raw('0'))
+            ->whereIn('ingredients.id', $ingredientIds)
+            ->whereNotNull('ingredients.materialized_path')
+            ->limit($limit)
+            ->orderBy('ingredients.name')
+            ->orderBy('_leaf_id')
             ->get();
     }
 
@@ -89,5 +120,55 @@ readonly class IngredientRepository
         LIMIT 10";
 
         return DB::select($rawQuery, ['barId' => $barId]);
+    }
+
+    public function rebuildMaterializedPath(int $barId): void
+    {
+        $ingredients = DB::table('ingredients')
+            ->where('bar_id', $barId)
+            ->orderBy('parent_ingredient_id')
+            ->get()
+            ->keyBy('id');
+
+        $paths = [];
+
+        // Function to recursively build paths
+        $buildPath = function ($ingredientId) use (&$ingredients, &$paths, &$buildPath) {
+            if (!isset($ingredients[$ingredientId])) {
+                return null;
+            }
+
+            $ingredient = $ingredients[$ingredientId];
+
+            // If root node, path is null
+            if (!$ingredient->parent_ingredient_id) {
+                return null;
+            }
+
+            // If path is already computed, return it
+            if (isset($paths[$ingredientId])) {
+                return $paths[$ingredientId];
+            }
+
+            // Recursively get parent path
+            $parentPath = $buildPath($ingredient->parent_ingredient_id);
+            $path = ($parentPath ? $parentPath . $ingredient->parent_ingredient_id . '/' : $ingredient->parent_ingredient_id . '/');
+
+            // Store the computed path
+            $paths[$ingredientId] = $path;
+
+            return $path;
+        };
+
+        // Compute paths for all ingredients
+        foreach ($ingredients as $ingredient) {
+            $paths[$ingredient->id] = $buildPath($ingredient->id);
+        }
+
+        DB::transaction(function () use ($paths) {
+            foreach ($paths as $ingredientId => $path) {
+                DB::table('ingredients')->where('id', $ingredientId)->update(['materialized_path' => $path]);
+            }
+        });
     }
 }

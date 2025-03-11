@@ -1,3 +1,53 @@
+# v5.0.0
+⚠️ This is a new major release. This updated includes big database schema updates that are not backwards compatible. I tried to cover all possible issues related to data migration but I recommend that you backup your current database before updating.
+
+Here's a quick summary of the more interesting changes:
+
+- Added SSO support
+- Added nested ingredient hierarchy and removed ingredient categories. You can now assign parent child relationships for ingredients and use all descendants of a given ingredient as a possible substitute. This gives option for users to manage more complex ingredient taxonomies, like "Spirits > Rum - Blended > Rum - Blended Lightly Aged"
+- Various query optimizations, the app should now be faster and more efficient on large datasets
+
+# Breaking changes
+- Removed ingredient categories
+    - Existing ingredient categories will be migrated to nested ingredient hierarchy, with ingredient category as the root node
+    - Removed `category_id` from ingredient filters
+- Removed "Track parent ingredients as a substitutes" option
+    - This is now default behavior
+- Updated Menu schema
+    - Added MenuItem schema to support multiple menu item types
+- Removed `bar_id` query param support
+    - Use `Bar-Assistant-Bar-Id` request header instead
+
+## New
+- Added nested ingredient hierarchy
+    - Updated `Ingredient` and `CocktailIngredient` schemas to reflect the new structure
+    - All descendants of a given ingredient are now considered as possible substitutes
+    - You can specify if you want to use all descendants of a given ingredient as a possible substitute
+    - Max nesting level is 10
+    - Added `ingredients/{id}/tree` endpoint to show ingredient hierarchy
+    - Added `bar:rebuild-hierarchy {barId}` artisan command to rebuild ingredient hierarchy
+    - Added `parent_ingredient_id`, `descendants_of` filters to `ingredients` endpoint
+- You can now add ingredients to the menu
+- Public menu schema now contains item images and bar shelf status
+- Added SSO support
+    - You can now login via SSO if the server is properly configured
+    - Currently supports: Google, GitHub, GitLab, Keycloak, Authentik, Authelia
+    - Added GET `sso/providers` endpoint to list available SSO providers
+    - Added GET `sso/{provider}/redirect` endpoint to redirect to SSO provider
+    - Added GET `sso/{provider}/callback` endpoint to handle SSO callback
+    - Added DELETE `profile/sso/{provider}` endpoint to remove SSO credentials from user
+    - Updated `Profile` schema
+- Added `recommender/cocktails` endpoint
+    - You can now get recommendations based on your favorite cocktails
+- Added user profile settings
+    - Used to store default settings like language and theme
+- Added support for default bar currency
+- Added `sugar_g_per_ml`, `acidity`, `distillery` properties to `Ingredient` schema
+
+## Changes
+- Updated Laravel to version 12
+- Import `source` property can now be JSON object
+
 # v4.4.2
 ## Changes
 - Publish image to GitHub Container Registry

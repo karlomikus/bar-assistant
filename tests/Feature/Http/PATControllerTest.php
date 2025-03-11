@@ -81,9 +81,6 @@ class PATControllerTest extends TestCase
         $response = $this->getJson('/api/cocktails', ['Authorization' => 'Bearer ' . $token->plainTextToken, 'Bar-Assistant-Bar-Id' => $barMembership->bar->id]);
         $response->assertForbidden();
 
-        $response = $this->getJson('/api/ingredient-categories', ['Authorization' => 'Bearer ' . $token->plainTextToken, 'Bar-Assistant-Bar-Id' => $barMembership->bar->id]);
-        $response->assertForbidden();
-
         $response = $this->getJson('/api/ingredients', ['Authorization' => 'Bearer ' . $token->plainTextToken, 'Bar-Assistant-Bar-Id' => $barMembership->bar->id]);
         $response->assertSuccessful();
     }

@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema(required: ['id', 'slug', 'name', 'description', 'origin', 'color', 'created_at', 'updated_at', 'strength'])]
+#[OAT\Schema(required: ['id', 'slug', 'name', 'description', 'origin', 'color', 'created_at', 'updated_at', 'strength', 'hierarchy', 'materialized_path'])]
 class Ingredient
 {
     #[OAT\Property(example: 1)]
@@ -33,25 +33,18 @@ class Ingredient
     #[OAT\Property(property: 'updated_at', format: 'date-time')]
     public ?string $updatedAt = null;
 
+    #[OAT\Property(property: 'materialized_path')]
+    public ?string $materializedPath = null;
+
     /** @var Image[] */
     #[OAT\Property()]
     public array $images = [];
 
-    #[OAT\Property(property: 'parent_ingredient')]
-    public ?IngredientBasic $parentIngredient = null;
-
     #[OAT\Property(example: '#ffffff')]
     public string $color;
 
-    #[OAT\Property()]
-    public ?IngredientCategory $category = null;
-
     #[OAT\Property(property: 'cocktails_count', example: 12)]
     public int $cocktailsCount;
-
-    /** @var IngredientBasic[] */
-    #[OAT\Property()]
-    public array $varieties = [];
 
     /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
@@ -63,6 +56,9 @@ class Ingredient
 
     #[OAT\Property(property: 'created_user')]
     public UserBasic $createdUser;
+
+    #[OAT\Property()]
+    public IngredientHierarchy $hierarchy;
 
     #[OAT\Property(property: 'updated_user')]
     public ?UserBasic $updatedUser = null;
@@ -85,11 +81,17 @@ class Ingredient
     #[OAT\Property(property: 'in_shelf')]
     public bool $inShelf = false;
 
+    #[OAT\Property(property: 'in_shelf_as_variant')]
+    public bool $inShelfAsVariant = false;
+
     #[OAT\Property(property: 'in_bar_shelf')]
     public bool $inBarShelf = false;
 
     #[OAT\Property(property: 'in_shopping_list')]
     public bool $inShoppingList = false;
+
+    #[OAT\Property(property: 'in_bar_shelf_as_variant')]
+    public bool $inBarShelfAsVariant = false;
 
     /** @var IngredientBasic[] */
     #[OAT\Property(property: 'used_as_substitute_for')]
@@ -101,4 +103,13 @@ class Ingredient
 
     #[OAT\Property(property: 'calculator_id')]
     public ?int $calculatorId = null;
+
+    #[OAT\Property(property: 'sugar_g_per_ml')]
+    public ?float $sugarGPerMl = null;
+
+    #[OAT\Property(property: 'acidity')]
+    public ?float $acidity = null;
+
+    #[OAT\Property(property: 'distillery')]
+    public ?string $distillery = null;
 }

@@ -4,13 +4,15 @@ RUN apk add --no-cache git
 
 WORKDIR /app/data
 
-RUN git clone --depth 1 --branch datapack https://github.com/bar-assistant/data.git .
+RUN git clone --depth 1 --branch v5 https://github.com/bar-assistant/data.git .
 
 RUN rm -r .git
 
 FROM serversideup/php:8.3-fpm-nginx AS php-base
 
 LABEL org.opencontainers.image.source="https://github.com/karlomikus/bar-assistant"
+LABEL org.opencontainers.image.description="Bar assistant is a all-in-one solution for managing your home bar"
+LABEL org.opencontainers.image.licenses=MIT
 
 ENV S6_CMD_WAIT_FOR_SERVICES=1
 ENV APP_BASE_DIR=/var/www/cocktails

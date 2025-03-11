@@ -7,15 +7,15 @@ namespace Kami\Cocktail\Services;
 use Throwable;
 use Illuminate\Log\LogManager;
 use Kami\Cocktail\Models\Image;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\IngredientPrice;
 use Kami\Cocktail\Models\ComplexIngredient;
-use Kami\Cocktail\Exceptions\IngredientException;
 use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest;
-use Kami\Cocktail\Exceptions\IngredientParentException;
 use Kami\Cocktail\Exceptions\ImagesNotAttachedException;
+use Kami\Cocktail\Exceptions\IngredientValidationException;
 
 final class IngredientService
 {
@@ -26,23 +26,31 @@ final class IngredientService
 
     public function createIngredient(IngredientRequest $dto): Ingredient
     {
+        DB::beginTransaction();
+
         try {
-            if ($dto->name === '') {
-                throw new IngredientException('Invalid ingredient name');
+            if (blank($dto->name)) {
+                throw new IngredientValidationException('Invalid ingredient name');
             }
 
             $ingredient = new Ingredient();
             $ingredient->bar_id = $dto->barId;
             $ingredient->name = $dto->name;
-            $ingredient->ingredient_category_id = $dto->ingredientCategoryId;
             $ingredient->strength = $dto->strength;
             $ingredient->description = $dto->description;
             $ingredient->origin = $dto->origin;
             $ingredient->color = $dto->color;
-            $ingredient->parent_ingredient_id = $dto->parentIngredientId;
             $ingredient->created_user_id = $dto->userId;
             $ingredient->calculator_id = $dto->calculatorId;
+            $ingredient->sugar_g_per_ml = $dto->sugarContent;
+            $ingredient->acidity = $dto->acidity;
+            $ingredient->distillery = $dto->distillery;
             $ingredient->save();
+
+            if ($dto->parentIngredientId !== null) {
+                $parentIngredient = Ingredient::findOrFail($dto->parentIngredientId);
+                $ingredient->appendAsChildOf($parentIngredient);
+            }
 
             foreach ($dto->complexIngredientParts as $ingredientPartId) {
                 $part = new ComplexIngredient();
@@ -64,8 +72,12 @@ final class IngredientService
         } catch (Throwable $e) {
             $this->log->error('[INGREDIENT_SERVICE] ' . $e->getMessage());
 
+            DB::rollBack();
+
             throw $e;
         }
+
+        DB::commit();
 
         if (count($dto->images) > 0) {
             try {
@@ -87,25 +99,39 @@ final class IngredientService
     public function updateIngredient(int $id, IngredientRequest $dto): Ingredient
     {
         if ($dto->parentIngredientId === $id) {
-            throw new IngredientParentException('Parent ingredient is the same as the current ingredient!');
+            throw new IngredientValidationException('Parent ingredient is the same as the current ingredient!');
         }
 
-        $originalStrength = null;
+        if (blank($dto->name)) {
+            throw new IngredientValidationException('Invalid ingredient name');
+        }
+
+        DB::beginTransaction();
 
         try {
             $ingredient = Ingredient::findOrFail($id);
             $originalStrength = $ingredient->strength;
             $ingredient->name = $dto->name;
-            $ingredient->ingredient_category_id = $dto->ingredientCategoryId;
             $ingredient->strength = $dto->strength;
             $ingredient->description = $dto->description;
             $ingredient->origin = $dto->origin;
             $ingredient->color = $dto->color;
-            $ingredient->parent_ingredient_id = $dto->parentIngredientId;
             $ingredient->updated_user_id = $dto->userId;
             $ingredient->updated_at = now();
             $ingredient->calculator_id = $dto->calculatorId;
+            $ingredient->sugar_g_per_ml = $dto->sugarContent;
+            $ingredient->acidity = $dto->acidity;
+            $ingredient->distillery = $dto->distillery;
             $ingredient->save();
+
+            if ($dto->parentIngredientId !== $ingredient->parent_ingredient_id) {
+                if ($dto->parentIngredientId === null) {
+                    $ingredient->appendAsChildOf(null);
+                } else {
+                    $parentIngredient = Ingredient::find($dto->parentIngredientId);
+                    $ingredient->appendAsChildOf($parentIngredient);
+                }
+            }
 
             Model::unguard();
             $currentIngredientParts = [];
@@ -134,9 +160,12 @@ final class IngredientService
 
         } catch (Throwable $e) {
             $this->log->error('[INGREDIENT_SERVICE] ' . $e->getMessage());
+            DB::rollBack();
 
             throw $e;
         }
+
+        DB::commit();
 
         if (count($dto->images) > 0) {
             try {
@@ -156,7 +185,7 @@ final class IngredientService
 
         $ingredient->loadMissing('cocktails.ingredients.ingredient');
 
-        if ($originalStrength !== null && $originalStrength !== $ingredient->strength) {
+        if ($originalStrength !== $ingredient->strength) {
             $this->log->debug('[INGREDIENT_SERVICE] Updated ingredient strength, updating ' . $ingredient->cocktails->count() . ' cocktails.');
             $ingredient->cocktails->each(function (Cocktail $cocktail) {
                 $cocktail->abv = $cocktail->getABV();

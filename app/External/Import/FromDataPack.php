@@ -8,9 +8,7 @@ use Generator;
 use Throwable;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Bar;
-use Kami\Cocktail\Models\Tag;
 use Kami\Cocktail\Models\User;
-use Kami\Cocktail\Models\Utensil;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
@@ -20,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Kami\Cocktail\Repository\IngredientRepository;
 use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
 use Kami\Cocktail\External\Model\Calculator as CalculatorExternal;
 use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
@@ -34,7 +33,7 @@ class FromDataPack
     /** @var array<string, int> */
     private array $ingredientCalculators = [];
 
-    public function __construct()
+    public function __construct(private readonly IngredientRepository $ingredientRepository)
     {
         $this->uploadsDisk = Storage::disk('uploads');
     }
@@ -53,7 +52,6 @@ class FromDataPack
             'glasses' => 'base_glasses.json',
             'cocktail_methods' => 'base_methods.json',
             'utensils' => 'base_utensils.json',
-            'ingredient_categories' => 'base_ingredient_categories.json',
             'price_categories' => 'base_price_categories.json',
         ];
 
@@ -82,9 +80,9 @@ class FromDataPack
         $bar->setStatus(BarStatusEnum::Active)->save();
 
         /** @phpstan-ignore-next-line */
-        Ingredient::where('bar_id', $bar->id)->with('category', 'images')->searchable();
+        Ingredient::where('bar_id', $bar->id)->searchable();
         /** @phpstan-ignore-next-line */
-        Cocktail::where('bar_id', $bar->id)->with('ingredients.ingredient', 'tags', 'images')->searchable();
+        Cocktail::where('bar_id', $bar->id)->searchable();
 
         $timerEnd = microtime(true);
 
@@ -167,7 +165,6 @@ class FromDataPack
 
     private function importIngredients(Filesystem $dataDisk, Bar $bar, User $user): void
     {
-        $categories = DB::table('ingredient_categories')->select('id', 'name')->where('bar_id', $bar->id)->get();
         $existingIngredients = DB::table('ingredients')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(function ($ingredient) {
             return Str::slug($ingredient->name);
         });
@@ -179,7 +176,6 @@ class FromDataPack
         $barImagesDir = $bar->getIngredientsDirectory();
         $this->uploadsDisk->makeDirectory($barImagesDir);
 
-        DB::beginTransaction();
         foreach ($this->getDataFromDir('ingredients', $dataDisk) as $fromYield) {
             [$externalIngredient, $filePath] = $fromYield;
             $externalIngredient = IngredientExternal::fromDataPackArray($externalIngredient);
@@ -187,13 +183,11 @@ class FromDataPack
                 continue;
             }
 
-            $category = $categories->firstWhere('name', $externalIngredient->category);
             $slug = $externalIngredient->id . '-' . $bar->id;
             $ingredientsToInsert[] = [
                 'bar_id' => $bar->id,
                 'slug' => $slug,
                 'name' => $externalIngredient->name,
-                'ingredient_category_id' => $category?->id,
                 'strength' => $externalIngredient->strength,
                 'description' => $externalIngredient->description,
                 'origin' => $externalIngredient->origin,
@@ -202,6 +196,9 @@ class FromDataPack
                 'created_at' => $externalIngredient->createdAt ?? now(),
                 'updated_at' => $externalIngredient->updatedAt,
                 'calculator_id' => $externalIngredient->calculatorId ? $this->ingredientCalculators[$externalIngredient->calculatorId] : null,
+                'sugar_g_per_ml' => $externalIngredient->sugarContent,
+                'acidity' => $externalIngredient->acidity,
+                'distillery' => $externalIngredient->distillery,
             ];
 
             if ($externalIngredient->parentId) {
@@ -233,9 +230,14 @@ class FromDataPack
             }
         }
 
+        // Start inserting
+        DB::beginTransaction();
+
         DB::table('ingredients')->insert($ingredientsToInsert);
 
         $ingredients = DB::table('ingredients')->where('bar_id', $bar->id)->get();
+        $barShelfIngredientsToInsert = [];
+        $complexIngredientsToInsert = [];
 
         foreach ($ingredients as $ingredient) {
             if (array_key_exists($ingredient->slug, $imagesToInsert)) {
@@ -245,7 +247,7 @@ class FromDataPack
 
             if (array_key_exists($ingredient->slug, $parentIngredientsToInsert)) {
                 $parentSlug = $parentIngredientsToInsert[$ingredient->slug];
-                $parentIngredientId = DB::table('ingredients')->where('slug', $parentSlug)->where('bar_id', $bar->id)->first('id');
+                $parentIngredientId = $ingredients->firstWhere('slug', $parentSlug);
                 if (isset($parentIngredientId->id)) {
                     DB::table('ingredients')->where('slug', $ingredient->slug)->where('bar_id', $bar->id)->update(['parent_ingredient_id' => $parentIngredientId->id]);
                 }
@@ -253,16 +255,24 @@ class FromDataPack
 
             if (array_key_exists($ingredient->slug, $ingredientPartsToInsert)) {
                 foreach ($ingredientPartsToInsert[$ingredient->slug] as $partSlug) {
-                    $ingredientPartId = DB::table('ingredients')->where('slug', $partSlug)->where('bar_id', $bar->id)->first('id');
+                    $ingredientPartId = $ingredients->firstWhere('slug', $partSlug);
                     if (isset($ingredientPartId->id)) {
-                        DB::table('complex_ingredients')->insert(['main_ingredient_id' => $ingredient->id, 'ingredient_id' => $ingredientPartId->id]);
+                        $complexIngredientsToInsert[] = ['main_ingredient_id' => $ingredient->id, 'ingredient_id' => $ingredientPartId->id];
                     }
                 }
             }
 
             if (in_array($ingredient->slug, $this->barShelf)) {
-                DB::table('bar_ingredients')->insert(['ingredient_id' => $ingredient->id, 'bar_id' => $bar->id]);
+                $barShelfIngredientsToInsert[] = ['ingredient_id' => $ingredient->id, 'bar_id' => $bar->id];
             }
+        }
+
+        if (count($complexIngredientsToInsert) > 0) {
+            DB::table('complex_ingredients')->insert($complexIngredientsToInsert);
+        }
+
+        if (count($barShelfIngredientsToInsert) > 0) {
+            DB::table('bar_ingredients')->insert($barShelfIngredientsToInsert);
         }
 
         if (count($imagesToInsert) > 0) {
@@ -270,6 +280,8 @@ class FromDataPack
         }
 
         DB::commit();
+
+        $this->ingredientRepository->rebuildMaterializedPath($bar->id);
     }
 
     private function importBaseCocktails(Filesystem $dataDisk, Bar $bar, User $user): void
@@ -281,13 +293,16 @@ class FromDataPack
             return Str::slug($cocktail->name);
         });
 
-        $imagesToInsert = [];
-        $tagsToInsert = [];
-        $cocktailUtensilsToInsert = [];
+        $cocktailImages = [];
+        $uniqueTags = [];
+        $cocktailTagsMap = [];
+        $newCocktails = [];
+        $newCocktailIngredients = [];
+        $newCocktailSubstituteIngredients = [];
+        $cocktailUtensilsMap = [];
         $barImagesDir = 'cocktails/' . $bar->id . '/';
         $this->uploadsDisk->makeDirectory($barImagesDir);
 
-        DB::beginTransaction();
         foreach ($this->getDataFromDir('cocktails', $dataDisk) as $fromYield) {
             [$cocktail, $filePath] = $fromYield;
 
@@ -299,7 +314,7 @@ class FromDataPack
 
             $slug = $externalCocktail->id . '-' . $bar->id;
 
-            $cocktailId = DB::table('cocktails')->insertGetId([
+            $newCocktails[] = [
                 'slug' => $slug,
                 'name' => $externalCocktail->name,
                 'instructions' => $externalCocktail->instructions,
@@ -313,28 +328,18 @@ class FromDataPack
                 'bar_id' => $bar->id,
                 'created_at' => $externalCocktail->createdAt ?? now(),
                 'updated_at' => $externalCocktail->updatedAt,
-            ]);
+            ];
 
             foreach ($externalCocktail->tags as $tag) {
-                $tag = Tag::firstOrCreate([
-                    'name' => trim($tag),
-                    'bar_id' => $bar->id,
-                ]);
-                $tagsToInsert[] = [
-                    'tag_id' => $tag->id,
-                    'cocktail_id' => $cocktailId,
-                ];
+                $tag = trim($tag);
+                if (!in_array($tag, $uniqueTags)) {
+                    $uniqueTags[] = $tag;
+                }
+                $cocktailTagsMap[$slug][] = $tag;
             }
 
             foreach ($externalCocktail->utensils as $utensil) {
-                $utensil = Utensil::firstOrCreate([
-                    'name' => trim($utensil),
-                    'bar_id' => $bar->id,
-                ]);
-                $cocktailUtensilsToInsert[] = [
-                    'utensil_id' => $utensil->id,
-                    'cocktail_id' => $cocktailId,
-                ];
+                $cocktailUtensilsMap[$slug][] = trim($utensil);
             }
 
             $sort = 1;
@@ -345,16 +350,16 @@ class FromDataPack
                     continue;
                 }
 
-                $ciId = DB::table('cocktail_ingredients')->insertGetId([
-                    'cocktail_id' => $cocktailId,
+                $newCocktailIngredients[$slug][] = [
                     'ingredient_id' => $matchedIngredientId,
                     'amount' => $cocktailIngredient->amount->amountMin,
                     'amount_max' => $cocktailIngredient->amount->amountMax,
                     'units' => $cocktailIngredient->amount->units->value,
                     'optional' => $cocktailIngredient->optional,
+                    'is_specified' => $cocktailIngredient->isSpecified,
                     'note' => $cocktailIngredient->note,
                     'sort' => $sort,
-                ]);
+                ];
 
                 $sort++;
 
@@ -365,15 +370,14 @@ class FromDataPack
                         continue;
                     }
 
-                    DB::table('cocktail_ingredient_substitutes')->insert([
-                        'cocktail_ingredient_id' => $ciId,
+                    $newCocktailSubstituteIngredients[$slug][$matchedIngredientId][] = [
                         'ingredient_id' => $matchedSubIngredientId,
                         'amount' => $substitute->amount->amountMin,
                         'amount_max' => $substitute->amount->amountMax,
                         'units' => $substitute->amount->units->value,
                         'created_at' => now(),
                         'updated_at' => null,
-                    ]);
+                    ];
                 }
             }
 
@@ -385,9 +389,8 @@ class FromDataPack
 
                 $this->copyResourceImage($dataDisk, $baseSrcImagePath, $targetImagePath);
 
-                $imagesToInsert[] = [
+                $cocktailImages[$slug][] = [
                     'imageable_type' => Cocktail::class,
-                    'imageable_id' => $cocktailId,
                     'copyright' => $image->copyright,
                     'file_path' => $targetImagePath,
                     'file_extension' => $fileExtension,
@@ -399,10 +402,88 @@ class FromDataPack
                 ];
             }
         }
-        DB::commit();
+
+        DB::beginTransaction();
+
+        $tagsToInsert = [];
+        foreach ($uniqueTags as $tag) {
+            $tagsToInsert[] = ['bar_id' => $bar->id, 'name' => $tag];
+        }
+        DB::table('tags')->insert($tagsToInsert);
+
+        DB::table('cocktails')->insert($newCocktails);
+        $tags = DB::table('tags')->where('bar_id', $bar->id)->get();
+        $cocktails = DB::table('cocktails')->select('slug', 'id')->where('bar_id', $bar->id)->get();
+        $existingsUtensils = DB::table('utensils')->select('name', 'id')->where('bar_id', $bar->id)->get();
+        $cocktailIngredientsToInsert = [];
+        $imagesToInsert = [];
+        $cocktailTagsToInsert = [];
+        $cocktailUtensilsToInsert = [];
+        foreach ($cocktails as $cocktail) {
+            // Add tags
+            if (isset($cocktailTagsMap[$cocktail->slug])) {
+                foreach ($cocktailTagsMap[$cocktail->slug] as $tag) {
+                    $cocktailTagsToInsert[] = ['cocktail_id' => $cocktail->id, 'tag_id' => $tags->where('name', $tag)->first()->id];
+                }
+            }
+
+            // Add utensils
+            if (isset($cocktailUtensilsMap[$cocktail->slug])) {
+                foreach ($cocktailUtensilsMap[$cocktail->slug] as $utensil) {
+                    $cocktailUtensilsToInsert[] = ['cocktail_id' => $cocktail->id, 'utensil_id' => $existingsUtensils->where('name', $utensil)->first()->id];
+                }
+            }
+
+            // Add cocktail id to images
+            if (isset($cocktailImages[$cocktail->slug])) {
+                $imagesWithAssignedCocktail = array_map(function ($row) use ($cocktail) {
+                    $row['imageable_id'] = $cocktail->id;
+
+                    return $row;
+                }, $cocktailImages[$cocktail->slug]);
+
+                $imagesToInsert = array_merge($imagesWithAssignedCocktail, $imagesToInsert);
+            }
+
+            // Add cocktail id to cocktail ingredients
+            if (isset($newCocktailIngredients[$cocktail->slug])) {
+                $cocktailIngredientsWithAssignedCocktail = array_map(function ($row) use ($cocktail) {
+                    $row['cocktail_id'] = $cocktail->id;
+
+                    return $row;
+                }, $newCocktailIngredients[$cocktail->slug]);
+
+                $cocktailIngredientsToInsert = array_merge($cocktailIngredientsWithAssignedCocktail, $cocktailIngredientsToInsert);
+            }
+        }
+        DB::table('cocktail_ingredients')->insert($cocktailIngredientsToInsert);
+        DB::table('cocktail_tag')->insert($cocktailTagsToInsert);
+        DB::table('cocktail_utensil')->insert($cocktailUtensilsToInsert);
+
+        $cocktailIngredients = DB::table('cocktail_ingredients')
+            ->select('cocktail_ingredients.id AS cocktail_ingredient_id', 'cocktails.slug', 'cocktail_ingredients.ingredient_id')
+            ->join('cocktails', 'cocktails.id', '=', 'cocktail_ingredients.cocktail_id')
+            ->where('cocktails.bar_id', $bar->id)
+            ->get();
+        $cocktailSubIngredientsToInsert = [];
+        foreach ($cocktailIngredients as $cocktailIngredient) {
+            if (!isset($newCocktailSubstituteIngredients[$cocktailIngredient->slug][$cocktailIngredient->ingredient_id])) {
+                continue;
+            }
+
+            $cocktailIngredientSubstituteWithAssignedCocktailIngredient = array_map(function ($row) use ($cocktailIngredient) {
+                $row['cocktail_ingredient_id'] = $cocktailIngredient->cocktail_ingredient_id;
+
+                return $row;
+            }, $newCocktailSubstituteIngredients[$cocktailIngredient->slug][$cocktailIngredient->ingredient_id]);
+
+            $cocktailSubIngredientsToInsert = array_merge($cocktailIngredientSubstituteWithAssignedCocktailIngredient, $cocktailSubIngredientsToInsert);
+        }
+        DB::table('cocktail_ingredient_substitutes')->insert($cocktailSubIngredientsToInsert);
 
         DB::table('images')->insert($imagesToInsert);
-        DB::table('cocktail_tag')->insert($tagsToInsert);
+
+        DB::commit();
     }
 
     private function copyResourceImage(Filesystem $dataDisk, string $baseSrcImagePath, string $targetImagePath): void
