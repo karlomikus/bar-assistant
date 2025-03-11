@@ -4,7 +4,7 @@ RUN apk add --no-cache git
 
 WORKDIR /app/data
 
-RUN git clone --depth 1 --branch datapack https://github.com/bar-assistant/data.git .
+RUN git clone --depth 1 --branch v5 https://github.com/bar-assistant/data.git .
 
 RUN rm -r .git
 
