@@ -211,12 +211,12 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     public function scopeAddInBarShelfColumn(Builder $query): Builder
     {
         return $query
-            ->leftJoin('bar_ingredients', function ($join) {
-                $join->on('ingredients.id', '=', 'bar_ingredients.ingredient_id')
-                    ->on('ingredients.bar_id', '=', 'bar_ingredients.bar_id');
+            ->leftJoin('bar_ingredients AS bi', function ($join) {
+                $join->on('ingredients.id', '=', 'bi.ingredient_id')
+                    ->on('ingredients.bar_id', '=', 'bi.bar_id');
             })
             ->addSelect('ingredients.*')
-            ->addSelect(DB::raw('CASE WHEN bar_ingredients.id IS NOT NULL THEN true ELSE false END AS in_bar_shelf'))
+            ->addSelect(DB::raw('CASE WHEN bi.id IS NOT NULL THEN true ELSE false END AS in_bar_shelf'))
             ->groupBy('ingredients.id');
     }
 
