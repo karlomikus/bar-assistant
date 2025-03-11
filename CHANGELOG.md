@@ -1,3 +1,7 @@
+# v5.0.1
+## Fixes
+- Fixed SQL error when filtering by bar ingredients
+
 # v5.0.0
 ⚠️ This is a new major release. This updated includes big database schema updates that are not backwards compatible. I tried to cover all possible issues related to data migration but I recommend that you backup your current database before updating.
 
