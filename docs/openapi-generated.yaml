@@ -9757,8 +9757,15 @@ components:
             type: object
       type: object
     MenuExplore:
+      required:
+        - bar
+        - categories
       properties:
         bar:
+          required:
+            - name
+            - subtitle
+            - description
           properties:
             name:
               type: string
@@ -9766,6 +9773,9 @@ components:
             subtitle:
               type: string
               example: 'Bar subtitle'
+            description:
+              type: string
+              example: 'Bar description'
             images:
               type: array
               items:
@@ -9775,6 +9785,9 @@ components:
         categories:
           type: array
           items:
+            required:
+              - name
+              - items
             properties:
               name:
                 type: string
@@ -9782,6 +9795,7 @@ components:
               items:
                 type: array
                 items:
+                  required: [in_bar_shelf, type, sort, price, public_id, name, description, image]
                   properties: { in_bar_shelf: { type: boolean, example: false }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, public_id: { type: string, example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, name: { type: string, example: 'Cocktail name' }, description: { type: string }, image: { description: 'Image URL', type: [string, 'null'] } }
                   type: object
             type: object

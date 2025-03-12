@@ -7,15 +7,16 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 
-#[OAT\Schema()]
+#[OAT\Schema(required: ['bar', 'categories'])]
 class MenuExplore
 {
     /** @var array<mixed> */
     #[OAT\Property(type: 'object', properties: [
         new OAT\Property(type: 'string', property: 'name', example: 'Bar name'),
         new OAT\Property(type: 'string', property: 'subtitle', example: 'Bar subtitle'),
+        new OAT\Property(type: 'string', property: 'description', example: 'Bar description'),
         new OAT\Property(type: 'array', property: 'images', items: new OAT\Items(type: 'string', example: 'https://example.com/image.jpg')),
-    ])]
+    ], required: ['name', 'subtitle', 'description'])]
     public array $bar;
     /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
@@ -29,7 +30,7 @@ class MenuExplore
             new OAT\Property(type: 'string', property: 'name', example: 'Cocktail name'),
             new OAT\Property(type: 'string', property: 'description'),
             new OAT\Property(type: 'string', nullable: true, property: 'image', description: 'Image URL'),
-        ])),
-    ]))]
+        ], required: ['in_bar_shelf', 'type', 'sort', 'price', 'public_id', 'name', 'description', 'image'])),
+    ], required: ['name', 'items']))]
     public array $categories;
 }
