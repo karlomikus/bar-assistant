@@ -112,6 +112,8 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonPath('data.0.name', 'Test');
         $response = $this->getJson('/api/ingredients?sort=created_at');
         $response->assertJsonPath('data.0.name', 'Whiskey');
+        $response = $this->getJson('/api/ingredients?filter[bar_shelf]=true');
+        $response->assertJsonCount(0, 'data');
     }
 
     public function test_list_ingredients_response_filter_by_shopping_list(): void

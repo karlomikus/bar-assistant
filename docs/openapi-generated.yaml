@@ -9766,9 +9766,11 @@ components:
             subtitle:
               type: string
               example: 'Bar subtitle'
-            description:
-              type: string
-              example: 'Bar description'
+            images:
+              type: array
+              items:
+                type: string
+                example: 'https://example.com/image.jpg'
           type: object
         categories:
           type: array
@@ -9777,10 +9779,10 @@ components:
               name:
                 type: string
                 example: 'Category name'
-              cocktails:
+              items:
                 type: array
                 items:
-                  properties: { sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, public_id: { type: string, example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, slug: { type: string, example: cocktail-name-1 }, currency: { type: string, example: EUR }, name: { type: string, example: 'Cocktail name' }, short_ingredients: { type: array, items: { type: string, example: Vodka } }, image: { type: string, example: 'https://example.com/image.jpg' } }
+                  properties: { in_bar_shelf: { type: boolean, example: false }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, public_id: { type: string, example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, name: { type: string, example: 'Cocktail name' }, description: { type: string }, image: { description: 'Image URL', type: [string, 'null'] } }
                   type: object
             type: object
       type: object

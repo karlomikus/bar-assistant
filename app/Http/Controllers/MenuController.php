@@ -67,7 +67,7 @@ class MenuController extends Controller
             ->join('menu_cocktails', 'menu_cocktails.menu_id', '=', 'menus.id')
             ->orderBy('menu_cocktails.sort', 'asc')
             ->with(
-                'bar',
+                'bar.images',
                 'menuCocktails.cocktail.ingredients.ingredient',
                 'menuCocktails.cocktail.images',
                 'menuCocktails.cocktail.bar.shelfIngredients',
