@@ -95,28 +95,28 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::prefix('ingredients')->group(function () {
         Route::get('/', [IngredientController::class, 'index'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.read']);
         Route::post('/', [IngredientController::class, 'store'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.write']);
-        Route::get('/{id}', [IngredientController::class, 'show'])->name('ingredients.show')->middleware(['ability:ingredients.read']);
+        Route::get('/{idOrSlug}', [IngredientController::class, 'show'])->name('ingredients.show')->middleware(['ability:ingredients.read']);
         Route::put('/{id}', [IngredientController::class, 'update'])->middleware(['ability:ingredients.write']);
         Route::delete('/{id}', [IngredientController::class, 'delete'])->middleware(['ability:ingredients.write']);
-        Route::get('/{id}/extra', [IngredientController::class, 'extra'])->middleware(['ability:ingredients.read']);
-        Route::get('/{id}/cocktails', [IngredientController::class, 'cocktails'])->middleware(['ability:ingredients.read']);
-        Route::get('/{id}/substitutes', [IngredientController::class, 'substitutes'])->middleware(['ability:ingredients.read']);
-        Route::get('/{id}/tree', [IngredientController::class, 'tree'])->middleware(['ability:ingredients.read']);
+        Route::get('/{idOrSlug}/extra', [IngredientController::class, 'extra'])->middleware(['ability:ingredients.read']);
+        Route::get('/{idOrSlug}/cocktails', [IngredientController::class, 'cocktails'])->middleware(['ability:ingredients.read']);
+        Route::get('/{idOrSlug}/substitutes', [IngredientController::class, 'substitutes'])->middleware(['ability:ingredients.read']);
+        Route::get('/{idOrSlug}/tree', [IngredientController::class, 'tree'])->middleware(['ability:ingredients.read']);
     });
 
     Route::prefix('cocktails')->group(function () {
         Route::get('/', [CocktailController::class, 'index'])->name('cocktails.index')->middleware([EnsureRequestHasBarQuery::class, 'ability:cocktails.read']);
-        Route::get('/{id}', [CocktailController::class, 'show'])->name('cocktails.show')->middleware(['ability:cocktails.read']);
-        Route::get('/{id}/share', [CocktailController::class, 'share'])->name('cocktails.share')->middleware(['ability:cocktails.read']);
+        Route::get('/{idOrSlug}', [CocktailController::class, 'show'])->name('cocktails.show')->middleware(['ability:cocktails.read']);
+        Route::get('/{idOrSlug}/share', [CocktailController::class, 'share'])->name('cocktails.share')->middleware(['ability:cocktails.read']);
         Route::post('/{id}/toggle-favorite', [CocktailController::class, 'toggleFavorite'])->name('cocktails.favorite');
         Route::post('/', [CocktailController::class, 'store'])->name('cocktails.store')->middleware([EnsureRequestHasBarQuery::class, 'ability:cocktails.write']);
         Route::delete('/{id}', [CocktailController::class, 'delete'])->name('cocktails.delete')->middleware(['ability:cocktails.write']);
         Route::put('/{id}', [CocktailController::class, 'update'])->name('cocktails.update')->middleware(['ability:cocktails.write']);
-        Route::post('/{id}/public-link', [CocktailController::class, 'makePublic'])->name('cocktails.make-public')->middleware(['ability:cocktails.write']);
-        Route::delete('/{id}/public-link', [CocktailController::class, 'makePrivate'])->name('cocktails.make-private')->middleware(['ability:cocktails.write']);
-        Route::get('/{id}/similar', [CocktailController::class, 'similar'])->name('cocktails.similar')->middleware(['ability:cocktails.read']);
-        Route::post('/{id}/copy', [CocktailController::class, 'copy'])->middleware([EnsureRequestHasBarQuery::class, 'ability:cocktails.write']);
-        Route::get('/{id}/prices', [CocktailController::class, 'prices'])->middleware(['ability:cocktails.read']);
+        Route::post('/{idOrSlug}/public-link', [CocktailController::class, 'makePublic'])->name('cocktails.make-public')->middleware(['ability:cocktails.write']);
+        Route::delete('/{idOrSlug}/public-link', [CocktailController::class, 'makePrivate'])->name('cocktails.make-private')->middleware(['ability:cocktails.write']);
+        Route::get('/{idOrSlug}/similar', [CocktailController::class, 'similar'])->name('cocktails.similar')->middleware(['ability:cocktails.read']);
+        Route::post('/{idOrSlug}/copy', [CocktailController::class, 'copy'])->middleware([EnsureRequestHasBarQuery::class, 'ability:cocktails.write']);
+        Route::get('/{idOrSlug}/prices', [CocktailController::class, 'prices'])->middleware(['ability:cocktails.read']);
 
         Route::prefix('/{id}/ratings')->middleware(['ability:cocktails.write'])->group(function () {
             Route::post('/', [RatingController::class, 'rateCocktail'])->name('ratings.rate-cocktail');

@@ -48,6 +48,7 @@ services:
   meilisearch:
     image: getmeili/meilisearch:v1.11
     environment:
+      - MEILI_NO_ANALYTICS=true
       - MEILI_MASTER_KEY=masterKeyThatIsReallyReallyLong4Real
     restart: unless-stopped
     ports:
