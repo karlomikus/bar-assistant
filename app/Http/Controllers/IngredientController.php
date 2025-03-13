@@ -76,7 +76,7 @@ class IngredientController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function show(Request $request, string $id): JsonResource
+    public function show(Request $request, string $idOrSlug): JsonResource
     {
         $ingredient = Ingredient::with(
             'cocktails',
@@ -91,8 +91,8 @@ class IngredientController extends Controller
             'ancestors'
         )
             ->withCount('cocktails')
-            ->where('id', $id)
-            ->orWhere('slug', $id)
+            ->where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
             ->firstOrFail();
 
         if ($request->user()->cannot('show', $ingredient)) {
@@ -198,9 +198,11 @@ class IngredientController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function extra(Request $request, CocktailRepository $cocktailRepo, int $id): JsonResponse
+    public function extra(Request $request, CocktailRepository $cocktailRepo, string $idOrSlug): JsonResponse
     {
-        $ingredient = Ingredient::findOrFail($id);
+        $ingredient = Ingredient::where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
+            ->firstOrFail();
 
         if ($request->user()->cannot('show', $ingredient)) {
             abort(403);
@@ -237,11 +239,11 @@ class IngredientController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function cocktails(Request $request, string $id): JsonResource
+    public function cocktails(Request $request, string $idOrSlug): JsonResource
     {
         $ingredient = Ingredient::with('cocktails')
-            ->where('id', $id)
-            ->orWhere('slug', $id)
+            ->where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
             ->firstOrFail();
 
         if ($request->user()->cannot('show', $ingredient)) {
@@ -250,12 +252,12 @@ class IngredientController extends Controller
 
         $cocktailIds = DB::table('cocktail_ingredients')
             ->select('cocktail_id')
-            ->where('ingredient_id', $id) // Matches cocktails that use the ingredient directly
+            ->where('ingredient_id', $idOrSlug) // Matches cocktails that use the ingredient directly
             ->union(
                 DB::table('cocktail_ingredients')
                     ->select('cocktail_id')
                     ->join('cocktail_ingredient_substitutes', 'cocktail_ingredient_substitutes.cocktail_ingredient_id', '=', 'cocktail_ingredients.id')
-                    ->where('cocktail_ingredient_substitutes.ingredient_id', $id) // Matches cocktails that use the ingredient as a substitute
+                    ->where('cocktail_ingredient_substitutes.ingredient_id', $idOrSlug) // Matches cocktails that use the ingredient as a substitute
             )
             ->pluck('cocktail_id');
 
@@ -274,11 +276,11 @@ class IngredientController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function substitutes(Request $request, string $id): JsonResource
+    public function substitutes(Request $request, string $idOrSlug): JsonResource
     {
         $ingredient = Ingredient::with('cocktails')
-            ->where('id', $id)
-            ->orWhere('slug', $id)
+            ->where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
             ->firstOrFail();
 
         if ($request->user()->cannot('show', $ingredient)) {
@@ -287,7 +289,7 @@ class IngredientController extends Controller
 
         $ids = DB::table('cocktail_ingredients')
             ->select('cocktail_ingredient_substitutes.ingredient_id')
-            ->where('cocktail_ingredients.ingredient_id', $id)
+            ->where('cocktail_ingredients.ingredient_id', $idOrSlug)
             ->join('cocktail_ingredient_substitutes', 'cocktail_ingredient_substitutes.cocktail_ingredient_id', '=', 'cocktail_ingredients.id')
             ->pluck('cocktail_ingredient_substitutes.ingredient_id');
 
@@ -304,11 +306,11 @@ class IngredientController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function tree(Request $request, string $id): IngredientTreeResource
+    public function tree(Request $request, string $idOrSlug): IngredientTreeResource
     {
         $ingredient = Ingredient::with('allChildren')
-            ->where('id', $id)
-            ->orWhere('slug', $id)
+            ->where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
             ->firstOrFail();
 
         if ($request->user()->cannot('show', $ingredient)) {

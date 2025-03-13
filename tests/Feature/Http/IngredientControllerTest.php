@@ -10,6 +10,7 @@ use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\UserShoppingList;
 use Kami\Cocktail\Models\CocktailIngredient;
@@ -87,6 +88,14 @@ class IngredientControllerTest extends TestCase
                 'name' => 'A cocktail name',
             ]);
 
+        foreach ($ingredients as $ingredient) {
+            BarIngredient::factory()->for($membership->bar)->for($ingredient)->create();
+        }
+
+        foreach ($ingredients as $ingredient) {
+            UserIngredient::factory()->for($membership)->for($ingredient)->create();
+        }
+
         $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
         $response = $this->getJson('/api/ingredients?filter[name]=whi');
         $response->assertJsonCount(1, 'data');
@@ -101,7 +110,7 @@ class IngredientControllerTest extends TestCase
         $response = $this->getJson('/api/ingredients?filter[strength_max]=39');
         $response->assertJsonCount(3, 'data');
         $response = $this->getJson('/api/ingredients?filter[on_shelf]=true');
-        $response->assertJsonCount(0, 'data');
+        $response->assertJsonCount(4, 'data');
         $response = $this->getJson('/api/ingredients?filter[on_shopping_list]=true');
         $response->assertJsonCount(0, 'data');
         $response = $this->getJson('/api/ingredients?filter[main_ingredients]=true');
@@ -112,6 +121,8 @@ class IngredientControllerTest extends TestCase
         $response->assertJsonPath('data.0.name', 'Test');
         $response = $this->getJson('/api/ingredients?sort=created_at');
         $response->assertJsonPath('data.0.name', 'Whiskey');
+        $response = $this->getJson('/api/ingredients?filter[bar_shelf]=true');
+        $response->assertJsonCount(4, 'data');
     }
 
     public function test_list_ingredients_response_filter_by_shopping_list(): void

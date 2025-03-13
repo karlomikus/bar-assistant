@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
+use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\ValueObjects\MenuItem;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -27,7 +28,7 @@ class MenuPublicResource extends JsonResource
                 'description' => $this->bar->description,
                 'images' => $this->when(
                     $this->bar->relationLoaded('images'),
-                    fn () => ImageResource::collection($this->bar->images)
+                    fn () => $this->bar->images->map(fn (Image $image) => $image->getImageUrl())->toArray(),
                 ),
             ],
             'categories' => $this->getMenuItems()->groupBy('categoryName')->map(function ($items, $name) {

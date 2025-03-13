@@ -177,13 +177,13 @@ class AuthController extends Controller
     #[OAT\Response(response: 204, description: 'Account confirmed')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function confirmAccount(string $userId, string $hash): JsonResponse
+    public function confirmAccount(int $id, string $hash): JsonResponse
     {
         if (config('bar-assistant.mail_require_confirmation') === false) {
             abort(404);
         }
 
-        $user = User::findOrFail($userId);
+        $user = User::findOrFail($id);
 
         if (!hash_equals(sha1($user->getEmailForVerification()), $hash)) {
             abort(403);
