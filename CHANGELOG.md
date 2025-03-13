@@ -1,3 +1,7 @@
+# v5.0.2
+## Fixes
+- Added missing menu schema changes
+
 # v5.0.1
 ## Fixes
 - Fixed SQL error when filtering by bar ingredients
