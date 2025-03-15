@@ -15,4 +15,6 @@ class IngredientBasic
     public string $slug;
     #[OAT\Property(example: 'Gin')]
     public string $name;
+    #[OAT\Property(description: 'Main resource image')]
+    public Image $image;
 }

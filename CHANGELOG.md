@@ -1,6 +1,14 @@
+# v5.1.0
+## New
+- Added `thumb_url` to `Image` schema
+- Added `image` to `CocktailBasic` and `IngredientBasic` schemas
+
 # v5.0.2
 ## Fixes
 - Added missing menu schema changes
+
+## Changes
+- Added route parameters type validation
 
 # v5.0.1
 ## Fixes

@@ -8706,6 +8706,9 @@ components:
           items:
             type: string
             example: Vodka
+        image:
+          $ref: '#/components/schemas/Image'
+          description: 'Main resource image'
       type: object
     CocktailExplore:
       properties:
@@ -9344,6 +9347,9 @@ components:
         url:
           type: string
           example: 'http://example.com/uploads/cocktails/1/image.jpg'
+        thumb_url:
+          type: string
+          example: 'http://example.com/uploads/cocktails/1/thumb'
         copyright:
           type:
             - string
@@ -9538,6 +9544,9 @@ components:
         name:
           type: string
           example: Gin
+        image:
+          $ref: '#/components/schemas/Image'
+          description: 'Main resource image'
       type: object
     IngredientHierarchy:
       description: 'Ingredient hierarchy'
