@@ -23,7 +23,7 @@ class ImageResource extends JsonResource
             'id' => $this->id,
             'file_path' => $this->file_path,
             'url' => $this->getImageUrl(),
-            'thumb_url' => route('images.thumb', ['id' => $this->id]),
+            'thumb_url' => $this->getImageThumbUrl(),
             'copyright' => $this->copyright,
             'sort' => $this->sort,
             'placeholder_hash' => $this->placeholder_hash,
