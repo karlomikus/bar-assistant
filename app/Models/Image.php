@@ -44,7 +44,7 @@ class Image extends Model
             return null;
         }
 
-        return route('images.thumb', ['id' => $this->id], true);
+        return route('images.thumb', ['id' => $this->id], false);
     }
 
     public function getImageAsFileURI(): ?string
