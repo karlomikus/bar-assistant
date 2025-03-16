@@ -3,6 +3,9 @@
 - Added `thumb_url` to `Image` schema
 - Added `image` to `CocktailBasic` and `IngredientBasic` schemas
 
+## Fixes
+- Optimized ancestors query execution
+
 # v5.0.2
 ## Fixes
 - Added missing menu schema changes
