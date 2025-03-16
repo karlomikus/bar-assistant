@@ -1,3 +1,10 @@
+# v5.0.3
+## Fixes
+- Optimized ancestors query execution
+
+## Fixes
+- Optimized ancestors query execution
+
 # v5.0.2
 ## Fixes
 - Added missing menu schema changes

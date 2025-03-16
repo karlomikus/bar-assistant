@@ -27,11 +27,13 @@ class HasManyAncestors extends BaseMaterializedPathRelation
         // Query all possible ancestors of the given ingredients
         // Save the leaf ingredient of relation as _leaf_id so we can match it later
         $this->query->select('ingredients.id as _leaf_id', 'ancestor.*')
-            ->join('ingredients AS ancestor', DB::raw("instr('/' || ingredients." . $this->getPathColumn() . " || '/', '/' || ancestor.id || '/')"), '>', DB::raw('0'))
+            ->join('ingredients AS ancestor', function ($join) use ($barId) {
+                $join->on(DB::raw("instr('/' || ingredients." . $this->getPathColumn() . " || '/', '/' || ancestor.id || '/')"), '>', DB::raw('0'))
+                    ->where('ancestor.bar_id', '=', $barId);
+            })
             ->whereIn('ingredients.id', $ids)
             ->whereNotNull('ingredients.' . $this->getPathColumn())
-            ->where('ingredients.bar_id', $barId)
-            ->get();
+            ->where('ingredients.bar_id', $barId);
     }
 
     /** @inheritDoc */
