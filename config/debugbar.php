@@ -21,6 +21,7 @@ return [
         'horizon*',
         'api/server/openapi*',
         'api/images*',
+        'uploads*',
     ],
 
     /*
