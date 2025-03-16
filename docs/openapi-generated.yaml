@@ -9737,6 +9737,12 @@ components:
           example: 'My device'
       type: object
     Menu:
+      required:
+        - id
+        - is_enabled
+        - created_at
+        - updated_at
+        - categories
       properties:
         id:
           type: integer
@@ -9754,6 +9760,9 @@ components:
         categories:
           type: array
           items:
+            required:
+              - name
+              - items
             properties:
               name:
                 type: string
@@ -9761,6 +9770,7 @@ components:
               items:
                 type: array
                 items:
+                  required: [id, type, sort, price, name, description]
                   properties: { id: { type: integer, example: 1 }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, name: { type: string, example: 'Cocktail name' }, description: { type: string } }
                   type: object
             type: object
@@ -9812,27 +9822,36 @@ components:
     MenuRequest:
       required:
         - is_enabled
-        - cocktails
+        - items
       properties:
         is_enabled:
           type: boolean
-        cocktails:
+        items:
           type: array
           items:
+            required:
+              - id
+              - type
+              - category_name
+              - sort
+              - price
+              - currency
             properties:
-              cocktail_id:
+              id:
                 type: integer
                 example: 1
-              price:
-                type: integer
-                format: minor
-                example: 2252
+              type:
+                $ref: '#/components/schemas/MenuItemTypeEnum'
               category_name:
                 type: string
                 example: 'Category name'
               sort:
                 type: integer
                 example: 1
+              price:
+                type: integer
+                format: minor
+                example: 2252
               currency:
                 type: string
                 format: 'ISO 4217'

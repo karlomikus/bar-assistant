@@ -7,7 +7,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 
-#[OAT\Schema()]
+#[OAT\Schema(required: ['id', 'is_enabled', 'created_at', 'updated_at', 'categories'])]
 class Menu
 {
     #[OAT\Property(example: 1)]
@@ -28,7 +28,7 @@ class Menu
             new OAT\Property(property: 'price', ref: Price::class),
             new OAT\Property(type: 'string', property: 'name', example: 'Cocktail name'),
             new OAT\Property(type: 'string', property: 'description'),
-        ])),
-    ]))]
+        ], required: ['id', 'type', 'sort', 'price', 'name', 'description'])),
+    ], required: ['name', 'items']))]
     public array $categories;
 }
