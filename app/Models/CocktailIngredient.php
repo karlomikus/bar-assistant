@@ -20,6 +20,7 @@ class CocktailIngredient extends Model
     public $timestamps = false;
 
     protected $casts = [
+        'is_specified' => 'boolean',
         'optional' => 'boolean',
         'amount' => 'float',
         'amount_max' => 'float',
