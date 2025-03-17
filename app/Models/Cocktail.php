@@ -93,7 +93,7 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
      */
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class)->where('bar_id', $this->bar_id);
+        return $this->belongsToMany(Tag::class);
     }
 
     /**
