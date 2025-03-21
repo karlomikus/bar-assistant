@@ -4,9 +4,11 @@
 - Added `image` to `CocktailBasic` and `IngredientBasic` schemas
 - Added POST `/bars/{id}/optimize` method
     - Used to run some optional commands per bar like, recalculating ABV, refreshing bar search index, recalculating ingredient hierarchy
+- Added cocktail tag index
 
 ## Fixes
 - Fixed `Menu` and `MenuRequest` schemas being out of sync
+- Fixed duplicated queries when fetching descendants
 
 # v5.0.4
 ## Fixes

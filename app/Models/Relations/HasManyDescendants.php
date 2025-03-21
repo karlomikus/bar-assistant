@@ -35,7 +35,7 @@ class HasManyDescendants extends BaseMaterializedPathRelation
         ->join('ingredients AS descendant', function ($join) use ($barId) {
             $join->on(DB::raw("('/' || descendant." . $this->getPathColumn() . " || '/')"), 'LIKE', DB::raw("'%/' || ingredients.id || '/%'"))
                 ->where('descendant.bar_id', '=', $barId);
-            })
+        })
             ->whereIn('ingredients.id', $ids)
             ->where('ingredients.bar_id', $barId);
     }
