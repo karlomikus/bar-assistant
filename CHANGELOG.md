@@ -3,6 +3,13 @@
 - Added `thumb_url` to `Image` schema
 - Added `image` to `CocktailBasic` and `IngredientBasic` schemas
 
+## Fixes
+- Fixed `Menu` and `MenuRequest` schemas being out of sync
+
+# v5.0.4
+## Fixes
+- Fixed cast error when duplicating recipe
+
 # v5.0.3
 ## Fixes
 - Optimized ancestors query execution

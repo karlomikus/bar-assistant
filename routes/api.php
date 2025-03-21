@@ -228,6 +228,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::post('/{id}/ingredients/batch-store', [ShelfController::class, 'batchStoreBarIngredients']);
         Route::post('/{id}/ingredients/batch-delete', [ShelfController::class, 'batchDeleteBarIngredients']);
         Route::get('/{id}/cocktails', [ShelfController::class, 'barCocktails']);
+        Route::post('/{id}/optimize', [BarController::class, 'optimize'])->name('bars.optimize')->middleware(['throttle:bar-optimization']);
     });
 
     Route::prefix('billing')->middleware(['ability:*'])->group(function () {
