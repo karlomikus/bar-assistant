@@ -885,6 +885,69 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/bars/{id}/optimize':
+    post:
+      tags:
+        - Bars
+      summary: 'Optimize bar'
+      description: 'Triggers bar optimizations. Updates all cocktail ABVs, rebuilds ingredient hierarchy, updates search index.'
+      operationId: optimizeBar
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '429':
+          description: 'Reached rate limit.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /calculators:
     get:
       tags:
@@ -8706,6 +8769,9 @@ components:
           items:
             type: string
             example: Vodka
+        image:
+          $ref: '#/components/schemas/Image'
+          description: 'Main resource image'
       type: object
     CocktailExplore:
       properties:
@@ -9344,6 +9410,9 @@ components:
         url:
           type: string
           example: 'http://example.com/uploads/cocktails/1/image.jpg'
+        thumb_url:
+          type: string
+          example: 'http://example.com/uploads/cocktails/1/thumb'
         copyright:
           type:
             - string
@@ -9538,6 +9607,9 @@ components:
         name:
           type: string
           example: Gin
+        image:
+          $ref: '#/components/schemas/Image'
+          description: 'Main resource image'
       type: object
     IngredientHierarchy:
       description: 'Ingredient hierarchy'
@@ -9728,6 +9800,12 @@ components:
           example: 'My device'
       type: object
     Menu:
+      required:
+        - id
+        - is_enabled
+        - created_at
+        - updated_at
+        - categories
       properties:
         id:
           type: integer
@@ -9745,6 +9823,9 @@ components:
         categories:
           type: array
           items:
+            required:
+              - name
+              - items
             properties:
               name:
                 type: string
@@ -9752,6 +9833,7 @@ components:
               items:
                 type: array
                 items:
+                  required: [id, type, sort, price, name, description]
                   properties: { id: { type: integer, example: 1 }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, name: { type: string, example: 'Cocktail name' }, description: { type: string } }
                   type: object
             type: object
@@ -9803,27 +9885,36 @@ components:
     MenuRequest:
       required:
         - is_enabled
-        - cocktails
+        - items
       properties:
         is_enabled:
           type: boolean
-        cocktails:
+        items:
           type: array
           items:
+            required:
+              - id
+              - type
+              - category_name
+              - sort
+              - price
+              - currency
             properties:
-              cocktail_id:
+              id:
                 type: integer
                 example: 1
-              price:
-                type: integer
-                format: minor
-                example: 2252
+              type:
+                $ref: '#/components/schemas/MenuItemTypeEnum'
               category_name:
                 type: string
                 example: 'Category name'
               sort:
                 type: integer
                 example: 1
+              price:
+                type: integer
+                format: minor
+                example: 2252
               currency:
                 type: string
                 format: 'ISO 4217'

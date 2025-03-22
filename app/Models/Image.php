@@ -38,6 +38,15 @@ class Image extends Model
         return $disk->url($this->file_path);
     }
 
+    public function getImageThumbUrl(): ?string
+    {
+        if (!$this->file_path) {
+            return null;
+        }
+
+        return route('images.thumb', ['id' => $this->id], false);
+    }
+
     public function getImageAsFileURI(): ?string
     {
         if (!$this->file_path) {

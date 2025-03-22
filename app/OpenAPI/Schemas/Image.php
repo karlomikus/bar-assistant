@@ -15,6 +15,8 @@ class Image
     public string $filePath;
     #[OAT\Property(example: 'http://example.com/uploads/cocktails/1/image.jpg')]
     public string $url;
+    #[OAT\Property(property: 'thumb_url', example: 'http://example.com/uploads/cocktails/1/thumb')]
+    public string $thumbUrl;
     #[OAT\Property(example: 'Image copyright')]
     public ?string $copyright = null;
     #[OAT\Property(example: 1)]

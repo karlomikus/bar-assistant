@@ -32,7 +32,10 @@ class HasManyDescendants extends BaseMaterializedPathRelation
         // Query all possible descendants of the given ingredients
         // Save the root ingredient of relation as _root_id so we can match it later
         $this->query->select('ingredients.id AS _root_id', 'descendant.*')
-            ->join('ingredients AS descendant', DB::raw("('/' || descendant." . $this->getPathColumn() . " || '/')"), 'LIKE', DB::raw("'%/' || ingredients.id || '/%'"))
+        ->join('ingredients AS descendant', function ($join) use ($barId) {
+            $join->on(DB::raw("('/' || descendant." . $this->getPathColumn() . " || '/')"), 'LIKE', DB::raw("'%/' || ingredients.id || '/%'"))
+                ->where('descendant.bar_id', '=', $barId);
+        })
             ->whereIn('ingredients.id', $ids)
             ->where('ingredients.bar_id', $barId);
     }

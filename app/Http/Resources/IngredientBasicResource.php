@@ -23,6 +23,9 @@ class IngredientBasicResource extends JsonResource
             'id' => $this->id,
             'slug' => $this->slug,
             'name' => $this->name,
+            'image' => $this->when($this->relationLoaded('images'), function () {
+                return new ImageResource($this->getMainImage());
+            }),
         ];
     }
 }

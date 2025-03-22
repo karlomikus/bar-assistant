@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Model;
 
 use Tests\TestCase;
+use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Exceptions\IngredientMoveException;
@@ -16,25 +17,26 @@ class IngredientPathTest extends TestCase
 
     public function test_ingredient_returns_descendants(): void
     {
-        $spirits = Ingredient::factory()->create([
+        $bar = Bar::factory()->create();
+        $spirits = Ingredient::factory()->for($bar)->create([
             'name' => 'Spirits',
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
-        $gin = Ingredient::factory()->create();
+        $gin = Ingredient::factory()->for($bar)->create();
         $gin->appendAsChildOf($spirits);
-        $oldTomGin = Ingredient::factory()->create();
+        $oldTomGin = Ingredient::factory()->for($bar)->create();
         $oldTomGin->appendAsChildOf($gin);
-        $oldTomGinSpecific = Ingredient::factory()->create();
+        $oldTomGinSpecific = Ingredient::factory()->for($bar)->create();
         $oldTomGinSpecific->appendAsChildOf($oldTomGin);
-        $londonDry = Ingredient::factory()->create();
+        $londonDry = Ingredient::factory()->for($bar)->create();
         $londonDry->appendAsChildOf($gin);
-        $whiskey = Ingredient::factory()->create([
+        $whiskey = Ingredient::factory()->for($bar)->create([
             'name' => 'Whiskey',
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
-        $jd = Ingredient::factory()->create();
+        $jd = Ingredient::factory()->for($bar)->create();
         $jd->appendAsChildOf($whiskey);
 
         $this->assertCount(4, $spirits->descendants);
@@ -48,12 +50,13 @@ class IngredientPathTest extends TestCase
 
     public function test_ingredient_eager_loads_descendants(): void
     {
-        $spirits = Ingredient::factory()->create();
-        $gin = Ingredient::factory()->create();
+        $bar = Bar::factory()->create();
+        $spirits = Ingredient::factory()->for($bar)->create();
+        $gin = Ingredient::factory()->for($bar)->create();
         $gin->appendAsChildOf($spirits);
-        $oldTomGin = Ingredient::factory()->create();
+        $oldTomGin = Ingredient::factory()->for($bar)->create();
         $oldTomGin->appendAsChildOf($gin);
-        $oldTomGinSpecific = Ingredient::factory()->create();
+        $oldTomGinSpecific = Ingredient::factory()->for($bar)->create();
         $oldTomGinSpecific->appendAsChildOf($oldTomGin);
 
         $res = Ingredient::with('descendants')->where('id', 1)->get();
@@ -65,25 +68,26 @@ class IngredientPathTest extends TestCase
 
     public function test_ingredient_returns_ancestors(): void
     {
-        $spirits = Ingredient::factory()->create([
+        $bar = Bar::factory()->create();
+        $spirits = Ingredient::factory()->for($bar)->create([
             'name' => 'Spirits',
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
-        $gin = Ingredient::factory()->create();
+        $gin = Ingredient::factory()->for($bar)->create();
         $gin->appendAsChildOf($spirits);
-        $oldTomGin = Ingredient::factory()->create();
+        $oldTomGin = Ingredient::factory()->for($bar)->create();
         $oldTomGin->appendAsChildOf($gin);
-        $oldTomGinSpecific = Ingredient::factory()->create();
+        $oldTomGinSpecific = Ingredient::factory()->for($bar)->create();
         $oldTomGinSpecific->appendAsChildOf($oldTomGin);
-        $londonDry = Ingredient::factory()->create();
+        $londonDry = Ingredient::factory()->for($bar)->create();
         $londonDry->appendAsChildOf($gin);
-        $whiskey = Ingredient::factory()->create([
+        $whiskey = Ingredient::factory()->for($bar)->create([
             'name' => 'Whiskey',
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
-        $jd = Ingredient::factory()->create();
+        $jd = Ingredient::factory()->for($bar)->create();
         $jd->appendAsChildOf($whiskey);
 
         $this->assertCount(0, $spirits->ancestors);
@@ -97,7 +101,8 @@ class IngredientPathTest extends TestCase
 
     public function test_ingredient_creates_materialized_path_value_object(): void
     {
-        $parentIngredient1 = Ingredient::factory()->create([
+        $bar = Bar::factory()->create();
+        $parentIngredient1 = Ingredient::factory()->for($bar)->create([
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
@@ -105,7 +110,7 @@ class IngredientPathTest extends TestCase
         $empty = $parentIngredient1->getMaterializedPath();
         $this->assertSame([], $empty->toArray());
 
-        $parentIngredient12 = Ingredient::factory()->create([
+        $parentIngredient12 = Ingredient::factory()->for($bar)->create([
             'parent_ingredient_id' => $parentIngredient1->id,
             'materialized_path' => '1/',
         ]);
@@ -116,14 +121,15 @@ class IngredientPathTest extends TestCase
 
     public function test_ingredient_can_be_root(): void
     {
-        $parentIngredient1 = Ingredient::factory()->create([
+        $bar = Bar::factory()->create();
+        $parentIngredient1 = Ingredient::factory()->for($bar)->create([
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
 
         $this->assertTrue($parentIngredient1->isRoot());
 
-        $parentIngredient12 = Ingredient::factory()->create([
+        $parentIngredient12 = Ingredient::factory()->for($bar)->create([
             'parent_ingredient_id' => $parentIngredient1->id,
             'materialized_path' => '1/',
         ]);
@@ -133,25 +139,26 @@ class IngredientPathTest extends TestCase
 
     public function test_ingredient_rebuilds_path_for_its_descendants_when_parent_changes(): void
     {
-        $spirits = Ingredient::factory()->create([
+        $bar = Bar::factory()->create();
+        $spirits = Ingredient::factory()->for($bar)->create([
             'name' => 'Spirits',
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
-        $gin = Ingredient::factory()->create();
+        $gin = Ingredient::factory()->for($bar)->create();
         $gin->appendAsChildOf($spirits);
-        $oldTomGin = Ingredient::factory()->create();
+        $oldTomGin = Ingredient::factory()->for($bar)->create();
         $oldTomGin->appendAsChildOf($gin);
-        $oldTomGinSpecific = Ingredient::factory()->create();
+        $oldTomGinSpecific = Ingredient::factory()->for($bar)->create();
         $oldTomGinSpecific->appendAsChildOf($oldTomGin);
-        $londonDry = Ingredient::factory()->create();
+        $londonDry = Ingredient::factory()->for($bar)->create();
         $londonDry->appendAsChildOf($gin);
-        $whiskey = Ingredient::factory()->create([
+        $whiskey = Ingredient::factory()->for($bar)->create([
             'name' => 'Whiskey',
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
-        $jd = Ingredient::factory()->create();
+        $jd = Ingredient::factory()->for($bar)->create();
         $jd->appendAsChildOf($whiskey);
 
         $gin->appendAsChildOf($whiskey);
@@ -165,35 +172,36 @@ class IngredientPathTest extends TestCase
 
     public function test_ingredient_rebuilds_path_for_its_descendants_when_parent_changes_to_root(): void
     {
-        $spirits = Ingredient::factory()->create([
+        $bar = Bar::factory()->create();
+        $spirits = Ingredient::factory()->for($bar)->create([
             'name' => 'Spirits',
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
-        $gin = Ingredient::factory()->create([
+        $gin = Ingredient::factory()->for($bar)->create([
             'name' => 'Gin',
         ]);
         $gin->appendAsChildOf($spirits);
-        $oldTomGin = Ingredient::factory()->create([
+        $oldTomGin = Ingredient::factory()->for($bar)->create([
             'name' => 'Old tom gin',
         ]);
         $oldTomGin->appendAsChildOf($gin);
-        $oldTomGinSpecific = Ingredient::factory()->create([
+        $oldTomGinSpecific = Ingredient::factory()->for($bar)->create([
             'name' => 'Specific old tom gin',
         ]);
         $oldTomGinSpecific->appendAsChildOf($oldTomGin);
-        $ldg = Ingredient::factory()->create([
+        $ldg = Ingredient::factory()->for($bar)->create([
             'name' => 'London dry gin',
             'parent_ingredient_id' => $gin->id,
             'materialized_path' => implode('/', [$spirits->id, $gin->id]) . '/',
         ]);
         $ldg->appendAsChildOf($gin);
-        $whiskey = Ingredient::factory()->create([
+        $whiskey = Ingredient::factory()->for($bar)->create([
             'name' => 'Whiskey',
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
-        $jd = Ingredient::factory()->create([
+        $jd = Ingredient::factory()->for($bar)->create([
             'name' => 'Jack Daniels',
             'parent_ingredient_id' => $whiskey->id,
             'materialized_path' => $whiskey->id . '/',
@@ -221,37 +229,38 @@ class IngredientPathTest extends TestCase
 
     public function test_ingredient_moves_root_to_descendant(): void
     {
-        $spirits = Ingredient::factory()->create([
+        $bar = Bar::factory()->create();
+        $spirits = Ingredient::factory()->for($bar)->create([
             'name' => 'Spirits',
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
-        $gin = Ingredient::factory()->create([
+        $gin = Ingredient::factory()->for($bar)->create([
             'name' => 'Gin',
             'parent_ingredient_id' => $spirits->id,
             'materialized_path' => $spirits->id . '/',
         ]);
-        $oldTomGin = Ingredient::factory()->create([
+        $oldTomGin = Ingredient::factory()->for($bar)->create([
             'name' => 'Old tom gin',
             'parent_ingredient_id' => $gin->id,
             'materialized_path' => implode('/', [$spirits->id, $gin->id]) . '/',
         ]);
-        $oldTomGinSpecific = Ingredient::factory()->create([
+        $oldTomGinSpecific = Ingredient::factory()->for($bar)->create([
             'name' => 'Specific old tom gin',
             'parent_ingredient_id' => $oldTomGin->id,
             'materialized_path' => implode('/', [$spirits->id, $gin->id, $oldTomGin->id]) . '/',
         ]);
-        Ingredient::factory()->create([
+        Ingredient::factory()->for($bar)->create([
             'name' => 'London dry gin',
             'parent_ingredient_id' => $gin->id,
             'materialized_path' => implode('/', [$spirits->id, $gin->id]) . '/',
         ]);
-        $whiskey = Ingredient::factory()->create([
+        $whiskey = Ingredient::factory()->for($bar)->create([
             'name' => 'Whiskey',
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
-        Ingredient::factory()->create([
+        Ingredient::factory()->for($bar)->create([
             'name' => 'Jack Daniels',
             'parent_ingredient_id' => $whiskey->id,
             'materialized_path' => $whiskey->id . '/',
@@ -263,22 +272,23 @@ class IngredientPathTest extends TestCase
 
     public function test_ingredient_prints_path(): void
     {
-        $spirits = Ingredient::factory()->create([
+        $bar = Bar::factory()->create();
+        $spirits = Ingredient::factory()->for($bar)->create([
             'name' => 'Spirits',
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
-        $gin = Ingredient::factory()->create([
+        $gin = Ingredient::factory()->for($bar)->create([
             'name' => 'Gin',
             'parent_ingredient_id' => $spirits->id,
             'materialized_path' => $spirits->id . '/',
         ]);
-        $oldTomGin = Ingredient::factory()->create([
+        $oldTomGin = Ingredient::factory()->for($bar)->create([
             'name' => 'Old tom gin',
             'parent_ingredient_id' => $gin->id,
             'materialized_path' => implode('/', [$spirits->id, $gin->id]) . '/',
         ]);
-        $oldTomGinSpecific = Ingredient::factory()->create([
+        $oldTomGinSpecific = Ingredient::factory()->for($bar)->create([
             'name' => 'Specific old tom gin',
             'parent_ingredient_id' => $oldTomGin->id,
             'materialized_path' => implode('/', [$spirits->id, $gin->id, $oldTomGin->id]) . '/',
@@ -292,27 +302,28 @@ class IngredientPathTest extends TestCase
 
     public function test_ingredient_can_check_if_descendant_of(): void
     {
-        $spirits = Ingredient::factory()->create([
+        $bar = Bar::factory()->create();
+        $spirits = Ingredient::factory()->for($bar)->create([
             'name' => 'Spirits',
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
-        $gin = Ingredient::factory()->create([
+        $gin = Ingredient::factory()->for($bar)->create([
             'name' => 'Gin',
             'parent_ingredient_id' => $spirits->id,
             'materialized_path' => $spirits->id . '/',
         ]);
-        $oldTomGin = Ingredient::factory()->create([
+        $oldTomGin = Ingredient::factory()->for($bar)->create([
             'name' => 'Old tom gin',
             'parent_ingredient_id' => $gin->id,
             'materialized_path' => implode('/', [$spirits->id, $gin->id]) . '/',
         ]);
-        $oldTomGinSpecific = Ingredient::factory()->create([
+        $oldTomGinSpecific = Ingredient::factory()->for($bar)->create([
             'name' => 'Specific old tom gin',
             'parent_ingredient_id' => $oldTomGin->id,
             'materialized_path' => implode('/', [$spirits->id, $gin->id, $oldTomGin->id]) . '/',
         ]);
-        $whiskey = Ingredient::factory()->create([
+        $whiskey = Ingredient::factory()->for($bar)->create([
             'name' => 'Whiskey',
             'parent_ingredient_id' => null,
             'materialized_path' => null,
@@ -326,12 +337,13 @@ class IngredientPathTest extends TestCase
 
     public function test_ingredient_checks_max_depth(): void
     {
+        $bar = Bar::factory()->create();
         $parent = null;
         $path = '';
         $max = 11;
 
         for ($i = 1; $i <= $max; $i++) {
-            $ingredient = Ingredient::factory()->create([
+            $ingredient = Ingredient::factory()->for($bar)->create([
                 'parent_ingredient_id' => $parent?->id, // Set parent if exists, else null
                 'materialized_path' => $path, // Use accumulated path
             ]);
@@ -342,7 +354,7 @@ class IngredientPathTest extends TestCase
         }
 
         $lastIngredient = Ingredient::find($max);
-        $newIngredient = Ingredient::factory()->create();
+        $newIngredient = Ingredient::factory()->for($bar)->create();
 
         $this->expectException(IngredientPathTooDeepException::class);
         $newIngredient->appendAsChildOf($lastIngredient);
@@ -350,18 +362,19 @@ class IngredientPathTest extends TestCase
 
     public function test_ingredient_delete_updates_paths(): void
     {
-        $spirits = Ingredient::factory()->create([
+        $bar = Bar::factory()->create();
+        $spirits = Ingredient::factory()->for($bar)->create([
             'name' => 'Spirits',
             'parent_ingredient_id' => null,
             'materialized_path' => null,
         ]);
-        $gin = Ingredient::factory()->create(['name' => 'Gin']);
+        $gin = Ingredient::factory()->for($bar)->create(['name' => 'Gin']);
         $gin->appendAsChildOf($spirits);
-        $oldTomGin = Ingredient::factory()->create(['name' => 'Old Tom Gin']);
+        $oldTomGin = Ingredient::factory()->for($bar)->create(['name' => 'Old Tom Gin']);
         $oldTomGin->appendAsChildOf($gin);
-        $oldTomGinSpecific = Ingredient::factory()->create(['name' => 'Old Tom Gin Specific']);
+        $oldTomGinSpecific = Ingredient::factory()->for($bar)->create(['name' => 'Old Tom Gin Specific']);
         $oldTomGinSpecific->appendAsChildOf($oldTomGin);
-        $londonDry = Ingredient::factory()->create(['name' => 'London Dry']);
+        $londonDry = Ingredient::factory()->for($bar)->create(['name' => 'London Dry']);
         $londonDry->appendAsChildOf($gin);
 
         $gin->delete();

@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Cache;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\Http\Requests\BarRequest;
+use Kami\Cocktail\Jobs\StartBarOptimization;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Kami\Cocktail\Http\Resources\BarResource;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
@@ -399,5 +400,25 @@ class BarController extends Controller
         }
 
         abort(403);
+    }
+
+    #[OAT\Post(path: '/bars/{id}/optimize', tags: ['Bars'], operationId: 'optimizeBar', description: 'Triggers bar optimizations. Updates all cocktail ABVs, rebuilds ingredient hierarchy, updates search index. Limited call to once per minute.', summary: 'Optimize bar', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\RateLimitResponse]
+    #[BAO\NotFoundResponse]
+    public function optimize(Request $request, int $id): JsonResponse
+    {
+        $bar = Bar::findOrFail($id);
+
+        if ($request->user()->cannot('edit', $bar)) {
+            abort(403);
+        }
+
+        StartBarOptimization::dispatch($bar->id);
+
+        return response()->json(status: 204);
     }
 }

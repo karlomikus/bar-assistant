@@ -291,8 +291,8 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
             'slug' => $this->slug,
             'description' => $this->description,
             'image_url' => $this->getMainImageThumbUrl(),
-            'short_ingredients' => $this->getIngredientNames(),
-            'tags' => $this->tags->pluck('name'),
+            'short_ingredients' => $this->getIngredientNames()->toArray(),
+            'tags' => $this->tags->pluck('name')->toArray(),
             'bar_id' => $this->bar_id,
         ];
     }
