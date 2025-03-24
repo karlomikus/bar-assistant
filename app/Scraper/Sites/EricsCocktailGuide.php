@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
-use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class EricsCocktailGuide extends AbstractSiteExtractor
@@ -50,7 +49,7 @@ class EricsCocktailGuide extends AbstractSiteExtractor
     {
         $result = [];
         $this->crawler->filterXPath("//ol[contains(@class, 'recipe_recipeIngredients__')]")->filter('li')->each(function ($node) use (&$result) {
-            $result[] = $this->ingredientParser->parseLine($node->text(), $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
+            $result[] = $this->ingredientParser->parseLine($node->text());
         });
 
         return $result;

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "694749cf82b0f0b37f892b16d00d42b6",
+    "content-hash": "843407b442404ee04bf159f197e80e21",
     "packages": [
         {
             "name": "brick/math",
@@ -1356,25 +1356,25 @@
         },
         {
             "name": "karlomikus/recipe-utils",
-            "version": "0.14.1",
+            "version": "0.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/karlomikus/recipe-utils.git",
-                "reference": "42ecb1a939f7a725f2e2b4f71a7401657acda4ec"
+                "reference": "e41949c25553ee458ae18483a934fc3cd3dc9403"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/karlomikus/recipe-utils/zipball/42ecb1a939f7a725f2e2b4f71a7401657acda4ec",
-                "reference": "42ecb1a939f7a725f2e2b4f71a7401657acda4ec",
+                "url": "https://api.github.com/repos/karlomikus/recipe-utils/zipball/e41949c25553ee458ae18483a934fc3cd3dc9403",
+                "reference": "e41949c25553ee458ae18483a934fc3cd3dc9403",
                 "shasum": ""
             },
             "require": {
                 "php": "^8.2"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.10",
-                "phpunit/php-code-coverage": "^10.1",
-                "phpunit/phpunit": "^10.3",
+                "phpstan/phpstan": "^2.0",
+                "phpunit/php-code-coverage": "^11.0",
+                "phpunit/phpunit": "^11.0",
                 "symfony/var-dumper": "^7.1",
                 "symplify/easy-coding-standard": "^12.0"
             },
@@ -1399,9 +1399,9 @@
             "description": "Utilities for extracting normalized ingredient data from recipes",
             "support": {
                 "issues": "https://github.com/karlomikus/recipe-utils/issues",
-                "source": "https://github.com/karlomikus/recipe-utils/tree/0.14.1"
+                "source": "https://github.com/karlomikus/recipe-utils/tree/0.16.0"
             },
-            "time": "2024-12-31T14:52:20+00:00"
+            "time": "2025-03-24T15:29:40+00:00"
         },
         {
             "name": "laravel/cashier-paddle",
@@ -3059,16 +3059,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "3.8.1",
+            "version": "3.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "aef6ee73a77a66e404dd6540934a9ef1b3c855b4"
+                "reference": "10d85740180ecba7896c87e06a166e0c95a0e3b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/aef6ee73a77a66e404dd6540934a9ef1b3c855b4",
-                "reference": "aef6ee73a77a66e404dd6540934a9ef1b3c855b4",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/10d85740180ecba7896c87e06a166e0c95a0e3b6",
+                "reference": "10d85740180ecba7896c87e06a166e0c95a0e3b6",
                 "shasum": ""
             },
             "require": {
@@ -3146,7 +3146,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/monolog/issues",
-                "source": "https://github.com/Seldaek/monolog/tree/3.8.1"
+                "source": "https://github.com/Seldaek/monolog/tree/3.9.0"
             },
             "funding": [
                 {
@@ -3158,7 +3158,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-12-05T17:15:07+00:00"
+            "time": "2025-03-24T10:02:05+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -4602,16 +4602,16 @@
         },
         {
             "name": "ramsey/collection",
-            "version": "2.1.0",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/collection.git",
-                "reference": "3c5990b8a5e0b79cd1cf11c2dc1229e58e93f109"
+                "reference": "344572933ad0181accbf4ba763e85a0306a8c5e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/collection/zipball/3c5990b8a5e0b79cd1cf11c2dc1229e58e93f109",
-                "reference": "3c5990b8a5e0b79cd1cf11c2dc1229e58e93f109",
+                "url": "https://api.github.com/repos/ramsey/collection/zipball/344572933ad0181accbf4ba763e85a0306a8c5e2",
+                "reference": "344572933ad0181accbf4ba763e85a0306a8c5e2",
                 "shasum": ""
             },
             "require": {
@@ -4672,9 +4672,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ramsey/collection/issues",
-                "source": "https://github.com/ramsey/collection/tree/2.1.0"
+                "source": "https://github.com/ramsey/collection/tree/2.1.1"
             },
-            "time": "2025-03-02T04:48:29+00:00"
+            "time": "2025-03-22T05:38:12+00:00"
         },
         {
             "name": "ramsey/uuid",
@@ -9992,16 +9992,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.8",
+            "version": "2.1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "f9adff3b87c03b12cc7e46a30a524648e497758f"
+                "reference": "8ca5f79a8f63c49b2359065832a654e1ec70ac30"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/f9adff3b87c03b12cc7e46a30a524648e497758f",
-                "reference": "f9adff3b87c03b12cc7e46a30a524648e497758f",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/8ca5f79a8f63c49b2359065832a654e1ec70ac30",
+                "reference": "8ca5f79a8f63c49b2359065832a654e1ec70ac30",
                 "shasum": ""
             },
             "require": {
@@ -10046,7 +10046,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-09T09:30:48+00:00"
+            "time": "2025-03-24T13:45:00+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -10373,16 +10373,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.5.14",
+            "version": "11.5.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "9d6046153c2893b521784069e6b5249ce7d2acae"
+                "reference": "4b6a4ee654e5e0c5e1f17e2f83c0f4c91dee1f9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/9d6046153c2893b521784069e6b5249ce7d2acae",
-                "reference": "9d6046153c2893b521784069e6b5249ce7d2acae",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4b6a4ee654e5e0c5e1f17e2f83c0f4c91dee1f9c",
+                "reference": "4b6a4ee654e5e0c5e1f17e2f83c0f4c91dee1f9c",
                 "shasum": ""
             },
             "require": {
@@ -10454,7 +10454,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.14"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.15"
             },
             "funding": [
                 {
@@ -10470,7 +10470,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-03-19T13:45:48+00:00"
+            "time": "2025-03-23T16:02:11+00:00"
         },
         {
             "name": "sebastian/cli-parser",

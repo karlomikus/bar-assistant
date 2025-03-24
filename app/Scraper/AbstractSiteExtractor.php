@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Scraper;
 
 use Symfony\Component\Uid\Ulid;
 use Kami\RecipeUtils\Parser\Parser;
+use Kami\RecipeUtils\ParserFactory;
 use Kami\RecipeUtils\RecipeIngredient;
 use Kami\Cocktail\External\Model\Schema;
 use Kami\RecipeUtils\UnitConverter\Units;
@@ -26,7 +27,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
 
     public function __construct(
         protected readonly string $url,
-        protected readonly ?Units $defaultConvertTo = null,
+        protected readonly ?Units $defaultConvertTo = null, // TODO: remove this
     ) {
         $store = new Store(storage_path('http_cache/'));
         $client = HttpClient::create([
@@ -42,7 +43,7 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
         /** @var \Symfony\Component\BrowserKit\Response $response */
         $response = $browser->getResponse();
         $this->crawler = new Crawler($response->getContent());
-        $this->ingredientParser = new Parser();
+        $this->ingredientParser = ParserFactory::make();
     }
 
     /**
@@ -159,8 +160,8 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             return [
                 '_id' => Ulid::generate(),
                 'name' => $this->clean(ucfirst($recipeIngredient->name)),
-                'amount' => $recipeIngredient->amount,
-                'amount_max' => $recipeIngredient->amountMax,
+                'amount' => $recipeIngredient->amount->getValue(),
+                'amount_max' => $recipeIngredient->amountMax?->getValue(),
                 'units' => $recipeIngredient->units === '' ? null : $recipeIngredient->units,
                 'note' => $recipeIngredient->comment === '' ? null : $recipeIngredient->comment,
                 'source' => $this->clean($recipeIngredient->source),

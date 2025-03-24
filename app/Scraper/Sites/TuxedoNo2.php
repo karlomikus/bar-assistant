@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\RecipeIngredient;
-use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class TuxedoNo2 extends AbstractSiteExtractor
@@ -80,7 +79,7 @@ class TuxedoNo2 extends AbstractSiteExtractor
             }
 
             $amountAndUnits = $node->filter('.amount')->text();
-            $recipeIngredient = $this->ingredientParser->parseLine(str_replace($onlyUnits, '', $amountAndUnits) . ' ' . $onlyUnits, $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
+            $recipeIngredient = $this->ingredientParser->parseLine(str_replace($onlyUnits, '', $amountAndUnits) . ' ' . $onlyUnits);
 
             if ($node->filter('.ingredient a')->count() === 0) {
                 return;
