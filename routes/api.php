@@ -214,26 +214,26 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::post('/ingredients', [ImportController::class, 'ingredients'])->middleware(EnsureRequestHasBarQuery::class)->name('import.ingredients');
     });
 
-    Route::prefix('bars')->middleware(['ability:*'])->group(function () {
-        Route::get('/', [BarController::class, 'index']);
-        Route::post('/', [BarController::class, 'store']);
-        Route::post('/join', [BarController::class, 'join']);
-        Route::get('/{id}', [BarController::class, 'show'])->name('bars.show');
-        Route::put('/{id}', [BarController::class, 'update']);
-        Route::delete('/{id}', [BarController::class, 'delete']);
-        Route::get('/{id}/memberships', [BarController::class, 'memberships']);
-        Route::delete('/{id}/memberships', [BarController::class, 'leave']);
-        Route::delete('/{id}/memberships/{userId}', [BarController::class, 'removeMembership']);
-        Route::post('/{id}/status', [BarController::class, 'toggleBarStatus']);
-        Route::post('/{id}/transfer', [BarController::class, 'transfer']);
-        Route::get('/{id}/collections', [CollectionController::class, 'shared']);
-        Route::get('/{id}/stats', [StatsController::class, 'index']);
-        Route::get('/{id}/ingredients', [ShelfController::class, 'barIngredients']);
-        Route::get('/{id}/ingredients/recommend', [ShelfController::class, 'recommendBarIngredients']);
-        Route::post('/{id}/ingredients/batch-store', [ShelfController::class, 'batchStoreBarIngredients']);
-        Route::post('/{id}/ingredients/batch-delete', [ShelfController::class, 'batchDeleteBarIngredients']);
-        Route::get('/{id}/cocktails', [ShelfController::class, 'barCocktails']);
-        Route::post('/{id}/optimize', [BarController::class, 'optimize'])->name('bars.optimize')->middleware(['throttle:bar-optimization']);
+    Route::prefix('bars')->group(function () {
+        Route::get('/', [BarController::class, 'index'])->middleware(['ability:bars.read']);
+        Route::post('/', [BarController::class, 'store'])->middleware(['ability:bars.write']);
+        Route::post('/join', [BarController::class, 'join'])->middleware(['ability:*']);
+        Route::get('/{id}', [BarController::class, 'show'])->name('bars.show')->middleware(['ability:bars.read']);
+        Route::put('/{id}', [BarController::class, 'update'])->middleware(['ability:bars.write']);
+        Route::delete('/{id}', [BarController::class, 'delete'])->middleware(['ability:*']);
+        Route::get('/{id}/memberships', [BarController::class, 'memberships'])->middleware(['ability:*']);
+        Route::delete('/{id}/memberships', [BarController::class, 'leave'])->middleware(['ability:*']);
+        Route::delete('/{id}/memberships/{userId}', [BarController::class, 'removeMembership'])->middleware(['ability:*']);
+        Route::post('/{id}/status', [BarController::class, 'toggleBarStatus'])->middleware(['ability:*']);
+        Route::post('/{id}/transfer', [BarController::class, 'transfer'])->middleware(['ability:*']);
+        Route::get('/{id}/collections', [CollectionController::class, 'shared'])->middleware(['ability:bars.read']);
+        Route::get('/{id}/stats', [StatsController::class, 'index'])->middleware(['ability:bars.read']);
+        Route::get('/{id}/ingredients', [ShelfController::class, 'barIngredients'])->middleware(['ability:*']);
+        Route::get('/{id}/ingredients/recommend', [ShelfController::class, 'recommendBarIngredients'])->middleware(['ability:bars.read']);
+        Route::post('/{id}/ingredients/batch-store', [ShelfController::class, 'batchStoreBarIngredients'])->middleware(['ability:*']);
+        Route::post('/{id}/ingredients/batch-delete', [ShelfController::class, 'batchDeleteBarIngredients'])->middleware(['ability:*']);
+        Route::get('/{id}/cocktails', [ShelfController::class, 'barCocktails'])->middleware(['ability:bars.read']);
+        Route::post('/{id}/optimize', [BarController::class, 'optimize'])->name('bars.optimize')->middleware(['throttle:bar-optimization', 'ability:bars.read']);
     });
 
     Route::prefix('billing')->middleware(['ability:*'])->group(function () {

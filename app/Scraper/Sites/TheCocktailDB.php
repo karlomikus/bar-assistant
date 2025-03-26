@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\RecipeIngredient;
-use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class TheCocktailDB extends AbstractSiteExtractor
@@ -91,7 +90,7 @@ class TheCocktailDB extends AbstractSiteExtractor
                 break;
             }
 
-            $recipeIngredient = $this->ingredientParser->parseLine($this->apiDrinkData[$measureKey], $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
+            $recipeIngredient = $this->ingredientParser->parseLine($this->apiDrinkData[$measureKey]);
 
             $result[] = new RecipeIngredient(
                 $this->apiDrinkData[$ingKey],

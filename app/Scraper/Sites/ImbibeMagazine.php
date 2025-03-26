@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
-use Kami\RecipeUtils\UnitConverter\Units;
-
 class ImbibeMagazine extends DefaultScraper
 {
     public static function getSupportedUrls(): array
@@ -81,7 +79,7 @@ class ImbibeMagazine extends DefaultScraper
         $schemaIngredients = $this->getRecipeSchema()['recipeIngredient'] ?? [];
 
         foreach ($schemaIngredients as $ingredient) {
-            $result[] = $this->ingredientParser->parseLine($ingredient['ingredient'], $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
+            $result[] = $this->ingredientParser->parseLine($ingredient['ingredient']);
         }
 
         if (empty($result)) {
@@ -89,7 +87,7 @@ class ImbibeMagazine extends DefaultScraper
                 if (str_starts_with($line, 'Tools:') || str_starts_with($line, 'Garnish:') || str_starts_with($line, 'Glass:')) {
                     continue;
                 }
-                $result[] = $this->ingredientParser->parseLine($line, $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
+                $result[] = $this->ingredientParser->parseLine($line);
             }
         }
 

@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Models\ValueObjects;
 
 use Stringable;
 use Kami\RecipeUtils\Converter;
+use Kami\RecipeUtils\AmountValue;
 
 final readonly class AmountValueObject implements Stringable
 {
@@ -25,13 +26,13 @@ final readonly class AmountValueObject implements Stringable
             return new self($this->amountMin, $this->units, $this->amountMax);
         }
 
-        $convertedMinAmount = Converter::fromTo($this->amountMin, $fromUnitsEnum, $toUnitsEnum);
+        $convertedMinAmount = Converter::convertAmount(AmountValue::from($this->amountMin), $fromUnitsEnum, $toUnitsEnum);
         $convertedMaxAmount = null;
         if ($this->amountMax) {
-            $convertedMaxAmount = Converter::fromTo($this->amountMax, $fromUnitsEnum, $toUnitsEnum);
+            $convertedMaxAmount = Converter::convertAmount(AmountValue::from($this->amountMax), $fromUnitsEnum, $toUnitsEnum);
         }
 
-        return new self($convertedMinAmount, $toUnits, $convertedMaxAmount);
+        return new self($convertedMinAmount->getValue(), $toUnits, $convertedMaxAmount?->getValue());
     }
 
     public function __toString(): string

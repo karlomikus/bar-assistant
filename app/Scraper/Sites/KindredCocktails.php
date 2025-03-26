@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Scraper\Sites;
 
 use Exception;
 use Throwable;
-use Kami\RecipeUtils\UnitConverter\Units;
 use Symfony\Component\DomCrawler\Crawler;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
@@ -55,7 +54,7 @@ class KindredCocktails extends AbstractSiteExtractor
             $ingredientString = $node->text();
 
             if (!str_contains($ingredientString, 'as garnish')) {
-                $result[] = $this->ingredientParser->parseLine($ingredientString, $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
+                $result[] = $this->ingredientParser->parseLine($ingredientString);
             }
         });
 

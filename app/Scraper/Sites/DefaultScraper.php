@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Throwable;
+use Kami\RecipeUtils\AmountValue;
 use Kami\Cocktail\Scraper\SchemaModel;
 use Kami\RecipeUtils\RecipeIngredient;
-use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\Concerns\ReadsLDJson;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 use Kami\Cocktail\Scraper\Concerns\ReadsHTMLSchema;
@@ -140,7 +140,7 @@ class DefaultScraper extends AbstractSiteExtractor
         foreach ($ingredients as $ingredient) {
             $ingredient = html_entity_decode($ingredient, ENT_SUBSTITUTE | ENT_HTML5); // Convert entities to correct chars
             $ingredient = e(trim($ingredient, " \n\r\t\v\x00\"\'"));
-            $recipeIngredient = $this->ingredientParser->parseLine($ingredient, $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
+            $recipeIngredient = $this->ingredientParser->parseLine($ingredient);
 
             if (empty($recipeIngredient->amount) || empty($recipeIngredient->name) || empty($recipeIngredient->units)) {
                 continue;
@@ -148,7 +148,7 @@ class DefaultScraper extends AbstractSiteExtractor
 
             $result[] = new RecipeIngredient(
                 ucfirst(e($recipeIngredient->name)),
-                (float) number_format($recipeIngredient->amount, 2, '.', ''),
+                new AmountValue((float) number_format($recipeIngredient->amount->getValue(), 2, '.', '')),
                 $recipeIngredient->units,
                 $recipeIngredient->source,
                 $recipeIngredient->comment,
