@@ -40,6 +40,7 @@ class ServerController extends Controller
                 'type' => config('app.env'),
                 'search_host' => $searchHost,
                 'search_version' => $searchVersion,
+                'is_feeds_enabled' => (bool) config('bar-assistant.enable_feeds') === true,
             ]
         ]);
     }

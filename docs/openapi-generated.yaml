@@ -8062,6 +8062,7 @@ components:
         - link
         - date
         - image
+        - description
       properties:
         source:
           description: 'The source of the recipe'
@@ -8126,6 +8127,8 @@ components:
         - cocktails.write
         - ingredients.read
         - ingredients.write
+        - bars.read
+        - bars.write
     BarStatusEnum:
       type: string
       enum:
@@ -10222,8 +10225,13 @@ components:
         - type
         - search_host
         - search_version
+        - latest_version
+        - is_latest
+        - type
+        - is_feeds_enabled
       properties:
         version:
+          description: 'Version of the server'
           type: string
           example: 1.0.0
         latest_version:
@@ -10231,17 +10239,24 @@ components:
           type: string
           example: 3.1.0
         is_latest:
+          description: 'Whether the server is running the latest version'
           type: boolean
           example: true
         type:
+          description: 'Environment the server is running in'
           type: string
           example: production
         search_host:
           type: string
           example: 'https://search.example.com'
         search_version:
+          description: 'Version of the search engine'
           type: string
           example: 1.2.0
+        is_feeds_enabled:
+          description: 'Whether feeds are enabled'
+          type: string
+          example: true
       type: object
     ShoppingList:
       required:

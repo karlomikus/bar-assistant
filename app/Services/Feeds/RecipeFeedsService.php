@@ -33,6 +33,10 @@ final class RecipeFeedsService
      */
     public function fetch(): array
     {
+        if ((bool) config('bar-assistant.enable_feeds') === false) {
+            return [];
+        }
+
         Reader::setHttpClient($this->client);
         $recipes = [];
 

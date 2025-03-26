@@ -69,5 +69,7 @@ return [
     'metrics' => [
         'enabled' => (bool) env('METRICS_ENABLED', false),
         'allowed_ips' => explode(',', env('METRICS_ALLOWED_IPS', '')),
-    ]
+    ],
+
+    'enable_feeds' => env('ENABLE_FEEDS', false),
 ];
