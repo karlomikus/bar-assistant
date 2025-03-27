@@ -33,7 +33,7 @@ final readonly class FeedsRecipe
 
         return new self(
             source: e($source),
-            title: e($entry->getTitle()),
+            title: html_entity_decode(e($entry->getTitle()), ENT_SUBSTITUTE | ENT_HTML5),
             link: e($entry->getLink()),
             dateModified: $entry->getDateModified() ? DateTimeImmutable::createFromMutable($entry->getDateModified()) : null,
             description: e(html_entity_decode(strip_tags($description ?? ''), encoding: 'UTF-8')),
