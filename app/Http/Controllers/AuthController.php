@@ -33,9 +33,16 @@ class AuthController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Token::class),
     ])]
-    #[OAT\Response(response: 400, description: 'Unable to authenticate')]
+    #[OAT\Response(response: 400, description: 'Unable to authenticate. Possible reasons: invalid credentials, unconfirmed account or disabled password login')]
     public function authenticate(Request $request): JsonResource
     {
+        if (!config('bar-assistant.enable_password_login')) {
+            Log::warning('User tried to login with password, but password login is disabled', [
+                'email' => $request->email,
+            ]);
+            abort(400, 'Password login is disabled.');
+        }
+
         $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
@@ -50,8 +57,6 @@ class AuthController extends Controller
         if (!$user || !Hash::check($request->password, $user->password)) {
             Log::warning('User tried to login with invalid credentials', [
                 'email' => $request->email,
-                'ip' => $request->ip(),
-                'user_agent' => $request->userAgent(),
             ]);
 
             if (config('bar-assistant.mail_require_confirmation') === true) {

@@ -41,6 +41,7 @@ class ServerController extends Controller
                 'search_host' => $searchHost,
                 'search_version' => $searchVersion,
                 'is_feeds_enabled' => (bool) config('bar-assistant.enable_feeds') === true,
+                'is_password_login_enabled' => config('bar-assistant.enable_password_login') === true,
             ]
         ]);
     }

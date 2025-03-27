@@ -52,7 +52,7 @@ paths:
                   data: { $ref: '#/components/schemas/Token' }
                 type: object
         '400':
-          description: 'Unable to authenticate'
+          description: 'Unable to authenticate. Possible reasons: invalid credentials, unconfirmed account or disabled password login'
       security: []
   /auth/logout:
     post:
@@ -10229,6 +10229,7 @@ components:
         - is_latest
         - type
         - is_feeds_enabled
+        - is_password_login_enabled
       properties:
         version:
           description: 'Version of the server'
@@ -10255,7 +10256,11 @@ components:
           example: 1.2.0
         is_feeds_enabled:
           description: 'Whether feeds are enabled'
-          type: string
+          type: boolean
+          example: true
+        is_password_login_enabled:
+          description: 'Whether password login is enabled'
+          type: boolean
           example: true
       type: object
     ShoppingList:

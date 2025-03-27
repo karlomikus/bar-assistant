@@ -71,5 +71,7 @@ return [
         'allowed_ips' => explode(',', env('METRICS_ALLOWED_IPS', '')),
     ],
 
-    'enable_feeds' => env('ENABLE_FEEDS', false),
+    'enable_feeds' => (bool) env('ENABLE_FEEDS', false),
+
+    'enable_password_login' => (bool) env('ENABLE_PASSWORD_LOGIN', true),
 ];
