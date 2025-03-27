@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "843407b442404ee04bf159f197e80e21",
+    "content-hash": "32f1e0193464512101d2731a4f755b25",
     "packages": [
         {
             "name": "brick/math",
@@ -1402,6 +1402,291 @@
                 "source": "https://github.com/karlomikus/recipe-utils/tree/0.16.0"
             },
             "time": "2025-03-24T15:29:40+00:00"
+        },
+        {
+            "name": "kevinrob/guzzle-cache-middleware",
+            "version": "6.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Kevinrob/guzzle-cache-middleware.git",
+                "reference": "61305ed694e763e887a04f61e71e2292bb4fbad1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Kevinrob/guzzle-cache-middleware/zipball/61305ed694e763e887a04f61e71e2292bb4fbad1",
+                "reference": "61305ed694e763e887a04f61e71e2292bb4fbad1",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.9.2",
+                "guzzlehttp/promises": "^2.0.3",
+                "guzzlehttp/psr7": "^2.7.0",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "cache/array-adapter": "^0.4 || ^0.5 || ^1.0",
+                "cache/simple-cache-bridge": "^0.1 || ^1.0",
+                "doctrine/cache": "^1.10",
+                "illuminate/cache": "^5.0",
+                "league/flysystem": "^2.5",
+                "phpunit/phpunit": "^9.6.21",
+                "psr/cache": "^1.0",
+                "symfony/cache": "^4.4 || ^5.0",
+                "symfony/phpunit-bridge": "^7.1.4"
+            },
+            "suggest": {
+                "doctrine/cache": "This library has a lot of ready-to-use cache storage (to be used with Kevinrob\\GuzzleCache\\Storage\\DoctrineCacheStorage). Use only versions >=1.4.0 < 2.0.0",
+                "guzzlehttp/guzzle": "For using this library. It was created for Guzzle6 (but you can use it with any PSR-7 HTTP client).",
+                "laravel/framework": "To be used with Kevinrob\\GuzzleCache\\Storage\\LaravelCacheStorage",
+                "league/flysystem": "To be used with Kevinrob\\GuzzleCache\\Storage\\FlysystemStorage",
+                "psr/cache": "To be used with Kevinrob\\GuzzleCache\\Storage\\Psr6CacheStorage",
+                "psr/simple-cache": "To be used with Kevinrob\\GuzzleCache\\Storage\\Psr16CacheStorage"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kevinrob\\GuzzleCache\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Robatel",
+                    "email": "kevinrob2@gmail.com",
+                    "homepage": "https://github.com/Kevinrob"
+                }
+            ],
+            "description": "A HTTP/1.1 Cache for Guzzle 6. It's a simple Middleware to be added in the HandlerStack. (RFC 7234)",
+            "homepage": "https://github.com/Kevinrob/guzzle-cache-middleware",
+            "keywords": [
+                "Etag",
+                "Flysystem",
+                "Guzzle",
+                "cache",
+                "cache-control",
+                "doctrine",
+                "expiration",
+                "guzzle6",
+                "handler",
+                "http",
+                "http 1.1",
+                "middleware",
+                "performance",
+                "php",
+                "promise",
+                "psr6",
+                "psr7",
+                "rfc7234",
+                "validation"
+            ],
+            "support": {
+                "issues": "https://github.com/Kevinrob/guzzle-cache-middleware/issues",
+                "source": "https://github.com/Kevinrob/guzzle-cache-middleware/tree/6.0.0"
+            },
+            "time": "2024-10-17T09:11:54+00:00"
+        },
+        {
+            "name": "laminas/laminas-escaper",
+            "version": "2.16.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laminas/laminas-escaper.git",
+                "reference": "9cf1f5317ca65b4fd5c6a3c2855e24a187b288c8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laminas/laminas-escaper/zipball/9cf1f5317ca65b4fd5c6a3c2855e24a187b288c8",
+                "reference": "9cf1f5317ca65b4fd5c6a3c2855e24a187b288c8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-mbstring": "*",
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
+            },
+            "conflict": {
+                "zendframework/zend-escaper": "*"
+            },
+            "require-dev": {
+                "infection/infection": "^0.29.8",
+                "laminas/laminas-coding-standard": "~3.0.1",
+                "phpunit/phpunit": "^10.5.45",
+                "psalm/plugin-phpunit": "^0.19.2",
+                "vimeo/psalm": "^6.6.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Laminas\\Escaper\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Securely and safely escape HTML, HTML attributes, JavaScript, CSS, and URLs",
+            "homepage": "https://laminas.dev",
+            "keywords": [
+                "escaper",
+                "laminas"
+            ],
+            "support": {
+                "chat": "https://laminas.dev/chat",
+                "docs": "https://docs.laminas.dev/laminas-escaper/",
+                "forum": "https://discourse.laminas.dev",
+                "issues": "https://github.com/laminas/laminas-escaper/issues",
+                "rss": "https://github.com/laminas/laminas-escaper/releases.atom",
+                "source": "https://github.com/laminas/laminas-escaper"
+            },
+            "funding": [
+                {
+                    "url": "https://funding.communitybridge.org/projects/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "time": "2025-02-17T12:40:19+00:00"
+        },
+        {
+            "name": "laminas/laminas-feed",
+            "version": "2.23.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laminas/laminas-feed.git",
+                "reference": "23807e692b3174750b426143bd93572b71b6739a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laminas/laminas-feed/zipball/23807e692b3174750b426143bd93572b71b6739a",
+                "reference": "23807e692b3174750b426143bd93572b71b6739a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "laminas/laminas-escaper": "^2.9",
+                "laminas/laminas-stdlib": "^3.6",
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
+            },
+            "conflict": {
+                "laminas/laminas-servicemanager": "<3.3",
+                "zendframework/zend-feed": "*"
+            },
+            "require-dev": {
+                "laminas/laminas-cache": "^2.13.2 || ^3.12",
+                "laminas/laminas-cache-storage-adapter-memory": "^1.1.0 || ^2.3",
+                "laminas/laminas-coding-standard": "~2.5.0",
+                "laminas/laminas-db": "^2.18",
+                "laminas/laminas-http": "^2.19",
+                "laminas/laminas-servicemanager": "^3.22.1",
+                "laminas/laminas-validator": "^2.46",
+                "phpunit/phpunit": "^10.5.5",
+                "psalm/plugin-phpunit": "^0.19.0",
+                "psr/http-message": "^2.0",
+                "vimeo/psalm": "^5.18.0"
+            },
+            "suggest": {
+                "laminas/laminas-cache": "Laminas\\Cache component, for optionally caching feeds between requests",
+                "laminas/laminas-db": "Laminas\\Db component, for use with PubSubHubbub",
+                "laminas/laminas-http": "Laminas\\Http for PubSubHubbub, and optionally for use with Laminas\\Feed\\Reader",
+                "laminas/laminas-servicemanager": "Laminas\\ServiceManager component, for easily extending ExtensionManager implementations",
+                "laminas/laminas-validator": "Laminas\\Validator component, for validating email addresses used in Atom feeds and entries when using the Writer subcomponent",
+                "psr/http-message": "PSR-7 ^1.0.1, if you wish to use Laminas\\Feed\\Reader\\Http\\Psr7ResponseDecorator"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Laminas\\Feed\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "provides functionality for creating and consuming RSS and Atom feeds",
+            "homepage": "https://laminas.dev",
+            "keywords": [
+                "atom",
+                "feed",
+                "laminas",
+                "rss"
+            ],
+            "support": {
+                "chat": "https://laminas.dev/chat",
+                "docs": "https://docs.laminas.dev/laminas-feed/",
+                "forum": "https://discourse.laminas.dev",
+                "issues": "https://github.com/laminas/laminas-feed/issues",
+                "rss": "https://github.com/laminas/laminas-feed/releases.atom",
+                "source": "https://github.com/laminas/laminas-feed"
+            },
+            "funding": [
+                {
+                    "url": "https://funding.communitybridge.org/projects/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "time": "2024-10-09T10:53:30+00:00"
+        },
+        {
+            "name": "laminas/laminas-stdlib",
+            "version": "3.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laminas/laminas-stdlib.git",
+                "reference": "8974a1213be42c3e2f70b2c27b17f910291ab2f4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laminas/laminas-stdlib/zipball/8974a1213be42c3e2f70b2c27b17f910291ab2f4",
+                "reference": "8974a1213be42c3e2f70b2c27b17f910291ab2f4",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
+            },
+            "conflict": {
+                "zendframework/zend-stdlib": "*"
+            },
+            "require-dev": {
+                "laminas/laminas-coding-standard": "^3.0",
+                "phpbench/phpbench": "^1.3.1",
+                "phpunit/phpunit": "^10.5.38",
+                "psalm/plugin-phpunit": "^0.19.0",
+                "vimeo/psalm": "^5.26.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Laminas\\Stdlib\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "SPL extensions, array utilities, error handlers, and more",
+            "homepage": "https://laminas.dev",
+            "keywords": [
+                "laminas",
+                "stdlib"
+            ],
+            "support": {
+                "chat": "https://laminas.dev/chat",
+                "docs": "https://docs.laminas.dev/laminas-stdlib/",
+                "forum": "https://discourse.laminas.dev",
+                "issues": "https://github.com/laminas/laminas-stdlib/issues",
+                "rss": "https://github.com/laminas/laminas-stdlib/releases.atom",
+                "source": "https://github.com/laminas/laminas-stdlib"
+            },
+            "funding": [
+                {
+                    "url": "https://funding.communitybridge.org/projects/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "time": "2024-10-29T13:46:07+00:00"
         },
         {
             "name": "laravel/cashier-paddle",

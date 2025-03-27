@@ -890,7 +890,7 @@ paths:
       tags:
         - Bars
       summary: 'Optimize bar'
-      description: 'Triggers bar optimizations. Updates all cocktail ABVs, rebuilds ingredient hierarchy, updates search index.'
+      description: 'Triggers bar optimizations. Updates all cocktail ABVs, rebuilds ingredient hierarchy, updates search index. Limited call to once per minute.'
       operationId: optimizeBar
       parameters:
         -
@@ -3237,6 +3237,33 @@ paths:
               schema:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /feeds:
+    get:
+      tags:
+        - Feeds
+      summary: 'List feeds'
+      description: 'Show a list of news and recipes from RSS/Atom feeds'
+      operationId: listFeeds
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/FeedsRecipe' } }
                 type: object
   /glasses:
     get:
@@ -8026,6 +8053,37 @@ components:
         - none
         - skip
         - overwrite
+    FeedsRecipe:
+      title: FeedsRecipe
+      description: 'Represents a recipe from an RSS/Atom feed'
+      required:
+        - source
+        - title
+        - link
+        - date
+        - image
+        - description
+      properties:
+        source:
+          description: 'The source of the recipe'
+          type: string
+        title:
+          description: 'The title of the recipe'
+          type: string
+        description:
+          description: 'The description of the recipe'
+          type: string
+        link:
+          description: 'The link to the recipe'
+          type: string
+        date:
+          description: 'The date the recipe was modified'
+          type: string
+          format: date-time
+        image:
+          description: 'The image URL of the recipe'
+          type: string
+      type: object
     OauthCredential:
       description: 'OAuth Credential information'
       required:
@@ -8069,6 +8127,8 @@ components:
         - cocktails.write
         - ingredients.read
         - ingredients.write
+        - bars.read
+        - bars.write
     BarStatusEnum:
       type: string
       enum:
@@ -10165,8 +10225,13 @@ components:
         - type
         - search_host
         - search_version
+        - latest_version
+        - is_latest
+        - type
+        - is_feeds_enabled
       properties:
         version:
+          description: 'Version of the server'
           type: string
           example: 1.0.0
         latest_version:
@@ -10174,17 +10239,24 @@ components:
           type: string
           example: 3.1.0
         is_latest:
+          description: 'Whether the server is running the latest version'
           type: boolean
           example: true
         type:
+          description: 'Environment the server is running in'
           type: string
           example: production
         search_host:
           type: string
           example: 'https://search.example.com'
         search_version:
+          description: 'Version of the search engine'
           type: string
           example: 1.2.0
+        is_feeds_enabled:
+          description: 'Whether feeds are enabled'
+          type: string
+          example: true
       type: object
     ShoppingList:
       required:
@@ -10498,6 +10570,9 @@ tags:
   -
     name: Exports
     description: Exports
+  -
+    name: Feeds
+    description: Feeds
   -
     name: Glasses
     description: Glasses

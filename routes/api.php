@@ -33,6 +33,7 @@ use Kami\Cocktail\Http\Controllers\SubscriptionController;
 use Kami\Cocktail\Http\Controllers\PriceCategoryController;
 use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
+use Kami\Cocktail\Http\Controllers\FeedsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -90,6 +91,10 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::prefix('shelf')->middleware(['ability:*'])->group(function () {
         Route::post('/ingredients/batch-store', [ShelfController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/ingredients/batch-delete', [ShelfController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
+    });
+
+    Route::prefix('feeds')->group(function () {
+        Route::get('/', [FeedsController::class, 'feeds']);
     });
 
     Route::prefix('ingredients')->group(function () {
