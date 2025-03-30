@@ -11,6 +11,10 @@
 - Added `is_feeds_enabled` and `is_password_login_enabled` to `ServerVersion` schema
 - Added `bars.read` and `bars.write` to personal access token abilities
 
+## Changes
+- Search index sync refresh no longer happens automatically on docker (re)start
+    - You should now run it manually or via bar optimize endpoint
+
 ## Fixes
 - Fixed missing `images` on `BarRequest` schema
 

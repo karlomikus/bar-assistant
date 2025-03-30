@@ -45,7 +45,7 @@ php artisan config:cache
 php artisan route:cache
 php artisan event:cache
 # Update meilisearch indexes
-php artisan bar:refresh-search
+# php artisan bar:refresh-search
 # Clear expired tokens
 php artisan sanctum:prune-expired --hours=24
 
