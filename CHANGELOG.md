@@ -1,3 +1,19 @@
+# v5.2.0
+## New
+- Added `ENABLE_PASSWORD_LOGIN` variable
+    - You can now disable password login by setting this to false
+- Added external feeds support
+    - We now collect RSS feeds from popular cocktail related websites and show recipes and news items
+    - Currently in beta, can be enabled with `ENABLE_FEEDS=true` env variable
+- Added `units` to ingredients
+    - Used to define default units for specific ingredients
+- Added more `info` and `warning` level logs to authentication
+- Added `is_feeds_enabled` and `is_password_login_enabled` to `ServerVersion` schema
+- Added `bars.read` and `bars.write` to personal access token abilities
+
+## Fixes
+- Fixed missing `images` on `BarRequest` schema
+
 # v5.1.0
 ## New
 - Added `thumb_url` to `Image` schema
