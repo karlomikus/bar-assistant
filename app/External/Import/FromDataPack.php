@@ -196,6 +196,7 @@ class FromDataPack
                 'sugar_g_per_ml' => $externalIngredient->sugarContent,
                 'acidity' => $externalIngredient->acidity,
                 'distillery' => $externalIngredient->distillery,
+                'units' => $externalIngredient->units,
             ];
 
             if ($externalIngredient->parentId) {

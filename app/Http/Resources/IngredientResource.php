@@ -76,6 +76,7 @@ class IngredientResource extends JsonResource
             'sugar_g_per_ml' => $this->sugar_g_per_ml,
             'acidity' => $this->acidity,
             'distillery' => $this->distillery,
+            'units' => $this->units,
         ];
     }
 }

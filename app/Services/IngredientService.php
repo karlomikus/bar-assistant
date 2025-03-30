@@ -45,6 +45,7 @@ final class IngredientService
             $ingredient->sugar_g_per_ml = $dto->sugarContent;
             $ingredient->acidity = $dto->acidity;
             $ingredient->distillery = $dto->distillery;
+            $ingredient->units = $dto->units;
             $ingredient->save();
 
             if ($dto->parentIngredientId !== null) {
@@ -122,6 +123,7 @@ final class IngredientService
             $ingredient->sugar_g_per_ml = $dto->sugarContent;
             $ingredient->acidity = $dto->acidity;
             $ingredient->distillery = $dto->distillery;
+            $ingredient->units = $dto->units;
             $ingredient->save();
 
             if ($dto->parentIngredientId !== $ingredient->parent_ingredient_id) {
