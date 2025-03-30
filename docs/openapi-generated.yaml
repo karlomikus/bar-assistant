@@ -8260,6 +8260,10 @@ components:
               type: boolean
               example: true
           type: object
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
       type: object
     BarBasic:
       required:
@@ -8341,6 +8345,11 @@ components:
         options:
           $ref: '#/components/schemas/BarOptionsEnum'
           description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.'
+        images:
+          description: 'Existing image ids'
+          type: array
+          items:
+            type: integer
       type: object
     BarSettings:
       properties:
@@ -9829,6 +9838,12 @@ components:
             - string
             - 'null'
           example: 'Buffalo trace'
+        units:
+          description: 'Default unit that would be used for this ingredient'
+          type:
+            - string
+            - 'null'
+          example: ml
       type: object
     IngredientTree:
       required:

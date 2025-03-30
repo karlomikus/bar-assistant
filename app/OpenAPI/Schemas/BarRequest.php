@@ -26,4 +26,7 @@ class BarRequest
     public bool $enableInvites = true;
     #[OAT\Property(description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.')]
     public BarOptionsEnum $options;
+    /** @var array<int> */
+    #[OAT\Property(items: new OAT\Items(type: 'integer'), description: 'Existing image ids')]
+    public array $images = [];
 }
