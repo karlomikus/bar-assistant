@@ -1,5 +1,5 @@
-name,strength,description,origin,color,sugar_g_per_ml,acidity,distillery
-Campari,40,Bitter liquer,Italy,#008800,,,
-gin,23.3,,,,,,
-Whiskey,,,,,,,
-empty,,,,,,,
+name,strength,description,origin,color,sugar_g_per_ml,acidity,distillery,units
+Campari,40,Bitter liquer,Italy,#008800,,,,
+gin,23.3,,,,,,,
+Whiskey,,,,,,,,
+empty,,,,,,,,

@@ -9,6 +9,7 @@ use Kami\Cocktail\Http\Controllers\TagController;
 use Kami\Cocktail\Http\Controllers\AuthController;
 use Kami\Cocktail\Http\Controllers\MenuController;
 use Kami\Cocktail\Http\Controllers\NoteController;
+use Kami\Cocktail\Http\Controllers\FeedsController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
@@ -33,7 +34,6 @@ use Kami\Cocktail\Http\Controllers\SubscriptionController;
 use Kami\Cocktail\Http\Controllers\PriceCategoryController;
 use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
-use Kami\Cocktail\Http\Controllers\FeedsController;
 
 /*
 |--------------------------------------------------------------------------
