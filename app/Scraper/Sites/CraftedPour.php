@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
+use Kami\RecipeUtils\AmountValue;
 use Kami\RecipeUtils\RecipeIngredient;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
@@ -76,7 +77,7 @@ class CraftedPour extends AbstractSiteExtractor
         foreach ($this->dataRecipeProp['ingredients'] ?? [] as $ingredient) {
             $result[] = new RecipeIngredient(
                 $ingredient['ingredient'],
-                floatVal($ingredient['quantity']),
+                AmountValue::fromString($ingredient['quantity']),
                 $ingredient['unit'] ?? '',
                 null,
                 $ingredient['link'],

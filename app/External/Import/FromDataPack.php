@@ -38,10 +38,7 @@ class FromDataPack
         $this->uploadsDisk = Storage::disk('uploads');
     }
 
-    /**
-     * @param array<BarOptionsEnum> $flags
-     */
-    public function process(Filesystem $dataDisk, Bar $bar, User $user, array $flags = []): bool
+    public function process(Filesystem $dataDisk, Bar $bar, User $user, ?BarOptionsEnum $flag = null): bool
     {
         Log::debug(sprintf('Starting datapack import for "%s"', $bar->name));
 
@@ -69,11 +66,11 @@ class FromDataPack
             $this->importCalculators($dataDisk->path('calculators.json'), $bar->id);
         }
 
-        if (in_array(BarOptionsEnum::Ingredients, $flags)) {
+        if ($flag === BarOptionsEnum::Ingredients || $flag === BarOptionsEnum::Cocktails) {
             $this->importIngredients($dataDisk, $bar, $user);
         }
 
-        if (in_array(BarOptionsEnum::Ingredients, $flags) && in_array(BarOptionsEnum::Cocktails, $flags)) {
+        if ($flag === BarOptionsEnum::Cocktails) {
             $this->importBaseCocktails($dataDisk, $bar, $user);
         }
 
@@ -199,6 +196,7 @@ class FromDataPack
                 'sugar_g_per_ml' => $externalIngredient->sugarContent,
                 'acidity' => $externalIngredient->acidity,
                 'distillery' => $externalIngredient->distillery,
+                'units' => $externalIngredient->units,
             ];
 
             if ($externalIngredient->parentId) {

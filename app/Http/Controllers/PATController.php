@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\Http\Requests\PATRequest;
 use Kami\Cocktail\Models\Enums\AbilityEnum;
 use Kami\Cocktail\Http\Resources\PATResource;
@@ -61,11 +62,18 @@ class PATController extends Controller
             abort(400, 'Unsupported abilities given, valid abilties include: ' . implode(', ', array_map(fn (AbilityEnum $ability) => $ability->value, AbilityEnum::cases())));
         }
 
+        $tokenName = $request->input('name', 'user_generated');
+
         $token = $request->user()->createToken(
-            $request->input('name', 'user_generated'),
+            $tokenName,
             $abilities,
             $expiresAt
         );
+
+        Log::info('User created a new personal access token', [
+            'user_id' => $request->user()->id,
+            'token_name' => $tokenName,
+        ]);
 
         return new TokenResource($token);
     }
@@ -85,6 +93,10 @@ class PATController extends Controller
         }
 
         $token->delete();
+
+        Log::info('User revoked a personal access token', [
+            'user_id' => $request->user()->id,
+        ]);
 
         return new Response(null, 204);
     }

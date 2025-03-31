@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Model;
+namespace Tests\Feature\Models;
 
 use Tests\TestCase;
 use Kami\Cocktail\Models\Bar;

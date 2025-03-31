@@ -9,6 +9,7 @@ use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -32,9 +33,16 @@ class AuthController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BAO\Schemas\Token::class),
     ])]
-    #[OAT\Response(response: 400, description: 'Unable to authenticate')]
+    #[OAT\Response(response: 400, description: 'Unable to authenticate. Possible reasons: invalid credentials, unconfirmed account or disabled password login')]
     public function authenticate(Request $request): JsonResource
     {
+        if (!config('bar-assistant.enable_password_login')) {
+            Log::warning('User tried to login with password, but password login is disabled', [
+                'email' => $request->email,
+            ]);
+            abort(400, 'Password login is disabled.');
+        }
+
         $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
@@ -47,6 +55,10 @@ class AuthController extends Controller
         }
 
         if (!$user || !Hash::check($request->password, $user->password)) {
+            Log::warning('User tried to login with invalid credentials', [
+                'email' => $request->email,
+            ]);
+
             if (config('bar-assistant.mail_require_confirmation') === true) {
                 abort(400, 'Unable to authenticate. Make sure you have confirmed your account and your login credentials are correct.');
             }
@@ -100,6 +112,9 @@ class AuthController extends Controller
 
         if ($requireConfirmation === true) {
             Mail::to($user)->queue(new ConfirmAccount($user->id, sha1($user->email)));
+            Log::info('User registered and confirmation email sent', [
+                'email' => $user->email,
+            ]);
         }
 
         return new ProfileResource($user);
@@ -121,6 +136,9 @@ class AuthController extends Controller
 
         $status = Password::sendResetLink($request->only('email'), function (User $user, string $token) {
             Mail::to($user)->queue(new PasswordReset($token));
+            Log::info('Password reset link sent', [
+                'email' => $user->email,
+            ]);
 
             return Password::RESET_LINK_SENT;
         });
@@ -164,6 +182,10 @@ class AuthController extends Controller
         if ($status === Password::PASSWORD_RESET) {
             Mail::to($request->post('email'))->queue(new PasswordChanged());
 
+            Log::info('Password reset successful', [
+                'email' => $request->post('email'),
+            ]);
+
             return response()->json(status: 204);
         }
 
@@ -191,6 +213,10 @@ class AuthController extends Controller
 
         if (!$user->hasVerifiedEmail()) {
             $user->markEmailAsVerified();
+
+            Log::info('User account confirmed', [
+                'email' => $user->email,
+            ]);
 
             event(new Verified($user));
         }

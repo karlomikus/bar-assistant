@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Requests;
 
 use Illuminate\Validation\Rule;
+use Kami\Cocktail\External\BarOptionsEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 
@@ -30,7 +31,10 @@ class BarRequest extends FormRequest
         return [
             'name' => 'required',
             'enable_invites' => 'boolean',
-            'options' => 'array',
+            'options' => [
+                Rule::enum(BarOptionsEnum::class),
+                'nullable',
+            ],
             'default_units' => 'string',
             'default_lang' => 'string',
             'status' => [

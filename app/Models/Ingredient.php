@@ -319,6 +319,7 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
             'description' => $this->description,
             'category' => $this->getMaterializedPathAsString(),
             'bar_id' => $this->bar_id,
+            'units' => $this->getDefaultUnits()?->value,
         ];
     }
 
@@ -427,6 +428,15 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         $shelfIngredientIds = $user->getShelfIngredients($this->bar_id)->pluck('ingredient_id');
 
         return $this->descendants->whereIn('id', $descendantIds->intersect($shelfIngredientIds))->sortBy('name');
+    }
+
+    public function getDefaultUnits(): ?UnitValueObject
+    {
+        if (!$this->units) {
+            return null;
+        }
+
+        return new UnitValueObject($this->units);
     }
 
     /**

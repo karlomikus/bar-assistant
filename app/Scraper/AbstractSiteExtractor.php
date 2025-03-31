@@ -6,18 +6,18 @@ namespace Kami\Cocktail\Scraper;
 
 use Symfony\Component\Uid\Ulid;
 use Kami\RecipeUtils\Parser\Parser;
+use Kami\RecipeUtils\ParserFactory;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 use Kami\RecipeUtils\RecipeIngredient;
 use Kami\Cocktail\External\Model\Schema;
-use Kami\RecipeUtils\UnitConverter\Units;
+use Kevinrob\GuzzleCache\CacheMiddleware;
 use Symfony\Component\DomCrawler\Crawler;
 use Kami\Cocktail\External\Model\Cocktail;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\BrowserKit\HttpBrowser;
 use Kami\Cocktail\External\Model\IngredientBasic;
-use Symfony\Component\HttpKernel\HttpCache\Store;
-use Symfony\Component\HttpClient\CachingHttpClient;
 use Kami\Cocktail\Exceptions\ScraperMissingException;
-use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
+use Kevinrob\GuzzleCache\Storage\LaravelCacheStorage;
+use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 
 abstract class AbstractSiteExtractor implements SiteExtractorContract
 {
@@ -26,23 +26,14 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
 
     public function __construct(
         protected readonly string $url,
-        protected readonly ?Units $defaultConvertTo = null,
     ) {
-        $store = new Store(storage_path('http_cache/'));
-        $client = HttpClient::create([
-            'max_redirects' => 0,
-            'timeout' => 10,
-        ]);
-        $client = new NoPrivateNetworkHttpClient($client);
-        $client = new CachingHttpClient($client, $store);
-        $browser = new HttpBrowser($client);
+        $cachingMiddleware = new CacheMiddleware(new GreedyCacheStrategy(new LaravelCacheStorage(Cache::store()), 60 * 15));
+        $response = Http::withMiddleware($cachingMiddleware)
+            ->timeout(10)
+            ->get($url);
 
-        $browser->request('GET', $url);
-
-        /** @var \Symfony\Component\BrowserKit\Response $response */
-        $response = $browser->getResponse();
-        $this->crawler = new Crawler($response->getContent());
-        $this->ingredientParser = new Parser();
+        $this->crawler = new Crawler($response->body());
+        $this->ingredientParser = ParserFactory::make();
     }
 
     /**
@@ -159,8 +150,8 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
             return [
                 '_id' => Ulid::generate(),
                 'name' => $this->clean(ucfirst($recipeIngredient->name)),
-                'amount' => $recipeIngredient->amount,
-                'amount_max' => $recipeIngredient->amountMax,
+                'amount' => $recipeIngredient->amount->getValue(),
+                'amount_max' => $recipeIngredient->amountMax?->getValue(),
                 'units' => $recipeIngredient->units === '' ? null : $recipeIngredient->units,
                 'note' => $recipeIngredient->comment === '' ? null : $recipeIngredient->comment,
                 'source' => $this->clean($recipeIngredient->source),

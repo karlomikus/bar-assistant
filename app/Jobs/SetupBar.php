@@ -23,17 +23,12 @@ class SetupBar implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    /**
-     * Create a new job instance.
-     *
-     * @param array<BarOptionsEnum> $barOptions
-     */
     public function __construct(
         #[WithoutRelations]
         private readonly Bar $bar,
         #[WithoutRelations]
         private readonly User $user,
-        private array $barOptions = []
+        private ?BarOptionsEnum $barOptions = null,
     ) {
     }
 

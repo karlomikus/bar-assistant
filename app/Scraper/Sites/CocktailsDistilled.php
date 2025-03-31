@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
+use Kami\RecipeUtils\AmountValue;
 use Kami\RecipeUtils\RecipeIngredient;
-use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class CocktailsDistilled extends AbstractSiteExtractor
@@ -54,17 +54,17 @@ class CocktailsDistilled extends AbstractSiteExtractor
 
             $measureMl = $listNode->filter('.measure.ml')->text();
             if (str_contains($measureMl, 'ml')) {
-                $amount = (int) str_replace('ml', '', $measureMl);
+                $amount = AmountValue::from((float) str_replace('ml', '', $measureMl));
                 $units = 'ml';
             } else {
-                $recipeIngredient = $this->ingredientParser->parseLine($measureMl, $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
+                $recipeIngredient = $this->ingredientParser->parseLine($measureMl);
                 $amount = $recipeIngredient->amount;
                 $units = $recipeIngredient->units;
             }
 
             $result[] = new RecipeIngredient(
                 $ingredientName,
-                (float) $amount,
+                $amount,
                 $units,
                 $listNode->innerText()
             );

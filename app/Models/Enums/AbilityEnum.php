@@ -13,4 +13,6 @@ enum AbilityEnum: string
     case CocktailsWrite = 'cocktails.write';
     case IngredientsRead = 'ingredients.read';
     case IngredientsWrite = 'ingredients.write';
+    case BarsRead = 'bars.read';
+    case BarsWrite = 'bars.write';
 }

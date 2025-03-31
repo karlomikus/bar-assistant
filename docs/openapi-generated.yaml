@@ -52,7 +52,7 @@ paths:
                   data: { $ref: '#/components/schemas/Token' }
                 type: object
         '400':
-          description: 'Unable to authenticate'
+          description: 'Unable to authenticate. Possible reasons: invalid credentials, unconfirmed account or disabled password login'
       security: []
   /auth/logout:
     post:
@@ -890,7 +890,7 @@ paths:
       tags:
         - Bars
       summary: 'Optimize bar'
-      description: 'Triggers bar optimizations. Updates all cocktail ABVs, rebuilds ingredient hierarchy, updates search index.'
+      description: 'Triggers bar optimizations. Updates all cocktail ABVs, rebuilds ingredient hierarchy, updates search index. Limited call to once per minute.'
       operationId: optimizeBar
       parameters:
         -
@@ -3237,6 +3237,33 @@ paths:
               schema:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /feeds:
+    get:
+      tags:
+        - Feeds
+      summary: 'List feeds'
+      description: 'Show a list of news and recipes from RSS/Atom feeds'
+      operationId: listFeeds
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/FeedsRecipe' } }
                 type: object
   /glasses:
     get:
@@ -8026,6 +8053,37 @@ components:
         - none
         - skip
         - overwrite
+    FeedsRecipe:
+      title: FeedsRecipe
+      description: 'Represents a recipe from an RSS/Atom feed'
+      required:
+        - source
+        - title
+        - link
+        - date
+        - image
+        - description
+      properties:
+        source:
+          description: 'The source of the recipe'
+          type: string
+        title:
+          description: 'The title of the recipe'
+          type: string
+        description:
+          description: 'The description of the recipe'
+          type: string
+        link:
+          description: 'The link to the recipe'
+          type: string
+        date:
+          description: 'The date the recipe was modified'
+          type: string
+          format: date-time
+        image:
+          description: 'The image URL of the recipe'
+          type: string
+      type: object
     OauthCredential:
       description: 'OAuth Credential information'
       required:
@@ -8069,6 +8127,8 @@ components:
         - cocktails.write
         - ingredients.read
         - ingredients.write
+        - bars.read
+        - bars.write
     BarStatusEnum:
       type: string
       enum:
@@ -8200,6 +8260,10 @@ components:
               type: boolean
               example: true
           type: object
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
       type: object
     BarBasic:
       required:
@@ -8281,6 +8345,11 @@ components:
         options:
           $ref: '#/components/schemas/BarOptionsEnum'
           description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.'
+        images:
+          description: 'Existing image ids'
+          type: array
+          items:
+            type: integer
       type: object
     BarSettings:
       properties:
@@ -9511,6 +9580,10 @@ components:
         cocktails_count:
           type: integer
           example: 12
+        cocktails_as_substitute_count:
+          description: 'Number of cocktails that use this ingredient as a substitute'
+          type: integer
+          example: 1
         cocktails:
           type: array
           items:
@@ -9536,16 +9609,14 @@ components:
             -
               type: 'null'
         access:
-          type: array
-          items:
-            properties:
-              can_edit:
-                type: boolean
-                example: true
-              can_delete:
-                type: boolean
-                example: true
-            type: object
+          properties:
+            can_edit:
+              type: boolean
+              example: true
+            can_delete:
+              type: boolean
+              example: true
+          type: object
         ingredient_parts:
           type: array
           items:
@@ -9587,6 +9658,10 @@ components:
             - 'null'
           format: float
         distillery:
+          type:
+            - string
+            - 'null'
+        units:
           type:
             - string
             - 'null'
@@ -9632,6 +9707,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IngredientBasic'
+        root_ingredient_id:
+          description: 'Root ingredient ID'
+          type:
+            - string
+            - 'null'
       type: object
     IngredientPrice:
       required:
@@ -9769,6 +9849,12 @@ components:
             - string
             - 'null'
           example: 'Buffalo trace'
+        units:
+          description: 'Default unit that would be used for this ingredient'
+          type:
+            - string
+            - 'null'
+          example: ml
       type: object
     IngredientTree:
       required:
@@ -10165,8 +10251,14 @@ components:
         - type
         - search_host
         - search_version
+        - latest_version
+        - is_latest
+        - type
+        - is_feeds_enabled
+        - is_password_login_enabled
       properties:
         version:
+          description: 'Version of the server'
           type: string
           example: 1.0.0
         latest_version:
@@ -10174,17 +10266,28 @@ components:
           type: string
           example: 3.1.0
         is_latest:
+          description: 'Whether the server is running the latest version'
           type: boolean
           example: true
         type:
+          description: 'Environment the server is running in'
           type: string
           example: production
         search_host:
           type: string
           example: 'https://search.example.com'
         search_version:
+          description: 'Version of the search engine'
           type: string
           example: 1.2.0
+        is_feeds_enabled:
+          description: 'Whether feeds are enabled'
+          type: boolean
+          example: true
+        is_password_login_enabled:
+          description: 'Whether password login is enabled'
+          type: boolean
+          example: true
       type: object
     ShoppingList:
       required:
@@ -10498,6 +10601,9 @@ tags:
   -
     name: Exports
     description: Exports
+  -
+    name: Feeds
+    description: Feeds
   -
     name: Glasses
     description: Glasses

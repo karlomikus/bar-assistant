@@ -99,8 +99,7 @@ class BarController extends Controller
         ]);
 
         $inviteEnabled = (bool) $request->post('enable_invites', '0');
-        $barOptions = $request->input('options', []);
-        $barOptions = array_map(fn ($flag) => BarOptionsEnum::tryFrom($flag), $barOptions);
+        $barOptions = BarOptionsEnum::tryFrom($request->input('options', ''));
 
         $bar = new Bar();
         $bar->name = $request->input('name');

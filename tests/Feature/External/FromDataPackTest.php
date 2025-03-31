@@ -31,7 +31,7 @@ class FromDataPackTest extends TestCase
         $this->assertDatabaseEmpty('utensils');
 
         $importer = resolve(FromDataPack::class);
-        $importer->process($datapackFolder, $membership->bar, $membership->user, [BarOptionsEnum::Ingredients, BarOptionsEnum::Cocktails]);
+        $importer->process($datapackFolder, $membership->bar, $membership->user, BarOptionsEnum::Cocktails);
 
         $this->assertDatabaseHas('glasses', ['name' => 'glass 1', 'description' => 'glass 1 description']);
         $this->assertDatabaseHas('glasses', ['name' => 'glass 2', 'description' => null]);

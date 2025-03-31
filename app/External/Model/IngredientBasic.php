@@ -36,7 +36,7 @@ readonly class IngredientBasic implements SupportsDraft2, SupportsDataPack
     {
         return new self(
             $sourceArray['_id'],
-            $sourceArray['name'],
+            $sourceArray['name'] ?? '',
             $sourceArray['strength'] ?? 0.0,
             $sourceArray['description'] ?? null,
             $sourceArray['origin'] ?? null,

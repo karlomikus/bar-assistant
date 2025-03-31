@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\Models\Ingredient;
@@ -31,6 +32,31 @@ final class BarOptimizerService
             }
         });
         Log::info('[' . $barId . '] Finished updating cocktail ABVs.');
+
+        // Find the most used unit per ingredient
+        $unitsPerIngredient = DB::table('cocktail_ingredients')
+            ->select(
+                'cocktail_ingredients.ingredient_id',
+                'cocktail_ingredients.units',
+                DB::raw('COUNT(cocktail_ingredients.ingredient_id) AS count')
+            )
+            ->join('ingredients', 'cocktail_ingredients.ingredient_id', '=', 'ingredients.id')
+            ->where('ingredients.bar_id', $barId)
+            ->orderBy('cocktail_ingredients.ingredient_id')
+            ->orderBy('count', 'desc')
+            ->groupBy('cocktail_ingredients.ingredient_id', 'cocktail_ingredients.units')
+            ->get()
+            ->unique('ingredient_id')
+            ->values();
+
+        foreach ($unitsPerIngredient as $commonUnit) {
+            DB::table('ingredients')
+                ->where('id', $commonUnit->ingredient_id)
+                ->where('bar_id', $barId)
+                ->whereNull('units')
+                ->update(['units' => $commonUnit->units]);
+        }
+        Log::info('[' . $barId . '] Finished updating ingredient default units.');
 
         /** @phpstan-ignore-next-line */
         Cocktail::where('bar_id', $barId)->searchable();

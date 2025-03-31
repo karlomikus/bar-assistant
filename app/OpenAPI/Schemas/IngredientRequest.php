@@ -42,6 +42,8 @@ class IngredientRequest
         public ?float $acidity = null,
         #[OAT\Property(property: 'distillery', example: 'Buffalo trace')]
         public ?string $distillery = null,
+        #[OAT\Property(property: 'units', example: 'ml', description: 'Default unit that would be used for this ingredient')]
+        public ?string $units = null,
     ) {
     }
 
@@ -72,6 +74,7 @@ class IngredientRequest
             $request->filled('sugar_g_per_ml') ? $request->float('sugar_g_per_ml') : null,
             $request->filled('acidity') ? $request->float('acidity') : null,
             $request->input('distillery'),
+            $request->input('units'),
         );
     }
 }

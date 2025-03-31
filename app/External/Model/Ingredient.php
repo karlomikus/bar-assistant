@@ -36,6 +36,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
         public ?float $sugarContent = null,
         public ?float $acidity = null,
         public ?string $distillery = null,
+        public ?string $units = null,
     ) {
     }
 
@@ -71,6 +72,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             sugarContent: $model->sugar_g_per_ml,
             acidity: $model->acidity,
             distillery: $model->distillery,
+            units: $model->getDefaultUnits()?->value,
         );
     }
 
@@ -104,6 +106,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             sugarContent: $sourceArray['sugar_g_per_ml'] ?? null,
             acidity: $sourceArray['acidity'] ?? null,
             distillery: $sourceArray['distillery'] ?? null,
+            units: $sourceArray['units'] ?? null,
         );
     }
 
@@ -127,6 +130,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             'sugar_g_per_ml' => $this->sugarContent,
             'acidity' => $this->acidity,
             'distillery' => $this->distillery,
+            'units' => $this->units,
         ];
     }
 
@@ -151,6 +155,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             sugarContent: blank($sourceArray['sugar_g_per_ml']) ? null : $sourceArray['sugar_g_per_ml'],
             acidity: blank($sourceArray['acidity']) ? null : $sourceArray['acidity'],
             distillery: blank($sourceArray['distillery']) ? null : $sourceArray['distillery'],
+            units: blank($sourceArray['units']) ? null : $sourceArray['units'],
         );
     }
 }

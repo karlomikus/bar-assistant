@@ -50,4 +50,7 @@ class Bar
         new OAT\Property(type: 'boolean', property: 'can_deactivate', example: true),
     ], description: 'User access rights for the bar')]
     public array $access;
+    /** @var Image[] */
+    #[OAT\Property()]
+    public array $images = [];
 }

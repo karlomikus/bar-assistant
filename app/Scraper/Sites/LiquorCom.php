@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
-use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
 class LiquorCom extends AbstractSiteExtractor
@@ -49,7 +48,7 @@ class LiquorCom extends AbstractSiteExtractor
         $ingredients = [];
 
         foreach ($this->getRecipeSchema()['recipeIngredient'] as $sourceIngredient) {
-            $ingredients[] = $this->ingredientParser->parseLine($sourceIngredient, $this->defaultConvertTo, [Units::Dash, Units::Barspoon]);
+            $ingredients[] = $this->ingredientParser->parseLine($sourceIngredient);
         }
 
         return $ingredients;

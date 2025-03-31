@@ -13,6 +13,7 @@ use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Kami\RecipeUtils\Converter;
 use Symfony\Component\Uid\Ulid;
+use Kami\RecipeUtils\AmountValue;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Collection;
 use Brick\Money\Context\DefaultContext;
@@ -149,10 +150,10 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
                 continue;
             }
 
-            $amount = Converter::fromTo($cocktailIngredient->amount, $unitFrom, Units::Oz);
+            $amount = Converter::convertAmount(new AmountValue($cocktailIngredient->amount), $unitFrom, Units::Oz);
 
             $ingredientsForABV[] = [
-                'amount' => $amount,
+                'amount' => $amount->getValue(),
                 'units' => $unitFrom->value,
                 'strength' => $cocktailIngredient->ingredient->strength ?? 0,
             ];
