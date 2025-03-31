@@ -46,6 +46,9 @@ class Ingredient
     #[OAT\Property(property: 'cocktails_count', example: 12)]
     public int $cocktailsCount;
 
+    #[OAT\Property(property: 'cocktails_as_substitute_count', example: 1, description: 'Number of cocktails that use this ingredient as a substitute')]
+    public int $cocktailsAsSubstituteCount;
+
     /** @var array<mixed> */
     #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
         new OAT\Property(type: 'integer', property: 'id', example: 1),
@@ -64,10 +67,10 @@ class Ingredient
     public ?UserBasic $updatedUser = null;
 
     /** @var array<mixed> */
-    #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
+    #[OAT\Property(type: 'object', properties: [
         new OAT\Property(type: 'boolean', property: 'can_edit', example: true),
         new OAT\Property(type: 'boolean', property: 'can_delete', example: true),
-    ]))]
+    ])]
     public array $access = [];
 
     /** @var IngredientBasic[] */
@@ -112,4 +115,7 @@ class Ingredient
 
     #[OAT\Property(property: 'distillery')]
     public ?string $distillery = null;
+
+    #[OAT\Property(property: 'units')]
+    public ?string $units = null;
 }

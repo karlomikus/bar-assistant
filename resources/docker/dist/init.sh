@@ -24,11 +24,6 @@ if [ ! -f "$db_file" ]; then
     touch "$db_file"
 fi
 
-# Enable WAL mode, done via php
-# echo "[BAR-ASSISTANT] Enabling database WAL mode..."
-# sqlite3 "$db_file" 'pragma journal_mode=wal;'
-# sqlite3 "$db_file" 'pragma synchronous=NORMAL;'
-
 # Start running artisan commands
 cd "$APP_BASE_DIR"
 
@@ -44,8 +39,6 @@ php artisan scout:sync-index-settings
 php artisan config:cache
 php artisan route:cache
 php artisan event:cache
-# Update meilisearch indexes
-# php artisan bar:refresh-search
 # Clear expired tokens
 php artisan sanctum:prune-expired --hours=24
 

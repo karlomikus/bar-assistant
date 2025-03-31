@@ -22,4 +22,7 @@ class IngredientHierarchy
     /** @var IngredientBasic[] */
     #[OAT\Property()]
     public array $ancestors = [];
+
+    #[OAT\Property(property: 'root_ingredient_id', description: 'Root ingredient ID')]
+    public ?string $rootIngredientId = null;
 }

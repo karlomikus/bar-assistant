@@ -17,6 +17,7 @@
 
 ## Fixes
 - Fixed missing `images` on `BarRequest` schema
+- Fixed missing properties on `Ingredient` schema
 
 # v5.1.0
 ## New
