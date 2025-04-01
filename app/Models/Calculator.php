@@ -11,10 +11,10 @@ use Illuminate\Database\Eloquent\Collection;
 use Kami\Cocktail\Models\Concerns\IsExternalized;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
-use Kami\Cocktail\OpenAPI\Schemas\CalculatorResult;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\Enums\CalculatorBlockTypeEnum;
+use Kami\Cocktail\Models\ValueObjects\CalculatorResult;
 use Kami\Cocktail\OpenAPI\Schemas\CalculatorSolveRequest;
 
 class Calculator extends Model implements IsExternalized

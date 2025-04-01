@@ -31,7 +31,7 @@ class CollectionController extends Controller
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`.', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\Collection::class),
+        new BAO\WrapItemsWithData(CollectionResource::class),
     ])]
     public function index(): JsonResource
     {
@@ -44,7 +44,7 @@ class CollectionController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\Collection::class),
+        new BAO\WrapItemsWithData(CollectionResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -71,7 +71,7 @@ class CollectionController extends Controller
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'integer')),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Collection::class),
+        new BAO\WrapObjectWithData(CollectionResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -95,7 +95,7 @@ class CollectionController extends Controller
         ]
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Collection::class),
+        new BAO\WrapObjectWithData(CollectionResource::class),
     ], headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
@@ -141,7 +141,7 @@ class CollectionController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Collection::class),
+        new BAO\WrapObjectWithData(CollectionResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -175,7 +175,7 @@ class CollectionController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Collection::class),
+        new BAO\WrapObjectWithData(CollectionResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     public function cocktails(Request $request, int $id): JsonResource

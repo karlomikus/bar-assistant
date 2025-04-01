@@ -1421,9 +1421,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/Cocktail' } }
-                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/Cocktail' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -3600,9 +3600,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/Image' } }
-                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/Image' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -4188,9 +4188,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/Ingredient' } }
-                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/Ingredient' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -4568,9 +4568,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
-                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -4649,9 +4649,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
-                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -5002,9 +5002,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/Note' } }
-                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/Note' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
                 type: object
     post:
       tags:
@@ -6126,9 +6126,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
-                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
                 type: object
   '/users/{id}/cocktails':
     get:
@@ -6180,9 +6180,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
-                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
                 type: object
   '/users/{id}/cocktails/favorites':
     get:
@@ -6234,9 +6234,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
-                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
                 type: object
   '/users/{id}/ingredients/batch-store':
     post:
@@ -6495,9 +6495,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
-                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
                 type: object
   '/bars/{id}/ingredients/batch-store':
     post:
@@ -6666,9 +6666,9 @@ paths:
             application/json:
               schema:
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
-                  links: { properties: { first: { type: [string, 'null'] }, last: { type: [string, 'null'] }, prev: { type: [string, 'null'] }, next: { type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { type: integer }, from: { type: integer }, last_page: { type: integer }, links: { type: array, items: { properties: { url: { type: string }, label: { type: string }, active: { type: boolean } }, type: object } }, path: { type: string }, per_page: { type: integer }, to: { type: integer }, total: { type: integer } }, type: object }
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
                 type: object
   '/bars/{id}/ingredients/recommend':
     get:
@@ -8053,109 +8053,57 @@ components:
         - none
         - skip
         - overwrite
-    FeedsRecipe:
-      title: FeedsRecipe
-      description: 'Represents a recipe from an RSS/Atom feed'
+    BarBasic:
+      description: 'Represents a bar with basic information'
       required:
-        - source
-        - title
-        - link
-        - date
-        - image
-        - description
+        - id
+        - slug
+        - name
+        - subtitle
       properties:
-        source:
-          description: 'The source of the recipe'
+        id:
+          description: 'The ID of the bar'
+          type: integer
+          example: 1
+        slug:
+          description: 'The slug of the bar'
           type: string
-        title:
-          description: 'The title of the recipe'
+          example: bar-name-1
+        name:
+          description: 'The name of the bar'
           type: string
-        description:
-          description: 'The description of the recipe'
-          type: string
-        link:
-          description: 'The link to the recipe'
-          type: string
-        date:
-          description: 'The date the recipe was modified'
-          type: string
-          format: date-time
-        image:
-          description: 'The image URL of the recipe'
-          type: string
-      type: object
-    OauthCredential:
-      description: 'OAuth Credential information'
-      required:
-        - provider
-        - created_at
-        - updated_at
-      properties:
-        provider:
-          $ref: '#/components/schemas/SSOProvider'
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
+          example: 'Bar name'
+        subtitle:
+          description: 'The subtitle of the bar'
           type:
             - string
             - 'null'
-          format: date-time
+          example: 'Bar subtitle'
       type: object
-    SSOProvider:
-      description: 'SSO Provider information'
+    BarMembership:
+      description: 'Represents a bar membership'
       required:
-        - name
-        - display_name
-        - enabled
+        - user_id
+        - user_name
+        - bar_id
+        - is_shelf_public
       properties:
-        name:
+        user_id:
+          description: 'The ID of the user'
+          type: integer
+          example: 1
+        user_name:
+          description: 'The name of the user'
           type: string
-          example: github
-        display_name:
-          type: string
-          example: GitHub
-        enabled:
-          description: 'Whether the provider is configured and enabled by server'
+          example: Bartender
+        bar_id:
+          description: 'The ID of the bar'
+          type: integer
+          example: 1
+        is_shelf_public:
+          description: 'Indicates if the shelf is public'
           type: boolean
           example: true
-      type: object
-    AbilityEnum:
-      type: string
-      enum:
-        - cocktails.read
-        - cocktails.write
-        - ingredients.read
-        - ingredients.write
-        - bars.read
-        - bars.write
-    BarStatusEnum:
-      type: string
-      enum:
-        - provisioning
-        - active
-        - deactivated
-    CalculatorBlockTypeEnum:
-      type: string
-      enum:
-        - input
-        - eval
-    MenuItemTypeEnum:
-      type: string
-      enum:
-        - cocktail
-        - ingredient
-    APIError:
-      required:
-        - type
-        - message
-      properties:
-        type:
-          type: string
-          example: api_error
-        message:
-          type: string
-          example: 'Resource record not found.'
       type: object
     Bar:
       description: 'Details about a bar'
@@ -8165,14 +8113,14 @@ components:
         - name
         - subtitle
         - description
-        - status
-        - access
         - invite_code
+        - status
         - settings
         - search_host
         - search_token
         - created_at
         - updated_at
+        - access
       properties:
         id:
           description: 'Unique number that can be used to reference a specific bar.'
@@ -8215,11 +8163,13 @@ components:
           type:
             - string
             - 'null'
+          example: my.test.com
         search_token:
           description: "Auth token used to access the bar's search engine"
           type:
             - string
             - 'null'
+          example: null
         created_at:
           description: 'Date and time when the bar was created'
           type: string
@@ -8243,6 +8193,12 @@ components:
           description: 'User who last updated the bar'
         access:
           description: 'User access rights for the bar'
+          required:
+            - role_id
+            - can_edit
+            - can_delete
+            - can_activate
+            - can_deactivate
           properties:
             role_id:
               type: integer
@@ -8261,49 +8217,1383 @@ components:
               example: true
           type: object
         images:
+          description: 'Images associated with the bar'
           type: array
           items:
             $ref: '#/components/schemas/Image'
       type: object
-    BarBasic:
+    CalculatorBlock:
+      description: 'Represents a calculator block with basic information'
+      required:
+        - sort
+        - label
+        - variable_name
+        - value
+        - description
+        - settings
+      properties:
+        label:
+          description: 'The label of the block'
+          type: string
+          example: 'Block label'
+        variable_name:
+          description: 'The variable name of the block'
+          type: string
+          example: block_variable_name
+        value:
+          description: 'The value of the block'
+          type: string
+          example: block_value
+        sort:
+          description: 'The sort order of the block'
+          type: integer
+          example: 1
+        type:
+          description: 'The type of the block'
+          type: string
+          example: number
+        description:
+          description: 'The description of the block'
+          type:
+            - string
+            - 'null'
+          example: 'Block description'
+        settings:
+          $ref: '#/components/schemas/CalculatorBlockSettings'
+          description: 'The settings of the block'
+      type: object
+    Calculator:
+      description: 'Represents a calculator with basic information'
+      required:
+        - id
+        - name
+        - blocks
+      properties:
+        id:
+          description: 'The ID of the calculator'
+          type: integer
+          example: 1
+        name:
+          description: 'The name of the calculator'
+          type: string
+          example: 'Calculator name'
+        description:
+          description: 'The description of the calculator'
+          type:
+            - string
+            - 'null'
+          example: 'Calculator description'
+        blocks:
+          description: 'The blocks of the calculator'
+          type: array
+          items:
+            $ref: '#/components/schemas/CalculatorBlock'
+      type: object
+    CocktailBasic:
+      description: 'Minimal cocktail information'
       required:
         - id
         - slug
         - name
-        - subtitle
+      properties:
+        id:
+          description: 'The ID of the cocktail'
+          type: integer
+          example: 1
+        slug:
+          description: 'The slug of the cocktail'
+          type: string
+          example: old-fashioned-1
+        name:
+          description: 'The name of the cocktail'
+          type: string
+          example: 'Old fashioned'
+        short_ingredients:
+          description: 'List of short ingredient names'
+          type: array
+          items:
+            type: string
+            example: Vodka
+        image:
+          $ref: '#/components/schemas/Image'
+      type: object
+    CocktailIngredient:
+      description: 'Cocktail ingredient'
+      required:
+        - ingredient
+        - sort
+        - amount
+        - units
+        - formatted
+        - is_specified
+        - note
+      properties:
+        sort:
+          description: 'Sort order of the ingredient'
+          type: integer
+          example: 1
+        amount:
+          description: 'Amount of the ingredient'
+          type: number
+          format: float
+          example: 30
+        amount_max:
+          description: 'Amount of the ingredient'
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 60
+        units:
+          description: 'Units of the ingredient'
+          type: string
+          example: ml
+        optional:
+          description: 'Is the ingredient optional'
+          type: boolean
+          example: false
+        ingredient:
+          $ref: '#/components/schemas/IngredientBasic'
+          description: 'Ingredient information'
+        substitutes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CocktailIngredientSubstitute'
+            description: 'Substitutes for the ingredient'
+        variants_in_shelf:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientBasic'
+            description: 'Variants of the ingredient in the shelf'
+        note:
+          description: 'Additional notes about the ingredient'
+          type:
+            - string
+            - 'null'
+          example: 'Additional notes'
+        is_specified:
+          description: 'Is the ingredient specified (ignores variants in matching)'
+          type: boolean
+          example: false
+        formatted:
+          description: 'Amounts in different units, converted if possible'
+          required:
+            - ml
+            - oz
+            - cl
+          properties:
+            ml:
+              required:
+                - amount
+                - amount_max
+                - units
+                - full_text
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  example: 30
+                amount_max:
+                  type: number
+                  format: float
+                  example: 60
+                units:
+                  type: string
+                  example: ml
+                full_text:
+                  type: string
+                  example: '30-60 ml'
+              type: object
+            oz:
+              required:
+                - amount
+                - amount_max
+                - units
+                - full_text
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  example: 1
+                amount_max:
+                  type: number
+                  format: float
+                  example: 2
+                units:
+                  type: string
+                  example: oz
+                full_text:
+                  type: string
+                  example: '1-2 oz'
+              type: object
+            cl:
+              required:
+                - amount
+                - amount_max
+                - units
+                - full_text
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  example: 3
+                amount_max:
+                  type: number
+                  format: float
+                  example: 6
+                units:
+                  type: string
+                  example: cl
+                full_text:
+                  type: string
+                  example: '3-6 cl'
+              type: object
+          type: object
+          additionalProperties: true
+        in_shelf:
+          description: "Is the ingredient in the user's shelf"
+          type: boolean
+          example: true
+        in_shelf_as_variant:
+          description: "Is the ingredient in the user's shelf as a variant"
+          type: boolean
+          example: true
+        in_shelf_as_substitute:
+          description: "Is the ingredient in the user's shelf as a substitute"
+          type: boolean
+          example: true
+        in_shelf_as_complex_ingredient:
+          description: "Is the ingredient in the user's shelf as a complex ingredient"
+          type: boolean
+          example: true
+        in_bar_shelf:
+          description: 'Is the ingredient in the bar shelf'
+          type: boolean
+          example: true
+        in_bar_shelf_as_substitute:
+          description: 'Is the ingredient in the bar shelf as a substitute'
+          type: boolean
+          example: true
+        in_bar_shelf_as_complex_ingredient:
+          description: 'Is the ingredient in the bar shelf as a complex ingredient'
+          type: boolean
+          example: true
+        in_bar_shelf_as_variant:
+          description: 'Is the ingredient in the bar shelf as a variant'
+          type: boolean
+          example: true
+      type: object
+    CocktailIngredientSubstitute:
+      description: 'Cocktail ingredient substitute'
+      required:
+        - ingredient
+        - amount
+        - amount_max
+        - units
+        - in_shelf
+        - in_bar_shelf
+      properties:
+        ingredient:
+          $ref: '#/components/schemas/IngredientBasic'
+        amount:
+          type: number
+          example: 30
+        amount_max:
+          type:
+            - number
+            - 'null'
+          example: 60
+        units:
+          type: string
+          example: ml
+        in_shelf:
+          type: boolean
+          example: true
+        in_bar_shelf:
+          type: boolean
+          example: true
+      type: object
+    CocktailMethod:
+      description: 'Cocktail method resource'
+      required:
+        - id
+        - name
+        - dilution_percentage
+      properties:
+        id:
+          description: 'Cocktail method ID'
+          type: integer
+          example: 1
+        name:
+          description: 'Cocktail method name'
+          type: string
+          example: Shake
+        dilution_percentage:
+          description: 'Dilution percentage'
+          type: integer
+          example: 20
+        cocktails_count:
+          description: 'Number of cocktails using this method'
+          type: integer
+          example: 32
+      type: object
+    Cocktail:
+      description: 'Cocktail resource'
+      required:
+        - id
+        - name
+        - slug
+        - garnish
+        - description
+        - instructions
+        - source
+        - public_id
+        - public_at
+        - created_at
+        - updated_at
+        - abv
+      properties:
+        id:
+          description: 'Cocktail ID'
+          type: integer
+          example: 1
+        name:
+          description: 'Cocktail name'
+          type: string
+          example: 'Cocktail name'
+        slug:
+          description: 'Cocktail slug'
+          type: string
+          example: cocktail-name-1
+        instructions:
+          description: 'Cocktail instructions'
+          type: string
+          example: 'Step by step instructions'
+        garnish:
+          description: 'Cocktail garnish'
+          type:
+            - string
+            - 'null'
+          example: Garnish
+        description:
+          description: 'Cocktail description'
+          type:
+            - string
+            - 'null'
+          example: 'Cocktail description'
+        source:
+          description: 'Cocktail source'
+          type:
+            - string
+            - 'null'
+          example: 'Source of the recipe'
+        public_id:
+          description: 'Public ID of the cocktail'
+          type:
+            - string
+            - 'null'
+          example: public-id-1
+        public_at:
+          description: 'Public date of the cocktail'
+          type:
+            - string
+            - 'null'
+          format: date-time
+          example: '2023-10-01T12:00:00Z'
+        images:
+          description: 'Cocktail images'
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+        tags:
+          description: 'Cocktail tags'
+          type: array
+          items:
+            properties:
+              id:
+                description: 'Tag ID'
+                type: integer
+                example: 1
+              name:
+                description: 'Tag name'
+                type: string
+                example: 'Tag name'
+            type: object
+        rating:
+          required:
+            - user
+            - average
+            - total_votes
+          properties:
+            user:
+              description: "Current user's rating"
+              type:
+                - integer
+                - 'null'
+              example: 1
+            average:
+              description: 'Average rating'
+              type: integer
+              example: 4
+            total_votes:
+              type: integer
+              example: 12
+          type: object
+        glass:
+          oneOf:
+            -
+              $ref: '#/components/schemas/Glass'
+              description: 'Cocktail glass'
+            -
+              type: 'null'
+          description: 'Cocktail glass'
+        utensils:
+          description: 'Cocktail utensils'
+          type: array
+          items:
+            $ref: '#/components/schemas/Utensil'
+        ingredients:
+          description: 'Cocktail ingredients'
+          type: array
+          items:
+            $ref: '#/components/schemas/CocktailIngredient'
+        created_at:
+          description: 'Creation date of the cocktail'
+          type: string
+          format: date-time
+          example: '2023-10-01T12:00:00Z'
+        updated_at:
+          description: 'Last update date of the cocktail'
+          type:
+            - string
+            - 'null'
+          format: date-time
+          example: '2023-10-01T12:00:00Z'
+        method:
+          oneOf:
+            -
+              $ref: '#/components/schemas/CocktailMethod'
+              description: 'Cocktail method'
+            -
+              type: 'null'
+          description: 'Cocktail method'
+        abv:
+          description: 'Alcohol by volume (ABV) percentage'
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 0.5
+        volume_ml:
+          description: 'Cocktail volume in milliliters'
+          type: number
+          format: float
+          example: 200
+        alcohol_units:
+          description: 'Alcohol units in the cocktail'
+          type: number
+          format: float
+          example: 1.5
+        calories:
+          description: 'Calories in the cocktail'
+          type: number
+          format: float
+          example: 150
+        created_user:
+          $ref: '#/components/schemas/UserBasic'
+          description: 'User who created the cocktail'
+        updated_user:
+          oneOf:
+            -
+              $ref: '#/components/schemas/UserBasic'
+              description: 'User who last updated the cocktail'
+            -
+              type: 'null'
+          description: 'User who last updated the cocktail'
+        in_shelf:
+          description: "Is the cocktail in the user's shelf"
+          type: boolean
+          example: true
+        in_bar_shelf:
+          description: "Is the cocktail in the bar's shelf"
+          type: boolean
+          example: true
+        is_favorited:
+          description: 'Is the cocktail favorited by the user'
+          type: boolean
+          example: true
+        access:
+          description: 'User access to the cocktail'
+          required:
+            - can_edit
+            - can_delete
+            - can_rate
+            - can_add_note
+          properties:
+            can_edit:
+              description: 'Can the user edit the cocktail'
+              type: boolean
+              example: true
+            can_delete:
+              description: 'Can the user delete the cocktail'
+              type: boolean
+              example: true
+            can_rate:
+              description: 'Can the user rate the cocktail'
+              type: boolean
+              example: true
+            can_add_note:
+              description: 'Can the user add a note to the cocktail'
+              type: boolean
+              example: true
+          type: object
+      type: object
+    Collection:
+      description: 'Collection resource'
+      required:
+        - id
+        - name
+        - description
+        - is_bar_shared
+        - created_at
       properties:
         id:
           type: integer
           example: 1
-        slug:
-          type: string
-          example: bar-name-1
         name:
           type: string
-          example: 'Bar name'
-        subtitle:
-          type: string
-          example: 'Bar subtitle'
+          example: 'Collection name'
+        description:
+          type:
+            - string
+            - 'null'
+          example: 'Collection description'
+        is_bar_shared:
+          type: boolean
+        created_at:
+          format: date-time
+          example: '2023-05-14T21:23:40.000000Z'
+        created_user:
+          $ref: '#/components/schemas/UserBasic'
+        cocktails:
+          type: array
+          items:
+            $ref: '#/components/schemas/CocktailBasic'
       type: object
-    BarMembership:
-      required:
-        - user_id
-        - user_name
-        - bar_id
-        - is_shelf_public
+    Export:
+      description: 'Export resource'
       properties:
-        user_id:
+        id:
           type: integer
           example: 1
-        user_name:
+        filename:
           type: string
-          example: Bartender
-        bar_id:
-          type: integer
-          example: 1
-        is_shelf_public:
+          example: cocktails.csv
+        created_at:
+          type: string
+          format: date-time
+        bar_name:
+          type: string
+          example: 'Bar name'
+        is_done:
           type: boolean
           example: true
+      type: object
+    FeedsRecipe:
+      title: FeedsRecipe
+      description: 'Represents a recipe from an RSS/Atom feed'
+      required:
+        - source
+        - title
+        - link
+        - date
+        - image
+        - description
+      properties:
+        source:
+          description: 'The source of the recipe'
+          type: string
+        title:
+          description: 'The title of the recipe'
+          type: string
+        description:
+          description: 'The description of the recipe'
+          type:
+            - string
+            - 'null'
+        link:
+          description: 'The link to the recipe'
+          type: string
+        date:
+          description: 'The date the recipe was modified'
+          type:
+            - string
+            - 'null'
+          format: date-time
+        image:
+          description: 'The image URL of the recipe'
+          type:
+            - string
+            - 'null'
+      type: object
+    Glass:
+      description: 'Represents glassware'
+      required:
+        - id
+        - name
+        - description
+        - cocktails_count
+        - volume
+        - volume_units
+      properties:
+        id:
+          description: 'The ID of the glassware'
+          type: integer
+          example: 1
+        name:
+          description: 'The name of the glassware'
+          type: string
+          example: Lowball
+        description:
+          description: 'The description of the glassware'
+          type:
+            - string
+            - 'null'
+          example: 'Glass for smaller cocktails'
+        cocktails_count:
+          description: 'The number of cocktails that use this glassware'
+          type: integer
+          example: 32
+        volume:
+          description: 'The volume of the glassware'
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 120
+        volume_units:
+          description: 'The volume units of the glassware'
+          type:
+            - string
+            - 'null'
+          example: ml
+      type: object
+    Image:
+      description: 'Image attached to a specific resource'
+      required:
+        - id
+        - file_path
+        - url
+        - copyright
+        - sort
+        - placeholder_hash
+      properties:
+        id:
+          description: 'The ID of the image'
+          type: integer
+          example: 1
+        file_path:
+          description: 'The file path of the image'
+          type: string
+          example: cocktails/1/image.jpg
+        url:
+          description: 'The URL of the image'
+          type:
+            - string
+            - 'null'
+          example: 'http://example.com/uploads/cocktails/1/image.jpg'
+        thumb_url:
+          description: 'The thumbnail URL of the image'
+          type:
+            - string
+            - 'null'
+          example: 'http://example.com/uploads/cocktails/1/thumb'
+        copyright:
+          description: 'The copyright information of the image'
+          type:
+            - string
+            - 'null'
+          example: 'Image copyright'
+        sort:
+          description: 'The sort order of the image'
+          type: integer
+          example: 1
+        placeholder_hash:
+          description: 'The placeholder hash for the image'
+          type:
+            - string
+            - 'null'
+          example: 1QcSHQRnh493V4dIh4eXh1h4kJUI
+      type: object
+    IngredientBasic:
+      description: 'Minimal ingredient information'
+      required:
+        - id
+        - slug
+        - name
+      properties:
+        id:
+          description: 'The ID of the ingredient'
+          type: integer
+          example: 1
+        slug:
+          description: 'The slug of the ingredient'
+          type: string
+          example: gin-1
+        name:
+          description: 'The name of the ingredient'
+          type: string
+          example: Gin
+        image:
+          $ref: '#/components/schemas/Image'
+          description: 'Main resource image'
+      type: object
+    IngredientPrice:
+      description: 'Ingredient price'
+      required:
+        - price_category
+        - price
+        - amount
+        - units
+        - description
+        - created_at
+        - updated_at
+      properties:
+        price_category:
+          $ref: '#/components/schemas/PriceCategory'
+        price:
+          $ref: '#/components/schemas/Price'
+        amount:
+          type: number
+          example: 30
+        units:
+          type: string
+          example: ml
+        description:
+          type:
+            - string
+            - 'null'
+          example: 'Updated price'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+      type: object
+    Ingredient:
+      description: 'Represents an ingredient'
+      required:
+        - id
+        - slug
+        - name
+        - description
+        - origin
+        - color
+        - created_at
+        - updated_at
+        - strength
+        - hierarchy
+        - materialized_path
+      properties:
+        id:
+          description: 'The ID of the ingredient'
+          type: integer
+          example: 1
+        slug:
+          description: 'The slug of the ingredient'
+          type: string
+          example: vodka
+        name:
+          description: 'The name of the ingredient'
+          type: string
+          example: Vodka
+        strength:
+          description: 'The strength of the ingredient'
+          type: number
+          format: float
+          example: 40
+        description:
+          description: 'The description of the ingredient'
+          type:
+            - string
+            - 'null'
+          example: 'Vodka is a clear distilled alcoholic beverage'
+        origin:
+          description: 'The origin of the ingredient'
+          type:
+            - string
+            - 'null'
+          example: Russia
+        created_at:
+          description: 'The creation date of the ingredient'
+          type: string
+          format: date-time
+          example: '2023-01-01T00:00:00Z'
+        updated_at:
+          description: 'The last update date of the ingredient'
+          type:
+            - string
+            - 'null'
+          format: date-time
+          example: '2023-01-01T00:00:00Z'
+        materialized_path:
+          description: 'The materialized path of the ingredient'
+          type:
+            - string
+            - 'null'
+          example: 1.2.3
+        hierarchy:
+          $ref: '#/components/schemas/IngredientHierarchy'
+          description: 'The hierarchy of the ingredient'
+        images:
+          description: 'The images of the ingredient'
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+        color:
+          description: 'The color of the ingredient'
+          type:
+            - string
+            - 'null'
+          example: '#ffffff'
+        cocktails_count:
+          description: 'The number of cocktails that use this ingredient'
+          type: integer
+          example: 12
+        cocktails_as_substitute_count:
+          description: 'Number of cocktails that use this ingredient as a substitute'
+          type: integer
+          example: 1
+        created_user:
+          $ref: '#/components/schemas/UserBasic'
+          description: 'The user who created the ingredient'
+        updated_user:
+          oneOf:
+            -
+              $ref: '#/components/schemas/UserBasic'
+              description: 'The user who created the ingredient'
+            -
+              type: 'null'
+          description: 'The user who created the ingredient'
+        access:
+          description: 'Access rights for the ingredient'
+          properties:
+            can_edit:
+              description: 'Whether the user can edit the ingredient'
+              type: boolean
+              example: true
+            can_delete:
+              description: 'Whether the user can delete the ingredient'
+              type: boolean
+              example: false
+          type: object
+        in_shelf:
+          description: 'Whether the user has this ingredient in their shelf'
+          type: boolean
+          example: true
+        in_shelf_as_variant:
+          description: 'Whether the user has this ingredient in their shelf as a variant'
+          type: boolean
+          example: true
+        in_bar_shelf:
+          description: 'Whether the bar has this ingredient in their shelf'
+          type: boolean
+          example: true
+        in_bar_shelf_as_variant:
+          description: 'Whether the bar has this ingredient in their shelf as a variant'
+          type: boolean
+          example: true
+        in_shopping_list:
+          description: 'Whether the user has this ingredient in their shopping list'
+          type: boolean
+          example: true
+        used_as_substitute_for:
+          description: 'Ingredients that this ingredient is used as a substitute for'
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientBasic'
+        can_be_substituted_with:
+          description: 'Ingredients that can be substituted with this ingredient'
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientBasic'
+        ingredient_parts:
+          description: 'Parts of this ingredient'
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientBasic'
+        prices:
+          description: 'Prices of the ingredient'
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientPrice'
+        calculator_id:
+          description: 'The calculator ID of the ingredient'
+          type:
+            - integer
+            - 'null'
+          example: 1
+        sugar_g_per_ml:
+          description: 'The sugar content of the ingredient in grams per milliliter'
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 0
+        acidity:
+          description: 'The acidity of the ingredient'
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 0
+        distillery:
+          description: 'The distillery of the ingredient'
+          type:
+            - string
+            - 'null'
+          example: 'Distillery Name'
+        units:
+          description: 'The units of the ingredient'
+          type:
+            - string
+            - 'null'
+          example: ml
+      type: object
+    IngredientTree:
+      description: 'Represents an ingredient tree with its children'
+      required:
+        - ingredient
+        - children
+      properties:
+        ingredient:
+          $ref: '#/components/schemas/IngredientBasic'
+        children:
+          description: 'Recursive list of child ingredients'
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientTree'
+      type: object
+    Menu:
+      description: 'Menu resource'
+      required:
+        - id
+        - is_enabled
+        - created_at
+        - updated_at
+        - categories
+      properties:
+        id:
+          description: 'Menu ID'
+          type: integer
+          example: 1
+        is_enabled:
+          description: 'Is menu enabled'
+          type: boolean
+          example: true
+        created_at:
+          description: 'Creation date'
+          type: string
+          format: date-time
+        updated_at:
+          description: 'Last update date'
+          type:
+            - string
+            - 'null'
+          format: date-time
+        '':
+          type: array
+          items:
+            required:
+              - name
+              - items
+            properties:
+              name:
+                type: string
+                example: 'Category name'
+              items:
+                type: array
+                items:
+                  required: [id, type, sort, price, name, description]
+                  properties: { id: { type: integer, example: 1 }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, name: { description: 'Cocktail name', type: string, example: 'Cocktail name' }, description: { type: [string, 'null'], example: 'Cocktail description' } }
+                  type: object
+            type: object
+      type: object
+    Note:
+      description: 'Note resource'
+      required:
+        - id
+        - note
+        - user_id
+        - created_at
+      properties:
+        id:
+          description: 'Note ID'
+          type: integer
+          example: 1
+        note:
+          description: 'Note text'
+          type: string
+          example: 'Note text'
+        user_id:
+          description: 'User ID'
+          type: integer
+          example: 1
+        created_at:
+          description: 'Creation date and time'
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00+00:00'
+      type: object
+    OauthCredential:
+      description: 'OAuth Credential information'
+      required:
+        - provider
+        - created_at
+        - updated_at
+      properties:
+        provider:
+          $ref: '#/components/schemas/SSOProvider'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+      type: object
+    PersonalAccessToken:
+      description: 'Personal Access Token'
+      required:
+        - id
+        - name
+        - abilities
+        - last_used_at
+        - created_at
+        - expires_at
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: user_generated
+        abilities:
+          type: array
+          items:
+            type: string
+          example:
+            - cocktails.read
+            - cocktails.write
+            - ingredients.read
+            - ingredients.write
+        last_used_at:
+          type: string
+          format: date-time
+          example: '2023-05-14T21:23:40.000000Z'
+        created_at:
+          type: string
+          format: date-time
+          example: '2023-05-14T21:23:40.000000Z'
+        expires_at:
+          type: string
+          format: date-time
+          example: '2023-05-14T21:23:40.000000Z'
+      type: object
+    PriceCategory:
+      description: 'Price category'
+      required:
+        - id
+        - name
+        - description
+        - currency
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Amazon (DE)'
+        description:
+          type:
+            - string
+            - 'null'
+          example: 'Current price on amazon.de'
+        currency:
+          type: string
+          format: 'ISO 4217'
+          example: EUR
+        currency_symbol:
+          type: string
+          example: €
+      type: object
+    Price:
+      description: 'Schema representing a price'
+      required:
+        - price
+        - price_minor
+        - formatted_price
+        - currency
+      properties:
+        price:
+          description: 'Price in major units (e.g., euros)'
+          type: number
+          example: 13.39
+        price_minor:
+          description: 'Price in minor units (e.g., cents)'
+          type: integer
+          example: 1339
+        formatted_price:
+          description: 'Pretty formatted price string'
+          type: string
+          example: 'EUR 13.39'
+        currency:
+          description: 'Currency code in ISO 4217 format'
+          type: string
+          example: EUR
+      type: object
+    Profile:
+      description: 'User profile resource'
+      required:
+        - id
+        - name
+        - email
+        - is_subscribed
+        - memberships
+        - oauth_credentials
+        - settings
+      properties:
+        id:
+          type: string
+          example: 1
+        name:
+          type: string
+          example: Floral
+        email:
+          description: 'User email'
+          type: string
+          example: example@example.com
+        is_subscribed:
+          description: 'Is user subscribed'
+          type: boolean
+          example: true
+        memberships:
+          description: 'User memberships'
+          type: array
+          items:
+            $ref: '#/components/schemas/BarMembership'
+        oauth_credentials:
+          description: 'OAuth credentials'
+          type: array
+          items:
+            $ref: '#/components/schemas/OauthCredential'
+        settings:
+          $ref: '#/components/schemas/ProfileSettings'
+      type: object
+    SSOProvider:
+      description: 'SSO Provider information'
+      required:
+        - name
+        - display_name
+        - enabled
+      properties:
+        name:
+          type: string
+          example: github
+        display_name:
+          type: string
+          example: GitHub
+        enabled:
+          description: 'Whether the provider is configured and enabled by server'
+          type: boolean
+          example: true
+      type: object
+    Tag:
+      description: 'Represents a tag with basic information'
+      required:
+        - id
+        - name
+        - cocktails_count
+      properties:
+        id:
+          description: 'The ID of the tag'
+          type: integer
+          example: 1
+        name:
+          description: 'The name of the tag'
+          type: string
+          example: Floral
+        cocktails_count:
+          description: 'The number of cocktails associated with the tag'
+          type: integer
+          example: 12
+      type: object
+    Token:
+      description: 'Auth token resource'
+      required:
+        - token
+      properties:
+        token:
+          description: 'Access token'
+          type: string
+          example: 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII
+      type: object
+    UserBasic:
+      description: 'Represents a user with basic information'
+      required:
+        - id
+        - name
+      properties:
+        id:
+          description: 'The ID of the user'
+          type: integer
+          example: 1
+        name:
+          description: 'The name of the user'
+          type: string
+          example: Bartender
+      type: object
+    User:
+      description: 'Represents a user in current bar'
+      required:
+        - id
+        - name
+        - email
+        - is_subscribed
+        - role
+      properties:
+        id:
+          description: 'User ID'
+          type: integer
+          example: 1
+        name:
+          description: 'User name'
+          type: string
+          example: Bartender
+        email:
+          description: 'User email'
+          type: string
+          example: test@email.com
+        is_subscribed:
+          description: 'Subscription status'
+          type: boolean
+          example: true
+        role:
+          required:
+            - bar_id
+            - role_id
+            - role_name
+          properties:
+            bar_id:
+              description: 'Bar ID'
+              type: integer
+              example: 1
+            role_id:
+              description: 'Role ID'
+              type:
+                - integer
+                - 'null'
+              example: 1
+            role_name:
+              description: 'Role name'
+              type:
+                - string
+                - 'null'
+              example: Admin
+          type: object
+      type: object
+    ShoppingList:
+      description: 'Shopping list resource'
+      required:
+        - ingredient
+        - quantity
+      properties:
+        ingredient:
+          $ref: '#/components/schemas/IngredientBasic'
+        quantity:
+          type:
+            - integer
+            - 'null'
+          example: 3
+      type: object
+    Utensil:
+      description: 'Represents a utensil with basic information'
+      required:
+        - id
+        - name
+        - description
+      properties:
+        id:
+          description: 'The ID of the utensil'
+          type: integer
+          example: 1
+        name:
+          description: 'The name of the utensil'
+          type: string
+          example: Shaker
+        description:
+          description: 'The description of the utensil'
+          type:
+            - string
+            - 'null'
+          example: 'Used to shake ingredients'
+      type: object
+    AbilityEnum:
+      type: string
+      enum:
+        - cocktails.read
+        - cocktails.write
+        - ingredients.read
+        - ingredients.write
+        - bars.read
+        - bars.write
+    BarStatusEnum:
+      type: string
+      enum:
+        - provisioning
+        - active
+        - deactivated
+    CalculatorBlockTypeEnum:
+      type: string
+      enum:
+        - input
+        - eval
+    MenuItemTypeEnum:
+      type: string
+      enum:
+        - cocktail
+        - ingredient
+    CalculatorResult:
+      required:
+        - inputs
+        - results
+      properties:
+        inputs:
+          description: string>
+          type: object
+          additionalProperties:
+            type: string
+        results:
+          description: string>
+          type: object
+          additionalProperties:
+            type: string
+      type: object
+    APIError:
+      required:
+        - type
+        - message
+      properties:
+        type:
+          type: string
+          example: api_error
+        message:
+          type: string
+          example: 'Resource record not found.'
       type: object
     BarRequest:
       required:
@@ -8494,59 +9784,6 @@ components:
                 example: 42
             type: object
       type: object
-    Calculator:
-      required:
-        - id
-        - name
-        - blocks
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: 'Calculator name'
-        description:
-          type:
-            - string
-            - 'null'
-          example: 'Calculator description'
-        blocks:
-          type: array
-          items:
-            $ref: '#/components/schemas/CalculatorBlock'
-      type: object
-    CalculatorBlock:
-      required:
-        - sort
-        - label
-        - variable_name
-        - value
-        - description
-        - settings
-      properties:
-        sort:
-          type: integer
-          example: 1
-        label:
-          type: string
-          example: 'Short label'
-        variable_name:
-          type: string
-          example: var-name
-        value:
-          type: string
-          example: 'sugar * 2'
-        type:
-          $ref: '#/components/schemas/CalculatorBlockTypeEnum'
-        description:
-          type:
-            - string
-            - 'null'
-          example: 'Short description'
-        settings:
-          $ref: '#/components/schemas/CalculatorBlockSettings'
-      type: object
     CalculatorBlockRequest:
       required:
         - label
@@ -8603,22 +9840,6 @@ components:
             - string
             - 'null'
       type: object
-    CalculatorResult:
-      required:
-        - inputs
-        - results
-      properties:
-        inputs:
-          description: string>
-          type: object
-          additionalProperties:
-            type: string
-        results:
-          description: string>
-          type: object
-          additionalProperties:
-            type: string
-      type: object
     CalculatorSolveRequest:
       required:
         - inputs
@@ -8627,220 +9848,6 @@ components:
           type: object
           additionalProperties:
             type: string
-      type: object
-    Cocktail:
-      required:
-        - id
-        - name
-        - slug
-        - garnish
-        - description
-        - instructions
-        - source
-        - public_id
-        - public_at
-        - created_at
-        - updated_at
-        - abv
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: 'Cocktail name'
-        slug:
-          type: string
-          example: cocktail-name-1
-        instructions:
-          type: string
-          example: 'Step by step instructions'
-        garnish:
-          type:
-            - string
-            - 'null'
-          example: Garnish
-        description:
-          type:
-            - string
-            - 'null'
-          example: 'Cocktail description'
-        source:
-          type:
-            - string
-            - 'null'
-          example: 'Source of the recipe'
-        public_id:
-          type:
-            - string
-            - 'null'
-          example: public-id-1
-        public_at:
-          type:
-            - string
-            - 'null'
-          format: date-time
-        images:
-          type: array
-          items:
-            $ref: '#/components/schemas/Image'
-        tags:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-                example: 1
-              name:
-                type: string
-                example: 'Tag name'
-            type: object
-        rating:
-          required:
-            - user
-            - average
-            - total_votes
-          properties:
-            user:
-              description: "Current user's rating"
-              type:
-                - integer
-                - 'null'
-              example: 1
-            average:
-              description: 'Average rating'
-              type: integer
-              example: 4
-            total_votes:
-              type: integer
-              example: 12
-          type: object
-        glass:
-          oneOf:
-            -
-              $ref: '#/components/schemas/Glass'
-            -
-              type: 'null'
-        utensils:
-          type: array
-          items:
-            $ref: '#/components/schemas/Utensil'
-        ingredients:
-          type: array
-          items:
-            $ref: '#/components/schemas/CocktailIngredient'
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type:
-            - string
-            - 'null'
-          format: date-time
-        method:
-          oneOf:
-            -
-              $ref: '#/components/schemas/CocktailMethod'
-            -
-              type: 'null'
-        abv:
-          type:
-            - number
-            - 'null'
-          format: float
-          example: 40
-        volume_ml:
-          type:
-            - number
-            - 'null'
-          format: float
-          example: 67.5
-        alcohol_units:
-          type:
-            - number
-            - 'null'
-          format: float
-          example: 25.5
-        calories:
-          type:
-            - integer
-            - 'null'
-          example: 350
-        created_user:
-          $ref: '#/components/schemas/UserBasic'
-        updated_user:
-          oneOf:
-            -
-              $ref: '#/components/schemas/UserBasic'
-            -
-              type: 'null'
-        in_shelf:
-          type: boolean
-        in_bar_shelf:
-          type: boolean
-        is_favorited:
-          type: boolean
-        access:
-          required:
-            - can_edit
-            - can_delete
-            - can_rate
-            - can_add_note
-          properties:
-            can_edit:
-              type: boolean
-              example: true
-            can_delete:
-              type: boolean
-              example: true
-            can_rate:
-              type: boolean
-              example: true
-            can_add_note:
-              type: boolean
-              example: true
-          type: object
-        navigation:
-          required:
-            - prev
-            - next
-          properties:
-            prev:
-              type:
-                - string
-                - 'null'
-              example: old-fashioned-1
-            next:
-              type:
-                - string
-                - 'null'
-              example: tom-collins-1
-          type: object
-      type: object
-    CocktailBasic:
-      description: 'Minimal cocktail information'
-      required:
-        - id
-        - slug
-        - name
-      properties:
-        id:
-          type: integer
-          example: 1
-        slug:
-          type: string
-          example: old-fashioned-1
-        name:
-          type: string
-          example: 'Old fashioned'
-        short_ingredients:
-          type: array
-          items:
-            type: string
-            example: Vodka
-        image:
-          $ref: '#/components/schemas/Image'
-          description: 'Main resource image'
       type: object
     CocktailExplore:
       properties:
@@ -8939,151 +9946,6 @@ components:
           format: float
           example: 40
       type: object
-    CocktailIngredient:
-      required:
-        - ingredient
-        - sort
-        - amount
-        - units
-        - formatted
-      properties:
-        ingredient:
-          $ref: '#/components/schemas/IngredientBasic'
-        sort:
-          type: integer
-          example: 0
-        amount:
-          type: number
-          format: float
-          example: 30
-        amount_max:
-          type:
-            - number
-            - 'null'
-          format: float
-          example: 60
-        units:
-          type: string
-          example: ml
-        optional:
-          type: boolean
-          example: false
-        is_specified:
-          type: boolean
-          example: false
-        substitutes:
-          type: array
-          items:
-            $ref: '#/components/schemas/CocktailIngredientSubstitute'
-        variants_in_shelf:
-          type: array
-          items:
-            $ref: '#/components/schemas/IngredientBasic'
-        note:
-          type:
-            - string
-            - 'null'
-          example: 'Additional notes'
-        formatted:
-          description: 'Amounts in different units, converted if possible'
-          required:
-            - ml
-            - oz
-            - cl
-          properties:
-            ml:
-              required:
-                - amount
-                - amount_max
-                - units
-                - full_text
-              properties:
-                amount:
-                  type: number
-                  format: float
-                  example: 30
-                amount_max:
-                  type: number
-                  format: float
-                  example: 60
-                units:
-                  type: string
-                  example: ml
-                full_text:
-                  type: string
-                  example: '30-60 ml'
-              type: object
-            oz:
-              required:
-                - amount
-                - amount_max
-                - units
-                - full_text
-              properties:
-                amount:
-                  type: number
-                  format: float
-                  example: 1
-                amount_max:
-                  type: number
-                  format: float
-                  example: 2
-                units:
-                  type: string
-                  example: oz
-                full_text:
-                  type: string
-                  example: '1-2 oz'
-              type: object
-            cl:
-              required:
-                - amount
-                - amount_max
-                - units
-                - full_text
-              properties:
-                amount:
-                  type: number
-                  format: float
-                  example: 3
-                amount_max:
-                  type: number
-                  format: float
-                  example: 6
-                units:
-                  type: string
-                  example: cl
-                full_text:
-                  type: string
-                  example: '3-6 cl'
-              type: object
-          type: object
-          additionalProperties: true
-        in_shelf:
-          type: boolean
-          example: true
-        in_shelf_as_variant:
-          type: boolean
-          example: true
-        in_shelf_as_substitute:
-          type: boolean
-          example: true
-        in_shelf_as_complex_ingredient:
-          type: boolean
-          example: true
-        in_bar_shelf:
-          type: boolean
-          example: true
-        in_bar_shelf_as_substitute:
-          type: boolean
-          example: true
-        in_bar_shelf_as_complex_ingredient:
-          type: boolean
-          example: true
-        in_bar_shelf_as_variant:
-          type: boolean
-          example: true
-      type: object
     CocktailIngredientRequest:
       required:
         - ingredient_id
@@ -9125,41 +9987,6 @@ components:
             - string
             - 'null'
       type: object
-    CocktailIngredientSubstitute:
-      required:
-        - ingredient
-        - amount
-        - amount_max
-        - units
-        - in_shelf
-        - in_bar_shelf
-      properties:
-        ingredient:
-          $ref: '#/components/schemas/IngredientBasic'
-        amount:
-          type:
-            - number
-            - 'null'
-          format: float
-          example: 30
-        amount_max:
-          type:
-            - number
-            - 'null'
-          format: float
-          example: 60
-        units:
-          type:
-            - string
-            - 'null'
-          example: ml
-        in_shelf:
-          type: boolean
-          example: true
-        in_bar_shelf:
-          type: boolean
-          example: true
-      type: object
     CocktailIngredientSubstituteRequest:
       required:
         - ingredient_id
@@ -9183,26 +10010,6 @@ components:
             - string
             - 'null'
           example: ml
-      type: object
-    CocktailMethod:
-      required:
-        - id
-        - name
-        - dilution_percentage
-        - cocktails_count
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: Shake
-        dilution_percentage:
-          type: integer
-          example: 20
-        cocktails_count:
-          type: integer
-          example: 32
       type: object
     CocktailMethodRequest:
       required:
@@ -9309,38 +10116,6 @@ components:
           items:
             type: integer
       type: object
-    Collection:
-      required:
-        - id
-        - name
-        - description
-        - is_bar_shared
-        - created_at
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: 'Collection name'
-        description:
-          type:
-            - string
-            - 'null'
-          example: 'Collection description'
-        is_bar_shared:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-          example: '2023-05-14T21:23:40.000000Z'
-        created_user:
-          $ref: '#/components/schemas/UserBasic'
-        cocktails:
-          type: array
-          items:
-            $ref: '#/components/schemas/CocktailBasic'
-      type: object
     CollectionRequest:
       required:
         - name
@@ -9359,25 +10134,6 @@ components:
           type: array
           items:
             type: integer
-      type: object
-    Export:
-      properties:
-        id:
-          type: integer
-          example: 1
-        filename:
-          type: string
-          example: cocktails.csv
-        created_at:
-          type: string
-          format: date-time
-          example: '2023-05-14T21:23:40.000000Z'
-        bar_name:
-          type: string
-          example: 'Bar name'
-        is_done:
-          type: boolean
-          example: true
       type: object
     ExportRequest:
       properties:
@@ -9400,41 +10156,6 @@ components:
         expires:
           type: string
           example: '2024-08-12T16:40:26+00:00'
-      type: object
-    Glass:
-      required:
-        - id
-        - name
-        - description
-        - cocktails_count
-        - volume
-        - volume_units
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: Lowball
-        description:
-          type:
-            - string
-            - 'null'
-          example: 'Glass for smaller cocktails'
-        cocktails_count:
-          type: integer
-          example: 32
-        volume:
-          type:
-            - number
-            - 'null'
-          format: float
-          example: 120
-        volume_units:
-          type:
-            - string
-            - 'null'
-          example: ml
       type: object
     GlassRequest:
       required:
@@ -9460,42 +10181,6 @@ components:
             - 'null'
           example: ml
       type: object
-    Image:
-      description: 'Image attached to a specific resource'
-      required:
-        - id
-        - file_path
-        - url
-        - copyright
-        - sort
-        - placeholder_hash
-      properties:
-        id:
-          type: integer
-          example: 1
-        file_path:
-          type: string
-          example: cocktails/1/image.jpg
-        url:
-          type: string
-          example: 'http://example.com/uploads/cocktails/1/image.jpg'
-        thumb_url:
-          type: string
-          example: 'http://example.com/uploads/cocktails/1/thumb'
-        copyright:
-          type:
-            - string
-            - 'null'
-          example: 'Image copyright'
-        sort:
-          type: integer
-          example: 1
-        placeholder_hash:
-          type:
-            - string
-            - 'null'
-          example: 1QcSHQRnh493V4dIh4eXh1h4kJUI
-      type: object
     ImageRequest:
       required:
         - image
@@ -9520,171 +10205,6 @@ components:
             - string
             - 'null'
           example: 'Image copyright'
-      type: object
-    Ingredient:
-      required:
-        - id
-        - slug
-        - name
-        - description
-        - origin
-        - color
-        - created_at
-        - updated_at
-        - strength
-        - hierarchy
-        - materialized_path
-      properties:
-        id:
-          type: integer
-          example: 1
-        slug:
-          type: string
-          example: gin-1
-        name:
-          type: string
-          example: Gin
-        strength:
-          type: number
-          format: float
-          example: 40
-        description:
-          type:
-            - string
-            - 'null'
-          example: 'Gin is a type of alcoholic spirit'
-        origin:
-          type:
-            - string
-            - 'null'
-          example: Worldwide
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type:
-            - string
-            - 'null'
-          format: date-time
-        materialized_path:
-          type:
-            - string
-            - 'null'
-        images:
-          type: array
-          items:
-            $ref: '#/components/schemas/Image'
-        color:
-          type: string
-          example: '#ffffff'
-        cocktails_count:
-          type: integer
-          example: 12
-        cocktails_as_substitute_count:
-          description: 'Number of cocktails that use this ingredient as a substitute'
-          type: integer
-          example: 1
-        cocktails:
-          type: array
-          items:
-            properties:
-              id:
-                type: integer
-                example: 1
-              slug:
-                type: string
-                example: old-fashioned-1
-              name:
-                type: string
-                example: 'Old fashioned'
-            type: object
-        created_user:
-          $ref: '#/components/schemas/UserBasic'
-        hierarchy:
-          $ref: '#/components/schemas/IngredientHierarchy'
-        updated_user:
-          oneOf:
-            -
-              $ref: '#/components/schemas/UserBasic'
-            -
-              type: 'null'
-        access:
-          properties:
-            can_edit:
-              type: boolean
-              example: true
-            can_delete:
-              type: boolean
-              example: true
-          type: object
-        ingredient_parts:
-          type: array
-          items:
-            $ref: '#/components/schemas/IngredientBasic'
-        prices:
-          type: array
-          items:
-            $ref: '#/components/schemas/IngredientPrice'
-        in_shelf:
-          type: boolean
-        in_shelf_as_variant:
-          type: boolean
-        in_bar_shelf:
-          type: boolean
-        in_shopping_list:
-          type: boolean
-        in_bar_shelf_as_variant:
-          type: boolean
-        used_as_substitute_for:
-          type: array
-          items:
-            $ref: '#/components/schemas/IngredientBasic'
-        can_be_substituted_with:
-          type: array
-          items:
-            $ref: '#/components/schemas/IngredientBasic'
-        calculator_id:
-          type:
-            - integer
-            - 'null'
-        sugar_g_per_ml:
-          type:
-            - number
-            - 'null'
-          format: float
-        acidity:
-          type:
-            - number
-            - 'null'
-          format: float
-        distillery:
-          type:
-            - string
-            - 'null'
-        units:
-          type:
-            - string
-            - 'null'
-      type: object
-    IngredientBasic:
-      description: 'Minimal ingredient information'
-      required:
-        - id
-        - slug
-        - name
-      properties:
-        id:
-          type: integer
-          example: 1
-        slug:
-          type: string
-          example: gin-1
-        name:
-          type: string
-          example: Gin
-        image:
-          $ref: '#/components/schemas/Image'
-          description: 'Main resource image'
       type: object
     IngredientHierarchy:
       description: 'Ingredient hierarchy'
@@ -9712,41 +10232,6 @@ components:
           type:
             - string
             - 'null'
-      type: object
-    IngredientPrice:
-      required:
-        - price_category
-        - price
-        - amount
-        - units
-        - description
-        - created_at
-        - updated_at
-      properties:
-        price_category:
-          $ref: '#/components/schemas/PriceCategory'
-        price:
-          $ref: '#/components/schemas/Price'
-        amount:
-          type: number
-          format: float
-          example: 30
-        units:
-          type: string
-          example: ml
-        description:
-          type:
-            - string
-            - 'null'
-          example: 'Updated price'
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type:
-            - string
-            - 'null'
-          format: date-time
       type: object
     IngredientPriceRequest:
       required:
@@ -9856,17 +10341,6 @@ components:
             - 'null'
           example: ml
       type: object
-    IngredientTree:
-      required:
-        - ingredient
-      properties:
-        ingredient:
-          $ref: '#/components/schemas/IngredientBasic'
-        children:
-          type: array
-          items:
-            $ref: '#/components/schemas/IngredientTree'
-      type: object
     LoginRequest:
       required:
         - email
@@ -9884,45 +10358,6 @@ components:
             - string
             - 'null'
           example: 'My device'
-      type: object
-    Menu:
-      required:
-        - id
-        - is_enabled
-        - created_at
-        - updated_at
-        - categories
-      properties:
-        id:
-          type: integer
-          example: 1
-        is_enabled:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type:
-            - string
-            - 'null'
-          format: date-time
-        categories:
-          type: array
-          items:
-            required:
-              - name
-              - items
-            properties:
-              name:
-                type: string
-                example: 'Category name'
-              items:
-                type: array
-                items:
-                  required: [id, type, sort, price, name, description]
-                  properties: { id: { type: integer, example: 1 }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, name: { type: string, example: 'Cocktail name' }, description: { type: string } }
-                  type: object
-            type: object
       type: object
     MenuExplore:
       required:
@@ -10007,22 +10442,6 @@ components:
                 example: EUR
             type: object
       type: object
-    Note:
-      properties:
-        id:
-          type: integer
-          example: 1
-        note:
-          type: string
-          example: 'Note text'
-        user_id:
-          type: integer
-          example: 1
-        created_at:
-          type: string
-          format: date-time
-          example: '2022-01-01T00:00:00+00:00'
-      type: object
     NoteRequest:
       required:
         - note
@@ -10038,33 +10457,6 @@ components:
         resource:
           type: string
           example: cocktail
-      type: object
-    PersonalAccessToken:
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: user_generated
-        abilities:
-          type: array
-          items:
-            type: string
-          example:
-            - cocktails.read
-            - cocktails.write
-            - ingredients.read
-            - ingredients.write
-        last_used_at:
-          type: string
-          example: '2023-05-14T21:23:40.000000Z'
-        created_at:
-          type: string
-          example: '2023-05-14T21:23:40.000000Z'
-        expires_at:
-          type: string
-          example: '2023-05-14T21:23:40.000000Z'
       type: object
     PersonalAccessTokenRequest:
       required:
@@ -10085,53 +10477,6 @@ components:
             - 'null'
           example: '2023-05-14T21:23:40.000000Z'
       type: object
-    Price:
-      required:
-        - price
-        - price_minor
-        - formatted_price
-        - currency
-      properties:
-        price:
-          type: number
-          format: float
-          example: 13.39
-        price_minor:
-          type: integer
-          example: 1339
-        formatted_price:
-          type: string
-          example: 'EUR 13.39'
-        currency:
-          type: string
-          example: EUR
-      type: object
-    PriceCategory:
-      required:
-        - id
-        - name
-        - description
-        - currency
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: 'Amazon (DE)'
-        description:
-          type:
-            - string
-            - 'null'
-          example: 'Current price on amazon.de'
-        currency:
-          type: string
-          format: 'ISO 4217'
-          example: EUR
-        currency_symbol:
-          type: string
-          example: €
-      type: object
     PriceCategoryRequest:
       required:
         - name
@@ -10149,42 +10494,6 @@ components:
           type: string
           format: 'ISO 4217'
           example: EUR
-      type: object
-    Profile:
-      required:
-        - id
-        - name
-        - email
-        - is_subscribed
-        - memberships
-        - oauth_credentials
-        - settings
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: Floral
-        email:
-          type: string
-          example: example@example.com
-        is_subscribed:
-          type: boolean
-        memberships:
-          type: array
-          items:
-            $ref: '#/components/schemas/BarMembership'
-        oauth_credentials:
-          type: array
-          items:
-            $ref: '#/components/schemas/OauthCredential'
-        settings:
-          oneOf:
-            -
-              $ref: '#/components/schemas/ProfileSettings'
-            -
-              type: 'null'
       type: object
     ProfileRequest:
       required:
@@ -10253,7 +10562,6 @@ components:
         - search_version
         - latest_version
         - is_latest
-        - type
         - is_feeds_enabled
         - is_password_login_enabled
       properties:
@@ -10288,17 +10596,6 @@ components:
           description: 'Whether password login is enabled'
           type: boolean
           example: true
-      type: object
-    ShoppingList:
-      required:
-        - ingredient
-        - quantity
-      properties:
-        ingredient:
-          $ref: '#/components/schemas/IngredientBasic'
-        quantity:
-          type: integer
-          example: 3
       type: object
     ShoppingListRequest:
       required:
@@ -10367,22 +10664,6 @@ components:
           items:
             $ref: '#/components/schemas/Transaction'
       type: object
-    Tag:
-      required:
-        - id
-        - name
-        - cocktails_count
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: Floral
-        cocktails_count:
-          type: integer
-          example: 12
-      type: object
     TagRequest:
       required:
         - name
@@ -10390,12 +10671,6 @@ components:
         name:
           type: string
           example: Floral
-      type: object
-    Token:
-      properties:
-        token:
-          type: string
-          example: 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII
       type: object
     Transaction:
       properties:
@@ -10423,44 +10698,6 @@ components:
             - string
             - 'null'
           format: date-time
-      type: object
-    User:
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: Bartender
-        email:
-          type: string
-          example: admin@example.com
-        is_subscribed:
-          type: boolean
-        role:
-          properties:
-            bar_id:
-              type: integer
-              example: 1
-            role_id:
-              type: integer
-              example: 1
-            role_name:
-              type: string
-              example: Admin
-          type: object
-      type: object
-    UserBasic:
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: Bartender
       type: object
     UserRequest:
       required:
@@ -10512,24 +10749,6 @@ components:
               $ref: '#/components/schemas/Subscription'
             -
               type: 'null'
-      type: object
-    Utensil:
-      required:
-        - id
-        - name
-        - description
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: Shaker
-        description:
-          type:
-            - string
-            - 'null'
-          example: 'Used to shake ingredients'
       type: object
     UtensilRequest:
       required:

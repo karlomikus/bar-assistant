@@ -24,7 +24,7 @@ class ShoppingListController extends Controller
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\ShoppingList::class),
+        new BAO\WrapItemsWithData(UserShoppingListResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     public function index(Request $request, int $id): JsonResource

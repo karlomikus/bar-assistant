@@ -31,7 +31,7 @@ class AuthController extends Controller
         ]
     ), security: [])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Token::class),
+        new BAO\WrapObjectWithData(TokenResource::class),
     ])]
     #[OAT\Response(response: 400, description: 'Unable to authenticate. Possible reasons: invalid credentials, unconfirmed account or disabled password login')]
     public function authenticate(Request $request): JsonResource
@@ -90,7 +90,7 @@ class AuthController extends Controller
         ]
     ), security: [])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Profile::class),
+        new BAO\WrapObjectWithData(ProfileResource::class),
     ])]
     #[BAO\NotFoundResponse]
     public function register(RegisterRequest $req): JsonResource

@@ -22,7 +22,7 @@ class TagController extends Controller
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\Tag::class),
+        new BAO\WrapItemsWithData(TagResource::class),
     ])]
     public function index(): JsonResource
     {
@@ -35,7 +35,7 @@ class TagController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Tag::class),
+        new BAO\WrapObjectWithData(TagResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -59,7 +59,7 @@ class TagController extends Controller
         ]
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Tag::class),
+        new BAO\WrapObjectWithData(TagResource::class),
     ], headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
@@ -90,7 +90,7 @@ class TagController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Tag::class),
+        new BAO\WrapObjectWithData(TagResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]

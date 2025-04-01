@@ -34,7 +34,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PerPageParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\IngredientBasic::class),
+        new BAO\PaginateData(IngredientBasicResource::class),
     ])]
     public function ingredients(Request $request, int $id): JsonResource
     {
@@ -62,7 +62,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PerPageParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
+        new BAO\PaginateData(CocktailBasicResource::class),
     ])]
     public function cocktails(CocktailRepository $cocktailRepo, Request $request, int $id): JsonResource
     {
@@ -92,7 +92,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PerPageParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
+        new BAO\PaginateData(CocktailBasicResource::class),
     ])]
     public function favorites(Request $request, int $id): JsonResource
     {
@@ -230,7 +230,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PerPageParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\IngredientBasic::class),
+        new BAO\PaginateData(IngredientBasicResource::class),
     ])]
     public function barIngredients(Request $request, int $id): JsonResource
     {
@@ -326,7 +326,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PerPageParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
+        new BAO\PaginateData(CocktailBasicResource::class),
     ])]
     public function barCocktails(CocktailRepository $cocktailRepo, Request $request, int $id): JsonResource
     {

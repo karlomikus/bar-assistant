@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kami\Cocktail\OpenAPI\Schemas;
+namespace Kami\Cocktail\Models\ValueObjects;
 
 use OpenApi\Attributes as OAT;
 

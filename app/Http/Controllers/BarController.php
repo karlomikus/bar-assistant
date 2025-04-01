@@ -30,7 +30,7 @@ class BarController extends Controller
 {
     #[OAT\Get(path: '/bars', tags: ['Bars'], summary: 'List bars', operationId: 'listBars', description: 'Show a list of bars user has access to. Includes bars that user has made and bars he is a member of.')]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\Bar::class),
+        new BAO\WrapItemsWithData(BarResource::class),
     ])]
     public function index(Request $request): JsonResource
     {
@@ -47,7 +47,7 @@ class BarController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Bar::class),
+        new BAO\WrapObjectWithData(BarResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -80,7 +80,7 @@ class BarController extends Controller
         ]
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Bar::class),
+        new BAO\WrapObjectWithData(BarResource::class),
     ], headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
@@ -156,7 +156,7 @@ class BarController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Bar::class),
+        new BAO\WrapObjectWithData(BarResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -246,7 +246,7 @@ class BarController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Bar::class),
+        new BAO\WrapObjectWithData(BarResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -305,7 +305,7 @@ class BarController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\BarMembership::class),
+        new BAO\WrapObjectWithData(BarMembershipResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]

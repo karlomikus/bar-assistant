@@ -4,11 +4,78 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
+use OpenApi\Attributes as OAT;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * @mixin \Kami\Cocktail\Models\CocktailIngredient
  */
+#[OAT\Schema(
+    schema: 'CocktailIngredient',
+    description: 'Cocktail ingredient',
+    properties: [
+        new OAT\Property(property: 'sort', type: 'integer', example: 1, description: 'Sort order of the ingredient'),
+        new OAT\Property(property: 'amount', type: 'number', example: 30, format: 'float', description: 'Amount of the ingredient'),
+        new OAT\Property(property: 'amount_max', type: 'number', example: 60, format: 'float', description: 'Amount of the ingredient', nullable: true),
+        new OAT\Property(property: 'units', type: 'string', example: 'ml', description: 'Units of the ingredient'),
+        new OAT\Property(property: 'optional', type: 'boolean', example: false, description: 'Is the ingredient optional'),
+        new OAT\Property(property: 'ingredient', type: IngredientBasicResource::class, description: 'Ingredient information'),
+        new OAT\Property(
+            property: 'substitutes',
+            type: 'array',
+            items: new OAT\Items(
+                type: CocktailIngredientSubstituteResource::class,
+                description: 'Substitutes for the ingredient'
+            )
+        ),
+        new OAT\Property(
+            property: 'variants_in_shelf',
+            type: 'array',
+            items: new OAT\Items(
+                type: IngredientBasicResource::class,
+                description: 'Variants of the ingredient in the shelf'
+            )
+        ),
+        new OAT\Property(property: 'note', type: 'string', example: 'Additional notes', description: 'Additional notes about the ingredient', nullable: true),
+        new OAT\Property(property: 'is_specified', type: 'boolean', example: false, description: 'Is the ingredient specified (ignores variants in matching)'),
+        new OAT\Property(
+            property: 'formatted',
+            type: 'object',
+            required: ['ml', 'oz', 'cl'],
+            properties: [
+                new OAT\Property('ml', type: 'object', required: ['amount', 'amount_max', 'units', 'full_text'], properties: [
+                    new OAT\Property('amount', type: 'number', format: 'float', example: 30),
+                    new OAT\Property('amount_max', type: 'number', format: 'float', example: 60),
+                    new OAT\Property('units', type: 'string', example: 'ml'),
+                    new OAT\Property('full_text', type: 'string', example: '30-60 ml'),
+                ]),
+                new OAT\Property('oz', type: 'object', required: ['amount', 'amount_max', 'units', 'full_text'], properties: [
+                    new OAT\Property('amount', type: 'number', format: 'float', example: 1),
+                    new OAT\Property('amount_max', type: 'number', format: 'float', example: 2),
+                    new OAT\Property('units', type: 'string', example: 'oz'),
+                    new OAT\Property('full_text', type: 'string', example: '1-2 oz'),
+                ]),
+                new OAT\Property('cl', type: 'object', required: ['amount', 'amount_max', 'units', 'full_text'], properties: [
+                    new OAT\Property('amount', type: 'number', format: 'float', example: 3),
+                    new OAT\Property('amount_max', type: 'number', format: 'float', example: 6),
+                    new OAT\Property('units', type: 'string', example: 'cl'),
+                    new OAT\Property('full_text', type: 'string', example: '3-6 cl'),
+                ]),
+            ],
+            additionalProperties: true,
+            description: 'Amounts in different units, converted if possible'
+        ),
+        new OAT\Property(property: 'in_shelf', type: 'boolean', example: true, description: 'Is the ingredient in the user\'s shelf'),
+        new OAT\Property(property: 'in_shelf_as_variant', type: 'boolean', example: true, description: 'Is the ingredient in the user\'s shelf as a variant'),
+        new OAT\Property(property: 'in_shelf_as_substitute', type: 'boolean', example: true, description: 'Is the ingredient in the user\'s shelf as a substitute'),
+        new OAT\Property(property: 'in_shelf_as_complex_ingredient', type: 'boolean', example: true, description: 'Is the ingredient in the user\'s shelf as a complex ingredient'),
+        new OAT\Property(property: 'in_bar_shelf', type: 'boolean', example: true, description: 'Is the ingredient in the bar shelf'),
+        new OAT\Property(property: 'in_bar_shelf_as_substitute', type: 'boolean', example: true, description: 'Is the ingredient in the bar shelf as a substitute'),
+        new OAT\Property(property: 'in_bar_shelf_as_complex_ingredient', type: 'boolean', example: true, description: 'Is the ingredient in the bar shelf as a complex ingredient'),
+        new OAT\Property(property: 'in_bar_shelf_as_variant', type: 'boolean', example: true, description: 'Is the ingredient in the bar shelf as a variant'),
+    ],
+    required: ['ingredient', 'sort', 'amount', 'units', 'formatted', 'is_specified', 'note']
+)]
 class CocktailIngredientResource extends JsonResource
 {
     /**

@@ -41,7 +41,7 @@ class ImportController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Cocktail::class),
+        new BAO\WrapObjectWithData(CocktailResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\RateLimitResponse]

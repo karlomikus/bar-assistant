@@ -23,7 +23,7 @@ class ExportController extends Controller
 {
     #[OAT\Get(path: '/exports', tags: ['Exports'], operationId: 'listExports', description: 'Show a list of all generated exports in a bar', summary: 'List exports')]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\Export::class),
+        new BAO\WrapItemsWithData(ExportResource::class),
     ])]
     public function index(Request $request): JsonResource
     {
@@ -42,7 +42,7 @@ class ExportController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Export::class),
+        new BAO\WrapObjectWithData(ExportResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\RateLimitResponse]

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\OpenAPI\Schemas;
 
+use Kami\Cocktail\Http\Resources\BarBasicResource;
 use OpenApi\Attributes as OAT;
 
 #[OAT\Schema()]
 class CocktailExplore
 {
     #[OAT\Property()]
-    public BarBasic $bar;
+    public BarBasicResource $bar;
 
     #[OAT\Property(example: 'Cocktail name')]
     public string $name;

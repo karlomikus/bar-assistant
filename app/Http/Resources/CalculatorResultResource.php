@@ -7,7 +7,7 @@ namespace Kami\Cocktail\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \Kami\Cocktail\OpenAPI\Schemas\CalculatorResult
+ * @mixin \Kami\Cocktail\Models\ValueObjects\CalculatorResult
  */
 class CalculatorResultResource extends JsonResource
 {

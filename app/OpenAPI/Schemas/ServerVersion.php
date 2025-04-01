@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema(required: ['version', 'type', 'search_host', 'search_version', 'latest_version', 'is_latest', 'type', 'is_feeds_enabled', 'is_password_login_enabled'])]
+#[OAT\Schema(required: ['version', 'type', 'search_host', 'search_version', 'latest_version', 'is_latest', 'is_feeds_enabled', 'is_password_login_enabled'])]
 class ServerVersion
 {
     #[OAT\Property(example: '1.0.0', description: 'Version of the server')]

@@ -14,6 +14,7 @@ use Kami\Cocktail\Models\CalculatorBlock;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CalculatorResource;
 use Kami\Cocktail\OpenAPI\Schemas\CalculatorRequest;
+use Kami\Cocktail\Models\ValueObjects\CalculatorResult;
 use Kami\Cocktail\OpenAPI\Schemas\CalculatorSolveRequest;
 use Kami\Cocktail\Http\Resources\CalculatorResultResource;
 use Kami\Cocktail\Http\Requests\CalculatorRequest as CalculatorFormRequest;
@@ -24,7 +25,7 @@ class CalculatorController extends Controller
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\Calculator::class),
+        new BAO\WrapItemsWithData(CalculatorResource::class),
     ])]
     public function index(): JsonResource
     {
@@ -37,7 +38,7 @@ class CalculatorController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Calculator::class),
+        new BAO\WrapObjectWithData(CalculatorResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -61,7 +62,7 @@ class CalculatorController extends Controller
         ]
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Calculator::class),
+        new BAO\WrapObjectWithData(CalculatorResource::class),
     ], headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
@@ -108,7 +109,7 @@ class CalculatorController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Calculator::class),
+        new BAO\WrapObjectWithData(CalculatorResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -172,7 +173,7 @@ class CalculatorController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\CalculatorResult::class),
+        new BAO\WrapObjectWithData(CalculatorResult::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]

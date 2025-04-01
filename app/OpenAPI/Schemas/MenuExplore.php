@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
+use Kami\Cocktail\Http\Resources\PriceResource;
 use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 
 #[OAT\Schema(required: ['bar', 'categories'])]
@@ -25,7 +26,7 @@ class MenuExplore
             new OAT\Property(type: 'bool', property: 'in_bar_shelf', example: false),
             new OAT\Property(property: 'type', ref: MenuItemTypeEnum::class),
             new OAT\Property(type: 'integer', property: 'sort', example: 1),
-            new OAT\Property(property: 'price', ref: Price::class),
+            new OAT\Property(property: 'price', ref: PriceResource::class),
             new OAT\Property(type: 'string', property: 'public_id', example: '01ARZ3NDEKTSV4RRFFQ69G5FAV'),
             new OAT\Property(type: 'string', property: 'name', example: 'Cocktail name'),
             new OAT\Property(type: 'string', property: 'description'),

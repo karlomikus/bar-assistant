@@ -24,7 +24,7 @@ class CocktailMethodController extends Controller
         ])),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\CocktailMethod::class),
+        new BAO\WrapItemsWithData(CocktailMethodResource::class),
     ])]
     public function index(): JsonResource
     {
@@ -37,7 +37,7 @@ class CocktailMethodController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\CocktailMethod::class),
+        new BAO\WrapObjectWithData(CocktailMethodResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -61,7 +61,7 @@ class CocktailMethodController extends Controller
         ]
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\CocktailMethod::class),
+        new BAO\WrapObjectWithData(CocktailMethodResource::class),
     ], headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
@@ -93,7 +93,7 @@ class CocktailMethodController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\CocktailMethod::class),
+        new BAO\WrapObjectWithData(CocktailMethodResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
