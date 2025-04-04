@@ -8053,6 +8053,80 @@ components:
         - none
         - skip
         - overwrite
+    AmountFormats:
+      description: 'Represents the amount of cocktail ingredient in different formats'
+      required:
+        - ml
+        - oz
+        - cl
+      properties:
+        ml:
+          required:
+            - amount
+            - amount_max
+            - units
+            - full_text
+          properties:
+            amount:
+              type: number
+              format: float
+              example: 30
+            amount_max:
+              type: number
+              format: float
+              example: 60
+            units:
+              type: string
+              example: ml
+            full_text:
+              type: string
+              example: '30-60 ml'
+          type: object
+        oz:
+          required:
+            - amount
+            - amount_max
+            - units
+            - full_text
+          properties:
+            amount:
+              type: number
+              format: float
+              example: 1
+            amount_max:
+              type: number
+              format: float
+              example: 2
+            units:
+              type: string
+              example: oz
+            full_text:
+              type: string
+              example: '1-2 oz'
+          type: object
+        cl:
+          required:
+            - amount
+            - amount_max
+            - units
+            - full_text
+          properties:
+            amount:
+              type: number
+              format: float
+              example: 3
+            amount_max:
+              type: number
+              format: float
+              example: 6
+            units:
+              type: string
+              example: cl
+            full_text:
+              type: string
+              example: '3-6 cl'
+          type: object
+      type: object
     BarBasic:
       description: 'Represents a bar with basic information'
       required:
@@ -8289,6 +8363,23 @@ components:
           items:
             $ref: '#/components/schemas/CalculatorBlock'
       type: object
+    CalculatorResult:
+      description: 'Represents the result of a calculator'
+      required:
+        - inputs
+        - results
+      properties:
+        inputs:
+          description: 'The inputs of the calculator'
+          type: object
+          additionalProperties:
+            type: string
+        results:
+          description: 'The results of the calculator'
+          type: object
+          additionalProperties:
+            type: string
+      type: object
     CocktailBasic:
       description: 'Minimal cocktail information'
       required:
@@ -8356,15 +8447,15 @@ components:
           $ref: '#/components/schemas/IngredientBasic'
           description: 'Ingredient information'
         substitutes:
+          description: 'Substitutes for the ingredient'
           type: array
           items:
             $ref: '#/components/schemas/CocktailIngredientSubstitute'
-            description: 'Substitutes for the ingredient'
         variants_in_shelf:
+          description: 'Variants of the ingredient in the shelf'
           type: array
           items:
             $ref: '#/components/schemas/IngredientBasic'
-            description: 'Variants of the ingredient in the shelf'
         note:
           description: 'Additional notes about the ingredient'
           type:
@@ -8376,80 +8467,7 @@ components:
           type: boolean
           example: false
         formatted:
-          description: 'Amounts in different units, converted if possible'
-          required:
-            - ml
-            - oz
-            - cl
-          properties:
-            ml:
-              required:
-                - amount
-                - amount_max
-                - units
-                - full_text
-              properties:
-                amount:
-                  type: number
-                  format: float
-                  example: 30
-                amount_max:
-                  type: number
-                  format: float
-                  example: 60
-                units:
-                  type: string
-                  example: ml
-                full_text:
-                  type: string
-                  example: '30-60 ml'
-              type: object
-            oz:
-              required:
-                - amount
-                - amount_max
-                - units
-                - full_text
-              properties:
-                amount:
-                  type: number
-                  format: float
-                  example: 1
-                amount_max:
-                  type: number
-                  format: float
-                  example: 2
-                units:
-                  type: string
-                  example: oz
-                full_text:
-                  type: string
-                  example: '1-2 oz'
-              type: object
-            cl:
-              required:
-                - amount
-                - amount_max
-                - units
-                - full_text
-              properties:
-                amount:
-                  type: number
-                  format: float
-                  example: 3
-                amount_max:
-                  type: number
-                  format: float
-                  example: 6
-                units:
-                  type: string
-                  example: cl
-                full_text:
-                  type: string
-                  example: '3-6 cl'
-              type: object
-          type: object
-          additionalProperties: true
+          $ref: '#/components/schemas/AmountFormats'
         in_shelf:
           description: "Is the ingredient in the user's shelf"
           type: boolean
@@ -8496,7 +8514,9 @@ components:
         ingredient:
           $ref: '#/components/schemas/IngredientBasic'
         amount:
-          type: number
+          type:
+            - number
+            - 'null'
           example: 30
         amount_max:
           type:
@@ -8504,7 +8524,9 @@ components:
             - 'null'
           example: 60
         units:
-          type: string
+          type:
+            - string
+            - 'null'
           example: ml
         in_shelf:
           type: boolean
@@ -8536,6 +8558,46 @@ components:
           description: 'Number of cocktails using this method'
           type: integer
           example: 32
+      type: object
+    CocktailPrice:
+      description: 'Cocktail price resource'
+      required:
+        - missing_prices_count
+        - price_category
+        - total_price
+        - prices_per_ingredient
+      properties:
+        missing_prices_count:
+          description: 'Number of ingredients that are missing defined prices in this category'
+          type: integer
+          example: 2
+        price_category:
+          $ref: '#/components/schemas/PriceCategory'
+        total_price:
+          $ref: '#/components/schemas/Price'
+          description: 'Total cocktail price, sum of `price_per_pour` amounts'
+        prices_per_ingredient:
+          description: 'Prices per each ingredient.'
+          type: array
+          items:
+            required:
+              - ingredient
+              - price_per_unit
+              - price_per_use
+              - units
+            properties:
+              ingredient:
+                $ref: '#/components/schemas/IngredientBasic'
+              units:
+                description: 'Units used for price calculation'
+                type: string
+              price_per_unit:
+                $ref: '#/components/schemas/Price'
+                description: 'Price per 1 unit of ingredient amount'
+              price_per_use:
+                $ref: '#/components/schemas/Price'
+                description: 'Price per cocktail ingredient part'
+            type: object
       type: object
     Cocktail:
       description: 'Cocktail resource'
@@ -8779,6 +8841,119 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CocktailBasic'
+      type: object
+    CocktailExplore:
+      description: 'Cocktail explore resource'
+      required:
+        - bar
+        - name
+        - instructions
+        - garnish
+        - description
+        - source
+        - tags
+        - glass
+        - utensils
+        - method
+        - images
+        - ingredients
+      properties:
+        bar:
+          $ref: '#/components/schemas/BarBasic'
+        name:
+          type: string
+          example: 'Cocktail name'
+        instructions:
+          type: string
+          example: 'Step by step instructions'
+        garnish:
+          type:
+            - string
+            - 'null'
+          example: Garnish
+        description:
+          type:
+            - string
+            - 'null'
+          example: 'Cocktail description'
+        source:
+          type:
+            - string
+            - 'null'
+          example: 'Source of the recipe'
+        tags:
+          type: array
+          items:
+            type: string
+        glass:
+          type:
+            - string
+            - 'null'
+        utensils:
+          type: array
+          items:
+            type: string
+        method:
+          type:
+            - string
+            - 'null'
+        images:
+          type: array
+          items:
+            properties:
+              sort:
+                type: integer
+                example: 1
+              placeholder_hash:
+                type: string
+                example: a1b2c3d4e5f6g7h8i9j0
+              url:
+                type: string
+                example: 'https://example.com/image.jpg'
+              copyright:
+                type: string
+                example: 'Image copyright'
+            type: object
+        ingredients:
+          type: array
+          items:
+            properties:
+              ingredient:
+                properties:
+                  name: { type: string, example: 'Ingredient name' }
+                type: object
+              amount:
+                type: number
+                example: 30
+              amount_max:
+                type:
+                  - number
+                  - 'null'
+                example: 45
+              units:
+                type: string
+                example: ml
+              optional:
+                type: boolean
+                example: true
+              note:
+                type:
+                  - string
+                  - 'null'
+                example: 'Ingredient note'
+              substitutes:
+                type: array
+                items:
+                  properties: { ingredient: { properties: { name: { type: string, example: 'Ingredient name' } }, type: object }, amount: { type: [number, 'null'], example: 30 }, amount_max: { type: [number, 'null'], example: 45 }, units: { type: [string, 'null'], example: ml } }
+                  type: object
+            type: object
+        abv:
+          description: 'Alcohol by volume (ABV) percentage'
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 0.5
       type: object
     Export:
       description: 'Export resource'
@@ -9204,7 +9379,7 @@ components:
             - string
             - 'null'
           format: date-time
-        '':
+        categories:
           type: array
           items:
             required:
@@ -9368,7 +9543,7 @@ components:
         - settings
       properties:
         id:
-          type: string
+          type: integer
           example: 1
         name:
           type: string
@@ -9376,6 +9551,7 @@ components:
         email:
           description: 'User email'
           type: string
+          format: email
           example: example@example.com
         is_subscribed:
           description: 'Is user subscribed'
@@ -9567,22 +9743,6 @@ components:
       enum:
         - cocktail
         - ingredient
-    CalculatorResult:
-      required:
-        - inputs
-        - results
-      properties:
-        inputs:
-          description: string>
-          type: object
-          additionalProperties:
-            type: string
-        results:
-          description: string>
-          type: object
-          additionalProperties:
-            type: string
-      type: object
     APIError:
       required:
         - type
@@ -9613,7 +9773,9 @@ components:
             - 'null'
           example: 'Bar description'
         slug:
-          type: string
+          type:
+            - string
+            - 'null'
           example: bar-name-1
         default_units:
           description: 'Used only as a setting for client apps.'
@@ -9633,7 +9795,12 @@ components:
           description: 'Enable users with invite code to join this bar. Default `false`.'
           type: boolean
         options:
-          $ref: '#/components/schemas/BarOptionsEnum'
+          oneOf:
+            -
+              $ref: '#/components/schemas/BarOptionsEnum'
+              description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.'
+            -
+              type: 'null'
           description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.'
         images:
           description: 'Existing image ids'
@@ -9849,103 +10016,6 @@ components:
           additionalProperties:
             type: string
       type: object
-    CocktailExplore:
-      properties:
-        bar:
-          $ref: '#/components/schemas/BarBasic'
-        name:
-          type: string
-          example: 'Cocktail name'
-        instructions:
-          type: string
-          example: 'Step by step instructions'
-        garnish:
-          type:
-            - string
-            - 'null'
-          example: Garnish
-        description:
-          type:
-            - string
-            - 'null'
-          example: 'Cocktail description'
-        source:
-          type:
-            - string
-            - 'null'
-          example: 'Source of the recipe'
-        images:
-          type: array
-          items:
-            properties:
-              sort:
-                type: integer
-                example: 1
-              placeholder_hash:
-                type: string
-                example: a1b2c3d4e5f6g7h8i9j0
-              url:
-                type: string
-                example: 'https://example.com/image.jpg'
-              copyright:
-                type: string
-                example: 'Image copyright'
-            type: object
-        tags:
-          type: array
-          items:
-            type: string
-        glass:
-          type:
-            - string
-            - 'null'
-        utensils:
-          type: array
-          items:
-            type: string
-        ingredients:
-          type: array
-          items:
-            properties:
-              name:
-                type: string
-                example: 'Ingredient name'
-              amount:
-                type: number
-                example: 30
-              amount_max:
-                type:
-                  - number
-                  - 'null'
-                example: 45
-              units:
-                type: string
-                example: ml
-              optional:
-                type: boolean
-                example: true
-              note:
-                type:
-                  - string
-                  - 'null'
-                example: 'Ingredient note'
-              substitutes:
-                type: array
-                items:
-                  properties: { name: { type: string, example: 'Ingredient name' }, amount: { type: [number, 'null'], example: 30 }, amount_max: { type: [number, 'null'], example: 45 }, units: { type: [string, 'null'], example: ml } }
-                  type: object
-            type: object
-        method:
-          type:
-            - string
-            - 'null'
-        abv:
-          type:
-            - number
-            - 'null'
-          format: float
-          example: 40
-      type: object
     CocktailIngredientRequest:
       required:
         - ingredient_id
@@ -10022,44 +10092,6 @@ components:
         dilution_percentage:
           type: integer
           example: 20
-      type: object
-    CocktailPrice:
-      required:
-        - missing_prices_count
-        - price_category
-        - total_price
-        - prices_per_ingredient
-      properties:
-        missing_prices_count:
-          description: 'Number of ingredients that are missing defined prices in this category'
-          type: integer
-          example: 1
-        price_category:
-          $ref: '#/components/schemas/PriceCategory'
-        total_price:
-          $ref: '#/components/schemas/Price'
-          description: 'Total cocktail price, sum of `price_per_pour` amounts'
-        prices_per_ingredient:
-          type: array
-          items:
-            required:
-              - ingredient
-              - price_per_unit
-              - price_per_use
-              - units
-            properties:
-              ingredient:
-                $ref: '#/components/schemas/IngredientBasic'
-              units:
-                description: 'Units used for price calculation'
-                type: string
-              price_per_unit:
-                $ref: '#/components/schemas/Price'
-                description: 'Price per 1 unit of ingredient amount'
-              price_per_use:
-                $ref: '#/components/schemas/Price'
-                description: 'Price per cocktail ingredient part'
-            type: object
       type: object
     CocktailRequest:
       required:

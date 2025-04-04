@@ -20,7 +20,7 @@ use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
         new OAT\Property(property: 'is_enabled', type: 'boolean', example: true, description: 'Is menu enabled'),
         new OAT\Property(property: 'created_at', format: 'date-time', type: 'string', description: 'Creation date'),
         new OAT\Property(property: 'updated_at', format: 'date-time', type: 'string', description: 'Last update date', nullable: true),
-        new OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
+        new OAT\Property(property: 'categories', type: 'array', items: new OAT\Items(type: 'object', properties: [
             new OAT\Property(type: 'string', property: 'name', example: 'Category name'),
             new OAT\Property(type: 'array', property: 'items', items: new OAT\Items(type: 'object', properties: [
                 new OAT\Property(type: 'integer', property: 'id', example: 1),

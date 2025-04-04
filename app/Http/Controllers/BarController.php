@@ -4,20 +4,16 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Image;
-use Symfony\Component\Uid\Ulid;
 use Kami\Cocktail\Jobs\SetupBar;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Cache;
-use Kami\RecipeUtils\UnitConverter\Units;
-use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\Http\Requests\BarRequest;
 use Kami\Cocktail\Jobs\StartBarOptimization;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
@@ -25,6 +21,7 @@ use Kami\Cocktail\Http\Resources\BarResource;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\BarMembershipResource;
+use Kami\Cocktail\OpenAPI\Schemas\BarRequest as SchemasBarRequest;
 
 class BarController extends Controller
 {
@@ -98,37 +95,15 @@ class BarController extends Controller
             'slug' => 'nullable|unique:bars,slug',
         ]);
 
-        $inviteEnabled = (bool) $request->post('enable_invites', '0');
-        $barOptions = BarOptionsEnum::tryFrom($request->input('options', ''));
+        $barRequest = SchemasBarRequest::fromLaravelRequest($request);
 
-        $bar = new Bar();
-        $bar->name = $request->input('name');
-        $bar->subtitle = $request->input('subtitle');
-        $bar->description = $request->input('description');
+        $bar = $barRequest->toLaravelModel();
         $bar->created_user_id = $request->user()->id;
-        $bar->invite_code = $inviteEnabled ? (string) new Ulid() : null;
-        if ($request->input('slug')) {
-            $bar->slug = Str::slug($request->input('slug'));
-        } else {
-            $bar->generateSlug();
-        }
-
-        $settings = [];
-        if ($defaultUnits = $request->input('default_units')) {
-            $settings['default_units'] = Units::tryFrom($defaultUnits)?->value;
-        }
-        if ($defaultCurrency = $request->input('default_currency')) {
-            $settings['default_currency'] = $defaultCurrency;
-        }
-        $bar->settings = $settings;
-
         $bar->save();
 
-        /** @var array<int> */
-        $images = $request->input('images', []);
-        if (count($images) > 0) {
+        if (count($barRequest->images) > 0) {
             try {
-                $imageModels = Image::findOrFail($images);
+                $imageModels = Image::findOrFail($barRequest->images);
                 $bar->attachImages($imageModels);
             } catch (\Throwable $e) {
                 abort(500, $e->getMessage());
@@ -139,7 +114,7 @@ class BarController extends Controller
 
         $request->user()->joinBarAs($bar, UserRoleEnum::Admin);
 
-        SetupBar::dispatch($bar, $request->user(), $barOptions);
+        SetupBar::dispatch($bar, $request->user(), $barRequest->options);
 
         return (new BarResource($bar))
             ->response()
@@ -175,35 +150,21 @@ class BarController extends Controller
 
         Cache::forget('ba:bar:' . $bar->id);
 
-        $inviteEnabled = (bool) $request->input('enable_invites', '0');
-        if ($inviteEnabled && $bar->invite_code === null) {
-            $bar->invite_code = (string) new Ulid();
-        } else {
-            $bar->invite_code = null;
-        }
-
-        $settings = $bar->settings;
-        $settings['default_units'] = Units::tryFrom($request->input('default_units') ?? '')?->value;
-        $settings['default_currency'] = $request->input('default_currency');
-        $bar->settings = $settings;
+        $barRequest = SchemasBarRequest::fromLaravelRequest($request);
+        $bar = $barRequest->toLaravelModel($bar);
 
         if ($request->filled('slug')) {
-            $bar->slug = Str::slug($request->input('slug'));
+            $bar->slug = $barRequest->slug;
         }
 
-        $bar->status = $request->input('status') ?? BarStatusEnum::Active->value;
-        $bar->name = $request->input('name');
-        $bar->description = $request->input('description');
-        $bar->subtitle = $request->input('subtitle');
+        $bar->status = BarStatusEnum::Active->value;
         $bar->updated_user_id = $request->user()->id;
         $bar->updated_at = now();
         $bar->save();
 
-        /** @var array<int> */
-        $images = $request->input('images', []);
-        if (count($images) > 0) {
+        if (count($barRequest->images) > 0) {
             try {
-                $imageModels = Image::findOrFail($images);
+                $imageModels = Image::findOrFail($barRequest->images);
                 $bar->attachImages($imageModels);
             } catch (\Throwable $e) {
                 abort(500, $e->getMessage());

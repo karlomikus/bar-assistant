@@ -15,9 +15,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
     description: 'Cocktail ingredient substitute',
     properties: [
         new OAT\Property(property: 'ingredient', type: IngredientBasicResource::class),
-        new OAT\Property(property: 'amount', type: 'number', example: 30),
+        new OAT\Property(property: 'amount', type: 'number', example: 30, nullable: true),
         new OAT\Property(property: 'amount_max', type: 'number', example: 60, nullable: true),
-        new OAT\Property(property: 'units', type: 'string', example: 'ml'),
+        new OAT\Property(property: 'units', type: 'string', example: 'ml', nullable: true),
         new OAT\Property(property: 'in_shelf', type: 'boolean', example: true),
         new OAT\Property(property: 'in_bar_shelf', type: 'boolean', example: true),
     ],

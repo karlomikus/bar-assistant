@@ -16,7 +16,7 @@ class ExploreController extends Controller
         new OAT\Parameter(name: 'public_id', in: 'path', required: true, description: 'Public cocktail id', schema: new OAT\Schema(type: 'string', format: 'ulid')),
     ], security: [])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\CocktailExplore::class),
+        new BAO\WrapObjectWithData(ExploreCocktailResource::class),
     ])]
     #[BAO\NotFoundResponse]
     public function cocktail(string $publicId): JsonResource

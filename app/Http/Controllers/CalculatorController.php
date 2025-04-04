@@ -173,7 +173,7 @@ class CalculatorController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(CalculatorResult::class),
+        new BAO\WrapObjectWithData(CalculatorResultResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
