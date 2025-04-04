@@ -80,7 +80,6 @@ class CocktailController extends Controller
             abort(400, $e->getMessage());
         }
 
-        /** @var \Illuminate\Pagination\LengthAwarePaginator<Cocktail> */
         $cocktails = $cocktails->paginate($request->get('per_page', 25));
 
         return CocktailResource::collection($cocktails->withQueryString());

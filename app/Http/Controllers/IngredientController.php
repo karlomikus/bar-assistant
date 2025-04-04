@@ -59,7 +59,6 @@ class IngredientController extends Controller
     public function index(IngredientRepository $ingredientQuery, Request $request): JsonResource
     {
         try {
-            /** @var \Illuminate\Pagination\LengthAwarePaginator<Ingredient> */
             $ingredients = (new IngredientQueryFilter($ingredientQuery))->paginate($request->get('per_page', 50));
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());

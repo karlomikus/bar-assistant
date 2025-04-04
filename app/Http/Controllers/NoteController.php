@@ -27,7 +27,6 @@ class NoteController extends Controller
     ])]
     public function index(Request $request): JsonResource
     {
-        /** @var \Illuminate\Pagination\LengthAwarePaginator<Note> */
         $notes = (new NoteQueryFilter())->paginate($request->get('per_page', 100));
 
         return NoteResource::collection($notes->withQueryString());
