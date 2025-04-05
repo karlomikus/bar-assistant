@@ -120,7 +120,7 @@ class BarControllerTest extends TestCase
         $response->assertOk();
 
         $bar = Bar::find(3);
-        $this->assertSame(['default_units' => 'oz', 'default_currency' => null], $bar->settings);
+        $this->assertSame(['default_units' => 'oz'], $bar->settings);
         $this->assertSame('Updated bar', $bar->name);
         $this->assertSame('description text', $bar->description);
     }

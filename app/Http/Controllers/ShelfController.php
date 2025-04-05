@@ -34,7 +34,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PerPageParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\IngredientBasic::class),
+        new BAO\PaginateData(IngredientBasicResource::class),
     ])]
     public function ingredients(Request $request, int $id): JsonResource
     {
@@ -49,7 +49,6 @@ class ShelfController extends Controller
             ->userIngredients
             ->pluck('ingredient_id');
 
-        /** @var \Illuminate\Pagination\LengthAwarePaginator<Ingredient> */
         $ingredients = Ingredient::whereIn('id', $userIngredientIds)->orderBy('name')->paginate($request->get('per_page', 100));
 
         return IngredientBasicResource::collection($ingredients->withQueryString());
@@ -62,7 +61,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PerPageParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
+        new BAO\PaginateData(CocktailBasicResource::class),
     ])]
     public function cocktails(CocktailRepository $cocktailRepo, Request $request, int $id): JsonResource
     {
@@ -79,7 +78,6 @@ class ShelfController extends Controller
             null,
         );
 
-        /** @var \Illuminate\Pagination\LengthAwarePaginator<Cocktail> */
         $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->get('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails->withQueryString());
@@ -92,7 +90,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PerPageParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
+        new BAO\PaginateData(CocktailBasicResource::class),
     ])]
     public function favorites(Request $request, int $id): JsonResource
     {
@@ -105,7 +103,6 @@ class ShelfController extends Controller
 
         $cocktailIds = CocktailFavorite::where('bar_membership_id', $barMembership->id)->pluck('cocktail_id');
 
-        /** @var \Illuminate\Pagination\LengthAwarePaginator<Cocktail> */
         $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->get('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails->withQueryString());
@@ -230,7 +227,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PerPageParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\IngredientBasic::class),
+        new BAO\PaginateData(IngredientBasicResource::class),
     ])]
     public function barIngredients(Request $request, int $id): JsonResource
     {
@@ -241,7 +238,6 @@ class ShelfController extends Controller
 
         $ingredientIds = $bar->shelfIngredients->pluck('ingredient_id');
 
-        /** @var \Illuminate\Pagination\LengthAwarePaginator<Ingredient> */
         $ingredients = Ingredient::whereIn('id', $ingredientIds)->orderBy('name')->paginate($request->get('per_page', 100));
 
         return IngredientBasicResource::collection($ingredients->withQueryString());
@@ -326,7 +322,7 @@ class ShelfController extends Controller
         new BAO\Parameters\PerPageParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
+        new BAO\PaginateData(CocktailBasicResource::class),
     ])]
     public function barCocktails(CocktailRepository $cocktailRepo, Request $request, int $id): JsonResource
     {
@@ -340,7 +336,6 @@ class ShelfController extends Controller
             $bar->id,
         );
 
-        /** @var \Illuminate\Pagination\LengthAwarePaginator<Cocktail> */
         $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->get('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails->withQueryString());

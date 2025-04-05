@@ -17,7 +17,7 @@ class RecommenderController extends Controller
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\CocktailBasic::class),
+        new BAO\WrapItemsWithData(CocktailBasicResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]

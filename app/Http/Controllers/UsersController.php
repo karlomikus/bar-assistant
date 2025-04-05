@@ -24,7 +24,7 @@ class UsersController extends Controller
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\User::class),
+        new BAO\WrapItemsWithData(UserResource::class),
     ])]
     public function index(Request $request): JsonResource
     {
@@ -47,7 +47,7 @@ class UsersController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\User::class),
+        new BAO\WrapObjectWithData(UserResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -75,7 +75,7 @@ class UsersController extends Controller
         ]
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\User::class),
+        new BAO\WrapObjectWithData(UserResource::class),
     ], headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
@@ -124,7 +124,7 @@ class UsersController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\User::class),
+        new BAO\WrapObjectWithData(UserResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]

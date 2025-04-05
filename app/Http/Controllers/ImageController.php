@@ -29,7 +29,7 @@ class ImageController extends Controller
         new BAO\Parameters\PerPageParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\Image::class),
+        new BAO\PaginateData(ImageResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -44,7 +44,7 @@ class ImageController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Image::class),
+        new BAO\WrapObjectWithData(ImageResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -68,7 +68,7 @@ class ImageController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\Image::class),
+        new BAO\WrapItemsWithData(ImageResource::class),
     ])]
     public function store(ImageService $imageservice, Request $request): JsonResource
     {
@@ -103,7 +103,7 @@ class ImageController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Image::class),
+        new BAO\WrapObjectWithData(ImageResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     public function update(int $id, ImageService $imageservice, ImageUpdateRequest $request): JsonResource

@@ -4,11 +4,63 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\Models\Enums\BarStatusEnum;
+use Kami\Cocktail\OpenAPI\Schemas\BarSettings;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * @mixin \Kami\Cocktail\Models\Bar
  */
+#[OAT\Schema(
+    schema: 'Bar',
+    description: 'Details about a bar',
+    properties: [
+        new OAT\Property(property: 'id', type: 'integer', example: 1, description: 'Unique number that can be used to reference a specific bar.'),
+        new OAT\Property(property: 'slug', type: 'string', example: 'bar-name-1', description: 'Unique string that can be used to reference a specific bar.'),
+        new OAT\Property(property: 'name', type: 'string', example: 'Bar name', description: 'Name of the bar'),
+        new OAT\Property(property: 'subtitle', type: 'string', nullable: true, example: 'A short subtitle of a bar', description: 'Optional short quip about the bar'),
+        new OAT\Property(property: 'description', type: 'string', nullable: true, example: 'Bar description', description: 'Description of the bar'),
+        new OAT\Property(property: 'invite_code', type: 'string', nullable: true, example: '01H8S3VH2HTEB3D893AW8NTBBC', description: 'Random code used to invite people to the bar'),
+        new OAT\Property(property: 'status', type: BarStatusEnum::class, example: 'active', description: 'Current status of the bar'),
+        new OAT\Property(property: 'settings', type: BarSettings::class, description: 'Settings for the bar'),
+        new OAT\Property(property: 'search_host', type: 'string', nullable: true, example: 'my.test.com', description: "Host URL used to access the bar's search engine"),
+        new OAT\Property(property: 'search_token', type: 'string', nullable: true, example: null, description: "Auth token used to access the bar's search engine"),
+        new OAT\Property(property: 'created_at', type: 'string', format: 'date-time', description: "Date and time when the bar was created"),
+        new OAT\Property(property: 'updated_at', type: 'string', format: 'date-time', nullable: true, description: "Date and time when the bar was last updated"),
+        new OAT\Property(property: 'created_user', type: UserBasicResource::class, description: "User who created the bar"),
+        new OAT\Property(property: 'updated_user', nullable: true, type: UserBasicResource::class, description: "User who last updated the bar"),
+        new OAT\Property(property: 'access', type: 'object', properties: [
+            new OAT\Property(type: 'integer', property: 'role_id', example: 1),
+            new OAT\Property(type: 'boolean', property: 'can_edit', example: true),
+            new OAT\Property(type: 'boolean', property: 'can_delete', example: true),
+            new OAT\Property(type: 'boolean', property: 'can_activate', example: true),
+            new OAT\Property(type: 'boolean', property: 'can_deactivate', example: true),
+        ], description: 'User access rights for the bar', required: [
+            'role_id',
+            'can_edit',
+            'can_delete',
+            'can_activate',
+            'can_deactivate',
+        ]),
+        new OAT\Property(property: 'images', type: 'array', items: new OAT\Items(type: ImageResource::class), description: 'Images associated with the bar'),
+    ],
+    required: [
+        'id',
+        'slug',
+        'name',
+        'subtitle',
+        'description',
+        'invite_code',
+        'status',
+        'settings',
+        'search_host',
+        'search_token',
+        'created_at',
+        'updated_at',
+        'access',
+    ]
+)]
 class BarResource extends JsonResource
 {
     /**

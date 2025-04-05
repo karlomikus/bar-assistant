@@ -19,7 +19,7 @@ class ProfileController extends Controller
 {
     #[OAT\Get(path: '/profile', tags: ['Profile'], operationId: 'showProfile', description: 'Show current user profile information', summary: 'Show profile')]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Profile::class),
+        new BAO\WrapObjectWithData(ProfileResource::class),
     ])]
     #[BAO\NotFoundResponse]
     public function show(Request $request): JsonResource
@@ -40,7 +40,7 @@ class ProfileController extends Controller
         ]
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Profile::class),
+        new BAO\WrapObjectWithData(ProfileResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     public function update(UpdateUserRequest $request): JsonResource

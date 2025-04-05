@@ -4,7 +4,3 @@ parameters:
     paths:
         - app/
     level: 7
-    ignoreErrors:
-        -
-            identifier: return.type
-            path: app/Models

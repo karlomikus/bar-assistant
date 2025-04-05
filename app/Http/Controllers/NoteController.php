@@ -23,11 +23,10 @@ class NoteController extends Controller
         new BAO\Parameters\PerPageParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\Note::class),
+        new BAO\PaginateData(NoteResource::class),
     ])]
     public function index(Request $request): JsonResource
     {
-        /** @var \Illuminate\Pagination\LengthAwarePaginator<Note> */
         $notes = (new NoteQueryFilter())->paginate($request->get('per_page', 100));
 
         return NoteResource::collection($notes->withQueryString());
@@ -37,7 +36,7 @@ class NoteController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Note::class),
+        new BAO\WrapObjectWithData(NoteResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -59,7 +58,7 @@ class NoteController extends Controller
         ]
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Note::class),
+        new BAO\WrapObjectWithData(NoteResource::class),
     ], headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]

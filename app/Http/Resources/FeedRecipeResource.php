@@ -17,10 +17,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
     properties: [
         new \OpenApi\Attributes\Property(property: 'source', type: 'string', description: 'The source of the recipe'),
         new \OpenApi\Attributes\Property(property: 'title', type: 'string', description: 'The title of the recipe'),
-        new \OpenApi\Attributes\Property(property: 'description', type: 'string', description: 'The description of the recipe'),
+        new \OpenApi\Attributes\Property(property: 'description', type: 'string', nullable: true, description: 'The description of the recipe'),
         new \OpenApi\Attributes\Property(property: 'link', type: 'string', description: 'The link to the recipe'),
-        new \OpenApi\Attributes\Property(property: 'date', type: 'string', format: 'date-time', description: 'The date the recipe was modified'),
-        new \OpenApi\Attributes\Property(property: 'image', type: 'string', description: 'The image URL of the recipe'),
+        new \OpenApi\Attributes\Property(property: 'date', type: 'string', nullable: true, format: 'date-time', description: 'The date the recipe was modified'),
+        new \OpenApi\Attributes\Property(property: 'image', type: 'string', nullable: true, description: 'The image URL of the recipe'),
     ],
     required: ['source', 'title', 'link', 'date', 'image', 'description'],
 )]

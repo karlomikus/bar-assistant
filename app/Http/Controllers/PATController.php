@@ -21,7 +21,7 @@ class PATController extends Controller
 {
     #[OAT\Get(path: '/tokens', tags: ['Tokens'], operationId: 'listTokens', description: 'List all personal access tokens', summary: 'List tokens')]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\PersonalAccessToken::class),
+        new BAO\WrapItemsWithData(PATResource::class),
     ])]
     public function index(Request $request): JsonResource
     {
@@ -46,7 +46,7 @@ class PATController extends Controller
         ]
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Token::class),
+        new BAO\WrapObjectWithData(TokenResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     public function store(PATRequest $request): TokenResource

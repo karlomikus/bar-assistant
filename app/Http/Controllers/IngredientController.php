@@ -53,13 +53,12 @@ class IngredientController extends Controller
         new OAT\Parameter(name: 'include', in: 'query', description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `prices`, `ingredientParts`, `descendants`, `ancestors`, `images`.', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\Ingredient::class),
+        new BAO\PaginateData(IngredientResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     public function index(IngredientRepository $ingredientQuery, Request $request): JsonResource
     {
         try {
-            /** @var \Illuminate\Pagination\LengthAwarePaginator<Ingredient> */
             $ingredients = (new IngredientQueryFilter($ingredientQuery))->paginate($request->get('per_page', 50));
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
@@ -72,7 +71,7 @@ class IngredientController extends Controller
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Ingredient::class),
+        new BAO\WrapObjectWithData(IngredientResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -111,7 +110,7 @@ class IngredientController extends Controller
         ]
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Ingredient::class),
+        new BAO\WrapObjectWithData(IngredientResource::class),
     ], headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
@@ -146,7 +145,7 @@ class IngredientController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\Ingredient::class),
+        new BAO\WrapObjectWithData(IngredientResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -194,7 +193,7 @@ class IngredientController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\CocktailBasic::class),
+        new BAO\WrapItemsWithData(CocktailBasicResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -235,7 +234,7 @@ class IngredientController extends Controller
         new BAO\Parameters\PerPageParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\CocktailBasic::class),
+        new BAO\PaginateData(CocktailBasicResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -272,7 +271,7 @@ class IngredientController extends Controller
         new BAO\Parameters\PerPageParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(BAO\Schemas\IngredientBasic::class),
+        new BAO\PaginateData(IngredientBasicResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -302,7 +301,7 @@ class IngredientController extends Controller
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\IngredientTree::class),
+        new BAO\WrapObjectWithData(IngredientTreeResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]

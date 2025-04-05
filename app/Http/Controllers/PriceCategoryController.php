@@ -20,7 +20,7 @@ class PriceCategoryController extends Controller
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\PriceCategory::class),
+        new BAO\WrapItemsWithData(PriceCategoryResource::class),
     ])]
     public function index(): JsonResource
     {
@@ -33,7 +33,7 @@ class PriceCategoryController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\PriceCategory::class),
+        new BAO\WrapObjectWithData(PriceCategoryResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
@@ -57,7 +57,7 @@ class PriceCategoryController extends Controller
         ]
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\PriceCategory::class),
+        new BAO\WrapObjectWithData(PriceCategoryResource::class),
     ], headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
@@ -90,7 +90,7 @@ class PriceCategoryController extends Controller
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\PriceCategory::class),
+        new BAO\WrapObjectWithData(PriceCategoryResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]

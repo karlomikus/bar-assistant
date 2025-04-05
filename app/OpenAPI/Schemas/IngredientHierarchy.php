@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
+use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 
 #[OAT\Schema(description: 'Ingredient hierarchy')]
 class IngredientHierarchy
@@ -13,13 +14,13 @@ class IngredientHierarchy
     public string $pathToSelf;
 
     #[OAT\Property(property: 'parent_ingredient')]
-    public ?IngredientBasic $parentIngredient = null;
+    public ?IngredientBasicResource $parentIngredient = null;
 
-    /** @var IngredientBasic[] */
+    /** @var IngredientBasicResource[] */
     #[OAT\Property()]
     public array $descendants = [];
 
-    /** @var IngredientBasic[] */
+    /** @var IngredientBasicResource[] */
     #[OAT\Property()]
     public array $ancestors = [];
 
