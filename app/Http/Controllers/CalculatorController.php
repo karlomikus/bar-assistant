@@ -14,7 +14,6 @@ use Kami\Cocktail\Models\CalculatorBlock;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CalculatorResource;
 use Kami\Cocktail\OpenAPI\Schemas\CalculatorRequest;
-use Kami\Cocktail\Models\ValueObjects\CalculatorResult;
 use Kami\Cocktail\OpenAPI\Schemas\CalculatorSolveRequest;
 use Kami\Cocktail\Http\Resources\CalculatorResultResource;
 use Kami\Cocktail\Http\Requests\CalculatorRequest as CalculatorFormRequest;

@@ -44,7 +44,8 @@ use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
                         new OAT\Property(property: 'name', type: 'string', example: 'Cocktail name'),
                         new OAT\Property(property: 'description', type: 'string', nullable: true),
                         new OAT\Property(property: 'image', type: 'string', nullable: true, description: 'Image URL'),
-                    ], required: ['in_bar_shelf', 'type', 'sort', 'price', 'public_id', 'name', 'description'])),
+                    ], required: ['in_bar_shelf', 'type', 'sort', 'price', 'public_id', 'name', 'description'])
+                ),
                 ], required: ['name', 'items']),
         ),
     ],

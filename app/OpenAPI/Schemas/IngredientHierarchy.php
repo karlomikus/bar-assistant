@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\OpenAPI\Schemas;
 
-use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 use OpenApi\Attributes as OAT;
+use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 
 #[OAT\Schema(description: 'Ingredient hierarchy')]
 class IngredientHierarchy
