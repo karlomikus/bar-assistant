@@ -11,16 +11,16 @@ use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Mail;
 use Kami\Cocktail\Mail\SubscriptionChanged;
-use Kami\Cocktail\Http\Resources\SubscriptionResource;
+use Kami\Cocktail\Http\Resources\UserSubscriptionResource;
 
 class SubscriptionController extends Controller
 {
     #[OAT\Get(path: '/billing/subscription', tags: ['Billing'], operationId: 'showSubscription', description: 'Show a subscription status', summary: 'Show subscription')]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\UserSubscription::class),
+        new BAO\WrapObjectWithData(UserSubscriptionResource::class),
     ])]
     #[BAO\NotFoundResponse]
-    public function subscription(Request $request): JsonResponse
+    public function subscription(Request $request): UserSubscriptionResource
     {
         if (!config('bar-assistant.enable_billing')) {
             abort(404);
@@ -33,19 +33,7 @@ class SubscriptionController extends Controller
             $customer = $user->createAsCustomer();
         }
 
-        $sub = $user->subscription();
-
-        return response()->json([
-            'data' => [
-                'prices' => config('bar-assistant.prices'),
-                'customer' => [
-                    'paddle_id' => $customer->paddle_id ?? null,
-                    'paddle_email' => $user->paddleEmail(),
-                    'paddle_name' => $user->paddleName(),
-                ],
-                'subscription' => $sub ? new SubscriptionResource($sub) : null,
-            ]
-        ]);
+        return new UserSubscriptionResource($user);
     }
 
     #[OAT\Post(path: '/billing/subscription', tags: ['Billing'], operationId: 'updateSubscription', description: 'Update user billing subscription', summary: 'Update subscription', requestBody: new OAT\RequestBody(

@@ -55,7 +55,7 @@ class MenuController extends Controller
         new OAT\Parameter(name: 'slug', in: 'path', required: true, description: 'Bar database slug', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\MenuExplore::class),
+        new BAO\WrapObjectWithData(MenuPublicResource::class),
     ])]
     #[BAO\NotFoundResponse]
     public function show(string $barSlug): MenuPublicResource

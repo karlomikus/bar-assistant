@@ -4898,7 +4898,7 @@ paths:
                 required:
                   - data
                 properties:
-                  data: { $ref: '#/components/schemas/MenuExplore' }
+                  data: { $ref: '#/components/schemas/MenuPublic' }
                 type: object
         '404':
           description: 'Resource record not found.'
@@ -9352,6 +9352,60 @@ components:
           items:
             $ref: '#/components/schemas/IngredientTree'
       type: object
+    MenuPublic:
+      description: 'Menu resource'
+      required:
+        - bar
+        - categories
+      properties:
+        bar:
+          description: 'Bar information'
+          required:
+            - name
+            - subtitle
+            - description
+          properties:
+            name:
+              type: string
+              example: 'Bar name'
+            subtitle:
+              type:
+                - string
+                - 'null'
+              example: 'Bar subtitle'
+            description:
+              type:
+                - string
+                - 'null'
+              example: 'Bar description'
+            images:
+              description: 'Bar images (like bar logo)'
+              type: array
+              items:
+                type: string
+              example:
+                - 'https://example.com/image1.jpg'
+                - 'https://example.com/image2.jpg'
+          type: object
+        categories:
+          description: 'List of menu categories'
+          type: array
+          items:
+            required:
+              - name
+              - items
+            properties:
+              name:
+                type: string
+                example: 'Category name'
+              items:
+                type: array
+                items:
+                  required: [in_bar_shelf, type, sort, price, public_id, name, description]
+                  properties: { in_bar_shelf: { type: boolean, example: false }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, public_id: { type: [string, 'null'], example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, name: { type: string, example: 'Cocktail name' }, description: { type: [string, 'null'] }, image: { description: 'Image URL', type: [string, 'null'] } }
+                  type: object
+            type: object
+      type: object
     Menu:
       description: 'Menu resource'
       required:
@@ -9588,6 +9642,106 @@ components:
           type: boolean
           example: true
       type: object
+    Subscription:
+      description: 'Subscription resource'
+      required:
+        - type
+        - paddle_id
+        - status
+        - created_at
+        - updated_at
+        - paused_at
+        - ends_at
+        - past_due
+        - is_recurring
+        - next_billed_at
+        - update_payment_url
+        - cancel_url
+      properties:
+        type:
+          type: string
+        paddle_id:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        paused_at:
+          type: string
+          format: date-time
+        ends_at:
+          type: string
+          format: date-time
+        past_due:
+          type: boolean
+        is_recurring:
+          type: boolean
+        next_billed_at:
+          required:
+            - currency
+            - amount
+            - date
+          properties:
+            currency:
+              type: string
+            amount:
+              type: string
+            date:
+              type: string
+              format: date-time
+          type:
+            - object
+            - 'null'
+        update_payment_url:
+          type: string
+          format: uri
+        cancel_url:
+          type: string
+          format: uri
+        transactions:
+          type: array
+          items:
+            required:
+              - total
+              - tax
+              - currency
+              - status
+              - invoice_number
+              - url
+              - billed_at
+              - created_at
+              - updated_at
+            properties:
+              total:
+                type: string
+              tax:
+                type: string
+              currency:
+                type: string
+              status:
+                type: string
+              invoice_number:
+                type: string
+              url:
+                type: string
+                format: uri
+              billed_at:
+                type: string
+                format: date-time
+              created_at:
+                type: string
+                format: date-time
+              updated_at:
+                type:
+                  - string
+                  - 'null'
+                format: date-time
+            type: object
+      type: object
     Tag:
       description: 'Represents a tag with basic information'
       required:
@@ -9695,6 +9849,43 @@ components:
             - integer
             - 'null'
           example: 3
+      type: object
+    UserSubscription:
+      description: 'User subscription resource'
+      required:
+        - prices
+        - customer
+        - subscription
+      properties:
+        prices:
+          type: array
+          items:
+            type: string
+        customer:
+          required:
+            - paddle_id
+            - paddle_email
+            - paddle_name
+          properties:
+            paddle_id:
+              type:
+                - string
+                - 'null'
+            paddle_email:
+              type:
+                - string
+                - 'null'
+            paddle_name:
+              type:
+                - string
+                - 'null'
+          type: object
+        subscription:
+          oneOf:
+            -
+              $ref: '#/components/schemas/Subscription'
+            -
+              type: 'null'
       type: object
     Utensil:
       description: 'Represents a utensil with basic information'
@@ -10391,50 +10582,6 @@ components:
             - 'null'
           example: 'My device'
       type: object
-    MenuExplore:
-      required:
-        - bar
-        - categories
-      properties:
-        bar:
-          required:
-            - name
-            - subtitle
-            - description
-          properties:
-            name:
-              type: string
-              example: 'Bar name'
-            subtitle:
-              type: string
-              example: 'Bar subtitle'
-            description:
-              type: string
-              example: 'Bar description'
-            images:
-              type: array
-              items:
-                type: string
-                example: 'https://example.com/image.jpg'
-          type: object
-        categories:
-          type: array
-          items:
-            required:
-              - name
-              - items
-            properties:
-              name:
-                type: string
-                example: 'Category name'
-              items:
-                type: array
-                items:
-                  required: [in_bar_shelf, type, sort, price, public_id, name, description, image]
-                  properties: { in_bar_shelf: { type: boolean, example: false }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, public_id: { type: string, example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, name: { type: string, example: 'Cocktail name' }, description: { type: string }, image: { description: 'Image URL', type: [string, 'null'] } }
-                  type: object
-            type: object
-      type: object
     MenuRequest:
       required:
         - is_enabled
@@ -10643,59 +10790,6 @@ components:
                 type: integer
             type: object
       type: object
-    Subscription:
-      properties:
-        type:
-          type: string
-        paddle_id:
-          type: string
-        status:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type:
-            - string
-            - 'null'
-          format: date-time
-        paused_at:
-          type:
-            - string
-            - 'null'
-          format: date-time
-        ends_at:
-          type:
-            - string
-            - 'null'
-          format: date-time
-        past_due:
-          type: boolean
-        is_recurring:
-          type: boolean
-        next_billed_at:
-          type: array
-          items:
-            properties:
-              currency:
-                type: string
-              amount:
-                type: string
-              date:
-                type: string
-                format: date-time
-            type: object
-        update_payment_url:
-          type: string
-          format: uri
-        cancel_url:
-          type: string
-          format: uri
-        transactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Transaction'
-      type: object
     TagRequest:
       required:
         - name
@@ -10703,33 +10797,6 @@ components:
         name:
           type: string
           example: Floral
-      type: object
-    Transaction:
-      properties:
-        total:
-          type: string
-        tax:
-          type: string
-        currency:
-          type: string
-        status:
-          type: string
-        invoice_number:
-          type: string
-        url:
-          type: string
-          format: uri
-        billed_at:
-          type: string
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type:
-            - string
-            - 'null'
-          format: date-time
       type: object
     UserRequest:
       required:
@@ -10751,36 +10818,6 @@ components:
           type: string
           format: password
           example: password
-      type: object
-    UserSubscription:
-      required:
-        - prices
-        - customer
-        - subscription
-      properties:
-        prices:
-          type: string
-        customer:
-          type: array
-          items:
-            required:
-              - paddle_id
-              - paddle_email
-              - paddle_name
-            properties:
-              paddle_id:
-                type: string
-              paddle_email:
-                type: string
-              paddle_name:
-                type: string
-            type: object
-        subscription:
-          oneOf:
-            -
-              $ref: '#/components/schemas/Subscription'
-            -
-              type: 'null'
       type: object
     UtensilRequest:
       required:
