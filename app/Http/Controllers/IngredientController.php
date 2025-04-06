@@ -18,7 +18,6 @@ use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\IngredientRequest;
-use Kami\Cocktail\Repository\IngredientRepository;
 use Kami\Cocktail\Http\Resources\IngredientResource;
 use Kami\Cocktail\Http\Filters\IngredientQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
@@ -56,7 +55,7 @@ class IngredientController extends Controller
         new BAO\PaginateData(IngredientResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function index(IngredientRepository $ingredientQuery, Request $request): JsonResource
+    public function index(IngredientService $ingredientQuery, Request $request): JsonResource
     {
         try {
             $ingredients = (new IngredientQueryFilter($ingredientQuery))->paginate($request->get('per_page', 50));

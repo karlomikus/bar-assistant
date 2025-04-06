@@ -9,12 +9,11 @@ use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\Repository\IngredientRepository;
 
 final class BarOptimizerService
 {
     public function __construct(
-        private readonly IngredientRepository $ingredientRepository,
+        private readonly IngredientService $ingredientRepository,
     ) {
     }
 
