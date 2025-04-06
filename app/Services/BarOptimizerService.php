@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
+use Kami\Cocktail\Models\Bar;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
@@ -19,19 +20,23 @@ final class BarOptimizerService
 
     public function optimize(int $barId): void
     {
+        $bar = Bar::findOrFail($barId);
+        $barSettings = $bar->settings ?? [];
+        $forceToUnits = $barSettings['default_units'] ?? null;
+
         Log::info('[' . $barId . '] Starting bar optimization for bar ID: ' . $barId);
 
         $this->ingredientRepository->rebuildMaterializedPath($barId);
         Log::info('[' . $barId . '] Finished rebuilding materialized path for ingredients.');
 
-        Cocktail::where('bar_id', $barId)->with('ingredients.ingredient')->chunk(50, function ($cocktails) {
-            foreach ($cocktails as $cocktail) {
-                $calculatedAbv = $cocktail->getABV();
-                $cocktail->abv = $calculatedAbv;
-                $cocktail->save();
-            }
-        });
-        Log::info('[' . $barId . '] Finished updating cocktail ABVs.');
+        // Cocktail::where('bar_id', $barId)->with('ingredients.ingredient')->chunk(50, function ($cocktails) {
+        //     foreach ($cocktails as $cocktail) {
+        //         $calculatedAbv = $cocktail->getABV();
+        //         $cocktail->abv = $calculatedAbv;
+        //         $cocktail->save();
+        //     }
+        // });
+        // Log::info('[' . $barId . '] Finished updating cocktail ABVs.');
 
         // Find the most used unit per ingredient
         $unitsPerIngredient = DB::table('cocktail_ingredients')
@@ -50,11 +55,22 @@ final class BarOptimizerService
             ->values();
 
         foreach ($unitsPerIngredient as $commonUnit) {
+            $ingredientUnits = $commonUnit->units;
+
+            // Force unit conversion if specified and the unit is convertible
+            if ($forceToUnits && $forceToUnits !== $ingredientUnits) {
+                $convertableUnits = ['ml', 'oz', 'cl'];
+                if (in_array($ingredientUnits, $convertableUnits) && in_array($forceToUnits, $convertableUnits)) {
+                    $ingredientUnits = $forceToUnits;
+                    Log::debug('[' . $barId . '] Forcing unit conversion from ' . $commonUnit->units . ' to ' . $forceToUnits . ' for ingredient ID: ' . $commonUnit->ingredient_id);
+                }
+            }
+
             DB::table('ingredients')
                 ->where('id', $commonUnit->ingredient_id)
                 ->where('bar_id', $barId)
                 ->whereNull('units')
-                ->update(['units' => $commonUnit->units]);
+                ->update(['units' => $ingredientUnits]);
         }
         Log::info('[' . $barId . '] Finished updating ingredient default units.');
 

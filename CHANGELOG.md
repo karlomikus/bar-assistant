@@ -1,3 +1,11 @@
+# v5.2.2
+## Changes
+- Automatic ingredient units filler function now tries to convert to default bar unit
+
+# v5.2.1
+## Fixes
+- Fixed OpenAPI schema not being in sync with some responses
+
 # v5.2.0
 ## New
 - Added `ENABLE_PASSWORD_LOGIN` variable
