@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Validator;
+use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Http\Requests\IngredientRequest;
 use Kami\Cocktail\Repository\IngredientRepository;
 use Kami\Cocktail\Http\Resources\IngredientResource;
@@ -197,7 +197,7 @@ class IngredientController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function extra(Request $request, CocktailRepository $cocktailRepo, string $idOrSlug): JsonResponse
+    public function extra(Request $request, CocktailService $cocktailRepo, string $idOrSlug): JsonResponse
     {
         $ingredient = Ingredient::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)

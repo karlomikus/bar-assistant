@@ -9,12 +9,12 @@ use Laravel\Scout\EngineManager;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
+use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\Services\MeilisearchService;
-use Kami\Cocktail\Repository\CocktailRepository;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -190,7 +190,7 @@ class Bar extends Model implements UploadableInterface
     public function getShelfCocktailsOnce(): array
     {
         return once(function () {
-            $cocktailRepo = resolve(CocktailRepository::class);
+            $cocktailRepo = resolve(CocktailService::class);
             $userShelfIngredients = $this->shelfIngredients->pluck('ingredient_id')->toArray();
 
             return $cocktailRepo->getCocktailsByIngredients(

@@ -8,11 +8,11 @@ use Illuminate\Support\Str;
 use Laravel\Paddle\Billable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Database\Eloquent\Collection;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Kami\Cocktail\Repository\CocktailRepository;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -189,7 +189,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getShelfCocktailsOnce(int $barId): array
     {
         return once(function () use ($barId) {
-            $cocktailRepo = resolve(CocktailRepository::class);
+            $cocktailRepo = resolve(CocktailService::class);
             $userShelfIngredients = $this->getShelfIngredients($barId)->pluck('ingredient_id')->toArray();
 
             return $cocktailRepo->getCocktailsByIngredients(
