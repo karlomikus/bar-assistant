@@ -959,7 +959,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -993,7 +993,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -1316,7 +1316,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -1341,56 +1341,82 @@ paths:
           schema:
             properties:
               id:
+                description: 'Filter by cocktail IDs'
                 type: string
               name:
+                description: 'Filter by cocktail names (fuzzy search)'
                 type: string
               ingredient_name:
+                description: 'Filter by cocktail ingredient names (fuzzy search)'
                 type: string
               tag_id:
+                description: 'Filter by tag IDs'
                 type: string
               created_user_id:
+                description: 'Filter by creator IDs'
                 type: string
               glass_id:
+                description: 'Filter by glass IDs'
                 type: string
               cocktail_method_id:
+                description: 'Filter by cocktail method IDs'
                 type: string
               collection_id:
+                description: 'Filter by collection IDs'
                 type: string
               favorites:
+                description: 'Show only user favorites'
                 type: boolean
               on_shelf:
+                description: "Show only cocktails on the user's shelf"
                 type: boolean
               bar_shelf:
+                description: 'Show only cocktails on the bar shelf'
                 type: boolean
               user_shelves:
+                description: "Show only cocktails on the user's shelves. Comma separated list of user IDs"
                 type: string
               shelf_ingredients:
+                description: 'Show only cocktails that can be made with the given ingredients. Used as on-the-fly custom shelf filter'
                 type: string
               is_public:
+                description: 'Show only cocktails with public links'
                 type: boolean
               user_rating_min:
+                description: 'Filter by greater than or equal user rating'
                 type: string
               user_rating_max:
+                description: 'Filter by less than or equal user rating'
                 type: string
               average_rating_min:
+                description: 'Filter by greater than or equal average rating'
                 type: string
               average_rating_max:
+                description: 'Filter by less than or equal average rating'
                 type: string
               abv_min:
+                description: 'Filter by greater than or equal ABV'
                 type: string
               abv_max:
+                description: 'Filter by less than or equal ABV'
                 type: string
               main_ingredient_id:
+                description: 'Show only cocktails whose main ingredient is in the given list. Comma separated list of ingredient IDs'
                 type: string
               total_ingredients:
+                description: 'Filter by total number of ingredients'
                 type: string
               missing_ingredients:
+                description: 'Filter by total number of missing ingredients'
                 type: string
               missing_bar_ingredients:
+                description: 'Filter by total number of missing bar ingredients'
                 type: string
               specific_ingredients:
+                description: 'Show cocktails that contain given ingredient IDs'
                 type: string
               ignore_ingredients:
+                description: 'Show cocktails that do not contain given ingredient IDs'
                 type: string
             type: object
         -
@@ -1452,7 +1478,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -2193,7 +2219,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -2238,7 +2264,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -2486,7 +2512,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -2547,7 +2573,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -3276,7 +3302,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -3327,7 +3353,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -3914,7 +3940,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -3990,7 +4016,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -4052,7 +4078,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -4101,7 +4127,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -4126,25 +4152,35 @@ paths:
           schema:
             properties:
               id:
+                description: 'Filter by ingredient id'
                 type: integer
               name:
+                description: 'Filter by ingredient name (fuzzy search)'
                 type: string
               name_exact:
+                description: 'Filter by ingredient name (exact match)'
                 type: string
               origin:
+                description: 'Filter by ingredient origin'
                 type: string
               created_user_id:
+                description: 'Filter by user id who created the ingredient'
                 type: integer
               on_shopping_list:
+                description: 'Show only ingredients that are on the shopping list'
                 type: boolean
               on_shelf:
+                description: 'Show only ingredients that are on the shelf'
                 type: boolean
               bar_shelf:
+                description: 'Show only ingredients that are on the bar shelf'
                 type: boolean
               strength_min:
+                description: 'Show only ingredients with strength greater than or equal to given value'
                 type: number
                 format: float
               strength_max:
+                description: 'Show only ingredients with strength less than or equal to given value'
                 type: number
                 format: float
               main_ingredients:
@@ -4219,7 +4255,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -4767,7 +4803,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -4818,7 +4854,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -4929,7 +4965,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -5318,7 +5354,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -5352,7 +5388,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -5848,7 +5884,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -6094,7 +6130,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -6148,7 +6184,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -6202,7 +6238,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -6256,7 +6292,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -6325,7 +6361,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -6394,7 +6430,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -6757,7 +6793,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -6816,7 +6852,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -6881,7 +6917,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -6950,7 +6986,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -7175,7 +7211,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -7209,7 +7245,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -7457,7 +7493,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -7491,7 +7527,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -7545,7 +7581,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -7620,7 +7656,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -7753,7 +7789,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
@@ -7787,7 +7823,7 @@ paths:
         -
           name: Bar-Assistant-Bar-Id
           in: header
-          description: 'Database id of a bar. Required if you are not using `bar_id` query string.'
+          description: 'Database id of a bar.'
           required: false
           schema:
             type: integer
