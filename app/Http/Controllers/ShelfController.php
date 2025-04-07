@@ -18,9 +18,9 @@ use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\UserShoppingList;
+use Kami\Cocktail\Services\CocktailService;
+use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\Repository\CocktailRepository;
-use Kami\Cocktail\Repository\IngredientRepository;
 use Kami\Cocktail\Http\Resources\CocktailBasicResource;
 use Kami\Cocktail\Http\Requests\ShelfIngredientsRequest;
 use Kami\Cocktail\Http\Resources\IngredientBasicResource;
@@ -63,7 +63,7 @@ class ShelfController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(CocktailBasicResource::class),
     ])]
-    public function cocktails(CocktailRepository $cocktailRepo, Request $request, int $id): JsonResource
+    public function cocktails(CocktailService $cocktailRepo, Request $request, int $id): JsonResource
     {
         $user = User::findOrFail($id);
         if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
@@ -203,7 +203,7 @@ class ShelfController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function recommend(Request $request, IngredientRepository $ingredientRepo, int $id): \Illuminate\Http\JsonResponse
+    public function recommend(Request $request, IngredientService $ingredientRepo, int $id): \Illuminate\Http\JsonResponse
     {
         $user = User::findOrFail($id);
         if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
@@ -324,7 +324,7 @@ class ShelfController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(CocktailBasicResource::class),
     ])]
-    public function barCocktails(CocktailRepository $cocktailRepo, Request $request, int $id): JsonResource
+    public function barCocktails(CocktailService $cocktailRepo, Request $request, int $id): JsonResource
     {
         $bar = Bar::findOrFail($id);
         if ($request->user()->cannot('show', $bar)) {
@@ -349,7 +349,7 @@ class ShelfController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function recommendBarIngredients(Request $request, IngredientRepository $ingredientRepo, int $id): \Illuminate\Http\JsonResponse
+    public function recommendBarIngredients(Request $request, IngredientService $ingredientRepo, int $id): \Illuminate\Http\JsonResponse
     {
         $bar = Bar::findOrFail($id);
         if ($request->user()->cannot('show', $bar)) {

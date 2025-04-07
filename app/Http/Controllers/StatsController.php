@@ -15,7 +15,7 @@ use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
-use Kami\Cocktail\Repository\CocktailRepository;
+use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
 class StatsController extends Controller
@@ -28,7 +28,7 @@ class StatsController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function index(CocktailRepository $cocktailRepo, Request $request, int $id): JsonResponse
+    public function index(CocktailService $cocktailRepo, Request $request, int $id): JsonResponse
     {
         $bar = Bar::findOrFail($id);
         $barMembership = $request->user()->getBarMembership($bar->id)->load('userIngredients');

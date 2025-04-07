@@ -8,14 +8,14 @@ use Kami\Cocktail\Models\Ingredient;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Kami\Cocktail\Repository\IngredientRepository;
+use Kami\Cocktail\Services\IngredientService;
 
 /**
  * @mixin \Kami\Cocktail\Models\Ingredient
  */
 final class IngredientQueryFilter extends QueryBuilder
 {
-    public function __construct(IngredientRepository $ingredientQuery)
+    public function __construct(IngredientService $ingredientQuery)
     {
         parent::__construct(Ingredient::query());
 

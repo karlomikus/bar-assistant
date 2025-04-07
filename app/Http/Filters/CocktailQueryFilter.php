@@ -10,14 +10,14 @@ use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedInclude;
-use Kami\Cocktail\Repository\CocktailRepository;
+use Kami\Cocktail\Services\CocktailService;
 
 /**
  * @mixin \Kami\Cocktail\Models\Cocktail
  */
 final class CocktailQueryFilter extends QueryBuilder
 {
-    public function __construct(CocktailRepository $cocktailRepo)
+    public function __construct(CocktailService $cocktailRepo)
     {
         parent::__construct(Cocktail::query());
 

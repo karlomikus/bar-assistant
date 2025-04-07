@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Illuminate\Support\Str;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Log;
@@ -30,8 +31,15 @@ class SSOAuthController extends Controller
             abort(404, 'Unsupported provider');
         }
 
-        /** @phpstan-ignore-next-line */
-        return Socialite::driver($validProvider->value)->stateless()->redirect();
+        /** @var \Laravel\Socialite\Two\AbstractProvider */
+        $driver = Socialite::driver($validProvider->value);
+
+        // Authelia always requires a state parameter to be set
+        if ($validProvider === OauthProvider::Authelia) {
+            $driver->with(['state' => Str::random(40)]);
+        }
+
+        return $driver->stateless()->redirect();
     }
 
     #[OAT\Get(path: '/auth/sso/{provider}/callback', tags: ['Authentication'], operationId: 'ssoCallback', description: 'Callback for SSO login', summary: 'SSO callback', parameters: [
@@ -51,8 +59,10 @@ class SSOAuthController extends Controller
         }
 
         try {
-            /** @phpstan-ignore-next-line */
-            $socialiteUser = Socialite::driver($validProvider->value)->stateless()->user() ?? throw new \Exception('Failed to get user');
+            /** @var \Laravel\Socialite\Two\AbstractProvider */
+            $driver = Socialite::driver($validProvider->value);
+
+            $socialiteUser = $driver->stateless()->user();
         } catch (\Exception $e) {
             abort(403, $e->getMessage());
         }

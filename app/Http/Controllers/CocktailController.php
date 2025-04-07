@@ -21,7 +21,6 @@ use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\OpenAPI\Schemas\ImageRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
-use Kami\Cocktail\Repository\CocktailRepository;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
@@ -72,7 +71,7 @@ class CocktailController extends Controller
         new BAO\PaginateData(CocktailResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function index(CocktailRepository $cocktailRepo, Request $request): JsonResource
+    public function index(CocktailService $cocktailRepo, Request $request): JsonResource
     {
         try {
             $cocktails = new CocktailQueryFilter($cocktailRepo);
@@ -350,7 +349,7 @@ class CocktailController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function similar(CocktailRepository $cocktailRepo, Request $request, string $idOrSlug): JsonResource
+    public function similar(CocktailService $cocktailRepo, Request $request, string $idOrSlug): JsonResource
     {
         $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->with('ingredients.ingredient')->firstOrFail();
 

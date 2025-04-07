@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Console\Commands;
 
 use Illuminate\Console\Command;
-use Kami\Cocktail\Repository\IngredientRepository;
+use Kami\Cocktail\Services\IngredientService;
 
 class RebuildHierarchy extends Command
 {
@@ -15,8 +15,8 @@ class RebuildHierarchy extends Command
 
     public function handle(): int
     {
-        /** @var IngredientRepository */
-        $repo = resolve(IngredientRepository::class);
+        /** @var IngredientService */
+        $repo = resolve(IngredientService::class);
 
         $barId = (int) $this->argument('barId');
 
