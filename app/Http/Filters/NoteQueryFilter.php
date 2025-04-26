@@ -8,6 +8,9 @@ use Kami\Cocktail\Models\Note;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 
+/**
+ * @extends \Spatie\QueryBuilder\QueryBuilder<Note>
+ */
 final class NoteQueryFilter extends QueryBuilder
 {
     public function __construct()

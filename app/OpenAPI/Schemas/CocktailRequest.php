@@ -46,13 +46,12 @@ readonly class CocktailRequest
 
     public static function fromIlluminateRequest(Request $request, ?int $barId = null): self
     {
+        /** @var array<mixed> */
         $formIngredients = $request->post('ingredients', []);
 
         $ingredients = [];
-        if (is_array($formIngredients)) {
-            foreach ($formIngredients as $formIngredient) {
-                $ingredients[] = CocktailIngredientRequest::fromArray($formIngredient);
-            }
+        foreach ($formIngredients as $formIngredient) {
+            $ingredients[] = CocktailIngredientRequest::fromArray($formIngredient);
         }
 
         return new self(

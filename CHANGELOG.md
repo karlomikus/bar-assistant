@@ -1,3 +1,11 @@
+# v5.2.4
+## Fixes
+- Fixed wrong thumbnail URL getting synced into search engine
+
+# v5.2.3
+## Changes
+- Query string `state` is always being sent when using Authelia as SSO provider
+
 # v5.2.2
 ## Changes
 - Automatic ingredient units filler function now tries to convert to default bar unit

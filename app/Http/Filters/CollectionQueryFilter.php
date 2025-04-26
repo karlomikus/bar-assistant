@@ -8,6 +8,9 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Kami\Cocktail\Models\Collection as ItemsCollection;
 
+/**
+ * @extends \Spatie\QueryBuilder\QueryBuilder<ItemsCollection>
+ */
 final class CollectionQueryFilter extends QueryBuilder
 {
     public function __construct()
