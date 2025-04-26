@@ -11,7 +11,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Kami\Cocktail\Services\IngredientService;
 
 /**
- * @mixin \Kami\Cocktail\Models\Ingredient
+ * @extends \Spatie\QueryBuilder\QueryBuilder<Ingredient>
  */
 final class IngredientQueryFilter extends QueryBuilder
 {

@@ -13,7 +13,7 @@ use Spatie\QueryBuilder\AllowedInclude;
 use Kami\Cocktail\Services\CocktailService;
 
 /**
- * @mixin \Kami\Cocktail\Models\Cocktail
+ * @extends \Spatie\QueryBuilder\QueryBuilder<Cocktail>
  */
 final class CocktailQueryFilter extends QueryBuilder
 {

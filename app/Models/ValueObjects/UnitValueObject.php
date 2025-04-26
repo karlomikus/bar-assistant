@@ -66,14 +66,14 @@ final readonly class UnitValueObject implements Stringable, JsonSerializable
 
     public function isDash(): bool
     {
-        $matches = $this->units['dash'] ?? [];
+        $matches = $this->units['dash'];
 
         return in_array($this->value, $matches, true);
     }
 
     public function isBarspoon(): bool
     {
-        $matches = $this->units['barspoon'] ?? [];
+        $matches = $this->units['barspoon'];
 
         return str_contains($this->value, 'spoon') || in_array($this->value, $matches, true);
     }

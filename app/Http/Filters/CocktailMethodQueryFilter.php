@@ -9,7 +9,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Kami\Cocktail\Models\CocktailMethod;
 
 /**
- * @mixin \Kami\Cocktail\Models\CocktailMethod
+ * @extends \Spatie\QueryBuilder\QueryBuilder<CocktailMethod>
  */
 final class CocktailMethodQueryFilter extends QueryBuilder
 {

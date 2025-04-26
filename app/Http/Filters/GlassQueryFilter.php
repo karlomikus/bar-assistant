@@ -9,7 +9,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 
 /**
- * @mixin \Kami\Cocktail\Models\Glass
+ * @extends \Spatie\QueryBuilder\QueryBuilder<Glass>
  */
 final class GlassQueryFilter extends QueryBuilder
 {
