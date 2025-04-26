@@ -1,3 +1,7 @@
+# v5.2.4
+## Fixes
+- Fixed wrong thumbnail URL getting synced into search engine
+
 # v5.2.3
 ## Changes
 - Query string `state` is always being sent when using Authelia as SSO provider
