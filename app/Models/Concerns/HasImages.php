@@ -36,6 +36,12 @@ trait HasImages
             return null;
         }
 
+        if (!empty(config('app.url'))) {
+            $path = route('images.thumb', ['id' => $this->getMainImage()->id], false);
+
+            return rtrim(config('app.url'), '/') . '/' . ltrim($path, '/');
+        }
+
         return route('images.thumb', ['id' => $this->getMainImage()->id], $absolute);
     }
 
