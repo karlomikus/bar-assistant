@@ -37,7 +37,7 @@ readonly class MenuItem
             categoryName: $menuCocktail->category_name,
             description: $menuCocktail->cocktail->getIngredientNames()->implode(', '),
             publicId: $menuCocktail->cocktail->public_id,
-            image: $thumbnail ? config('app.url') . $thumbnail : null,
+            image: $thumbnail,
             inShelf: $menuCocktail->cocktail->inBarShelf(),
         );
     }
@@ -55,7 +55,7 @@ readonly class MenuItem
             categoryName: $menuIngredient->category_name,
             description: $menuIngredient->ingredient->getMaterializedPathAsString(),
             publicId: null,
-            image: $thumbnail ? config('app.url') . $thumbnail : null,
+            image: $thumbnail,
             inShelf: $menuIngredient->ingredient->barHasInShelf(),
         );
     }
