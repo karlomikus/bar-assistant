@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services\Auth;
 
-use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Arr;
-use SocialiteProviders\Manager\OAuth2\AbstractProvider;
+use GuzzleHttp\RequestOptions;
 use SocialiteProviders\Manager\OAuth2\User;
+use SocialiteProviders\Manager\OAuth2\AbstractProvider;
 
 class PocketIdProvider extends AbstractProvider
 {
