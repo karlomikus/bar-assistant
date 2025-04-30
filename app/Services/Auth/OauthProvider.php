@@ -18,6 +18,7 @@ enum OauthProvider: string
     case Authentik = 'authentik';
     case Authelia = 'authelia';
     case Keycloak = 'keycloak';
+    case PocketId = 'pocketid';
 
     public function getPrettyName(): string
     {
@@ -28,6 +29,7 @@ enum OauthProvider: string
             self::Authentik => 'Authentik',
             self::Authelia => 'Authelia',
             self::Keycloak => 'Keycloak',
+            self::PocketId => 'PocketId',
         };
     }
 }

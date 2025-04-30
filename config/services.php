@@ -70,4 +70,11 @@ return [
         'base_url' => env('KEYCLOAK_BASE_URL'),
         'realms' => env('KEYCLOAK_REALM'),
     ],
+
+    'pocketid' => [
+        'base_url' => env('POCKETID_BASE_URL'),
+        'client_id' => env('POCKETID_CLIENT_ID'),
+        'client_secret' => env('POCKETID_CLIENT_SECRET'),
+        'redirect' => env('POCKETID_REDIRECT_URI')
+    ],
 ];
