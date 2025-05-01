@@ -1,3 +1,19 @@
+# v5.3.0
+## New
+- Added PocketId as a SSO provider
+```
+# Setup via:
+POCKETID_BASE_URL=
+POCKETID_CLIENT_ID=
+POCKETID_CLIENT_SECRET=
+POCKETID_REDIRECT_URI=
+```
+- Added import support for `cocktailexplorer.co`
+
+# v5.2.5
+## Fixes
+- Fixed menu item having wrong thumb path
+
 # v5.2.4
 ## Fixes
 - Fixed wrong thumbnail URL getting synced into search engine
