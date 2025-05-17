@@ -24,6 +24,7 @@
         "socialiteproviders/authelia": "^4.0",
         "socialiteproviders/authentik": "^5.2",
         "socialiteproviders/keycloak": "^5.3",
+        "socialiteproviders/zitadel": "^4.1",
         "spatie/array-to-xml": "^3.1",
         "spatie/laravel-query-builder": "^6.0",
         "spatie/laravel-sluggable": "^3.4",

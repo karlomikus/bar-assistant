@@ -10893,6 +10893,8 @@ components:
         - authentik
         - authelia
         - keycloak
+        - pocketid
+        - zitadel
   securitySchemes:
     user_token:
       type: http

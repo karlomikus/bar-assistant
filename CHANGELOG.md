@@ -1,3 +1,11 @@
+# v5.4.0
+## New
+- Added Zitadel as SSO provider
+- ABV now gets recalculated when method dilution percentage changes
+
+## Fixes
+- Fix materialized path migration failing in certain cases
+
 # v5.3.0
 ## New
 - Added PocketId as a SSO provider
