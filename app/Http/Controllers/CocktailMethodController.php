@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
+use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\Models\CocktailMethod;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailMethodRequest;
@@ -105,10 +106,23 @@ class CocktailMethodController extends Controller
             abort(403);
         }
 
+        $originalDilutionPercentage = $method->dilution_percentage;
+
         $method->name = $request->input('name');
         $method->dilution_percentage = (int) $request->input('dilution_percentage');
         $method->updated_at = now();
         $method->save();
+
+        if ($originalDilutionPercentage !== $method->dilution_percentage) {
+            Log::info('Updating ABV for cocktails using method ID: ' . $method->id);
+            $cocktailsToUpdateAbv = $method->cocktails()->get();
+
+            foreach ($cocktailsToUpdateAbv as $cocktail) {
+                $calculatedAbv = $cocktail->getABV();
+                $cocktail->abv = $calculatedAbv;
+                $cocktail->save();
+            }
+        }
 
         return new CocktailMethodResource($method);
     }
