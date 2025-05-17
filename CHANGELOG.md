@@ -1,3 +1,10 @@
+# v5.4.0
+## New
+- Added Zitadel as SSO provider
+
+## Fixes
+- Fix materialized path migration failing in certain cases
+
 # v5.3.0
 ## New
 - Added PocketId as a SSO provider
