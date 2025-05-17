@@ -33,11 +33,14 @@ return new class () extends Migration {
             $categoryToIngredientMap = [];
 
             foreach ($categories as $category) {
-                $userId = DB::table('bars')
+                $barUser = DB::table('bars')
                     ->select('created_user_id')
                     ->where('id', $category->bar_id)
-                    ->first()
-                    ->created_user_id;
+                    ->first();
+
+                if (!$barUser) {
+                    continue;
+                }
 
                 // Create new root ingredient from category
                 $newIngredientId = DB::table('ingredients')->insertGetId([
@@ -47,7 +50,7 @@ return new class () extends Migration {
                     'bar_id' => $category->bar_id,
                     'created_at' => $category->created_at,
                     'updated_at' => $category->updated_at,
-                    'created_user_id' => $userId,
+                    'created_user_id' => $barUser->created_user_id,
                     'materialized_path' => null, // Root ingredients should have null path
                     'parent_ingredient_id' => null, // Root level
                 ]);
