@@ -243,21 +243,25 @@ final class CocktailService
         // Basically, goes through all ingredients to match ($ingredientIds) and check if they can create complex ingredients
         // If they can, that ingredient is added to the list of ingredients to match
         if ($matchComplexIngredients) {
-            $placeholders = str_repeat('?,', count($ingredientIds) - 1) . '?';
-            $rawQuery = "WITH RECURSIVE IngredientChain AS (
-                    SELECT id AS matched_ingredient
-                    FROM ingredients
-                    WHERE id IN (" . $placeholders . ")
-                    UNION
-                    SELECT ci.main_ingredient_id AS matched_ingredient
-                    FROM complex_ingredients ci
-                    INNER JOIN IngredientChain ic ON ci.ingredient_id = ic.matched_ingredient
-                )
-                SELECT DISTINCT matched_ingredient
-                FROM IngredientChain;";
+            $additionalIngredients = $this->db->table('complex_ingredients AS ci')
+                ->distinct()
+                ->select('ci.main_ingredient_id')
+                ->join('ingredients AS i_main', 'ci.main_ingredient_id', '=', 'i_main.id')
+                ->whereIn('ci.id', function ($query) use ($ingredientIds) {
+                    $query->select('ci_inner.id')
+                        ->from('complex_ingredients AS ci_inner')
+                        ->whereNotExists(function ($query) use ($ingredientIds) {
+                            $query->select('i_ingredient.id')
+                                ->from('complex_ingredients AS ci_sub')
+                                ->join('ingredients AS i_ingredient', 'ci_sub.ingredient_id', '=', 'i_ingredient.id')
+                                ->whereColumn('ci_sub.main_ingredient_id', 'ci_inner.main_ingredient_id')
+                                ->whereNotIn('i_ingredient.id', $ingredientIds);
+                        });
+                })
+                ->pluck('main_ingredient_id')
+                ->toArray();
 
-            $additionalIngredients = collect($this->db->select($rawQuery, $ingredientIds))->pluck('matched_ingredient');
-            $ingredientIds = array_merge($ingredientIds, $additionalIngredients->toArray());
+            $ingredientIds = array_merge($ingredientIds, $additionalIngredients);
             $ingredientIds = array_unique($ingredientIds);
         }
 

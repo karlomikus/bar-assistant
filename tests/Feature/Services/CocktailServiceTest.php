@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Repository;
+namespace Tests\Feature\Services;
 
 use Tests\TestCase;
 use Kami\Cocktail\Models\Cocktail;
@@ -13,7 +13,7 @@ use Kami\Cocktail\Models\CocktailIngredient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 
-class CocktailRepositoryTest extends TestCase
+class CocktailServiceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -186,10 +186,14 @@ class CocktailRepositoryTest extends TestCase
 
         $whiskey = Ingredient::factory()->for($membership->bar)->create();
         $gin = Ingredient::factory()->for($membership->bar)->create();
-        $lemon = Ingredient::factory()->for($membership->bar)->create();
+        $lemonJuicePart1 = Ingredient::factory()->for($membership->bar)->create();
+        $lemonJuicePart2 = Ingredient::factory()->for($membership->bar)->create();
+        $lemonJuicePart3 = Ingredient::factory()->for($membership->bar)->create();
         $lemonJuice = Ingredient::factory()
             ->for($membership->bar)
-            ->has(ComplexIngredient::factory()->for($lemon), 'ingredientParts')
+            ->has(ComplexIngredient::factory()->for($lemonJuicePart1), 'ingredientParts')
+            ->has(ComplexIngredient::factory()->for($lemonJuicePart2), 'ingredientParts')
+            ->has(ComplexIngredient::factory()->for($lemonJuicePart3), 'ingredientParts')
             ->create();
 
         Cocktail::factory()
@@ -232,7 +236,7 @@ class CocktailRepositoryTest extends TestCase
         Cocktail::factory()->recycle($membership->bar)->count(10)->create();
 
         $repository = resolve(CocktailService::class);
-        $cocktails = $repository->getCocktailsByIngredients([$gin->id, $lemon->id], $membership->bar_id);
+        $cocktails = $repository->getCocktailsByIngredients([$gin->id, $lemonJuicePart1->id, $lemonJuicePart2->id, $lemonJuicePart3->id], $membership->bar_id);
 
         $this->assertSame([1], $cocktails->toArray());
     }
