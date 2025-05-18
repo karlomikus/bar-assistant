@@ -1,3 +1,7 @@
+# v5.4.1
+## Fixes
+- Fixed recipe matching when complex ingredient includes multiple ingredient parts
+
 # v5.4.0
 ## New
 - Added Zitadel as SSO provider
