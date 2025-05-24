@@ -121,11 +121,25 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
         return $this->belongsToMany(CocktailCollection::class, 'collections_cocktails');
     }
 
+    /**
+     * @return HasMany<MenuCocktail, $this>
+     */
+    public function menuCocktails(): HasMany
+    {
+        return $this->hasMany(MenuCocktail::class);
+    }
+
+    public function deleteFromMenu(): void
+    {
+        $this->menuCocktails()->delete();
+    }
+
     public function delete(): ?bool
     {
         $this->deleteImages();
         $this->deleteRatings();
         $this->deleteNotes();
+        $this->deleteFromMenu(); // Fix for missing FK constraints in older versions
 
         return parent::delete();
     }

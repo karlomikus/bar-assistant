@@ -18,7 +18,7 @@ return new class () extends Migration {
 
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('bar_id');
+            $table->foreignId('bar_id')->constrained()->cascadeOnDelete();
             $table->boolean('is_enabled')->default(false);
             $table->timestamps();
 
@@ -30,8 +30,8 @@ return new class () extends Migration {
             $table->id();
             $table->string('category_name');
             $table->integer('sort')->default(0);
-            $table->foreignId('menu_id');
-            $table->foreignId('cocktail_id');
+            $table->foreignId('menu_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('cocktail_id')->constrained()->cascadeOnDelete();
             $table->integer('price')->default(0);
             $table->string('currency')->nullable();
         });
