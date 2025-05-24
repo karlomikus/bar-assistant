@@ -1,3 +1,7 @@
+# v5.4.2
+## Fixes
+- Fixed menu cocktails not getting removed correctly
+
 # v5.4.1
 ## Fixes
 - Fixed recipe matching when complex ingredient includes multiple ingredient parts

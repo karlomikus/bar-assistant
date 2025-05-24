@@ -21,7 +21,6 @@ use Kami\Cocktail\Models\MenuCocktail;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\PriceCategory;
 use Kami\Cocktail\Models\CocktailMethod;
-use Kami\Cocktail\Models\MenuIngredient;
 use Kami\Cocktail\Models\IngredientPrice;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
