@@ -7,6 +7,7 @@ namespace Tests\Feature\Http;
 use Tests\TestCase;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Bar;
+use Kami\Cocktail\Models\Menu;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\Models\Image;
@@ -16,9 +17,11 @@ use Kami\Cocktail\Models\Utensil;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Config;
+use Kami\Cocktail\Models\MenuCocktail;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\PriceCategory;
 use Kami\Cocktail\Models\CocktailMethod;
+use Kami\Cocktail\Models\MenuIngredient;
 use Kami\Cocktail\Models\IngredientPrice;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
@@ -421,11 +424,14 @@ class CocktailControllerTest extends TestCase
         $response->assertNoContent();
     }
 
-    public function test_cocktail_delete_deletes_images_response(): void
+    public function test_cocktail_delete_deletes_all_references_response(): void
     {
-        $this->setupBar();
+        $barMembership = $this->setupBarMembership();
+        $this->actingAs($barMembership->user);
 
-        $cocktail = Cocktail::factory()->create(['created_user_id' => auth()->user()->id, 'bar_id' => 1]);
+        $cocktail = Cocktail::factory()->create(['created_user_id' => $barMembership->user_id, 'bar_id' => $barMembership->bar_id]);
+        $cocktail->rate(2, $barMembership->user_id);
+        $cocktail->addNote('Test note', $barMembership->user_id);
         $storage = Storage::fake('uploads');
         $imageFile = UploadedFile::fake()->createWithContent('image1.jpg', $this->getFakeImageContent('jpg'));
         $image = Image::factory()->for($cocktail, 'imageable')->create([
@@ -433,14 +439,24 @@ class CocktailControllerTest extends TestCase
             'file_extension' => $imageFile->extension(),
             'copyright' => 'initial',
             'sort' => 7,
-            'created_user_id' => auth()->user()->id
+            'created_user_id' => $barMembership->user_id
         ]);
+        $menu = Menu::factory()->for($barMembership->bar)->create(['is_enabled' => true]);
+        MenuCocktail::factory()->for($menu)->for($cocktail)->create(['category_name' => 'cocktails']);
 
         $this->assertTrue($storage->exists($image->file_path));
+        $this->assertDatabaseHas('images', ['id' => $image->id]);
+        $this->assertDatabaseHas('ratings', ['rateable_id' => $cocktail->id]);
+        $this->assertDatabaseHas('notes', ['noteable_id' => $cocktail->id]);
+        $this->assertDatabaseHas('menu_cocktails', ['cocktail_id' => $cocktail->id]);
 
         $this->deleteJson('/api/cocktails/' . $cocktail->id);
 
         $this->assertFalse($storage->exists($image->file_path));
+        $this->assertDatabaseMissing('images', ['id' => $image->id]);
+        $this->assertDatabaseEmpty('ratings');
+        $this->assertDatabaseEmpty('notes');
+        $this->assertDatabaseEmpty('menu_cocktails');
     }
 
     public function test_make_cocktail_public_link_response(): void
