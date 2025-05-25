@@ -19,6 +19,9 @@ class GlassRequest
     public ?float $volume = null;
     #[OAT\Property(property: 'volume_units', example: 'ml')]
     public ?string $volumeUnits = null;
+    /** @var array<int> */
+    #[OAT\Property(items: new OAT\Items(type: 'integer'), description: 'Existing image ids')]
+    public array $images = [];
 
     public static function fromLaravelRequest(Request $request): self
     {
@@ -28,6 +31,7 @@ class GlassRequest
         $result->description = $request->input('description');
         $result->volume = $request->float('volume');
         $result->volumeUnits = $request->input('volume_units');
+        $result->images = array_map('intval', $request->input('images', []));
 
         return $result;
     }

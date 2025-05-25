@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Glass;
+use Kami\Cocktail\Models\Image;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Http\Requests\GlassRequest;
@@ -44,7 +46,7 @@ class GlassController extends Controller
     #[BAO\NotFoundResponse]
     public function show(Request $request, int $id): JsonResource
     {
-        $glass = Glass::withCount('cocktails')->findOrFail($id);
+        $glass = Glass::withCount('cocktails')->with('images')->findOrFail($id);
 
         if ($request->user()->cannot('show', $glass)) {
             abort(403);
@@ -73,9 +75,20 @@ class GlassController extends Controller
             abort(403);
         }
 
-        $glass = BAO\Schemas\GlassRequest::fromLaravelRequest($request)->toLaravelModel();
+        $glassRequest = BAO\Schemas\GlassRequest::fromLaravelRequest($request);
+
+        $glass = $glassRequest->toLaravelModel();
         $glass->bar_id = bar()->id;
         $glass->save();
+
+        if (count($glassRequest->images) > 0) {
+            try {
+                $imageModels = Image::findOrFail($glassRequest->images);
+                $glass->attachImages($imageModels);
+            } catch (Throwable $e) {
+                abort(500, $e->getMessage());
+            }
+        }
 
         return (new GlassResource($glass))
             ->response()
@@ -104,9 +117,20 @@ class GlassController extends Controller
             abort(403);
         }
 
-        $glass = BAO\Schemas\GlassRequest::fromLaravelRequest($request)->toLaravelModel($glass);
+        $glassRequest = BAO\Schemas\GlassRequest::fromLaravelRequest($request);
+
+        $glass = $glassRequest->toLaravelModel($glass);
         $glass->updated_at = now();
         $glass->save();
+
+        if (count($glassRequest->images) > 0) {
+            try {
+                $imageModels = Image::findOrFail($glassRequest->images);
+                $glass->attachImages($imageModels);
+            } catch (Throwable $e) {
+                abort(500, $e->getMessage());
+            }
+        }
 
         $glass->cocktails->each(fn ($cocktail) => $cocktail->searchable());
 

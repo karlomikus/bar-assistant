@@ -9088,6 +9088,11 @@ components:
             - string
             - 'null'
           example: ml
+        images:
+          description: 'Glassware images'
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
       type: object
     Image:
       description: 'Image attached to a specific resource'
@@ -10439,6 +10444,11 @@ components:
             - string
             - 'null'
           example: ml
+        images:
+          description: 'Existing image ids'
+          type: array
+          items:
+            type: integer
       type: object
     ImageRequest:
       required:

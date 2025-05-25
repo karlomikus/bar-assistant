@@ -60,7 +60,7 @@ trait HasImages
         $disk = Storage::disk('uploads');
 
         foreach ($images as $image) {
-            if (!$image->isTemp()) { // Dont attach already attached images
+            if (!$image->isTemporaryImage()) { // Dont attach already attached images
                 continue;
             }
 

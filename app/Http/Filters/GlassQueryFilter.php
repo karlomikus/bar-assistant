@@ -24,6 +24,7 @@ final class GlassQueryFilter extends QueryBuilder
             ->defaultSort('name')
             ->allowedSorts('name', 'created_at')
             ->withCount('cocktails')
+            ->with('images')
             ->filterByBar();
     }
 }
