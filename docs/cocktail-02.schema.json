@@ -213,9 +213,11 @@
     "ingredients": {
       "type": "array",
       "description": "List of ingredients",
+      "uniqueItems": true,
       "items": {
         "type": "object",
         "title": "Ingredient",
+        "additionalProperties": true,
         "properties": {
           "_id": {
             "description": "The unique identifier for an ingredient, used as a refrence in cocktail ingredient list",
