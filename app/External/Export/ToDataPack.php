@@ -146,7 +146,7 @@ class ToDataPack
     private function dumpBaseData(int $barId, ZipArchive &$zip): void
     {
         $baseDataFiles = [
-            'base_glasses' => DB::table('glasses')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
+            'base_glasses' => DB::table('glasses')->select('name', 'description', 'volume', 'volume_units')->where('bar_id', $barId)->get()->toArray(),
             'base_methods' => DB::table('cocktail_methods')->select('name', 'dilution_percentage')->where('bar_id', $barId)->get()->toArray(),
             'base_utensils' => DB::table('utensils')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
             'base_price_categories' => DB::table('price_categories')->select('name', 'currency', 'description')->where('bar_id', $barId)->get()->toArray(),
