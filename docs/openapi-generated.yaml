@@ -9046,6 +9046,9 @@ components:
           type:
             - string
             - 'null'
+        supports_recipe_import:
+          description: 'Indicates if the recipe supports import into the application'
+          type: boolean
       type: object
     Glass:
       description: 'Represents glassware'

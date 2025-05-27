@@ -11,17 +11,17 @@ use Laminas\Feed\Reader\Http\ClientInterface;
 
 final class RecipeFeedsService
 {
-    /** @var string[] */
+    /** @var array<array{url: string, supportsRecipeImport: bool}> */
     private array $feeds = [
-        'https://punchdrink.com/recipe-archives/feed/',
-        'https://feeds.feedburner.com/punchdrink',
-        'https://abarabove.com/feed/',
-        'https://imbibemagazine.com/category/recipes/cocktails-spirits-recipes/feed/',
-        'https://imbibemagazine.com/category/recipes/alcohol-free-recipes/feed/',
-        'https://www.theeducatedbarfly.com/category/recipes/cocktails/feed/',
-        // 'https://australianbartender.com.au/feed/',
-        // 'https://chilledmagazine.com/feed/',
-        // 'https://imbibemagazine.com/feed/',
+        ['url' => 'https://punchdrink.com/recipe-archives/feed/', 'supportsRecipeImport' => true],
+        ['url' => 'https://feeds.feedburner.com/punchdrink', 'supportsRecipeImport' => false],
+        ['url' => 'https://abarabove.com/feed/', 'supportsRecipeImport' => false],
+        ['url' => 'https://imbibemagazine.com/category/recipes/cocktails-spirits-recipes/feed/', 'supportsRecipeImport' => true],
+        ['url' => 'https://imbibemagazine.com/category/recipes/alcohol-free-recipes/feed/', 'supportsRecipeImport' => true],
+        ['url' => 'https://www.theeducatedbarfly.com/category/recipes/cocktails/feed/', 'supportsRecipeImport' => true],
+        ['url' => 'https://feeds-api.dotdashmeredith.com/v1/rss/google/7d333f07-9a05-4a69-aae7-7f2daacd7ebc', 'supportsRecipeImport' => false],
+        // ['url' => 'https://cocktailvirgin.blogspot.com/feeds/posts/default', 'supportsRecipeImport' => true],
+        // ['url' => 'https://www.reddit.com/r/cocktails/top/.rss?sort=top&t=week', 'supportsRecipeImport' => false],
     ];
 
     public function __construct(private readonly ClientInterface $client)
@@ -40,16 +40,18 @@ final class RecipeFeedsService
         Reader::setHttpClient($this->client);
         $recipes = [];
 
-        foreach ($this->feeds as $feedUrl) {
+        foreach ($this->feeds as $feed) {
             try {
-                $feed = Reader::import($feedUrl);
+                $feedUrl = $feed['url'];
+                $supportsRecipeImport = $feed['supportsRecipeImport'];
+                $feedData = Reader::import($feedUrl);
             } catch (Throwable $e) {
-                Log::error("Failed to fetch feed from $feedUrl: {$e->getMessage()}");
+                Log::error("Failed to fetch feed from {$feed['url']}: {$e->getMessage()}");
                 continue;
             }
 
-            foreach ($feed as $entry) {
-                $recipes[] = FeedsRecipe::fromLaminasEntry($entry, $feed->getTitle());
+            foreach ($feedData as $entry) {
+                $recipes[] = FeedsRecipe::fromLaminasEntry($entry, $feedData->getTitle(), $supportsRecipeImport);
             }
         }
 
