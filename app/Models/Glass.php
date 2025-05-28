@@ -74,6 +74,7 @@ class Glass extends Model
     public function delete(): bool
     {
         $this->cocktails->each(fn ($cocktail) => $cocktail->searchable());
+        $this->deleteImages();
 
         return parent::delete();
     }
