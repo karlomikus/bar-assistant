@@ -24,7 +24,7 @@ class Glass extends Model
 
     public function getUploadPath(): string
     {
-        return 'glasses/';
+        return 'glasses/' . $this->bar_id . '/';
     }
 
     public function getSlugAttribute(): string
