@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources;
 
+use Illuminate\Support\Str;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,6 +22,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
         new \OpenApi\Attributes\Property(property: 'link', type: 'string', description: 'The link to the recipe'),
         new \OpenApi\Attributes\Property(property: 'date', type: 'string', nullable: true, format: 'date-time', description: 'The date the recipe was modified'),
         new \OpenApi\Attributes\Property(property: 'image', type: 'string', nullable: true, description: 'The image URL of the recipe'),
+        new \OpenApi\Attributes\Property(property: 'supports_recipe_import', type: 'boolean', description: 'Indicates if the recipe supports import into the application'),
     ],
     required: ['source', 'title', 'link', 'date', 'image', 'description'],
 )]
@@ -37,10 +39,11 @@ class FeedRecipeResource extends JsonResource
         return [
             'source' => $this->source,
             'title' => $this->title,
-            'description' => $this->description,
+            'description' => Str::limit($this->description, 250, '...'),
             'link' => $this->link,
             'date' => $this->dateModified?->format(DATE_ATOM),
             'image' => $this->image,
+            'supports_recipe_import' => $this->supportsRecipeImport,
         ];
     }
 }

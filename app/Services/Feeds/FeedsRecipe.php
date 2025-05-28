@@ -16,20 +16,25 @@ final readonly class FeedsRecipe
         public ?DateTimeImmutable $dateModified,
         public ?string $description = null,
         public ?string $image = null,
+        public bool $supportsRecipeImport = true,
     ) {
     }
 
-    public static function fromLaminasEntry(EntryInterface $entry, string $source): self
+    public static function fromLaminasEntry(EntryInterface $entry, string $source, bool $supportsRecipeImport = true): self
     {
         $image = null;
         $imagePattern = '/<img[^>]+src="([^"]+)"/';
-        preg_match($imagePattern, $entry->getContent(), $matches);
+        preg_match($imagePattern, html_entity_decode($entry->getContent()), $matches);
         if (isset($matches[1])) {
             $image = $matches[1];
         }
 
         /** @var string|null */
         $description = $entry->getDescription();
+        if (!$description) {
+            /** @var string|null */
+            $description = $entry->getContent();
+        }
 
         return new self(
             source: e($source),
@@ -38,6 +43,7 @@ final readonly class FeedsRecipe
             dateModified: $entry->getDateModified() ? DateTimeImmutable::createFromMutable($entry->getDateModified()) : null,
             description: e(html_entity_decode(strip_tags($description ?? ''), encoding: 'UTF-8')),
             image: $image,
+            supportsRecipeImport: $supportsRecipeImport,
         );
     }
 }

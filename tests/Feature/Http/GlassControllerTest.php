@@ -7,6 +7,7 @@ namespace Tests\Feature\Http;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Glass;
+use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\BarMembership;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -81,9 +82,13 @@ class GlassControllerTest extends TestCase
 
     public function test_save_glass_response(): void
     {
+        $image = Image::factory()->create();
         $response = $this->postJson('/api/glasses', [
             'name' => 'Glass 1',
             'description' => 'Glass 1 Description',
+            'volume' => 250,
+            'volume_units' => 'ml',
+            'images' => [$image->id],
         ], ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
         $response->assertCreated();
@@ -93,8 +98,15 @@ class GlassControllerTest extends TestCase
                 ->has('data.id')
                 ->where('data.name', 'Glass 1')
                 ->where('data.description', 'Glass 1 Description')
+                ->where('data.volume', 250)
+                ->where('data.volume_units', 'ml')
                 ->etc()
         );
+        $this->assertDatabaseHas('images', [
+            'id' => $image->id,
+            'imageable_type' => Glass::class,
+            'imageable_id' => $response->json('data.id'),
+        ]);
     }
 
     public function test_save_glass_forbidden_response(): void
@@ -110,14 +122,20 @@ class GlassControllerTest extends TestCase
 
     public function test_update_glass_response(): void
     {
+        $image = Image::factory()->create();
         $glass = Glass::factory()->recycle($this->barMembership->bar)->create([
             'name' => 'Glass 1',
             'description' => 'Glass 1 Description',
+            'volume' => 250,
+            'volume_units' => 'ml',
         ]);
 
         $response = $this->putJson('/api/glasses/' . $glass->id, [
             'name' => 'Glass updated',
             'description' => 'Glass updated Description',
+            'volume' => 3.2,
+            'volume_units' => 'cl',
+            'images' => [$image->id],
         ]);
 
         $response->assertOk();
@@ -127,8 +145,15 @@ class GlassControllerTest extends TestCase
                 ->has('data.id')
                 ->where('data.name', 'Glass updated')
                 ->where('data.description', 'Glass updated Description')
+                ->where('data.volume', 3.2)
+                ->where('data.volume_units', 'cl')
                 ->etc()
         );
+        $this->assertDatabaseHas('images', [
+            'id' => $image->id,
+            'imageable_type' => Glass::class,
+            'imageable_id' => $response->json('data.id'),
+        ]);
     }
 
     public function test_delete_glass_response(): void
@@ -137,9 +162,15 @@ class GlassControllerTest extends TestCase
             'name' => 'Glass 1',
             'description' => 'Glass 1 Description',
         ]);
+        $image = Image::factory()->for($glass, 'imageable')->create();
 
         $response = $this->deleteJson('/api/glasses/' . $glass->id);
 
         $response->assertNoContent();
+        $this->assertDatabaseMissing('images', [
+            'id' => $image->id,
+            'imageable_type' => Glass::class,
+            'imageable_id' => $glass->id,
+        ]);
     }
 }

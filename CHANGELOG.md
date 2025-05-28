@@ -1,3 +1,11 @@
+# v5.5.0
+## New
+- Added images upload support to glass types
+- Added `supports_recipe_import` to feed item
+
+## Fixes
+- Added missing glass volume and volume units to datapack export
+
 # v5.4.2
 ## Fixes
 - Fixed menu cocktails not getting removed correctly

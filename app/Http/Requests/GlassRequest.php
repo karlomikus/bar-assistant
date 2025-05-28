@@ -28,6 +28,7 @@ class GlassRequest extends FormRequest
         return [
             'name' => 'required',
             'volume' => 'numeric|nullable',
+            'images' => 'array|max:1',
         ];
     }
 }

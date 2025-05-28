@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,6 +20,17 @@ class Glass extends Model
     use HasFactory;
     use HasBarAwareScope;
     use HasAuthors;
+    use HasImages;
+
+    public function getUploadPath(): string
+    {
+        return 'glasses/' . $this->bar_id . '/';
+    }
+
+    public function getSlugAttribute(): string
+    {
+        return Str::slug($this->name);
+    }
 
     /**
      * @return Attribute<?float, ?float>
@@ -61,6 +74,7 @@ class Glass extends Model
     public function delete(): bool
     {
         $this->cocktails->each(fn ($cocktail) => $cocktail->searchable());
+        $this->deleteImages();
 
         return parent::delete();
     }

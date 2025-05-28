@@ -10,6 +10,12 @@ storage/http_cache/*
 storage/debugbar/*
 storage/bar-assistant
 .env
+.env.dev
+tests
+.env.testing
+.editorconfig
+pint.json
+.spectral.yml
 
 Dockerfile
 Dockerfile.dev
@@ -21,3 +27,6 @@ phpunit.xml
 phpstan.neon
 README.md
 ecs.php
+
+SECURITY.md
+CONTRIBUTING.md

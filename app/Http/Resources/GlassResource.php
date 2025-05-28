@@ -20,6 +20,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
         new OAT\Property(property: 'cocktails_count', type: 'integer', example: 32, description: 'The number of cocktails that use this glassware'),
         new OAT\Property(property: 'volume', type: 'number', format: 'float', nullable: true, example: 120.0, description: 'The volume of the glassware'),
         new OAT\Property(property: 'volume_units', type: 'string', nullable: true, example: 'ml', description: 'The volume units of the glassware'),
+        new OAT\Property(property: 'images', type: 'array', items: new OAT\Items(type: ImageResource::class), description: 'Glassware images'),
     ],
     required: ['id', 'name', 'description', 'cocktails_count', 'volume', 'volume_units']
 )]
@@ -40,6 +41,10 @@ class GlassResource extends JsonResource
             'volume' => $this->volume,
             'volume_units' => $this->volume_units,
             'cocktails_count' => $this->whenCounted('cocktails'),
+            'images' => $this->when(
+                $this->relationLoaded('images'),
+                fn () => ImageResource::collection($this->images)
+            ),
         ];
     }
 }
