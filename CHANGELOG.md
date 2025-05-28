@@ -1,6 +1,6 @@
 # v5.5.0
 ## New
-- You can now add images to glass types
+- Added images upload support to glass types
 - Added `supports_recipe_import` to feed item
 
 ## Fixes
