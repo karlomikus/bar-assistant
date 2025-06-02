@@ -213,8 +213,8 @@ final class CocktailQueryFilter extends QueryBuilder
             ->selectRaw(implode(', ', [
                 'cocktails.*',
                 '(SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_ingredients.cocktail_id = cocktails.id) AS total_ingredients',
-                'COUNT(ci.ingredient_id) - COUNT(ui.ingredient_id) AS missing_ingredients',
-                'COUNT(ci.ingredient_id) - COUNT(bi.ingredient_id) AS missing_bar_ingredients',
+                '(SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_ingredients.cocktail_id = cocktails.id) - COUNT(ui.ingredient_id) AS missing_ingredients',
+                '(SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_ingredients.cocktail_id = cocktails.id) - COUNT(bi.ingredient_id) AS missing_bar_ingredients',
             ]))
             ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')
             ->leftJoin('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')
