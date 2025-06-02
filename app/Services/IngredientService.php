@@ -329,4 +329,64 @@ final class IngredientService
             }
         });
     }
+
+    /**
+     * Return array of all ingredients that are part of the user's shelf
+     * and can be used to create cocktails.
+     *
+     * Includes complex and variant ingredients.
+     *
+     * @param int $userId
+     * @param int $barId
+     * @return array<int>
+     */
+    public function getMemberIngredients(int $userId, int $barId): array
+    {
+        $userIngredientIds = $this->db->table('user_ingredients AS ui')
+            ->select('ui.ingredient_id')
+            ->join('bar_memberships AS bm', 'ui.bar_membership_id', '=', 'bm.id')
+            ->where('bm.user_id', $userId)
+            ->where('bm.bar_id', $barId)
+            ->pluck('ingredient_id')
+            ->toArray();
+
+        if (empty($userIngredientIds)) {
+            return [];
+        }
+
+        $descendantIngredientIds = $this->db->table('ingredients')
+            ->select('descendant.id')
+            ->join('ingredients AS descendant', function ($join) use ($barId) {
+                $join->on(DB::raw("('/' || descendant.materialized_path || '/')"), 'LIKE', DB::raw("'%/' || ingredients.id || '/%'"))
+                    ->where('descendant.bar_id', '=', $barId);
+            })
+            ->whereIn('ingredients.id', $userIngredientIds)
+            ->where('ingredients.bar_id', $barId)
+            ->pluck('id')
+            ->toArray();
+
+        $complexIngredients = $this->db->table('complex_ingredients AS ci')
+            ->distinct()
+            ->select('ci.main_ingredient_id')
+            ->join('ingredients AS i_main', 'ci.main_ingredient_id', '=', 'i_main.id')
+            ->whereIn('ci.id', function ($query) use ($userIngredientIds) {
+                $query->select('ci_inner.id')
+                    ->from('complex_ingredients AS ci_inner')
+                    ->whereNotExists(function ($query) use ($userIngredientIds) {
+                        $query->select('i_ingredient.id')
+                            ->from('complex_ingredients AS ci_sub')
+                            ->join('ingredients AS i_ingredient', 'ci_sub.ingredient_id', '=', 'i_ingredient.id')
+                            ->whereColumn('ci_sub.main_ingredient_id', 'ci_inner.main_ingredient_id')
+                            ->whereNotIn('i_ingredient.id', $userIngredientIds);
+                    });
+            })
+            ->pluck('main_ingredient_id')
+            ->toArray();
+
+        return array_unique(array_merge(
+            $descendantIngredientIds,
+            $userIngredientIds,
+            $complexIngredients
+        ));
+    }
 }
