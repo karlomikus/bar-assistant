@@ -1,5 +1,5 @@
 recipe:
-  _id: gin-and-tonic
+  _id: gin-and-tonic_1
   name: 'Gin and Tonic'
   instructions: 'Cocktail instructions go here'
   created_at: '2020-01-01T12:00:00+00:00'
@@ -20,7 +20,7 @@ recipe:
       copyright: 'Exported copyright'
   ingredients:
     -
-      _id: gin
+      _id: gin_1
       amount: 45.0
       units: ml
       optional: false
@@ -31,7 +31,7 @@ recipe:
       sort: 1
 ingredients:
   -
-    _id: gin
+    _id: gin_1
     name: Gin
     strength: 40.0
     description: 'Test description'

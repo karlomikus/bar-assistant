@@ -6,10 +6,10 @@ namespace Tests\Feature\Services;
 
 use Tests\TestCase;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Kami\Cocktail\Models\UserIngredient;
 
 class IngredientServiceTest extends TestCase
 {

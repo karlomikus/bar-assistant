@@ -48,7 +48,7 @@ class ExportController extends Controller
     #[BAO\RateLimitResponse]
     public function store(Request $request): ExportResource
     {
-        $bar = Bar::findOrFail($request->post('bar_id'));
+        $bar = Bar::findOrFail((int) $request->post('bar_id'));
 
         if ($request->user()->cannot('createExport', $bar)) {
             abort(403);
