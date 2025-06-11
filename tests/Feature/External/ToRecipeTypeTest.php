@@ -68,8 +68,8 @@ class ToRecipeTypeTest extends TestCase
         $zip->close();
 
         $this->assertFileExists($unzippedFilesDisk->path('_meta.json'));
-        $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic/recipe.json'));
-        $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic/c-1-img.jpg'));
+        $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic_1/recipe.json'));
+        $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic_1/c-1-img.jpg'));
     }
 
     /**

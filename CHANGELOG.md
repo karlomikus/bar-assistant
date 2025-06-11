@@ -1,3 +1,8 @@
+# v5.5.1
+## Fixes
+- Fixed missing cocktail recipes with duplicated names in datapack export
+- Fixed total missing ingredients counting when filtering by ingredient
+
 # v5.5.0
 ## New
 - Added images upload support to glass types

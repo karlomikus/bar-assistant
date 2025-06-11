@@ -82,7 +82,8 @@ class ToDataPack
     {
         $cocktails = Cocktail::with(
             'ingredients.ingredient',
-            'ingredients.substitutes.ingredient',
+            'ingredients.ingredient.parentIngredient',
+            'ingredients.substitutes.ingredient.parentIngredient',
             'images.imageable',
             'glass',
             'method',
@@ -111,7 +112,7 @@ class ToDataPack
 
     private function dumpIngredients(int $barId, ZipArchive &$zip): void
     {
-        $ingredients = Ingredient::with('images', 'calculator', 'prices.priceCategory', 'ingredientParts.ingredient', 'ancestors', 'parentIngredient')->where('bar_id', $barId)->get();
+        $ingredients = Ingredient::with('images.imageable', 'calculator', 'prices.priceCategory', 'ingredientParts.ingredient.parentIngredient', 'ancestors', 'parentIngredient')->where('bar_id', $barId)->get();
 
         /** @var Ingredient $ingredient */
         foreach ($ingredients as $ingredient) {

@@ -79,18 +79,18 @@ class ToDataPackTest extends TestCase
             $this->assertFileExists($unzippedFilesDisk->path($file));
         }
 
-        $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic/data.json'));
-        $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic/c-1-img.jpg'));
-        $this->assertFileExists($unzippedFilesDisk->path('ingredients/jack-daniels/data.json'));
-        $this->assertFileExists($unzippedFilesDisk->path('ingredients/jack-daniels/i-1-img.png'));
+        $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic_1/data.json'));
+        $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic_1/c-1-img.jpg'));
+        $this->assertFileExists($unzippedFilesDisk->path('ingredients/jack-daniels_1/data.json'));
+        $this->assertFileExists($unzippedFilesDisk->path('ingredients/jack-daniels_1/i-1-img.png'));
 
         $cocktailExport = [];
-        if ($cocktailFixture = file_get_contents($unzippedFilesDisk->path('cocktails/gin-and-tonic/data.json'))) {
+        if ($cocktailFixture = file_get_contents($unzippedFilesDisk->path('cocktails/gin-and-tonic_1/data.json'))) {
             $cocktailExport = json_decode($cocktailFixture, true);
         }
 
         $ingredientExport = [];
-        if ($ingredientFixture = file_get_contents($unzippedFilesDisk->path('ingredients/jack-daniels/data.json'))) {
+        if ($ingredientFixture = file_get_contents($unzippedFilesDisk->path('ingredients/jack-daniels_1/data.json'))) {
             $ingredientExport = json_decode($ingredientFixture, true);
         }
 

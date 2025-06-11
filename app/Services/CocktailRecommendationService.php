@@ -59,8 +59,9 @@ class CocktailRecommendationService
             ->whereNotIn('cocktails.id', $memberFavoriteCocktailIds)
             ->whereNotIn('cocktails.id', $memberRatedCocktailIds)
             ->where('cocktails.bar_id', $barMembership->bar_id)
-            ->limit(100)
+            ->limit(150)
             ->with('tags', 'ingredients.ingredient', 'images')
+            ->inRandomOrder()
             ->get();
 
         foreach ($potentialCocktails as $cocktail) {

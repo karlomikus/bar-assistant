@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <draft2>
   <recipe>
-    <_id>gin-and-tonic</_id>
+    <_id>gin-and-tonic_1</_id>
     <name>Gin and Tonic</name>
     <instructions>Cocktail instructions go here</instructions>
     <created_at>2020-01-01T12:00:00+00:00</created_at>
@@ -21,7 +21,7 @@
       <copyright>Exported copyright</copyright>
     </images>
     <ingredients>
-      <_id>gin</_id>
+      <_id>gin_1</_id>
       <amount>45</amount>
       <units>ml</units>
       <optional></optional>
@@ -33,7 +33,7 @@
     </ingredients>
   </recipe>
   <ingredients>
-    <_id>gin</_id>
+    <_id>gin_1</_id>
     <name>Gin</name>
     <strength>40</strength>
     <description>Test description</description>
