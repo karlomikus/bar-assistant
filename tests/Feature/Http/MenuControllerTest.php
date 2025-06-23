@@ -166,4 +166,37 @@ class MenuControllerTest extends TestCase
 
         $response->assertSuccessful();
     }
+
+    public function test_generate_menu_from_shelf(): void
+    {
+        $ingredient1 = Ingredient::factory()->for($this->barMembership->bar)->create();
+        $ingredient2 = Ingredient::factory()->for($this->barMembership->bar)->create();
+
+        $cocktail = Cocktail::factory()->for($this->barMembership->bar)->create();
+
+
+        $this->barMembership->bar->shelfIngredients()->createMany([
+            ['ingredient_id' => $ingredient1->id],
+            ['ingredient_id' => $ingredient2->id],
+        ]);
+
+        $response = $this->postJson('/api/menu/generate-from-shelf', [], [
+            'Bar-Assistant-Bar-Id' => $this->barMembership->bar_id,
+        ]);
+
+        $response->assertSuccessful();
+        $response->assertJson(fn (AssertableJson $json) =>
+            $json->has('data.id')
+                ->has('data.categories')
+                ->where('data.is_enabled', false)
+                ->etc()
+        );
+
+        $this->assertDatabaseHas('menu_cocktails', [
+            'cocktail_id' => $cocktail->id,
+            'menu_id' => $response->json('data.id'),
+            'price' => 100,
+            'currency' => 'EUR',
+        ]);
+    }
 }
