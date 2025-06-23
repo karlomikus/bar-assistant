@@ -12,6 +12,7 @@ use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Validator;
 use Kami\Cocktail\Http\Requests\MenuRequest;
+use Kami\Cocktail\Services\CocktailService; 
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Kami\Cocktail\Http\Resources\MenuResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -179,4 +180,52 @@ class MenuController extends Controller
 
         return new Response($writer->toString(), 200, ['Content-Type' => 'text/csv']);
     }
+
+    #[OAT\Post(
+    path: '/menu/generate-from-shelf',
+    tags: ['Menu'],
+    operationId: 'generateFromShelf',
+    description: 'Generate a menu from ingredients on the bar’s shelf',
+    summary: 'Generate menu from shelf',
+    parameters: [
+        new BAO\Parameters\BarIdHeaderParameter(),
+    ]
+    )]
+    #[BAO\SuccessfulResponse(content: [
+        new BAO\WrapObjectWithData(MenuResource::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    public function generateFromShelf(Request $request, CocktailService $cocktailService): MenuResource
+    {
+        $this->authorize('update', Menu::class);
+
+        $bar = bar();
+        $ingredientIds = $bar->shelfIngredients
+            ->pluck('ingredient_id')
+            ->toArray();
+
+        $cocktailIds = $cocktailService
+            ->getCocktailsByIngredients($ingredientIds, $bar->id);
+
+        if ($cocktailIds->isEmpty()) {
+            abort(404, 'No cocktails could be generated from shelf ingredients.');
+        }
+
+        $menu = Menu::firstOrCreate(['bar_id' => $bar->id]);
+
+        $items = $cocktailIds->map(fn (int $id, int $index) => [
+            'type'          => MenuItemTypeEnum::Cocktail->value,
+            'id'            => $id,
+            'price'         => 1,
+            'currency'      => 'EUR',
+            'category_name' => 'From Shelf',
+            'sort'          => $index + 1,
+        ])->values()->toArray();
+
+        $menu->syncItems($items);
+        $menu->touch();
+
+        return new MenuResource($menu);
+    }
+
 }
