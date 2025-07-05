@@ -42,6 +42,7 @@ final class CocktailService
             $cocktail->glass_id = $cocktailDTO->glassId;
             $cocktail->cocktail_method_id = $cocktailDTO->methodId;
             $cocktail->bar_id = $cocktailDTO->barId;
+            $cocktail->parent_cocktail_id = $cocktailDTO->parentCocktailId;
             $cocktail->save();
 
             foreach ($cocktailDTO->ingredients as $ingredient) {
@@ -125,6 +126,16 @@ final class CocktailService
             $cocktail->updated_user_id = $cocktailDTO->userId;
             $cocktail->glass_id = $cocktailDTO->glassId;
             $cocktail->cocktail_method_id = $cocktailDTO->methodId;
+
+            if ($cocktailDTO->parentCocktailId !== $cocktail->id) {
+                $cocktail->parent_cocktail_id = $cocktailDTO->parentCocktailId;
+            } else {
+                $this->log->warning('[COCKTAIL_SERVICE] Attempted to set parent cocktail to itself', [
+                    'cocktail_id' => $cocktail->id,
+                    'parent_cocktail_id' => $cocktailDTO->parentCocktailId,
+                ]);
+            }
+
             $cocktail->updated_at = now();
             $cocktail->save();
 

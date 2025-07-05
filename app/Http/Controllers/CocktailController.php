@@ -453,6 +453,7 @@ class CocktailController extends Controller
             $ingredients,
             $images,
             $cocktail->utensils->pluck('id')->toArray(),
+            $cocktail->id,
         );
 
         try {

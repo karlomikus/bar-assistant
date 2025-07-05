@@ -129,6 +129,22 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
         return $this->hasMany(MenuCocktail::class);
     }
 
+    /**
+     * @return HasMany<Cocktail, $this>
+     */
+    public function cocktailVarieties(): HasMany
+    {
+        return $this->hasMany(Cocktail::class, 'parent_cocktail_id');
+    }
+
+    /**
+     * @return BelongsTo<Cocktail, $this>
+     */
+    public function parentCocktail(): BelongsTo
+    {
+        return $this->belongsTo(Cocktail::class, 'parent_cocktail_id');
+    }
+
     public function deleteFromMenu(): void
     {
         $this->menuCocktails()->delete();
@@ -434,6 +450,8 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
             'ratings',
             'ingredients.ingredient.bar.shelfIngredients',
             'ingredients.ingredient.descendants',
+            'parentCocktail.images',
+            'cocktailVarieties.images',
         ]);
 
         return $this;

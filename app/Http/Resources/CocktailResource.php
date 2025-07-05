@@ -59,6 +59,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
             'can_rate',
             'can_add_note',
         ]),
+        new OAT\Property(property: 'parent_cocktail', type: CocktailBasicResource::class, description: 'If this cocktail is a variety of existing cocktail, this will reference the original cocktail', nullable: true),
+        new OAT\Property(property: 'varieties', type: 'array', items: new OAT\Items(type: CocktailBasicResource::class), description: 'List of varieties of this cocktail'),
     ],
     required: [
         'id',
@@ -139,6 +141,10 @@ class CocktailResource extends JsonResource
                     'can_add_note' => $request->user()->can('addNote', $this->resource),
                 ];
             }),
+            'parent_cocktail' => $this->whenLoaded('parentCocktail', function () {
+                return new CocktailBasicResource($this->parentCocktail);
+            }),
+            'varieties' => CocktailBasicResource::collection($this->whenLoaded('cocktailVarieties')),
         ];
     }
 }

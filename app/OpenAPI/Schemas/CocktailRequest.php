@@ -41,6 +41,8 @@ readonly class CocktailRequest
         public array $images = [],
         #[OAT\Property(items: new OAT\Items(type: 'integer'), description: 'List of existing utensil ids')]
         public array $utensils = [],
+        #[OAT\Property(example: 1, property: 'parent_cocktail_id')]
+        public ?int $parentCocktailId = null,
     ) {
     }
 
@@ -68,6 +70,7 @@ readonly class CocktailRequest
             $ingredients,
             $request->input('images', []),
             $request->input('utensils', []),
+            $request->filled('parent_cocktail_id') ? $request->integer('parent_cocktail_id') : null,
         );
     }
 }
