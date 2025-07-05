@@ -47,7 +47,7 @@ class LiquorCom extends AbstractSiteExtractor
     {
         $ingredients = [];
 
-        foreach ($this->getRecipeSchema()['recipeIngredient'] as $sourceIngredient) {
+        foreach ($this->getRecipeSchema()['recipeIngredient'] ?? [] as $sourceIngredient) {
             $ingredients[] = $this->ingredientParser->parseLine($sourceIngredient);
         }
 
@@ -73,6 +73,6 @@ class LiquorCom extends AbstractSiteExtractor
             $recipeSchema = json_decode($node->text(), true, JSON_INVALID_UTF8_SUBSTITUTE);
         });
 
-        return $recipeSchema[0];
+        return $recipeSchema[0] ?? [];
     }
 }

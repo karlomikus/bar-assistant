@@ -175,6 +175,7 @@ final class CocktailQueryFilter extends QueryBuilder
                             ->whereIn('cocktail_ingredients.ingredient_id', $value);
                     });
                 }),
+                AllowedFilter::exact('parent_cocktail_id'),
             ])
             ->defaultSort('name')
             ->allowedSorts([
