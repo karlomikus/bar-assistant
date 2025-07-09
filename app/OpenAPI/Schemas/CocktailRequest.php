@@ -43,6 +43,8 @@ readonly class CocktailRequest
         public array $utensils = [],
         #[OAT\Property(example: 1, property: 'parent_cocktail_id')]
         public ?int $parentCocktailId = null,
+        #[OAT\Property(example: 2023, property: 'year')]
+        public ?int $year = null,
     ) {
     }
 
@@ -71,6 +73,7 @@ readonly class CocktailRequest
             $request->input('images', []),
             $request->input('utensils', []),
             $request->filled('parent_cocktail_id') ? $request->integer('parent_cocktail_id') : null,
+            $request->filled('year') ? $request->integer('year') : null,
         );
     }
 }

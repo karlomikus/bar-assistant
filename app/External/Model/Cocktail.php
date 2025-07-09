@@ -38,6 +38,8 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
         public array $utensils = [],
         public array $images = [],
         public array $ingredients = [],
+        public ?int $parentCocktailId = null,
+        public ?int $year = null,
     ) {
     }
 
@@ -67,6 +69,8 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             $model->utensils->pluck('name')->toArray(),
             $images,
             $ingredients,
+            $model->parent_cocktail_id,
+            $model->year,
         );
     }
 
@@ -98,6 +102,8 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             $sourceArray['utensils'] ?? [],
             $images,
             $ingredients,
+            $sourceArray['parent_cocktail_id'] ?? null,
+            $sourceArray['year'] ?? null,
         );
     }
 
@@ -119,6 +125,8 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             'utensils' => $this->utensils,
             'images' => array_map(fn ($model) => $model->toDataPackArray(), $this->images),
             'ingredients' => array_map(fn ($model) => $model->toDataPackArray(), $this->ingredients),
+            'parent_cocktail_id' => $this->parentCocktailId,
+            'year' => $this->year,
         ];
     }
 

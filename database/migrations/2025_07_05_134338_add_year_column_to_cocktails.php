@@ -11,7 +11,7 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::table('cocktails', function (Blueprint $table) {
-            $table->foreignId('parent_cocktail_id')->nullable()->constrained('cocktails')->nullOnDelete();
+            $table->integer('year')->nullable();
         });
     }
 
@@ -21,7 +21,7 @@ return new class () extends Migration {
     public function down(): void
     {
         Schema::table('cocktails', function (Blueprint $table) {
-            $table->dropColumn('parent_cocktail_id');
+            $table->dropColumn('year');
         });
     }
 };

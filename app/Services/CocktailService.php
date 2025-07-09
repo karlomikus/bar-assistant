@@ -43,6 +43,7 @@ final class CocktailService
             $cocktail->cocktail_method_id = $cocktailDTO->methodId;
             $cocktail->bar_id = $cocktailDTO->barId;
             $cocktail->parent_cocktail_id = $cocktailDTO->parentCocktailId;
+            $cocktail->year = $cocktailDTO->year;
             $cocktail->save();
 
             foreach ($cocktailDTO->ingredients as $ingredient) {
@@ -126,6 +127,7 @@ final class CocktailService
             $cocktail->updated_user_id = $cocktailDTO->userId;
             $cocktail->glass_id = $cocktailDTO->glassId;
             $cocktail->cocktail_method_id = $cocktailDTO->methodId;
+            $cocktail->year = $cocktailDTO->year;
 
             if ($cocktailDTO->parentCocktailId !== $cocktail->id) {
                 $cocktail->parent_cocktail_id = $cocktailDTO->parentCocktailId;

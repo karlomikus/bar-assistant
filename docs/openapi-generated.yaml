@@ -8858,6 +8858,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CocktailBasic'
+        year:
+          description: 'Cocktail recipe year'
+          type:
+            - number
+            - 'null'
+          example: 2023
       type: object
     Collection:
       description: 'Collection resource'
@@ -10400,6 +10406,11 @@ components:
             - integer
             - 'null'
           example: 1
+        year:
+          type:
+            - integer
+            - 'null'
+          example: 2023
       type: object
     CollectionRequest:
       required:
