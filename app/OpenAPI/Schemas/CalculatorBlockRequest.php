@@ -44,7 +44,7 @@ readonly class CalculatorBlockRequest
         return new self(
             $source['label'],
             $source['variable_name'],
-            $source['value'],
+            $source['value'] ?? '',
             CalculatorBlockTypeEnum::from($source['type']),
             $settings,
             $source['description'] ?? null,
