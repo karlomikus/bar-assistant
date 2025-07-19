@@ -14,9 +14,9 @@ class TheCocktailDB extends AbstractSite
      */
     private array $apiDrinkData = [];
 
-    public function __construct(string $url)
+    public function __construct(string $url, string $content = '')
     {
-        parent::__construct($url);
+        parent::__construct($url, $content);
 
         if (!str_starts_with($url, 'https://www.thecocktaildb.com/api')) {
             $url = rtrim($url, '/');

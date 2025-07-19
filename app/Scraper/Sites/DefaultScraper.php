@@ -19,9 +19,9 @@ class DefaultScraper extends AbstractSite
 
     protected ?SchemaModel $schemaModel = null;
 
-    public function __construct(string $url)
+    public function __construct(string $url, string $content = '')
     {
-        parent::__construct($url);
+        parent::__construct($url, $content);
 
         $jsonLdNodes = $this->crawler->filterXPath('//script[@type="application/ld+json"]');
         $htmlSchemaNodes = $this->crawler->filterXPath('//*[@itemtype="http://schema.org/Recipe"]//*[@itemprop]');

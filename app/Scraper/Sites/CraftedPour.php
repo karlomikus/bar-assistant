@@ -13,9 +13,9 @@ class CraftedPour extends AbstractSite
     /** @var array<string, mixed> */
     private readonly array $dataRecipeProp;
 
-    public function __construct(string $url)
+    public function __construct(string $url, string $content = '')
     {
-        parent::__construct($url);
+        parent::__construct($url, $content);
 
         $rawDataStructure = $this->crawler->filter('#__NEXT_DATA__')->first()->text();
         $data = json_decode($rawDataStructure, true);

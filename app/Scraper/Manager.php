@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
-use Throwable;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
+use Kevinrob\GuzzleCache\CacheMiddleware;
 use Kami\Cocktail\Scraper\Sites\DefaultScraper;
 use Kami\Cocktail\Exceptions\ScraperMissingException;
+use Kevinrob\GuzzleCache\Storage\LaravelCacheStorage;
+use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 
 final class Manager
 {
@@ -37,28 +40,46 @@ final class Manager
     {
     }
 
+    public static function scrape(string $url): AbstractSite
+    {
+        return (new self($url))->matchFirst();
+    }
+
     private function matchFirst(): AbstractSite
+    {
+        $scraperClass = $this->matchSite();
+        $body = $this->getSiteContent();
+
+        if (empty($body)) {
+            throw new ScraperMissingException('Scraper could not find any relevant data for the given site.');
+        }
+
+        return resolve($scraperClass, ['url' => $this->url, 'content' => $body]);
+    }
+
+    private function matchSite(): string
     {
         foreach ($this->supportedSites as $siteClass) {
             foreach ($siteClass::getSupportedUrls() as $supportedHostname) {
                 if (str_starts_with($this->url, $supportedHostname)) {
-                    return resolve($siteClass, ['url' => $this->url]);
+                    return $siteClass;
                 }
             }
         }
 
-        // Fallback to schema scraper
-        try {
-            return resolve(DefaultScraper::class, ['url' => $this->url]);
-        } catch (Throwable $e) {
-            Log::debug('Scraping failed: ' . $e->getMessage());
-        }
-
-        throw new ScraperMissingException('Scraper could not find any relevant data for the given site.');
+        return DefaultScraper::class;
     }
 
-    public static function scrape(string $url): AbstractSite
+    private function getSiteContent(): string
     {
-        return (new self($url))->matchFirst();
+        $saf = mt_rand(531, 536) . mt_rand(0, 2);
+        $userAgent = "(X11; Linux x86_64) AppleWebKit/$saf (KHTML, like Gecko) Chrome/" . mt_rand(36, 40) . '.0.' . mt_rand(800, 899) . ".0 Mobile Safari/$saf";
+        $cachingMiddleware = new CacheMiddleware(new GreedyCacheStrategy(new LaravelCacheStorage(Cache::store()), 60 * 15));
+        $response = Http::withMiddleware($cachingMiddleware)
+            ->withUserAgent($userAgent)
+            ->timeout(10)
+            ->get($this->url);
+
+        return $response->body();
     }
 }
