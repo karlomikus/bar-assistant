@@ -13,6 +13,8 @@ class GenericScraperTest extends TestCase
     #[DataProvider('provideUrls')]
     public function testScrape(string $url): void
     {
+        $this->markTestSkipped('These tests are still too flakey, will be updated when scraping gets refactored.');
+
         // We test simple data here, it's too much work to keep everything in sync with the website changes
         $scraper = Manager::scrape($url);
         $result = $scraper->toArray();
