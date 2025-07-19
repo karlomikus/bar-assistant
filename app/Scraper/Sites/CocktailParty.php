@@ -6,9 +6,9 @@ namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\RecipeIngredient;
 use Symfony\Component\DomCrawler\Crawler;
-use Kami\Cocktail\Scraper\AbstractSiteExtractor;
+use Kami\Cocktail\Scraper\AbstractSite;
 
-class CocktailParty extends AbstractSiteExtractor
+class CocktailParty extends AbstractSite
 {
     public static function getSupportedUrls(): array
     {

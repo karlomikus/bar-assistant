@@ -12,7 +12,7 @@ use Kami\Cocktail\Exceptions\ScraperMissingException;
 final class Manager
 {
     /**
-     * @var array<class-string<AbstractSiteExtractor>>
+     * @var array<class-string<AbstractSite>>
      */
     private array $supportedSites = [
         \Kami\Cocktail\Scraper\Sites\TuxedoNo2::class,
@@ -37,7 +37,7 @@ final class Manager
     {
     }
 
-    private function matchFirst(): AbstractSiteExtractor
+    private function matchFirst(): AbstractSite
     {
         foreach ($this->supportedSites as $siteClass) {
             foreach ($siteClass::getSupportedUrls() as $supportedHostname) {
@@ -57,7 +57,7 @@ final class Manager
         throw new ScraperMissingException('Scraper could not find any relevant data for the given site.');
     }
 
-    public static function scrape(string $url): AbstractSiteExtractor
+    public static function scrape(string $url): AbstractSite
     {
         return (new self($url))->matchFirst();
     }

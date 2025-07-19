@@ -19,7 +19,7 @@ use Kami\Cocktail\Exceptions\ScraperMissingException;
 use Kevinrob\GuzzleCache\Storage\LaravelCacheStorage;
 use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 
-abstract class AbstractSiteExtractor implements SiteExtractorContract
+abstract class AbstractSite implements Site
 {
     protected readonly Crawler $crawler;
     protected readonly Parser $ingredientParser;

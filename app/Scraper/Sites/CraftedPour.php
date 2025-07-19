@@ -6,9 +6,9 @@ namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\AmountValue;
 use Kami\RecipeUtils\RecipeIngredient;
-use Kami\Cocktail\Scraper\AbstractSiteExtractor;
+use Kami\Cocktail\Scraper\AbstractSite;
 
-class CraftedPour extends AbstractSiteExtractor
+class CraftedPour extends AbstractSite
 {
     /** @var array<string, mixed> */
     private readonly array $dataRecipeProp;
