@@ -102,11 +102,10 @@ class ImportController extends Controller
 
         try {
             $scraper = Manager::scrape($request->input('source'));
+            $dataToImport = $scraper->toArray();
         } catch (Throwable $e) {
             abort(400, $e->getMessage());
         }
-
-        $dataToImport = $scraper->toArray();
 
         return response()->json([
             'data' => $dataToImport,

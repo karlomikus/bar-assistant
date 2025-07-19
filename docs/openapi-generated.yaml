@@ -8845,6 +8845,25 @@ components:
               type: boolean
               example: true
           type: object
+        parent_cocktail:
+          oneOf:
+            -
+              $ref: '#/components/schemas/CocktailBasic'
+              description: 'If this cocktail is a variety of existing cocktail, this will reference the original cocktail'
+            -
+              type: 'null'
+          description: 'If this cocktail is a variety of existing cocktail, this will reference the original cocktail'
+        varieties:
+          description: 'List of varieties of this cocktail'
+          type: array
+          items:
+            $ref: '#/components/schemas/CocktailBasic'
+        year:
+          description: 'Cocktail recipe year'
+          type:
+            - number
+            - 'null'
+          example: 2023
       type: object
     Collection:
       description: 'Collection resource'
@@ -10382,6 +10401,16 @@ components:
           type: array
           items:
             type: integer
+        parent_cocktail_id:
+          type:
+            - integer
+            - 'null'
+          example: 1
+        year:
+          type:
+            - integer
+            - 'null'
+          example: 2023
       type: object
     CollectionRequest:
       required:

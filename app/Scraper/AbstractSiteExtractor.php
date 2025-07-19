@@ -27,8 +27,11 @@ abstract class AbstractSiteExtractor implements SiteExtractorContract
     public function __construct(
         protected readonly string $url,
     ) {
+        $saf = mt_rand(531, 536) . mt_rand(0, 2);
+        $userAgent = "(X11; Linux x86_64) AppleWebKit/$saf (KHTML, like Gecko) Chrome/" . mt_rand(36, 40) . '.0.' . mt_rand(800, 899) . ".0 Mobile Safari/$saf";
         $cachingMiddleware = new CacheMiddleware(new GreedyCacheStrategy(new LaravelCacheStorage(Cache::store()), 60 * 15));
         $response = Http::withMiddleware($cachingMiddleware)
+            ->withUserAgent($userAgent)
             ->timeout(10)
             ->get($url);
 

@@ -1,3 +1,16 @@
+# v5.6.0
+## New
+- Added cocktail recipe parent ID tracking
+    - Enables recipe varieties/riffs
+    - Copying recipe will automatically reference the copied recipe as a parent cocktail
+    - Added `parent_cocktail_id` to `Cocktail` schema
+    - Added `varieties` to `Cocktail` schema
+- Added cocktail recipe year
+
+## Fixes
+- Fixed missing detailed error message when scraping failes
+- Fixed calculator import error on null values
+
 # v5.5.1
 ## Fixes
 - Fixed missing cocktail recipes with duplicated names in datapack export
