@@ -88,7 +88,8 @@ class ToDataPack
             'glass',
             'method',
             'tags',
-            'utensils'
+            'utensils',
+            'parentCocktail',
         )->where('bar_id', $barId)->get();
 
         /** @var Cocktail $cocktail */
