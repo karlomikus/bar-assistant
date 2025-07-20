@@ -298,6 +298,7 @@ class FromDataPack
         $newCocktailIngredients = [];
         $newCocktailSubstituteIngredients = [];
         $cocktailUtensilsMap = [];
+        $cocktailParentMap = [];
         $barImagesDir = 'cocktails/' . $bar->id . '/';
         $this->uploadsDisk->makeDirectory($barImagesDir);
 
@@ -327,6 +328,10 @@ class FromDataPack
                 'created_at' => $externalCocktail->createdAt ?? now(),
                 'updated_at' => $externalCocktail->updatedAt,
             ];
+
+            if ($externalCocktail->parentCocktailId) {
+                $cocktailParentMap[$slug] = $externalCocktail->parentCocktailId . '-' . $bar->id;
+            }
 
             foreach ($externalCocktail->tags as $tag) {
                 $tag = trim($tag);
@@ -452,6 +457,15 @@ class FromDataPack
                 }, $newCocktailIngredients[$cocktail->slug]);
 
                 $cocktailIngredientsToInsert = array_merge($cocktailIngredientsWithAssignedCocktail, $cocktailIngredientsToInsert);
+            }
+
+            // Add parent cocktail id
+            if (isset($cocktailParentMap[$cocktail->slug])) {
+                $parentSlug = $cocktailParentMap[$cocktail->slug];
+                $parentCocktailId = $cocktails->firstWhere('slug', $parentSlug);
+                if (isset($parentCocktailId->id)) {
+                    DB::table('cocktails')->where('slug', $cocktail->slug)->where('bar_id', $bar->id)->update(['parent_cocktail_id' => $parentCocktailId->id]);
+                }
             }
         }
         DB::table('cocktail_ingredients')->insert($cocktailIngredientsToInsert);
