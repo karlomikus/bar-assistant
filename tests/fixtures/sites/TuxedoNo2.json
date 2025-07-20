@@ -1,0 +1,105 @@
+{
+    "schema_version": "draft2",
+    "schema": {
+        "recipe": {
+            "_id": "negroni",
+            "name": "Negroni",
+            "instructions": "1. Combine all ingredients with ice and stir\n2. Strain into an old fashioned over ice\n3. Garnish with citrus peel",
+            "created_at": null,
+            "updated_at": null,
+            "description": "The ultimate shift-ending cocktail and champion of bitterness",
+            "source": "https:\/\/tuxedono2.com\/negroni-cocktail-recipe",
+            "garnish": "grapefruit peel or orange peel for garnish",
+            "abv": null,
+            "tags": [
+                "Gin"
+            ],
+            "glass": "rocks glass",
+            "method": "stirred",
+            "utensils": [],
+            "images": [
+                {
+                    "uri": "TEST",
+                    "sort": 0,
+                    "placeholder_hash": null,
+                    "copyright": "TuxedoNo2"
+                }
+            ],
+            "ingredients": [
+                {
+                    "_id": "TEST",
+                    "amount": 1,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 1
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 1,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 2
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 1,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 3
+                }
+            ]
+        },
+        "ingredients": [
+            {
+                "_id": "TEST",
+                "name": "London dry gin",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Campari",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Sweet vermouth",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            }
+        ]
+    },
+    "scraper_meta": [
+        {
+            "_id": "TEST",
+            "source": "1 oz"
+        },
+        {
+            "_id": "TEST",
+            "source": "1 oz"
+        },
+        {
+            "_id": "TEST",
+            "source": "1 oz"
+        }
+    ]
+}

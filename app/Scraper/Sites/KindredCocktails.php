@@ -6,8 +6,8 @@ namespace Kami\Cocktail\Scraper\Sites;
 
 use Exception;
 use Throwable;
-use Symfony\Component\DomCrawler\Crawler;
 use Kami\Cocktail\Scraper\AbstractSite;
+use Symfony\Component\DomCrawler\Crawler;
 
 class KindredCocktails extends AbstractSite
 {

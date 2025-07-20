@@ -8,8 +8,8 @@ use Throwable;
 use Kami\RecipeUtils\AmountValue;
 use Kami\Cocktail\Scraper\SchemaModel;
 use Kami\RecipeUtils\RecipeIngredient;
-use Kami\Cocktail\Scraper\Concerns\ReadsLDJson;
 use Kami\Cocktail\Scraper\AbstractSite;
+use Kami\Cocktail\Scraper\Concerns\ReadsLDJson;
 use Kami\Cocktail\Scraper\Concerns\ReadsHTMLSchema;
 
 class DefaultScraper extends AbstractSite

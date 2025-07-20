@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\RecipeIngredient;
-use Symfony\Component\DomCrawler\Crawler;
 use Kami\Cocktail\Scraper\AbstractSite;
+use Symfony\Component\DomCrawler\Crawler;
 
 class CocktailParty extends AbstractSite
 {

@@ -1,0 +1,106 @@
+{
+    "schema_version": "draft2",
+    "schema": {
+        "recipe": {
+            "_id": "negroni",
+            "name": "Negroni",
+            "instructions": "Build in an ice-filled rocks glass \u2013 the order doesn\u2019t matter. Just give it a stir and garnish with an orange twist.",
+            "created_at": null,
+            "updated_at": null,
+            "description": "Cocktail snobs have a bad habit of using the Negroni as the threshold through which all drinkers must pass before they can be considered true connoisseurs. There\u2019s an element of truth to this view; the balance of flavors requires an experienced tongue to appreciate. But make no mistake \u2013 it is a very bitter drink, and it\u2019s not for everyone.\n\nSome folks have a genetic variation which allows them to taste bitter compounds, while other people don\u2019t. Those who can are called \u201csupertasters,\u201d and it\u2019s likely that no amount of epicurean taste-acquiring can make this drink palatable to those so afflicted.",
+            "source": "https:\/\/cocktailpartyapp.com\/drinks\/negroni\/",
+            "garnish": null,
+            "abv": null,
+            "tags": [
+                "Simple Cocktails",
+                "Spirit-Forward Cocktails"
+            ],
+            "glass": null,
+            "method": null,
+            "utensils": [],
+            "images": [
+                {
+                    "uri": "TEST",
+                    "sort": 0,
+                    "placeholder_hash": null,
+                    "copyright": "CocktailParty"
+                }
+            ],
+            "ingredients": [
+                {
+                    "_id": "TEST",
+                    "amount": 1.5,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 1
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 1.5,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 2
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 1.5,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 3
+                }
+            ]
+        },
+        "ingredients": [
+            {
+                "_id": "TEST",
+                "name": "Bitter orange ap\u00e9ritif",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Sweet vermouth",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Gin",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            }
+        ]
+    },
+    "scraper_meta": [
+        {
+            "_id": "TEST",
+            "source": "1\u00bd parts Bitter orange ap\u00e9ritif"
+        },
+        {
+            "_id": "TEST",
+            "source": "1\u00bd parts Sweet vermouth"
+        },
+        {
+            "_id": "TEST",
+            "source": "1\u00bd parts Gin or Aged gin"
+        }
+    ]
+}
