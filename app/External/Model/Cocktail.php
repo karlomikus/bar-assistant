@@ -38,7 +38,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
         public array $utensils = [],
         public array $images = [],
         public array $ingredients = [],
-        public ?int $parentCocktailId = null,
+        public ?string $parentCocktailId = null,
         public ?int $year = null,
     ) {
     }
@@ -69,7 +69,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             $model->utensils->pluck('name')->toArray(),
             $images,
             $ingredients,
-            $model->parent_cocktail_id,
+            $model->parentCocktail?->getExternalId(),
             $model->year,
         );
     }
