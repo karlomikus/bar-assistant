@@ -16,7 +16,7 @@ class CocktailPolicy
     {
         $barId = bar()->id;
 
-        $cocktailsLimit = $user->hasActiveSubscription() ? 1000 : 500;
+        $cocktailsLimit = $user->hasActiveSubscription() ? 1500 : 750;
         $hasReachedCocktailNumberLimit = bar()->cocktails()->count() >= $cocktailsLimit;
         if (!config('bar-assistant.enable_billing')) {
             $hasReachedCocktailNumberLimit = false;
