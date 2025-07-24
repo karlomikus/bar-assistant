@@ -24,8 +24,8 @@ This repository only contains the API server, if you are looking for easy to use
 </p>
 
 ## Features
-- [Includes over 300 cocktail recipes with detailed information](https://github.com/bar-assistant/data)
-- Includes over 150 base ingredients with categories
+- [Includes over 500 cocktail recipes with detailed information](https://github.com/bar-assistant/data)
+- Includes over 250 base ingredients with categories
 - Add and manage multiple bars and bar members
 - Fine-grained user control with user roles
 - Endpoints for managing and filtering ingredients and cocktails
@@ -39,6 +39,7 @@ This repository only contains the API server, if you are looking for easy to use
 - Support for glass types, utensils, tags, ingredient categories and more
 - Cocktail recipe importing via URL, JSON, YAML or custom collections
 - Support for cocktail ratings
+- Support for cocktail variations
 - Create user-specific cocktail collections for easy referencing and sharing
 - Support for cocktail and ingredient notes
 - Supports sharing recipes by public links, custom recipe images and printing
@@ -48,6 +49,7 @@ This repository only contains the API server, if you are looking for easy to use
 - Data export support in various formats
 - Support for multiple ingredient prices
 - Automatic cocktail price calculation based on ingredients
+- SSO Support
 
 ## Container images
 
