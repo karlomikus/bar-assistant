@@ -57,6 +57,7 @@ class AuthController extends Controller
         if (!$user || !Hash::check($request->password, $user->password)) {
             Log::warning('User tried to login with invalid credentials', [
                 'email' => $request->email,
+                'is_verified' => $user?->hasVerifiedEmail(),
             ]);
 
             if (config('bar-assistant.mail_require_confirmation') === true) {
