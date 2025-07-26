@@ -12,7 +12,6 @@ use Kami\Cocktail\Http\Controllers\Controller;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Filters\PublicCocktailQueryFilter;
-use Kami\Cocktail\Http\Resources\ExploreCocktailResource;
 use Kami\Cocktail\Http\Resources\Public\CocktailResource;
 
 class CocktailController extends Controller
@@ -20,8 +19,7 @@ class CocktailController extends Controller
     public function index(Request $request, int $barId): JsonResource
     {
         $bar = Bar::findOrFail($barId);
-
-        if (!$bar->isPublic()) {
+        if (!$bar->is_public) {
             abort(404);
         }
 
@@ -62,10 +60,15 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails->withQueryString());
     }
 
-    public function show(string $barSlug, string $id): ExploreCocktailResource
+    public function show(int $barId, string $slug): CocktailResource
     {
-        $cocktail = Cocktail::where('public_id', $id)->firstOrFail()->load('ingredients.ingredient');
+        $bar = Bar::findOrFail($barId);
+        if (!$bar->is_public) {
+            abort(404);
+        }
 
-        return new ExploreCocktailResource($cocktail);
+        $cocktail = Cocktail::where('slug', $slug)->firstOrFail()->load('ingredients.ingredient');
+
+        return new CocktailResource($cocktail);
     }
 }

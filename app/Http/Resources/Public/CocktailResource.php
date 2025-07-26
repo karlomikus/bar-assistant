@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Http\Resources\Public;
 
 use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\CocktailIngredient;
-use Kami\Cocktail\Http\Resources\AmountFormats;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 
@@ -24,8 +23,8 @@ class CocktailResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'name' => $this->name,
             'slug' => $this->slug,
+            'name' => $this->name,
             'instructions' => e($this->instructions),
             'garnish' => e($this->garnish),
             'description' => e($this->description),

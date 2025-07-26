@@ -12,13 +12,13 @@ use Kami\Cocktail\Http\Resources\MenuPublicResource;
 
 class MenuController extends Controller
 {
-    #[OAT\Get(path: '/public/{barId}/menu', tags: ['Public'], operationId: 'publicBarMenu', description: 'Show a public bar menu details', summary: 'Show public menu', parameters: [
-        new OAT\Parameter(name: 'barId', in: 'path', required: true, description: 'Bar database id', schema: new OAT\Schema(type: 'number')),
-    ], security: [])]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(MenuPublicResource::class),
-    ])]
-    #[BAO\NotFoundResponse]
+    // #[OAT\Get(path: '/public/{barId}/menu', tags: ['Public'], operationId: 'publicBarMenu', description: 'Show a public bar menu details', summary: 'Show public menu', parameters: [
+    //     new OAT\Parameter(name: 'barId', in: 'path', required: true, description: 'Bar database id', schema: new OAT\Schema(type: 'number')),
+    // ], security: [])]
+    // #[BAO\SuccessfulResponse(content: [
+    //     new BAO\WrapObjectWithData(MenuPublicResource::class),
+    // ])]
+    // #[BAO\NotFoundResponse]
     public function show(string $barId): MenuPublicResource
     {
         $menu = Menu::select('menus.*')

@@ -29,6 +29,7 @@ class Bar extends Model implements UploadableInterface
 
     protected $casts = [
         'settings' => 'array',
+        'is_public' => 'boolean',
     ];
 
     public function getUploadPath(): string
@@ -198,10 +199,5 @@ class Bar extends Model implements UploadableInterface
                 barId: $this->id,
             )->values()->toArray();
         });
-    }
-
-    public function isPublic(): bool
-    {
-        return (bool) $this->is_public;
     }
 }

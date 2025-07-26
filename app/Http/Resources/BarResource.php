@@ -99,7 +99,7 @@ class BarResource extends JsonResource
                 $this->relationLoaded('images'),
                 fn () => ImageResource::collection($this->images)
             ),
-            'is_public' => $this->isPublic(),
+            'is_public' => (bool) $this->is_public,
         ];
     }
 }
