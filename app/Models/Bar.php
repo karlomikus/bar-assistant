@@ -199,4 +199,9 @@ class Bar extends Model implements UploadableInterface
             )->values()->toArray();
         });
     }
+
+    public function isPublic(): bool
+    {
+        return (bool) $this->is_public;
+    }
 }

@@ -28,12 +28,14 @@ class BarRequest
     #[OAT\Property(property: 'default_currency', example: 'EUR', description: 'ISO 4217 format of currency. Used only as a setting for client apps.')]
     public ?string $defaultCurrency = null;
     #[OAT\Property(property: 'enable_invites', description: 'Enable users with invite code to join this bar. Default `false`.')]
-    public bool $invitesEnabled = true;
+    public bool $invitesEnabled = false;
     #[OAT\Property(description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.')]
     public ?BarOptionsEnum $options;
     /** @var array<int> */
     #[OAT\Property(items: new OAT\Items(type: 'integer'), description: 'Existing image ids')]
     public array $images = [];
+    #[OAT\Property(property: 'is_public', description: 'Allow public access to bar recipes. Default `false`.')]
+    public bool $isPublic = false;
 
     public static function fromLaravelRequest(Request $request): self
     {
@@ -46,6 +48,7 @@ class BarRequest
         $result->subtitle = $request->input('subtitle');
         $result->description = $request->input('description');
         $result->invitesEnabled = $inviteEnabled;
+        $result->isPublic = $request->boolean('is_public', false);
         if ($request->input('slug')) {
             $result->slug = Str::slug($request->input('slug'));
         }
@@ -70,6 +73,7 @@ class BarRequest
         $bar->name = $this->name;
         $bar->subtitle = $this->subtitle;
         $bar->description = $this->description;
+        $bar->is_public = $this->isPublic;
 
         if ($this->invitesEnabled && $bar->invite_code === null) {
             $bar->invite_code = (string) new Ulid();
