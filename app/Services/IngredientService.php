@@ -282,52 +282,51 @@ final class IngredientService
 
     public function rebuildMaterializedPath(int $barId): void
     {
+        $startTime = microtime(true);
         $ingredients = DB::table('ingredients')
             ->where('bar_id', $barId)
-            ->orderBy('parent_ingredient_id')
+            ->select('id', 'parent_ingredient_id')
             ->get()
             ->keyBy('id');
 
         $paths = [];
-
-        // Function to recursively build paths
-        $buildPath = function ($ingredientId) use (&$ingredients, &$paths, &$buildPath) {
-            if (!isset($ingredients[$ingredientId])) {
-                return null;
-            }
-
-            $ingredient = $ingredients[$ingredientId];
-
-            // If root node, path is null
-            if (!$ingredient->parent_ingredient_id) {
-                return null;
-            }
-
-            // If path is already computed, return it
-            if (isset($paths[$ingredientId])) {
-                return $paths[$ingredientId];
-            }
-
-            // Recursively get parent path
-            $parentPath = $buildPath($ingredient->parent_ingredient_id);
-            $path = ($parentPath ? $parentPath . $ingredient->parent_ingredient_id . '/' : $ingredient->parent_ingredient_id . '/');
-
-            // Store the computed path
-            $paths[$ingredientId] = $path;
-
-            return $path;
-        };
-
-        // Compute paths for all ingredients
         foreach ($ingredients as $ingredient) {
-            $paths[$ingredient->id] = $buildPath($ingredient->id);
+            if ($ingredient->parent_ingredient_id === null) {
+                $paths[$ingredient->id] = null;
+                continue;
+            }
+
+            $path = '';
+            $current = $ingredient;
+            while ($current && $current->parent_ingredient_id !== null) {
+                $path = $current->parent_ingredient_id . '/' . $path;
+                $current = $ingredients->get($current->parent_ingredient_id);
+            }
+            $paths[$ingredient->id] = $path;
         }
 
-        DB::transaction(function () use ($paths) {
-            foreach ($paths as $ingredientId => $path) {
-                DB::table('ingredients')->where('id', $ingredientId)->update(['materialized_path' => $path]);
-            }
-        });
+        $cases = [];
+        $bindings = [];
+        $ids = [];
+
+        foreach ($paths as $id => $path) {
+            $cases[] = "WHEN ? THEN ?";
+            $bindings[] = $id;
+            $bindings[] = $path;
+            $ids[] = $id;
+        }
+
+        if (empty($ids)) {
+            return;
+        }
+
+        $ids = implode(',', $ids);
+        $cases = implode(' ', $cases);
+
+        DB::update("UPDATE ingredients SET materialized_path = CASE id {$cases} END WHERE id IN ({$ids})", $bindings);
+
+        $endTime = microtime(true);
+        $this->log->info('[INGREDIENT_SERVICE] Rebuilt materialized path for ingredients for bar ' . $barId . ' in ' . round($endTime - $startTime, 6) . ' seconds.');
     }
 
     /**

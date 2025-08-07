@@ -1,3 +1,7 @@
+# v5.7.0
+## New
+- Import parent cocktails via datapack
+
 # v5.6.1
 ## Fixes
 - Fixed `parent_cocktail_id` type error when importing data via datapack
