@@ -38,7 +38,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
         public array $utensils = [],
         public array $images = [],
         public array $ingredients = [],
-        public ?int $parentCocktailId = null,
+        public ?string $parentCocktailId = null,
         public ?int $year = null,
     ) {
     }
