@@ -162,6 +162,8 @@ class FromDataPack
 
     private function importIngredients(Filesystem $dataDisk, Bar $bar, User $user): void
     {
+        $timerStart = microtime(true);
+
         $existingIngredients = DB::table('ingredients')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(function ($ingredient) {
             return Str::slug($ingredient->name);
         });
@@ -173,6 +175,7 @@ class FromDataPack
         $barImagesDir = $bar->getIngredientsDirectory();
         $this->uploadsDisk->makeDirectory($barImagesDir);
 
+        $imagesTimer = 0.0;
         foreach ($this->getDataFromDir('ingredients', $dataDisk) as $fromYield) {
             [$externalIngredient, $filePath] = $fromYield;
             $externalIngredient = IngredientExternal::fromDataPackArray($externalIngredient);
@@ -208,6 +211,7 @@ class FromDataPack
             }
 
             // For performance, manually copy the files and create image references
+            $imagesTimerStart = microtime(true);
             foreach ($externalIngredient->images as $image) {
                 $baseSrcImagePath = $filePath . $image->getLocalFilePath();
                 $fileExtension = File::extension($dataDisk->path($baseSrcImagePath));
@@ -226,7 +230,11 @@ class FromDataPack
                     'updated_at' => null,
                 ];
             }
+            $imageTimerEnd = microtime(true);
+            $imagesTimer += ($imageTimerEnd - $imagesTimerStart);
         }
+
+        Log::debug(sprintf('Ingredient image copy completed in %d ms', $imagesTimer * 1000));
 
         // Start inserting
         DB::beginTransaction();
@@ -280,10 +288,15 @@ class FromDataPack
         DB::commit();
 
         $this->ingredientRepository->rebuildMaterializedPath($bar->id);
+
+        $timerEnd = microtime(true);
+        Log::debug(sprintf('Ingredients import completed in %d ms', ($timerEnd - $timerStart) * 1000));
     }
 
     private function importBaseCocktails(Filesystem $dataDisk, Bar $bar, User $user): void
     {
+        $timerStart = microtime(true);
+
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
@@ -302,6 +315,7 @@ class FromDataPack
         $barImagesDir = 'cocktails/' . $bar->id . '/';
         $this->uploadsDisk->makeDirectory($barImagesDir);
 
+        $imagesTimer = 0.0;
         foreach ($this->getDataFromDir('cocktails', $dataDisk) as $fromYield) {
             [$cocktail, $filePath] = $fromYield;
 
@@ -385,6 +399,7 @@ class FromDataPack
             }
 
             // For performance, manually copy the files and create image references
+            $imagesTimerStart = microtime(true);
             foreach ($externalCocktail->images as $image) {
                 $baseSrcImagePath = $filePath . $image->getLocalFilePath();
                 $fileExtension = File::extension($dataDisk->path($baseSrcImagePath));
@@ -404,7 +419,11 @@ class FromDataPack
                     'updated_at' => null,
                 ];
             }
+            $imageTimerEnd = microtime(true);
+            $imagesTimer += ($imageTimerEnd - $imagesTimerStart);
         }
+
+        Log::debug(sprintf('Cocktail image copy completed in %d ms', $imagesTimer * 1000));
 
         DB::beginTransaction();
 
@@ -496,6 +515,9 @@ class FromDataPack
         DB::table('images')->insert($imagesToInsert);
 
         DB::commit();
+
+        $timerEnd = microtime(true);
+        Log::debug(sprintf('Cocktails import completed in %d ms', ($timerEnd - $timerStart) * 1000));
     }
 
     private function copyResourceImage(Filesystem $dataDisk, string $baseSrcImagePath, string $targetImagePath): void
