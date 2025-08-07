@@ -1,3 +1,7 @@
+# v5.6.1
+## Fixes
+- Fixed `parent_cocktail_id` type error when importing data via datapack
+
 # v5.6.0
 ## New
 - Added cocktail recipe parent ID tracking
