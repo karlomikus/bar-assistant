@@ -11,9 +11,12 @@ use Kami\Cocktail\Scraper\Sites\DefaultScraper;
 use Kami\Cocktail\Exceptions\ScraperMissingException;
 use Kevinrob\GuzzleCache\Storage\LaravelCacheStorage;
 use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
+use Spatie\Robots\Robots;
 
 final class Manager
 {
+    const USER_AGENT = 'BarAssistantBot/1.0';
+
     /**
      * @var array<class-string<AbstractSite>>
      */
@@ -47,6 +50,12 @@ final class Manager
 
     private function matchFirst(): AbstractSite
     {
+        if (!$this->scrapingAllowed()) {
+            throw new ScraperMissingException(
+                "This site does not allow scraping the given URL. Please check the site's robots.txt file for more information."
+            );
+        }
+
         $scraperClass = $this->matchSite();
         $body = $this->getSiteContent();
 
@@ -72,14 +81,21 @@ final class Manager
 
     private function getSiteContent(): string
     {
-        $saf = mt_rand(531, 536) . mt_rand(0, 2);
-        $userAgent = "(X11; Linux x86_64) AppleWebKit/$saf (KHTML, like Gecko) Chrome/" . mt_rand(36, 40) . '.0.' . mt_rand(800, 899) . ".0 Mobile Safari/$saf";
+        //$saf = mt_rand(531, 536) . mt_rand(0, 2);
+        //$userAgent = "(X11; Linux x86_64) AppleWebKit/$saf (KHTML, like Gecko) Chrome/" . mt_rand(36, 40) . '.0.' . mt_rand(800, 899) . ".0 Mobile Safari/$saf";
         $cachingMiddleware = new CacheMiddleware(new GreedyCacheStrategy(new LaravelCacheStorage(Cache::store()), 60 * 15));
         $response = Http::withMiddleware($cachingMiddleware)
-            ->withUserAgent($userAgent)
+            ->withUserAgent(self::USER_AGENT)
             ->timeout(10)
             ->get($this->url);
 
         return $response->body();
+    }
+
+    private function scrapingAllowed(): bool
+    {
+        $robots = Robots::create(self::USER_AGENT);
+
+        return $robots->mayIndex($this->url);
     }
 }
