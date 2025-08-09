@@ -5761,59 +5761,6 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  '/public/{barId}/menu':
-    get:
-      tags:
-        - Public
-      summary: 'Show public menu'
-      description: 'Show a public bar menu details'
-      operationId: publicBarMenu
-      parameters:
-        -
-          name: barId
-          in: path
-          description: 'Bar database id'
-          required: true
-          schema:
-            type: number
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/MenuPublic' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-      security: []
   '/cocktails/{id}/ratings':
     post:
       tags:
@@ -8284,6 +8231,7 @@ components:
         - created_at
         - updated_at
         - access
+        - is_public
       properties:
         id:
           description: 'Unique number that can be used to reference a specific bar.'
@@ -8384,6 +8332,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Image'
+        is_public:
+          type: boolean
+          default: false
+          example: true
       type: object
     CalculatorBlock:
       description: 'Represents a calculator block with basic information'
@@ -8758,6 +8710,9 @@ components:
             $ref: '#/components/schemas/Image'
         tags:
           description: 'Cocktail tags'
+          required:
+            - id
+            - name
           type: array
           items:
             properties:
@@ -10114,6 +10069,9 @@ components:
           type: array
           items:
             type: integer
+        is_public:
+          description: 'Allow public access to bar recipes. Default `false`.'
+          type: boolean
       type: object
     BarSettings:
       properties:
@@ -11052,9 +11010,6 @@ tags:
   -
     name: Profile
     description: Profile
-  -
-    name: Public
-    description: Public
   -
     name: Ratings
     description: Ratings
