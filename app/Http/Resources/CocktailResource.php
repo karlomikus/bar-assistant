@@ -27,7 +27,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
         new OAT\Property(property: 'tags', type: 'array', items: new OAT\Items(type: 'object', properties: [
             new OAT\Property(property: 'id', type: 'integer', example: 1, description: 'Tag ID'),
             new OAT\Property(property: 'name', type: 'string', example: 'Tag name', description: 'Tag name'),
-        ]), description: 'Cocktail tags', required: ['id', 'name']),
+        ], required: ['id', 'name']), description: 'Cocktail tags'),
         new OAT\Property(property: 'rating', type: 'object', required: ['user', 'average', 'total_votes'], properties: [
             new OAT\Property(type: 'integer', property: 'user', example: 1, nullable: true, description: 'Current user\'s rating'),
             new OAT\Property(type: 'integer', property: 'average', example: 4, description: 'Average rating'),
