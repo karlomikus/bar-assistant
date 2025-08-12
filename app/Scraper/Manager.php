@@ -13,6 +13,11 @@ use Kevinrob\GuzzleCache\Storage\LaravelCacheStorage;
 use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 use Spatie\Robots\Robots;
 
+/**
+ * TODO: Refactor this mess of a class:
+ * Split content fetching, site matching, and scraping logic into separate classes.
+ * Make this a factory class
+ */
 final class Manager
 {
     const USER_AGENT = 'BarAssistantBot/1.0';
@@ -43,27 +48,29 @@ final class Manager
     {
     }
 
-    public static function scrape(string $url): AbstractSite
+    public static function scrape(string $url, ?string $content = null): AbstractSite
     {
-        return (new self($url))->matchFirst();
+        return (new self($url))->matchFirst($content);
     }
 
-    private function matchFirst(): AbstractSite
+    private function matchFirst(?string $content = null): AbstractSite
     {
-        if (!$this->scrapingAllowed()) {
+        if ($content === null && !$this->scrapingAllowed()) {
             throw new ScraperMissingException(
                 "This site does not allow scraping the given URL. Please check the site's robots.txt file for more information."
             );
         }
 
         $scraperClass = $this->matchSite();
-        $body = $this->getSiteContent();
+        if ($content === null) {
+            $content = $this->getSiteContent();
+        }
 
-        if (empty($body)) {
+        if (empty($content)) {
             throw new ScraperMissingException('Scraper could not find any relevant data for the given site.');
         }
 
-        return resolve($scraperClass, ['url' => $this->url, 'content' => $body]);
+        return resolve($scraperClass, ['url' => $this->url, 'content' => $content]);
     }
 
     private function matchSite(): string
