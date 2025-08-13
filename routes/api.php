@@ -221,11 +221,11 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::put('/{id}/cocktails', [CollectionController::class, 'cocktails']);
     });
 
-    Route::prefix('import')->middleware(['throttle:importing', 'ability:*'])->group(function () {
-        Route::post('/scrape', [ImportController::class, 'scrape'])->middleware(EnsureRequestHasBarQuery::class)->name('import.scrape');
-        Route::post('/cocktail', [ImportController::class, 'cocktail'])->middleware(EnsureRequestHasBarQuery::class)->name('import.cocktail');
-        Route::post('/file', [ImportController::class, 'file'])->middleware(EnsureRequestHasBarQuery::class)->name('import.file');
-        Route::post('/ingredients', [ImportController::class, 'ingredients'])->middleware(EnsureRequestHasBarQuery::class)->name('import.ingredients');
+    Route::prefix('import')->middleware(['throttle:importing'])->group(function () {
+        Route::post('/scrape', [ImportController::class, 'scrape'])->middleware([EnsureRequestHasBarQuery::class, 'ability:cocktails.import'])->name('import.scrape');
+        Route::post('/cocktail', [ImportController::class, 'cocktail'])->middleware([EnsureRequestHasBarQuery::class, 'ability:*'])->name('import.cocktail');
+        Route::post('/file', [ImportController::class, 'file'])->middleware([EnsureRequestHasBarQuery::class, 'ability:*'])->name('import.file');
+        Route::post('/ingredients', [ImportController::class, 'ingredients'])->middleware([EnsureRequestHasBarQuery::class, 'ability:*'])->name('import.ingredients');
     });
 
     Route::prefix('bars')->group(function () {
