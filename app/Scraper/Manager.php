@@ -66,6 +66,10 @@ final class Manager
             $content = $this->getSiteContent();
         }
 
+        if (!str_starts_with($content, '<!DOCTYPE html>')) {
+            $content = '<!DOCTYPE html>' . $content;
+        }
+
         if (empty($content)) {
             throw new ScraperMissingException('Scraper could not find any relevant data for the given site.');
         }
