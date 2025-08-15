@@ -16,6 +16,7 @@ tests
 .editorconfig
 pint.json
 .spectral.yml
+.todo
 
 Dockerfile
 Dockerfile.dev

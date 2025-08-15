@@ -20,3 +20,4 @@ composer.phar
 .phpunit.cache
 /resources/data
 litestream.yml
+.todo

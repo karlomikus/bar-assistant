@@ -2946,7 +2946,7 @@ paths:
       tags:
         - Explore
       summary: 'Show cocktail'
-      description: '[DEPRECATED] This route will be removed in future releases. Please use `/{barId}/cocktails/{slug}` endpoint.Show details from a cocktail using a public id.'
+      description: 'Show details from a cocktail using a public id'
       operationId: showPublicCocktail
       parameters:
         -
@@ -5761,6 +5761,76 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/public/{barId}':
+    get:
+      tags:
+        - Public
+      summary: 'Show bar'
+      description: 'Show public information about a single bar.'
+      operationId: showPublicBar
+      parameters:
+        -
+          name: barId
+          in: path
+          description: 'Database id of bar'
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/PublicBarResource' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
   '/cocktails/{id}/ratings':
     post:
       tags:
@@ -9695,6 +9765,74 @@ components:
         settings:
           $ref: '#/components/schemas/ProfileSettings'
       type: object
+    PublicBarResource:
+      description: 'Public details about a bar'
+      required:
+        - id
+        - slug
+        - name
+        - subtitle
+        - description
+        - images
+      properties:
+        id:
+          description: 'Unique number that can be used to reference a specific bar.'
+          type: integer
+          example: 1
+        slug:
+          description: 'Unique string that can be used to reference a specific bar.'
+          type: string
+          example: bar-name-1
+        name:
+          description: 'Name of the bar'
+          type: string
+          example: 'Bar name'
+        subtitle:
+          description: 'Optional short quip about the bar'
+          type:
+            - string
+            - 'null'
+          example: 'A short subtitle of a bar'
+        description:
+          description: 'Description of the bar'
+          type:
+            - string
+            - 'null'
+          example: 'Bar description'
+        images:
+          description: 'Images associated with the bar'
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicImageResource'
+      type: object
+    PublicImageResource:
+      description: 'Public details about an image'
+      required:
+        - sort
+        - placeholder_hash
+        - url
+        - copyright
+      properties:
+        sort:
+          description: 'Sort order of the image'
+          type: integer
+          example: 1
+        placeholder_hash:
+          description: 'Placeholder hash for the image, used for lazy loading'
+          type: string
+          example: abc123
+        url:
+          description: 'URL of the image'
+          type: string
+          format: uri
+          example: 'https://example.com/image.jpg'
+        copyright:
+          description: 'Copyright information for the image'
+          type:
+            - string
+            - 'null'
+          example: 'Author name'
+      type: object
     SSOProvider:
       description: 'SSO Provider information'
       required:
@@ -11011,6 +11149,9 @@ tags:
   -
     name: Profile
     description: Profile
+  -
+    name: Public
+    description: Public
   -
     name: Ratings
     description: Ratings
