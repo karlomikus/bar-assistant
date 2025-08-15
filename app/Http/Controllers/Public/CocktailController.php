@@ -30,44 +30,32 @@ class CocktailController extends Controller
         }
 
         $queryParams = $request->only([
-            'id',
-            'name',
-            'ingredient_name',
-            'ingredient_substitute_id',
-            'ingredient_id',
-            'tag_id',
-            'created_user_id',
-            'glass_id',
-            'cocktail_method_id',
-            'bar_shelf',
-            'abv_min',
-            'abv_max',
-            'main_ingredient_id',
-            'total_ingredients',
-            'parent_cocktail_id',
-            'per_page',
+            'filter',
             'sort',
             'page',
         ]);
         ksort($queryParams);
         $queryString = http_build_query($queryParams);
-        $cacheKey = 'public_cocktails_' . $barId . '_' . sha1($queryString);
+        $cacheKey = 'public_cocktails_index_' . $barId . '_' . sha1($queryString);
 
-        $cocktails = Cache::remember($cacheKey, 3600, function () use ($cocktailsQuery, $request) {
-            return $cocktailsQuery->paginate($request->get('per_page', 25));
+        $cocktails = Cache::remember($cacheKey, 3600, function () use ($cocktailsQuery) {
+            return $cocktailsQuery->paginate(50);
         });
 
         return CocktailResource::collection($cocktails->withQueryString());
     }
 
-    public function show(int $barId, string $slug): CocktailResource
+    public function show(int $barId, string $slugOrPublicId): CocktailResource
     {
         $bar = Bar::findOrFail($barId);
         if (!$bar->is_public) {
             abort(404);
         }
 
-        $cocktail = Cocktail::where('slug', $slug)->firstOrFail()->load('ingredients.ingredient');
+        $cocktail = Cocktail::where('public_id', $slugOrPublicId)
+            ->orWhere('slug', $slugOrPublicId)
+            ->firstOrFail()
+            ->load('ingredients.ingredient', 'ingredients.substitutes.ingredient', 'images', 'tags', 'utensils');
 
         return new CocktailResource($cocktail);
     }

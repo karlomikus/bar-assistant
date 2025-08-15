@@ -2946,7 +2946,7 @@ paths:
       tags:
         - Explore
       summary: 'Show cocktail'
-      description: 'Show details from a cocktail using a public id'
+      description: '[DEPRECATED] This route will be removed in future releases. Please use `/{barId}/cocktails/{slug}` endpoint.Show details from a cocktail using a public id.'
       operationId: showPublicCocktail
       parameters:
         -
@@ -4048,7 +4048,7 @@ paths:
                 required:
                   - data
                 properties:
-                  data: { required: [schema_version, schema, scraper_meta], properties: { schema_version: { type: string, example: draft2 }, schema: { $ref: 'https://barassistant.app/cocktail-02.schema.json' }, scraper_meta: { type: array, items: { required: [_id, source], properties: { _id: { type: string }, source: { type: string } }, type: object } } }, type: object }
+                  data: { required: [schema_version, schema, scraper_meta], properties: { schema_version: { type: string, example: draft2 }, schema: { $ref: 'https://barassistant.app/cocktail-02.schema.json' }, scraper_meta: { type: array, items: { required: [_id, source], properties: { _id: { type: string }, source: { type: string }, html_content: { description: 'The HTML content of the scraped page, if available.', type: [string, 'null'] } }, type: object } } }, type: object }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -9985,6 +9985,7 @@ components:
       enum:
         - cocktails.read
         - cocktails.write
+        - cocktails.import
         - ingredients.read
         - ingredients.write
         - bars.read

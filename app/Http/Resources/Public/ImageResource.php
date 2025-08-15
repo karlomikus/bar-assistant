@@ -7,9 +7,9 @@ namespace Kami\Cocktail\Http\Resources\Public;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \Kami\Cocktail\Models\Bar
+ * @mixin \Kami\Cocktail\Models\Image
  */
-class BarResource extends JsonResource
+class ImageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,12 +20,10 @@ class BarResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'slug' => $this->slug,
-            'name' => $this->name,
-            'subtitle' => $this->subtitle,
-            'description' => $this->description,
-            'images' => ImageResource::collection($this->images),
+            'sort' => $this->sort,
+            'placeholder_hash' => $this->placeholder_hash,
+            'url' => $this->getImageUrl(),
+            'copyright' => $this->copyright,
         ];
     }
 }
