@@ -6,8 +6,8 @@ namespace Tests\Feature\Http;
 
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ImportControllerTest extends TestCase
 {

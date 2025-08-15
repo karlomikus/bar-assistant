@@ -8,10 +8,12 @@ use Throwable;
 use Kami\Cocktail\Models\Bar;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Models\Export;
+
+use function Laravel\Prompts\spin;
+
 use Illuminate\Support\Facades\DB;
 
 use function Laravel\Prompts\search;
-use function Laravel\Prompts\spin;
 
 use Kami\Cocktail\External\ExportTypeEnum;
 use Kami\Cocktail\External\Export\ToDataPack;
@@ -53,8 +55,8 @@ class BarExportRecipes extends Command
         $this->newLine();
         $this->line('Exporting data from a bar');
         $this->newLine();
-        $this->line('Selected export type: ' . ($type?->value ?? 'datapack'));
-        $this->line('Selected unit conversion: ' . ($units?->value ?? 'none'));
+        $this->line('Selected export type: ' . ($type->value ?? 'datapack'));
+        $this->line('Selected unit conversion: ' . ($units->value ?? 'none'));
 
         if ($barId === 0) {
             $barId = search(

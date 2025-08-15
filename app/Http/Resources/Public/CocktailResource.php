@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Resources\Public;
 
 use Kami\Cocktail\Models\CocktailIngredient;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\AmountFormats;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 
 /**

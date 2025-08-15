@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
+use Spatie\Robots\Robots;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Kevinrob\GuzzleCache\CacheMiddleware;
@@ -11,7 +12,6 @@ use Kami\Cocktail\Scraper\Sites\DefaultScraper;
 use Kami\Cocktail\Exceptions\ScraperMissingException;
 use Kevinrob\GuzzleCache\Storage\LaravelCacheStorage;
 use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
-use Spatie\Robots\Robots;
 
 /**
  * TODO: Refactor this mess of a class:
@@ -20,7 +20,7 @@ use Spatie\Robots\Robots;
  */
 final class Manager
 {
-    const USER_AGENT = 'BarAssistantBot/1.0';
+    public const USER_AGENT = 'BarAssistantBot/1.0';
 
     /**
      * @var array<class-string<AbstractSite>>
@@ -64,9 +64,7 @@ final class Manager
         $scraperClass = $this->matchSite();
         if ($content === null) {
             $content = $this->getSiteContent();
-        }
-
-        if (!str_starts_with($content, '<!DOCTYPE html>')) {
+        } elseif (!str_starts_with($content, '<!DOCTYPE html>')) {
             $content = '<!DOCTYPE html>' . $content;
         }
 

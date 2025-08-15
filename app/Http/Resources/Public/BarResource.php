@@ -10,19 +10,19 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * @mixin \Kami\Cocktail\Models\Bar
  */
- #[OAT\Schema(
-     schema: 'PublicBarResource',
-     description: 'Public details about a bar',
-     properties: [
-        new OAT\Property(property: 'id', type: 'integer', example: 1, description: 'Unique number that can be used to reference a specific bar.'),
-        new OAT\Property(property: 'slug', type: 'string', example: 'bar-name-1', description: 'Unique string that can be used to reference a specific bar.'),
-        new OAT\Property(property: 'name', type: 'string', example: 'Bar name', description: 'Name of the bar'),
-        new OAT\Property(property: 'subtitle', type: 'string', nullable: true, example: 'A short subtitle of a bar', description: 'Optional short quip about the bar'),
-        new OAT\Property(property: 'description', type: 'string', nullable: true, example: 'Bar description', description: 'Description of the bar'),
-        new OAT\Property(property: 'images', type: 'array', items: new OAT\Items(type: ImageResource::class), description: 'Images associated with the bar'),
-     ],
-     required: ['id', 'slug', 'name', 'subtitle', 'description', 'images'],
- )]
+#[OAT\Schema(
+    schema: 'PublicBarResource',
+    description: 'Public details about a bar',
+    properties: [
+       new OAT\Property(property: 'id', type: 'integer', example: 1, description: 'Unique number that can be used to reference a specific bar.'),
+       new OAT\Property(property: 'slug', type: 'string', example: 'bar-name-1', description: 'Unique string that can be used to reference a specific bar.'),
+       new OAT\Property(property: 'name', type: 'string', example: 'Bar name', description: 'Name of the bar'),
+       new OAT\Property(property: 'subtitle', type: 'string', nullable: true, example: 'A short subtitle of a bar', description: 'Optional short quip about the bar'),
+       new OAT\Property(property: 'description', type: 'string', nullable: true, example: 'Bar description', description: 'Description of the bar'),
+       new OAT\Property(property: 'images', type: 'array', items: new OAT\Items(type: ImageResource::class), description: 'Images associated with the bar'),
+    ],
+    required: ['id', 'slug', 'name', 'subtitle', 'description', 'images'],
+)]
 class BarResource extends JsonResource
 {
     /**
