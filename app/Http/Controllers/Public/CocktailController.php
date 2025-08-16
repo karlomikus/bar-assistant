@@ -6,6 +6,8 @@ namespace Kami\Cocktail\Http\Controllers\Public;
 
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Bar;
+use OpenApi\Attributes as OAT;
+use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Http\Controllers\Controller;
@@ -45,17 +47,31 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails->withQueryString());
     }
 
+    #[OAT\Get(path: '/public/{barId}/cocktails/{slugOrPublicId}', tags: ['Public'], operationId: 'showPublicBarCocktail', description: 'Show public information about cocktail. If valid public ID is provided it will used, if not it will use cocktail slug.', summary: 'Show cocktail', parameters: [
+        new OAT\Parameter(name: 'barId', in: 'path', required: true, description: 'Database id of bar', schema: new OAT\Schema(type: 'number')),
+        new OAT\Parameter(name: 'slugOrPublicId', in: 'path', required: true, description: 'Cocktail slug or public id (ULID)', schema: new OAT\Schema(type: 'string')),
+    ], security: [])]
+    #[BAO\SuccessfulResponse(content: [
+        new BAO\WrapObjectWithData(CocktailResource::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function show(int $barId, string $slugOrPublicId): CocktailResource
     {
+        $cocktail = Cocktail::where('bar_id', $barId)
+            ->where('public_id', $slugOrPublicId)
+            ->orWhere('slug', $slugOrPublicId)
+            ->with('ingredients.ingredient', 'ingredients.substitutes.ingredient', 'images', 'tags', 'utensils')
+            ->firstOrFail();
+
+        if ($cocktail->public_id === $slugOrPublicId) {
+            return new CocktailResource($cocktail);
+        }
+
         $bar = Bar::findOrFail($barId);
         if (!$bar->is_public) {
             abort(404);
         }
-
-        $cocktail = Cocktail::where('public_id', $slugOrPublicId)
-            ->orWhere('slug', $slugOrPublicId)
-            ->firstOrFail()
-            ->load('ingredients.ingredient', 'ingredients.substitutes.ingredient', 'images', 'tags', 'utensils');
 
         return new CocktailResource($cocktail);
     }

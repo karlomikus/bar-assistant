@@ -5831,6 +5831,83 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
+  '/public/{barId}/cocktails/{slugOrPublicId}':
+    get:
+      tags:
+        - Public
+      summary: 'Show cocktail'
+      description: 'Show public information about cocktail. If valid public ID is provided it will used, if not it will use cocktail slug.'
+      operationId: showPublicBarCocktail
+      parameters:
+        -
+          name: barId
+          in: path
+          description: 'Database id of bar'
+          required: true
+          schema:
+            type: number
+        -
+          name: slugOrPublicId
+          in: path
+          description: 'Cocktail slug or public id (ULID)'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/PublicCocktailResource' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
   '/cocktails/{id}/ratings':
     post:
       tags:
@@ -9804,6 +9881,169 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PublicImageResource'
+      type: object
+    PublicCocktailResource:
+      description: 'Public details about a cocktail'
+      required:
+        - slug
+        - name
+        - instructions
+        - garnish
+        - description
+        - source
+        - public_id
+        - public_at
+        - images
+        - tags
+        - glass
+        - utensils
+        - method
+        - created_at
+        - abv
+        - year
+        - ingredients
+      properties:
+        slug:
+          description: 'Unique string that can be used to reference a specific cocktail.'
+          type: string
+          example: cocktail-name-1
+        name:
+          description: 'Name of the cocktail'
+          type: string
+          example: 'Cocktail Name'
+        instructions:
+          description: 'Instructions for preparing the cocktail'
+          type: string
+          example: 'Shake well and serve.'
+        garnish:
+          description: 'Garnish for the cocktail'
+          type:
+            - string
+            - 'null'
+          example: 'Lemon twist'
+        description:
+          description: 'Description of the cocktail'
+          type:
+            - string
+            - 'null'
+          example: 'A refreshing cocktail with a twist.'
+        source:
+          description: 'Source of the cocktail recipe'
+          type:
+            - string
+            - 'null'
+          example: 'https://example.com/cocktail-recipe'
+        public_id:
+          description: 'Public identifier (ULID) for the cocktail'
+          type: string
+          example: '12345'
+        public_at:
+          description: 'Date and time when the cocktail was made public'
+          type:
+            - string
+            - 'null'
+          format: date-time
+          example: '2023-10-01T12:00:00Z'
+        images:
+          description: 'Images associated with the cocktail'
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicImageResource'
+        tags:
+          description: 'Tags associated with the cocktail'
+          type: array
+          items:
+            type: string
+        glass:
+          description: 'Type of glass used for the cocktail'
+          type:
+            - string
+            - 'null'
+          example: 'Highball glass'
+        utensils:
+          description: 'Utensils used for preparing the cocktail'
+          type: array
+          items:
+            type: string
+        method:
+          description: 'Method of preparation for the cocktail'
+          type:
+            - string
+            - 'null'
+          example: Shaken
+        created_at:
+          description: 'Date and time when the cocktail was created'
+          type: string
+          format: date-time
+          example: '2023-10-01T12:00:00Z'
+        abv:
+          description: 'Alcohol by volume percentage of the cocktail'
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 0.15
+        year:
+          description: 'Year the cocktail was created or published'
+          type:
+            - integer
+            - 'null'
+          example: 2023
+        ingredients:
+          description: 'List of ingredients required to make the cocktail'
+          type: array
+          items:
+            required:
+              - name
+              - amount
+              - amount_max
+              - units
+              - units_formatted
+              - optional
+              - note
+              - substitutes
+            properties:
+              name:
+                description: 'Name of the ingredient'
+                type: string
+                example: Gin
+              amount:
+                description: 'Amount of the ingredient in the cocktail'
+                type: number
+                format: float
+                example: 50
+              amount_max:
+                description: 'Maximum amount of the ingredient that can be used'
+                type:
+                  - number
+                  - 'null'
+                format: float
+                example: null
+              units:
+                description: 'Units of measurement for the ingredient amount'
+                type: string
+                example: ml
+              units_formatted:
+                $ref: '#/components/schemas/AmountFormats'
+                description: 'Formatted units for the ingredient amount'
+              optional:
+                description: 'Indicates if the ingredient is optional'
+                type: boolean
+                example: false
+              note:
+                description: 'Additional notes about the ingredient'
+                type:
+                  - string
+                  - 'null'
+                example: 'Use fresh gin for best results.'
+              substitutes:
+                description: 'List of substitute ingredients that can be used in place of this ingredient'
+                type: array
+                items:
+                  required: [name, amount, amount_max, units]
+                  properties: { name: { description: 'Name of the substitute ingredient', type: string, example: Vodka }, amount: { description: 'Amount of the substitute ingredient', type: number, format: float, example: 50 }, amount_max: { description: 'Maximum amount of the substitute ingredient that can be used', type: [number, 'null'], format: float, example: null }, units: { description: 'Units of measurement for the substitute ingredient amount', type: string, example: ml } }
+                  type: object
+            type: object
       type: object
     PublicImageResource:
       description: 'Public details about an image'
