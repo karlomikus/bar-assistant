@@ -19,7 +19,7 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
      * @param array<CocktailIngredientSubstitute> $substitutes
      */
     private function __construct(
-        public IngredientBasic $ingredient,
+        public Ingredient $ingredient,
         public AmountValueObject $amount,
         public bool $optional = false,
         public bool $isSpecified = false,
@@ -41,7 +41,7 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
         }
 
         return new self(
-            IngredientBasic::fromModel($model->ingredient),
+            Ingredient::fromModel($model->ingredient),
             $amount,
             (bool) $model->optional,
             (bool) $model->is_specified,
@@ -65,12 +65,9 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
         }
 
         return new self(
-            IngredientBasic::fromDataPackArray([
+            Ingredient::fromDataPackArray([
                 '_id' => Str::slug($sourceArray['name']),
                 'name' => $sourceArray['name'],
-                'strength' => $sourceArray['strength'] ?? 0.0,
-                'description' => $sourceArray['description'] ?? null,
-                'origin' => $sourceArray['origin'] ?? null,
             ]),
             new AmountValueObject(
                 $sourceArray['amount'] ?? 0.0,
@@ -88,7 +85,9 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
     public function toDataPackArray(): array
     {
         return [
-            ...$this->ingredient->toDataPackArray(),
+            '_id' => $this->ingredient->id,
+            'name' => $this->ingredient->name,
+            'sort' => $this->sort,
             'amount' => $this->amount->amountMin,
             'units' => $this->amount->units->value,
             'optional' => $this->optional,
@@ -96,7 +95,6 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
             'amount_max' => $this->amount->amountMax,
             'note' => $this->note,
             'substitutes' => array_map(fn ($model) => $model->toDataPackArray(), $this->substitutes),
-            'sort' => $this->sort,
         ];
     }
 
@@ -114,7 +112,7 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
         }
 
         return new self(
-            IngredientBasic::fromDraft2Array([
+            Ingredient::fromDraft2Array([
                 '_id' => $sourceArray['_id'],
                 'name' => $sourceArray['name'] ?? '',
                 'strength' => $sourceArray['strength'] ?? null,

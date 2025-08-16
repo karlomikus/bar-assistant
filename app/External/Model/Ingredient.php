@@ -7,15 +7,16 @@ namespace Kami\Cocktail\External\Model;
 use Kami\Cocktail\External\SupportsCSV;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\External\SupportsDataPack;
+use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\Models\Image as ImageModel;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 use Kami\Cocktail\Models\IngredientPrice as IngredientPriceModel;
 
-readonly class Ingredient implements SupportsDataPack, SupportsCSV
+readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsCSV
 {
     /**
      * @param array<Image> $images
-     * @param array<IngredientBasic> $ingredientParts
+     * @param array<Ingredient> $ingredientParts
      * @param array<IngredientPrice> $prices
      */
     private function __construct(
@@ -47,7 +48,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
         })->toArray();
 
         $ingredientParts = $model->ingredientParts->map(function (ComplexIngredient $part) {
-            return IngredientBasic::fromModel($part->ingredient);
+            return Ingredient::fromModel($part->ingredient);
         })->toArray();
 
         $ingredientPrices = $model->prices->map(function (IngredientPriceModel $price) {
@@ -85,7 +86,12 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
 
         $ingredientParts = [];
         foreach ($sourceArray['ingredient_parts'] ?? [] as $ingredient) {
-            $ingredientParts[] = IngredientBasic::fromDataPackArray($ingredient);
+            $ingredientParts[] = Ingredient::fromDataPackArray($ingredient);
+        }
+
+        $ingredientPrices = [];
+        foreach ($sourceArray['prices'] ?? [] as $price) {
+            $ingredientPrices[] = IngredientPrice::fromDataPackArray($price);
         }
 
         return new self(
@@ -101,7 +107,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             updatedAt: $sourceArray['updated_at'] ?? null,
             images: $images,
             ingredientParts: $ingredientParts,
-            prices: [],
+            prices: $ingredientPrices,
             calculatorId: $sourceArray['calculator_id'] ?? null,
             sugarContent: $sourceArray['sugar_g_per_ml'] ?? null,
             acidity: $sourceArray['acidity'] ?? null,
@@ -157,5 +163,29 @@ readonly class Ingredient implements SupportsDataPack, SupportsCSV
             distillery: blank($sourceArray['distillery']) ? null : $sourceArray['distillery'],
             units: blank($sourceArray['units']) ? null : $sourceArray['units'],
         );
+    }
+
+    public static function fromDraft2Array(array $sourceArray): self
+    {
+        return new self(
+            id: $sourceArray['_id'],
+            name: $sourceArray['name'] ?? '',
+            strength: $sourceArray['strength'] ?? 0.0,
+            description: $sourceArray['description'] ?? null,
+            origin: $sourceArray['origin'] ?? null,
+            category: $sourceArray['category'] ?? null,
+        );
+    }
+
+    public function toDraft2Array(): array
+    {
+        return [
+            '_id' => $this->id,
+            'name' => $this->name,
+            'strength' => $this->strength,
+            'description' => $this->description,
+            'origin' => $this->origin,
+            'category' => $this->category,
+        ];
     }
 }

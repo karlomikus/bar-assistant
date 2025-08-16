@@ -11,7 +11,7 @@ use Kami\RecipeUtils\RecipeIngredient;
 use Kami\Cocktail\External\Model\Schema;
 use Symfony\Component\DomCrawler\Crawler;
 use Kami\Cocktail\External\Model\Cocktail;
-use Kami\Cocktail\External\Model\IngredientBasic;
+use Kami\Cocktail\External\Model\Ingredient;
 use Kami\Cocktail\Exceptions\ScraperMissingException;
 
 abstract class AbstractSite implements Site
@@ -184,7 +184,7 @@ abstract class AbstractSite implements Site
 
         $model = new Schema(
             $cocktail,
-            array_map(fn ($ingredient) => IngredientBasic::fromDraft2Array($ingredient), $ingredients),
+            array_map(fn ($ingredient) => Ingredient::fromDraft2Array($ingredient), $ingredients),
         );
 
         return [
