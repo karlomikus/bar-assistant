@@ -69,7 +69,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             $model->utensils->pluck('name')->toArray(),
             $images,
             $ingredients,
-            $model->parent_cocktail_id !== null ? (string) $model->parent_cocktail_id : null,
+            $model->parentCocktail?->getExternalId(),
             $model->year,
         );
     }

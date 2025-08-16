@@ -89,6 +89,7 @@ class ImportController extends Controller
                 new OAT\Property(property: 'scraper_meta', type: 'array', items: new OAT\Items(type: 'object', properties: [
                     new OAT\Property(property: '_id', type: 'string'),
                     new OAT\Property(property: 'source', type: 'string'),
+                    new OAT\Property(property: 'html_content', type: 'string', nullable: true, description: 'The HTML content of the scraped page, if available.'),
                 ], required: ['_id', 'source'])),
             ], required: ['schema_version', 'schema', 'scraper_meta']),
         ], required: ['data']),
@@ -100,8 +101,10 @@ class ImportController extends Controller
             abort(403);
         }
 
+        $content = $request->input('html_content', null);
+
         try {
-            $scraper = Manager::scrape($request->input('source'));
+            $scraper = Manager::scrape($request->input('source'), $content);
             $dataToImport = $scraper->toArray();
         } catch (Throwable $e) {
             abort(400, $e->getMessage());

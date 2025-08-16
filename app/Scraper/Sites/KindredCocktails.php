@@ -6,10 +6,10 @@ namespace Kami\Cocktail\Scraper\Sites;
 
 use Exception;
 use Throwable;
+use Kami\Cocktail\Scraper\AbstractSite;
 use Symfony\Component\DomCrawler\Crawler;
-use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
-class KindredCocktails extends AbstractSiteExtractor
+class KindredCocktails extends AbstractSite
 {
     public static function getSupportedUrls(): array
     {

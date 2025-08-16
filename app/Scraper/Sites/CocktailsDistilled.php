@@ -6,9 +6,9 @@ namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\AmountValue;
 use Kami\RecipeUtils\RecipeIngredient;
-use Kami\Cocktail\Scraper\AbstractSiteExtractor;
+use Kami\Cocktail\Scraper\AbstractSite;
 
-class CocktailsDistilled extends AbstractSiteExtractor
+class CocktailsDistilled extends AbstractSite
 {
     public static function getSupportedUrls(): array
     {

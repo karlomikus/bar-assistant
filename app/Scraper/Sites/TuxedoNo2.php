@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\RecipeIngredient;
-use Kami\Cocktail\Scraper\AbstractSiteExtractor;
+use Kami\Cocktail\Scraper\AbstractSite;
 
-class TuxedoNo2 extends AbstractSiteExtractor
+class TuxedoNo2 extends AbstractSite
 {
     public static function getSupportedUrls(): array
     {

@@ -29,6 +29,7 @@ class Bar extends Model implements UploadableInterface
 
     protected $casts = [
         'settings' => 'array',
+        'is_public' => 'boolean',
     ];
 
     public function getUploadPath(): string

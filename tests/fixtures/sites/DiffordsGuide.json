@@ -1,0 +1,103 @@
+{
+    "schema_version": "draft2",
+    "schema": {
+        "recipe": {
+            "_id": "negroni-cocktail",
+            "name": "Negroni Cocktail",
+            "instructions": "1. Select and pre-chill an Old-fashioned glass.\n2. Prepare garnish of orange wedge or slice and\/or orange zest twist.\n3. POUR all ingredients into ice-filled glass.\n4. STIR.\n5. Garnish with orange wedge or slice and\/or orange zest twist.",
+            "created_at": null,
+            "updated_at": null,
+            "description": "Discover how to make a Negroni Cocktail using Gin, Red bitter liqueur and Rosso\/sweet vermouth in just 5 easy to follow steps",
+            "source": "https:\/\/www.diffordsguide.com\/cocktails\/recipe\/1392\/negroni-cocktail",
+            "garnish": "Garnish with orange wedge or slice and\/or orange zest twist.",
+            "abv": null,
+            "tags": [],
+            "glass": null,
+            "method": null,
+            "utensils": [],
+            "images": [
+                {
+                    "uri": "TEST",
+                    "sort": 0,
+                    "placeholder_hash": null,
+                    "copyright": "Difford's Guide"
+                }
+            ],
+            "ingredients": [
+                {
+                    "_id": "TEST",
+                    "amount": 30,
+                    "units": "ml",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 1
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 30,
+                    "units": "ml",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 2
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 30,
+                    "units": "ml",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 3
+                }
+            ]
+        },
+        "ingredients": [
+            {
+                "_id": "TEST",
+                "name": "Gin",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Red bitter liqueur",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Rosso\/sweet vermouth",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            }
+        ]
+    },
+    "scraper_meta": [
+        {
+            "_id": "TEST",
+            "source": "30 ml Gin"
+        },
+        {
+            "_id": "TEST",
+            "source": "30 ml Red bitter liqueur"
+        },
+        {
+            "_id": "TEST",
+            "source": "30 ml Rosso\/sweet vermouth"
+        }
+    ]
+}

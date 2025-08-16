@@ -1,0 +1,107 @@
+{
+    "schema_version": "draft2",
+    "schema": {
+        "recipe": {
+            "_id": "negroni-cocktail-recipe",
+            "name": "Negroni cocktail recipe",
+            "instructions": "1. Add all the ingredients directly into a lowball glass with ice and stir\n2. Garnish with an orange slice and serve",
+            "created_at": null,
+            "updated_at": null,
+            "description": "<p>The Negroni is a classic Italian cocktail that has been enjoyed for over a century. The drink is made up of equal parts gin, Campari, and red vermouth, resulting in a harmonious balance of flavors.<\/p><p>The origins of the Negroni trace back to the early 1900s, when Count Camillo Negroni requested for his Americano cocktail to be made stronger by replacing the soda water with gin. The result was a bold and bitter-sweet concoction that became an instant hit.<\/p><p>The combination of the herbal notes from the gin, the bitter and citrusy flavors of Campari, and the rich sweetness of red vermouth creates a complex and sophisticated taste. The Negroni is often garnished with an orange peel, adding a zesty aroma to the drink.<\/p><p>Whether sipped on a warm summer evening or enjoyed as an aperitif before a meal, the Negroni is a timeless classic that continues to be a favorite amongst cocktail enthusiasts.<\/p>",
+            "source": "https:\/\/makemeacocktail.com\/cocktail\/6781\/negroni",
+            "garnish": null,
+            "abv": null,
+            "tags": [
+                "Easy",
+                "Classic",
+                "Stirred"
+            ],
+            "glass": null,
+            "method": null,
+            "utensils": [],
+            "images": [
+                {
+                    "uri": "TEST",
+                    "sort": 0,
+                    "placeholder_hash": null,
+                    "copyright": "Make Me a Cocktail"
+                }
+            ],
+            "ingredients": [
+                {
+                    "_id": "TEST",
+                    "amount": 30,
+                    "units": "ml",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 1
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 30,
+                    "units": "ml",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 2
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 30,
+                    "units": "ml",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 3
+                }
+            ]
+        },
+        "ingredients": [
+            {
+                "_id": "TEST",
+                "name": "Gin",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Campari",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Red vermouth",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            }
+        ]
+    },
+    "scraper_meta": [
+        {
+            "_id": "TEST",
+            "source": "30ml Gin"
+        },
+        {
+            "_id": "TEST",
+            "source": "30ml Campari"
+        },
+        {
+            "_id": "TEST",
+            "source": "30ml Red vermouth"
+        }
+    ]
+}

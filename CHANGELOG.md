@@ -1,3 +1,18 @@
+# v5.7.0
+## New
+- Import parent cocktails via datapack
+- Added `is_public` property to `Bar` schema
+    - If set to `true`, bar will expose public endpoints `/public/{barId}/*`
+    - New public endpoints are still being documented
+- Added optional `html_content` to scrape request schema
+    - This allows you to send raw HTML content to scrape endpoint, instead of server making a request to the URL
+- Scraping now respects `robots.txt` rules
+- Scraping is now done with identifiable user agent
+
+# v5.6.1
+## Fixes
+- Fixed `parent_cocktail_id` type error when importing data via datapack
+
 # v5.6.0
 ## New
 - Added cocktail recipe parent ID tracking

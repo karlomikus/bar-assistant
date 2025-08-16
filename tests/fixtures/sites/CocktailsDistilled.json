@@ -1,0 +1,103 @@
+{
+    "schema_version": "draft2",
+    "schema": {
+        "recipe": {
+            "_id": "kingston-negroni",
+            "name": "Kingston Negroni",
+            "instructions": "Combine all ingredients and stir with ice. Strain into an ice-filled rocks glass.",
+            "created_at": null,
+            "updated_at": null,
+            "description": "What happens when Campari and Italian Vermouth meet the sand and sun of the Caribbean? Well, that would be a Kingston Negroni. Overproof Jamaican Rum stands up to the bombastic chocolate and bitter orange notes in the vermouth while drying out the Campari’s richness and tempering its bitterness.",
+            "source": "https:\/\/cocktailsdistilled.com\/recipe\/kingston-negroni\/",
+            "garnish": "Orange Slice",
+            "abv": null,
+            "tags": [],
+            "glass": "Rocks",
+            "method": "Stir",
+            "utensils": [],
+            "images": [
+                {
+                    "uri": "TEST",
+                    "sort": 0,
+                    "placeholder_hash": null,
+                    "copyright": "Cocktails Distilled"
+                }
+            ],
+            "ingredients": [
+                {
+                    "_id": "TEST",
+                    "amount": 30,
+                    "units": "ml",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 1
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 30,
+                    "units": "ml",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 2
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 30,
+                    "units": "ml",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 3
+                }
+            ]
+        },
+        "ingredients": [
+            {
+                "_id": "TEST",
+                "name": "Jamaican Rum (overproof)",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Sweet Vermouth",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Campari",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            }
+        ]
+    },
+    "scraper_meta": [
+        {
+            "_id": "TEST",
+            "source": "Jamaican Rum (overproof)"
+        },
+        {
+            "_id": "TEST",
+            "source": "Sweet Vermouth"
+        },
+        {
+            "_id": "TEST",
+            "source": "Campari"
+        }
+    ]
+}

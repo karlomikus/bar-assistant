@@ -1,0 +1,103 @@
+{
+    "schema_version": "draft2",
+    "schema": {
+        "recipe": {
+            "_id": "negroni",
+            "name": "Negroni",
+            "instructions": "Pour ingredients into ice-filled rocks glass and stir. Garnish with orange twist.",
+            "created_at": null,
+            "updated_at": null,
+            "description": null,
+            "source": "https:\/\/www.ericscocktailguide.com\/recipes\/negroni",
+            "garnish": null,
+            "abv": null,
+            "tags": [],
+            "glass": null,
+            "method": null,
+            "utensils": [],
+            "images": [
+                {
+                    "uri": "TEST",
+                    "sort": 0,
+                    "placeholder_hash": null,
+                    "copyright": "Eric's Cocktail Guide"
+                }
+            ],
+            "ingredients": [
+                {
+                    "_id": "TEST",
+                    "amount": 1,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": "Plymouth Gin",
+                    "substitutes": [],
+                    "sort": 1
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 1,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": "Cocchi Storico Vermouth di Torino",
+                    "substitutes": [],
+                    "sort": 2
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 1,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 3
+                }
+            ]
+        },
+        "ingredients": [
+            {
+                "_id": "TEST",
+                "name": "Gin",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Sweet vermouth",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Campari",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            }
+        ]
+    },
+    "scraper_meta": [
+        {
+            "_id": "TEST",
+            "source": "1 oz gin (Plymouth Gin)"
+        },
+        {
+            "_id": "TEST",
+            "source": "1 oz sweet vermouth (Cocchi Storico Vermouth di Torino)"
+        },
+        {
+            "_id": "TEST",
+            "source": "1 oz campari"
+        }
+    ]
+}

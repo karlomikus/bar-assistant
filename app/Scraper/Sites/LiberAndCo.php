@@ -7,9 +7,9 @@ namespace Kami\Cocktail\Scraper\Sites;
 use Throwable;
 use Kami\RecipeUtils\AmountValue;
 use Kami\RecipeUtils\RecipeIngredient;
-use Kami\Cocktail\Scraper\AbstractSiteExtractor;
+use Kami\Cocktail\Scraper\AbstractSite;
 
-class LiberAndCo extends AbstractSiteExtractor
+class LiberAndCo extends AbstractSite
 {
     public static function getSupportedUrls(): array
     {

@@ -44,6 +44,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
             'can_deactivate',
         ]),
         new OAT\Property(property: 'images', type: 'array', items: new OAT\Items(type: ImageResource::class), description: 'Images associated with the bar'),
+        new OAT\Property(property: 'is_public', type: 'boolean', default: false, example: true),
     ],
     required: [
         'id',
@@ -59,6 +60,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
         'created_at',
         'updated_at',
         'access',
+        'is_public',
     ]
 )]
 class BarResource extends JsonResource
@@ -97,6 +99,7 @@ class BarResource extends JsonResource
                 $this->relationLoaded('images'),
                 fn () => ImageResource::collection($this->images)
             ),
+            'is_public' => (bool) $this->is_public,
         ];
     }
 }

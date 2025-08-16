@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\RecipeIngredient;
+use Kami\Cocktail\Scraper\AbstractSite;
 use Symfony\Component\DomCrawler\Crawler;
-use Kami\Cocktail\Scraper\AbstractSiteExtractor;
 
-class CocktailParty extends AbstractSiteExtractor
+class CocktailParty extends AbstractSite
 {
     public static function getSupportedUrls(): array
     {

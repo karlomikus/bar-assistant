@@ -88,7 +88,8 @@ class ToDataPack
             'glass',
             'method',
             'tags',
-            'utensils'
+            'utensils',
+            'parentCocktail',
         )->where('bar_id', $barId)->get();
 
         /** @var Cocktail $cocktail */
@@ -98,7 +99,7 @@ class ToDataPack
             /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($cocktail->images as $img) {
                 try {
-                    $zip->addFile($img->getPath(), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getFileName());
+                    $zip->addFile($img->getPath(), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getExternalId());
                 } catch (ImageFileNotFoundException $e) {
                     Log::warning($e->getMessage());
                 }
@@ -120,7 +121,7 @@ class ToDataPack
 
             /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($ingredient->images as $img) {
-                $zip->addFile($img->getPath(), 'ingredients/' . $ingredient->getExternalId() . '/' . $img->getFileName());
+                $zip->addFile($img->getPath(), 'ingredients/' . $ingredient->getExternalId() . '/' . $img->getExternalId());
             }
 
             $ingredientExportData = $this->prepareDataOutput($data->toDataPackArray());

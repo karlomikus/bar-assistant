@@ -6,6 +6,7 @@ namespace Tests\Feature\Http;
 
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ImportControllerTest extends TestCase
@@ -104,5 +105,24 @@ class ImportControllerTest extends TestCase
         ]);
 
         $response->assertUnprocessable();
+    }
+
+    public function test_import_scrapes_from_html_content(): void
+    {
+        Http::fake();
+
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        // The fixture is actually different recipe to test that no external request is used
+        $response = $this->postJson('/api/import/scrape', [
+            'source' => 'https://punchdrink.com/recipes/prado/',
+            'html_content' => file_get_contents(base_path('tests/fixtures/scraper-html-content.html')),
+        ]);
+
+        $response->assertSuccessful();
+        $response->assertJsonPath('data.schema.recipe.name', 'Negroni');
     }
 }

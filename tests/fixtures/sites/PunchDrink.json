@@ -1,0 +1,105 @@
+{
+    "schema_version": "draft2",
+    "schema": {
+        "recipe": {
+            "_id": "negroni",
+            "name": "Negroni",
+            "instructions": "1. Add all ingredients to a mixing glass.\n2. Add ice and stir until chilled.\n3. If on the rocks, strain over ice into a rocks glass. If up, strain into a chilled coupe or cocktail glass.\n4. Garnish with an orange or lemon peel.\n\n\n ## Editors note:\n\nWe prefer Negronis with London-style dry gin for its typically citrus-forward flavor. We also like mixing up our sweet vermouth option with things like Cocchi Vermouth di Torino (if you can find it), but classically we prefer Carpano Antica. Both lend the drink a dark, savory complexity that plays well with the bitter tang of Campari.",
+            "created_at": null,
+            "updated_at": null,
+            "description": "Navigating a through line between bitter and sweet, the Negroni has evolved into one of the cornerstones of the classic cocktail revival.",
+            "source": "https:\/\/punchdrink.com\/recipes\/negroni",
+            "garnish": "orange or lemon peel",
+            "abv": null,
+            "tags": [
+                "Strong"
+            ],
+            "glass": null,
+            "method": null,
+            "utensils": [],
+            "images": [
+                {
+                    "uri": "TEST",
+                    "sort": 0,
+                    "placeholder_hash": null,
+                    "copyright": "Punch Staff | Daniel Krieger"
+                }
+            ],
+            "ingredients": [
+                {
+                    "_id": "TEST",
+                    "amount": 1,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 1
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 1,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 2
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 1,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 3
+                }
+            ]
+        },
+        "ingredients": [
+            {
+                "_id": "TEST",
+                "name": "Gin",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Campari",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Sweet vermouth",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            }
+        ]
+    },
+    "scraper_meta": [
+        {
+            "_id": "TEST",
+            "source": "1 ounce gin"
+        },
+        {
+            "_id": "TEST",
+            "source": "1 ounce Campari"
+        },
+        {
+            "_id": "TEST",
+            "source": "1 ounce sweet vermouth"
+        }
+    ]
+}

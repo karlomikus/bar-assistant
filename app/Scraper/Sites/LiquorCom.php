@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
-use Kami\Cocktail\Scraper\AbstractSiteExtractor;
+use Kami\Cocktail\Scraper\AbstractSite;
 
-class LiquorCom extends AbstractSiteExtractor
+class LiquorCom extends AbstractSite
 {
     public static function getSupportedUrls(): array
     {

@@ -7,11 +7,12 @@ namespace Kami\Cocktail\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
+use Kami\Cocktail\Models\Concerns\IsExternalized;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Exceptions\ImageFileNotFoundException;
 
-class Image extends Model
+class Image extends Model implements IsExternalized
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\ImageFactory> */
     use HasFactory;
@@ -54,6 +55,11 @@ class Image extends Model
         }
 
         return 'file:///' . $this->getFileName();
+    }
+
+    public function getExternalId(): string
+    {
+        return $this->getFileName() ?? (string) $this->id;
     }
 
     public function getFileName(): ?string

@@ -8,6 +8,9 @@ use Throwable;
 use Kami\Cocktail\Models\Bar;
 use Illuminate\Console\Command;
 use Kami\Cocktail\Models\Export;
+
+use function Laravel\Prompts\spin;
+
 use Illuminate\Support\Facades\DB;
 
 use function Laravel\Prompts\search;
@@ -24,14 +27,16 @@ class BarExportRecipes extends Command
      *
      * @var string
      */
-    protected $signature = 'bar:export-recipes {barId?} {--t|type=datapack : Export type} {--u|units= : Force unit conversion when possible (none, ml, oz, cl)}';
+    protected $signature = 'bar:export-recipes {barId?} {--t|type=datapack : Export type (datapack, schema, md, json-ld, xml, yaml)} {--u|units= : Force unit conversion when possible (none, ml, oz, cl)}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Export data from a single bar. Available export types: datapack, schema, markdown, json-ld, xml, yaml';
+    protected $description = 'Export data from a single bar';
+
+    protected $help = 'This command allows you to export data from a single bar in various formats. You can specify the bar ID as an argument, or search for it interactively if not provided.';
 
     public function __construct(private readonly ToDataPack $datapackExporter, private readonly ToRecipeType $recipeExporter)
     {
@@ -44,6 +49,14 @@ class BarExportRecipes extends Command
     public function handle(): int
     {
         $barId = (int) $this->argument('barId');
+        $type = ExportTypeEnum::tryFrom($this->option('type') ?? 'datapack');
+        $units = ForceUnitConvertEnum::tryFrom($this->option('units') ?? 'none');
+
+        $this->newLine();
+        $this->line('Exporting data from a bar');
+        $this->newLine();
+        $this->line('Selected export type: ' . ($type->value ?? 'datapack'));
+        $this->line('Selected unit conversion: ' . ($units->value ?? 'none'));
 
         if ($barId === 0) {
             $barId = search(
@@ -56,9 +69,6 @@ class BarExportRecipes extends Command
             );
         }
 
-        $type = ExportTypeEnum::tryFrom($this->option('type') ?? 'datapack');
-        $units = ForceUnitConvertEnum::tryFrom($this->option('units') ?? 'none');
-
         try {
             $bar = Bar::findOrFail($barId);
         } catch (Throwable $e) {
@@ -67,13 +77,20 @@ class BarExportRecipes extends Command
             return Command::FAILURE;
         }
 
-        $this->line(sprintf('Starting new export (%s | %s) from bar: %s - "%s"', $type->value, $units->value, $bar->id, $bar->name));
+        $this->line(sprintf('Starting new %s export from bar: [%s] %s', $type->value, $bar->id, $bar->name));
 
-        if ($type === ExportTypeEnum::Datapack) {
-            $filename = $this->datapackExporter->process($bar->id, Export::generateFilename('datapack'), $units);
-        } else {
-            $filename = $this->recipeExporter->process($bar->id, Export::generateFilename($type->getFilenameContext()), $type, $units);
-        }
+        $filename = spin(
+            callback: function () use ($bar, $type, $units) {
+                if ($type === ExportTypeEnum::Datapack) {
+                    $filename = $this->datapackExporter->process($bar->id, Export::generateFilename('datapack'), $units);
+                } else {
+                    $filename = $this->recipeExporter->process($bar->id, Export::generateFilename($type->getFilenameContext()), $type, $units);
+                }
+
+                return $filename;
+            },
+            message: 'Generating...'
+        );
 
         $this->output->success('Data exported to file: ' . $filename);
 

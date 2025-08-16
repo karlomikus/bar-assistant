@@ -7,35 +7,23 @@ namespace Kami\Cocktail\Scraper;
 use Symfony\Component\Uid\Ulid;
 use Kami\RecipeUtils\Parser\Parser;
 use Kami\RecipeUtils\ParserFactory;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Cache;
 use Kami\RecipeUtils\RecipeIngredient;
 use Kami\Cocktail\External\Model\Schema;
-use Kevinrob\GuzzleCache\CacheMiddleware;
 use Symfony\Component\DomCrawler\Crawler;
 use Kami\Cocktail\External\Model\Cocktail;
 use Kami\Cocktail\External\Model\IngredientBasic;
 use Kami\Cocktail\Exceptions\ScraperMissingException;
-use Kevinrob\GuzzleCache\Storage\LaravelCacheStorage;
-use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 
-abstract class AbstractSiteExtractor implements SiteExtractorContract
+abstract class AbstractSite implements Site
 {
     protected readonly Crawler $crawler;
     protected readonly Parser $ingredientParser;
 
     public function __construct(
         protected readonly string $url,
+        protected readonly string $content = '',
     ) {
-        $saf = mt_rand(531, 536) . mt_rand(0, 2);
-        $userAgent = "(X11; Linux x86_64) AppleWebKit/$saf (KHTML, like Gecko) Chrome/" . mt_rand(36, 40) . '.0.' . mt_rand(800, 899) . ".0 Mobile Safari/$saf";
-        $cachingMiddleware = new CacheMiddleware(new GreedyCacheStrategy(new LaravelCacheStorage(Cache::store()), 60 * 15));
-        $response = Http::withMiddleware($cachingMiddleware)
-            ->withUserAgent($userAgent)
-            ->timeout(10)
-            ->get($url);
-
-        $this->crawler = new Crawler($response->body());
+        $this->crawler = new Crawler($content);
         $this->ingredientParser = ParserFactory::make();
     }
 

@@ -1335,34 +1335,34 @@ paths:
         -
           name: filter
           in: query
-          description: 'Filter by attributes'
+          description: 'Filter by attributes. You can specify multiple matching filter values by passing a comma separated list of values.'
           style: deepObject
           explode: true
           schema:
             properties:
               id:
-                description: 'Filter by cocktail IDs'
+                description: 'Filter by cocktail ID(s)'
                 type: string
               name:
-                description: 'Filter by cocktail names (fuzzy search)'
+                description: 'Filter by cocktail names(s) (fuzzy search)'
                 type: string
               ingredient_name:
-                description: 'Filter by cocktail ingredient names (fuzzy search)'
+                description: 'Filter by cocktail ingredient names(s) (fuzzy search)'
                 type: string
               tag_id:
-                description: 'Filter by tag IDs'
+                description: 'Filter by tag ID(s)'
                 type: string
               created_user_id:
-                description: 'Filter by creator IDs'
+                description: 'Filter by creator ID(s)'
                 type: string
               glass_id:
-                description: 'Filter by glass IDs'
+                description: 'Filter by glass ID(s)'
                 type: string
               cocktail_method_id:
-                description: 'Filter by cocktail method IDs'
+                description: 'Filter by cocktail method ID(s)'
                 type: string
               collection_id:
-                description: 'Filter by collection IDs'
+                description: 'Filter by collection ID(s)'
                 type: string
               favorites:
                 description: 'Show only user favorites'
@@ -1384,39 +1384,39 @@ paths:
                 type: boolean
               user_rating_min:
                 description: 'Filter by greater than or equal user rating'
-                type: string
+                type: number
               user_rating_max:
                 description: 'Filter by less than or equal user rating'
-                type: string
+                type: number
               average_rating_min:
                 description: 'Filter by greater than or equal average rating'
-                type: string
+                type: number
               average_rating_max:
                 description: 'Filter by less than or equal average rating'
-                type: string
+                type: number
               abv_min:
                 description: 'Filter by greater than or equal ABV'
-                type: string
+                type: number
               abv_max:
                 description: 'Filter by less than or equal ABV'
-                type: string
+                type: number
               main_ingredient_id:
                 description: 'Show only cocktails whose main ingredient is in the given list. Comma separated list of ingredient IDs'
                 type: string
               total_ingredients:
                 description: 'Filter by total number of ingredients'
-                type: string
+                type: number
               missing_ingredients:
                 description: 'Filter by total number of missing ingredients'
-                type: string
+                type: number
               missing_bar_ingredients:
                 description: 'Filter by total number of missing bar ingredients'
-                type: string
+                type: number
               specific_ingredients:
-                description: 'Show cocktails that contain given ingredient IDs'
+                description: 'Show cocktails that contain given ingredient ID(s)'
                 type: string
               ignore_ingredients:
-                description: 'Show cocktails that do not contain given ingredient IDs'
+                description: 'Show cocktails that do not contain given ingredient ID(s)'
                 type: string
             type: object
         -
@@ -4048,7 +4048,7 @@ paths:
                 required:
                   - data
                 properties:
-                  data: { required: [schema_version, schema, scraper_meta], properties: { schema_version: { type: string, example: draft2 }, schema: { $ref: 'https://barassistant.app/cocktail-02.schema.json' }, scraper_meta: { type: array, items: { required: [_id, source], properties: { _id: { type: string }, source: { type: string } }, type: object } } }, type: object }
+                  data: { required: [schema_version, schema, scraper_meta], properties: { schema_version: { type: string, example: draft2 }, schema: { $ref: 'https://barassistant.app/cocktail-02.schema.json' }, scraper_meta: { type: array, items: { required: [_id, source], properties: { _id: { type: string }, source: { type: string }, html_content: { description: 'The HTML content of the scraped page, if available.', type: [string, 'null'] } }, type: object } } }, type: object }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -4146,26 +4146,26 @@ paths:
         -
           name: filter
           in: query
-          description: 'Filter by attributes'
+          description: 'Filter by attributes. You can specify multiple matching filter values by passing a comma separated list of values.'
           style: deepObject
           explode: true
           schema:
             properties:
               id:
-                description: 'Filter by ingredient id'
-                type: integer
+                description: 'Filter by ingredient id(s)'
+                type: string
               name:
-                description: 'Filter by ingredient name (fuzzy search)'
+                description: 'Filter by ingredient name(s) (fuzzy search)'
                 type: string
               name_exact:
-                description: 'Filter by ingredient name (exact match)'
+                description: 'Filter by ingredient name(s) (exact match)'
                 type: string
               origin:
                 description: 'Filter by ingredient origin'
                 type: string
               created_user_id:
-                description: 'Filter by user id who created the ingredient'
-                type: integer
+                description: 'Filter by user(s) who created the ingredient'
+                type: string
               on_shopping_list:
                 description: 'Show only ingredients that are on the shopping list'
                 type: boolean
@@ -4185,16 +4185,16 @@ paths:
                 format: float
               main_ingredients:
                 description: 'Show only ingredients that are used as main ingredients in cocktails'
-                type: string
+                type: boolean
               complex:
                 description: 'Show only ingredients that can be made with other ingredients'
                 type: boolean
               parent_ingredient_id:
                 description: 'Show only direct children of given ingredient. Use null as value to get ingredients without parent ingredient'
-                type: integer
+                type: string
               descendants_of:
-                description: 'Show all descendants of given ingredient'
-                type: integer
+                description: 'Show all descendants of given ingredient(s)'
+                type: string
             type: object
         -
           name: sort
@@ -5761,6 +5761,76 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/public/{barId}':
+    get:
+      tags:
+        - Public
+      summary: 'Show bar'
+      description: 'Show public information about a single bar.'
+      operationId: showPublicBar
+      parameters:
+        -
+          name: barId
+          in: path
+          description: 'Database id of bar'
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/PublicBarResource' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
   '/cocktails/{id}/ratings':
     post:
       tags:
@@ -8231,6 +8301,7 @@ components:
         - created_at
         - updated_at
         - access
+        - is_public
       properties:
         id:
           description: 'Unique number that can be used to reference a specific bar.'
@@ -8331,6 +8402,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Image'
+        is_public:
+          type: boolean
+          default: false
+          example: true
       type: object
     CalculatorBlock:
       description: 'Represents a calculator block with basic information'
@@ -8707,6 +8782,9 @@ components:
           description: 'Cocktail tags'
           type: array
           items:
+            required:
+              - id
+              - name
             properties:
               id:
                 description: 'Tag ID'
@@ -9687,6 +9765,74 @@ components:
         settings:
           $ref: '#/components/schemas/ProfileSettings'
       type: object
+    PublicBarResource:
+      description: 'Public details about a bar'
+      required:
+        - id
+        - slug
+        - name
+        - subtitle
+        - description
+        - images
+      properties:
+        id:
+          description: 'Unique number that can be used to reference a specific bar.'
+          type: integer
+          example: 1
+        slug:
+          description: 'Unique string that can be used to reference a specific bar.'
+          type: string
+          example: bar-name-1
+        name:
+          description: 'Name of the bar'
+          type: string
+          example: 'Bar name'
+        subtitle:
+          description: 'Optional short quip about the bar'
+          type:
+            - string
+            - 'null'
+          example: 'A short subtitle of a bar'
+        description:
+          description: 'Description of the bar'
+          type:
+            - string
+            - 'null'
+          example: 'Bar description'
+        images:
+          description: 'Images associated with the bar'
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicImageResource'
+      type: object
+    PublicImageResource:
+      description: 'Public details about an image'
+      required:
+        - sort
+        - placeholder_hash
+        - url
+        - copyright
+      properties:
+        sort:
+          description: 'Sort order of the image'
+          type: integer
+          example: 1
+        placeholder_hash:
+          description: 'Placeholder hash for the image, used for lazy loading'
+          type: string
+          example: abc123
+        url:
+          description: 'URL of the image'
+          type: string
+          format: uri
+          example: 'https://example.com/image.jpg'
+        copyright:
+          description: 'Copyright information for the image'
+          type:
+            - string
+            - 'null'
+          example: 'Author name'
+      type: object
     SSOProvider:
       description: 'SSO Provider information'
       required:
@@ -9977,6 +10123,7 @@ components:
       enum:
         - cocktails.read
         - cocktails.write
+        - cocktails.import
         - ingredients.read
         - ingredients.write
         - bars.read
@@ -10061,6 +10208,9 @@ components:
           type: array
           items:
             type: integer
+        is_public:
+          description: 'Allow public access to bar recipes. Default `false`.'
+          type: boolean
       type: object
     BarSettings:
       properties:
@@ -10999,6 +11149,9 @@ tags:
   -
     name: Profile
     description: Profile
+  -
+    name: Public
+    description: Public
   -
     name: Ratings
     description: Ratings

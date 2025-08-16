@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\RecipeIngredient;
-use Kami\Cocktail\Scraper\AbstractSiteExtractor;
+use Kami\Cocktail\Scraper\AbstractSite;
 
-class TheCocktailDB extends AbstractSiteExtractor
+class TheCocktailDB extends AbstractSite
 {
     /**
      * @var array<string, mixed>
      */
     private array $apiDrinkData = [];
 
-    public function __construct(string $url)
+    public function __construct(string $url, string $content = '')
     {
-        parent::__construct($url);
+        parent::__construct($url, $content);
 
         if (!str_starts_with($url, 'https://www.thecocktaildb.com/api')) {
             $url = rtrim($url, '/');

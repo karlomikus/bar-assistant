@@ -1,0 +1,126 @@
+{
+    "schema_version": "draft2",
+    "schema": {
+        "recipe": {
+            "_id": "how-to-make-a-negroni-cocktail",
+            "name": "How to make a Negroni Cocktail",
+            "instructions": "1. Fill an old-fashioned glass with ice\n2. Pour ingredients over ice\n3. Stir well (20-30 seconds)\n4. Garnish with an orange twist",
+            "created_at": null,
+            "updated_at": null,
+            "description": "This cocktail resembles the Americano (minus the soda and replaced with gin). Not to everyone's taste though I must admit - try easing into one by replacing the Campari with a less bitter Italian aperitif, Aperol - yum!",
+            "source": "https:\/\/stevethebartender.com.au\/negroni-cocktail-recipe\/",
+            "garnish": null,
+            "abv": null,
+            "tags": [],
+            "glass": null,
+            "method": null,
+            "utensils": [],
+            "images": [
+                {
+                    "uri": "TEST",
+                    "sort": 0,
+                    "placeholder_hash": null,
+                    "copyright": "Steve the Bartender"
+                }
+            ],
+            "ingredients": [
+                {
+                    "_id": "TEST",
+                    "amount": 30,
+                    "units": "ml",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 1
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 30,
+                    "units": "ml",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 2
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 30,
+                    "units": "ml",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 3
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 0,
+                    "units": "",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": "or a slice will do!",
+                    "substitutes": [],
+                    "sort": 4
+                }
+            ]
+        },
+        "ingredients": [
+            {
+                "_id": "TEST",
+                "name": "Sweet Vermouth",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Campari",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Gin",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Orange twist",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            }
+        ]
+    },
+    "scraper_meta": [
+        {
+            "_id": "TEST",
+            "source": "30 mL Sweet Vermouth"
+        },
+        {
+            "_id": "TEST",
+            "source": "30 mL Campari"
+        },
+        {
+            "_id": "TEST",
+            "source": "30 mL Gin"
+        },
+        {
+            "_id": "TEST",
+            "source": "Orange twist (or a slice will do!)"
+        }
+    ]
+}

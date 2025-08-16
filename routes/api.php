@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Kami\Cocktail\Http\Controllers\Public;
 use Kami\Cocktail\Http\Controllers\BarController;
 use Kami\Cocktail\Http\Controllers\PATController;
 use Kami\Cocktail\Http\Controllers\TagController;
@@ -47,6 +48,8 @@ use Kami\Cocktail\Http\Controllers\CocktailMethodController;
 */
 
 $apiMiddleware = ['auth:sanctum'];
+
+// Add middleware for email verification if configured
 if (config('bar-assistant.mail_require_confirmation') === true) {
     $apiMiddleware[] = 'verified';
 }
@@ -68,9 +71,10 @@ Route::prefix('server')->group(function () {
 });
 
 Route::prefix('images')->group(function () {
-    Route::get('/{id}/thumb', [ImageController::class, 'thumb'])->name('images.thumb'); // TODO: Move this to auth middleware
+    Route::get('/{id}/thumb', [ImageController::class, 'thumb'])->name('images.thumb');
 });
 
+// Deprecated routes
 Route::prefix('explore')->group(function () {
     Route::get('/cocktails/{ulid}', [ExploreController::class, 'cocktail']);
     Route::get('/menus/{barSlug}', [MenuController::class, 'show']);
@@ -80,6 +84,16 @@ Route::prefix('exports')->group(function () {
     Route::get('/{id}/download', [ExportController::class, 'download'])->name('exports.download');
 });
 
+Route::post('/billing/webhook', WebhookController::class);
+
+Route::prefix('public')->group(function () {
+    Route::get('/{barId}', [Public\BarController::class, 'show']);
+    Route::get('/{barId}/cocktails', [Public\CocktailController::class, 'index']);
+    Route::get('/{barId}/cocktails/{slug}', [Public\CocktailController::class, 'show']);
+    Route::get('/{barId}/menu', [Public\MenuController::class, 'show']);
+});
+
+// Private API routes
 Route::middleware($apiMiddleware)->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware(['ability:*']);
     Route::post('password-check', [AuthController::class, 'passwordCheck'])->middleware(['ability:*']);
@@ -207,11 +221,11 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::put('/{id}/cocktails', [CollectionController::class, 'cocktails']);
     });
 
-    Route::prefix('import')->middleware(['throttle:importing', 'ability:*'])->group(function () {
-        Route::post('/scrape', [ImportController::class, 'scrape'])->middleware(EnsureRequestHasBarQuery::class)->name('import.scrape');
-        Route::post('/cocktail', [ImportController::class, 'cocktail'])->middleware(EnsureRequestHasBarQuery::class)->name('import.cocktail');
-        Route::post('/file', [ImportController::class, 'file'])->middleware(EnsureRequestHasBarQuery::class)->name('import.file');
-        Route::post('/ingredients', [ImportController::class, 'ingredients'])->middleware(EnsureRequestHasBarQuery::class)->name('import.ingredients');
+    Route::prefix('import')->middleware(['throttle:importing'])->group(function () {
+        Route::post('/scrape', [ImportController::class, 'scrape'])->middleware([EnsureRequestHasBarQuery::class, 'ability:cocktails.import'])->name('import.scrape');
+        Route::post('/cocktail', [ImportController::class, 'cocktail'])->middleware([EnsureRequestHasBarQuery::class, 'ability:*'])->name('import.cocktail');
+        Route::post('/file', [ImportController::class, 'file'])->middleware([EnsureRequestHasBarQuery::class, 'ability:*'])->name('import.file');
+        Route::post('/ingredients', [ImportController::class, 'ingredients'])->middleware([EnsureRequestHasBarQuery::class, 'ability:*'])->name('import.ingredients');
     });
 
     Route::prefix('bars')->group(function () {
@@ -281,8 +295,6 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/cocktails', [RecommenderController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);
     });
 });
-
-Route::post('/billing/webhook', WebhookController::class);
 
 Route::fallback(function () {
     return response()->json([

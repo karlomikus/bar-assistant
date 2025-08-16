@@ -1,0 +1,106 @@
+{
+    "schema_version": "draft2",
+    "schema": {
+        "recipe": {
+            "_id": "negroni",
+            "name": "Negroni",
+            "instructions": "Stir into glass over ice, garnish and serve.",
+            "created_at": null,
+            "updated_at": null,
+            "description": null,
+            "source": "https:\/\/www.thecocktaildb.com\/drink\/11003-Negroni",
+            "garnish": null,
+            "abv": null,
+            "tags": [
+                "IBA",
+                "Classic"
+            ],
+            "glass": "Old-fashioned glass",
+            "method": null,
+            "utensils": [],
+            "images": [
+                {
+                    "uri": "TEST",
+                    "sort": 0,
+                    "placeholder_hash": null,
+                    "copyright": "TheCocktailDB.com"
+                }
+            ],
+            "ingredients": [
+                {
+                    "_id": "TEST",
+                    "amount": 1,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 1
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 1,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 2
+                },
+                {
+                    "_id": "TEST",
+                    "amount": 1,
+                    "units": "oz",
+                    "optional": false,
+                    "is_specified": false,
+                    "amount_max": null,
+                    "note": null,
+                    "substitutes": [],
+                    "sort": 3
+                }
+            ]
+        },
+        "ingredients": [
+            {
+                "_id": "TEST",
+                "name": "Gin",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Campari",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            },
+            {
+                "_id": "TEST",
+                "name": "Sweet Vermouth",
+                "strength": 0,
+                "description": null,
+                "origin": null,
+                "category": null
+            }
+        ]
+    },
+    "scraper_meta": [
+        {
+            "_id": "TEST",
+            "source": "1 oz "
+        },
+        {
+            "_id": "TEST",
+            "source": "1 oz "
+        },
+        {
+            "_id": "TEST",
+            "source": "1 oz "
+        }
+    ]
+}

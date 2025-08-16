@@ -37,7 +37,6 @@ class CocktailRecommendationService
             ->join('cocktail_favorites', 'cocktail_favorites.cocktail_id', '=', 'cocktail_tag.cocktail_id')
             ->where('cocktail_favorites.bar_membership_id', $barMembership->id)
             ->groupBy('tags.id')
-            ->orderBy('cocktails_count', 'DESC')
             ->get();
 
         // Collect all favorite ingredients
@@ -47,7 +46,6 @@ class CocktailRecommendationService
             ->where('ingredients.bar_id', $barMembership->bar_id)
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
             ->groupBy('ingredient_id')
-            ->orderBy('cocktails_count', 'DESC')
             ->get();
 
         // TODO: Prefer shelf cocktails
