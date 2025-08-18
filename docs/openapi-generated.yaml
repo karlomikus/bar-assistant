@@ -948,6 +948,69 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/bars/{id}/sync-datapack':
+    post:
+      tags:
+        - Bars
+      summary: 'Sync recipes'
+      description: 'Triggers synchronization of recipes from the default datapack. Matches data by name, does not overwrite your existing recipes or ingredients.'
+      operationId: syncBarDatapack
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '429':
+          description: 'Reached rate limit.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /calculators:
     get:
       tags:
@@ -4025,10 +4088,15 @@ paths:
         content:
           application/json:
             schema:
+              required:
+                - source
               properties:
                 source:
                   type: string
                   example: 'https://www.example.com/recipe-url'
+                html_content:
+                  type: [string, 'null']
+                  example: '<p>HTML content</p>'
               type: object
       responses:
         '200':
@@ -5766,7 +5834,7 @@ paths:
       tags:
         - Public
       summary: 'Show bar'
-      description: 'Show public information about a single bar.'
+      description: 'Show public information about a single bar. To access this endpoint the bar must be marked as public.'
       operationId: showPublicBar
       parameters:
         -
@@ -5776,6 +5844,12 @@ paths:
           required: true
           schema:
             type: number
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
       responses:
         '200':
           description: 'Successful response'
@@ -5796,8 +5870,8 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/PublicBarResource' }
                 type: object
-        '403':
-          description: 'You are not authorized for this action.'
+        '404':
+          description: 'Resource record not found.'
           headers:
             x-ratelimit-limit:
               description: 'Max number of attempts.'
@@ -5812,6 +5886,78 @@ paths:
               schema:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
+  '/public/{barId}/cocktails':
+    get:
+      tags:
+        - Public
+      summary: 'List cocktails'
+      description: 'List and filter bar cocktails. To access this endpoint the bar must be marked as public.'
+      operationId: listPublicBarCocktails
+      parameters:
+        -
+          name: barId
+          in: path
+          description: 'Database id of bar'
+          required: true
+          schema:
+            type: number
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: filter
+          in: query
+          description: 'Filter by attributes. You can specify multiple matching filter values by passing a comma separated list of values.'
+          style: deepObject
+          explode: true
+          schema:
+            properties:
+              name:
+                description: 'Filter by cocktail names(s) (fuzzy search)'
+                type: string
+              ingredient_name:
+                description: 'Filter by cocktail ingredient names(s) (fuzzy search)'
+                type: string
+              bar_shelf:
+                description: 'Show only cocktails on the bar shelf'
+                type: boolean
+              abv_min:
+                description: 'Filter by greater than or equal ABV'
+                type: number
+              abv_max:
+                description: 'Filter by less than or equal ABV'
+                type: number
+            type: object
+        -
+          name: sort
+          in: query
+          description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `missing_bar_ingredients`, `favorited_at`, `random`.'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/PublicCocktailResource' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
                 type: object
         '404':
           description: 'Resource record not found.'
@@ -5872,23 +6018,6 @@ paths:
                   - data
                 properties:
                   data: { $ref: '#/components/schemas/PublicCocktailResource' }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
                 type: object
         '404':
           description: 'Resource record not found.'
