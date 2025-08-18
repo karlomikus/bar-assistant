@@ -18,6 +18,22 @@ use Kami\Cocktail\Http\Resources\Public\CocktailResource;
 
 class CocktailController extends Controller
 {
+    #[OAT\Get(path: '/public/{barId}/cocktails', tags: ['Public'], operationId: 'listPublicBarCocktails', description: 'List and filter bar cocktails. To access this endpoint the bar must be marked as public.', summary: 'List cocktails', parameters: [
+        new OAT\Parameter(name: 'barId', in: 'path', required: true, description: 'Database id of bar', schema: new OAT\Schema(type: 'number')),
+        new BAO\Parameters\PageParameter(),
+        new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes. You can specify multiple matching filter values by passing a comma separated list of values.', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
+            new OAT\Property(property: 'name', type: 'string', description: 'Filter by cocktail names(s) (fuzzy search)'),
+            new OAT\Property(property: 'ingredient_name', type: 'string', description: 'Filter by cocktail ingredient names(s) (fuzzy search)'),
+            new OAT\Property(property: 'bar_shelf', type: 'boolean', description: 'Show only cocktails on the bar shelf'),
+            new OAT\Property(property: 'abv_min', type: 'number', description: 'Filter by greater than or equal ABV'),
+            new OAT\Property(property: 'abv_max', type: 'number', description: 'Filter by less than or equal ABV'),
+        ])),
+        new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `missing_bar_ingredients`, `favorited_at`, `random`.', schema: new OAT\Schema(type: 'string')),
+    ], security: [])]
+    #[BAO\SuccessfulResponse(content: [
+        new BAO\PaginateData(CocktailResource::class),
+    ])]
+    #[BAO\NotFoundResponse]
     public function index(Request $request, int $barId): JsonResource
     {
         $bar = Bar::findOrFail($barId);
@@ -54,7 +70,6 @@ class CocktailController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(CocktailResource::class),
     ])]
-    #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     public function show(int $barId, string $slugOrPublicId): CocktailResource
     {

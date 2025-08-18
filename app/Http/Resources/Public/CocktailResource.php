@@ -13,62 +13,62 @@ use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 /**
  * @mixin \Kami\Cocktail\Models\Cocktail
  */
- #[OAT\Schema(
-     schema: 'PublicCocktailResource',
-     description: 'Public details about a cocktail',
-     required: ['slug', 'name', 'instructions', 'garnish', 'description', 'source', 'public_id', 'public_at', 'images', 'tags', 'glass', 'utensils', 'method', 'created_at', 'abv', 'year', 'ingredients'],
-     properties: [
-        new OAT\Property(property: 'slug', type: 'string', example: 'cocktail-name-1', description: 'Unique string that can be used to reference a specific cocktail.'),
-        new OAT\Property(property: 'name', type: 'string', example: 'Cocktail Name', description: 'Name of the cocktail'),
-        new OAT\Property(property: 'instructions', type: 'string', example: 'Shake well and serve.', description: 'Instructions for preparing the cocktail'),
-        new OAT\Property(property: 'garnish', type: 'string', nullable: true, example: 'Lemon twist', description: 'Garnish for the cocktail'),
-        new OAT\Property(property: 'description', type: 'string', nullable: true, example: 'A refreshing cocktail with a twist.', description: 'Description of the cocktail'),
-        new OAT\Property(property: 'source', type: 'string', nullable: true, example: 'https://example.com/cocktail-recipe', description: 'Source of the cocktail recipe'),
-        new OAT\Property(property: 'public_id', type: 'string', example: '12345', description: 'Public identifier (ULID) for the cocktail'),
-        new OAT\Property(property: 'public_at', type: 'string', format: 'date-time', nullable: true, example: '2023-10-01T12:00:00Z', description: 'Date and time when the cocktail was made public'),
-        new OAT\Property(property: 'images', type: 'array', items: new OAT\Items(type: ImageResource::class), description: 'Images associated with the cocktail'),
-        new OAT\Property(property: 'tags', type: 'array', items: new OAT\Items(type: 'string'), description: 'Tags associated with the cocktail'),
-        new OAT\Property(property: 'glass', type: 'string', nullable: true, example: 'Highball glass', description: 'Type of glass used for the cocktail'),
-        new OAT\Property(property: 'utensils', type: 'array', items: new OAT\Items(type: 'string'), description: 'Utensils used for preparing the cocktail'),
-        new OAT\Property(property: 'method', type: 'string', nullable: true, example: 'Shaken', description: 'Method of preparation for the cocktail'),
-        new OAT\Property(property: 'created_at', type: 'string', format: 'date-time', example: '2023-10-01T12:00:00Z', description: 'Date and time when the cocktail was created'),
-        new OAT\Property(property: 'abv', type: 'number', format: 'float', nullable: true, example: 0.15, description: 'Alcohol by volume percentage of the cocktail'),
-        new OAT\Property(property: 'year', type: 'integer', nullable: true, example: 2023, description: 'Year the cocktail was created or published'),
-        new OAT\Property(
-            property: 'ingredients',
-            type: 'array',
-            items: new OAT\Items(
-                type: 'object',
-                required: ['name', 'amount', 'amount_max', 'units', 'units_formatted', 'optional', 'note', 'substitutes'],
-                properties: [
-                    new OAT\Property(property: 'name', type: 'string', example: 'Gin', description: 'Name of the ingredient'),
-                    new OAT\Property(property: 'amount', type: 'number', format: 'float', example: 50, description: 'Amount of the ingredient in the cocktail'),
-                    new OAT\Property(property: 'amount_max', type: 'number', format: 'float', nullable: true, example: null, description: 'Maximum amount of the ingredient that can be used'),
-                    new OAT\Property(property: 'units', type: 'string', example: 'ml', description: 'Units of measurement for the ingredient amount'),
-                    new OAT\Property(property: 'units_formatted', type: AmountFormats::class, description: 'Formatted units for the ingredient amount'),
-                    new OAT\Property(property: 'optional', type: 'boolean', example: false, description: 'Indicates if the ingredient is optional'),
-                    new OAT\Property(property: 'note', type: 'string', nullable: true, example: 'Use fresh gin for best results.', description: 'Additional notes about the ingredient'),
-                    new OAT\Property(
-                        property: 'substitutes',
-                        type: 'array',
-                        description: 'List of substitute ingredients that can be used in place of this ingredient',
-                        items: new OAT\Items(
-                            type: 'object',
-                            required: ['name', 'amount', 'amount_max', 'units'],
-                            properties: [
-                                new OAT\Property(property: 'name', type: 'string', example: 'Vodka', description: 'Name of the substitute ingredient'),
-                                new OAT\Property(property: 'amount', type: 'number', format: 'float', example: 50, description: 'Amount of the substitute ingredient'),
-                                new OAT\Property(property: 'amount_max', type: 'number', format: 'float', nullable: true, example: null, description: 'Maximum amount of the substitute ingredient that can be used'),
-                                new OAT\Property(property: 'units', type: 'string', example: 'ml', description: 'Units of measurement for the substitute ingredient amount'),
-                            ]
-                        ),
-                    ),
-                ]
-            ),
-            description: 'List of ingredients required to make the cocktail'
-        ),
-     ],
- )]
+#[OAT\Schema(
+    schema: 'PublicCocktailResource',
+    description: 'Public details about a cocktail',
+    required: ['slug', 'name', 'instructions', 'garnish', 'description', 'source', 'public_id', 'public_at', 'images', 'tags', 'glass', 'utensils', 'method', 'created_at', 'abv', 'year', 'ingredients'],
+    properties: [
+       new OAT\Property(property: 'slug', type: 'string', example: 'cocktail-name-1', description: 'Unique string that can be used to reference a specific cocktail.'),
+       new OAT\Property(property: 'name', type: 'string', example: 'Cocktail Name', description: 'Name of the cocktail'),
+       new OAT\Property(property: 'instructions', type: 'string', example: 'Shake well and serve.', description: 'Instructions for preparing the cocktail'),
+       new OAT\Property(property: 'garnish', type: 'string', nullable: true, example: 'Lemon twist', description: 'Garnish for the cocktail'),
+       new OAT\Property(property: 'description', type: 'string', nullable: true, example: 'A refreshing cocktail with a twist.', description: 'Description of the cocktail'),
+       new OAT\Property(property: 'source', type: 'string', nullable: true, example: 'https://example.com/cocktail-recipe', description: 'Source of the cocktail recipe'),
+       new OAT\Property(property: 'public_id', type: 'string', example: '12345', description: 'Public identifier (ULID) for the cocktail'),
+       new OAT\Property(property: 'public_at', type: 'string', format: 'date-time', nullable: true, example: '2023-10-01T12:00:00Z', description: 'Date and time when the cocktail was made public'),
+       new OAT\Property(property: 'images', type: 'array', items: new OAT\Items(type: ImageResource::class), description: 'Images associated with the cocktail'),
+       new OAT\Property(property: 'tags', type: 'array', items: new OAT\Items(type: 'string'), description: 'Tags associated with the cocktail'),
+       new OAT\Property(property: 'glass', type: 'string', nullable: true, example: 'Highball glass', description: 'Type of glass used for the cocktail'),
+       new OAT\Property(property: 'utensils', type: 'array', items: new OAT\Items(type: 'string'), description: 'Utensils used for preparing the cocktail'),
+       new OAT\Property(property: 'method', type: 'string', nullable: true, example: 'Shaken', description: 'Method of preparation for the cocktail'),
+       new OAT\Property(property: 'created_at', type: 'string', format: 'date-time', example: '2023-10-01T12:00:00Z', description: 'Date and time when the cocktail was created'),
+       new OAT\Property(property: 'abv', type: 'number', format: 'float', nullable: true, example: 0.15, description: 'Alcohol by volume percentage of the cocktail'),
+       new OAT\Property(property: 'year', type: 'integer', nullable: true, example: 2023, description: 'Year the cocktail was created or published'),
+       new OAT\Property(
+           property: 'ingredients',
+           type: 'array',
+           items: new OAT\Items(
+               type: 'object',
+               required: ['name', 'amount', 'amount_max', 'units', 'units_formatted', 'optional', 'note', 'substitutes'],
+               properties: [
+                   new OAT\Property(property: 'name', type: 'string', example: 'Gin', description: 'Name of the ingredient'),
+                   new OAT\Property(property: 'amount', type: 'number', format: 'float', example: 50, description: 'Amount of the ingredient in the cocktail'),
+                   new OAT\Property(property: 'amount_max', type: 'number', format: 'float', nullable: true, example: null, description: 'Maximum amount of the ingredient that can be used'),
+                   new OAT\Property(property: 'units', type: 'string', example: 'ml', description: 'Units of measurement for the ingredient amount'),
+                   new OAT\Property(property: 'units_formatted', type: AmountFormats::class, description: 'Formatted units for the ingredient amount'),
+                   new OAT\Property(property: 'optional', type: 'boolean', example: false, description: 'Indicates if the ingredient is optional'),
+                   new OAT\Property(property: 'note', type: 'string', nullable: true, example: 'Use fresh gin for best results.', description: 'Additional notes about the ingredient'),
+                   new OAT\Property(
+                       property: 'substitutes',
+                       type: 'array',
+                       description: 'List of substitute ingredients that can be used in place of this ingredient',
+                       items: new OAT\Items(
+                           type: 'object',
+                           required: ['name', 'amount', 'amount_max', 'units'],
+                           properties: [
+                               new OAT\Property(property: 'name', type: 'string', example: 'Vodka', description: 'Name of the substitute ingredient'),
+                               new OAT\Property(property: 'amount', type: 'number', format: 'float', example: 50, description: 'Amount of the substitute ingredient'),
+                               new OAT\Property(property: 'amount_max', type: 'number', format: 'float', nullable: true, example: null, description: 'Maximum amount of the substitute ingredient that can be used'),
+                               new OAT\Property(property: 'units', type: 'string', example: 'ml', description: 'Units of measurement for the substitute ingredient amount'),
+                           ]
+                       ),
+                   ),
+               ]
+           ),
+           description: 'List of ingredients required to make the cocktail'
+       ),
+    ],
+)]
 class CocktailResource extends JsonResource
 {
     /**

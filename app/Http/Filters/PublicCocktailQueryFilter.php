@@ -24,20 +24,6 @@ final class PublicCocktailQueryFilter extends QueryBuilder
                 AllowedFilter::exact('id'),
                 AllowedFilter::custom('name', new FilterNameSearch()),
                 AllowedFilter::partial('ingredient_name', 'ingredients.ingredient.name'),
-                AllowedFilter::exact('ingredient_substitute_id', 'ingredients.substitutes.ingredient.id'),
-                AllowedFilter::callback('ingredient_id', function ($query, $value) {
-                    if (!is_array($value)) {
-                        $value = [$value];
-                    }
-
-                    $query->where(function ($q) use ($value) {
-                        $q->whereIn('ci.ingredient_id', $value)->orWhereIn('cis.ingredient_id', $value);
-                    });
-                }),
-                AllowedFilter::exact('tag_id', 'tags.id'),
-                AllowedFilter::exact('created_user_id'),
-                AllowedFilter::exact('glass_id'),
-                AllowedFilter::exact('cocktail_method_id'),
                 AllowedFilter::callback('bar_shelf', function ($query, $value) use ($bar) {
                     if ($value === true) {
                         $query->whereIn('cocktails.id', $bar->getShelfCocktailsOnce());
@@ -49,17 +35,6 @@ final class PublicCocktailQueryFilter extends QueryBuilder
                 AllowedFilter::callback('abv_max', function ($query, $value) {
                     $query->where('abv', '<=', $value);
                 }),
-                AllowedFilter::callback('main_ingredient_id', function ($query, $value) {
-                    if (!is_array($value)) {
-                        $value = [$value];
-                    }
-
-                    $query->whereIn('ci.ingredient_id', $value)->where('sort', '=', 1);
-                }),
-                AllowedFilter::callback('total_ingredients', function ($query, $value) {
-                    $query->having('total_ingredients', '>=', (int) $value);
-                }),
-                AllowedFilter::exact('parent_cocktail_id'),
             ])
             ->defaultSort('name')
             ->allowedSorts([
