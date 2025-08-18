@@ -21,6 +21,7 @@ use Kami\Cocktail\Http\Resources\BarResource;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\BarMembershipResource;
+use Kami\Cocktail\Jobs\SyncBarRecipes;
 use Kami\Cocktail\OpenAPI\Schemas\BarRequest as SchemasBarRequest;
 
 class BarController extends Controller
@@ -378,6 +379,26 @@ class BarController extends Controller
         }
 
         StartBarOptimization::dispatch($bar->id);
+
+        return response()->json(status: 204);
+    }
+
+    #[OAT\Post(path: '/bars/{id}/sync-datapack', tags: ['Bars'], operationId: 'syncBarDatapack', description: 'Triggers synchronization of recipes from the default datapack. Matches data by name, does not overwrite your existing recipes or ingredients.', summary: 'Sync recipes', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\RateLimitResponse]
+    #[BAO\NotFoundResponse]
+    public function syncDatapack(Request $request, int $id): JsonResponse
+    {
+        $bar = Bar::findOrFail($id);
+
+        if ($request->user()->cannot('edit', $bar)) {
+            abort(403);
+        }
+
+        SyncBarRecipes::dispatch($bar, $request->user());
 
         return response()->json(status: 204);
     }
