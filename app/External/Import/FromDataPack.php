@@ -125,6 +125,15 @@ class FromDataPack
             $data = [];
         }
 
+        $existing = DB::table('calculators')->select('name')->where('bar_id', $barId)->get()->keyBy(fn ($row) => strtolower($row->name))->toArray();
+        $data = array_filter($data, function ($item) use ($existing) {
+            if (array_key_exists(strtolower($item['name']), $existing)) {
+                return false;
+            }
+
+            return true;
+        });
+
         DB::beginTransaction();
         try {
             foreach ($data as $calculator) {
@@ -179,7 +188,7 @@ class FromDataPack
         foreach ($this->getDataFromDir('ingredients', $dataDisk) as $fromYield) {
             [$externalIngredient, $filePath] = $fromYield;
             $externalIngredient = IngredientExternal::fromDataPackArray($externalIngredient);
-            if ($existingIngredients->has($externalIngredient->id)) {
+            if ($existingIngredients->has(Str::slug($externalIngredient->name))) {
                 continue;
             }
 
@@ -235,6 +244,11 @@ class FromDataPack
         }
 
         Log::debug(sprintf('Ingredient image copy completed in %d ms', $imagesTimer * 1000));
+
+        if (empty($ingredientsToInsert)) {
+            Log::debug('No ingredients to import');
+            return;
+        }
 
         // Start inserting
         DB::beginTransaction();
@@ -320,8 +334,7 @@ class FromDataPack
             [$cocktail, $filePath] = $fromYield;
 
             $externalCocktail = CocktailExternal::fromDataPackArray($cocktail);
-
-            if ($existingCocktails->has($externalCocktail->id)) {
+            if ($existingCocktails->has(Str::slug($externalCocktail->name))) {
                 continue;
             }
 
@@ -424,6 +437,11 @@ class FromDataPack
         }
 
         Log::debug(sprintf('Cocktail image copy completed in %d ms', $imagesTimer * 1000));
+
+        if (empty($newCocktails)) {
+            Log::debug('No cocktails to import');
+            return;
+        }
 
         DB::beginTransaction();
 
