@@ -14,6 +14,7 @@ use Kami\Cocktail\Jobs\SetupBar;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Cache;
+use Kami\Cocktail\Jobs\SyncBarRecipes;
 use Kami\Cocktail\Http\Requests\BarRequest;
 use Kami\Cocktail\Jobs\StartBarOptimization;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
@@ -21,7 +22,6 @@ use Kami\Cocktail\Http\Resources\BarResource;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\BarMembershipResource;
-use Kami\Cocktail\Jobs\SyncBarRecipes;
 use Kami\Cocktail\OpenAPI\Schemas\BarRequest as SchemasBarRequest;
 
 class BarController extends Controller
