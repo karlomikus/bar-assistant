@@ -12,13 +12,13 @@ use Kami\Cocktail\Http\Resources\Public\BarResource;
 
 class BarController extends Controller
 {
-    #[OAT\Get(path: '/public/{barId}', tags: ['Public'], operationId: 'showPublicBar', description: 'Show public information about a single bar.', summary: 'Show bar', parameters: [
+    #[OAT\Get(path: '/public/{barId}', tags: ['Public'], operationId: 'showPublicBar', description: 'Show public information about a single bar. To access this endpoint the bar must be marked as public.', summary: 'Show bar', parameters: [
         new OAT\Parameter(name: 'barId', in: 'path', required: true, description: 'Database id of bar', schema: new OAT\Schema(type: 'number')),
+        new BAO\Parameters\PageParameter(),
     ], security: [])]
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BarResource::class),
     ])]
-    #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     public function show(int $barId): BarResource
     {

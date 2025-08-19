@@ -1,3 +1,12 @@
+# v5.8.0
+## New
+- Added `bars/{id}/sync-datapack` endpoint
+    - This endpoint will sync existing bar data with the default datapack
+    - Existing recipes and ingredients will not be overwritten, only new data will be added
+
+## Changes
+- Recommendations now take into account bar shelf ingredients, recipe recency and negative tags
+
 # v5.7.0
 ## New
 - Import parent cocktails via datapack

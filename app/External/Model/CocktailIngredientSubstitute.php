@@ -15,7 +15,7 @@ use Kami\Cocktail\Models\CocktailIngredientSubstitute as CocktailIngredientSubst
 readonly class CocktailIngredientSubstitute implements SupportsDataPack, SupportsDraft2
 {
     private function __construct(
-        public IngredientBasic $ingredient,
+        public Ingredient $ingredient,
         public ?AmountValueObject $amount = null,
     ) {
     }
@@ -29,7 +29,7 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
         }
 
         return new self(
-            IngredientBasic::fromModel($model->ingredient),
+            Ingredient::fromModel($model->ingredient),
             $amount,
         );
     }
@@ -37,12 +37,9 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
     public static function fromDataPackArray(array $sourceArray): self
     {
         return new self(
-            IngredientBasic::fromDataPackArray([
+            Ingredient::fromDataPackArray([
                 '_id' => Str::slug($sourceArray['name']),
                 'name' => $sourceArray['name'],
-                'strength' => $sourceArray['strength'] ?? 0.0,
-                'description' => $sourceArray['description'] ?? null,
-                'origin' => $sourceArray['origin'] ?? null,
             ]),
             new AmountValueObject(
                 $sourceArray['amount'] ?? 0.0,
@@ -55,7 +52,8 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
     public function toDataPackArray(): array
     {
         return [
-            ...$this->ingredient->toDataPackArray(),
+            '_id' => $this->ingredient->id,
+            'name' => $this->ingredient->name,
             'amount' => $this->amount->amountMin <= 0.0 ? null : $this->amount->amountMin,
             'units' => $this->amount->units->value === '' ? null : $this->amount->units->value,
             'amount_max' => $this->amount->amountMax,
@@ -65,7 +63,7 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
     public static function fromDraft2Array(array $sourceArray): self
     {
         return new self(
-            IngredientBasic::fromDraft2Array([
+            Ingredient::fromDraft2Array([
                 '_id' => $sourceArray['_id'],
                 'name' => $sourceArray['name'] ?? '',
             ]),

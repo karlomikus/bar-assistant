@@ -123,10 +123,10 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             'glass' => $this->glass,
             'method' => $this->method,
             'utensils' => $this->utensils,
-            'images' => array_map(fn ($model) => $model->toDataPackArray(), $this->images),
-            'ingredients' => array_map(fn ($model) => $model->toDataPackArray(), $this->ingredients),
             'parent_cocktail_id' => $this->parentCocktailId,
             'year' => $this->year,
+            'images' => array_map(fn ($model) => $model->toDataPackArray(), $this->images),
+            'ingredients' => array_map(fn ($model) => $model->toDataPackArray(), $this->ingredients),
         ];
     }
 

@@ -19,7 +19,7 @@ readonly class Schema implements SupportsDraft2, SupportsXML, SupportsMarkdown, 
     public const SCHEMA_URL = 'https://barassistant.app/cocktail-02.schema.json';
 
     /**
-     * @param array<IngredientBasic> $ingredients
+     * @param array<Ingredient> $ingredients
      */
     public function __construct(
         public Cocktail $cocktail,
@@ -31,9 +31,9 @@ readonly class Schema implements SupportsDraft2, SupportsXML, SupportsMarkdown, 
     {
         $ingredients = [];
         foreach ($model->ingredients as $cocktailIngredient) {
-            $ingredients[] = IngredientBasic::fromModel($cocktailIngredient->ingredient);
+            $ingredients[] = Ingredient::fromModel($cocktailIngredient->ingredient);
             foreach ($cocktailIngredient->substitutes as $substitute) {
-                $ingredients[] = IngredientBasic::fromModel($substitute->ingredient);
+                $ingredients[] = Ingredient::fromModel($substitute->ingredient);
             }
         }
 
@@ -47,7 +47,7 @@ readonly class Schema implements SupportsDraft2, SupportsXML, SupportsMarkdown, 
     {
         return new self(
             Cocktail::fromDraft2Array($source['recipe']),
-            array_map(fn ($ingredient) => IngredientBasic::fromDraft2Array($ingredient), $source['ingredients']),
+            array_map(fn ($ingredient) => Ingredient::fromDraft2Array($ingredient), $source['ingredients']),
         );
     }
 

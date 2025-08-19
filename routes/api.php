@@ -248,6 +248,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::post('/{id}/ingredients/batch-delete', [ShelfController::class, 'batchDeleteBarIngredients'])->middleware(['ability:*']);
         Route::get('/{id}/cocktails', [ShelfController::class, 'barCocktails'])->middleware(['ability:bars.read']);
         Route::post('/{id}/optimize', [BarController::class, 'optimize'])->name('bars.optimize')->middleware(['throttle:bar-optimization', 'ability:bars.read']);
+        Route::post('/{id}/sync-datapack', [BarController::class, 'syncDatapack'])->name('bars.sync-datapack')->middleware(['throttle:bar-optimization', 'ability:bars.write']);
     });
 
     Route::prefix('billing')->middleware(['ability:*'])->group(function () {

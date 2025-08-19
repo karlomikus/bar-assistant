@@ -5,6 +5,7 @@
 /public/uploads
 /storage/*.key
 /vendor
+.zed
 .env
 .env.backup
 .phpunit.result.cache

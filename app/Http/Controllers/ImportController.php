@@ -78,7 +78,8 @@ class ImportController extends Controller
         content: [
             new OAT\JsonContent(type: 'object', properties: [
                 new OAT\Property(property: 'source', type: 'string', example: 'https://www.example.com/recipe-url'),
-            ]),
+                new OAT\Property(property: 'html_content', type: 'string', nullable: true, example: '<p>HTML content</p>'),
+            ], required: ['source']),
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
