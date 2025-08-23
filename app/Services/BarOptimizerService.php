@@ -73,10 +73,12 @@ final class BarOptimizerService
         }
         Log::info('[' . $barId . '] Finished updating ingredient default units.');
 
-        /** @phpstan-ignore-next-line */
-        Cocktail::where('bar_id', $barId)->searchable();
-        /** @phpstan-ignore-next-line */
-        Ingredient::where('bar_id', $barId)->searchable();
+        if (!empty(config('scout.driver'))) {
+            /** @phpstan-ignore-next-line */
+            Cocktail::where('bar_id', $barId)->searchable();
+            /** @phpstan-ignore-next-line */
+            Ingredient::where('bar_id', $barId)->searchable();
+        }
 
         Log::info('[' . $barId . '] Finished re-indexing cocktails and ingredients.');
     }

@@ -132,7 +132,9 @@ class GlassController extends Controller
             }
         }
 
-        $glass->cocktails->each(fn ($cocktail) => $cocktail->searchable());
+        if (!empty(config('scout.driver'))) {
+            $glass->cocktails->each(fn ($cocktail) => $cocktail->searchable());
+        }
 
         return new GlassResource($glass);
     }

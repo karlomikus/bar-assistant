@@ -198,7 +198,9 @@ final class IngredientService
             });
         }
 
-        $ingredient->cocktails->each(fn ($cocktail) => $cocktail->searchable());
+        if (!empty(config('scout.driver'))) {
+            $ingredient->cocktails->each(fn ($cocktail) => $cocktail->searchable());
+        }
 
         return $ingredient;
     }
