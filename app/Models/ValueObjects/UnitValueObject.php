@@ -15,6 +15,8 @@ final readonly class UnitValueObject implements Stringable, JsonSerializable
     /** @var array<string, array<string>> */
     public array $units;
 
+    public const CONVERTABLE_UNITS = ['ml', 'oz', 'cl'];
+
     public function __construct(
         ?string $value,
     ) {
@@ -80,7 +82,7 @@ final readonly class UnitValueObject implements Stringable, JsonSerializable
 
     public function isConvertable(): bool
     {
-        return in_array($this->value, ['ml', 'oz', 'cl'], true);
+        return in_array($this->value, self::CONVERTABLE_UNITS, true);
     }
 
     public function __toString(): string

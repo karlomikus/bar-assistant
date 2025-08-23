@@ -43,7 +43,7 @@ final class AmountFormats implements JsonSerializable
 
     public function jsonSerialize(): mixed
     {
-        $unitsToConvertTo = ['ml', 'oz', 'cl'];
+        $unitsToConvertTo = UnitValueObject::CONVERTABLE_UNITS;
         $formats = [];
 
         foreach ($unitsToConvertTo as $unitTo) {
