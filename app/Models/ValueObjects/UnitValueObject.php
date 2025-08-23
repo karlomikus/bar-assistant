@@ -78,6 +78,11 @@ final readonly class UnitValueObject implements Stringable, JsonSerializable
         return str_contains($this->value, 'spoon') || in_array($this->value, $matches, true);
     }
 
+    public function isConvertable(): bool
+    {
+        return in_array($this->value, ['ml', 'oz', 'cl'], true);
+    }
+
     public function __toString(): string
     {
         return $this->value;

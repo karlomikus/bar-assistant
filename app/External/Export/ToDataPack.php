@@ -65,7 +65,7 @@ class ToDataPack
         }
 
         $this->dumpCocktails($barId, $zip, $toUnits);
-        $this->dumpIngredients($barId, $zip);
+        $this->dumpIngredients($barId, $zip, $toUnits);
         $this->dumpBaseData($barId, $zip);
         $this->dumpCalculators($barId, $zip);
 
@@ -111,13 +111,13 @@ class ToDataPack
         }
     }
 
-    private function dumpIngredients(int $barId, ZipArchive &$zip): void
+    private function dumpIngredients(int $barId, ZipArchive &$zip, ?Units $toUnits = null): void
     {
         $ingredients = Ingredient::with('images.imageable', 'calculator', 'prices.priceCategory', 'ingredientParts.ingredient.parentIngredient', 'ancestors', 'parentIngredient')->where('bar_id', $barId)->get();
 
         /** @var Ingredient $ingredient */
         foreach ($ingredients as $ingredient) {
-            $data = IngredientExternal::fromModel($ingredient, true);
+            $data = IngredientExternal::fromModel($ingredient, true, $toUnits);
 
             /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($ingredient->images as $img) {

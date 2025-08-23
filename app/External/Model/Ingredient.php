@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External\Model;
 
 use Kami\Cocktail\External\SupportsCSV;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\External\SupportsDataPack;
@@ -41,7 +42,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
     ) {
     }
 
-    public static function fromModel(IngredientModel $model, bool $useFileURI = false): self
+    public static function fromModel(IngredientModel $model, bool $useFileURI = false, ?Units $toUnits = null): self
     {
         $images = $model->images->map(function (ImageModel $image) use ($useFileURI) {
             return Image::fromModel($image, $useFileURI);
@@ -54,6 +55,11 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
         $ingredientPrices = $model->prices->map(function (IngredientPriceModel $price) {
             return IngredientPrice::fromModel($price);
         })->toArray();
+
+        $defaultIngredientUnits = $model->getDefaultUnits()?->value;
+        if ($model->getDefaultUnits()?->isConvertable()) {
+            $defaultIngredientUnits = $toUnits->value;
+        }
 
         return new self(
             id: $model->getExternalId(),
@@ -73,7 +79,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
             sugarContent: $model->sugar_g_per_ml,
             acidity: $model->acidity,
             distillery: $model->distillery,
-            units: $model->getDefaultUnits()?->value,
+            units: $defaultIngredientUnits,
         );
     }
 
