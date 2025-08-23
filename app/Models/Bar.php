@@ -40,10 +40,7 @@ class Bar extends Model implements UploadableInterface
     protected static function booted(): void
     {
         static::retrieved(function (Bar $bar) {
-            if (
-                $bar->search_token ||
-                config('scout.driver') === null
-            ) {
+            if (!empty($bar->search_token) || empty(config('scout.driver'))) {
                 return;
             }
 

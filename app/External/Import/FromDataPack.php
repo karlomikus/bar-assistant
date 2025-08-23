@@ -76,10 +76,12 @@ class FromDataPack
 
         $bar->setStatus(BarStatusEnum::Active)->save();
 
-        /** @phpstan-ignore-next-line */
-        Ingredient::where('bar_id', $bar->id)->searchable();
-        /** @phpstan-ignore-next-line */
-        Cocktail::where('bar_id', $bar->id)->searchable();
+        if (!empty(config('scout.driver'))) {
+            /** @phpstan-ignore-next-line */
+            Ingredient::where('bar_id', $bar->id)->searchable();
+            /** @phpstan-ignore-next-line */
+            Cocktail::where('bar_id', $bar->id)->searchable();
+        }
 
         $timerEnd = microtime(true);
 
