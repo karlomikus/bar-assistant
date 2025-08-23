@@ -15,8 +15,9 @@ use Kami\Cocktail\Http\Requests\MenuRequest;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Kami\Cocktail\Http\Resources\MenuResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
+use Kami\Cocktail\OpenAPI\Schemas\MenuItemRequest;
 use Kami\Cocktail\Http\Resources\MenuPublicResource;
+use Kami\Cocktail\OpenAPI\Schemas\MenuRequest as SchemasMenuRequest;
 
 class MenuController extends Controller
 {
@@ -98,27 +99,26 @@ class MenuController extends Controller
             abort(403);
         }
 
-        /** @var array<mixed> */
-        $items = $request->input('items', []);
+        $schemaRequest = SchemasMenuRequest::fromIlluminateRequest($request);
 
-        $ingredients = collect($items)->where('type', MenuItemTypeEnum::Ingredient->value)->values()->toArray();
-        $cocktails = collect($items)->where('type', MenuItemTypeEnum::Cocktail->value)->values()->toArray();
+        $ingredients = $schemaRequest->getIngredients();
+        $cocktails = $schemaRequest->getCocktails();
 
-        Validator::make($ingredients, [
+        Validator::make(collect($ingredients)->map(fn (MenuItemRequest $mi) => ['id' => $mi->id])->toArray(), [
             '*.id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
         ])->validate();
 
-        Validator::make($cocktails, [
+        Validator::make(collect($cocktails)->map(fn (MenuItemRequest $mi) => ['id' => $mi->id])->toArray(), [
             '*.id' => [new ResourceBelongsToBar(bar()->id, 'cocktails')],
         ])->validate();
 
         $menu = Menu::firstOrCreate(['bar_id' => bar()->id]);
-        $menu->is_enabled = $request->boolean('is_enabled');
+        $menu->is_enabled = $schemaRequest->isEnabled;
         if (!$menu->created_at) {
             $menu->created_at = now();
         }
         $menu->updated_at = now();
-        $menu->syncItems($items);
+        $menu->syncItems($schemaRequest->items);
         $menu->save();
 
         return new MenuResource($menu);

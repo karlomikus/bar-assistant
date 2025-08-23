@@ -11179,6 +11179,35 @@ components:
             - 'null'
           example: 'My device'
       type: object
+    MenuItemRequest:
+      required:
+        - id
+        - type
+        - category_name
+        - sort
+        - price
+        - currency
+      properties:
+        id:
+          type: integer
+          example: 1
+        type:
+          $ref: '#/components/schemas/MenuItemTypeEnum'
+        category_name:
+          type: string
+          example: 'Category name'
+        sort:
+          type: integer
+          example: 1
+        price:
+          type: number
+          format: float
+          example: 22.52
+        currency:
+          type: string
+          format: 'ISO 4217'
+          example: EUR
+      type: object
     MenuRequest:
       required:
         - is_enabled
@@ -11189,34 +11218,7 @@ components:
         items:
           type: array
           items:
-            required:
-              - id
-              - type
-              - category_name
-              - sort
-              - price
-              - currency
-            properties:
-              id:
-                type: integer
-                example: 1
-              type:
-                $ref: '#/components/schemas/MenuItemTypeEnum'
-              category_name:
-                type: string
-                example: 'Category name'
-              sort:
-                type: integer
-                example: 1
-              price:
-                type: integer
-                format: minor
-                example: 2252
-              currency:
-                type: string
-                format: 'ISO 4217'
-                example: EUR
-            type: object
+            $ref: '#/components/schemas/MenuItemRequest'
       type: object
     NoteRequest:
       required:
