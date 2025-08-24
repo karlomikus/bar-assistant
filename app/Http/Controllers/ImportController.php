@@ -26,22 +26,39 @@ use Kami\Cocktail\Jobs\StartIngredientCSVImport;
 use Kami\Cocktail\External\Import\FromJsonSchema;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\External\Import\DuplicateActionsEnum;
+use Kami\Cocktail\External\Matcher;
+use Kami\Cocktail\Http\Resources\CocktailBasicResource;
+use Kami\Cocktail\OpenAPI\Schemas\BulkImportCounts as BulkCountsSchema;
+use Kami\Cocktail\OpenAPI\Schemas\BulkImportItem as BulkItemSchema;
+use Kami\Cocktail\OpenAPI\Schemas\BulkImportResponse as BulkResponseSchema;
 
 class ImportController extends Controller
 {
-    #[OAT\Post(path: '/import/cocktail', tags: ['Import'], operationId: 'importCocktail', summary: 'Import recipe', description: 'Import a recipe from a JSON structure that follows Bar Assistant recipe JSON schema. Supported schemas include [Draft 2](https://barassistant.app/cocktail-02.schema.json) and [Draft 1](https://barassistant.app/cocktail-01.schema.json).', parameters: [
+    #[OAT\Post(path: '/import/cocktail', tags: ['Import'], operationId: 'importCocktail', summary: 'Import recipe(s)', description: 'Import a recipe from a JSON structure that follows Bar Assistant recipe JSON schema. Supported schemas include [Draft 2](https://barassistant.app/cocktail-02.schema.json) and [Draft 1](https://barassistant.app/cocktail-01.schema.json). You can submit a single object or an array of objects under the `source` field.', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(property: 'source', type: 'string', description: 'Valid JSON structure to import.'),
+                new OAT\Property(property: 'source', oneOf: [new OAT\Schema(type: 'object'), new OAT\Schema(type: 'array', items: new OAT\Items(type: 'object'))], description: 'Valid JSON structure to import. Accepts a single schema object or an array of schema objects.'),
                 new OAT\Property(property: 'duplicate_actions', ref: DuplicateActionsEnum::class, example: 'none', description: 'How to handle duplicates. Cocktails are matched by lowercase name.'),
             ]),
+            new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(type: 'object', required: ['source'], properties: [
+                new OAT\Property(property: 'source', type: 'string', format: 'binary', description: 'JSON file'),
+                new OAT\Property(property: 'duplicate_actions', ref: DuplicateActionsEnum::class, example: 'none', description: 'How to handle duplicates. Cocktails are matched by lowercase name.'),
+            ])),
         ]
     ))]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(CocktailResource::class),
+        new OAT\JsonContent(oneOf: [
+            new BAO\WrapObjectWithData(CocktailResource::class),
+            new OAT\JsonContent(type: 'object', properties: [
+                new OAT\Property(property: 'data', type: 'object', properties: [
+                    new OAT\Property(property: 'items', type: 'array', items: new OAT\Items(ref: BulkItemSchema::class)),
+                    new OAT\Property(property: 'counts', type: BulkCountsSchema::class),
+                ], required: ['items','counts'])
+            ], required: ['data'])
+        ])
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\RateLimitResponse]
@@ -51,7 +68,16 @@ class ImportController extends Controller
             abort(403);
         }
 
-        $source = $request->input('source');
+        // Support multipart JSON file upload
+        if ($request->hasFile('source')) {
+            Validator::make($request->all(), [
+                'source' => 'required|file|mimetypes:application/json,text/plain,application/octet-stream|max:1048576',
+            ])->validate();
+            $raw = (string) file_get_contents($request->file('source')->getRealPath());
+            $source = json_decode($raw, true);
+        } else {
+            $source = $request->input('source');
+        }
         $duplicateAction = $request->enum('duplicate_actions', DuplicateActionsEnum::class);
 
         $importer = new FromJsonSchema(
@@ -62,11 +88,73 @@ class ImportController extends Controller
             $request->user()->id,
         );
 
-        if (is_array($source)) {
-            $cocktail = $importer->process($source, $duplicateAction);
-        } else {
-            $cocktail = $importer->process(json_decode($source, true), $duplicateAction);
+        // If `source` is a list of items, import each and return per-item statuses with counts
+        if (is_array($source) && array_is_list($source)) {
+            // Enforce maximum items in a single request
+            if (count($source) > 500) {
+                abort(413, 'Too many items in a single request. Maximum allowed is 500.');
+            }
+            $matcher = new Matcher(bar()->id, resolve(IngredientService::class));
+
+            $items = [];
+            $counts = [
+                'total' => count($source),
+                'created' => 0,
+                'skipped' => 0,
+                'overwritten' => 0,
+                'failed' => 0,
+            ];
+
+            foreach ($source as $index => $item) {
+                $parsed = is_array($item) ? $item : json_decode((string) $item, true);
+                $name = $parsed['recipe']['name'] ?? null;
+
+                $existingId = null;
+                if (is_string($name)) {
+                    $existingId = $matcher->matchCocktailByName(mb_strtolower($name, 'UTF-8'));
+                }
+
+                try {
+                    $cocktail = $importer->process($parsed, $duplicateAction);
+
+                    $status = 'created';
+                    if ($existingId !== null && $duplicateAction === DuplicateActionsEnum::Skip) {
+                        $status = 'skipped';
+                    } elseif ($existingId !== null && $duplicateAction === DuplicateActionsEnum::Overwrite) {
+                        $status = 'overwritten';
+                    }
+
+                    $counts[$status]++;
+
+                    $items[] = [
+                        'status' => $status,
+                        'cocktail' => new CocktailBasicResource($cocktail),
+                        'name' => $name,
+                        'error' => null,
+                        'index' => $index,
+                    ];
+                } catch (Throwable $e) {
+                    $counts['failed']++;
+
+                    $items[] = [
+                        'status' => 'failed',
+                        'cocktail' => null,
+                        'name' => $name,
+                        'error' => $e->getMessage(),
+                        'index' => $index,
+                    ];
+
+                    // continue
+                }
+            }
+
+            return new JsonResource([
+                'items' => $items,
+                'counts' => $counts,
+            ]);
         }
+
+        $cocktail = $importer->process(is_array($source) ? $source : json_decode((string) $source, true), $duplicateAction);
 
         return new CocktailResource($cocktail);
     }
@@ -171,28 +259,28 @@ class ImportController extends Controller
     //     if ($request->user()->cannot('create', Cocktail::class)) {
     //         abort(403);
     //     }
-
+    //
     //     $zipFile = $request->file('file')->store('/', 'temp-uploads');
     //     $barId = $request->post('bar_id');
     //     $duplicateAction = DuplicateActionsEnum::from($request->post('duplicate_actions', 'none'));
-
+    //
     //     $bar = Bar::findOrFail($barId);
     //     if ($request->user()->cannot('edit', $bar)) {
     //         abort(403);
     //     }
-
+    //
     //     $unzippedFilesDisk = Storage::disk('temp');
-
+    //
     //     $zip = new ZipUtils();
     //     $zip->unzip(Storage::disk('temp-uploads')->path($zipFile));
-
+    //
     //     // $importer = new FromJsonSchema(
     //     //     resolve(\Kami\Cocktail\Services\CocktailService::class),
     //     //     resolve(\Kami\Cocktail\Services\IngredientService::class),
     //     //     resolve(\Kami\Cocktail\Services\Image\ImageService::class),
     //     //     $bar->id,
     //     // );
-
+    //
     //     // \Illuminate\Support\Facades\DB::beginTransaction();
     //     // try {
     //     //     foreach ($unzippedFilesDisk->directories($zip->getDirName() . '/cocktails') as $diskDirPath) {
@@ -210,9 +298,9 @@ class ImportController extends Controller
     //     //     $zip->cleanup();
     //     //     Storage::disk('temp-uploads')->delete($zipFile);
     //     // }
-
+    //
     //     \Illuminate\Support\Facades\DB::commit();
-
+    //
     //     return new Response(null, 204);
     // }
 }
