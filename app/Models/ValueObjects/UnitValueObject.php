@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Models\ValueObjects;
 
 use Stringable;
 use JsonSerializable;
+use Kami\RecipeUtils\DefaultUnits;
 use Kami\RecipeUtils\UnitConverter\Units;
 
 final readonly class UnitValueObject implements Stringable, JsonSerializable
@@ -20,31 +21,7 @@ final readonly class UnitValueObject implements Stringable, JsonSerializable
     public function __construct(
         ?string $value,
     ) {
-        // TODO: Move to package
-        $this->units = [
-            'oz' => ['oz.', 'fl-oz', 'oz', 'ounce', 'ounces'],
-            'ml' => ['ml', 'ml.', 'milliliter', 'milliliters'],
-            'cl' => ['cl', 'cl.', 'centiliter', 'centiliters'],
-            'dash' => ['dashes', 'dash', 'ds'],
-            'sprigs' => ['sprig', 'sprigs'],
-            'leaves' => ['leaves', 'leaf'],
-            'whole' => ['whole'],
-            'drops' => ['drop', 'drops'],
-            'barspoon' => ['barspoon', 'teaspoon', 'bsp', 'tsp', 'tsp.', 'tspn', 't', 't.', 'teaspoon', 'teaspoons', 'tablespoons', 'tablespoon'],
-            'slice' => ['slice', 'sliced', 'slices'],
-            'cup' => ['c', 'c.', 'cup', 'cups'],
-            'pint' => ['pt', 'pts', 'pt.', 'pint', 'pints'],
-            'splash' => ['a splash', 'splash', 'splashes'],
-            'pinch' => ['pinches', 'pinch'],
-            'topup' => ['topup'],
-            'part' => ['part', 'parts'],
-            'wedge' => ['wedge', 'wedges'],
-            'cube' => ['cubes', 'cube'],
-            'bottle' => ['bottles', 'bottle'],
-            'can' => ['cans', 'can'],
-            'bag' => ['bags', 'bag'],
-            'shot' => ['shots', 'shot'],
-        ];
+        $this->units = DefaultUnits::get();
         $this->value = trim(mb_strtolower($value ?? ''));
     }
 

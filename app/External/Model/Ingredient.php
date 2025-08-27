@@ -12,6 +12,7 @@ use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Image as ImageModel;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 use Kami\Cocktail\Models\IngredientPrice as IngredientPriceModel;
+use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 
 readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsCSV
 {
@@ -38,7 +39,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
         public ?float $sugarContent = null,
         public ?float $acidity = null,
         public ?string $distillery = null,
-        public ?string $units = null,
+        public ?UnitValueObject $units = null,
     ) {
     }
 
@@ -56,9 +57,9 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
             return IngredientPrice::fromModel($price);
         })->toArray();
 
-        $defaultIngredientUnits = $model->getDefaultUnits()?->value;
+        $defaultIngredientUnits = $model->getDefaultUnits();
         if ($model->getDefaultUnits()?->isConvertable()) {
-            $defaultIngredientUnits = $toUnits->value;
+            $defaultIngredientUnits = new UnitValueObject($toUnits->value);
         }
 
         return new self(
@@ -118,7 +119,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
             sugarContent: $sourceArray['sugar_g_per_ml'] ?? null,
             acidity: $sourceArray['acidity'] ?? null,
             distillery: $sourceArray['distillery'] ?? null,
-            units: $sourceArray['units'] ?? null,
+            units: $sourceArray['units'] ? new UnitValueObject($sourceArray['units']) : null,
         );
     }
 
@@ -142,7 +143,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
             'sugar_g_per_ml' => $this->sugarContent,
             'acidity' => $this->acidity,
             'distillery' => $this->distillery,
-            'units' => $this->units,
+            'units' => $this->units?->value,
         ];
     }
 
@@ -167,7 +168,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
             sugarContent: blank($sourceArray['sugar_g_per_ml']) ? null : $sourceArray['sugar_g_per_ml'],
             acidity: blank($sourceArray['acidity']) ? null : $sourceArray['acidity'],
             distillery: blank($sourceArray['distillery']) ? null : $sourceArray['distillery'],
-            units: blank($sourceArray['units']) ? null : $sourceArray['units'],
+            units: blank($sourceArray['units']) ? null : new UnitValueObject($sourceArray['units']),
         );
     }
 
