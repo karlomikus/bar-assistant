@@ -119,7 +119,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
             sugarContent: $sourceArray['sugar_g_per_ml'] ?? null,
             acidity: $sourceArray['acidity'] ?? null,
             distillery: $sourceArray['distillery'] ?? null,
-            units: $sourceArray['units'] ? new UnitValueObject($sourceArray['units']) : null,
+            units: ($sourceArray['units'] ?? null) ? new UnitValueObject($sourceArray['units']) : null,
         );
     }
 

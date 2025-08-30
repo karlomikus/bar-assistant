@@ -194,6 +194,12 @@ class FromDataPack
                 continue;
             }
 
+            $ingredientUnit = $externalIngredient->units?->value;
+            $barSettings = $bar->settings ?? [];
+            if ($externalIngredient->units?->isConvertable() && array_key_exists('default_units', $barSettings)) {
+                $ingredientUnit = $barSettings['default_units'];
+            }
+
             $slug = $externalIngredient->id . '-' . $bar->id;
             $ingredientsToInsert[] = [
                 'bar_id' => $bar->id,
@@ -210,7 +216,7 @@ class FromDataPack
                 'sugar_g_per_ml' => $externalIngredient->sugarContent,
                 'acidity' => $externalIngredient->acidity,
                 'distillery' => $externalIngredient->distillery,
-                'units' => $externalIngredient->units?->value,
+                'units' => $ingredientUnit,
             ];
 
             if ($externalIngredient->parentId) {
