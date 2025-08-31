@@ -10,9 +10,9 @@ use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Image as ImageModel;
+use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 use Kami\Cocktail\Models\IngredientPrice as IngredientPriceModel;
-use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 
 readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsCSV
 {

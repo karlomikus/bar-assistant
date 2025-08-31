@@ -41,26 +41,16 @@ final class PublicCocktailQueryFilter extends QueryBuilder
                 'name',
                 'created_at',
                 'abv',
-                'total_ingredients',
                 AllowedSort::callback('random', function ($query) {
                     $query->inRandomOrder();
                 }),
             ])
-            ->allowedIncludes([
-                'glass',
-                'method',
-                'user',
-                'utensils',
-                'images',
-                'tags',
-                'ingredients.ingredient',
-            ])
             ->select('cocktails.*')
             ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')
             ->leftJoin('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')
-            ->leftJoin('bar_ingredients AS bi', function ($query) {
-                $query->on('bi.ingredient_id', '=', 'ci.ingredient_id');
-            })
+            // ->leftJoin('bar_ingredients AS bi', function ($query) {
+            //     $query->on('bi.ingredient_id', '=', 'ci.ingredient_id');
+            // })
             ->where('cocktails.bar_id', $bar->id)
             ->groupBy('cocktails.id')
             ->with(

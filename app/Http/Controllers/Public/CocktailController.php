@@ -41,24 +41,25 @@ class CocktailController extends Controller
             abort(404);
         }
 
+        $queryParams = $request->only(['filter', 'sort', 'page']);
+        ksort($queryParams);
+        $cacheKey = 'public_cocktails_index:' . $barId . ':' . sha1(http_build_query($queryParams));
+
+        if (Cache::has($cacheKey)) {
+            $cocktails = Cache::get($cacheKey);
+
+            return CocktailResource::collection($cocktails->withQueryString());
+        }
+
         try {
             $cocktailsQuery = new PublicCocktailQueryFilter($bar);
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }
 
-        $queryParams = $request->only([
-            'filter',
-            'sort',
-            'page',
-        ]);
-        ksort($queryParams);
-        $queryString = http_build_query($queryParams);
-        $cacheKey = 'public_cocktails_index_' . $barId . '_' . sha1($queryString);
+        $cocktails = $cocktailsQuery->paginate(50);
 
-        $cocktails = Cache::remember($cacheKey, 3600, function () use ($cocktailsQuery) {
-            return $cocktailsQuery->paginate(50);
-        });
+        Cache::put($cacheKey, $cocktails, 3600);
 
         return CocktailResource::collection($cocktails->withQueryString());
     }
