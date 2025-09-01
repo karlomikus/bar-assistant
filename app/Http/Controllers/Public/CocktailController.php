@@ -24,11 +24,13 @@ class CocktailController extends Controller
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes. You can specify multiple matching filter values by passing a comma separated list of values.', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
             new OAT\Property(property: 'name', type: 'string', description: 'Filter by cocktail names(s) (fuzzy search)'),
             new OAT\Property(property: 'ingredient_name', type: 'string', description: 'Filter by cocktail ingredient names(s) (fuzzy search)'),
+            new OAT\Property(property: 'tag', type: 'string', description: 'Filter by cocktail tag name(s) (fuzzy search)'),
+            new OAT\Property(property: 'glass', type: 'string', description: 'Filter by cocktail glass type name(s) (fuzzy search)'),
+            new OAT\Property(property: 'method', type: 'string', description: 'Filter by cocktail method name(s) (fuzzy search)'),
             new OAT\Property(property: 'bar_shelf', type: 'boolean', description: 'Show only cocktails on the bar shelf'),
-            new OAT\Property(property: 'abv_min', type: 'number', description: 'Filter by greater than or equal ABV'),
-            new OAT\Property(property: 'abv_max', type: 'number', description: 'Filter by less than or equal ABV'),
+            new OAT\Property(property: 'abv', type: 'number', description: 'Filter by greater than or equal ABV. Use >=, >, <=, < operators (e.g., `filter[abv]=>=20` to get cocktails with ABV greater than or equal to 20).'),
         ])),
-        new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `missing_bar_ingredients`, `favorited_at`, `random`.', schema: new OAT\Schema(type: 'string')),
+        new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `abv`, `random`.', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
     #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(CocktailResource::class),

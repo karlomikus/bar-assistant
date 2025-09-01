@@ -94,6 +94,8 @@ final class CocktailService
 
         $this->db->commit();
 
+        Cache::forgetWildcardRedis('public_cocktails_index:' . $cocktail->bar_id . ':*');
+
         if (count($cocktailDTO->images) > 0) {
             try {
                 $imageModels = Image::findOrFail($cocktailDTO->images);
@@ -109,8 +111,6 @@ final class CocktailService
         $cocktail->abv = $cocktail->getABV();
         // Upsert scout index
         $cocktail->save();
-
-        Cache::forgetWildcardRedis('public_cocktails_index:' . $cocktail->bar_id . ':*');
 
         return $cocktail;
     }
@@ -200,6 +200,8 @@ final class CocktailService
         }
 
         $this->db->commit();
+
+        Cache::forgetWildcardRedis('public_cocktails_index:' . $cocktail->bar_id . ':*');
 
         if (count($cocktailDTO->images) > 0) {
             try {

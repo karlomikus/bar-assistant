@@ -5923,20 +5923,26 @@ paths:
               ingredient_name:
                 description: 'Filter by cocktail ingredient names(s) (fuzzy search)'
                 type: string
+              tag:
+                description: 'Filter by cocktail tag name(s) (fuzzy search)'
+                type: string
+              glass:
+                description: 'Filter by cocktail glass type name(s) (fuzzy search)'
+                type: string
+              method:
+                description: 'Filter by cocktail method name(s) (fuzzy search)'
+                type: string
               bar_shelf:
                 description: 'Show only cocktails on the bar shelf'
                 type: boolean
-              abv_min:
-                description: 'Filter by greater than or equal ABV'
-                type: number
-              abv_max:
-                description: 'Filter by less than or equal ABV'
+              abv:
+                description: 'Filter by greater than or equal ABV. Use >=, >, <=, < operators (e.g., `filter[abv]=>=20` to get cocktails with ABV greater than or equal to 20).'
                 type: number
             type: object
         -
           name: sort
           in: query
-          description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `missing_bar_ingredients`, `favorited_at`, `random`.'
+          description: 'Sort by attributes. Available attributes: `name`, `created_at`, `abv`, `random`.'
           schema:
             type: string
       responses:

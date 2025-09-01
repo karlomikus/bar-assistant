@@ -9,6 +9,7 @@ use Kami\Cocktail\Models\Cocktail;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\Enums\FilterOperator;
 
 /**
  * @extends \Spatie\QueryBuilder\QueryBuilder<Cocktail>
@@ -24,17 +25,15 @@ final class PublicCocktailQueryFilter extends QueryBuilder
                 AllowedFilter::exact('id'),
                 AllowedFilter::custom('name', new FilterNameSearch()),
                 AllowedFilter::partial('ingredient_name', 'ingredients.ingredient.name'),
+                AllowedFilter::partial('tag', 'tags.name'),
+                AllowedFilter::partial('glass', 'glass.name'),
+                AllowedFilter::partial('method', 'method.name'),
                 AllowedFilter::callback('bar_shelf', function ($query, $value) use ($bar) {
                     if ($value === true) {
                         $query->whereIn('cocktails.id', $bar->getShelfCocktailsOnce());
                     }
                 }),
-                AllowedFilter::callback('abv_min', function ($query, $value) {
-                    $query->where('abv', '>=', $value);
-                }),
-                AllowedFilter::callback('abv_max', function ($query, $value) {
-                    $query->where('abv', '<=', $value);
-                }),
+                AllowedFilter::operator('abv', FilterOperator::DYNAMIC),
             ])
             ->defaultSort('name')
             ->allowedSorts([
@@ -48,9 +47,6 @@ final class PublicCocktailQueryFilter extends QueryBuilder
             ->select('cocktails.*')
             ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')
             ->leftJoin('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')
-            // ->leftJoin('bar_ingredients AS bi', function ($query) {
-            //     $query->on('bi.ingredient_id', '=', 'ci.ingredient_id');
-            // })
             ->where('cocktails.bar_id', $bar->id)
             ->groupBy('cocktails.id')
             ->with(

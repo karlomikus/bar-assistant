@@ -49,7 +49,12 @@ This repository only contains the API server, if you are looking for easy to use
 - Data export support in various formats
 - Support for multiple ingredient prices
 - Automatic cocktail price calculation based on ingredients
-- SSO Support
+- Single sign-on (SSO) support
+- Recipe recommendations based on your favorites and tags
+
+## Documentation
+
+[Documentation is available here.](https://docs.barassistant.app/)
 
 ## Container images
 
@@ -63,13 +68,13 @@ We recommend that you always use the latest major release, as it will always be 
 
 ## Managed instance
 
-Bar Assistant will always be open-source and MIT-licensed, but if you want to support the project or don't want to self-host, you can try officialy managed instance. Visit [barassistant.app](https://barassistant.app/) for more information about our cloud offering.
+Bar Assistant will always be open-source and MIT-licensed, but if you want to support the project or don't want to self-host, you can try our official managed instance. Visit [barassistant.app](https://barassistant.app/) for more information about our cloud offering.
 
 ![Cloud offering screenshot](/resources/art/art1.png)
 
-## Documentation
+## 3rd Party Integrations
 
-[Documentation is available here.](https://bar-assistant.github.io/docs/)
+There's an [unofficial Raycast extension](https://www.raycast.com/stupifier/barassistant) maintained by a [community member](https://github.com/zhdenny).
 
 ## Contributing
 
