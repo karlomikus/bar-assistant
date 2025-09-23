@@ -58,7 +58,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
         })->toArray();
 
         $defaultIngredientUnits = $model->getDefaultUnits();
-        if ($model->getDefaultUnits()?->isConvertable()) {
+        if ($model->getDefaultUnits()?->isConvertable() && $toUnits) {
             $defaultIngredientUnits = new UnitValueObject($toUnits->value);
         }
 
