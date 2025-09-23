@@ -10106,11 +10106,27 @@ components:
             - string
             - 'null'
           example: Shaken
+        method_dilution_percentage:
+          description: 'Dilution percentage associated with the preparation method'
+          type:
+            - number
+            - 'null'
+          example: '12'
+        volume_ml:
+          description: 'Total volume of the cocktail in milliliters'
+          type:
+            - number
+            - 'null'
+          example: '120'
         created_at:
           description: 'Date and time when the cocktail was created'
           type: string
           format: date-time
           example: '2023-10-01T12:00:00Z'
+        in_bar_shelf:
+          description: 'Indicates if the cocktail can be made in the current bar'
+          type: boolean
+          example: true
         abv:
           description: 'Alcohol by volume percentage of the cocktail'
           type:

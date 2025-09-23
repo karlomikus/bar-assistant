@@ -31,7 +31,10 @@ use Kami\Cocktail\Models\CocktailIngredientSubstitute;
        new OAT\Property(property: 'glass', type: 'string', nullable: true, example: 'Highball glass', description: 'Type of glass used for the cocktail'),
        new OAT\Property(property: 'utensils', type: 'array', items: new OAT\Items(type: 'string'), description: 'Utensils used for preparing the cocktail'),
        new OAT\Property(property: 'method', type: 'string', nullable: true, example: 'Shaken', description: 'Method of preparation for the cocktail'),
+       new OAT\Property(property: 'method_dilution_percentage', type: 'number', nullable: true, example: '12', description: 'Dilution percentage associated with the preparation method'),
+       new OAT\Property(property: 'volume_ml', type: 'number', nullable: true, example: '120', description: 'Total volume of the cocktail in milliliters'),
        new OAT\Property(property: 'created_at', type: 'string', format: 'date-time', example: '2023-10-01T12:00:00Z', description: 'Date and time when the cocktail was created'),
+       new OAT\Property(property: 'in_bar_shelf', type: 'boolean', example: true, description: 'Indicates if the cocktail can be made in the current bar'),
        new OAT\Property(property: 'abv', type: 'number', format: 'float', nullable: true, example: 0.15, description: 'Alcohol by volume percentage of the cocktail'),
        new OAT\Property(property: 'year', type: 'integer', nullable: true, example: 2023, description: 'Year the cocktail was created or published'),
        new OAT\Property(
@@ -98,7 +101,10 @@ class CocktailResource extends JsonResource
             'glass' => $this->glass->name ?? null,
             'utensils' => $this->utensils->pluck('name'),
             'method' => $this->method->name ?? null,
+            'method_dilution_percentage' => $this->method->dilution_percentage ?? null,
+            'volume_ml' => $this->getVolume(),
             'created_at' => $this->created_at->toAtomString(),
+            'in_bar_shelf' => $this->inBarShelf(),
             'abv' => $this->abv,
             'year' => $this->year,
             'ingredients' => $this->ingredients->map(function (CocktailIngredient $cocktailIngredient) {
