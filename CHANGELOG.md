@@ -1,3 +1,7 @@
+# v5.8.1
+## Fixes
+- Fixed missing API ability on `import/cocktail` endpoint
+
 # v5.8.0
 ## New
 - Added `bars/{id}/sync-datapack` endpoint
