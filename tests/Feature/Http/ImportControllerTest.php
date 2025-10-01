@@ -43,6 +43,89 @@ class ImportControllerTest extends TestCase
         $response->assertSuccessful();
     }
 
+    public function test_import_cocktail_array_created_and_skip_overwrite(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $base = json_decode((string) file_get_contents(base_path('tests/fixtures/external/recipe.json')), true);
+        $first = $base;
+        $first['recipe']['name'] = 'Bulk Test 1';
+        $second = $base;
+        $second['recipe']['name'] = 'Bulk Test 2';
+
+        // First: create two
+        $resp = $this->postJson('/api/import/cocktail', [
+            'source' => [$first, $second],
+            'duplicate_actions' => 'none',
+        ]);
+        $resp->assertSuccessful();
+        $resp->assertJsonPath('data.counts.created', 2);
+
+        // Second: try again with skip
+        $resp = $this->postJson('/api/import/cocktail', [
+            'source' => [$first, $second],
+            'duplicate_actions' => 'skip',
+        ]);
+        $resp->assertSuccessful();
+        $resp->assertJsonPath('data.counts.skipped', 2);
+
+        // Third: overwrite
+        $resp = $this->postJson('/api/import/cocktail', [
+            'source' => [$first, $second],
+            'duplicate_actions' => 'overwrite',
+        ]);
+        $resp->assertSuccessful();
+        $resp->assertJsonPath('data.counts.overwritten', 2);
+    }
+
+    public function test_import_cocktail_array_partial_failure_continues(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $valid = json_decode((string) file_get_contents(base_path('tests/fixtures/external/recipe.json')), true);
+        $valid['recipe']['name'] = 'Bulk Partial OK';
+        $invalid = ['recipe' => ['name' => 'Broken'], 'ingredients' => 'not-an-array'];
+
+        $resp = $this->postJson('/api/import/cocktail', [
+            'source' => [$valid, $invalid],
+            'duplicate_actions' => 'none',
+        ]);
+
+        $resp->assertSuccessful();
+        $resp->assertJsonPath('data.counts.total', 2);
+        $resp->assertJsonPath('data.counts.created', 1);
+        $resp->assertJsonPath('data.counts.failed', 1);
+    }
+
+    public function test_import_cocktail_array_too_many_items_returns_413(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $base = json_decode((string) file_get_contents(base_path('tests/fixtures/external/recipe.json')), true);
+        $payload = [];
+        for ($i = 0; $i < 501; $i++) {
+            $copy = $base;
+            $copy['recipe']['name'] = 'Over Limit ' . $i;
+            $payload[] = $copy;
+        }
+
+        $resp = $this->postJson('/api/import/cocktail', [
+            'source' => $payload,
+            'duplicate_actions' => 'none',
+        ]);
+
+        $resp->assertStatus(413);
+    }
+
     public function test_import_csv_ingredients_from_file(): void
     {
         $membership = $this->setupBarMembership();
