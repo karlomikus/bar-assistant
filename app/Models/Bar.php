@@ -18,6 +18,7 @@ use Kami\Cocktail\Services\MeilisearchService;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Bar extends Model implements UploadableInterface
 {
@@ -131,6 +132,14 @@ class Bar extends Model implements UploadableInterface
     public function exports(): HasMany
     {
         return $this->hasMany(Export::class);
+    }
+
+    /**
+     * @return HasOne<Menu, $this>
+     */
+    public function menu(): HasOne
+    {
+        return $this->hasOne(Menu::class);
     }
 
     public function owner(): User

@@ -18,8 +18,8 @@ use Kami\Cocktail\Http\Resources\Public\CocktailResource;
 
 class CocktailController extends Controller
 {
-    #[OAT\Get(path: '/public/{barId}/cocktails', tags: ['Public'], operationId: 'listPublicBarCocktails', description: 'List and filter bar cocktails. To access this endpoint the bar must be marked as public.', summary: 'List cocktails', parameters: [
-        new OAT\Parameter(name: 'barId', in: 'path', required: true, description: 'Database id of bar', schema: new OAT\Schema(type: 'number')),
+    #[OAT\Get(path: '/public/{slugOrId}/cocktails', tags: ['Public'], operationId: 'listPublicBarCocktails', description: 'List and filter bar cocktails. To access this endpoint the bar must be marked as public.', summary: 'List cocktails', parameters: [
+        new OAT\Parameter(name: 'slugOrId', in: 'path', required: true, description: 'Database id or slug of bar', schema: new OAT\Schema(type: 'string')),
         new BAO\Parameters\PageParameter(),
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes. You can specify multiple matching filter values by passing a comma separated list of values.', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
             new OAT\Property(property: 'name', type: 'string', description: 'Filter by cocktail names(s) (fuzzy search)'),
@@ -36,16 +36,16 @@ class CocktailController extends Controller
         new BAO\PaginateData(CocktailResource::class),
     ])]
     #[BAO\NotFoundResponse]
-    public function index(Request $request, int $barId): JsonResource
+    public function index(Request $request, string $slugOrId): JsonResource
     {
-        $bar = Bar::findOrFail($barId);
+        $bar = Bar::where('slug', $slugOrId)->orWhere('id', $slugOrId)->firstOrFail();
         if (!$bar->is_public) {
             abort(404);
         }
 
         $queryParams = $request->only(['filter', 'sort', 'page']);
         ksort($queryParams);
-        $cacheKey = 'public_cocktails_index:' . $barId . ':' . sha1(http_build_query($queryParams));
+        $cacheKey = 'public_cocktails_index:' . $bar->id . ':' . sha1(http_build_query($queryParams));
 
         if (Cache::has($cacheKey)) {
             $cocktails = Cache::get($cacheKey);
@@ -66,30 +66,25 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails->withQueryString());
     }
 
-    #[OAT\Get(path: '/public/{barId}/cocktails/{slugOrPublicId}', tags: ['Public'], operationId: 'showPublicBarCocktail', description: 'Show public information about cocktail. If valid public ID is provided it will used, if not it will use cocktail slug.', summary: 'Show cocktail', parameters: [
-        new OAT\Parameter(name: 'barId', in: 'path', required: true, description: 'Database id of bar', schema: new OAT\Schema(type: 'number')),
+    #[OAT\Get(path: '/public/{slugOrId}/cocktails/{slugOrPublicId}', tags: ['Public'], operationId: 'showPublicBarCocktail', description: 'Show public information about cocktail. If valid public ID is provided it will used, if not it will use cocktail slug.', summary: 'Show cocktail', parameters: [
+        new OAT\Parameter(name: 'slugOrId', in: 'path', required: true, description: 'Database id of bar', schema: new OAT\Schema(type: 'string')),
         new OAT\Parameter(name: 'slugOrPublicId', in: 'path', required: true, description: 'Cocktail slug or public id (ULID)', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(CocktailResource::class),
     ])]
     #[BAO\NotFoundResponse]
-    public function show(int $barId, string $slugOrPublicId): CocktailResource
+    public function show(string $barId, string $slugOrPublicId): CocktailResource
     {
-        $cocktail = Cocktail::where('bar_id', $barId)
-            ->where('public_id', $slugOrPublicId)
-            ->orWhere('slug', $slugOrPublicId)
-            ->with('ingredients.ingredient', 'ingredients.substitutes.ingredient', 'images', 'tags', 'utensils')
-            ->firstOrFail();
-
-        if ($cocktail->public_id === $slugOrPublicId) {
-            return new CocktailResource($cocktail);
-        }
-
-        $bar = Bar::findOrFail($barId);
+        $bar = Bar::where('slug', $barId)->orWhere('id', $barId)->firstOrFail();
         if (!$bar->is_public) {
             abort(404);
         }
+
+        $cocktail = Cocktail::where('public_id', $slugOrPublicId)
+            ->orWhere('slug', $slugOrPublicId)
+            ->with('ingredients.ingredient', 'ingredients.substitutes.ingredient', 'images', 'tags', 'utensils')
+            ->firstOrFail();
 
         return new CocktailResource($cocktail);
     }

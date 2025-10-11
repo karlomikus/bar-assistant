@@ -5829,7 +5829,7 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  '/public/{barId}':
+  '/public/{slugOrId}':
     get:
       tags:
         - Public
@@ -5838,12 +5838,12 @@ paths:
       operationId: showPublicBar
       parameters:
         -
-          name: barId
+          name: slugOrId
           in: path
           description: 'Database id of bar'
           required: true
           schema:
-            type: number
+            type: string
         -
           name: page
           in: query
@@ -5888,7 +5888,7 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
-  '/public/{barId}/cocktails':
+  '/public/{slugOrId}/cocktails':
     get:
       tags:
         - Public
@@ -5897,12 +5897,12 @@ paths:
       operationId: listPublicBarCocktails
       parameters:
         -
-          name: barId
+          name: slugOrId
           in: path
-          description: 'Database id of bar'
+          description: 'Database id or slug of bar'
           required: true
           schema:
-            type: number
+            type: string
         -
           name: page
           in: query
@@ -5983,7 +5983,7 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
-  '/public/{barId}/cocktails/{slugOrPublicId}':
+  '/public/{slugOrId}/cocktails/{slugOrPublicId}':
     get:
       tags:
         - Public
@@ -5992,12 +5992,12 @@ paths:
       operationId: showPublicBarCocktail
       parameters:
         -
-          name: barId
+          name: slugOrId
           in: path
           description: 'Database id of bar'
           required: true
           schema:
-            type: number
+            type: string
         -
           name: slugOrPublicId
           in: path
@@ -9986,6 +9986,7 @@ components:
         - subtitle
         - description
         - images
+        - is_menu_enabled
       properties:
         id:
           description: 'Unique number that can be used to reference a specific bar.'
@@ -10016,6 +10017,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PublicImageResource'
+        is_menu_enabled:
+          description: 'Whether the bar has enabled its menu for public viewing'
+          type: boolean
+          example: true
       type: object
     PublicCocktailResource:
       description: 'Public details about a cocktail'

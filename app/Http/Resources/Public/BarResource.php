@@ -20,8 +20,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
        new OAT\Property(property: 'subtitle', type: 'string', nullable: true, example: 'A short subtitle of a bar', description: 'Optional short quip about the bar'),
        new OAT\Property(property: 'description', type: 'string', nullable: true, example: 'Bar description', description: 'Description of the bar'),
        new OAT\Property(property: 'images', type: 'array', items: new OAT\Items(type: ImageResource::class), description: 'Images associated with the bar'),
+       new OAT\Property(property: 'is_menu_enabled', type: 'boolean', example: true, description: 'Whether the bar has enabled its menu for public viewing'),
     ],
-    required: ['id', 'slug', 'name', 'subtitle', 'description', 'images'],
+    required: ['id', 'slug', 'name', 'subtitle', 'description', 'images', 'is_menu_enabled'],
 )]
 class BarResource extends JsonResource
 {
@@ -40,6 +41,7 @@ class BarResource extends JsonResource
             'subtitle' => $this->subtitle,
             'description' => $this->description,
             'images' => ImageResource::collection($this->images),
+            'is_menu_enabled' => $this->menu?->is_enabled ?? false,
         ];
     }
 }

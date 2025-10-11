@@ -30,7 +30,7 @@ class ShoppingListController extends Controller
     public function index(Request $request, int $id): JsonResource
     {
         $user = User::findOrFail($id);
-        if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
             abort(403);
         }
 
@@ -54,7 +54,7 @@ class ShoppingListController extends Controller
     public function batchStore(IngredientsBatchRequest $request, int $id): Response
     {
         $user = User::findOrFail($id);
-        if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
             abort(403);
         }
 
@@ -111,7 +111,7 @@ class ShoppingListController extends Controller
     public function batchDelete(IngredientsBatchRequest $request, int $id): Response
     {
         $user = User::findOrFail($id);
-        if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
             abort(403);
         }
 
@@ -150,7 +150,7 @@ class ShoppingListController extends Controller
     public function share(Request $request, int $id): JsonResponse
     {
         $user = User::findOrFail($id);
-        if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
+        if ($request->user()->id !== $user->id || $request->user()->cannot('show', $user)) {
             abort(403);
         }
 

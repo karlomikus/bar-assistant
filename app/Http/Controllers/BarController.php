@@ -23,6 +23,7 @@ use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\BarMembershipResource;
 use Kami\Cocktail\OpenAPI\Schemas\BarRequest as SchemasBarRequest;
+use Throwable;
 
 class BarController extends Controller
 {
@@ -87,7 +88,7 @@ class BarController extends Controller
     public function store(BarRequest $request): JsonResponse
     {
         if ($request->user()->cannot('create', Bar::class)) {
-            abort(403, 'You can not create anymore bars');
+            abort(403, 'You can not create any more bars.');
         }
 
         Cache::forget('metrics_bass_total_bars');
@@ -106,7 +107,7 @@ class BarController extends Controller
             try {
                 $imageModels = Image::findOrFail($barRequest->images);
                 $bar->attachImages($imageModels);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 abort(500, $e->getMessage());
             }
         }
@@ -167,7 +168,7 @@ class BarController extends Controller
             try {
                 $imageModels = Image::findOrFail($barRequest->images);
                 $bar->attachImages($imageModels);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 abort(500, $e->getMessage());
             }
         }

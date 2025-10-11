@@ -90,7 +90,6 @@ class CocktailResource extends JsonResource
             'description' => e($this->description),
             'source' => $this->source,
             'public_id' => $this->public_id,
-            'bar_id' => $this->bar_id,
             'public_at' => $this->public_at?->toAtomString() ?? null,
             'images' => ImageResource::collection($this->images),
             'tags' => $this->when(

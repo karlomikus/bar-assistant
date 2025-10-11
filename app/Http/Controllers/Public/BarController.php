@@ -12,17 +12,17 @@ use Kami\Cocktail\Http\Resources\Public\BarResource;
 
 class BarController extends Controller
 {
-    #[OAT\Get(path: '/public/{barId}', tags: ['Public'], operationId: 'showPublicBar', description: 'Show public information about a single bar. To access this endpoint the bar must be marked as public.', summary: 'Show bar', parameters: [
-        new OAT\Parameter(name: 'barId', in: 'path', required: true, description: 'Database id of bar', schema: new OAT\Schema(type: 'number')),
+    #[OAT\Get(path: '/public/{slugOrId}', tags: ['Public'], operationId: 'showPublicBar', description: 'Show public information about a single bar. To access this endpoint the bar must be marked as public.', summary: 'Show bar', parameters: [
+        new OAT\Parameter(name: 'slugOrId', in: 'path', required: true, description: 'Database id of bar', schema: new OAT\Schema(type: 'string')),
         new BAO\Parameters\PageParameter(),
     ], security: [])]
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(BarResource::class),
     ])]
     #[BAO\NotFoundResponse]
-    public function show(int $barId): BarResource
+    public function show(string $slugOrId): BarResource
     {
-        $bar = Bar::findOrFail($barId);
+        $bar = Bar::where('slug', $slugOrId)->orWhere('id', $slugOrId)->firstOrFail();
         if (!$bar->is_public) {
             abort(404);
         }
