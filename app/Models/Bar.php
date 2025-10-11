@@ -15,10 +15,10 @@ use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\Services\MeilisearchService;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Bar extends Model implements UploadableInterface
 {

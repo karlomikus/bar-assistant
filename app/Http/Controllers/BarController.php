@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Bar;
@@ -23,7 +24,6 @@ use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\BarMembershipResource;
 use Kami\Cocktail\OpenAPI\Schemas\BarRequest as SchemasBarRequest;
-use Throwable;
 
 class BarController extends Controller
 {
