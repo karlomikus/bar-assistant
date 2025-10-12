@@ -1,3 +1,19 @@
+# v5.9.0
+# New
+- Added `public/{slugOrId}` endpoints
+    - You can now access public bar data via `public/{slugOrId}` endpoints
+    - Added GET `public/{slugOrId}/menu` endpoint
+    - Added GET `public/{slugOrId}/cocktails` endpoint
+    - Added GET `public/{slugOrId}/cocktails/{cocktailId}` endpoint
+    - Added `is_public` property to `Bar` schema
+        - If set to `true`, bar will expose public endpoints `/public/{barId}/*`
+- Added `is_menu_enabled` to public `Bar` schema
+
+## Fixes
+- Fixed search driver indexing calls when not using search driver
+- Default ingredient unit bar setting is not correctly applied when importing data via datapack
+- Fixed unique constraint violation when adding ingredients into bar shelf
+
 # v5.8.1
 ## Fixes
 - Fixed missing API ability on `import/cocktail` endpoint
