@@ -41,7 +41,7 @@ class BarResource extends JsonResource
             'subtitle' => $this->subtitle,
             'description' => $this->description,
             'images' => ImageResource::collection($this->images),
-            'is_menu_enabled' => $this->menu?->is_enabled ?? false,
+            'is_menu_enabled' => $this->menu->is_enabled ?? false,
         ];
     }
 }

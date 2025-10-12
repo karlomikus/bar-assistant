@@ -252,7 +252,7 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     /**
      * Return all ingredients that can be substituted with this ingredient
      *
-     * @return Collection<int, $this>
+     * @return Collection<int, Ingredient>
      */
     public function getCanBeSubstitutedWithIngredients(): Collection
     {

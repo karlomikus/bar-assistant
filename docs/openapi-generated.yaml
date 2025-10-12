@@ -6043,6 +6043,59 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
+  '/public/{slugOrId}/menu':
+    get:
+      tags:
+        - Public
+      summary: 'Show public menu'
+      description: 'Show a public bar menu details'
+      operationId: showPublicBarMenu
+      parameters:
+        -
+          name: slugOrId
+          in: path
+          description: 'Database id or slug of bar'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/MenuPublic' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
   '/cocktails/{id}/ratings':
     post:
       tags:
