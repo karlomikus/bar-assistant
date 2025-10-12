@@ -10169,13 +10169,13 @@ components:
           type:
             - number
             - 'null'
-          example: '12'
+          example: 12
         volume_ml:
           description: 'Total volume of the cocktail in milliliters'
           type:
             - number
             - 'null'
-          example: '120'
+          example: 120
         created_at:
           description: 'Date and time when the cocktail was created'
           type: string
