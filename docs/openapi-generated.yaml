@@ -5983,12 +5983,12 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
-  '/public/{slugOrId}/cocktails/{slugOrPublicId}':
+  '/public/{slugOrId}/cocktails/{cocktailSlug}':
     get:
       tags:
         - Public
       summary: 'Show cocktail'
-      description: 'Show public information about cocktail. If valid public ID is provided it will used, if not it will use cocktail slug.'
+      description: 'Show public information about cocktail.'
       operationId: showPublicBarCocktail
       parameters:
         -
@@ -5999,9 +5999,9 @@ paths:
           schema:
             type: string
         -
-          name: slugOrPublicId
+          name: cocktailSlug
           in: path
-          description: 'Cocktail slug or public id (ULID)'
+          description: 'Cocktail slug'
           required: true
           schema:
             type: string
@@ -6048,7 +6048,7 @@ paths:
       tags:
         - Public
       summary: 'Show public menu'
-      description: 'Show a public bar menu details'
+      description: 'Show a public bar menu details. The bar must have menu enabled.'
       operationId: showPublicBarMenu
       parameters:
         -

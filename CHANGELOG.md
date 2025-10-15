@@ -1,6 +1,6 @@
 # v5.9.0
 # New
-- Added `public/{slugOrId}` endpoints
+- Documented `public/{slugOrId}` endpoints
     - You can now access public bar data via `public/{slugOrId}` endpoints
     - Added GET `public/{slugOrId}/menu` endpoint
     - Added GET `public/{slugOrId}/cocktails` endpoint

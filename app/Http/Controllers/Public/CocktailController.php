@@ -39,7 +39,7 @@ class CocktailController extends Controller
     public function index(Request $request, string $slugOrId): JsonResource
     {
         $bar = Bar::where('slug', $slugOrId)->orWhere('id', $slugOrId)->firstOrFail();
-        if (!$bar->is_public) {
+        if (!$bar->isPublic()) {
             abort(404);
         }
 
@@ -66,23 +66,22 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails->withQueryString());
     }
 
-    #[OAT\Get(path: '/public/{slugOrId}/cocktails/{slugOrPublicId}', tags: ['Public'], operationId: 'showPublicBarCocktail', description: 'Show public information about cocktail. If valid public ID is provided it will used, if not it will use cocktail slug.', summary: 'Show cocktail', parameters: [
+    #[OAT\Get(path: '/public/{slugOrId}/cocktails/{cocktailSlug}', tags: ['Public'], operationId: 'showPublicBarCocktail', description: 'Show public information about cocktail.', summary: 'Show cocktail', parameters: [
         new OAT\Parameter(name: 'slugOrId', in: 'path', required: true, description: 'Database id of bar', schema: new OAT\Schema(type: 'string')),
-        new OAT\Parameter(name: 'slugOrPublicId', in: 'path', required: true, description: 'Cocktail slug or public id (ULID)', schema: new OAT\Schema(type: 'string')),
+        new OAT\Parameter(name: 'cocktailSlug', in: 'path', required: true, description: 'Cocktail slug', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(CocktailResource::class),
     ])]
     #[BAO\NotFoundResponse]
-    public function show(string $barId, string $slugOrPublicId): CocktailResource
+    public function show(string $barId, string $cocktailSlug): CocktailResource
     {
         $bar = Bar::where('slug', $barId)->orWhere('id', $barId)->firstOrFail();
-        if (!$bar->is_public) {
+        if (!$bar->isPublic()) {
             abort(404);
         }
 
-        $cocktail = Cocktail::where('public_id', $slugOrPublicId)
-            ->orWhere('slug', $slugOrPublicId)
+        $cocktail = Cocktail::where('slug', $cocktailSlug)
             ->with('ingredients.ingredient', 'ingredients.substitutes.ingredient', 'images', 'tags', 'utensils')
             ->firstOrFail();
 

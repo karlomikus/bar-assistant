@@ -186,6 +186,16 @@ class Bar extends Model implements UploadableInterface
         return $this->status !== BarStatusEnum::Deactivated->value;
     }
 
+    public function isProvisioning(): bool
+    {
+        return $this->status === BarStatusEnum::Provisioning->value;
+    }
+
+    public function isPublic(): bool
+    {
+        return $this->is_public && $this->isAccessible() && !$this->isProvisioning();
+    }
+
     public function getIngredientsDirectory(): string
     {
         return 'ingredients/' . $this->id . '/';
