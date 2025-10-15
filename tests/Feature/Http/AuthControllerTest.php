@@ -89,9 +89,7 @@ class AuthControllerTest extends TestCase
             'name' => 'Test Guy',
         ]);
 
-        Mail::assertQueued(ConfirmAccount::class, function (ConfirmAccount $mail) {
-            return $mail->hasTo('test@test.com');
-        });
+        Mail::assertQueued(ConfirmAccount::class, fn(ConfirmAccount $mail) => $mail->hasTo('test@test.com'));
     }
 
     public function test_forgot_password_response(): void
@@ -106,9 +104,7 @@ class AuthControllerTest extends TestCase
             'email' => 'test@test.com'
         ]);
 
-        Mail::assertQueued(PasswordReset::class, function (PasswordReset $mail) {
-            return $mail->hasTo('test@test.com');
-        });
+        Mail::assertQueued(PasswordReset::class, fn(PasswordReset $mail) => $mail->hasTo('test@test.com'));
 
         $response->assertSuccessful();
     }

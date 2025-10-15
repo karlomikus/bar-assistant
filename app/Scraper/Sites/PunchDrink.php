@@ -23,7 +23,7 @@ class PunchDrink extends DefaultScraper
         $i = 1;
         $result = "";
         $instructionsList->each(function ($node) use (&$result, &$i) {
-            $result .= $i . ". " . trim($node->text()) . "\n";
+            $result .= $i . ". " . trim((string) $node->text()) . "\n";
             $i++;
         });
 
@@ -67,7 +67,7 @@ class PunchDrink extends DefaultScraper
         // Convert <br> to new lines
         $editorsNote = preg_replace('/<br\s?\/?>/ius', "\n\n", str_replace("\n", "", str_replace("\r", "", htmlspecialchars_decode($editorsNote))));
         // Convert bolds to markdown
-        $editorsNote = preg_replace('/<(b|strong)>(.*?)<\/\1>/i', '### $2', $editorsNote);
+        $editorsNote = preg_replace('/<(b|strong)>(.*?)<\/\1>/i', '### $2', (string) $editorsNote);
         $editorsNote = str_replace('&nbsp;', '', $editorsNote);
 
         return "\n\n ## Editors note:\n\n" . htmlentities($editorsNote);

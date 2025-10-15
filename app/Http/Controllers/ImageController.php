@@ -177,7 +177,7 @@ class ImageController extends Controller
 
         return new Response($responseContent, $statusCode, [
             'Content-Type' => 'image/webp',
-            'Content-Length' => strlen($responseContent),
+            'Content-Length' => strlen((string) $responseContent),
             'Etag' => $etag
         ]);
     }

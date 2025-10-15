@@ -297,9 +297,7 @@ Route::middleware($apiMiddleware)->group(function () {
     });
 });
 
-Route::fallback(function () {
-    return response()->json([
-        'type' => 'api_error',
-        'message' => 'Endpoint not found.'
-    ], 404);
-});
+Route::fallback(fn() => response()->json([
+    'type' => 'api_error',
+    'message' => 'Endpoint not found.'
+], 404));

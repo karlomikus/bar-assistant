@@ -103,7 +103,7 @@ class UsersController extends Controller
         }
 
         if ($requireConfirmation === true) {
-            Mail::to($user)->queue(new ConfirmAccount($user->id, sha1($user->email)));
+            Mail::to($user)->queue(new ConfirmAccount($user->id, sha1((string) $user->email)));
         }
 
         bar()->users()->save($user, ['user_role_id' => $roleId]);

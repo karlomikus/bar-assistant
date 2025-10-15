@@ -94,9 +94,7 @@ class CocktailResource extends JsonResource
             'images' => ImageResource::collection($this->images),
             'tags' => $this->when(
                 $this->relationLoaded('tags'),
-                fn () => $this->tags->map(function ($tag) {
-                    return $tag->name;
-                })
+                fn () => $this->tags->map(fn($tag) => $tag->name)
             ),
             'glass' => $this->glass->name ?? null,
             'utensils' => $this->utensils->pluck('name'),
@@ -107,25 +105,21 @@ class CocktailResource extends JsonResource
             'in_bar_shelf' => $this->inBarShelf(),
             'abv' => $this->abv,
             'year' => $this->year,
-            'ingredients' => $this->ingredients->map(function (CocktailIngredient $cocktailIngredient) {
-                return [
-                    'name' => $cocktailIngredient->ingredient->name,
-                    'amount' => $cocktailIngredient->amount,
-                    'amount_max' => $cocktailIngredient->amount_max,
-                    'units' => $cocktailIngredient->units,
-                    'units_formatted' => new AmountFormats($cocktailIngredient),
-                    'optional' => (bool) $cocktailIngredient->optional,
-                    'note' => $cocktailIngredient->note,
-                    'substitutes' => $cocktailIngredient->substitutes->map(function (CocktailIngredientSubstitute $substitute) {
-                        return [
-                            'name' => $substitute->ingredient->name,
-                            'amount' => $substitute->amount,
-                            'amount_max' => $substitute->amount_max,
-                            'units' => $substitute->units,
-                        ];
-                    })->toArray(),
-                ];
-            }),
+            'ingredients' => $this->ingredients->map(fn(CocktailIngredient $cocktailIngredient) => [
+                'name' => $cocktailIngredient->ingredient->name,
+                'amount' => $cocktailIngredient->amount,
+                'amount_max' => $cocktailIngredient->amount_max,
+                'units' => $cocktailIngredient->units,
+                'units_formatted' => new AmountFormats($cocktailIngredient),
+                'optional' => (bool) $cocktailIngredient->optional,
+                'note' => $cocktailIngredient->note,
+                'substitutes' => $cocktailIngredient->substitutes->map(fn(CocktailIngredientSubstitute $substitute) => [
+                    'name' => $substitute->ingredient->name,
+                    'amount' => $substitute->amount,
+                    'amount_max' => $substitute->amount_max,
+                    'units' => $substitute->units,
+                ])->toArray(),
+            ]),
         ];
     }
 }

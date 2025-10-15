@@ -38,7 +38,7 @@ class LiberAndCo extends AbstractSite
         $result = '';
 
         $this->crawler->filterXPath('//p/strong[contains(text(), \'Instructions:\')]/following::ul')->first()->filter('li')->each(function ($node, $i) use (&$result) {
-            $result .= ($i + 1) . ". " . trim($node->text()) . "\n";
+            $result .= ($i + 1) . ". " . trim((string) $node->text()) . "\n";
         });
 
         return trim($result);
@@ -105,7 +105,7 @@ class LiberAndCo extends AbstractSite
         }
 
         try {
-            $srcUrl = trim($this->crawler->filter('.product-gallery img')->first()->attr('src'));
+            $srcUrl = trim((string) $this->crawler->filter('.product-gallery img')->first()->attr('src'));
             $imageUrl = substr($srcUrl, 0, (int) strrpos($srcUrl, "?"));
             if (str_starts_with($imageUrl, '//')) {
                 $imageUrl = 'https:' . $imageUrl;

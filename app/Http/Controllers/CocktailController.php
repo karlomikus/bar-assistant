@@ -401,7 +401,7 @@ class CocktailController extends Controller
                         copyright: $image->copyright,
                         sort: $image->sort,
                     );
-                } catch (Throwable $e) {
+                } catch (Throwable) {
                 }
             }
         }

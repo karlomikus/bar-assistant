@@ -35,7 +35,7 @@ class Matcher
         }
 
         $this->matchedCocktails = DB::table('cocktails')->select('id', 'name')->where('bar_id', $this->barId)->get()->map(function ($row) {
-            $row->name = mb_strtolower($row->name, 'UTF-8');
+            $row->name = mb_strtolower((string) $row->name, 'UTF-8');
 
             return $row;
         })->pluck('id', 'name')->toArray();
@@ -59,7 +59,7 @@ class Matcher
         }
 
         $this->matchedIngredients = DB::table('ingredients')->select('id', 'name')->where('bar_id', $this->barId)->get()->map(function ($row) {
-            $row->name = mb_strtolower($row->name, 'UTF-8');
+            $row->name = mb_strtolower((string) $row->name, 'UTF-8');
 
             return $row;
         })->pluck('id', 'name')->toArray();
@@ -87,7 +87,7 @@ class Matcher
         }
 
         $this->matchedGlasses = DB::table('glasses')->select('id', 'name')->where('bar_id', $this->barId)->get()->map(function ($row) {
-            $row->name = mb_strtolower($row->name, 'UTF-8');
+            $row->name = mb_strtolower((string) $row->name, 'UTF-8');
 
             return $row;
         })->pluck('id', 'name')->toArray();
@@ -111,7 +111,7 @@ class Matcher
         }
 
         $this->matchedMethods = DB::table('cocktail_methods')->select('id', 'name')->where('bar_id', $this->barId)->get()->map(function ($row) {
-            $row->name = mb_strtolower($row->name, 'UTF-8');
+            $row->name = mb_strtolower((string) $row->name, 'UTF-8');
 
             return $row;
         })->pluck('id', 'name')->toArray();

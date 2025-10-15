@@ -64,11 +64,11 @@ return [
     */
 
     'enable_billing' => env('ENABLE_BILLING', false),
-    'prices' => explode('|', env('BILLING_PRODUCT_PRICES', '')),
+    'prices' => explode('|', (string) env('BILLING_PRODUCT_PRICES', '')),
 
     'metrics' => [
         'enabled' => (bool) env('METRICS_ENABLED', false),
-        'allowed_ips' => explode(',', env('METRICS_ALLOWED_IPS', '')),
+        'allowed_ips' => explode(',', (string) env('METRICS_ALLOWED_IPS', '')),
     ],
 
     'enable_feeds' => (bool) env('ENABLE_FEEDS', false),

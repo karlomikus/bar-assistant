@@ -22,7 +22,7 @@ class ImbibeMagazine extends DefaultScraper
     {
         $desc = $this->getRecipeSchema()['articleBody'] ?? parent::description();
 
-        return trim($desc);
+        return trim((string) $desc);
     }
 
     public function source(): ?string
@@ -35,7 +35,7 @@ class ImbibeMagazine extends DefaultScraper
         $result = '';
         $i = 1;
         foreach ($this->getRecipeSchema()['recipeInstructions'] ?? [] as $step) {
-            $result .= $i . '. ' . trim($step['text']) . "\n";
+            $result .= $i . '. ' . trim((string) $step['text']) . "\n";
             $i++;
         }
 
@@ -54,7 +54,7 @@ class ImbibeMagazine extends DefaultScraper
         $result = null;
 
         $this->crawler->filter('.ingredients__tools li')->each(function ($listItem) use (&$result) {
-            if (str_contains(strtolower($listItem->text()), 'glass')) {
+            if (str_contains(strtolower((string) $listItem->text()), 'glass')) {
                 $result = $listItem->text();
 
                 $result = ucfirst(str_replace('Glass:', '', $result));
@@ -99,7 +99,7 @@ class ImbibeMagazine extends DefaultScraper
         $result = null;
 
         $this->crawler->filter('.ingredients__tools li')->each(function ($listItem) use (&$result) {
-            if (str_contains(strtolower($listItem->text()), 'garnish')) {
+            if (str_contains(strtolower((string) $listItem->text()), 'garnish')) {
                 $result = $listItem->text();
 
                 $result = ucfirst(str_replace('Garnish:', '', $result));
@@ -132,7 +132,7 @@ class ImbibeMagazine extends DefaultScraper
         if (!empty($schema)) {
             $url = $schema['image'] ?? null;
         } else {
-            $url = explode(' ', $this->crawler->filter('img.recipe__image')->first()->attr('data-srcset'))[0];
+            $url = explode(' ', (string) $this->crawler->filter('img.recipe__image')->first()->attr('data-srcset'))[0];
         }
 
         return [
@@ -149,7 +149,7 @@ class ImbibeMagazine extends DefaultScraper
         $recipeSchema = [];
 
         $this->crawler->filterXPath('//script[@type="application/ld+json"]')->each(function ($node) use (&$recipeSchema) {
-            $parsedSchema = json_decode($node->text(), true);
+            $parsedSchema = json_decode((string) $node->text(), true);
             if (array_key_exists('@type', $parsedSchema) && $parsedSchema['@type'] === 'Recipe') {
                 $recipeSchema = $parsedSchema;
             }

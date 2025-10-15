@@ -70,7 +70,7 @@ class LiquorCom extends AbstractSite
         $recipeSchema = [];
 
         $this->crawler->filterXPath('//script[@type="application/ld+json"]')->each(function ($node) use (&$recipeSchema) {
-            $recipeSchema = json_decode($node->text(), true, JSON_INVALID_UTF8_SUBSTITUTE);
+            $recipeSchema = json_decode((string) $node->text(), true, JSON_INVALID_UTF8_SUBSTITUTE);
         });
 
         return $recipeSchema[0] ?? [];

@@ -46,7 +46,7 @@ trait ReadsHTMLSchema
             }
 
             if ($propName === 'keywords' && count($schemaModel->tags) === 0) {
-                $schemaModel->tags = explode(',', $node->attr('content'));
+                $schemaModel->tags = explode(',', (string) $node->attr('content'));
             }
 
             if ($propName === 'image') {

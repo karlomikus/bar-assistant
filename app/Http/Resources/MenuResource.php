@@ -49,21 +49,17 @@ class MenuResource extends JsonResource
             'is_enabled' => (bool) $this->is_enabled,
             'created_at' => $this->created_at->toAtomString(),
             'updated_at' => $this->updated_at?->toAtomString(),
-            'categories' => $this->getMenuItems()->groupBy('categoryName')->map(function ($items, $name) {
-                return [
-                    'name' => $name,
-                    'items' => $items->sortBy(fn ($menuItem) => $menuItem->sort)->values()->map(function (MenuItem $menuItem) {
-                        return [
-                            'id' => $menuItem->id,
-                            'type' => $menuItem->type->value,
-                            'sort' => $menuItem->sort,
-                            'price' => new PriceResource($menuItem->price),
-                            'name' => $menuItem->name,
-                            'description' => $menuItem->description,
-                        ];
-                    })->toArray(),
-                ];
-            })->values()
+            'categories' => $this->getMenuItems()->groupBy('categoryName')->map(fn($items, $name) => [
+                'name' => $name,
+                'items' => $items->sortBy(fn ($menuItem) => $menuItem->sort)->values()->map(fn(MenuItem $menuItem) => [
+                    'id' => $menuItem->id,
+                    'type' => $menuItem->type->value,
+                    'sort' => $menuItem->sort,
+                    'price' => new PriceResource($menuItem->price),
+                    'name' => $menuItem->name,
+                    'description' => $menuItem->description,
+                ])->toArray(),
+            ])->values()
         ];
     }
 }

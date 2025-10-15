@@ -35,9 +35,9 @@ use Kami\Cocktail\Models\ValueObjects\CocktailIngredientFormatter;
     ],
     required: ['ml', 'oz', 'cl']
 )]
-final class AmountFormats implements JsonSerializable
+final readonly class AmountFormats implements JsonSerializable
 {
-    public function __construct(private readonly CocktailIngredient $cocktailIngredient)
+    public function __construct(private CocktailIngredient $cocktailIngredient)
     {
     }
 

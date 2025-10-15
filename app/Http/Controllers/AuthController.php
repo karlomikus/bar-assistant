@@ -112,7 +112,7 @@ class AuthController extends Controller
         $user->save();
 
         if ($requireConfirmation === true) {
-            Mail::to($user)->queue(new ConfirmAccount($user->id, sha1($user->email)));
+            Mail::to($user)->queue(new ConfirmAccount($user->id, sha1((string) $user->email)));
             Log::info('User registered and confirmation email sent', [
                 'email' => $user->email,
             ]);
@@ -208,7 +208,7 @@ class AuthController extends Controller
 
         $user = User::findOrFail($id);
 
-        if (!hash_equals(sha1($user->getEmailForVerification()), $hash)) {
+        if (!hash_equals(sha1((string) $user->getEmailForVerification()), $hash)) {
             abort(403);
         }
 

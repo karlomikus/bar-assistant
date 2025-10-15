@@ -45,17 +45,11 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
 
     public static function fromModel(IngredientModel $model, bool $useFileURI = false, ?Units $toUnits = null): self
     {
-        $images = $model->images->map(function (ImageModel $image) use ($useFileURI) {
-            return Image::fromModel($image, $useFileURI);
-        })->toArray();
+        $images = $model->images->map(fn(ImageModel $image) => Image::fromModel($image, $useFileURI))->toArray();
 
-        $ingredientParts = $model->ingredientParts->map(function (ComplexIngredient $part) {
-            return Ingredient::fromModel($part->ingredient);
-        })->toArray();
+        $ingredientParts = $model->ingredientParts->map(fn(ComplexIngredient $part) => Ingredient::fromModel($part->ingredient))->toArray();
 
-        $ingredientPrices = $model->prices->map(function (IngredientPriceModel $price) {
-            return IngredientPrice::fromModel($price);
-        })->toArray();
+        $ingredientPrices = $model->prices->map(fn(IngredientPriceModel $price) => IngredientPrice::fromModel($price))->toArray();
 
         $defaultIngredientUnits = $model->getDefaultUnits();
         if ($model->getDefaultUnits()?->isConvertable() && $toUnits) {

@@ -67,7 +67,7 @@ class AppServiceProvider extends ServiceProvider
                     PRAGMA cache_size = -20000;
                     PRAGMA mmap_size = 2147483648;
                 ');
-            } catch (Throwable $e) {
+            } catch (Throwable) {
                 Log::warning('Unable to connect to DB setup PRAGMAs');
             }
         }

@@ -48,7 +48,7 @@ class ToDataPack
         $meta = [
             'version' => $version,
             'date' => Carbon::now()->toAtomString(),
-            'called_from' => __CLASS__,
+            'called_from' => self::class,
         ];
 
         File::ensureDirectoryExists($this->file->disk('exports')->path((string) $barId));

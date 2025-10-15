@@ -20,7 +20,7 @@ use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientSubstituteRequest as Substit
 
 class FromJsonSchema
 {
-    private Matcher $matcher;
+    private readonly Matcher $matcher;
 
     public function __construct(
         private readonly CocktailService $cocktailService,

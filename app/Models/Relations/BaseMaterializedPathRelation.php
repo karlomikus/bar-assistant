@@ -13,16 +13,12 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
  */
 abstract class BaseMaterializedPathRelation extends Relation
 {
-    private string $pathColumn;
-
     /**
      * @param Ingredient $parent In our case the root ingredient
      * @param string $pathColumn Name of column containing materialized path
      */
-    public function __construct(Ingredient $parent, string $pathColumn)
+    public function __construct(Ingredient $parent, private readonly string $pathColumn)
     {
-        $this->pathColumn = $pathColumn;
-
         parent::__construct(Ingredient::query(), $parent);
     }
 

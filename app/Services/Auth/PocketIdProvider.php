@@ -28,7 +28,7 @@ class PocketIdProvider extends AbstractProvider
 
     protected function getBaseUrl(): string
     {
-        return rtrim($this->getConfig('base_url'), '/');
+        return rtrim((string) $this->getConfig('base_url'), '/');
     }
 
     /**

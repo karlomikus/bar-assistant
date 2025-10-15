@@ -25,7 +25,7 @@ use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
 
 class FromDataPack
 {
-    private Filesystem $uploadsDisk;
+    private readonly Filesystem $uploadsDisk;
 
     /** @var array<string> */
     private array $barShelf = [];
@@ -107,9 +107,9 @@ class FromDataPack
         }, $data);
 
         // Skip duplicates
-        $existing = DB::table($tableName)->select('name')->where('bar_id', $barId)->get()->keyBy(fn ($row) => strtolower($row->name))->toArray();
+        $existing = DB::table($tableName)->select('name')->where('bar_id', $barId)->get()->keyBy(fn ($row) => strtolower((string) $row->name))->toArray();
         $importData = array_filter($importData, function ($item) use ($existing) {
-            if (array_key_exists(strtolower($item['name']), $existing)) {
+            if (array_key_exists(strtolower((string) $item['name']), $existing)) {
                 return false;
             }
 
@@ -127,9 +127,9 @@ class FromDataPack
             $data = [];
         }
 
-        $existing = DB::table('calculators')->select('name')->where('bar_id', $barId)->get()->keyBy(fn ($row) => strtolower($row->name))->toArray();
+        $existing = DB::table('calculators')->select('name')->where('bar_id', $barId)->get()->keyBy(fn ($row) => strtolower((string) $row->name))->toArray();
         $data = array_filter($data, function ($item) use ($existing) {
-            if (array_key_exists(strtolower($item['name']), $existing)) {
+            if (array_key_exists(strtolower((string) $item['name']), $existing)) {
                 return false;
             }
 
@@ -175,9 +175,7 @@ class FromDataPack
     {
         $timerStart = microtime(true);
 
-        $existingIngredients = DB::table('ingredients')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(function ($ingredient) {
-            return Str::slug($ingredient->name);
-        });
+        $existingIngredients = DB::table('ingredients')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(fn($ingredient) => Str::slug($ingredient->name));
 
         $ingredientsToInsert = [];
         $parentIngredientsToInsert = [];
@@ -322,9 +320,7 @@ class FromDataPack
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
-        $existingCocktails = DB::table('cocktails')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(function ($cocktail) {
-            return Str::slug($cocktail->name);
-        });
+        $existingCocktails = DB::table('cocktails')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(fn($cocktail) => Str::slug($cocktail->name));
 
         $cocktailImages = [];
         $uniqueTags = [];

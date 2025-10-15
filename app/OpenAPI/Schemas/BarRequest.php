@@ -30,7 +30,7 @@ class BarRequest
     #[OAT\Property(property: 'enable_invites', description: 'Enable users with invite code to join this bar. Default `false`.')]
     public bool $invitesEnabled = false;
     #[OAT\Property(description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.')]
-    public ?BarOptionsEnum $options;
+    public ?BarOptionsEnum $options = null;
     /** @var array<int> */
     #[OAT\Property(items: new OAT\Items(type: 'integer'), description: 'Existing image ids')]
     public array $images = [];

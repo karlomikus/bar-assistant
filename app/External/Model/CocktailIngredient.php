@@ -31,9 +31,7 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
 
     public static function fromModel(CocktailIngredientModel $model, ?Units $toUnits = null): self
     {
-        $substitutes = $model->substitutes->map(function (CocktailIngredientSubstituteModel $substitute) use ($toUnits) {
-            return CocktailIngredientSubstitute::fromModel($substitute, $toUnits);
-        })->toArray();
+        $substitutes = $model->substitutes->map(fn(CocktailIngredientSubstituteModel $substitute) => CocktailIngredientSubstitute::fromModel($substitute, $toUnits))->toArray();
 
         $amount = $model->getAmount();
         if ($toUnits && !$model->getAmount()->units->isDash()) {

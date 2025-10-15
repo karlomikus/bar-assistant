@@ -18,7 +18,7 @@ class MakeMeACocktail extends DefaultScraper
         $result = [];
 
         $this->crawler->filterXPath('//div[contains(text(), "Details")]/following::div[2]/div/div')->each(function ($node) use (&$result) {
-            $result[] = trim($node->text());
+            $result[] = trim((string) $node->text());
         });
 
         return $result;

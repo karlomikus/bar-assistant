@@ -9,9 +9,9 @@ use Kami\Cocktail\Models\OauthCredential;
 use Kami\Cocktail\OpenAPI\Schemas\RegisterRequest;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 
-final class SSOService
+final readonly class SSOService
 {
-    public function __construct(private readonly RegisterUserService $registerUserService)
+    public function __construct(private RegisterUserService $registerUserService)
     {
     }
 

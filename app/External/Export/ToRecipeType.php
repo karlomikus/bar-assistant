@@ -38,7 +38,7 @@ class ToRecipeType
         $meta = [
             'version' => $version,
             'date' => Carbon::now()->toAtomString(),
-            'called_from' => __CLASS__,
+            'called_from' => self::class,
             'type' => $type->value,
             'bar_id' => $barId,
             'schema' => $type === ExportTypeEnum::Schema ? 'https://barassistant.app/cocktail-02.schema.json' : null,

@@ -23,7 +23,7 @@ class BarFullBackup extends Command
      */
     protected $description = 'Create a .zip file with the full backup of your Bar Assistant instance data';
 
-    public function __construct(private ToFullBackup $exporter)
+    public function __construct(private readonly ToFullBackup $exporter)
     {
         parent::__construct();
     }

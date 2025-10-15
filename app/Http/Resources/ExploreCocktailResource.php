@@ -89,37 +89,31 @@ class ExploreCocktailResource extends JsonResource
             'glass' => $this->glass->name ?? null,
             'utensils' => $this->utensils->pluck('name'),
             'method' => $this->method->name ?? null,
-            'images' => $this->images->map(function (Image $image) {
-                return [
-                    'sort' => $image->sort,
-                    'placeholder_hash' => $image->placeholder_hash,
-                    'url' => $image->getImageUrl(),
-                    'copyright' => $image->copyright,
-                ];
-            }),
+            'images' => $this->images->map(fn(Image $image) => [
+                'sort' => $image->sort,
+                'placeholder_hash' => $image->placeholder_hash,
+                'url' => $image->getImageUrl(),
+                'copyright' => $image->copyright,
+            ]),
             'abv' => $this->abv,
-            'ingredients' => $this->ingredients->map(function (CocktailIngredient $cocktailIngredient) {
-                return [
+            'ingredients' => $this->ingredients->map(fn(CocktailIngredient $cocktailIngredient) => [
+                'ingredient' => [
+                    'name' => $cocktailIngredient->ingredient->name,
+                ],
+                'amount' => $cocktailIngredient->amount,
+                'amount_max' => $cocktailIngredient->amount_max,
+                'units' => $cocktailIngredient->units,
+                'optional' => (bool) $cocktailIngredient->optional,
+                'note' => $cocktailIngredient->note,
+                'substitutes' => $cocktailIngredient->substitutes->map(fn(CocktailIngredientSubstitute $substitute) => [
                     'ingredient' => [
-                        'name' => $cocktailIngredient->ingredient->name,
+                        'name' => $substitute->ingredient->name,
                     ],
-                    'amount' => $cocktailIngredient->amount,
-                    'amount_max' => $cocktailIngredient->amount_max,
-                    'units' => $cocktailIngredient->units,
-                    'optional' => (bool) $cocktailIngredient->optional,
-                    'note' => $cocktailIngredient->note,
-                    'substitutes' => $cocktailIngredient->substitutes->map(function (CocktailIngredientSubstitute $substitute) {
-                        return [
-                            'ingredient' => [
-                                'name' => $substitute->ingredient->name,
-                            ],
-                            'amount' => $substitute->amount,
-                            'amount_max' => $substitute->amount_max,
-                            'units' => $substitute->units,
-                        ];
-                    })->toArray(),
-                ];
-            }),
+                    'amount' => $substitute->amount,
+                    'amount_max' => $substitute->amount_max,
+                    'units' => $substitute->units,
+                ])->toArray(),
+            ]),
         ];
     }
 }

@@ -15,13 +15,9 @@ use Kami\Cocktail\Http\Middleware\CheckMetricsAccess;
 |
 */
 
-Route::get('/', function () {
-    return 'This is your Bar Assistant instance. Checkout /docs to see documentation.<br>If you are trying to make a request to the API, make sure you are using the correct endpoint (e.g., /api/cocktails).<br>Also make sure you are using all the required headers: Accept, Authorization.';
-});
+Route::get('/', fn() => 'This is your Bar Assistant instance. Checkout /docs to see documentation.<br>If you are trying to make a request to the API, make sure you are using the correct endpoint (e.g., /api/cocktails).<br>Also make sure you are using all the required headers: Accept, Authorization.');
 
-Route::get('/docs', function () {
-    return view('elements');
-});
+Route::get('/docs', fn() => view('elements'));
 
 if (config('bar-assistant.metrics.enabled') === true) {
     Route::get('/metrics', [MetricsController::class, 'index'])->name('metrics')->middleware(CheckMetricsAccess::class);

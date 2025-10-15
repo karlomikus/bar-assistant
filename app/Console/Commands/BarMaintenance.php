@@ -29,7 +29,7 @@ class BarMaintenance extends Command
      */
     protected $description = 'This will remove unused images, update missing ABVs, fix ingredient sort and refresh cache';
 
-    private Filesystem $disk;
+    private readonly Filesystem $disk;
 
     public function __construct()
     {

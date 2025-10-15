@@ -54,13 +54,11 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'is_subscribed' => $this->hasActiveSubscription(),
-            'role' => $this->memberships->where('bar_id', $bar->id)->map(function (BarMembership $membership) {
-                return [
-                    'bar_id' => $membership->bar_id,
-                    'role_id' => $membership->role->id ?? null,
-                    'role_name' => $membership->role->name ?? null,
-                ];
-            })->first(),
+            'role' => $this->memberships->where('bar_id', $bar->id)->map(fn(BarMembership $membership) => [
+                'bar_id' => $membership->bar_id,
+                'role_id' => $membership->role->id ?? null,
+                'role_name' => $membership->role->name ?? null,
+            ])->first(),
         ];
     }
 }

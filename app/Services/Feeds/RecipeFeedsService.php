@@ -56,9 +56,7 @@ final class RecipeFeedsService
         }
 
         // Sort the recipes by date
-        usort($recipes, function (FeedsRecipe $a, FeedsRecipe $b) {
-            return $b->dateModified <=> $a->dateModified;
-        });
+        usort($recipes, fn(FeedsRecipe $a, FeedsRecipe $b) => $b->dateModified <=> $a->dateModified);
 
         return $recipes;
     }
