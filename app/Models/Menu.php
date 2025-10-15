@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\ValueObjects\MenuItem;
 use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
+use Kami\Cocktail\OpenAPI\Schemas\MenuItemRequest;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,14 +55,14 @@ class Menu extends Model
      */
     public function getMenuItems(): Collection
     {
-        $cocktails = $this->menuCocktails->map(fn (MenuCocktail $menuCocktail) => MenuItem::fromMenuCocktail($menuCocktail));
-        $ingredients = $this->menuIngredients->map(fn (MenuIngredient $menuIngredient) => MenuItem::fromMenuIngredient($menuIngredient));
+        $cocktails = $this->menuCocktails->map(fn (MenuCocktail $menuCocktail) => MenuItem::fromMenuCocktail($menuCocktail))->values();
+        $ingredients = $this->menuIngredients->map(fn (MenuIngredient $menuIngredient) => MenuItem::fromMenuIngredient($menuIngredient))->values();
 
         return $cocktails->merge($ingredients)->values();
     }
 
     /**
-     * @param array<int, array<string, mixed>> $menuItems
+     * @param array<MenuItemRequest> $menuItems
      */
     public function syncItems(array $menuItems): void
     {
@@ -70,33 +71,33 @@ class Menu extends Model
 
         foreach ($menuItems as $menuItem) {
             $price = 0;
-            if ($menuItem['price'] ?? false) {
+            if ($menuItem->price ?? false) {
                 $price = Money::of(
-                    $menuItem['price'],
-                    $menuItem['currency'],
+                    $menuItem->price,
+                    $menuItem->currency,
                     roundingMode: RoundingMode::UP
                 )->getMinorAmount()->toInt();
             }
 
-            if (MenuItemTypeEnum::from($menuItem['type']) === MenuItemTypeEnum::Ingredient) {
-                $currentIngredientMenuItems[] = $menuItem['id'];
+            if ($menuItem->type === MenuItemTypeEnum::Ingredient) {
+                $currentIngredientMenuItems[] = $menuItem->id;
                 $this->menuIngredients()->updateOrCreate([
-                    'ingredient_id' => $menuItem['id']
+                    'ingredient_id' => $menuItem->id
                 ], [
-                    'category_name' => $menuItem['category_name'],
-                    'sort' => $menuItem['sort'] ?? 0,
+                    'category_name' => $menuItem->categoryName,
+                    'sort' => $menuItem->sort ?? 0,
                     'price' => $price,
-                    'currency' => $menuItem['currency'] ?? null,
+                    'currency' => $menuItem->currency ?? null,
                 ]);
             } else {
-                $currentCocktailMenuItems[] = $menuItem['id'];
+                $currentCocktailMenuItems[] = $menuItem->id;
                 $this->menuCocktails()->updateOrCreate([
-                    'cocktail_id' => $menuItem['id']
+                    'cocktail_id' => $menuItem->id
                 ], [
-                    'category_name' => $menuItem['category_name'],
-                    'sort' => $menuItem['sort'] ?? 0,
+                    'category_name' => $menuItem->categoryName,
+                    'sort' => $menuItem->sort ?? 0,
                     'price' => $price,
-                    'currency' => $menuItem['currency'] ?? null,
+                    'currency' => $menuItem->currency ?? null,
                 ]);
             }
         }

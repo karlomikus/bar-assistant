@@ -39,7 +39,9 @@ class RatingController extends Controller
             $request->user()->id
         );
 
-        $cocktail->searchable();
+        if (!empty(config('scout.driver'))) {
+            $cocktail->searchable();
+        }
 
         return new Response(null, 204);
     }
@@ -60,7 +62,9 @@ class RatingController extends Controller
 
         $cocktail->deleteUserRating($request->user()->id);
 
-        $cocktail->searchable();
+        if (!empty(config('scout.driver'))) {
+            $cocktail->searchable();
+        }
 
         return new Response(null, 204);
     }

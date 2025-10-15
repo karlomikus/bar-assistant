@@ -31,7 +31,14 @@ class StatsController extends Controller
     public function index(CocktailService $cocktailRepo, Request $request, int $id): JsonResponse
     {
         $bar = Bar::findOrFail($id);
-        $barMembership = $request->user()->getBarMembership($bar->id)->load('userIngredients');
+        $barMembership = $request->user()->getBarMembership($bar->id);
+
+        if ($barMembership === null) {
+            abort(403);
+        }
+
+        $barMembership->load('userIngredients');
+
         $limit = 5;
         $stats = [];
 

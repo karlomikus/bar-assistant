@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Kami\Cocktail\External\Model;
 
 use Kami\Cocktail\External\SupportsCSV;
+use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Image as ImageModel;
+use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 use Kami\Cocktail\Models\IngredientPrice as IngredientPriceModel;
 
@@ -37,11 +39,11 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
         public ?float $sugarContent = null,
         public ?float $acidity = null,
         public ?string $distillery = null,
-        public ?string $units = null,
+        public ?UnitValueObject $units = null,
     ) {
     }
 
-    public static function fromModel(IngredientModel $model, bool $useFileURI = false): self
+    public static function fromModel(IngredientModel $model, bool $useFileURI = false, ?Units $toUnits = null): self
     {
         $images = $model->images->map(function (ImageModel $image) use ($useFileURI) {
             return Image::fromModel($image, $useFileURI);
@@ -54,6 +56,11 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
         $ingredientPrices = $model->prices->map(function (IngredientPriceModel $price) {
             return IngredientPrice::fromModel($price);
         })->toArray();
+
+        $defaultIngredientUnits = $model->getDefaultUnits();
+        if ($model->getDefaultUnits()?->isConvertable() && $toUnits) {
+            $defaultIngredientUnits = new UnitValueObject($toUnits->value);
+        }
 
         return new self(
             id: $model->getExternalId(),
@@ -73,7 +80,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
             sugarContent: $model->sugar_g_per_ml,
             acidity: $model->acidity,
             distillery: $model->distillery,
-            units: $model->getDefaultUnits()?->value,
+            units: $defaultIngredientUnits,
         );
     }
 
@@ -112,7 +119,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
             sugarContent: $sourceArray['sugar_g_per_ml'] ?? null,
             acidity: $sourceArray['acidity'] ?? null,
             distillery: $sourceArray['distillery'] ?? null,
-            units: $sourceArray['units'] ?? null,
+            units: ($sourceArray['units'] ?? null) ? new UnitValueObject($sourceArray['units']) : null,
         );
     }
 
@@ -136,7 +143,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
             'sugar_g_per_ml' => $this->sugarContent,
             'acidity' => $this->acidity,
             'distillery' => $this->distillery,
-            'units' => $this->units,
+            'units' => $this->units?->value,
         ];
     }
 
@@ -161,7 +168,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
             sugarContent: blank($sourceArray['sugar_g_per_ml']) ? null : $sourceArray['sugar_g_per_ml'],
             acidity: blank($sourceArray['acidity']) ? null : $sourceArray['acidity'],
             distillery: blank($sourceArray['distillery']) ? null : $sourceArray['distillery'],
-            units: blank($sourceArray['units']) ? null : $sourceArray['units'],
+            units: blank($sourceArray['units']) ? null : new UnitValueObject($sourceArray['units']),
         );
     }
 

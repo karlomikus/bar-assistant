@@ -3,9 +3,12 @@
 namespace Kami\Cocktail\Providers;
 
 use Throwable;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -32,6 +35,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Cache::macro('forgetWildcardRedis', function (string $key) {
+            try {
+                $prefix = config('database.redis.options.prefix');
+                $redisCache = Redis::connection('cache');
+                $foundKeys = $redisCache->keys('*' . $key);
+                foreach ($foundKeys as $foundKey) {
+                    $keyToDelete = $prefix ? Str::after($foundKey, $prefix) : $foundKey;
+                    Log::debug('Clearing cache key via wildcard', ['key' => $foundKey]);
+                    $redisCache->unlink($keyToDelete);
+                }
+            } catch (Throwable $e) {
+                Log::error('Unable to clear cache with wildcard', ['message' => $e->getMessage()]);
+
+                return;
+            }
+        });
+
         Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
             $event->extendSocialite('authentik', \SocialiteProviders\Authentik\Provider::class);
             $event->extendSocialite('authelia', \SocialiteProviders\Authelia\Provider::class);

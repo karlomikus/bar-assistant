@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 
 final class BarOptimizerService
 {
@@ -21,7 +22,7 @@ final class BarOptimizerService
     {
         $bar = Bar::findOrFail($barId);
         $barSettings = $bar->settings ?? [];
-        $forceToUnits = $barSettings['default_units'] ?? null;
+        $forceToUnits = new UnitValueObject($barSettings['default_units'] ?? null);
 
         Log::info('[' . $barId . '] Starting bar optimization for bar ID: ' . $barId);
 
@@ -54,12 +55,11 @@ final class BarOptimizerService
             ->values();
 
         foreach ($unitsPerIngredient as $commonUnit) {
-            $ingredientUnits = $commonUnit->units;
+            $ingredientUnits = new UnitValueObject($commonUnit->units);
 
             // Force unit conversion if specified and the unit is convertible
-            if ($forceToUnits && $forceToUnits !== $ingredientUnits) {
-                $convertableUnits = ['ml', 'oz', 'cl'];
-                if (in_array($ingredientUnits, $convertableUnits) && in_array($forceToUnits, $convertableUnits)) {
+            if ($forceToUnits->value && $forceToUnits->value !== $ingredientUnits->value) {
+                if ($ingredientUnits->isConvertable() && $forceToUnits->isConvertable()) {
                     $ingredientUnits = $forceToUnits;
                     Log::debug('[' . $barId . '] Forcing unit conversion from ' . $commonUnit->units . ' to ' . $forceToUnits . ' for ingredient ID: ' . $commonUnit->ingredient_id);
                 }
@@ -69,14 +69,16 @@ final class BarOptimizerService
                 ->where('id', $commonUnit->ingredient_id)
                 ->where('bar_id', $barId)
                 ->whereNull('units')
-                ->update(['units' => $ingredientUnits]);
+                ->update(['units' => $ingredientUnits->value]);
         }
         Log::info('[' . $barId . '] Finished updating ingredient default units.');
 
-        /** @phpstan-ignore-next-line */
-        Cocktail::where('bar_id', $barId)->searchable();
-        /** @phpstan-ignore-next-line */
-        Ingredient::where('bar_id', $barId)->searchable();
+        if (!empty(config('scout.driver'))) {
+            /** @phpstan-ignore-next-line */
+            Cocktail::where('bar_id', $barId)->searchable();
+            /** @phpstan-ignore-next-line */
+            Ingredient::where('bar_id', $barId)->searchable();
+        }
 
         Log::info('[' . $barId . '] Finished re-indexing cocktails and ingredients.');
     }

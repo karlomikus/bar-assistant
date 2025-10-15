@@ -15,6 +15,7 @@ use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\Services\MeilisearchService;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -40,10 +41,7 @@ class Bar extends Model implements UploadableInterface
     protected static function booted(): void
     {
         static::retrieved(function (Bar $bar) {
-            if (
-                $bar->search_token ||
-                config('scout.driver') === null
-            ) {
+            if (!empty($bar->search_token) || empty(config('scout.driver'))) {
                 return;
             }
 
@@ -136,6 +134,14 @@ class Bar extends Model implements UploadableInterface
         return $this->hasMany(Export::class);
     }
 
+    /**
+     * @return HasOne<Menu, $this>
+     */
+    public function menu(): HasOne
+    {
+        return $this->hasOne(Menu::class);
+    }
+
     public function owner(): User
     {
         return $this->createdUser;
@@ -178,6 +184,16 @@ class Bar extends Model implements UploadableInterface
     public function isAccessible(): bool
     {
         return $this->status !== BarStatusEnum::Deactivated->value;
+    }
+
+    public function isProvisioning(): bool
+    {
+        return $this->status === BarStatusEnum::Provisioning->value;
+    }
+
+    public function isPublic(): bool
+    {
+        return $this->is_public && $this->isAccessible() && !$this->isProvisioning();
     }
 
     public function getIngredientsDirectory(): string

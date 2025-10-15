@@ -4,23 +4,52 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\OpenAPI\Schemas;
 
+use Illuminate\Http\Request;
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 
 #[OAT\Schema(required: ['is_enabled', 'items'])]
 class MenuRequest
 {
-    #[OAT\Property(property: 'is_enabled')]
-    public bool $isEnabled = false;
-    /** @var array<mixed> */
-    #[OAT\Property(type: 'array', items: new OAT\Items(type: 'object', properties: [
-        new OAT\Property(type: 'integer', property: 'id', example: 1),
-        new OAT\Property(type: 'schema', property: 'type', ref: MenuItemTypeEnum::class),
-        new OAT\Property(type: 'string', property: 'category_name', example: 'Category name'),
-        new OAT\Property(type: 'integer', property: 'sort', example: 1),
-        new OAT\Property(type: 'integer', property: 'price', example: 2252, format: 'minor'),
-        new OAT\Property(type: 'string', property: 'currency', example: 'EUR', format: 'ISO 4217'),
-    ], required: ['id', 'type', 'category_name', 'sort', 'price', 'currency'])),
-    ]
-    public array $items = [];
+    /**
+     * @param array<MenuItemRequest> $items
+     */
+    public function __construct(
+        #[OAT\Property(property: 'is_enabled')]
+        public bool $isEnabled = false,
+        #[OAT\Property(items: new OAT\Items(type: MenuItemRequest::class))]
+        public array $items = [],
+    ) {
+    }
+
+    public static function fromIlluminateRequest(Request $request): self
+    {
+        /** @var array<mixed> */
+        $formItems = $request->post('items', []);
+
+        $items = [];
+        foreach ($formItems as $formItem) {
+            $items[] = MenuItemRequest::fromArray($formItem);
+        }
+
+        return new self(
+            isEnabled: $request->boolean('is_enabled', false),
+            items: $items,
+        );
+    }
+
+    /**
+     * @return array<MenuItemRequest>
+     */
+    public function getIngredients(): array
+    {
+        return array_filter($this->items, fn (MenuItemRequest $item) => $item->type === \Kami\Cocktail\Models\Enums\MenuItemTypeEnum::Ingredient);
+    }
+
+    /**
+     * @return array<MenuItemRequest>
+     */
+    public function getCocktails(): array
+    {
+        return array_filter($this->items, fn (MenuItemRequest $item) => $item->type === \Kami\Cocktail\Models\Enums\MenuItemTypeEnum::Cocktail);
+    }
 }

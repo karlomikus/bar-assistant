@@ -11,6 +11,7 @@ use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Collection;
 use Kami\Cocktail\Models\Cocktail;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\DatabaseManager;
 use Kami\Cocktail\Models\CocktailFavorite;
@@ -92,6 +93,8 @@ final class CocktailService
         }
 
         $this->db->commit();
+
+        Cache::forgetWildcardRedis('public_cocktails_index:' . $cocktail->bar_id . ':*');
 
         if (count($cocktailDTO->images) > 0) {
             try {
@@ -197,6 +200,8 @@ final class CocktailService
         }
 
         $this->db->commit();
+
+        Cache::forgetWildcardRedis('public_cocktails_index:' . $cocktail->bar_id . ':*');
 
         if (count($cocktailDTO->images) > 0) {
             try {

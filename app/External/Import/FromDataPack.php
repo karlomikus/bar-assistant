@@ -76,10 +76,12 @@ class FromDataPack
 
         $bar->setStatus(BarStatusEnum::Active)->save();
 
-        /** @phpstan-ignore-next-line */
-        Ingredient::where('bar_id', $bar->id)->searchable();
-        /** @phpstan-ignore-next-line */
-        Cocktail::where('bar_id', $bar->id)->searchable();
+        if (!empty(config('scout.driver'))) {
+            /** @phpstan-ignore-next-line */
+            Ingredient::where('bar_id', $bar->id)->searchable();
+            /** @phpstan-ignore-next-line */
+            Cocktail::where('bar_id', $bar->id)->searchable();
+        }
 
         $timerEnd = microtime(true);
 
@@ -192,6 +194,12 @@ class FromDataPack
                 continue;
             }
 
+            $ingredientUnit = $externalIngredient->units?->value;
+            $barSettings = $bar->settings ?? [];
+            if ($externalIngredient->units?->isConvertable() && array_key_exists('default_units', $barSettings)) {
+                $ingredientUnit = $barSettings['default_units'];
+            }
+
             $slug = $externalIngredient->id . '-' . $bar->id;
             $ingredientsToInsert[] = [
                 'bar_id' => $bar->id,
@@ -208,7 +216,7 @@ class FromDataPack
                 'sugar_g_per_ml' => $externalIngredient->sugarContent,
                 'acidity' => $externalIngredient->acidity,
                 'distillery' => $externalIngredient->distillery,
-                'units' => $externalIngredient->units,
+                'units' => $ingredientUnit,
             ];
 
             if ($externalIngredient->parentId) {

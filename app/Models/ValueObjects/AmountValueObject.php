@@ -32,7 +32,7 @@ final readonly class AmountValueObject implements Stringable
             $convertedMaxAmount = Converter::convertAmount(AmountValue::from($this->amountMax), $fromUnitsEnum, $toUnitsEnum);
         }
 
-        return new self($convertedMinAmount->getValue(), $toUnits, $convertedMaxAmount?->getValue());
+        return new self(round($convertedMinAmount->getValue(), 4), $toUnits, $convertedMaxAmount?->getValue());
     }
 
     public function __toString(): string

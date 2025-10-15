@@ -262,7 +262,9 @@ class ShelfController extends Controller
         if ($request->user()->cannot('manageShelf', $bar)) {
             abort(403);
         }
+        $bar->load('shelfIngredients');
 
+        $existingBarShelfIngredients = $bar->shelfIngredients->pluck('ingredient_id');
         $ingredients = DB::table('ingredients')
             ->select('id')
             ->where('bar_id', $bar->id)
@@ -271,6 +273,10 @@ class ShelfController extends Controller
 
         $models = [];
         foreach ($ingredients as $dbIngredientId) {
+            if ($existingBarShelfIngredients->contains($dbIngredientId)) {
+                continue;
+            }
+
             $userIngredient = new BarIngredient();
             $userIngredient->ingredient_id = $dbIngredientId;
             $models[] = $userIngredient;

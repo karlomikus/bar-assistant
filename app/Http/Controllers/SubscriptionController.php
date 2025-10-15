@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Kami\Cocktail\Mail\SubscriptionChanged;
 use Kami\Cocktail\Http\Resources\UserSubscriptionResource;
@@ -30,7 +31,11 @@ class SubscriptionController extends Controller
         $customer = $user->customer;
 
         if (!$customer) {
-            $customer = $user->createAsCustomer();
+            try {
+                $customer = $user->createAsCustomer();
+            } catch (Throwable $e) {
+                Log::warning($e->getMessage());
+            }
         }
 
         return new UserSubscriptionResource($user);
