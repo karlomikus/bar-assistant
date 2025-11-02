@@ -68,7 +68,7 @@ class AppServiceProvider extends ServiceProvider
                     PRAGMA mmap_size = 2147483648;
                 ');
             } catch (Throwable) {
-                Log::warning('Unable to connect to DB setup PRAGMAs');
+                Log::warning('Unable to set SQLite performance pragmas');
             }
         }
     }
