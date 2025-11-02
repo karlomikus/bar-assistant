@@ -36,8 +36,8 @@ class HausAlpenz extends AbstractSite
         $step = 1;
 
         $this->crawler->filter(".recipeFull p:not(:first-child):not(.measure)")->each(function ($node) use (&$result, &$step) {
-            if (!str_contains(strtolower($node->text()), 'garnish')) {
-                $result .= $step . '. ' . trim($node->text()) . "\n";
+            if (!str_contains(strtolower((string) $node->text()), 'garnish')) {
+                $result .= $step . '. ' . trim((string) $node->text()) . "\n";
             }
             $step++;
         });
@@ -53,7 +53,7 @@ class HausAlpenz extends AbstractSite
     public function glass(): ?string
     {
         $imageSource = $this->crawler->filter(".recipeFull h1 img:not(.protocol)")->attr('src');
-        $urlSplit = explode('/', $imageSource);
+        $urlSplit = explode('/', (string) $imageSource);
         $svg = end($urlSplit);
 
         return match ($svg) {
@@ -88,7 +88,7 @@ class HausAlpenz extends AbstractSite
         $result = null;
 
         $this->crawler->filter(".recipeFull p:not(:first-child):not(.measure)")->each(function ($node) use (&$result) {
-            if (str_contains(strtolower($node->text()), 'garnish')) {
+            if (str_contains(strtolower((string) $node->text()), 'garnish')) {
                 $result = $node->text();
             }
         });

@@ -65,7 +65,7 @@ class ImportController extends Controller
         if (is_array($source)) {
             $cocktail = $importer->process($source, $duplicateAction);
         } else {
-            $cocktail = $importer->process(json_decode($source, true), $duplicateAction);
+            $cocktail = $importer->process(json_decode((string) $source, true), $duplicateAction);
         }
 
         return new CocktailResource($cocktail);

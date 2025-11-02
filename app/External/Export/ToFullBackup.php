@@ -23,7 +23,7 @@ class ToFullBackup
         $meta = [
             'version' => $version,
             'date' => Carbon::now()->toAtomString(),
-            'called_from' => __CLASS__,
+            'called_from' => self::class,
         ];
 
         $zip = new ZipArchive();

@@ -154,7 +154,7 @@ final readonly class ImageService
      */
     private function processImageFile(string $image, ?string $filename = null): array
     {
-        $filename = $filename ?? Str::random(40);
+        $filename ??= Str::random(40);
 
         try {
             $fileExtension = 'webp';

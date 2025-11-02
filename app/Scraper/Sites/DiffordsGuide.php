@@ -37,7 +37,7 @@ class DiffordsGuide extends DefaultScraper
 
             $garnish = null;
             foreach ($instructions as $instructionStep) {
-                if (isset($instructionStep['name']) && mb_strtolower($instructionStep['name']) === 'garnish') {
+                if (isset($instructionStep['name']) && mb_strtolower((string) $instructionStep['name']) === 'garnish') {
                     $garnish = $instructionStep['text'];
                 }
             }

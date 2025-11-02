@@ -12,8 +12,8 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 
 class ZipUtils
 {
-    private Filesystem $unzipDisk;
-    private string $dirName;
+    private readonly Filesystem $unzipDisk;
+    private readonly string $dirName;
 
     public function __construct()
     {

@@ -48,22 +48,14 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function configureRateLimiting()
     {
-        RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(1000)->by($request->user()?->id ?: $request->ip());
-        });
+        RateLimiter::for('api', fn (Request $request) => Limit::perMinute(1000)->by($request->user()?->id ?: $request->ip()));
 
-        RateLimiter::for('importing', function (Request $request) {
-            return $request->user()->hasActiveSubscription()
-                ? Limit::none()
-                : Limit::perMinute(2)->by($request->user()->id);
-        });
+        RateLimiter::for('importing', fn (Request $request) => $request->user()->hasActiveSubscription()
+            ? Limit::none()
+            : Limit::perMinute(2)->by($request->user()->id));
 
-        RateLimiter::for('exports', function (Request $request) {
-            return App::environment('production') ? Limit::perMinute(1)->by($request->user()?->id ?: $request->ip()) : Limit::none();
-        });
+        RateLimiter::for('exports', fn (Request $request) => App::environment('production') ? Limit::perMinute(1)->by($request->user()?->id ?: $request->ip()) : Limit::none());
 
-        RateLimiter::for('bar-optimization', function (Request $request) {
-            return App::environment('production') ? Limit::perMinute(1, 10)->by($request->user()?->id ?: $request->ip()) : Limit::none();
-        });
+        RateLimiter::for('bar-optimization', fn (Request $request) => App::environment('production') ? Limit::perMinute(1, 10)->by($request->user()?->id ?: $request->ip()) : Limit::none());
     }
 }

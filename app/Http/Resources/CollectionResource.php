@@ -40,9 +40,7 @@ class CollectionResource extends JsonResource
             'description' => $this->description,
             'is_bar_shared' => $this->is_bar_shared,
             'created_at' => $this->created_at->toAtomString(),
-            'created_user' => $this->whenLoaded('barMembership', function () {
-                return new UserBasicResource($this->barMembership->user);
-            }),
+            'created_user' => $this->whenLoaded('barMembership', fn () => new UserBasicResource($this->barMembership->user)),
             'cocktails' => CocktailBasicResource::collection($this->whenLoaded('cocktails')),
         ];
     }

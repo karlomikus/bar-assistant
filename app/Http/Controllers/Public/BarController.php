@@ -23,7 +23,7 @@ class BarController extends Controller
     public function show(string $slugOrId): BarResource
     {
         $bar = Bar::where('slug', $slugOrId)->orWhere('id', $slugOrId)->firstOrFail();
-        if (!$bar->isPublic()) {
+        if (!$bar->isPublic() && !$bar->menu->is_enabled) {
             abort(404);
         }
 

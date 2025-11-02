@@ -137,26 +137,22 @@ abstract class AbstractSite implements Site
     public function toArray(): array
     {
         $ingredients = $this->ingredients();
-        $ingredients = array_map(function (RecipeIngredient $recipeIngredient, int $sort) {
-            return [
-                '_id' => Ulid::generate(),
-                'name' => $this->clean(ucfirst($recipeIngredient->name)),
-                'amount' => $recipeIngredient->amount->getValue(),
-                'amount_max' => $recipeIngredient->amountMax?->getValue(),
-                'units' => $recipeIngredient->units === '' ? null : $recipeIngredient->units,
-                'note' => $recipeIngredient->comment === '' ? null : $recipeIngredient->comment,
-                'source' => $this->clean($recipeIngredient->source),
-                'optional' => false,
-                'sort' => $sort + 1,
-            ];
-        }, $ingredients, array_keys($ingredients));
+        $ingredients = array_map(fn (RecipeIngredient $recipeIngredient, int $sort) => [
+            '_id' => Ulid::generate(),
+            'name' => $this->clean(ucfirst($recipeIngredient->name)),
+            'amount' => $recipeIngredient->amount->getValue(),
+            'amount_max' => $recipeIngredient->amountMax?->getValue(),
+            'units' => $recipeIngredient->units === '' ? null : $recipeIngredient->units,
+            'note' => $recipeIngredient->comment === '' ? null : $recipeIngredient->comment,
+            'source' => $this->clean($recipeIngredient->source),
+            'optional' => false,
+            'sort' => $sort + 1,
+        ], $ingredients, array_keys($ingredients));
 
-        $meta = array_map(function (array $org) {
-            return [
-                '_id' => $org['_id'],
-                'source' => $org['source'],
-            ];
-        }, $ingredients);
+        $meta = array_map(fn (array $org) => [
+            '_id' => $org['_id'],
+            'source' => $org['source'],
+        ], $ingredients);
 
         $image = $this->convertImagesToDataUri();
         $images = [];
@@ -209,7 +205,7 @@ abstract class AbstractSite implements Site
         $str = str_replace(' ', " ", $str);
         $str = preg_replace("/\s+/u", " ", $str);
 
-        return html_entity_decode($str, encoding: 'UTF-8');
+        return html_entity_decode((string) $str, encoding: 'UTF-8');
     }
 
     /**
@@ -235,7 +231,7 @@ abstract class AbstractSite implements Site
         $image = $this->image();
         if ($image['uri'] && !blank($image['uri'])) {
             $url = parse_url($image['uri']);
-            $cleanUrl = ($url['scheme'] ?? '') . '://' . ($url['host'] ?? '') . (isset($url['path']) ? $url['path'] : '');
+            $cleanUrl = ($url['scheme'] ?? '') . '://' . ($url['host'] ?? '') . ($url['path'] ?? '');
 
             $dataUri = null;
             $type = pathinfo($cleanUrl, PATHINFO_EXTENSION);

@@ -112,9 +112,7 @@ class IngredientResource extends JsonResource
                 $this->relationLoaded('ingredientParts'),
                 fn () => $this->ingredientParts->map(fn ($cip) => new IngredientBasicResource($cip->ingredient))
             ),
-            'prices' => $this->when($this->relationLoaded('prices'), function () {
-                return IngredientPriceResource::collection($this->prices);
-            }),
+            'prices' => $this->when($this->relationLoaded('prices'), fn () => IngredientPriceResource::collection($this->prices)),
             'calculator_id' => $this->calculator_id,
             'sugar_g_per_ml' => $this->sugar_g_per_ml,
             'acidity' => $this->acidity,

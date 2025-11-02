@@ -39,13 +39,15 @@
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
+        "driftingly/rector-laravel": "^2.1",
         "fakerphp/faker": "^1.9.1",
         "larastan/larastan": "^3.0",
         "laravel/pint": "^1.0",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "phpstan/phpstan": "^2.0",
-        "phpunit/phpunit": "^11.0"
+        "phpunit/phpunit": "^11.0",
+        "rector/rector": "^2.2"
     },
     "autoload": {
         "files": [

@@ -24,17 +24,13 @@ class EnsureRequestHasBarQuery
             abort(400, sprintf("Missing required bar reference while requesting '%s'. Use 'Bar-Assistant-Bar-Id' header to specify bar id.", $request->path()));
         }
 
-        $bar = Cache::remember('ba:bar:' . $barId, 60 * 60 * 24, function () use ($barId) {
-            return Bar::findOrFail($barId);
-        });
+        $bar = Cache::remember('ba:bar:' . $barId, 60 * 60 * 24, fn () => Bar::findOrFail($barId));
 
         if ($request->user()->cannot('access', $bar)) {
             abort(403);
         }
 
-        app()->singleton(BarContext::class, function () use ($bar) {
-            return new BarContext($bar);
-        });
+        app()->singleton(BarContext::class, fn () => new BarContext($bar));
 
         return $next($request);
     }

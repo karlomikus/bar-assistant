@@ -17,7 +17,7 @@ final class FileToken
         $payload = urldecode(http_build_query($payload));
         $payload = implode("\n", [$id, $expires->getTimestamp(), $payload]);
 
-        return hash_hmac('sha256', $payload, config('app.key'));
+        return hash_hmac('sha256', $payload, (string) config('app.key'));
     }
 
     public static function check(string $token, int $id, string $filename, DateTimeImmutable $expires): bool

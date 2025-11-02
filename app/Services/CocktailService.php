@@ -20,11 +20,11 @@ use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 use Kami\Cocktail\Exceptions\ImagesNotAttachedException;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest as CocktailDTO;
 
-final class CocktailService
+final readonly class CocktailService
 {
     public function __construct(
-        private readonly DatabaseManager $db,
-        private readonly LogManager $log,
+        private DatabaseManager $db,
+        private LogManager $log,
     ) {
     }
 
@@ -100,7 +100,7 @@ final class CocktailService
             try {
                 $imageModels = Image::findOrFail($cocktailDTO->images);
                 $cocktail->attachImages($imageModels);
-            } catch (Throwable $e) {
+            } catch (Throwable) {
                 throw new ImagesNotAttachedException('Unable to attach images to cocktail');
             }
         }
@@ -207,7 +207,7 @@ final class CocktailService
             try {
                 $imageModels = Image::findOrFail($cocktailDTO->images);
                 $cocktail->attachImages($imageModels);
-            } catch (Throwable $e) {
+            } catch (Throwable) {
                 throw new ImagesNotAttachedException();
             }
         }

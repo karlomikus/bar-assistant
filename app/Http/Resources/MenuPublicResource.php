@@ -71,23 +71,19 @@ class MenuPublicResource extends JsonResource
                     fn () => $this->bar->images->map(fn (Image $image) => $image->getImageUrl())->toArray(),
                 ),
             ],
-            'categories' => $this->getMenuItems()->groupBy('categoryName')->map(function ($items, $name) {
-                return [
-                    'name' => $name,
-                    'items' => $items->sortBy(fn ($menuItem) => $menuItem->sort)->values()->map(function (MenuItem $menuItem) {
-                        return [
-                            'in_bar_shelf' => $menuItem->inShelf,
-                            'type' => $menuItem->type->value,
-                            'sort' => $menuItem->sort,
-                            'price' => new PriceResource($menuItem->price),
-                            'public_id' => $menuItem->publicId,
-                            'name' => $menuItem->name,
-                            'description' => $menuItem->description,
-                            'image' => $menuItem->image,
-                        ];
-                    })->toArray(),
-                ];
-            })->values()
+            'categories' => $this->getMenuItems()->groupBy('categoryName')->map(fn ($items, $name) => [
+                'name' => $name,
+                'items' => $items->sortBy(fn ($menuItem) => $menuItem->sort)->values()->map(fn (MenuItem $menuItem) => [
+                    'in_bar_shelf' => $menuItem->inShelf,
+                    'type' => $menuItem->type->value,
+                    'sort' => $menuItem->sort,
+                    'price' => new PriceResource($menuItem->price),
+                    'public_id' => $menuItem->publicId,
+                    'name' => $menuItem->name,
+                    'description' => $menuItem->description,
+                    'image' => $menuItem->image,
+                ])->toArray(),
+            ])->values()
         ];
     }
 }

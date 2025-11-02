@@ -67,7 +67,7 @@ class TuxedoNo2 extends AbstractSite
         $result = [];
 
         $this->crawler->filter('.recipe__recipe ul')->first()->filter('li')->each(function ($node) use (&$result) {
-            $isGarnish = str_contains($node->filter('.ingredient')->text(), 'garnish');
+            $isGarnish = str_contains((string) $node->filter('.ingredient')->text(), 'garnish');
 
             if ($isGarnish) {
                 return;
@@ -106,7 +106,7 @@ class TuxedoNo2 extends AbstractSite
 
         $this->crawler->filter('.recipe__recipe ul')->first()->filter('li')->each(function ($node) use (&$garnish) {
             if ($node->filter('.amount .unit')->count() === 0) {
-                $garnish .= trim($node->filter('.ingredient')->text()) . "\n";
+                $garnish .= trim((string) $node->filter('.ingredient')->text()) . "\n";
             }
         });
 
@@ -116,7 +116,7 @@ class TuxedoNo2 extends AbstractSite
     public function image(): ?array
     {
         $srcSet = $this->crawler->filter('.recipe__primary-image.recipe__primary-image--1')->first()->attr('srcset');
-        $sources = explode(' ', $srcSet);
+        $sources = explode(' ', (string) $srcSet);
 
         if (!$sources[2]) {
             return null;

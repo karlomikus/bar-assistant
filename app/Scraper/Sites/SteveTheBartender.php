@@ -26,7 +26,7 @@ class SteveTheBartender extends AbstractSite
         $i = 1;
         $result = '';
         foreach ($instructions as $step) {
-            $result .= $i . ". " . trim($step['text']) . "\n";
+            $result .= $i . ". " . trim((string) $step['text']) . "\n";
             $i++;
         }
 
@@ -61,7 +61,7 @@ class SteveTheBartender extends AbstractSite
 
     public function description(): ?string
     {
-        return trim($this->getRecipeSchema()['description']);
+        return trim((string) $this->getRecipeSchema()['description']);
     }
 
     /**
@@ -72,7 +72,7 @@ class SteveTheBartender extends AbstractSite
         $recipeSchema = [];
 
         $this->crawler->filterXPath('//script[@type="application/ld+json"]')->each(function ($node) use (&$recipeSchema) {
-            $parsedSchema = json_decode($node->text(), true);
+            $parsedSchema = json_decode((string) $node->text(), true);
             foreach ($parsedSchema['@graph'] as $graph) {
                 if (array_key_exists('@type', $graph) && $graph['@type'] === 'Recipe') {
                     $recipeSchema = $graph;

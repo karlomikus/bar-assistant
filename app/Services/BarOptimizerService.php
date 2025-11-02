@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 
-final class BarOptimizerService
+final readonly class BarOptimizerService
 {
     public function __construct(
-        private readonly IngredientService $ingredientRepository,
+        private IngredientService $ingredientRepository,
     ) {
     }
 

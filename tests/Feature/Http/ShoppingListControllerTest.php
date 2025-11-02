@@ -43,9 +43,7 @@ class ShoppingListControllerTest extends TestCase
         $ingredients = Ingredient::factory()->recycle($membership->bar)->count(3)->create();
 
         $response = $this->postJson('/api/users/'. $membership->user_id .'/shopping-list/batch-store', [
-            'ingredients' => $ingredients->map(function ($ing) {
-                return ['id' => $ing->id];
-            })->toArray()
+            'ingredients' => $ingredients->map(fn ($ing) => ['id' => $ing->id])->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertNoContent();
@@ -59,9 +57,7 @@ class ShoppingListControllerTest extends TestCase
         $unOwnedIngredients = Ingredient::factory()->count(3)->create();
 
         $response = $this->postJson('/api/users/'. $membership->user_id .'/shopping-list/batch-store', [
-            'ingredients' => $unOwnedIngredients->map(function ($ing) {
-                return ['id' => $ing->id];
-            })->toArray()
+            'ingredients' => $unOwnedIngredients->map(fn ($ing) => ['id' => $ing->id])->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertNoContent();
@@ -81,9 +77,7 @@ class ShoppingListControllerTest extends TestCase
         $this->assertDatabaseCount('user_shopping_lists', 5);
 
         $response = $this->postJson('/api/users/'. $membership->user_id .'/shopping-list/batch-delete', [
-            'ingredients' => $ingredients->pluck('ingredient')->map(function ($ing) {
-                return ['id' => $ing->id];
-            })->toArray()
+            'ingredients' => $ingredients->pluck('ingredient')->map(fn ($ing) => ['id' => $ing->id])->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertNoContent();

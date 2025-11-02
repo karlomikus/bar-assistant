@@ -27,17 +27,15 @@ readonly class Calculator implements SupportsDataPack
             $model->getExternalId(),
             $model->name,
             $model->description,
-            $model->blocks->map(function (CalculatorBlock $block) {
-                return [
-                    'label' => $block->label,
-                    'variable_name' => $block->variable_name,
-                    'value' => $block->value,
-                    'type' => $block->type,
-                    'settings' => $block->settings,
-                    'description' => $block->description,
-                    'sort' => $block->sort,
-                ];
-            })->toArray()
+            $model->blocks->map(fn (CalculatorBlock $block) => [
+                'label' => $block->label,
+                'variable_name' => $block->variable_name,
+                'value' => $block->value,
+                'type' => $block->type,
+                'settings' => $block->settings,
+                'description' => $block->description,
+                'sort' => $block->sort,
+            ])->toArray()
         );
     }
 

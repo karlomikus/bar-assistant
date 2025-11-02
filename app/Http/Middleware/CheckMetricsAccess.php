@@ -26,9 +26,7 @@ class CheckMetricsAccess
             return $next($request);
         }
 
-        $whitelist = array_filter(config('bar-assistant.metrics.allowed_ips', []), function ($ip) {
-            return $ip !== '';
-        });
+        $whitelist = array_filter(config('bar-assistant.metrics.allowed_ips', []), fn ($ip) => $ip !== '');
 
         if (count($whitelist) === 0) {
             abort(404);

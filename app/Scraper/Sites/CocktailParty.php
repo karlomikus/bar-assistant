@@ -39,9 +39,7 @@ class CocktailParty extends AbstractSite
 
     public function tags(): array
     {
-        return $this->findDescriptionContainer()->filter('.elementor-widget-post-info a')->each(function ($node): string {
-            return $node->text();
-        });
+        return $this->findDescriptionContainer()->filter('.elementor-widget-post-info a')->each(fn ($node): string => $node->text());
     }
 
     public function ingredients(): array
@@ -91,9 +89,7 @@ class CocktailParty extends AbstractSite
 
     private function joinParagraphs(Crawler $nodes): string
     {
-        $paragraphs = $nodes->each(function ($node): string {
-            return $this->clean($node->text());
-        });
+        $paragraphs = $nodes->each(fn ($node): string => $this->clean($node->text()));
 
         return implode("\n\n", $paragraphs);
     }

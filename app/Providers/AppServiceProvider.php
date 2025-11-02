@@ -67,8 +67,8 @@ class AppServiceProvider extends ServiceProvider
                     PRAGMA cache_size = -20000;
                     PRAGMA mmap_size = 2147483648;
                 ');
-            } catch (Throwable $e) {
-                Log::warning('Unable to connect to DB setup PRAGMAs');
+            } catch (Throwable) {
+                Log::warning('Unable to set SQLite performance pragmas');
             }
         }
     }

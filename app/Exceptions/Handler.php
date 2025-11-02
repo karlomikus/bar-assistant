@@ -60,18 +60,14 @@ class Handler extends ExceptionHandler
             }
         });
 
-        $this->renderable(function (NotFoundHttpException $e, $request) {
-            return response()->json([
-                'type' => 'api_error',
-                'message' => 'Resource not found.',
-            ], 404);
-        });
+        $this->renderable(fn (NotFoundHttpException $e, $request) => response()->json([
+            'type' => 'api_error',
+            'message' => 'Resource not found.',
+        ], 404));
 
-        $this->renderable(function (MethodNotAllowedHttpException $e, $request) {
-            return response()->json([
-                'type' => 'api_error',
-                'message' => $e->getMessage(),
-            ], 405);
-        });
+        $this->renderable(fn (MethodNotAllowedHttpException $e, $request) => response()->json([
+            'type' => 'api_error',
+            'message' => $e->getMessage(),
+        ], 405));
     }
 }

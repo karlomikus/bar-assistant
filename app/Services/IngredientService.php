@@ -19,11 +19,11 @@ use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest;
 use Kami\Cocktail\Exceptions\ImagesNotAttachedException;
 use Kami\Cocktail\Exceptions\IngredientValidationException;
 
-final class IngredientService
+final readonly class IngredientService
 {
     public function __construct(
-        private readonly LogManager $log,
-        private readonly DatabaseManager $db,
+        private LogManager $log,
+        private DatabaseManager $db,
     ) {
     }
 
@@ -87,7 +87,7 @@ final class IngredientService
             try {
                 $imageModels = Image::findOrFail($dto->images);
                 $ingredient->attachImages($imageModels);
-            } catch (Throwable $e) {
+            } catch (Throwable) {
                 throw new ImagesNotAttachedException();
             }
         }
@@ -176,7 +176,7 @@ final class IngredientService
             try {
                 $imageModels = Image::findOrFail($dto->images);
                 $ingredient->attachImages($imageModels);
-            } catch (Throwable $e) {
+            } catch (Throwable) {
                 throw new ImagesNotAttachedException();
             }
         }

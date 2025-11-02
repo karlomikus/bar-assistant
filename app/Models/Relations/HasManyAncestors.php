@@ -40,9 +40,7 @@ class HasManyAncestors extends BaseMaterializedPathRelation
     public function match(array $models, EloquentCollection $results, $relation)
     {
         foreach ($models as $model) {
-            $ancestors = $results->filter(function ($possibleAncestor) use ($model) {
-                return $possibleAncestor['_leaf_id'] === $model->id;
-            })->sort(function ($a, $b) use ($model) {
+            $ancestors = $results->filter(fn ($possibleAncestor) => $possibleAncestor['_leaf_id'] === $model->id)->sort(function ($a, $b) use ($model) {
                 // Sort by position in materialized path
                 $path = $model->getMaterializedPath()->toArray();
                 $posA = (int) array_search($a['id'], $path);

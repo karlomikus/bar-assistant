@@ -11,9 +11,9 @@ use Kami\Cocktail\Models\Bar;
  * Combined with bar() helper method you can always get the current requested Bar model.
  * @see \Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery
  */
-final class BarContext
+final readonly class BarContext
 {
-    public function __construct(private readonly Bar $currentBar)
+    public function __construct(private Bar $currentBar)
     {
     }
 
