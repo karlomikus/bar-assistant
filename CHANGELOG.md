@@ -1,3 +1,7 @@
+# v5.9.1
+## Fixes
+- Public menu can be enabled independently of `is_public` bar setting
+
 # v5.9.0
 # New
 - Documented `public/{slugOrId}` endpoints
