@@ -27,7 +27,7 @@ class MetricsServiceProvider extends ServiceProvider
             return;
         }
 
-        $this->app->scoped(CollectorRegistry::class, fn() => new CollectorRegistry(Redis::fromExistingConnection(LaravelRedis::connection()->client())));
+        $this->app->scoped(CollectorRegistry::class, fn () => new CollectorRegistry(Redis::fromExistingConnection(LaravelRedis::connection()->client())));
     }
 
     public function boot(): void

@@ -23,7 +23,7 @@ final class Utils
         $dilutionPercentage = $dilutionPercentage / 100;
 
         $amountUsed = array_sum(array_column($ingredients, 'amount'));
-        $alcoholVolume = floatval(array_reduce($ingredients, fn($carry, $item) => (($item['amount'] * $item['strength']) / 100) + $carry));
+        $alcoholVolume = floatval(array_reduce($ingredients, fn ($carry, $item) => (($item['amount'] * $item['strength']) / 100) + $carry));
 
         $afterDilution = ($amountUsed * $dilutionPercentage) + $amountUsed;
 

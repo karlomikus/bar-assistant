@@ -137,7 +137,7 @@ abstract class AbstractSite implements Site
     public function toArray(): array
     {
         $ingredients = $this->ingredients();
-        $ingredients = array_map(fn(RecipeIngredient $recipeIngredient, int $sort) => [
+        $ingredients = array_map(fn (RecipeIngredient $recipeIngredient, int $sort) => [
             '_id' => Ulid::generate(),
             'name' => $this->clean(ucfirst($recipeIngredient->name)),
             'amount' => $recipeIngredient->amount->getValue(),
@@ -149,7 +149,7 @@ abstract class AbstractSite implements Site
             'sort' => $sort + 1,
         ], $ingredients, array_keys($ingredients));
 
-        $meta = array_map(fn(array $org) => [
+        $meta = array_map(fn (array $org) => [
             '_id' => $org['_id'],
             'source' => $org['source'],
         ], $ingredients);

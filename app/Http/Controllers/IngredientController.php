@@ -217,7 +217,7 @@ class IngredientController extends Controller
         $extraCocktails = Cocktail::whereIn('id', $extraShelfCocktails->diff($currentShelfCocktails)->values())->where('bar_id', '=', $ingredient->bar_id)->get();
 
         return response()->json([
-            'data' => $extraCocktails->map(fn(Cocktail $cocktail) => [
+            'data' => $extraCocktails->map(fn (Cocktail $cocktail) => [
                 'id' => $cocktail->id,
                 'slug' => $cocktail->slug,
                 'name' => $cocktail->name,

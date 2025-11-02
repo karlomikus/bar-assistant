@@ -104,7 +104,7 @@ class CocktailResource extends JsonResource
             ),
             'tags' => $this->when(
                 $this->relationLoaded('tags'),
-                fn () => $this->tags->map(fn($tag) => [
+                fn () => $this->tags->map(fn ($tag) => [
                     'id' => $tag->id,
                     'name' => $tag->name,
                 ])
@@ -132,13 +132,13 @@ class CocktailResource extends JsonResource
             'in_shelf' => in_array($this->id, $request->user()->getShelfCocktailsOnce($this->bar_id)),
             'in_bar_shelf' => in_array($this->id, $this->bar->getShelfCocktailsOnce()),
             'is_favorited' => $request->user()->getBarMembership($this->bar_id)->cocktailFavorites->where('cocktail_id', $this->id)->isNotEmpty(),
-            'access' => $this->when(true, fn() => [
+            'access' => $this->when(true, fn () => [
                 'can_edit' => $request->user()->can('edit', $this->resource),
                 'can_delete' => $request->user()->can('delete', $this->resource),
                 'can_rate' => $request->user()->can('rate', $this->resource),
                 'can_add_note' => $request->user()->can('addNote', $this->resource),
             ]),
-            'parent_cocktail' => $this->whenLoaded('parentCocktail', fn() => new CocktailBasicResource($this->parentCocktail)),
+            'parent_cocktail' => $this->whenLoaded('parentCocktail', fn () => new CocktailBasicResource($this->parentCocktail)),
             'varieties' => CocktailBasicResource::collection($this->whenLoaded('cocktailVarieties')),
             'year' => $this->year,
         ];

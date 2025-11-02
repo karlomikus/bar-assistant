@@ -194,7 +194,7 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
 
     public function getVolume(): float
     {
-        $ingredients = $this->ingredients->map(fn($i) => $i->getAmount())->toArray();
+        $ingredients = $this->ingredients->map(fn ($i) => $i->getAmount())->toArray();
 
         return Utils::calculateVolume($ingredients);
     }
@@ -340,7 +340,7 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
     {
         $currentShelf = $user->getShelfIngredients($this->bar_id);
         $totalIngredients = $this->ingredients->count();
-        $matchIngredients = $this->ingredients->filter(fn(CocktailIngredient $ci) => $currentShelf->contains('ingredient_id', $ci->ingredient_id))->count();
+        $matchIngredients = $this->ingredients->filter(fn (CocktailIngredient $ci) => $currentShelf->contains('ingredient_id', $ci->ingredient_id))->count();
 
         return ($matchIngredients / $totalIngredients) * 100;
     }
@@ -349,7 +349,7 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
     {
         $currentShelf = $this->bar->shelfIngredients;
         $totalIngredients = $this->ingredients->count();
-        $matchIngredients = $this->ingredients->filter(fn(CocktailIngredient $ci) => $currentShelf->contains('ingredient_id', $ci->ingredient_id))->count();
+        $matchIngredients = $this->ingredients->filter(fn (CocktailIngredient $ci) => $currentShelf->contains('ingredient_id', $ci->ingredient_id))->count();
 
         return ($matchIngredients / $totalIngredients) * 100;
     }
@@ -404,7 +404,7 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
             "recipeCategory" => "Drink",
             "recipeCuisine" => "Cocktail",
             "keywords" => $this->tags->pluck('name')->implode(', '),
-            "recipeIngredient" => $this->ingredients->map(fn(CocktailIngredient $ci) => $ci->amount . ' ' . $ci->units . ' ' . $ci->ingredient->name),
+            "recipeIngredient" => $this->ingredients->map(fn (CocktailIngredient $ci) => $ci->amount . ' ' . $ci->units . ' ' . $ci->ingredient->name),
         ];
     }
 

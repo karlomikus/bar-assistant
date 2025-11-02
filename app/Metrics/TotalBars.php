@@ -12,7 +12,7 @@ class TotalBars extends BaseMetrics
 {
     public function __invoke(): void
     {
-        $counts = Cache::remember('metrics_bass_total_bars', 60 * 24, fn() => DB::table('bars')->select(
+        $counts = Cache::remember('metrics_bass_total_bars', 60 * 24, fn () => DB::table('bars')->select(
             DB::raw("(CASE WHEN status IS NULL THEN 'active' ELSE status END) AS bar_status"),
             DB::raw('COUNT(*) AS total')
         )->groupBy('bar_status')->get()->keyBy('bar_status'));

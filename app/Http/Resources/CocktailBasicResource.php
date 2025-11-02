@@ -37,7 +37,7 @@ class CocktailBasicResource extends JsonResource
             'slug' => $this->slug,
             'name' => $this->name,
             'short_ingredients' => $this->getIngredientNames(),
-            'image' => $this->when($this->relationLoaded('images'), fn() => new ImageResource($this->getMainImage())),
+            'image' => $this->when($this->relationLoaded('images'), fn () => new ImageResource($this->getMainImage())),
         ];
     }
 }

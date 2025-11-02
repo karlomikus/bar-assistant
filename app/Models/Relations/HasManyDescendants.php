@@ -44,7 +44,7 @@ class HasManyDescendants extends BaseMaterializedPathRelation
     public function match(array $rootIngredients, EloquentCollection $descendants, $relation)
     {
         foreach ($rootIngredients as $rootIngredient) {
-            $relationDescendants = $descendants->filter(fn($possibleDescendant) => $possibleDescendant['_root_id'] === $rootIngredient->id)->sort(function ($a, $b) use ($rootIngredient) {
+            $relationDescendants = $descendants->filter(fn ($possibleDescendant) => $possibleDescendant['_root_id'] === $rootIngredient->id)->sort(function ($a, $b) use ($rootIngredient) {
                 // Sort by position in materialized path
                 $path = $rootIngredient->getMaterializedPath()->toArray();
                 $posA = (int) array_search($a['id'], $path);

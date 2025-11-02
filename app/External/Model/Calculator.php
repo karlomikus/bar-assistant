@@ -27,7 +27,7 @@ readonly class Calculator implements SupportsDataPack
             $model->getExternalId(),
             $model->name,
             $model->description,
-            $model->blocks->map(fn(CalculatorBlock $block) => [
+            $model->blocks->map(fn (CalculatorBlock $block) => [
                 'label' => $block->label,
                 'variable_name' => $block->variable_name,
                 'value' => $block->value,

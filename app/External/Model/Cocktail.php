@@ -45,9 +45,9 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
 
     public static function fromModel(CocktailModel $model, bool $useFileURI = false, ?Units $toUnits = null): self
     {
-        $images = $model->images->map(fn(ImageModel $image) => Image::fromModel($image, $useFileURI))->toArray();
+        $images = $model->images->map(fn (ImageModel $image) => Image::fromModel($image, $useFileURI))->toArray();
 
-        $ingredients = $model->ingredients->map(fn(CocktailIngredientModel $cocktailIngredient) => CocktailIngredient::fromModel($cocktailIngredient, $toUnits))->toArray();
+        $ingredients = $model->ingredients->map(fn (CocktailIngredientModel $cocktailIngredient) => CocktailIngredient::fromModel($cocktailIngredient, $toUnits))->toArray();
 
         return new self(
             $model->getExternalId(),
@@ -207,7 +207,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             "recipeCategory" => "Drink",
             "recipeCuisine" => "Cocktail",
             "keywords" => implode(', ', $this->tags),
-            "recipeIngredient" => array_map(fn(CocktailIngredient $ci) => (new CocktailIngredientFormatter($ci->amount, $ci->ingredient->name, $ci->optional))->format(), $this->ingredients),
+            "recipeIngredient" => array_map(fn (CocktailIngredient $ci) => (new CocktailIngredientFormatter($ci->amount, $ci->ingredient->name, $ci->optional))->format(), $this->ingredients),
         ], ['image' => $image]);
 
         if ($data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) {

@@ -175,7 +175,7 @@ class FromDataPack
     {
         $timerStart = microtime(true);
 
-        $existingIngredients = DB::table('ingredients')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(fn($ingredient) => Str::slug($ingredient->name));
+        $existingIngredients = DB::table('ingredients')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(fn ($ingredient) => Str::slug($ingredient->name));
 
         $ingredientsToInsert = [];
         $parentIngredientsToInsert = [];
@@ -320,7 +320,7 @@ class FromDataPack
         $dbIngredients = DB::table('ingredients')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbGlasses = DB::table('glasses')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
         $dbMethods = DB::table('cocktail_methods')->select('id', DB::raw('LOWER(name) AS name'))->where('bar_id', $bar->id)->get()->keyBy('name')->map(fn ($row) => $row->id)->toArray();
-        $existingCocktails = DB::table('cocktails')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(fn($cocktail) => Str::slug($cocktail->name));
+        $existingCocktails = DB::table('cocktails')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(fn ($cocktail) => Str::slug($cocktail->name));
 
         $cocktailImages = [];
         $uniqueTags = [];

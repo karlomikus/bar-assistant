@@ -59,7 +59,7 @@ class CocktailController extends Controller
             abort(400, $e->getMessage());
         }
 
-        $cocktails = $cocktailsQuery->paginate(50);
+        $cocktails = $cocktailsQuery->paginate(52);
 
         Cache::put($cacheKey, $cocktails, 3600);
 

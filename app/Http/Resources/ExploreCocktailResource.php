@@ -89,14 +89,14 @@ class ExploreCocktailResource extends JsonResource
             'glass' => $this->glass->name ?? null,
             'utensils' => $this->utensils->pluck('name'),
             'method' => $this->method->name ?? null,
-            'images' => $this->images->map(fn(Image $image) => [
+            'images' => $this->images->map(fn (Image $image) => [
                 'sort' => $image->sort,
                 'placeholder_hash' => $image->placeholder_hash,
                 'url' => $image->getImageUrl(),
                 'copyright' => $image->copyright,
             ]),
             'abv' => $this->abv,
-            'ingredients' => $this->ingredients->map(fn(CocktailIngredient $cocktailIngredient) => [
+            'ingredients' => $this->ingredients->map(fn (CocktailIngredient $cocktailIngredient) => [
                 'ingredient' => [
                     'name' => $cocktailIngredient->ingredient->name,
                 ],
@@ -105,7 +105,7 @@ class ExploreCocktailResource extends JsonResource
                 'units' => $cocktailIngredient->units,
                 'optional' => (bool) $cocktailIngredient->optional,
                 'note' => $cocktailIngredient->note,
-                'substitutes' => $cocktailIngredient->substitutes->map(fn(CocktailIngredientSubstitute $substitute) => [
+                'substitutes' => $cocktailIngredient->substitutes->map(fn (CocktailIngredientSubstitute $substitute) => [
                     'ingredient' => [
                         'name' => $substitute->ingredient->name,
                     ],
