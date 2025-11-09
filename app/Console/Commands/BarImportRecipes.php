@@ -47,7 +47,7 @@ class BarImportRecipes extends Command
             'root' => storage_path('bar-assistant/temp/' . Str::random(8)),
         ]);
 
-        $zipFileDisk = Storage::disk('bar-assistant');
+        $zipFileDisk = Storage::disk('local');
 
         $filename = $this->argument('filename');
 

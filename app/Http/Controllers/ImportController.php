@@ -140,11 +140,11 @@ class ImportController extends Controller
                 'source' => 'required|file|mimes:csv|max:1048576',
             ])->validate();
 
-            $file = $request->source->store('', 'temp-uploads');
+            $file = $request->source->store('', 'temp');
         } else {
             $file = Str::random(10) . '.csv';
             $csv = $request->getContent();
-            if (!Storage::disk('temp-uploads')->put($file, $csv)) {
+            if (!Storage::disk('temp')->put($file, $csv)) {
                 abort(500, 'Unable to store uploaded file');
             }
         }
@@ -172,7 +172,7 @@ class ImportController extends Controller
     //         abort(403);
     //     }
 
-    //     $zipFile = $request->file('file')->store('/', 'temp-uploads');
+    //     $zipFile = $request->file('file')->store('/', 'temp');
     //     $barId = $request->post('bar_id');
     //     $duplicateAction = DuplicateActionsEnum::from($request->post('duplicate_actions', 'none'));
 
@@ -184,7 +184,7 @@ class ImportController extends Controller
     //     $unzippedFilesDisk = Storage::disk('temp');
 
     //     $zip = new ZipUtils();
-    //     $zip->unzip(Storage::disk('temp-uploads')->path($zipFile));
+    //     $zip->unzip(Storage::disk('temp')->path($zipFile));
 
     //     // $importer = new FromJsonSchema(
     //     //     resolve(\Kami\Cocktail\Services\CocktailService::class),
@@ -208,7 +208,7 @@ class ImportController extends Controller
     //     //     Log::error('Error importing from file: ' . $e->getMessage());
     //     // } finally {
     //     //     $zip->cleanup();
-    //     //     Storage::disk('temp-uploads')->delete($zipFile);
+    //     //     Storage::disk('temp')->delete($zipFile);
     //     // }
 
     //     \Illuminate\Support\Facades\DB::commit();

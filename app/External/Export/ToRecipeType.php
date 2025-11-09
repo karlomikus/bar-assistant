@@ -8,7 +8,6 @@ use ZipArchive;
 use Carbon\Carbon;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\File;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\ExportTypeEnum;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
@@ -44,26 +43,33 @@ class ToRecipeType
             'schema' => $type === ExportTypeEnum::Schema ? 'https://barassistant.app/cocktail-02.schema.json' : null,
         ];
 
-        File::ensureDirectoryExists($this->file->disk('exports')->path((string) $barId));
-        $filename = $this->file->disk('exports')->path($barId . '/' . $filename);
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'cocktail_export');
+        Log::debug(sprintf('Exporting recipe type "%s" to temporary file "%s"', $type->value, $tempFilePath));
 
-        $zip = new ZipArchive();
+        try {
+            $zip = new ZipArchive();
 
-        if ($zip->open($filename, ZipArchive::CREATE) !== true) {
-            $message = sprintf('Error creating zip archive with filepath "%s"', $filename);
+            if ($zip->open($tempFilePath, ZipArchive::CREATE) !== true) {
+                $message = sprintf('Error creating zip archive with filepath "%s"', $tempFilePath);
 
-            throw new ExportFileNotCreatedException($message);
+                throw new ExportFileNotCreatedException($message);
+            }
+
+            $this->dumpCocktails($barId, $zip, $type, $toUnits);
+
+            if ($metaContent = json_encode($meta)) {
+                $zip->addFromString('_meta.json', $metaContent);
+            }
+        } finally {
+            $zip->close();
         }
 
-        $this->dumpCocktails($barId, $zip, $type, $toUnits);
+        $fullPath = $barId . '/' . $filename;
+        Log::debug(sprintf('Moving temporary file from "%s" to exports disk at "%s"', $tempFilePath, $fullPath));
+        $this->file->disk('exports')->makeDirectory($barId);
+        $this->file->disk('exports')->put($fullPath, file_get_contents($tempFilePath));
 
-        if ($metaContent = json_encode($meta)) {
-            $zip->addFromString('_meta.json', $metaContent);
-        }
-
-        $zip->close();
-
-        return $filename;
+        return $fullPath;
     }
 
     private function dumpCocktails(int $barId, ZipArchive &$zip, ExportTypeEnum $type, ?Units $toUnits = null): void

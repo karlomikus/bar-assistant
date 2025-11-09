@@ -17,6 +17,7 @@
         "laravel/scout": "^10.4",
         "laravel/socialite": "^5.18",
         "league/csv": "^9.0",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "meilisearch/meilisearch-php": "^1.0",
         "nxp/math-executor": "^2.3",
         "promphp/prometheus_client_php": "^2.13",
