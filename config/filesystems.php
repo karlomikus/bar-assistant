@@ -54,7 +54,6 @@ return [
             'driver' => 'local',
             'root' => resource_path('data/data'),
             'throw' => false,
-            'read-only' => true,
         ],
 
         'uploads' => [

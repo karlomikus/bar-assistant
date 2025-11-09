@@ -161,7 +161,10 @@ final readonly class ImageService
             $filepath = 'temp/' . $filename . '.' . $fileExtension;
 
             $vipsImage = ImageResizeService::resizeImageTo($image);
-            $vipsImage->writeToFile($this->filesystemManager->disk('uploads')->path($filepath), ['Q' => 85]);
+            $this->filesystemManager->disk('uploads')->put(
+                $filepath,
+                $vipsImage->writeToBuffer('.' . $fileExtension, ['Q' => 85])
+            );
         } catch (Throwable $e) {
             $this->log->error('[IMAGE_SERVICE] ' . $e->getMessage());
 
