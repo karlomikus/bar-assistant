@@ -1,3 +1,7 @@
+# v5.9.2
+## Fixes
+- Fixed CSV import errors
+
 # v5.9.1
 ## Fixes
 - Public menu can be enabled independently of `is_public` bar setting
