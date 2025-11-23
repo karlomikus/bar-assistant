@@ -1,3 +1,7 @@
+# v5.9.3
+## Fixes
+- Fixed shopping list access check
+
 # v5.9.2
 ## Fixes
 - Fixed CSV import errors

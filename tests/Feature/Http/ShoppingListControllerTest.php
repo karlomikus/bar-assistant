@@ -9,6 +9,7 @@ use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\UserShoppingList;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Models\Enums\UserRoleEnum;
 
 class ShoppingListControllerTest extends TestCase
 {
@@ -83,5 +84,27 @@ class ShoppingListControllerTest extends TestCase
         $response->assertNoContent();
 
         $this->assertDatabaseCount('user_shopping_lists', 0);
+    }
+
+    public function test_list_ingredients_on_shopping_list_response_guest_role(): void
+    {
+        $membership = $this->setupBarMembership(UserRoleEnum::Guest);
+        $this->actingAs($membership->user);
+
+        UserShoppingList::factory()->count(5)->create();
+        UserShoppingList::factory()
+            ->recycle($membership, $membership->bar, $membership->user)
+            ->count(5)
+            ->create();
+
+        $response = $this->getJson('/api/users/'. $membership->user_id .'/shopping-list', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
+
+        $response->assertOk();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data', 5)
+                ->etc()
+        );
     }
 }
