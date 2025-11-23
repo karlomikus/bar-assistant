@@ -7,9 +7,9 @@ namespace Tests\Feature\Http;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\UserShoppingList;
+use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Kami\Cocktail\Models\Enums\UserRoleEnum;
 
 class ShoppingListControllerTest extends TestCase
 {
