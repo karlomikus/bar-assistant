@@ -39,11 +39,11 @@ class StartIngredientCSVImport implements ShouldQueue
         $importer = new FromIngredientCSV($this->barId, $this->userId);
 
         try {
-            $importer->process(Storage::disk('temp-uploads')->path($this->filepath));
+            $importer->process(Storage::disk('temp')->path($this->filepath));
         } catch (Throwable $e) {
             Log::error('Error importing ingredients from CSV: ' . $e->getMessage());
         }
 
-        Storage::disk('temp-uploads')->delete($this->filepath);
+        Storage::disk('temp')->delete($this->filepath);
     }
 }

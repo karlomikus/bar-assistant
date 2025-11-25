@@ -23,10 +23,25 @@ class FromIngredientCSV
         DuplicateActionsEnum $duplicateAction = DuplicateActionsEnum::None,
         string $imageDirectoryBasePath = '',
     ): void {
+        $existingIngredientNames = Ingredient::where('bar_id', $this->barId)
+            ->pluck('name')
+            ->map(fn (string $name) => mb_strtolower($name))
+            ->toArray();
+
         DB::beginTransaction();
         try {
             Reader::createFromPath($filepath)
                 ->setHeaderOffset(0)
+                ->filter(function (array $record) use ($existingIngredientNames, $duplicateAction) {
+                    $record = array_change_key_case($record, CASE_LOWER);
+
+                    $ingredientNameLower = mb_strtolower($record['name'] ?? '');
+                    if ($duplicateAction === DuplicateActionsEnum::Skip && in_array($ingredientNameLower, $existingIngredientNames, true)) {
+                        return false;
+                    }
+
+                    return true;
+                })
                 ->each(function (array $record) {
                     $ingredientExternal = IngredientExternal::fromCSV($record);
 

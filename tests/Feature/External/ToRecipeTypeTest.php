@@ -29,11 +29,12 @@ class ToRecipeTypeTest extends TestCase
         $exporter = new ToRecipeType($this->getFileMock());
         $filename = $exporter->process($membership->bar->id, 'recipes.zip');
 
-        $this->assertTrue(str_ends_with($filename, 'exports/1/recipes.zip'));
+        $this->assertSame($filename, '1/recipes.zip');
     }
 
     public function test_default_export_contains_schema_files(): void
     {
+        $exportMock = $this->getFileMock();
         Storage::fake('uploads');
 
         $membership = $this->setupBarMembership();
@@ -55,8 +56,9 @@ class ToRecipeTypeTest extends TestCase
             'file_extension' => $ingredientCocktailFile->extension(),
         ]);
 
-        $exporter = new ToRecipeType($this->getFileMock());
+        $exporter = new ToRecipeType($exportMock);
         $filename = $exporter->process($membership->bar->id, 'recipes.zip');
+        $filename = $exportMock->disk()->path($filename);
 
         $unzippedFilesDisk = Storage::fake('temp-recipes-unzip');
 

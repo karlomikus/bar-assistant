@@ -9,7 +9,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\File;
 use Kami\Cocktail\Models\Calculator;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
@@ -51,31 +50,41 @@ class ToDataPack
             'called_from' => self::class,
         ];
 
-        File::ensureDirectoryExists($this->file->disk('exports')->path((string) $barId));
-        $filename = $this->file->disk('exports')->path($barId . '/' . $filename);
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'cocktail_export');
+        Log::debug(sprintf('Exporting datapack to temporary file "%s"', $tempFilePath));
 
-        Log::debug(sprintf('Exporting datapack to "%s"', $filename));
+        try {
+            $zip = new ZipArchive();
 
-        $zip = new ZipArchive();
+            if ($zip->open($tempFilePath, ZipArchive::CREATE) !== true) {
+                $message = sprintf('Error creating zip archive with filepath "%s"', $tempFilePath);
 
-        if ($zip->open($filename, ZipArchive::CREATE) !== true) {
-            $message = sprintf('Error creating zip archive with filepath "%s"', $filename);
+                throw new ExportFileNotCreatedException($message);
+            }
 
-            throw new ExportFileNotCreatedException($message);
+            $this->dumpCocktails($barId, $zip, $toUnits);
+            $this->dumpIngredients($barId, $zip, $toUnits);
+            $this->dumpBaseData($barId, $zip);
+            $this->dumpCalculators($barId, $zip);
+
+            if ($metaContent = json_encode($meta)) {
+                $zip->addFromString('_meta.json', $metaContent);
+            }
+        } finally {
+            $zip->close();
         }
 
-        $this->dumpCocktails($barId, $zip, $toUnits);
-        $this->dumpIngredients($barId, $zip, $toUnits);
-        $this->dumpBaseData($barId, $zip);
-        $this->dumpCalculators($barId, $zip);
-
-        if ($metaContent = json_encode($meta)) {
-            $zip->addFromString('_meta.json', $metaContent);
+        $fullPath = $barId . '/' . $filename;
+        Log::debug(sprintf('Moving datapack temporary file from "%s" to exports disk at "%s"', $tempFilePath, $fullPath));
+        $this->file->disk('exports')->makeDirectory((string) $barId);
+        $contents = file_get_contents($tempFilePath);
+        if ($contents === false) {
+            throw new ExportFileNotCreatedException('Could not read temporary export file contents');
         }
 
-        $zip->close();
+        $this->file->disk('exports')->put($fullPath, $contents);
 
-        return $filename;
+        return $fullPath;
     }
 
     private function dumpCocktails(int $barId, ZipArchive &$zip, ?Units $toUnits = null): void

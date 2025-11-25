@@ -30,30 +30,36 @@ return [
 
     'disks' => [
 
+        // 'local' => [
+        //     'driver' => 'local',
+        //     'root' => storage_path('app'),
+        //     'throw' => false,
+        // ],
+
+        // 'public' => [
+        //     'driver' => 'local',
+        //     'root' => storage_path('app/public'),
+        //     'url' => env('APP_URL').'/storage',
+        //     'visibility' => 'public',
+        //     'throw' => false,
+        // ],
+
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
-            'throw' => false,
-        ],
-
-        'public' => [
-            'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
-            'visibility' => 'public',
-            'throw' => false,
-        ],
-
-        'bar-assistant' => [
-            'driver' => 'local',
             'root' => storage_path('bar-assistant'),
+            'throw' => false,
+        ],
+
+        'data-files' => [
+            'driver' => 'local',
+            'root' => resource_path('data/data'),
             'throw' => false,
         ],
 
         'uploads' => [
             'driver' => 'local',
             'root' => storage_path('bar-assistant/uploads'),
-            'url' => env('APP_URL').'/uploads',
+            'url' => env('APP_URL') . '/uploads',
             'visibility' => 'public',
             'throw' => false,
         ],
@@ -61,19 +67,13 @@ return [
         'exports' => [
             'driver' => 'local',
             'root' => storage_path('bar-assistant/exports'),
-            'url' => env('APP_URL').'/uploads',
+            'url' => env('APP_URL') . '/uploads',
             'throw' => false,
         ],
 
         'temp' => [
             'driver' => 'local',
             'root' => storage_path('bar-assistant/temp'),
-            'throw' => false,
-        ],
-
-        'temp-uploads' => [
-            'driver' => 'local',
-            'root' => storage_path('bar-assistant/uploads/temp'),
             'throw' => false,
         ],
 
@@ -87,12 +87,6 @@ return [
             'key' => env('S3_KEY'),
             'secret' => env('S3_SECRET'),
             'visibility' => 'public',
-            'throw' => false,
-        ],
-
-        'data-files' => [
-            'driver' => 'local',
-            'root' => resource_path('data/data'),
             'throw' => false,
         ],
 
