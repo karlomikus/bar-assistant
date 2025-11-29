@@ -8,7 +8,7 @@ RUN git clone --depth 1 --branch v5 https://github.com/bar-assistant/data.git .
 
 RUN rm -r .git
 
-FROM serversideup/php:8.3-fpm-nginx AS php-base
+FROM serversideup/php:8.4-fpm-nginx AS php-base
 
 LABEL org.opencontainers.image.source="https://github.com/karlomikus/bar-assistant"
 LABEL org.opencontainers.image.description="Bar assistant is a all-in-one solution for managing your home bar"
