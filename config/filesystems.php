@@ -53,7 +53,6 @@ return [
         'exports' => [
             'driver' => 'local',
             'root' => storage_path('bar-assistant/exports'),
-            'url' => env('APP_URL') . '/uploads',
             'throw' => false,
         ],
 
