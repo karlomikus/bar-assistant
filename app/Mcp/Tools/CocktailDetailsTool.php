@@ -29,15 +29,15 @@ class CocktailDetailsTool extends Tool
     {
         $idOrSlug = $request->get('idOrSlug');
 
-        $cocktail = Cocktail::where('bar_id', 557)
+        $cocktail = Cocktail::where('bar_id', bar()->id)
             ->where(function ($query) use ($idOrSlug) {
                 $query->where('slug', $idOrSlug)->orWhere('id', $idOrSlug);
             })
             ->firstOrFail();
 
-        // if ($request->user()->cannot('show', $cocktail)) {
-        //     abort(403);
-        // }
+        if ($request->user()->cannot('show', $cocktail)) {
+            return Response::error('Permission denied.');
+        }
 
         $cocktail->loadDefaultRelations();
 
