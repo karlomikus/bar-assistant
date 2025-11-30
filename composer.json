@@ -1,7 +1,7 @@
 {
     "license": "MIT",
     "require": {
-        "php": "^8.2.0",
+        "php": "^8.3.0",
         "brick/money": "^0.9.0",
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
@@ -43,7 +43,7 @@
         "barryvdh/laravel-debugbar": "^3.7",
         "driftingly/rector-laravel": "^2.1",
         "fakerphp/faker": "^1.9.1",
-        "larastan/larastan": "^3.0",
+        "larastan/larastan": "~3.7.0",
         "laravel/pint": "^1.0",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",

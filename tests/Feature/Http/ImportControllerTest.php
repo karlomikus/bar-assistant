@@ -65,7 +65,7 @@ class ImportControllerTest extends TestCase
             'strength' => 40,
             'description' => 'Bitter liquer',
             'origin' => 'Italy',
-            'color' => '#008800',
+            'color' => null,
             'bar_id' => $membership->bar_id,
             'created_user_id' => $membership->user_id,
         ]);

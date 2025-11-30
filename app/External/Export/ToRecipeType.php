@@ -66,8 +66,13 @@ class ToRecipeType
 
         $fullPath = $barId . '/' . $filename;
         Log::debug(sprintf('Moving temporary file from "%s" to exports disk at "%s"', $tempFilePath, $fullPath));
-        $this->file->disk('exports')->makeDirectory($barId);
-        $this->file->disk('exports')->put($fullPath, file_get_contents($tempFilePath));
+        $this->file->disk('exports')->makeDirectory((string) $barId);
+        $contents = file_get_contents($tempFilePath);
+        if ($contents === false) {
+            throw new ExportFileNotCreatedException('Could not read temporary export file contents');
+        }
+
+        $this->file->disk('exports')->put($fullPath, $contents);
 
         return $fullPath;
     }

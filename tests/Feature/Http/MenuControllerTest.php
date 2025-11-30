@@ -152,7 +152,7 @@ class MenuControllerTest extends TestCase
         $response = $this->getJson('/api/menu/export', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
         $response->assertSuccessful();
-        $response->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
+        $response->assertHeader('Content-Type', 'text/csv; charset=utf-8');
     }
 
     public function test_menu_has_null_currency(): void

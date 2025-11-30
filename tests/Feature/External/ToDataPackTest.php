@@ -29,11 +29,12 @@ class ToDataPackTest extends TestCase
         $exporter = new ToDataPack($this->getFileMock());
         $filename = $exporter->process($membership->bar->id, 'datapack-test.zip');
 
-        $this->assertTrue(str_ends_with($filename, 'exports/1/datapack-test.zip'));
+        $this->assertSame($filename, '1/datapack-test.zip');
     }
 
     public function test_export_contains_files(): void
     {
+        $exportMock = $this->getFileMock();
         Storage::fake('uploads');
 
         $membership = $this->setupBarMembership();
@@ -55,8 +56,9 @@ class ToDataPackTest extends TestCase
             'file_extension' => $ingredientCocktailFile->extension(),
         ]);
 
-        $exporter = new ToDataPack($this->getFileMock());
+        $exporter = new ToDataPack($exportMock);
         $filename = $exporter->process($membership->bar->id, 'datapack-test.zip');
+        $filename = $exportMock->disk()->path($filename);
 
         $unzippedFilesDisk = Storage::fake('temp-datapack-unzip');
 
