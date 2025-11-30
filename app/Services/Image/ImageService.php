@@ -37,8 +37,7 @@ final readonly class ImageService
 
                 if ($dtoImage->image) {
                     try {
-                        [$filepath, $fileExtension] = $this->processImageFile($dtoImage->image);
-                        $thumbHash = ImageHashingService::generatePlaceholderHashFromFilepath($this->filesystemManager->disk('uploads')->path($filepath));
+                        [$filepath, $fileExtension, $thumbHash] = $this->processImageFile($dtoImage->image);
 
                         $image->file_path = $filepath;
                         $image->placeholder_hash = $thumbHash;
@@ -58,9 +57,9 @@ final readonly class ImageService
                 }
 
                 try {
-                    [$filepath, $fileExtension] = $this->processImageFile($dtoImage->image);
-                    $thumbHash = ImageHashingService::generatePlaceholderHashFromFilepath($this->filesystemManager->disk('uploads')->path($filepath));
-                } catch (Throwable) {
+                    [$filepath, $fileExtension, $thumbHash] = $this->processImageFile($dtoImage->image);
+                } catch (Throwable $e) {
+                    $this->log->error('[IMAGE_SERVICE] File upload error | ' . $e->getMessage());
                     continue;
                 }
 
@@ -87,8 +86,7 @@ final readonly class ImageService
         if ($imageDTO->image) {
             $oldFilePath = $image->file_path;
             try {
-                [$filepath, $fileExtension] = $this->processImageFile($imageDTO->image);
-                $thumbHash = ImageHashingService::generatePlaceholderHashFromFilepath($this->filesystemManager->disk('uploads')->path($filepath));
+                [$filepath, $fileExtension, $thumbHash] = $this->processImageFile($imageDTO->image);
 
                 $image->file_path = $filepath;
                 $image->placeholder_hash = $thumbHash;
@@ -161,6 +159,7 @@ final readonly class ImageService
             $filepath = 'temp/' . $filename . '.' . $fileExtension;
 
             $vipsImage = ImageResizeService::resizeImageTo($image);
+            $thumbHash = ImageHashingService::generatePlaceholderHashFromBuffer($image);
             $this->filesystemManager->disk('uploads')->put(
                 $filepath,
                 $vipsImage->writeToBuffer('.' . $fileExtension, ['Q' => 85])
@@ -171,6 +170,6 @@ final readonly class ImageService
             throw $e;
         }
 
-        return [$filepath, $fileExtension];
+        return [$filepath, $fileExtension, $thumbHash];
     }
 }
