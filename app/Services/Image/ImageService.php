@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services\Image;
 
+use Illuminate\Container\Attributes\Storage;
 use Throwable;
 use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface;
@@ -11,12 +12,13 @@ use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\OpenAPI\Schemas\ImageRequest;
-use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
+use Illuminate\Contracts\Filesystem\Filesystem;
 
 final readonly class ImageService
 {
     public function __construct(
-        private FileSystemFactory $filesystemManager,
+        #[Storage('uploads')]
+        private Filesystem $filesystem,
         private LoggerInterface $log,
     ) {
     }
@@ -98,7 +100,7 @@ final readonly class ImageService
             }
 
             try {
-                $this->filesystemManager->disk('uploads')->delete($oldFilePath);
+                $this->filesystem->delete($oldFilePath);
             } catch (Throwable $e) {
                 $this->log->error('[IMAGE_SERVICE] File delete error | ' . $e->getMessage());
             }
@@ -140,10 +142,10 @@ final readonly class ImageService
                 ->delete();
         });
 
-        $this->filesystemManager->disk('uploads')->deleteDirectory('cocktails/' . $bar->id . '/');
-        $this->filesystemManager->disk('uploads')->deleteDirectory('ingredients/' . $bar->id . '/');
+        $this->filesystem->deleteDirectory('cocktails/' . $bar->id . '/');
+        $this->filesystem->deleteDirectory('ingredients/' . $bar->id . '/');
         if ($barLogoPath) {
-            $this->filesystemManager->disk('uploads')->delete($barLogoPath);
+            $this->filesystem->delete($barLogoPath);
         }
     }
 
@@ -160,7 +162,7 @@ final readonly class ImageService
 
             $vipsImage = ImageResizeService::resizeImageTo($image);
             $thumbHash = ImageHashingService::generatePlaceholderHashFromBuffer($image);
-            $this->filesystemManager->disk('uploads')->put(
+            $this->filesystem->put(
                 $filepath,
                 $vipsImage->writeToBuffer('.' . $fileExtension, ['Q' => 85])
             );
