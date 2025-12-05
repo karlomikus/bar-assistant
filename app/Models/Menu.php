@@ -58,7 +58,7 @@ class Menu extends Model
         $cocktails = $this->menuCocktails->map(fn (MenuCocktail $menuCocktail) => MenuItem::fromMenuCocktail($menuCocktail))->values();
         $ingredients = $this->menuIngredients->map(fn (MenuIngredient $menuIngredient) => MenuItem::fromMenuIngredient($menuIngredient))->values();
 
-        return $cocktails->merge($ingredients)->values();
+        return collect([...$cocktails, ...$ingredients]);
     }
 
     /**
