@@ -2,8 +2,11 @@
 
 namespace Kami\Cocktail\Mcp\Servers;
 
+use Kami\Cocktail\Mcp\Tools\CocktailCreateTool;
 use Kami\Cocktail\Mcp\Tools\CocktailDetailsTool;
 use Kami\Cocktail\Mcp\Tools\CocktailSearchTool;
+use Kami\Cocktail\Mcp\Tools\IngredientDetailsTool;
+use Kami\Cocktail\Mcp\Tools\IngredientListTool;
 use Laravel\Mcp\Server;
 
 class CocktailServer extends Server
@@ -33,6 +36,9 @@ class CocktailServer extends Server
     protected array $tools = [
         CocktailDetailsTool::class,
         CocktailSearchTool::class,
+        CocktailCreateTool::class,
+        IngredientListTool::class,
+        IngredientDetailsTool::class,
     ];
 
     /**

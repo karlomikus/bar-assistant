@@ -51,7 +51,7 @@ class CocktailSearchTool extends Tool
         $cocktails = $cocktails->get(['cocktails.id', 'cocktails.name', 'cocktails.slug']);
 
         return Response::text($cocktails->map(function ($cocktail) {
-            return "- {$cocktail->name} (ID: {$cocktail->id}, Slug: {$cocktail->slug})";
+            return "- {$cocktail->name} (ID: {$cocktail->id})";
         })->implode("\n"));
     }
 
