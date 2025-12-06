@@ -30,20 +30,6 @@ return [
 
     'disks' => [
 
-        // 'local' => [
-        //     'driver' => 'local',
-        //     'root' => storage_path('app'),
-        //     'throw' => false,
-        // ],
-
-        // 'public' => [
-        //     'driver' => 'local',
-        //     'root' => storage_path('app/public'),
-        //     'url' => env('APP_URL').'/storage',
-        //     'visibility' => 'public',
-        //     'throw' => false,
-        // ],
-
         'local' => [
             'driver' => 'local',
             'root' => storage_path('bar-assistant'),
@@ -67,7 +53,6 @@ return [
         'exports' => [
             'driver' => 'local',
             'root' => storage_path('bar-assistant/exports'),
-            'url' => env('APP_URL') . '/uploads',
             'throw' => false,
         ],
 
@@ -79,7 +64,6 @@ return [
 
         'uploads_s3' => [
             'driver' => 's3',
-            'url' => env('S3_URL'),
             'use_path_style_endpoint' => env('S3_USE_PATH_STYLE_ENDPOINT', false),
             'endpoint' => env('S3_ENDPOINT'),
             'bucket' => env('S3_BUCKET'),

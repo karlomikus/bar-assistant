@@ -30,7 +30,7 @@ class MenuRequest extends FormRequest
     {
         return [
             'is_enabled' => 'required|boolean',
-            'items' => 'required|array',
+            'items' => 'array',
             'items.*.id' => 'required|integer',
             'items.*.type' => ['required', Rule::enum(MenuItemTypeEnum::class)],
             'items.*.sort' => 'required|integer',

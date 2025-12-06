@@ -13,11 +13,12 @@ use Kami\Cocktail\Models\Calculator;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
 use Kami\RecipeUtils\UnitConverter\Units;
+use Illuminate\Contracts\Filesystem\Cloud;
+use Illuminate\Container\Attributes\Storage;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
 use Kami\Cocktail\Exceptions\ImageFileNotFoundException;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
-use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
 use Kami\Cocktail\External\Model\Calculator as CalculatorExternal;
 use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
 
@@ -28,8 +29,10 @@ use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
  */
 class ToDataPack
 {
-    public function __construct(private readonly FileSystemFactory $file)
-    {
+    public function __construct(
+        #[Storage('exports')]
+        private readonly Cloud $file,
+    ) {
     }
 
     public function process(int $barId, ?string $filename = null, ForceUnitConvertEnum $units = ForceUnitConvertEnum::Original): string
@@ -76,13 +79,13 @@ class ToDataPack
 
         $fullPath = $barId . '/' . $filename;
         Log::debug(sprintf('Moving datapack temporary file from "%s" to exports disk at "%s"', $tempFilePath, $fullPath));
-        $this->file->disk('exports')->makeDirectory((string) $barId);
+        $this->file->makeDirectory((string) $barId);
         $contents = file_get_contents($tempFilePath);
         if ($contents === false) {
             throw new ExportFileNotCreatedException('Could not read temporary export file contents');
         }
 
-        $this->file->disk('exports')->put($fullPath, $contents);
+        $this->file->put($fullPath, $contents);
 
         return $fullPath;
     }
