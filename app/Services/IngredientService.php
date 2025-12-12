@@ -221,12 +221,12 @@ final readonly class IngredientService
     }
 
     /**
-     * @param array<int> $ingredientIds
+     * @param array<int> $existingIngredients
      * @return array<int, object>
      */
-    public function getIngredientsForPossibleCocktails(int $barId, array $ingredientIds): array
+    public function getIngredientsForPossibleCocktails(int $barId, array $existingIngredients): array
     {
-        $placeholders = implode(',', array_map(fn ($id) => (int) $id, $ingredientIds));
+        $placeholders = implode(',', array_map(fn ($id) => (int) $id, $existingIngredients));
 
         $rawQuery = "SELECT
             pi.ingredient_id as id,
