@@ -1,3 +1,12 @@
+# v5.10.0
+## New
+- Added `locked_user_cocktails` filter to cocktails endpoint
+    - This will show cocktails that are locked for the user (not all ingredients are in user's shelf)
+- Added `locked_bar_cocktails` filter to cocktails endpoint
+    - This will show cocktails that are locked for the bar (not all ingredients are in bar's shelf)
+- Added `potential_bar_shelf_cocktails` sort to ingredients endpoint
+    - This will sort ingredients by how many new cocktails would be unlocked for the bar if the ingredient is added to bar shelf
+
 # v5.9.3
 ## Fixes
 - Fixed shopping list access check
