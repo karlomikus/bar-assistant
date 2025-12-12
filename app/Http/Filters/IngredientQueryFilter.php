@@ -96,6 +96,21 @@ final class IngredientQueryFilter extends QueryBuilder
                 'name',
                 'created_at',
                 'strength',
+                AllowedSort::callback('potential_bar_shelf_cocktails', function ($query, bool $descending) use ($barMembership) {
+                    $direction = $descending ? 'DESC' : 'ASC';
+
+                    $query->selectRaw('ingredients.*, COUNT(DISTINCT ci.cocktail_id) AS potential_cocktails_count')
+                        ->leftJoin('cocktail_ingredients AS ci', function ($join) use ($barMembership) {
+                            $join->on('ci.ingredient_id', '=', 'ingredients.id')
+                                ->whereNotIn('ci.ingredient_id', function ($subquery) use ($barMembership) {
+                                    $subquery->select('ingredient_id')
+                                        ->from('bar_ingredients')
+                                        ->where('bar_id', $barMembership->bar_id);
+                                });
+                        })
+                        ->groupBy('ingredients.id')
+                        ->orderBy('potential_cocktails_count', $direction);
+                }),
                 AllowedSort::callback('total_cocktails', function ($query, bool $descending) {
                     $direction = $descending ? 'DESC' : 'ASC';
 
