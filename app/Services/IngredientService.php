@@ -221,12 +221,12 @@ final readonly class IngredientService
     }
 
     /**
-     * @param array<int> $ingredientIds
+     * @param array<int> $existingIngredients
      * @return array<int, object>
      */
-    public function getIngredientsForPossibleCocktails(int $barId, array $ingredientIds): array
+    public function getIngredientsForPossibleCocktails(int $barId, array $existingIngredients): array
     {
-        $placeholders = implode(',', array_map(fn ($id) => (int) $id, $ingredientIds));
+        $placeholders = implode(',', array_map(fn ($id) => (int) $id, $existingIngredients));
 
         $rawQuery = "SELECT
             pi.ingredient_id as id,
@@ -332,6 +332,33 @@ final readonly class IngredientService
     }
 
     /**
+     * Resolve complex ingredients that can be made with the given ingredient IDs.
+     *
+     * @param array<int> $ingredientIds
+     * @return array<int>
+     */
+    public function resolveComplexIngredients(array $ingredientIds): array
+    {
+        return $this->db->table('complex_ingredients AS ci')
+            ->distinct()
+            ->select('ci.main_ingredient_id')
+            ->join('ingredients AS i_main', 'ci.main_ingredient_id', '=', 'i_main.id')
+            ->whereIn('ci.id', function ($query) use ($ingredientIds) {
+                $query->select('ci_inner.id')
+                    ->from('complex_ingredients AS ci_inner')
+                    ->whereNotExists(function ($query) use ($ingredientIds) {
+                        $query->select('i_ingredient.id')
+                            ->from('complex_ingredients AS ci_sub')
+                            ->join('ingredients AS i_ingredient', 'ci_sub.ingredient_id', '=', 'i_ingredient.id')
+                            ->whereColumn('ci_sub.main_ingredient_id', 'ci_inner.main_ingredient_id')
+                            ->whereNotIn('i_ingredient.id', $ingredientIds);
+                    });
+            })
+            ->pluck('main_ingredient_id')
+            ->toArray();
+    }
+
+    /**
      * Return array of all ingredients that are part of the user's shelf
      * and can be used to create cocktails.
      *
@@ -366,23 +393,7 @@ final readonly class IngredientService
             ->pluck('id')
             ->toArray();
 
-        $complexIngredients = $this->db->table('complex_ingredients AS ci')
-            ->distinct()
-            ->select('ci.main_ingredient_id')
-            ->join('ingredients AS i_main', 'ci.main_ingredient_id', '=', 'i_main.id')
-            ->whereIn('ci.id', function ($query) use ($userIngredientIds) {
-                $query->select('ci_inner.id')
-                    ->from('complex_ingredients AS ci_inner')
-                    ->whereNotExists(function ($query) use ($userIngredientIds) {
-                        $query->select('i_ingredient.id')
-                            ->from('complex_ingredients AS ci_sub')
-                            ->join('ingredients AS i_ingredient', 'ci_sub.ingredient_id', '=', 'i_ingredient.id')
-                            ->whereColumn('ci_sub.main_ingredient_id', 'ci_inner.main_ingredient_id')
-                            ->whereNotIn('i_ingredient.id', $userIngredientIds);
-                    });
-            })
-            ->pluck('main_ingredient_id')
-            ->toArray();
+        $complexIngredients = $this->resolveComplexIngredients($userIngredientIds);
 
         return array_unique(array_merge(
             $descendantIngredientIds,

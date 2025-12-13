@@ -10,13 +10,15 @@ use Psr\Log\LoggerInterface;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Container\Attributes\Storage;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Kami\Cocktail\OpenAPI\Schemas\ImageRequest;
-use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
 
 final readonly class ImageService
 {
     public function __construct(
-        private FileSystemFactory $filesystemManager,
+        #[Storage('uploads')]
+        private Filesystem $filesystem,
         private LoggerInterface $log,
     ) {
     }
@@ -37,8 +39,7 @@ final readonly class ImageService
 
                 if ($dtoImage->image) {
                     try {
-                        [$filepath, $fileExtension] = $this->processImageFile($dtoImage->image);
-                        $thumbHash = ImageHashingService::generatePlaceholderHashFromFilepath($this->filesystemManager->disk('uploads')->path($filepath));
+                        [$filepath, $fileExtension, $thumbHash] = $this->processImageFile($dtoImage->image);
 
                         $image->file_path = $filepath;
                         $image->placeholder_hash = $thumbHash;
@@ -58,9 +59,9 @@ final readonly class ImageService
                 }
 
                 try {
-                    [$filepath, $fileExtension] = $this->processImageFile($dtoImage->image);
-                    $thumbHash = ImageHashingService::generatePlaceholderHashFromFilepath($this->filesystemManager->disk('uploads')->path($filepath));
-                } catch (Throwable) {
+                    [$filepath, $fileExtension, $thumbHash] = $this->processImageFile($dtoImage->image);
+                } catch (Throwable $e) {
+                    $this->log->error('[IMAGE_SERVICE] File upload error | ' . $e->getMessage());
                     continue;
                 }
 
@@ -87,8 +88,7 @@ final readonly class ImageService
         if ($imageDTO->image) {
             $oldFilePath = $image->file_path;
             try {
-                [$filepath, $fileExtension] = $this->processImageFile($imageDTO->image);
-                $thumbHash = ImageHashingService::generatePlaceholderHashFromFilepath($this->filesystemManager->disk('uploads')->path($filepath));
+                [$filepath, $fileExtension, $thumbHash] = $this->processImageFile($imageDTO->image);
 
                 $image->file_path = $filepath;
                 $image->placeholder_hash = $thumbHash;
@@ -100,7 +100,7 @@ final readonly class ImageService
             }
 
             try {
-                $this->filesystemManager->disk('uploads')->delete($oldFilePath);
+                $this->filesystem->delete($oldFilePath);
             } catch (Throwable $e) {
                 $this->log->error('[IMAGE_SERVICE] File delete error | ' . $e->getMessage());
             }
@@ -142,10 +142,10 @@ final readonly class ImageService
                 ->delete();
         });
 
-        $this->filesystemManager->disk('uploads')->deleteDirectory('cocktails/' . $bar->id . '/');
-        $this->filesystemManager->disk('uploads')->deleteDirectory('ingredients/' . $bar->id . '/');
+        $this->filesystem->deleteDirectory('cocktails/' . $bar->id . '/');
+        $this->filesystem->deleteDirectory('ingredients/' . $bar->id . '/');
         if ($barLogoPath) {
-            $this->filesystemManager->disk('uploads')->delete($barLogoPath);
+            $this->filesystem->delete($barLogoPath);
         }
     }
 
@@ -161,7 +161,8 @@ final readonly class ImageService
             $filepath = 'temp/' . $filename . '.' . $fileExtension;
 
             $vipsImage = ImageResizeService::resizeImageTo($image);
-            $this->filesystemManager->disk('uploads')->put(
+            $thumbHash = ImageHashingService::generatePlaceholderHashFromBuffer($image);
+            $this->filesystem->put(
                 $filepath,
                 $vipsImage->writeToBuffer('.' . $fileExtension, ['Q' => 85])
             );
@@ -171,6 +172,6 @@ final readonly class ImageService
             throw $e;
         }
 
-        return [$filepath, $fileExtension];
+        return [$filepath, $fileExtension, $thumbHash];
     }
 }

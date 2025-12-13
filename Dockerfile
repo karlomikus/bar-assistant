@@ -8,7 +8,7 @@ RUN git clone --depth 1 --branch v5 https://github.com/bar-assistant/data.git .
 
 RUN rm -r .git
 
-FROM serversideup/php:8.3-fpm-nginx AS php-base
+FROM serversideup/php:8.4-fpm-nginx AS php-base
 
 LABEL org.opencontainers.image.source="https://github.com/karlomikus/bar-assistant"
 LABEL org.opencontainers.image.description="Bar assistant is a all-in-one solution for managing your home bar"
@@ -41,6 +41,9 @@ ENV PHP_OPCACHE_MAX_ACCELERATED_FILES=20000
 ENV PHP_OPCACHE_MEMORY_CONSUMPTION=256
 ARG BAR_ASSISTANT_VERSION
 ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-develop}
+ENV LOG_OUTPUT_LEVEL=error
+ENV NGINX_FASTCGI_BUFFERS="16 16k"
+ENV NGINX_FASTCGI_BUFFER_SIZE="32k"
 
 COPY --chmod=755 ./resources/docker/dist/init.sh /etc/entrypoint.d/99-bass.sh
 

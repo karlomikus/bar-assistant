@@ -9,9 +9,9 @@ use Jcupitt\Vips\Image as Vips;
 
 class ImageHashingService
 {
-    public static function generatePlaceholderHashFromFilepath(string $file, int $width = 100, int $height = 100): string
+    public static function generatePlaceholderHashFromBuffer(string $buffer, int $width = 100, int $height = 100): string
     {
-        $image = Vips::newFromFile($file)->thumbnail_image($width, ['height' => $height, 'crop' => 'centre']);
+        $image = Vips::newFromBuffer($buffer)->thumbnail_image($width, ['height' => $height, 'crop' => 'centre']);
 
         if ($image->bands < 4) {
             $image = $image->bandjoin(255);

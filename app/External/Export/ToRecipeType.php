@@ -9,17 +9,20 @@ use Carbon\Carbon;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Kami\RecipeUtils\UnitConverter\Units;
+use Illuminate\Contracts\Filesystem\Cloud;
 use Kami\Cocktail\External\ExportTypeEnum;
+use Illuminate\Container\Attributes\Storage;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
 use Kami\Cocktail\Exceptions\ImageFileNotFoundException;
 use Kami\Cocktail\External\Model\Schema as SchemaExternal;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
-use Illuminate\Contracts\Filesystem\Factory as FileSystemFactory;
 
 class ToRecipeType
 {
-    public function __construct(private readonly FileSystemFactory $file)
-    {
+    public function __construct(
+        #[Storage('exports')]
+        private readonly Cloud $file,
+    ) {
     }
 
     public function process(int $barId, ?string $filename = null, ExportTypeEnum $type = ExportTypeEnum::Schema, ForceUnitConvertEnum $units = ForceUnitConvertEnum::Original): string
@@ -66,13 +69,13 @@ class ToRecipeType
 
         $fullPath = $barId . '/' . $filename;
         Log::debug(sprintf('Moving temporary file from "%s" to exports disk at "%s"', $tempFilePath, $fullPath));
-        $this->file->disk('exports')->makeDirectory((string) $barId);
+        $this->file->makeDirectory((string) $barId);
         $contents = file_get_contents($tempFilePath);
         if ($contents === false) {
             throw new ExportFileNotCreatedException('Could not read temporary export file contents');
         }
 
-        $this->file->disk('exports')->put($fullPath, $contents);
+        $this->file->put($fullPath, $contents);
 
         return $fullPath;
     }

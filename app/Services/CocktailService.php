@@ -25,6 +25,7 @@ final readonly class CocktailService
     public function __construct(
         private DatabaseManager $db,
         private LogManager $log,
+        private IngredientService $ingredientService,
     ) {
     }
 
@@ -261,23 +262,7 @@ final readonly class CocktailService
         // Basically, goes through all ingredients to match ($ingredientIds) and check if they can create complex ingredients
         // If they can, that ingredient is added to the list of ingredients to match
         if ($matchComplexIngredients) {
-            $additionalIngredients = $this->db->table('complex_ingredients AS ci')
-                ->distinct()
-                ->select('ci.main_ingredient_id')
-                ->join('ingredients AS i_main', 'ci.main_ingredient_id', '=', 'i_main.id')
-                ->whereIn('ci.id', function ($query) use ($ingredientIds) {
-                    $query->select('ci_inner.id')
-                        ->from('complex_ingredients AS ci_inner')
-                        ->whereNotExists(function ($query) use ($ingredientIds) {
-                            $query->select('i_ingredient.id')
-                                ->from('complex_ingredients AS ci_sub')
-                                ->join('ingredients AS i_ingredient', 'ci_sub.ingredient_id', '=', 'i_ingredient.id')
-                                ->whereColumn('ci_sub.main_ingredient_id', 'ci_inner.main_ingredient_id')
-                                ->whereNotIn('i_ingredient.id', $ingredientIds);
-                        });
-                })
-                ->pluck('main_ingredient_id')
-                ->toArray();
+            $additionalIngredients = $this->ingredientService->resolveComplexIngredients($ingredientIds);
 
             $ingredientIds = array_merge($ingredientIds, $additionalIngredients);
             $ingredientIds = array_unique($ingredientIds);

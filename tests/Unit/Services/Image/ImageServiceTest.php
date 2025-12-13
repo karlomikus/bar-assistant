@@ -14,7 +14,8 @@ class ImageServiceTest extends TestCase
 {
     public function testGeneratePlaceholderHash(): void
     {
-        $hashKey = ImageHashingService::generatePlaceholderHashFromFilepath(base_path('tests/fixtures/cocktail.jpg'));
+        $imageBuffer = file_get_contents(base_path('tests/fixtures/cocktail.jpg'));
+        $hashKey = ImageHashingService::generatePlaceholderHashFromBuffer($imageBuffer);
 
         $this->assertSame('q+cFHwD1eXbJQopoiJaWqWd2aHBWqQcC', $hashKey);
     }

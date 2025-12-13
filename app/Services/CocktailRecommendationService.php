@@ -30,6 +30,14 @@ class CocktailRecommendationService
     {
         $barMembership->loadMissing('cocktailFavorites');
 
+        // Limit considerations for performance on large datasets
+        $considerationsLimit = 750;
+
+        // Early exit if no favorites
+        if ($barMembership->cocktailFavorites->isEmpty()) {
+            return collect();
+        }
+
         $excludedCocktailIds = $this->getExcludedCocktails($barMembership);
 
         // Collect all favorite tags
@@ -50,6 +58,7 @@ class CocktailRecommendationService
             ->where('ingredients.bar_id', $barMembership->bar_id)
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
             ->groupBy('ingredient_id')
+            ->limit($considerationsLimit)
             ->get();
 
         // Bar shelf ingredients
@@ -63,6 +72,7 @@ class CocktailRecommendationService
             ->whereNotIn('cocktails.id', $excludedCocktailIds)
             ->where('cocktails.bar_id', $barMembership->bar_id)
             ->with('tags', 'ingredients.ingredient', 'images')
+            ->limit($considerationsLimit)
             // ->inRandomOrder()
             ->get();
 
