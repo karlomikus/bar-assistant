@@ -6,6 +6,9 @@
     - This will show cocktails that are locked for the bar (not all ingredients are in bar's shelf)
 - Added `potential_bar_shelf_cocktails` sort to ingredients endpoint
     - This will sort ingredients by how many new cocktails would be unlocked for the bar if the ingredient is added to bar shelf
+    
+## Changes
+- Docker image is now built on top of PHP 8.4 base image
 
 # v5.9.3
 ## Fixes
