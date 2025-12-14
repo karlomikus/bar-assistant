@@ -13,6 +13,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Redis as LaravelRedis;
 use Kami\Cocktail\Http\Middleware\TracksRequestMetric;
 use Kami\Cocktail\Http\Middleware\TrackSQLQueriesMetric;
+use Prometheus\Storage\InMemory;
 
 class MetricsServiceProvider extends ServiceProvider
 {
@@ -22,12 +23,14 @@ class MetricsServiceProvider extends ServiceProvider
             return;
         }
 
-        if (config('bar-assistant.metrics.enabled') === true && config('cache.default') !== 'redis') {
-            Log::warning('Metrics are enabled, but the cache driver is not set to redis. Metrics will not be available.');
-            return;
+        if (config('cache.default') !== 'redis') {
+            Log::warning('Metrics are enabled, but the cache driver is not set to redis. Metrics will not be persisted!');
+            $storageAdapter = new InMemory();
+        } else {
+            $storageAdapter = Redis::fromExistingConnection(LaravelRedis::connection()->client());
         }
 
-        $this->app->scoped(CollectorRegistry::class, fn () => new CollectorRegistry(Redis::fromExistingConnection(LaravelRedis::connection()->client())));
+        $this->app->scoped(CollectorRegistry::class, fn () => new CollectorRegistry($storageAdapter));
     }
 
     public function boot(): void
