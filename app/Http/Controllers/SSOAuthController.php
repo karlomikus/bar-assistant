@@ -61,8 +61,8 @@ class SSOAuthController extends Controller
         try {
             /** @var \Laravel\Socialite\Two\AbstractProvider */
             $driver = Socialite::driver($validProvider->value);
-
-            $socialiteUser = $driver->stateless()->user();
+            $driver->stateless();
+            $socialiteUser = $driver->user();
         } catch (\Exception $e) {
             abort(403, $e->getMessage());
         }
