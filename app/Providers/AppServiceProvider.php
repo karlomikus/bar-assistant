@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
 
@@ -51,6 +52,18 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
         });
+
+        if (config('bar-assistant.scraping_client.proxy') !== null) {
+            $options = [
+                'proxy' => config('bar-assistant.scraping_client.proxy'),
+            ];
+
+            if (config('bar-assistant.scraping_client.cert')) {
+                $options['verify'] = config('bar-assistant.scraping_client.cert');
+            }
+
+            Http::globalOptions($options);
+        }
 
         Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
             $event->extendSocialite('authentik', \SocialiteProviders\Authentik\Provider::class);

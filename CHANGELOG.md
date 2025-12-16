@@ -1,3 +1,12 @@
+# v5.11.0
+## New
+- Added `SCRAPING_HTTP_PROXY` env variable
+    - You can now set an HTTP proxy for scraping requests
+    - Example value: `http://username:password@proxyserver:port`
+- Added `SCRAPING_CLIENT_CERT` env variable
+    - You can now set a client certificate for scraping requests
+    - Example value: `/var/www/cocktails/storage/bar-assistant/my-cert.pem`
+
 # v5.10.0
 ## New
 - Added `locked_user_cocktails` filter to cocktails endpoint
