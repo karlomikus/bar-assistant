@@ -7,6 +7,12 @@
     - You can now set a client certificate for scraping requests
     - Example value: `/var/www/cocktails/storage/bar-assistant/my-cert.pem`
 
+## Changes
+- Improved search results for queries with multiple words
+
+## Fixes
+- Fixed out of memory errors when exporting large bars
+
 # v5.10.0
 ## New
 - Added `locked_user_cocktails` filter to cocktails endpoint
