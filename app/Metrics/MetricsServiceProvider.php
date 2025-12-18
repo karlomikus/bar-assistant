@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Metrics;
 
 use Throwable;
 use Prometheus\Storage\Redis;
+use Prometheus\Storage\InMemory;
 use Prometheus\CollectorRegistry;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Http\Kernel;
@@ -22,12 +23,14 @@ class MetricsServiceProvider extends ServiceProvider
             return;
         }
 
-        if (config('bar-assistant.metrics.enabled') === true && config('cache.default') !== 'redis') {
-            Log::warning('Metrics are enabled, but the cache driver is not set to redis. Metrics will not be available.');
-            return;
+        if (config('cache.default') !== 'redis') {
+            Log::warning('Metrics are enabled, but the cache driver is not set to redis. Metrics will not be persisted!');
+            $storageAdapter = new InMemory();
+        } else {
+            $storageAdapter = Redis::fromExistingConnection(LaravelRedis::connection()->client());
         }
 
-        $this->app->scoped(CollectorRegistry::class, fn () => new CollectorRegistry(Redis::fromExistingConnection(LaravelRedis::connection()->client())));
+        $this->app->scoped(CollectorRegistry::class, fn () => new CollectorRegistry($storageAdapter));
     }
 
     public function boot(): void

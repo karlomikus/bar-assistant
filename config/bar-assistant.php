@@ -74,4 +74,9 @@ return [
     'enable_feeds' => (bool) env('ENABLE_FEEDS', false),
 
     'enable_password_login' => (bool) env('ENABLE_PASSWORD_LOGIN', true),
+
+    'scraping_client' => [
+        'proxy' => env('SCRAPING_HTTP_PROXY', null),
+        'cert' => env('SCRAPING_CLIENT_CERT', null),
+    ],
 ];

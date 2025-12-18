@@ -63,8 +63,34 @@ Bar Assistant is available as a Docker image on [Docker Hub](https://hub.docker.
 - `barassistant/server:v4.4.1` - This will pull the exact version
 - `barassistant/server:v4.4` - This will pull the latest minor release
 - `barassistant/server:v4` - This will pull the latest major release
+- `barassistant/server:dev` - This will pull the latest development version (not recommended for production)
 
 We recommend that you always use the latest major release, as it will always be the most stable version.
+
+## Environment Variables
+
+Here's a list of interesting environment variables you can set to configure Bar Assistant:
+
+|Name|Default|Description|
+|----|-------|-----------|
+|REDIS_HOST|redis|The Redis host.|
+|CACHE_DRIVER|redis|The cache driver to use (`file` or `redis`).|
+|SESSION_DRIVER|redis|The session driver to use (`file` or `redis`).|
+|ALLOW_REGISTRATION|true|Allow or disallow user registration.|
+|MAIL_REQUIRE_CONFIRMATION|false|Require email confirmation for new user registrations.|
+|MEILISEARCH_HOST||The Meilisearch host URL.|
+|MEILISEARCH_KEY||The Meilisearch API key.|
+|METRICS_ENABLED|false|Enable or disable Prometheus metrics endpoint.|
+|METRICS_ALLOWED_IPS||Comma-separated list of IPs allowed to access metrics endpoint.|
+|ENABLE_PASSWORD_LOGIN|true|Enable or disable password login.|
+|SCRAPING_HTTP_PROXY||HTTP proxy URL for web scraping.|
+|SCRAPING_CLIENT_CERT||Path to client certificate for web scraping.|
+|MAIL_MAILER||The mailer to use.|
+|MAIL_HOST||The mail host.|
+|MAIL_PORT||The mail port.|
+|MAIL_ENCRYPTION||The mail encryption method.|
+|MAIL_USERNAME||The mail username.|
+|MAIL_PASSWORD||The mail password.|
 
 ## Managed instance
 

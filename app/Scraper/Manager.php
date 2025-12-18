@@ -90,11 +90,19 @@ final class Manager
 
     private function getSiteContent(): string
     {
-        //$saf = mt_rand(531, 536) . mt_rand(0, 2);
-        //$userAgent = "(X11; Linux x86_64) AppleWebKit/$saf (KHTML, like Gecko) Chrome/" . mt_rand(36, 40) . '.0.' . mt_rand(800, 899) . ".0 Mobile Safari/$saf";
+        $options = [];
+        if (config('bar-assistant.scraping_client.proxy') !== null) {
+            $options['proxy'] = config('bar-assistant.scraping_client.proxy');
+
+            if (config('bar-assistant.scraping_client.cert')) {
+                $options['verify'] = config('bar-assistant.scraping_client.cert');
+            }
+        }
+
         $cachingMiddleware = new CacheMiddleware(new GreedyCacheStrategy(new LaravelCacheStorage(Cache::store()), 60 * 15));
         $response = Http::withMiddleware($cachingMiddleware)
             ->withUserAgent(self::USER_AGENT)
+            ->withOptions($options)
             ->timeout(10)
             ->get($this->url);
 

@@ -24,7 +24,7 @@ RUN install-php-extensions bcmath intl ffi
 
 RUN apt update \
     && apt-get install -y \
-    sqlite3 \
+    sqlite3 git \
     && apt-get install -y --no-install-recommends libvips42 \
     && apt-get autoremove -y \
     && apt-get clean \
