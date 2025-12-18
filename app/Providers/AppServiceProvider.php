@@ -53,18 +53,6 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        if (config('bar-assistant.scraping_client.proxy') !== null) {
-            $options = [
-                'proxy' => config('bar-assistant.scraping_client.proxy'),
-            ];
-
-            if (config('bar-assistant.scraping_client.cert')) {
-                $options['verify'] = config('bar-assistant.scraping_client.cert');
-            }
-
-            Http::globalOptions($options);
-        }
-
         Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
             $event->extendSocialite('authentik', \SocialiteProviders\Authentik\Provider::class);
             $event->extendSocialite('authelia', \SocialiteProviders\Authelia\Provider::class);
