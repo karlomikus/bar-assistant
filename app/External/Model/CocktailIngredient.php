@@ -39,7 +39,7 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
         }
 
         return new self(
-            Ingredient::fromModel($model->ingredient),
+            Ingredient::fromModelBasic($model->ingredient),
             $amount,
             (bool) $model->optional,
             (bool) $model->is_specified,
