@@ -12,6 +12,8 @@ final class VersionCheckService
     public function getLatestVersion(): ?string
     {
         try {
+            /** TODO: remove after fixed in laravel */
+            /** @phpstan-ignore-next-line */
             $response = Http::get('https://api.github.com/repos/karlomikus/bar-assistant/releases/latest')->throw();
         } catch (Throwable) {
             return null;

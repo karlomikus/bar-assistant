@@ -11,8 +11,8 @@ use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Models\CocktailIngredient;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RecommenderControllerTest extends TestCase
 {

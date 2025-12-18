@@ -39,7 +39,7 @@ class SSOAuthControllerTest extends TestCase
     {
         config()->set('services.github.client_id', 'fake-client-id');
 
-        Socialite::fake('github', (new User)->map([
+        Socialite::fake('github', (new User())->map([
             'id' => 550,
             'name' => 'GitHub User',
             'email' => 'email@github.com',

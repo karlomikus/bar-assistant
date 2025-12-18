@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Metrics;
 
 use Throwable;
 use Prometheus\Storage\Redis;
+use Prometheus\Storage\InMemory;
 use Prometheus\CollectorRegistry;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Http\Kernel;
@@ -13,7 +14,6 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Redis as LaravelRedis;
 use Kami\Cocktail\Http\Middleware\TracksRequestMetric;
 use Kami\Cocktail\Http\Middleware\TrackSQLQueriesMetric;
-use Prometheus\Storage\InMemory;
 
 class MetricsServiceProvider extends ServiceProvider
 {

@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.368.0",
+            "version": "3.368.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "c1189f8e4ba3268d6306e515f6f65611c671d033"
+                "reference": "f7916ea27b5214fa1b4b6ecfa0c3f549b388a70c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/c1189f8e4ba3268d6306e515f6f65611c671d033",
-                "reference": "c1189f8e4ba3268d6306e515f6f65611c671d033",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/f7916ea27b5214fa1b4b6ecfa0c3f549b388a70c",
+                "reference": "f7916ea27b5214fa1b4b6ecfa0c3f549b388a70c",
                 "shasum": ""
             },
             "require": {
@@ -153,9 +153,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.368.0"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.368.1"
             },
-            "time": "2025-12-16T20:11:32+00:00"
+            "time": "2025-12-17T19:06:44+00:00"
         },
         {
             "name": "brick/math",
@@ -10240,16 +10240,16 @@
         },
         {
             "name": "driftingly/rector-laravel",
-            "version": "2.1.7",
+            "version": "2.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driftingly/rector-laravel.git",
-                "reference": "2a64c96fa363bc85e4e6d4162c6a6bb7a78fd122"
+                "reference": "5c5f97354e562b6742b2b7989959061bde60fa71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driftingly/rector-laravel/zipball/2a64c96fa363bc85e4e6d4162c6a6bb7a78fd122",
-                "reference": "2a64c96fa363bc85e4e6d4162c6a6bb7a78fd122",
+                "url": "https://api.github.com/repos/driftingly/rector-laravel/zipball/5c5f97354e562b6742b2b7989959061bde60fa71",
+                "reference": "5c5f97354e562b6742b2b7989959061bde60fa71",
                 "shasum": ""
             },
             "require": {
@@ -10270,9 +10270,9 @@
             "description": "Rector upgrades rules for Laravel Framework",
             "support": {
                 "issues": "https://github.com/driftingly/rector-laravel/issues",
-                "source": "https://github.com/driftingly/rector-laravel/tree/2.1.7"
+                "source": "https://github.com/driftingly/rector-laravel/tree/2.1.8"
             },
-            "time": "2025-12-10T11:30:42+00:00"
+            "time": "2025-12-17T15:29:24+00:00"
         },
         {
             "name": "fakerphp/faker",
