@@ -1,6 +1,7 @@
 # v5.11.1
 ## Fixes
 - Fixed missing calculator reference in datapack import
+- Fixed empty menu when only ingredients are added
 
 # v5.11.0
 ## New
