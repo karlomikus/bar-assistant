@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+namespace BarAssistant\Application\DTO;
+
+final readonly class CreateIngredientRequest
+{
+    public function __construct(
+        public int $barId,
+        public string $name,
+        public int $userId,
+        public float $strength = 0.0,
+        public ?string $description = null,
+        public ?string $origin = null,
+        public ?string $color = null,
+        public ?int $parentIngredientId = null,
+        /** @var int[] */
+        public array $images = [],
+        /** @var int[] */
+        public array $complexIngredientParts = [],
+        /** @var IngredientPriceRequest[] */
+        public array $prices = [],
+        public ?int $calculatorId = null,
+        public ?float $sugarContent = null,
+        public ?float $acidity = null,
+        public ?string $distillery = null,
+        public ?string $units = null,
+    ) {
+    }
+}

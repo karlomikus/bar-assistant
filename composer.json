@@ -56,6 +56,7 @@
         ],
         "psr-4": {
             "Kami\\Cocktail\\": "app/",
+            "BarAssistant\\": "src/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
