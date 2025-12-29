@@ -30,11 +30,10 @@ interface IngredientRepository
 
     /**
      * Find all descendants (children, grandchildren, etc.) of an ingredient
-     * Uses materialized path for efficient querying
      *
      * @return Ingredient[]
      */
-    // public function findDescendants(IngredientId $ancestorId): array;
+    public function findDescendants(IngredientId $ancestorId): array;
 
     /**
      * Find all ancestors (parent, grandparent, etc.) of an ingredient

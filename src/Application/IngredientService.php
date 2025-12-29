@@ -28,19 +28,26 @@ final readonly class IngredientService
             color: $ingredientRequest->color ? Color::fromHexString($ingredientRequest->color) : null,
         );
 
-        $ingredientPartCandidates = $this->ingredientRepository->findMany($ingredientRequest->complexIngredientParts);
-        foreach ($ingredientPartCandidates as $part) {
-            $ingredient->addIngredientPart($part);
+        if (count($ingredientRequest->complexIngredientParts) > 0) {
+            $ingredientPartCandidates = $this->ingredientRepository->findMany(array_map(
+                fn (int $id) => new IngredientId($id),
+                $ingredientRequest->complexIngredientParts
+            ));
+            foreach ($ingredientPartCandidates as $part) {
+                $ingredient->addIngredientPart($part);
+            }
         }
 
         $ingredient = $this->ingredientRepository->save($ingredient);
 
-        if ($ingredientRequest->parentIngredientId) {
+        if ($ingredientRequest->parentIngredientId !== null) {
             $parentIngredient = $this->ingredientRepository->find(new IngredientId($ingredientRequest->parentIngredientId));
             if ($parentIngredient === null) {
                 throw new \InvalidArgumentException('Parent ingredient not found');
             }
-            $ingredient->setAsVariantOf($parentIngredient);
+            $ingredient->setParentIngredient($parentIngredient);
+        } else {
+            $ingredient->setParentIngredient(null);
         }
 
         return $ingredient;

@@ -19,9 +19,6 @@ final class Ingredient
     /** @var IngredientId[] */
     private array $ingredientParts = [];
 
-    /**
-     * @param IngredientId[] $ingredientParts
-     */
     public function __construct(
         private BarId $barId,
         private string $name,
@@ -47,7 +44,7 @@ final class Ingredient
         return $this->id;
     }
 
-    public function withId(IngredientId $id): self
+    public function setId(IngredientId $id): self
     {
         if ($this->isTransient() === false) {
             throw new DomainException('Cannot change the ID of an existing ingredient');
@@ -58,9 +55,32 @@ final class Ingredient
         return $this;
     }
 
+    public function setParentIngredient(?self $parentIngredient): self
+    {
+        if ($parentIngredient !== null && !$parentIngredient->getBarId()->equals($this->getBarId())) {
+            throw new DomainException('Parent ingredient must belong to the same bar');
+        }
+
+        $this->parentIngredientId = $parentIngredient?->getId();
+
+        return $this;
+    }
+
+    public function setMaterializedPath(MaterializedPath $path): self
+    {
+        $this->materializedPath = $path;
+
+        return $this;
+    }
+
     public function getBarId(): BarId
     {
         return $this->barId;
+    }
+
+    public function getParentIngredientId(): ?IngredientId
+    {
+        return $this->parentIngredientId;
     }
 
     public function getName(): string
@@ -73,9 +93,32 @@ final class Ingredient
         return $this->materializedPath;
     }
 
-    public function isRoot(): bool
+    public function getDescription(): ?string
     {
-        return $this->parentIngredientId === null;
+        return $this->description;
+    }
+
+    public function getStrength(): ?float
+    {
+        return $this->strength;
+    }
+
+    public function getOrigin(): ?string
+    {
+        return $this->origin;
+    }
+
+    public function getColor(): ?Color
+    {
+        return $this->color;
+    }
+
+    /**
+     * @return IngredientId[]
+     */
+    public function getIngredientParts(): array
+    {
+        return $this->ingredientParts;
     }
 
     public function isComplexIngredient(): bool
@@ -85,17 +128,16 @@ final class Ingredient
 
     public function addIngredientPart(Ingredient $partIngredient): self
     {
-        if ($this->barId->id !== $partIngredient->getBarId()->id) {
+        if (!$this->getBarId()->equals($partIngredient->getBarId())) {
             throw new DomainException('All ingredient parts must belong to the same bar');
         }
 
-        if ($this->id !== null && $this->id->id === $partIngredient->getId()->id) {
+        if (!$this->isTransient() && $this->id->equals($partIngredient->getId())) {
             throw new DomainException('Ingredient cannot contain itself as a part');
         }
 
-        // Check if this part already exists
         foreach ($this->ingredientParts as $existingPart) {
-            if ($existingPart->id === $partIngredient->getId()) {
+            if ($existingPart->equals($partIngredient->getId())) {
                 throw new DomainException('This ingredient part already exists');
             }
         }
@@ -115,43 +157,8 @@ final class Ingredient
         return $this;
     }
 
-    public function setAsVariantOf(self $parentIngredient): self
-    {
-        if ($this->isTransient()) {
-            throw new DomainException('Ingredient must have an ID before setting a parent ingredient');
-        }
-
-        if ($this->getId()->equals($parentIngredient->getId())) {
-            throw new DomainException('Ingredient cannot be a variant of itself');
-        }
-
-        if ($this->isAncestorOf($parentIngredient)) {
-            throw new DomainException('Cannot set parent ingredient to a descendant');
-        }
-
-        $newPath = $parentIngredient->getMaterializedPath()->append($this->getId()->id);
-
-        $this->parentIngredientId = $parentIngredient->getId();
-        $this->materializedPath = $newPath;
-
-        return $this;
-    }
-
-    public function makeRoot(): self
-    {
-        $this->parentIngredientId = null;
-        $this->materializedPath = MaterializedPath::root();
-
-        return $this;
-    }
-
     public function isAncestorOf(self $other): bool
     {
-        return $this->materializedPath->isAncestorOf($other->materializedPath);
-    }
-
-    public function isDescendantOf(self $other): bool
-    {
-        return $this->materializedPath->isDescendantOf($other->materializedPath);
+        return $this->materializedPath->isAncestorOf($other->getMaterializedPath());
     }
 }
