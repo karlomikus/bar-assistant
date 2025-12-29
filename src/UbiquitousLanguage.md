@@ -7,3 +7,5 @@
 | Complex Ingredient | Any ingredient that is made up of multiple ingredients (one or more). For example, a "lemon juice" is made of "lemon". |
 | Materialized Path | A list of ingredient ids represeting a hierarchy for a given ingredient. |
 | Cocktail | A recipe that will make a drink that typically contains a mixture of various ingredients. |
+| Image | A picture associated with a bar, ingredient, or cocktail. |
+| Temporary Image | An image that is uploaded but not yet associated with any resource. |
