@@ -7,9 +7,10 @@ namespace BarAssistant\Domain\Ingredient;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\AggregateRoot;
 use BarAssistant\Domain\Support\Color;
 
-final class Ingredient
+final class Ingredient implements AggregateRoot
 {
     private ?IngredientId $id = null;
 
@@ -193,6 +194,13 @@ final class Ingredient
             $this->images,
             fn(ImageId $existingImageId) => !$existingImageId->equals($imageId)
         ));
+
+        return $this;
+    }
+
+    public function removeAllImages(): self
+    {
+        $this->images = [];
 
         return $this;
     }

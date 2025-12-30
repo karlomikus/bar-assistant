@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BarAssistant\Domain\Bar;
+namespace BarAssistant\Domain\User;
 
-use BarAssistant\Support\IntegerIdentifier;
+use BarAssistant\Domain\Support\IntegerIdentifier;
 
 final readonly class UserId extends IntegerIdentifier
 {

@@ -2,16 +2,22 @@
 
 declare(strict_types=1);
 
-namespace BarAssistant\Support;
+namespace BarAssistant\Domain\Support;
 
-abstract readonly class IntegerIdentifier
+use BarAssistant\Domain\AggregateRootId;
+
+abstract readonly class IntegerIdentifier implements AggregateRootId
 {
     public function __construct(public int $id)
     {
     }
 
-    public function equals(self $other): bool
+    public function equals(AggregateRootId $other): bool
     {
+        if (!$other instanceof self) {
+            return false;
+        }
+
         return $this->id === $other->id;
     }
 }
