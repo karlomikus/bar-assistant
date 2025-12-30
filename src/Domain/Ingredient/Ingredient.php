@@ -6,6 +6,7 @@ namespace BarAssistant\Domain\Ingredient;
 
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Exception\DomainException;
+use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Support\Color;
 
 final class Ingredient
@@ -18,6 +19,9 @@ final class Ingredient
 
     /** @var IngredientId[] */
     private array $ingredientParts = [];
+
+    /** @var ImageId[] */
+    private array $images = [];
 
     public function __construct(
         private BarId $barId,
@@ -160,5 +164,36 @@ final class Ingredient
     public function isAncestorOf(self $other): bool
     {
         return $this->materializedPath->isAncestorOf($other->getMaterializedPath());
+    }
+
+    /**
+     * @return ImageId[]
+     */
+    public function getImages(): array
+    {
+        return $this->images;
+    }
+
+    public function addImage(ImageId $imageId): self
+    {
+        foreach ($this->images as $existingImageId) {
+            if ($existingImageId->equals($imageId)) {
+                return $this;
+            }
+        }
+
+        $this->images[] = $imageId;
+
+        return $this;
+    }
+
+    public function removeImage(ImageId $imageId): self
+    {
+        $this->images = array_values(array_filter(
+            $this->images,
+            fn(ImageId $existingImageId) => !$existingImageId->equals($imageId)
+        ));
+
+        return $this;
     }
 }
