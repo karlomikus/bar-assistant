@@ -54,10 +54,10 @@ final class IngredientHierarchyManager
         // Store the old materialized path structure
         $oldPath = $ingredient->getMaterializedPath();
 
-        // Update the ingredient's parent
+        // Update path
         $ingredient
             ->setParentIngredient($newParent)
-            ->setMaterializedPath($newParent->getMaterializedPath()->append($ingredient->getId()->id));
+            ->setMaterializedPath($newParent->getMaterializedPath()->append($newParent->getId()->id));
 
         // Calculate path difference for updating descendants
         $newPath = $ingredient->getMaterializedPath();

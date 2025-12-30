@@ -22,10 +22,10 @@ final class Ingredient
     public function __construct(
         private BarId $barId,
         private string $name,
-        private ?string $description,
-        private ?float $strength,
-        private ?string $origin,
-        private ?Color $color,
+        private ?string $description = null,
+        private ?float $strength = null,
+        private ?string $origin = null,
+        private ?Color $color = null,
     ) {
         if (trim($name) === '') {
             throw new DomainException('Ingredient name cannot be empty');

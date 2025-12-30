@@ -61,9 +61,18 @@ $lemonJuice = $service->createIngredient(new CreateIngredientRequest(
     userId: $userId,
     complexIngredientParts: [$lemon->getId()->id],
 ));
+$lemonJuice2 = $service->createIngredient(new CreateIngredientRequest(
+    barId: $barId,
+    name: 'Lemon juice 2',
+    description: null,
+    strength: 0.0,
+    userId: $userId,
+));
 
-// $hierarchyService->changeParent($lemon, $fruits);
-// $hierarchyService->changeParent($lemonJuice, $juices);
+$hierarchyService->changeParent($lemon, $fruits);
+$hierarchyService->changeParent($lemonJuice, $juices);
+$hierarchyService->changeParent($lemonJuice2, $lemonJuice);
+$hierarchyService->changeParent($lemonJuice2, $juices);
 
 $t = $repo->find(new IngredientId(115868));
 dd('done');

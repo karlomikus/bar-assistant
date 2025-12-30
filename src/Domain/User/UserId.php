@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Bar;
 
-final readonly class UserId
+use BarAssistant\Support\IntegerIdentifier;
+
+final readonly class UserId extends IntegerIdentifier
 {
-    public function __construct(public int $id)
-    {
-    }
 }
