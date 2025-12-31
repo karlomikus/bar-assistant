@@ -8,7 +8,9 @@ use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\AggregateRoot;
+use BarAssistant\Domain\Support\Authors;
 use BarAssistant\Domain\Support\Color;
+use BarAssistant\Domain\Support\RecordTimestamps;
 
 final class Ingredient implements AggregateRoot
 {
@@ -30,6 +32,8 @@ final class Ingredient implements AggregateRoot
     public function __construct(
         private BarId $barId,
         private string $name,
+        private Authors $authors,
+        private RecordTimestamps $recordTimestamps,
         private ?string $description = null,
         private ?float $strength = null,
         private ?string $origin = null,
@@ -225,5 +229,15 @@ final class Ingredient implements AggregateRoot
         $this->prices[] = $price;
 
         return $this;
+    }
+
+    public function getAuthors(): Authors
+    {
+        return $this->authors;
+    }
+
+    public function getRecordTimestamps(): RecordTimestamps
+    {
+        return $this->recordTimestamps;
     }
 }

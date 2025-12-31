@@ -14,6 +14,26 @@ final readonly class RecordTimestamps
     ) {
     }
 
+    public static function createdNow(): self
+    {
+        return new self(new DateTimeImmutable(), null);
+    }
+
+    public static function createdAt(DateTimeImmutable $createdAt): self
+    {
+        return new self($createdAt, null);
+    }
+
+    public function updatedNow(): self
+    {
+        return new self($this->createdAt, new DateTimeImmutable());
+    }
+
+    public function updatedAt(?DateTimeImmutable $updatedAt): self
+    {
+        return new self($this->createdAt, $updatedAt);
+    }
+
     public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
@@ -22,5 +42,10 @@ final readonly class RecordTimestamps
     public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    public function wasUpdated(): bool
+    {
+        return $this->updatedAt !== null;
     }
 }

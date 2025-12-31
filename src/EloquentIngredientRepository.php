@@ -10,7 +10,10 @@ use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
 use Kami\Cocktail\Models\Ingredient as ModelIngredient;
 use BarAssistant\Domain\Ingredient\MaterializedPath;
+use BarAssistant\Domain\Support\Authors;
 use BarAssistant\Domain\Support\Color;
+use BarAssistant\Domain\Support\RecordTimestamps;
+use BarAssistant\Domain\User\UserId;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\Models\IngredientPrice;
@@ -51,7 +54,8 @@ final class EloquentIngredientRepository implements IngredientRepository
             $ingredientModel->description = $ingredient->getDescription();
             $ingredientModel->origin = $ingredient->getOrigin();
             $ingredientModel->color = $ingredient->getColor()?->toHexString();
-            $ingredientModel->created_user_id = 1;
+            $ingredientModel->created_user_id = $ingredient->getAuthors()->getCreatedBy()->id;
+            $ingredientModel->created_at = $ingredient->getRecordTimestamps()->getCreatedAt()->format('Y-m-d H:i:s');
             $ingredientModel->calculator_id = null;
             $ingredientModel->sugar_g_per_ml = null;
             $ingredientModel->acidity = null;
@@ -114,6 +118,8 @@ final class EloquentIngredientRepository implements IngredientRepository
             description: $model->description,
             strength: $model->strength,
             origin: $model->origin,
+            authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
+            recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at ? $model->updated_at->toDateTimeImmutable() : null),
             color: $model->color ? Color::fromHexString($model->color) : null,
         );
 

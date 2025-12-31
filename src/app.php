@@ -1,6 +1,6 @@
 <?php
 
-use BarAssistant\Application\DTO\CreateIngredientRequest;
+use BarAssistant\Application\DTO\CreateIngredientDTO;
 use BarAssistant\Application\DTO\IngredientPriceRequest;
 use BarAssistant\Application\IngredientService;
 use BarAssistant\Domain\Bar\BarId;
@@ -35,7 +35,7 @@ $userId = 586;
 
 Ingredient::where('bar_id', $barId)->delete();
 
-$fruits = $service->createIngredient(new CreateIngredientRequest(
+$fruits = $service->createIngredient(new CreateIngredientDTO(
     barId: $barId,
     name: 'Fruits',
     description: 'All kinds of fruits',
@@ -51,29 +51,29 @@ $fruits = $service->createIngredient(new CreateIngredientRequest(
         ),
     ],
 ));
-$lemon = $service->createIngredient(new CreateIngredientRequest(
+$lemon = $service->createIngredient(new CreateIngredientDTO(
     barId: $barId,
     name: 'Lemon',
     description: 'A fruit of lemon tree',
     strength: 0.0,
     userId: $userId,
 ));
-$juices = $service->createIngredient(new CreateIngredientRequest(
+$juices = $service->createIngredient(new CreateIngredientDTO(
     barId: $barId,
     name: 'Juices',
     description: null,
     strength: 0.0,
     userId: $userId,
 ));
-$lemonJuice = $service->createIngredient(new CreateIngredientRequest(
+$lemonJuice = $service->createIngredient(new CreateIngredientDTO(
     barId: $barId,
     name: 'Lemon juice',
     description: null,
     strength: 0.0,
     userId: $userId,
-    complexIngredientParts: [$lemon->getId()->id],
+    complexIngredientParts: [$lemon->id],
 ));
-$lemonJuice2 = $service->createIngredient(new CreateIngredientRequest(
+$lemonJuice2 = $service->createIngredient(new CreateIngredientDTO(
     barId: $barId,
     name: 'Lemon juice 2',
     description: null,
@@ -81,10 +81,10 @@ $lemonJuice2 = $service->createIngredient(new CreateIngredientRequest(
     userId: $userId,
 ));
 
-$hierarchyService->changeParent($lemon, $fruits);
-$hierarchyService->changeParent($lemonJuice, $juices);
-$hierarchyService->changeParent($lemonJuice2, $lemonJuice);
-$hierarchyService->changeParent($lemonJuice2, $juices);
+// $hierarchyService->changeParent($lemon, $fruits);
+// $hierarchyService->changeParent($lemonJuice, $juices);
+// $hierarchyService->changeParent($lemonJuice2, $lemonJuice);
+// $hierarchyService->changeParent($lemonJuice2, $juices);
 
 $t = $repo->find(new IngredientId(115868));
 dd('done');

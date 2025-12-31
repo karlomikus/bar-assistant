@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\DTO;
 
-final readonly class CreateIngredientRequest
+final readonly class CreateIngredientDTO
 {
     /**
      * @param int[] $images

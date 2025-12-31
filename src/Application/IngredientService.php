@@ -6,7 +6,8 @@ namespace BarAssistant\Application;
 
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Support\Color;
-use BarAssistant\Application\DTO\CreateIngredientRequest;
+use BarAssistant\Application\DTO\CreateIngredientDTO;
+use BarAssistant\Application\DTO\IngredientDTO;
 use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\IngredientPrice;
@@ -14,6 +15,9 @@ use BarAssistant\Domain\Ingredient\IngredientRepository;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
+use BarAssistant\Domain\Support\Authors;
+use BarAssistant\Domain\Support\RecordTimestamps;
+use BarAssistant\Domain\User\UserId;
 
 final readonly class IngredientService
 {
@@ -21,12 +25,17 @@ final readonly class IngredientService
     {
     }
 
-    public function createIngredient(CreateIngredientRequest $ingredientRequest): Ingredient
+    /**
+     * Creates a new ingredient based on the provided request data.
+     */
+    public function createIngredient(CreateIngredientDTO $ingredientRequest): IngredientDTO
     {
         $barId = new BarId($ingredientRequest->barId);
         $ingredient = new Ingredient(
             barId: $barId,
             name: $ingredientRequest->name,
+            recordTimestamps: RecordTimestamps::createdNow(),
+            authors: Authors::createdBy(new UserId($ingredientRequest->userId)),
             description: $ingredientRequest->description,
             strength: $ingredientRequest->strength,
             origin: $ingredientRequest->origin,
@@ -80,6 +89,6 @@ final readonly class IngredientService
 
         $ingredient = $this->ingredientRepository->save($ingredient);
 
-        return $ingredient;
+        return IngredientDTO::fromDomain($ingredient);
     }
 }
