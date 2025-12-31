@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Ingredient;
 
+use BarAssistant\Domain\Bar\BarId;
+
 interface IngredientRepository
 {
     public function find(IngredientId $id): ?Ingredient;
 
-    public function findMany(array $ids): array;
+    public function findMany(BarId $barId, array $ids): array;
 
     public function save(Ingredient $ingredient): Ingredient;
 

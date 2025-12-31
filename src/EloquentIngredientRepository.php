@@ -24,9 +24,9 @@ final class EloquentIngredientRepository implements IngredientRepository
     }
 
     /** @param IngredientId[] $ids */
-    public function findMany(array $ids): array
+    public function findMany(BarId $barId, array $ids): array
     {
-        $models = ModelIngredient::whereIn('id', array_map(fn(IngredientId $id) => $id->id, $ids))->get();
+        $models = ModelIngredient::whereIn('id', array_map(fn(IngredientId $id) => $id->id, $ids))->where('bar_id', $barId->id)->get();
 
         $ingredients = [];
         /** @var ModelIngredient $model */

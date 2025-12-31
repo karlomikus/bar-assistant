@@ -24,6 +24,9 @@ final class Ingredient implements AggregateRoot
     /** @var ImageId[] */
     private array $images = [];
 
+    /** @var IngredientPrice[] */
+    private array $prices = [];
+
     public function __construct(
         private BarId $barId,
         private string $name,
@@ -201,6 +204,21 @@ final class Ingredient implements AggregateRoot
     public function removeAllImages(): self
     {
         $this->images = [];
+
+        return $this;
+    }
+
+    /**
+     * @return IngredientPrice[]
+     */
+    public function getPrices(): array
+    {
+        return $this->prices;
+    }
+
+    public function addPrice(IngredientPrice $price): self
+    {
+        $this->prices[] = $price;
 
         return $this;
     }

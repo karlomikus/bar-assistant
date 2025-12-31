@@ -10,3 +10,5 @@
 | Image | A picture associated with a bar, ingredient, or cocktail. |
 | Temporary Image | An image that is uploaded but not yet associated with any resource. |
 | Main image | An image that is designated as the primary image for a resource that contains multiple images. Image is considered as main when it's first in the sort order. |
+| Price Category | A classification for prices of ingredients, typically based on market locale, like "Amazon US", "Local Store", etc. |
+| Ingredient Price | A monetary value associated with an ingredient amount and units within a specific price category. |

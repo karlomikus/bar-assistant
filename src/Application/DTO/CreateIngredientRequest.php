@@ -6,6 +6,11 @@ namespace BarAssistant\Application\DTO;
 
 final readonly class CreateIngredientRequest
 {
+    /**
+     * @param int[] $images
+     * @param int[] $complexIngredientParts
+     * @param IngredientPriceRequest[] $prices
+     */
     public function __construct(
         public int $barId,
         public string $name,
@@ -15,11 +20,8 @@ final readonly class CreateIngredientRequest
         public ?string $origin = null,
         public ?string $color = null,
         public ?int $parentIngredientId = null,
-        /** @var int[] */
         public array $images = [],
-        /** @var int[] */
         public array $complexIngredientParts = [],
-        /** @var IngredientPriceRequest[] */
         public array $prices = [],
         public ?int $calculatorId = null,
         public ?float $sugarContent = null,
