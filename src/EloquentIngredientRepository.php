@@ -13,6 +13,7 @@ use BarAssistant\Domain\Ingredient\MaterializedPath;
 use BarAssistant\Domain\Support\Color;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\ComplexIngredient;
+use Kami\Cocktail\Models\IngredientPrice;
 
 final class EloquentIngredientRepository implements IngredientRepository
 {
@@ -41,30 +42,41 @@ final class EloquentIngredientRepository implements IngredientRepository
     {
         DB::beginTransaction();
 
-        $model = ModelIngredient::findOrNew($ingredient->getId()?->id);
+        $ingredientModel = ModelIngredient::findOrNew($ingredient->getId()?->id);
 
         try {
-            $model->bar_id = $ingredient->getBarId()->id;
-            $model->name = $ingredient->getName();
-            $model->strength = $ingredient->getStrength();
-            $model->description = $ingredient->getDescription();
-            $model->origin = $ingredient->getOrigin();
-            $model->color = $ingredient->getColor()?->toHexString();
-            $model->created_user_id = 1;
-            $model->calculator_id = null;
-            $model->sugar_g_per_ml = null;
-            $model->acidity = null;
-            $model->distillery = null;
-            $model->units = null;
-            $model->materialized_path = $ingredient->getMaterializedPath()->toString();
-            $model->parent_ingredient_id = $ingredient->getParentIngredientId()?->id;
-            $model->save();
+            $ingredientModel->bar_id = $ingredient->getBarId()->id;
+            $ingredientModel->name = $ingredient->getName();
+            $ingredientModel->strength = $ingredient->getStrength();
+            $ingredientModel->description = $ingredient->getDescription();
+            $ingredientModel->origin = $ingredient->getOrigin();
+            $ingredientModel->color = $ingredient->getColor()?->toHexString();
+            $ingredientModel->created_user_id = 1;
+            $ingredientModel->calculator_id = null;
+            $ingredientModel->sugar_g_per_ml = null;
+            $ingredientModel->acidity = null;
+            $ingredientModel->distillery = null;
+            $ingredientModel->units = null;
+            $ingredientModel->materialized_path = $ingredient->getMaterializedPath()->toString();
+            $ingredientModel->parent_ingredient_id = $ingredient->getParentIngredientId()?->id;
+            $ingredientModel->save();
 
             foreach ($ingredient->getIngredientParts() as $ingredientPartId) {
-                $part = new ComplexIngredient();
-                $part->ingredient_id = $ingredientPartId->id;
-                $part->main_ingredient_id = $model->id;
-                $part->save();
+                $partModel = new ComplexIngredient();
+                $partModel->ingredient_id = $ingredientPartId->id;
+                $partModel->main_ingredient_id = $ingredientModel->id;
+                $partModel->save();
+            }
+
+            foreach ($ingredient->getPrices() as $price) {
+                $ingredientPriceModel = new IngredientPrice();
+                $ingredientPriceModel->ingredient_id = $ingredientModel->id;
+                $ingredientPriceModel->price_category_id = $price->getPriceCategoryId()->id;
+                $ingredientPriceModel->price = $price->getPrice()->getPriceAsMinor();
+                $ingredientPriceModel->amount = $price->getAmountWithUnits()->amountMin;
+                $ingredientPriceModel->units = $price->getAmountWithUnits()->units;
+                $ingredientPriceModel->description = $price->getDescription();
+                $ingredientPriceModel->save();
             }
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -75,7 +87,7 @@ final class EloquentIngredientRepository implements IngredientRepository
         DB::commit();
 
         if ($ingredient->isTransient()) {
-            $ingredient = $ingredient->setId(new IngredientId($model->id));
+            $ingredient = $ingredient->setId(new IngredientId($ingredientModel->id));
         }
 
         return $ingredient;

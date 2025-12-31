@@ -136,17 +136,21 @@ final class Ingredient implements AggregateRoot
 
     public function addIngredientPart(Ingredient $partIngredient): self
     {
+        if ($partIngredient->isTransient()) {
+            throw new DomainException('Ingredient part must have an ID assigned');
+        }
+
         if (!$this->getBarId()->equals($partIngredient->getBarId())) {
             throw new DomainException('All ingredient parts must belong to the same bar');
         }
 
-        if (!$this->isTransient() && $this->id->equals($partIngredient->getId())) {
+        if (!$this->isTransient() && $this->getId()->equals($partIngredient->getId())) {
             throw new DomainException('Ingredient cannot contain itself as a part');
         }
 
         foreach ($this->ingredientParts as $existingPart) {
             if ($existingPart->equals($partIngredient->getId())) {
-                throw new DomainException('This ingredient part already exists');
+                return $this;
             }
         }
 

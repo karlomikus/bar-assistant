@@ -13,7 +13,7 @@ final readonly class IngredientPrice
     public function __construct(
         private PriceCategoryId $priceCategoryId,
         private Price $price,
-        private AmountWithUnits $amount,
+        private AmountWithUnits $amountWithUnits,
         private ?string $description = null,
     ) {
     }
@@ -23,7 +23,7 @@ final readonly class IngredientPrice
         return new self(
             priceCategoryId: $priceCategoryId,
             price: Price::createFromMinor($price, $currency),
-            amount: new AmountWithUnits($amount, new Unit($units)),
+            amountWithUnits: new AmountWithUnits($amount, new Unit($units)),
             description: $description,
         );
     }
@@ -38,9 +38,9 @@ final readonly class IngredientPrice
         return $this->price;
     }
 
-    public function getAmount(): AmountWithUnits
+    public function getAmountWithUnits(): AmountWithUnits
     {
-        return $this->amount;
+        return $this->amountWithUnits;
     }
 
     public function getDescription(): ?string

@@ -11,7 +11,7 @@ use DomainException;
 
 final class PriceCategory implements AggregateRoot
 {
-    private ?PriceCategoryId $priceCategoryId = null;
+    private ?PriceCategoryId $id = null;
 
     /**
      * @param BarId $barId Bar identifier
@@ -32,12 +32,23 @@ final class PriceCategory implements AggregateRoot
 
     public function getId(): ?PriceCategoryId
     {
-        return $this->priceCategoryId;
+        return $this->id;
+    }
+
+    public function setId(PriceCategoryId $id): self
+    {
+        if ($this->isTransient() === false) {
+            throw new DomainException('Cannot change the ID of an existing price category');
+        }
+
+        $this->id = $id;
+
+        return $this;
     }
 
     public function isTransient(): bool
     {
-        return $this->priceCategoryId === null;
+        return $this->id === null;
     }
 
     public function getBarId(): BarId

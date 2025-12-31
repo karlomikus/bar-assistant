@@ -13,6 +13,8 @@ interface AggregateRoot
 
     /**
      * Check if the aggregate root has not been persisted yet
+     *
+     * @phpstan-assert-if-true null $this->getId()
      */
     public function isTransient(): bool;
 }

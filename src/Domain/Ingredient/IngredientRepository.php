@@ -10,6 +10,10 @@ interface IngredientRepository
 {
     public function find(IngredientId $id): ?Ingredient;
 
+    /**
+     * @param IngredientId[] $ids
+     * @return Ingredient[]
+     */
     public function findMany(BarId $barId, array $ids): array;
 
     public function save(Ingredient $ingredient): Ingredient;

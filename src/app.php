@@ -1,12 +1,14 @@
 <?php
 
 use BarAssistant\Application\DTO\CreateIngredientRequest;
+use BarAssistant\Application\DTO\IngredientPriceRequest;
 use BarAssistant\Application\IngredientService;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\MaterializedPath;
 use BarAssistant\EloquentIngredientRepository;
+use BarAssistant\EloquentPriceCategoryRepository;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Http\Kernel;
 use Kami\Cocktail\Models\Ingredient;
@@ -24,8 +26,9 @@ $response = $kernel->handle(
 $kernel->terminate($request, $response);
 
 $repo = new EloquentIngredientRepository();
+$priceRepo = new EloquentPriceCategoryRepository();
 $hierarchyService = new IngredientHierarchyManager($repo);
-$service = new IngredientService($repo, $hierarchyService);
+$service = new IngredientService($repo, $priceRepo);
 
 $barId = 583;
 $userId = 586;
@@ -38,6 +41,15 @@ $fruits = $service->createIngredient(new CreateIngredientRequest(
     description: 'All kinds of fruits',
     strength: 0.0,
     userId: $userId,
+    prices: [
+        new IngredientPriceRequest(
+            priceCategoryId: 27,
+            price: 500,
+            amount: 1.0,
+            units: 'kg',
+            description: 'Base price for fruits',
+        ),
+    ],
 ));
 $lemon = $service->createIngredient(new CreateIngredientRequest(
     barId: $barId,

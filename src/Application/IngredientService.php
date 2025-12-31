@@ -21,7 +21,7 @@ final readonly class IngredientService
     {
     }
 
-    public function createIngredient(CreateIngredientRequest $ingredientRequest)
+    public function createIngredient(CreateIngredientRequest $ingredientRequest): Ingredient
     {
         $barId = new BarId($ingredientRequest->barId);
         $ingredient = new Ingredient(
@@ -52,12 +52,16 @@ final readonly class IngredientService
             /** @var array<int, PriceCategory> */
             $priceCategoriesById = [];
             foreach ($priceCategories as $priceCategory) {
+                if ($priceCategory->getId() === null) {
+                    continue;
+                }
+
                 $priceCategoriesById[$priceCategory->getId()->id] = $priceCategory;
             }
 
             foreach ($ingredientRequest->prices as $priceData) {
                 $priceCategory = $priceCategoriesById[$priceData->priceCategoryId] ?? null;
-                if ($priceCategory === null) {
+                if ($priceCategory === null || $priceCategory->getId() === null) {
                     continue;
                 }
 
