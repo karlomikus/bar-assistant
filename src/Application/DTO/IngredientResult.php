@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\DTO;
 
-final readonly class IngredientDTO
+final readonly class IngredientResult
 {
     public function __construct(
         public int $id,
