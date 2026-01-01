@@ -6,6 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OAT;
+use Laravel\Mcp\Request as MCPRequest;
 
 #[OAT\Schema(required: ['name', 'instructions'])]
 readonly class CocktailRequest
@@ -74,6 +75,24 @@ readonly class CocktailRequest
             $request->input('utensils', []),
             $request->filled('parent_cocktail_id') ? $request->integer('parent_cocktail_id') : null,
             $request->filled('year') ? $request->integer('year') : null,
+        );
+    }
+
+    public static function fromMCPRequest(MCPRequest $request, ?int $barId = null): self
+    {
+        // /** @var array<mixed> */
+        // $formIngredients = $request->post('ingredients', []);
+
+        // $ingredients = [];
+        // foreach ($formIngredients as $formIngredient) {
+        //     $ingredients[] = CocktailIngredientRequest::fromArray($formIngredient);
+        // }
+
+        return new self(
+            $request->get('name'),
+            $request->get('instructions'),
+            $request->user()->id,
+            $barId ?? (int) bar()->id,
         );
     }
 }
