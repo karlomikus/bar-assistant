@@ -7,7 +7,10 @@ namespace BarAssistant\Application;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Support\Color;
 use BarAssistant\Application\DTO\CreateIngredientDTO;
+use BarAssistant\Application\DTO\IngredientPriceRequest;
 use BarAssistant\Application\DTO\IngredientResult;
+use BarAssistant\Application\DTO\UpdateIngredientDTO;
+use BarAssistant\Application\Exception\ApplicationServiceException;
 use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\IngredientPrice;
@@ -15,8 +18,6 @@ use BarAssistant\Domain\Ingredient\IngredientRepository;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
-use BarAssistant\Domain\Support\Authors;
-use BarAssistant\Domain\Support\RecordTimestamps;
 use BarAssistant\Domain\User\UserId;
 
 final readonly class IngredientService
@@ -33,62 +34,122 @@ final readonly class IngredientService
         $barId = new BarId($ingredientRequest->barId);
         $ingredient = new Ingredient(
             barId: $barId,
+        );
+
+        $ingredient->updateDetails(
             name: $ingredientRequest->name,
-            recordTimestamps: RecordTimestamps::createdNow(),
-            authors: Authors::createdBy(new UserId($ingredientRequest->userId)),
             description: $ingredientRequest->description,
             strength: $ingredientRequest->strength,
             origin: $ingredientRequest->origin,
             color: $ingredientRequest->color ? Color::fromHexString($ingredientRequest->color) : null,
         );
 
+        $ingredient->wasCreatedBy(new UserId($ingredientRequest->userId));
+
         if (count($ingredientRequest->complexIngredientParts) > 0) {
-            $ingredientPartCandidates = $this->ingredientRepository->findMany($barId, array_map(
-                fn (int $id) => new IngredientId($id),
-                $ingredientRequest->complexIngredientParts
-            ));
-            foreach ($ingredientPartCandidates as $part) {
-                $ingredient->addIngredientPart($part);
-            }
+            $ingredient = $this->assignIngredientParts($ingredient, $ingredientRequest->complexIngredientParts);
         }
 
         if (count($ingredientRequest->prices) > 0) {
-            $priceCategories = $this->priceCategoryRepository->findMany($barId, array_map(
-                fn (object $priceData) => new PriceCategoryId($priceData->priceCategoryId),
-                $ingredientRequest->prices
-            ));
-
-            /** @var array<int, PriceCategory> */
-            $priceCategoriesById = [];
-            foreach ($priceCategories as $priceCategory) {
-                if ($priceCategory->getId() === null) {
-                    continue;
-                }
-
-                $priceCategoriesById[$priceCategory->getId()->id] = $priceCategory;
-            }
-
-            foreach ($ingredientRequest->prices as $priceData) {
-                $priceCategory = $priceCategoriesById[$priceData->priceCategoryId] ?? null;
-                if ($priceCategory === null || $priceCategory->getId() === null) {
-                    continue;
-                }
-
-                $ingredient->addPrice(
-                    IngredientPrice::create(
-                        priceCategoryId: $priceCategory->getId(),
-                        price: $priceData->price,
-                        currency: $priceCategory->getCurrency()->getCurrencyCode(),
-                        amount: $priceData->amount,
-                        units: $priceData->units,
-                        description: $priceData->description,
-                    )
-                );
-            }
+            $ingredient = $this->assignIngredientPrices($ingredient, $ingredientRequest->prices);
         }
 
         $ingredient = $this->ingredientRepository->save($ingredient);
 
-        return IngredientResult::fromDomain($ingredient);
+        return IngredientResult::fromIngredient($ingredient);
+    }
+
+    public function updateIngredient(UpdateIngredientDTO $ingredientRequest): IngredientResult
+    {
+        $ingredient = $this->ingredientRepository->findById(new IngredientId($ingredientRequest->ingredientId));
+        if ($ingredient === null) {
+            throw new ApplicationServiceException('The ingredient to update was not found');
+        }
+
+        $ingredient->updateDetails(
+            name: $ingredientRequest->name,
+            description: $ingredientRequest->description,
+            strength: $ingredientRequest->strength,
+            origin: $ingredientRequest->origin,
+            color: $ingredientRequest->color ? Color::fromHexString($ingredientRequest->color) : null,
+        );
+
+        $ingredient->wasUpdatedBy(new UserId($ingredientRequest->userId));
+
+        $ingredient->removeAllIngredientParts();
+        if (count($ingredientRequest->complexIngredientParts) > 0) {
+            $ingredient = $this->assignIngredientParts($ingredient, $ingredientRequest->complexIngredientParts);
+        }
+
+        $ingredient->removeAllPrices();
+        if (count($ingredientRequest->prices) > 0) {
+            $ingredient = $this->assignIngredientPrices($ingredient, $ingredientRequest->prices);
+        }
+
+        $ingredient = $this->ingredientRepository->save($ingredient);
+
+        return IngredientResult::fromIngredient($ingredient);
+    }
+
+    /**
+     * Find and assign ingredient parts to a complex ingredient.
+     *
+     * @param non-empty-array<int> $ingredientPartIds
+     */
+    private function assignIngredientParts(Ingredient $ingredient, array $ingredientPartIds): Ingredient
+    {
+        $ingredientPartCandidates = $this->ingredientRepository->findMany($ingredient->getBarId(), array_map(
+            fn (int $id) => new IngredientId($id),
+            $ingredientPartIds
+        ));
+
+        foreach ($ingredientPartCandidates as $part) {
+            $ingredient->addIngredientPart($part);
+        }
+
+        return $ingredient;
+    }
+
+    /**
+     * Find and assign ingredient prices to an ingredient.
+     *
+     * @param non-empty-array<IngredientPriceRequest> $prices
+     */
+    private function assignIngredientPrices(Ingredient $ingredient, array $prices): Ingredient
+    {
+        $priceCategories = $this->priceCategoryRepository->findMany($ingredient->getBarId(), array_map(
+            fn (object $priceData) => new PriceCategoryId($priceData->priceCategoryId),
+            $prices
+        ));
+
+        /** @var array<int, PriceCategory> */
+        $priceCategoriesById = [];
+        foreach ($priceCategories as $priceCategory) {
+            if ($priceCategory->isTransient()) {
+                continue;
+            }
+
+            $priceCategoriesById[$priceCategory->getId()->id] = $priceCategory;
+        }
+
+        foreach ($prices as $priceData) {
+            $priceCategory = $priceCategoriesById[$priceData->priceCategoryId] ?? null;
+            if ($priceCategory === null || $priceCategory->isTransient()) {
+                continue;
+            }
+
+            $ingredient->addPrice(
+                IngredientPrice::create(
+                    priceCategoryId: $priceCategory->getId(),
+                    price: $priceData->price,
+                    currency: $priceCategory->getCurrency()->getCurrencyCode(),
+                    amount: $priceData->amount,
+                    units: $priceData->units,
+                    description: $priceData->description,
+                )
+            );
+        }
+
+        return $ingredient;
     }
 }

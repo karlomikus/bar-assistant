@@ -2,6 +2,7 @@
 
 use BarAssistant\Application\DTO\CreateIngredientDTO;
 use BarAssistant\Application\DTO\IngredientPriceRequest;
+use BarAssistant\Application\DTO\UpdateIngredientDTO;
 use BarAssistant\Application\IngredientService;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
@@ -81,10 +82,16 @@ $lemonJuice2 = $service->createIngredient(new CreateIngredientDTO(
     userId: $userId,
 ));
 
+$service->updateIngredient(new UpdateIngredientDTO(
+    ingredientId: $lemon->id,
+    name: 'Lemon juice 2',
+    userId: $userId,
+));
+
 // $hierarchyService->changeParent($lemon, $fruits);
 // $hierarchyService->changeParent($lemonJuice, $juices);
 // $hierarchyService->changeParent($lemonJuice2, $lemonJuice);
 // $hierarchyService->changeParent($lemonJuice2, $juices);
 
-$t = $repo->find(new IngredientId(115868));
+$t = $repo->findById(new IngredientId(115868));
 dd('done');

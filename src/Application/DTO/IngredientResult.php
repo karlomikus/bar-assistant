@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\DTO;
 
+use BarAssistant\Domain\Ingredient\Ingredient;
+
 final readonly class IngredientResult
 {
     public function __construct(
@@ -13,7 +15,7 @@ final readonly class IngredientResult
     ) {
     }
 
-    public static function fromDomain(\BarAssistant\Domain\Ingredient\Ingredient $ingredient): self
+    public static function fromIngredient(Ingredient $ingredient): self
     {
         return new self(
             id: $ingredient->getId() ? $ingredient->getId()->id : 0,

@@ -11,6 +11,8 @@ use BarAssistant\Domain\AggregateRoot;
 use BarAssistant\Domain\Support\Authors;
 use BarAssistant\Domain\Support\Color;
 use BarAssistant\Domain\Support\RecordTimestamps;
+use BarAssistant\Domain\User\UserId;
+use DateTimeImmutable;
 
 final class Ingredient implements AggregateRoot
 {
@@ -29,20 +31,23 @@ final class Ingredient implements AggregateRoot
     /** @var IngredientPrice[] */
     private array $prices = [];
 
+    private Authors $authors;
+
+    private RecordTimestamps $recordTimestamps;
+
+    private string $name;
+
+    private ?string $description = null;
+
+    private ?float $strength = null;
+
+    private ?string $origin = null;
+
+    private ?Color $color = null;
+
     public function __construct(
         private BarId $barId,
-        private string $name,
-        private Authors $authors,
-        private RecordTimestamps $recordTimestamps,
-        private ?string $description = null,
-        private ?float $strength = null,
-        private ?string $origin = null,
-        private ?Color $color = null,
     ) {
-        if (trim($name) === '') {
-            throw new DomainException('Ingredient name cannot be empty');
-        }
-
         $this->materializedPath = MaterializedPath::root();
     }
 
@@ -173,6 +178,13 @@ final class Ingredient implements AggregateRoot
         return $this;
     }
 
+    public function removeAllIngredientParts(): self
+    {
+        $this->ingredientParts = [];
+
+        return $this;
+    }
+
     public function isAncestorOf(self $other): bool
     {
         return $this->materializedPath->isAncestorOf($other->getMaterializedPath());
@@ -231,6 +243,13 @@ final class Ingredient implements AggregateRoot
         return $this;
     }
 
+    public function removeAllPrices(): self
+    {
+        $this->prices = [];
+
+        return $this;
+    }
+
     public function getAuthors(): Authors
     {
         return $this->authors;
@@ -239,5 +258,41 @@ final class Ingredient implements AggregateRoot
     public function getRecordTimestamps(): RecordTimestamps
     {
         return $this->recordTimestamps;
+    }
+
+    public function updateDetails(
+        string $name,
+        ?string $description = null,
+        ?float $strength = null,
+        ?string $origin = null,
+        ?Color $color = null,
+    ): self {
+        if (trim($name) === '') {
+            throw new DomainException('Ingredient name cannot be empty');
+        }
+
+        if ($strength !== null && ($strength < 0.0 || $strength > 100.0)) {
+            throw new DomainException('Ingredient strength must be between 0.0 and 100.0');
+        }
+
+        $this->name = $name;
+        $this->description = $description;
+        $this->strength = $strength;
+        $this->origin = $origin;
+        $this->color = $color;
+
+        return $this;
+    }
+
+    public function wasUpdatedBy(UserId $userId, ?DateTimeImmutable $updatedAt = null): void
+    {
+        $this->authors = $this->authors->updatedBy($userId);
+        $this->recordTimestamps = $updatedAt ? $this->recordTimestamps->updatedAt($updatedAt) : $this->recordTimestamps->updatedNow();
+    }
+
+    public function wasCreatedBy(UserId $userId, ?DateTimeImmutable $createdAt = null): void
+    {
+        $this->authors = Authors::createdBy($userId);
+        $this->recordTimestamps = $createdAt ? RecordTimestamps::createdAt($createdAt) : RecordTimestamps::createdNow();
     }
 }

@@ -20,7 +20,7 @@ use Kami\Cocktail\Models\IngredientPrice;
 
 final class EloquentIngredientRepository implements IngredientRepository
 {
-    public function find(IngredientId $id): ?Ingredient
+    public function findById(IngredientId $id): ?Ingredient
     {
         $model = ModelIngredient::findOrFail($id->id);
 
@@ -114,14 +114,20 @@ final class EloquentIngredientRepository implements IngredientRepository
     {
         $ingredient = new Ingredient(
             barId: new BarId($model->bar_id),
+        );
+
+        $ingredient->updateDetails(
             name: $model->name,
             description: $model->description,
             strength: $model->strength,
             origin: $model->origin,
-            authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
-            recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at ? $model->updated_at->toDateTimeImmutable() : null),
             color: $model->color ? Color::fromHexString($model->color) : null,
         );
+
+        $ingredient->wasCreatedBy(new UserId($model->created_user_id), $model->created_at->toDateTimeImmutable());
+        if ($model->updated_user_id !== null) {
+            $ingredient->wasUpdatedBy(new UserId($model->updated_user_id), $model->updated_at?->toDateTimeImmutable());
+        }
 
         $ingredient
             ->setId(new IngredientId($model->id))

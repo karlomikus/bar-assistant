@@ -8,7 +8,7 @@ use BarAssistant\Domain\Bar\BarId;
 
 interface IngredientRepository
 {
-    public function find(IngredientId $id): ?Ingredient;
+    public function findById(IngredientId $id): ?Ingredient;
 
     /**
      * @param IngredientId[] $ids
