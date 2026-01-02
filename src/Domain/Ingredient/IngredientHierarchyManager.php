@@ -52,7 +52,6 @@ final readonly class IngredientHierarchyManager
         $descendants = $this->repository->findDescendants($ingredient);
 
         // Store the old materialized path structure
-        $oldParentIngredientId = $ingredient->getParentIngredientId();
         $oldPath = $ingredient->getMaterializedPath();
 
         // Update path
@@ -61,31 +60,27 @@ final readonly class IngredientHierarchyManager
         // Calculate path difference for updating descendants
         $newPath = $ingredient->getMaterializedPath();
 
-        // Descendats are a flat array and we need to update their paths and parent ids
+        // The old base path for descendants was oldPath + ingredient's ID
+        $oldBasePath = $oldPath->append($ingredient->getId());
+        // The new base path for descendants is newPath + ingredient's ID
+        $newBasePath = $newPath->append($ingredient->getId());
+
+        // Descendants are a flat array and we need to update their paths and parent ids
         foreach ($descendants as $descendant) {
-            if ($descendant->getId()->equals($ingredient->getId())) {
-                continue; // Skip the moved ingredient itself
+            // Get the relative path (the part after the moved ingredient)
+            $relativePath = $descendant->getMaterializedPath()->getRelativePath($oldBasePath);
+
+            // Build the new path by prepending the new base path
+            $updatedPath = $newBasePath;
+            foreach ($relativePath->getAncestorIds() as $ancestorId) {
+                $updatedPath = $updatedPath->append($ancestorId);
             }
 
-            // Direct child of the moved ingredient
-            if ($descendant->getParentIngredientId()->equals($oldParentIngredientId)) {
-                $descendant->setParentIngredientId($newParent->getId());
-            }
+            $descendant->setMaterializedPath($updatedPath);
 
-            // $descendant->materialized_path = str_replace($oldPath, $newPath ?? '', $descendant->materialized_path);
-
-            // Calculate new materialized path
-            $relativePath = substr(
-                $descendant->getMaterializedPath()->toString(),
-                strlen($oldPath->toString())
-            );
-
-            $newMaterializedPathString = $newPath->toString() . $relativePath;
-            $descendant->setMaterializedPath(MaterializedPath::fromString($newMaterializedPathString));
-
-            // // Update parent ingredient id
-            // $parentId = $descendant->getMaterializedPath()->getLastId();
-            // $descendant->setParentIngredientId($parentId);
+            // Note: parentIngredientId doesn't change for descendants - they still reference
+            // their immediate parent within the subtree. Only the moved ingredient's
+            // parentIngredientId changes, which is handled by setAsVariantOf().
         }
 
         $this->repository->saveHierarchyChanges($ingredient, $descendants);
@@ -117,8 +112,30 @@ final readonly class IngredientHierarchyManager
         // Make the ingredient a root
         $ingredient->setAsVariantOf(null);
 
-        // New path is root
+        // New path is root (empty)
         $newPath = $ingredient->getMaterializedPath();
+
+        // The old base path for descendants was oldPath + ingredient's ID
+        $oldBasePath = $oldPath->append($ingredient->getId());
+        // The new base path for descendants is newPath + ingredient's ID (just the ingredient's ID since it's now root)
+        $newBasePath = $newPath->append($ingredient->getId());
+
+        // Update all descendants' paths
+        foreach ($descendants as $descendant) {
+            // Get the relative path (the part after the moved ingredient)
+            $relativePath = $descendant->getMaterializedPath()->getRelativePath($oldBasePath);
+
+            // Build the new path by prepending the new base path
+            $updatedPath = $newBasePath;
+            foreach ($relativePath->getAncestorIds() as $ancestorId) {
+                $updatedPath = $updatedPath->append($ancestorId);
+            }
+
+            $descendant->setMaterializedPath($updatedPath);
+
+            // parentIngredientId doesn't change for descendants - they still reference
+            // their immediate parent within the subtree
+        }
 
         $this->repository->saveHierarchyChanges($ingredient, $descendants);
     }
