@@ -4,20 +4,24 @@ declare(strict_types=1);
 
 namespace BarAssistant;
 
+use Throwable;
 use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\Ingredient\Ingredient;
-use BarAssistant\Domain\Ingredient\IngredientPrice;
-use BarAssistant\Domain\Ingredient\IngredientRepository;
-use Kami\Cocktail\Models\Ingredient as ModelIngredient;
-use BarAssistant\Domain\Ingredient\MaterializedPath;
-use BarAssistant\Domain\Support\AmountWithUnits;
+use BarAssistant\Domain\Calculator\CalculatorId;
+use BarAssistant\Domain\Image\ImageId;
+use Illuminate\Support\Facades\DB;
+use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Support\Unit;
 use BarAssistant\Domain\Support\Color;
 use BarAssistant\Domain\Support\Price;
-use BarAssistant\Domain\Support\Unit;
-use BarAssistant\Domain\User\UserId;
-use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\ComplexIngredient;
+use BarAssistant\Domain\Ingredient\Ingredient;
+use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Domain\Support\AmountWithUnits;
+use BarAssistant\Domain\Ingredient\IngredientPrice;
+use BarAssistant\Domain\Ingredient\MaterializedPath;
+use Kami\Cocktail\Models\Ingredient as ModelIngredient;
+use BarAssistant\Domain\Ingredient\IngredientRepository;
+use Kami\Cocktail\Models\Image as ModelImage;
 use Kami\Cocktail\Models\IngredientPrice as ModelIngredientPrice;
 
 final class EloquentIngredientRepository implements IngredientRepository
@@ -50,9 +54,7 @@ final class EloquentIngredientRepository implements IngredientRepository
     public function save(Ingredient $ingredient): Ingredient
     {
         DB::beginTransaction();
-
         $ingredientModel = ModelIngredient::findOrNew($ingredient->getId()?->id);
-
         try {
             $ingredientModel->bar_id = $ingredient->getBarId()->id;
             $ingredientModel->name = $ingredient->getName();
@@ -62,14 +64,23 @@ final class EloquentIngredientRepository implements IngredientRepository
             $ingredientModel->color = $ingredient->getColor()?->toHexString();
             $ingredientModel->created_user_id = $ingredient->getAuthors()->getCreatedBy()->id;
             $ingredientModel->created_at = $ingredient->getRecordTimestamps()->getCreatedAt()->format('Y-m-d H:i:s');
-            $ingredientModel->calculator_id = null;
-            $ingredientModel->sugar_g_per_ml = null;
-            $ingredientModel->acidity = null;
-            $ingredientModel->distillery = null;
-            $ingredientModel->units = null;
+            $ingredientModel->calculator_id = $ingredient->getCalculatorId()?->id;
+            $ingredientModel->sugar_g_per_ml = $ingredient->getSugarContent();
+            $ingredientModel->acidity = $ingredient->getAcidity();
+            $ingredientModel->distillery = $ingredient->getDistillery();
+            $ingredientModel->units = $ingredient->getUnits()?->value;
             $ingredientModel->materialized_path = $ingredient->getMaterializedPath()->toString();
             $ingredientModel->parent_ingredient_id = $ingredient->getParentIngredientId()?->id;
+            if ($ingredient->getAuthors()->isUpdated()) {
+                $ingredientModel->updated_user_id = $ingredient->getAuthors()->getUpdatedBy()?->id;
+                $ingredientModel->updated_at = $ingredient->getRecordTimestamps()->getUpdatedAt()?->format('Y-m-d H:i:s');
+                $ingredientModel->save();
+            }
             $ingredientModel->save();
+
+            if ($ingredient->isTransient()) {
+                $ingredient = $ingredient->setId(new IngredientId($ingredientModel->id));
+            }
 
             foreach ($ingredient->getIngredientParts() as $ingredientPartId) {
                 $partModel = new ComplexIngredient();
@@ -88,16 +99,15 @@ final class EloquentIngredientRepository implements IngredientRepository
                 $ingredientPriceModel->description = $price->getDescription();
                 $ingredientPriceModel->save();
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             DB::rollBack();
-
             throw $e;
         }
-
         DB::commit();
 
-        if ($ingredient->isTransient()) {
-            $ingredient = $ingredient->setId(new IngredientId($ingredientModel->id));
+        if (count($ingredient->getImages()) > 0) {
+            $imageModels = ModelImage::findOrFail(array_map(fn (ImageId $img): int => $img->id, $ingredient->getImages()));
+            $ingredientModel->attachImages($imageModels);
         }
 
         return $ingredient;
@@ -147,6 +157,11 @@ final class EloquentIngredientRepository implements IngredientRepository
             strength: $model->strength,
             origin: $model->origin,
             color: $model->color ? Color::fromHexString($model->color) : null,
+            calculatorId: $model->calculator_id ? new CalculatorId($model->calculator_id) : null,
+            sugarContent: $model->sugar_g_per_ml,
+            acidity: $model->acidity,
+            distillery: $model->distillery,
+            units: $model->units ? new Unit($model->units) : null,
         );
 
         $ingredient->wasCreatedBy(new UserId($model->created_user_id), $model->created_at->toDateTimeImmutable());

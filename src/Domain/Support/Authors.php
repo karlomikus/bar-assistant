@@ -33,4 +33,9 @@ final readonly class Authors
     {
         return new self($this->createdBy, $userId);
     }
+
+    public function isUpdated(): bool
+    {
+        return $this->updatedBy !== null;
+    }
 }

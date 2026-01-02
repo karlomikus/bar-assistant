@@ -8,9 +8,11 @@ use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\AggregateRoot;
+use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\Support\Authors;
 use BarAssistant\Domain\Support\Color;
 use BarAssistant\Domain\Support\RecordTimestamps;
+use BarAssistant\Domain\Support\Unit;
 use BarAssistant\Domain\User\UserId;
 use DateTimeImmutable;
 
@@ -32,14 +34,15 @@ final class Ingredient implements AggregateRoot
     private RecordTimestamps $recordTimestamps;
 
     private string $name;
-
     private ?string $description = null;
-
     private ?float $strength = null;
-
     private ?string $origin = null;
-
     private ?Color $color = null;
+    private ?CalculatorId $calculatorId = null;
+    private ?float $sugarContent = null;
+    private ?float $acidity = null;
+    private ?string $distillery = null;
+    private ?Unit $units = null;
 
     public function __construct(
         private BarId $barId,
@@ -274,6 +277,11 @@ final class Ingredient implements AggregateRoot
         ?float $strength = null,
         ?string $origin = null,
         ?Color $color = null,
+        ?CalculatorId $calculatorId = null,
+        ?float $sugarContent = null,
+        ?float $acidity = null,
+        ?string $distillery = null,
+        ?Unit $units = null,
     ): self {
         if (trim($name) === '') {
             throw new DomainException('Ingredient name cannot be empty');
@@ -288,6 +296,11 @@ final class Ingredient implements AggregateRoot
         $this->strength = $strength;
         $this->origin = $origin;
         $this->color = $color;
+        $this->calculatorId = $calculatorId;
+        $this->sugarContent = $sugarContent;
+        $this->acidity = $acidity;
+        $this->distillery = $distillery;
+        $this->units = $units;
 
         return $this;
     }
@@ -302,5 +315,30 @@ final class Ingredient implements AggregateRoot
     {
         $this->authors = Authors::createdBy($userId);
         $this->recordTimestamps = $createdAt ? RecordTimestamps::createdAt($createdAt) : RecordTimestamps::createdNow();
+    }
+
+    public function getCalculatorId(): ?CalculatorId
+    {
+        return $this->calculatorId;
+    }
+
+    public function getSugarContent(): ?float
+    {
+        return $this->sugarContent;
+    }
+
+    public function getAcidity(): ?float
+    {
+        return $this->acidity;
+    }
+
+    public function getDistillery(): ?string
+    {
+        return $this->distillery;
+    }
+
+    public function getUnits(): ?Unit
+    {
+        return $this->units;
     }
 }

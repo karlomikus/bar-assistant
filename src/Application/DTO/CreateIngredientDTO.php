@@ -30,4 +30,35 @@ final readonly class CreateIngredientDTO
         public ?string $units = null,
     ) {
     }
+
+    public static function fromIlluminateRequest(\Illuminate\Http\Request $request, int $barId): self
+    {
+        $formPrices = $request->input('prices', []);
+
+        $prices = [];
+        if (is_array($formPrices)) {
+            foreach ($formPrices as $price) {
+                $prices[] = \Kami\Cocktail\OpenAPI\Schemas\IngredientPriceRequest::fromArray($price);
+            }
+        }
+
+        return new self(
+            $barId,
+            $request->input('name'),
+            $request->user()->id,
+            $request->float('strength'),
+            $request->input('description'),
+            $request->input('origin'),
+            $request->input('color'),
+            $request->filled('parent_ingredient_id') ? $request->integer('parent_ingredient_id') : null,
+            $request->input('images', []),
+            $request->input('complex_ingredient_part_ids', []),
+            $prices,
+            $request->filled('calculator_id') ? $request->integer('calculator_id') : null,
+            $request->filled('sugar_g_per_ml') ? $request->float('sugar_g_per_ml') : null,
+            $request->filled('acidity') ? $request->float('acidity') : null,
+            $request->input('distillery'),
+            $request->input('units'),
+        );
+    }
 }

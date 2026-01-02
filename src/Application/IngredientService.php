@@ -11,6 +11,7 @@ use BarAssistant\Application\DTO\IngredientPriceRequest;
 use BarAssistant\Application\DTO\IngredientResult;
 use BarAssistant\Application\DTO\UpdateIngredientDTO;
 use BarAssistant\Application\Exception\ApplicationServiceException;
+use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
 use BarAssistant\Domain\Ingredient\IngredientId;
@@ -19,6 +20,7 @@ use BarAssistant\Domain\Ingredient\IngredientRepository;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
+use BarAssistant\Domain\Support\Unit;
 use BarAssistant\Domain\User\UserId;
 
 final readonly class IngredientService
@@ -48,6 +50,11 @@ final readonly class IngredientService
             strength: $ingredientRequest->strength,
             origin: $ingredientRequest->origin,
             color: $ingredientRequest->color ? Color::fromHexString($ingredientRequest->color) : null,
+            calculatorId: $ingredientRequest->calculatorId ? new CalculatorId($ingredientRequest->calculatorId) : null,
+            sugarContent: $ingredientRequest->sugarContent,
+            acidity: $ingredientRequest->acidity,
+            distillery: $ingredientRequest->distillery,
+            units: $ingredientRequest->units ? new Unit($ingredientRequest->units) : null
         );
 
         $ingredient->wasCreatedBy(new UserId($ingredientRequest->userId));
@@ -87,6 +94,11 @@ final readonly class IngredientService
             strength: $ingredientRequest->strength,
             origin: $ingredientRequest->origin,
             color: $ingredientRequest->color ? Color::fromHexString($ingredientRequest->color) : null,
+            calculatorId: $ingredientRequest->calculatorId ? new CalculatorId($ingredientRequest->calculatorId) : null,
+            sugarContent: $ingredientRequest->sugarContent,
+            acidity: $ingredientRequest->acidity,
+            distillery: $ingredientRequest->distillery,
+            units: $ingredientRequest->units ? new Unit($ingredientRequest->units) : null
         );
 
         $ingredient->wasUpdatedBy(new UserId($ingredientRequest->userId));
