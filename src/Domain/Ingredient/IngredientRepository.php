@@ -8,41 +8,42 @@ use BarAssistant\Domain\Bar\BarId;
 
 interface IngredientRepository
 {
+    /**
+     * Find an ingredient by its ID
+     */
     public function findById(IngredientId $id): ?Ingredient;
 
     /**
+     * Find multiple ingredients by their IDs within a specific bar
+     *
      * @param IngredientId[] $ids
      * @return Ingredient[]
      */
     public function findMany(BarId $barId, array $ids): array;
 
+    /**
+     * Save an ingredient (insert or update)
+     */
     public function save(Ingredient $ingredient): Ingredient;
 
     /**
      * Validate and save an ingredient with all its descendants after hierarchy change.
      *
-     * This method should be saved atomic to ensure data integrity.
+     * This method should be atomic to ensure data integrity.
      *
      * @param Ingredient $ingredient The ingredient that was moved
      * @param Ingredient[] $descendants All affected descendants
      */
     public function saveHierarchyChanges(Ingredient $ingredient, array $descendants): void;
 
-    // public function delete(IngredientId $id): void;
-
-    /**
-     * Find all root ingredients (ingredients without a parent)
-     *
-     * @return Ingredient[]
-     */
-    // public function findRoots(): array;
+    public function delete(IngredientId $id): void;
 
     /**
      * Find all direct children of an ingredient
      *
      * @return Ingredient[]
      */
-    // public function findChildren(IngredientId $parentId): array;
+    public function findChildren(IngredientId $parentId): array;
 
     /**
      * Find all descendants (children, grandchildren, etc.) of an ingredient
@@ -57,17 +58,5 @@ interface IngredientRepository
      *
      * @return Ingredient[]
      */
-    // public function findAncestors(IngredientId $descendantId): array;
-
-    /**
-     * Find the entire subtree rooted at the given ingredient (including the ingredient itself)
-     *
-     * @return Ingredient[]
-     */
-    // public function findSubtree(IngredientId $rootId): array;
-
-    /**
-     * Check if an ingredient exists
-     */
-    // public function exists(IngredientId $id): bool;
+    public function findAncestors(IngredientId $descendantId): array;
 }

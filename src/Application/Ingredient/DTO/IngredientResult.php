@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BarAssistant\Application\DTO;
+namespace BarAssistant\Application\Ingredient\DTO;
 
 use BarAssistant\Domain\Ingredient\Ingredient;
 

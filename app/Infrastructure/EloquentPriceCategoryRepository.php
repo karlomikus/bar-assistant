@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BarAssistant;
+namespace Kami\Cocktail\Infrastructure;
 
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;

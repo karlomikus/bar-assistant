@@ -125,9 +125,15 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $ingredient = $ingredientService->createIngredient(
-            IngredientDTO::fromIlluminateRequest($request, bar()->id)
+        $ingredientRepo = new \BarAssistant\EloquentIngredientRepository();
+        $priceRepo = new \BarAssistant\EloquentPriceCategoryRepository();
+        $service = new \BarAssistant\Application\Ingredient\IngredientService($ingredientRepo, $priceRepo);
+
+        $ingredient = $service->createIngredient(
+            \BarAssistant\Application\Ingredient\DTO\CreateIngredientDTO::fromIlluminateRequest($request, bar()->id)
         );
+
+        $ingredient = Ingredient::findOrFail($ingredient->id);
 
         return (new IngredientResource($ingredient))
             ->response()

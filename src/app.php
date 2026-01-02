@@ -1,17 +1,13 @@
 <?php
 
-use BarAssistant\Application\DTO\CreateIngredientDTO;
-use BarAssistant\Application\DTO\IngredientPriceRequest;
-use BarAssistant\Application\DTO\UpdateIngredientDTO;
-use BarAssistant\Application\IngredientService;
-use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
-use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\Ingredient\MaterializedPath;
-use BarAssistant\EloquentIngredientRepository;
-use BarAssistant\EloquentPriceCategoryRepository;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredientDTO;
+use BarAssistant\Application\Ingredient\DTO\IngredientPriceRequest;
+use BarAssistant\Application\Ingredient\DTO\UpdateIngredientDTO;
+use BarAssistant\Application\Ingredient\IngredientService;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Http\Kernel;
+use Kami\Cocktail\Infrastructure\EloquentIngredientRepository;
+use Kami\Cocktail\Infrastructure\EloquentPriceCategoryRepository;
 use Kami\Cocktail\Models\Ingredient;
 
 require __DIR__.'/../vendor/autoload.php';
@@ -26,10 +22,9 @@ $response = $kernel->handle(
 
 $kernel->terminate($request, $response);
 
-$repo = new EloquentIngredientRepository();
+$ingredientsRepo = new EloquentIngredientRepository();
 $priceRepo = new EloquentPriceCategoryRepository();
-// $hierarchyService = new IngredientHierarchyManager($repo);
-$service = new IngredientService($repo, $priceRepo);
+$service = new IngredientService($ingredientsRepo, $priceRepo);
 
 $barId = 583;
 $userId = 586;
@@ -101,8 +96,6 @@ $speyside = $service->createIngredient(new CreateIngredientDTO(
     parentIngredientId: $scotch->id,
 ));
 
-
-
 $test = $service->updateIngredient(new UpdateIngredientDTO(
     ingredientId: $whiskey->id,
     name: $whiskey->name,
@@ -112,40 +105,4 @@ $test = $service->updateIngredient(new UpdateIngredientDTO(
     parentIngredientId: $gin->id,
 ));
 
-// $juices3 = $service->updateIngredient(new UpdateIngredientDTO(
-//     ingredientId: $lemon->id,
-//     name: $lemon->name,
-//     description: null,
-//     strength: 0.0,
-//     userId: $userId,
-//     parentIngredientId: $juices3->id,
-// ));
-// $lemonJuice = $service->createIngredient(new CreateIngredientDTO(
-//     barId: $barId,
-//     name: 'Lemon juice',
-//     description: null,
-//     strength: 0.0,
-//     userId: $userId,
-//     complexIngredientParts: [$lemon->id],
-// ));
-// $lemonJuice2 = $service->createIngredient(new CreateIngredientDTO(
-//     barId: $barId,
-//     name: 'Lemon juice 2',
-//     description: null,
-//     strength: 0.0,
-//     userId: $userId,
-// ));
-
-// $service->updateIngredient(new UpdateIngredientDTO(
-//     ingredientId: $lemon->id,
-//     name: 'Lemon juice 2',
-//     userId: $userId,
-// ));
-
-// $hierarchyService->changeParent($lemon, $fruits);
-// $hierarchyService->changeParent($lemonJuice, $juices);
-// $hierarchyService->changeParent($lemonJuice2, $lemonJuice);
-// $hierarchyService->changeParent($lemonJuice2, $juices);
-
-$t = $repo->findById(new IngredientId(115868));
 dd('done');

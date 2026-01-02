@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BarAssistant;
+namespace Kami\Cocktail\Infrastructure;
 
 use Throwable;
 use BarAssistant\Domain\Bar\BarId;
@@ -141,6 +141,50 @@ final class EloquentIngredientRepository implements IngredientRepository
         return $ingredients;
     }
 
+    public function delete(IngredientId $id): void
+    {
+        ModelIngredient::destroy($id->id);
+    }
+
+    public function findChildren(IngredientId $parentId): array
+    {
+        $models = ModelIngredient::where('parent_ingredient_id', $parentId->id)->get();
+
+        $ingredients = [];
+        /** @var ModelIngredient $model */
+        foreach ($models as $model) {
+            $ingredients[] = self::map($model);
+        }
+
+        return $ingredients;
+    }
+
+    public function findAncestors(IngredientId $descendantId): array
+    {
+        $model = ModelIngredient::find($descendantId->id);
+
+        if ($model === null) {
+            return [];
+        }
+
+        $materializedPath = MaterializedPath::fromString($model->materialized_path);
+        $ancestorIds = $materializedPath->getAncestorIds();
+
+        if (count($ancestorIds) === 0) {
+            return [];
+        }
+
+        $models = ModelIngredient::whereIn('id', array_map(fn (IngredientId $id): int => $id->id, $ancestorIds))->get();
+
+        $ingredients = [];
+        /** @var ModelIngredient $model */
+        foreach ($models as $model) {
+            $ingredients[] = self::map($model);
+        }
+
+        return $ingredients;
+    }
+
     private static function map(ModelIngredient $model): Ingredient
     {
         $ingredient = new Ingredient(
@@ -184,6 +228,10 @@ final class EloquentIngredientRepository implements IngredientRepository
                     description: $price->description,
                 )
             );
+        }
+
+        foreach ($model->images as $imageModel) {
+            $ingredient->addImage(new ImageId($imageModel->id));
         }
 
         return $ingredient;

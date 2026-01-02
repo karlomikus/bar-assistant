@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace BarAssistant\Application;
+namespace BarAssistant\Application\Ingredient;
 
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Support\Color;
-use BarAssistant\Application\DTO\CreateIngredientDTO;
-use BarAssistant\Application\DTO\IngredientPriceRequest;
-use BarAssistant\Application\DTO\IngredientResult;
-use BarAssistant\Application\DTO\UpdateIngredientDTO;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredientDTO;
+use BarAssistant\Application\Ingredient\DTO\IngredientPriceRequest;
+use BarAssistant\Application\Ingredient\DTO\IngredientResult;
+use BarAssistant\Application\Ingredient\DTO\UpdateIngredientDTO;
 use BarAssistant\Application\Exception\ApplicationServiceException;
 use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\Ingredient\Ingredient;
@@ -127,6 +127,11 @@ final readonly class IngredientService
         }
 
         return IngredientResult::fromIngredient($ingredient);
+    }
+
+    public function deleteIngredient(int $ingredientId): void
+    {
+        // $this->ingredientRepository->deleteById(new IngredientId($ingredientId));
     }
 
     /**
