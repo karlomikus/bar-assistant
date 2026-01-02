@@ -103,4 +103,9 @@ final readonly class MaterializedPath
 
         return implode(self::SEPARATOR, $this->basePath) . self::SEPARATOR;
     }
+
+    public function getLastId(): ?IngredientId
+    {
+        return $this->basePath[count($this->basePath) - 2] ?? null;
+    }
 }

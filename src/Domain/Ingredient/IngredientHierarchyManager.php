@@ -52,6 +52,7 @@ final readonly class IngredientHierarchyManager
         $descendants = $this->repository->findDescendants($ingredient);
 
         // Store the old materialized path structure
+        $oldParentIngredientId = $ingredient->getParentIngredientId();
         $oldPath = $ingredient->getMaterializedPath();
 
         // Update path
@@ -60,9 +61,31 @@ final readonly class IngredientHierarchyManager
         // Calculate path difference for updating descendants
         $newPath = $ingredient->getMaterializedPath();
 
-        // Update all descendants with their new paths
+        // Descendats are a flat array and we need to update their paths and parent ids
         foreach ($descendants as $descendant) {
-            
+            if ($descendant->getId()->equals($ingredient->getId())) {
+                continue; // Skip the moved ingredient itself
+            }
+
+            // Direct child of the moved ingredient
+            if ($descendant->getParentIngredientId()->equals($oldParentIngredientId)) {
+                $descendant->setParentIngredientId($newParent->getId());
+            }
+
+            // $descendant->materialized_path = str_replace($oldPath, $newPath ?? '', $descendant->materialized_path);
+
+            // Calculate new materialized path
+            $relativePath = substr(
+                $descendant->getMaterializedPath()->toString(),
+                strlen($oldPath->toString())
+            );
+
+            $newMaterializedPathString = $newPath->toString() . $relativePath;
+            $descendant->setMaterializedPath(MaterializedPath::fromString($newMaterializedPathString));
+
+            // // Update parent ingredient id
+            // $parentId = $descendant->getMaterializedPath()->getLastId();
+            // $descendant->setParentIngredientId($parentId);
         }
 
         $this->repository->saveHierarchyChanges($ingredient, $descendants);
@@ -86,7 +109,7 @@ final readonly class IngredientHierarchyManager
         }
 
         // Get all descendants before making root
-        $descendants = $this->repository->findDescendants($ingredient->getId());
+        $descendants = $this->repository->findDescendants($ingredient);
 
         // Store the old materialized path structure
         $oldPath = $ingredient->getMaterializedPath();
@@ -97,11 +120,7 @@ final readonly class IngredientHierarchyManager
         // New path is root
         $newPath = $ingredient->getMaterializedPath();
 
-        // Update all descendants with their new paths
-        foreach ($descendants as $descendant) {
-            $this->rebuildDescendantPath($descendant, $oldPath, $newPath);
-        }
-
         $this->repository->saveHierarchyChanges($ingredient, $descendants);
     }
 }
+

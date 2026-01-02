@@ -84,23 +84,19 @@ final class Ingredient implements AggregateRoot
         return $this;
     }
 
-    // public function setParentIngredient(?self $parentIngredient): self
-    // {
-    //     if ($parentIngredient !== null && !$parentIngredient->getBarId()->equals($this->getBarId())) {
-    //         throw new DomainException('Parent ingredient must belong to the same bar');
-    //     }
+    public function setMaterializedPath(MaterializedPath $path): Ingredient
+    {
+        $this->materializedPath = $path;
 
-    //     $this->parentIngredientId = $parentIngredient?->getId();
+        return $this;
+    }
 
-    //     return $this;
-    // }
+    public function setParentIngredientId(IngredientId $id): Ingredient
+    {
+        $this->parentIngredientId = $id;
 
-    // public function setMaterializedPath(MaterializedPath $path): self
-    // {
-    //     $this->materializedPath = $path;
-
-    //     return $this;
-    // }
+        return $this;
+    }
 
     public function getBarId(): BarId
     {
