@@ -28,7 +28,7 @@ $kernel->terminate($request, $response);
 
 $repo = new EloquentIngredientRepository();
 $priceRepo = new EloquentPriceCategoryRepository();
-$hierarchyService = new IngredientHierarchyManager($repo);
+// $hierarchyService = new IngredientHierarchyManager($repo);
 $service = new IngredientService($repo, $priceRepo);
 
 $barId = 583;
@@ -36,10 +36,10 @@ $userId = 586;
 
 Ingredient::where('bar_id', $barId)->delete();
 
-$fruits = $service->createIngredient(new CreateIngredientDTO(
+$spirits = $service->createIngredient(new CreateIngredientDTO(
     barId: $barId,
-    name: 'Fruits',
-    description: 'All kinds of fruits',
+    name: 'Spirits',
+    description: 'All kinds of spirits',
     strength: 0.0,
     userId: $userId,
     prices: [
@@ -52,41 +52,86 @@ $fruits = $service->createIngredient(new CreateIngredientDTO(
         ),
     ],
 ));
-$lemon = $service->createIngredient(new CreateIngredientDTO(
+$whiskey = $service->createIngredient(new CreateIngredientDTO(
     barId: $barId,
-    name: 'Lemon',
-    description: 'A fruit of lemon tree',
-    strength: 0.0,
-    userId: $userId,
-));
-$juices = $service->createIngredient(new CreateIngredientDTO(
-    barId: $barId,
-    name: 'Juices',
+    name: 'Whiskey',
     description: null,
     strength: 0.0,
     userId: $userId,
+    parentIngredientId: $spirits->id,
 ));
-$lemonJuice = $service->createIngredient(new CreateIngredientDTO(
+$scotch = $service->createIngredient(new CreateIngredientDTO(
     barId: $barId,
-    name: 'Lemon juice',
+    name: 'Scotch',
     description: null,
     strength: 0.0,
     userId: $userId,
-    complexIngredientParts: [$lemon->id],
+    parentIngredientId: $whiskey->id,
 ));
-$lemonJuice2 = $service->createIngredient(new CreateIngredientDTO(
+$islay = $service->createIngredient(new CreateIngredientDTO(
     barId: $barId,
-    name: 'Lemon juice 2',
+    name: 'Islay Scotch',
     description: null,
     strength: 0.0,
     userId: $userId,
+    parentIngredientId: $scotch->id,
+));
+$gin = $service->createIngredient(new CreateIngredientDTO(
+    barId: $barId,
+    name: 'Gin',
+    description: null,
+    strength: 0.0,
+    userId: $userId,
+    parentIngredientId: $spirits->id,
+));
+$london = $service->createIngredient(new CreateIngredientDTO(
+    barId: $barId,
+    name: 'London dry gin',
+    description: null,
+    strength: 0.0,
+    userId: $userId,
+    parentIngredientId: $gin->id,
 ));
 
-$service->updateIngredient(new UpdateIngredientDTO(
-    ingredientId: $lemon->id,
-    name: 'Lemon juice 2',
+
+
+$test = $service->updateIngredient(new UpdateIngredientDTO(
+    ingredientId: $whiskey->id,
+    name: $whiskey->name,
+    description: null,
+    strength: 0.0,
     userId: $userId,
+    parentIngredientId: $gin->id,
 ));
+// $juices3 = $service->updateIngredient(new UpdateIngredientDTO(
+//     ingredientId: $lemon->id,
+//     name: $lemon->name,
+//     description: null,
+//     strength: 0.0,
+//     userId: $userId,
+//     parentIngredientId: $juices3->id,
+// ));
+// $lemonJuice = $service->createIngredient(new CreateIngredientDTO(
+//     barId: $barId,
+//     name: 'Lemon juice',
+//     description: null,
+//     strength: 0.0,
+//     userId: $userId,
+//     complexIngredientParts: [$lemon->id],
+// ));
+// $lemonJuice2 = $service->createIngredient(new CreateIngredientDTO(
+//     barId: $barId,
+//     name: 'Lemon juice 2',
+//     description: null,
+//     strength: 0.0,
+//     userId: $userId,
+// ));
+
+// $service->updateIngredient(new UpdateIngredientDTO(
+//     ingredientId: $lemon->id,
+//     name: 'Lemon juice 2',
+//     userId: $userId,
+// ));
 
 // $hierarchyService->changeParent($lemon, $fruits);
 // $hierarchyService->changeParent($lemonJuice, $juices);

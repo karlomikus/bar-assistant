@@ -18,6 +18,16 @@ interface IngredientRepository
 
     public function save(Ingredient $ingredient): Ingredient;
 
+    /**
+     * Validate and save an ingredient with all its descendants after hierarchy change.
+     *
+     * This method should be saved atomic to ensure data integrity.
+     *
+     * @param Ingredient $ingredient The ingredient that was moved
+     * @param Ingredient[] $descendants All affected descendants
+     */
+    public function saveHierarchyChanges(Ingredient $ingredient, array $descendants): void;
+
     // public function delete(IngredientId $id): void;
 
     /**

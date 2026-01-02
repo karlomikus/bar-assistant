@@ -63,12 +63,15 @@ final readonly class MaterializedPath
         return count($this->basePath);
     }
 
+    /**
+     * @return IngredientId[]
+     */
     public function getAncestorIds(): array
     {
         return $this->basePath;
     }
 
-    public function getParentId(): ?int
+    public function getParentId(): ?IngredientId
     {
         $ancestors = $this->getAncestorIds();
         if (empty($ancestors)) {

@@ -18,10 +18,6 @@ final class Ingredient implements AggregateRoot
 {
     private ?IngredientId $id = null;
 
-    private ?IngredientId $parentIngredientId = null;
-
-    private MaterializedPath $materializedPath;
-
     /** @var IngredientId[] */
     private array $ingredientParts = [];
 
@@ -47,8 +43,10 @@ final class Ingredient implements AggregateRoot
 
     public function __construct(
         private BarId $barId,
+        private ?IngredientId $parentIngredientId = null,
+        private ?MaterializedPath $materializedPath = null,
     ) {
-        $this->materializedPath = MaterializedPath::root();
+        $this->materializedPath = $materializedPath ?? MaterializedPath::root();
     }
 
     public function isTransient(): bool
@@ -72,23 +70,37 @@ final class Ingredient implements AggregateRoot
         return $this;
     }
 
-    public function setParentIngredient(?self $parentIngredient): self
+    public function setAsVariantOf(?self $parentIngredient): Ingredient
     {
         if ($parentIngredient !== null && !$parentIngredient->getBarId()->equals($this->getBarId())) {
             throw new DomainException('Parent ingredient must belong to the same bar');
         }
 
         $this->parentIngredientId = $parentIngredient?->getId();
+        $this->materializedPath = $parentIngredient
+            ? $parentIngredient->getMaterializedPath()->append($parentIngredient->getId()->id)
+            : MaterializedPath::root();
 
         return $this;
     }
 
-    public function setMaterializedPath(MaterializedPath $path): self
-    {
-        $this->materializedPath = $path;
+    // public function setParentIngredient(?self $parentIngredient): self
+    // {
+    //     if ($parentIngredient !== null && !$parentIngredient->getBarId()->equals($this->getBarId())) {
+    //         throw new DomainException('Parent ingredient must belong to the same bar');
+    //     }
 
-        return $this;
-    }
+    //     $this->parentIngredientId = $parentIngredient?->getId();
+
+    //     return $this;
+    // }
+
+    // public function setMaterializedPath(MaterializedPath $path): self
+    // {
+    //     $this->materializedPath = $path;
+
+    //     return $this;
+    // }
 
     public function getBarId(): BarId
     {

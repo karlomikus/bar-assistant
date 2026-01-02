@@ -7,24 +7,30 @@ namespace BarAssistant;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\Ingredient;
+use BarAssistant\Domain\Ingredient\IngredientPrice;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
 use Kami\Cocktail\Models\Ingredient as ModelIngredient;
 use BarAssistant\Domain\Ingredient\MaterializedPath;
-use BarAssistant\Domain\Support\Authors;
+use BarAssistant\Domain\Support\AmountWithUnits;
 use BarAssistant\Domain\Support\Color;
-use BarAssistant\Domain\Support\RecordTimestamps;
+use BarAssistant\Domain\Support\Price;
+use BarAssistant\Domain\Support\Unit;
 use BarAssistant\Domain\User\UserId;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\ComplexIngredient;
-use Kami\Cocktail\Models\IngredientPrice;
+use Kami\Cocktail\Models\IngredientPrice as ModelIngredientPrice;
 
 final class EloquentIngredientRepository implements IngredientRepository
 {
     public function findById(IngredientId $id): ?Ingredient
     {
-        $model = ModelIngredient::findOrFail($id->id);
+        $model = ModelIngredient::find($id->id);
 
-        return $this->map($model);
+        if ($model === null) {
+            return null;
+        }
+
+        return self::map($model);
     }
 
     /** @param IngredientId[] $ids */
@@ -35,7 +41,7 @@ final class EloquentIngredientRepository implements IngredientRepository
         $ingredients = [];
         /** @var ModelIngredient $model */
         foreach ($models as $model) {
-            $ingredients[] = $this->map($model);
+            $ingredients[] = self::map($model);
         }
 
         return $ingredients;
@@ -73,7 +79,7 @@ final class EloquentIngredientRepository implements IngredientRepository
             }
 
             foreach ($ingredient->getPrices() as $price) {
-                $ingredientPriceModel = new IngredientPrice();
+                $ingredientPriceModel = new ModelIngredientPrice();
                 $ingredientPriceModel->ingredient_id = $ingredientModel->id;
                 $ingredientPriceModel->price_category_id = $price->getPriceCategoryId()->id;
                 $ingredientPriceModel->price = $price->getPrice()->getPriceAsMinor();
@@ -97,6 +103,17 @@ final class EloquentIngredientRepository implements IngredientRepository
         return $ingredient;
     }
 
+    public function saveHierarchyChanges(Ingredient $ingredient, array $descendants): void
+    {
+        DB::transaction(function () use ($ingredient, $descendants): void {
+            $this->save($ingredient);
+
+            foreach ($descendants as $descendant) {
+                $this->save($descendant);
+            }
+        });
+    }
+
     public function findDescendants(IngredientId $ancestorId): array
     {
         $models = ModelIngredient::where('materialized_path', 'LIKE', $ancestorId->id . '/%')->get();
@@ -104,17 +121,21 @@ final class EloquentIngredientRepository implements IngredientRepository
         $ingredients = [];
         /** @var ModelIngredient $model */
         foreach ($models as $model) {
-            $ingredients[] = $this->map($model);
+            $ingredients[] = self::map($model);
         }
 
         return $ingredients;
     }
 
-    private function map(ModelIngredient $model): Ingredient
+    private static function map(ModelIngredient $model): Ingredient
     {
         $ingredient = new Ingredient(
             barId: new BarId($model->bar_id),
+            materializedPath: MaterializedPath::fromString($model->materialized_path),
+            parentIngredientId: $model->parent_ingredient_id ? new IngredientId($model->parent_ingredient_id) : null,
         );
+
+        $ingredient->setId(new IngredientId($model->id));
 
         $ingredient->updateDetails(
             name: $model->name,
@@ -129,14 +150,21 @@ final class EloquentIngredientRepository implements IngredientRepository
             $ingredient->wasUpdatedBy(new UserId($model->updated_user_id), $model->updated_at?->toDateTimeImmutable());
         }
 
-        $ingredient
-            ->setId(new IngredientId($model->id))
-            ->setParentIngredient($model->parent_ingredient_id ? $this->map(ModelIngredient::find($model->parent_ingredient_id)) : null)
-            ->setMaterializedPath(MaterializedPath::fromString($model->materialized_path));
-
         /** @var ComplexIngredient $part */
         foreach ($model->ingredientParts as $part) {
-            $ingredient->addIngredientPart($this->map($part->ingredient));
+            $ingredient->addIngredientPart(self::map($part->ingredient));
+        }
+
+        /** @var ModelIngredientPrice $price */
+        foreach ($model->prices as $price) {
+            $ingredient->addPrice(
+                new IngredientPrice(
+                    priceCategoryId: new \BarAssistant\Domain\Ingredient\PriceCategoryId($price->price_category_id),
+                    price: Price::createFromMinor($price->price, $price->priceCategory->currency),
+                    amountWithUnits: new AmountWithUnits($price->amount, new Unit($price->units)),
+                    description: $price->description,
+                )
+            );
         }
 
         return $ingredient;

@@ -13,10 +13,10 @@ use BarAssistant\Domain\Ingredient\Exception\IngredientHierarchyException;
  * coordination between multiple ingredients, particularly when
  * updating materialized paths after hierarchy changes.
  */
-final class IngredientHierarchyManager
+final readonly class IngredientHierarchyManager
 {
     public function __construct(
-        private readonly IngredientRepository $repository
+        private IngredientRepository $repository,
     ) {
     }
 
@@ -30,7 +30,7 @@ final class IngredientHierarchyManager
      * @param Ingredient $newParent The new parent ingredient
      * @throws IngredientHierarchyException If the operation would create an invalid hierarchy
      */
-    public function changeParent(Ingredient $ingredient, Ingredient $newParent): void
+    public function changeParent(Ingredient $ingredient, Ingredient $newParent): Ingredient
     {
         if ($ingredient->isTransient()) {
             throw new IngredientHierarchyException('Cannot change parent of transient ingredient');
@@ -55,9 +55,7 @@ final class IngredientHierarchyManager
         $oldPath = $ingredient->getMaterializedPath();
 
         // Update path
-        $ingredient
-            ->setParentIngredient($newParent)
-            ->setMaterializedPath($newParent->getMaterializedPath()->append($newParent->getId()->id));
+        $ingredient->setAsVariantOf($newParent);
 
         // Calculate path difference for updating descendants
         $newPath = $ingredient->getMaterializedPath();
@@ -67,7 +65,9 @@ final class IngredientHierarchyManager
             $this->rebuildDescendantPath($descendant, $oldPath, $newPath);
         }
 
-        $this->saveHierarchyChanges($ingredient, $descendants);
+        $this->repository->saveHierarchyChanges($ingredient, $descendants);
+
+        return $ingredient;
     }
 
     /**
@@ -92,9 +92,7 @@ final class IngredientHierarchyManager
         $oldPath = $ingredient->getMaterializedPath();
 
         // Make the ingredient a root
-        $ingredient
-            ->setParentIngredient(null)
-            ->setMaterializedPath(MaterializedPath::root());
+        $ingredient->setAsVariantOf(null);
 
         // New path is root
         $newPath = $ingredient->getMaterializedPath();
@@ -104,7 +102,7 @@ final class IngredientHierarchyManager
             $this->rebuildDescendantPath($descendant, $oldPath, $newPath);
         }
 
-        $this->saveHierarchyChanges($ingredient, $descendants);
+        $this->repository->saveHierarchyChanges($ingredient, $descendants);
     }
 
     /**
@@ -113,6 +111,7 @@ final class IngredientHierarchyManager
      * This method reconstructs the descendant's materialized path by:
      * 1. Finding where the descendant was relative to the old ancestor path
      * 2. Rebuilding the path starting from the new ancestor path
+     * 3. Finding and setting the descendant's new parent
      *
      * @param Ingredient $descendant The descendant to update
      * @param MaterializedPath $oldAncestorPath The ancestor's old path
@@ -133,26 +132,7 @@ final class IngredientHierarchyManager
         // Build new path: new ancestor path + relative path
         $newPath = $newAncestorPath;
         foreach ($relativeIds as $id) {
-            $newPath = $newPath->append($id);
-        }
-
-        $descendant->setMaterializedPath($newPath);
-    }
-
-    /**
-     * Validate and save an ingredient with all its descendants after hierarchy change.
-     *
-     * @param Ingredient $ingredient The ingredient that was moved
-     * @param Ingredient[] $descendants All affected descendants
-     */
-    private function saveHierarchyChanges(Ingredient $ingredient, array $descendants): void
-    {
-        // Save the moved ingredient
-        $this->repository->save($ingredient);
-
-        // Save all descendants
-        foreach ($descendants as $descendant) {
-            $this->repository->save($descendant);
+            $newPath = $newPath->append($id->id);
         }
     }
 }

@@ -12,6 +12,7 @@ use BarAssistant\Application\DTO\IngredientResult;
 use BarAssistant\Application\DTO\UpdateIngredientDTO;
 use BarAssistant\Application\Exception\ApplicationServiceException;
 use BarAssistant\Domain\Ingredient\Ingredient;
+use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\IngredientPrice;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
@@ -22,8 +23,13 @@ use BarAssistant\Domain\User\UserId;
 
 final readonly class IngredientService
 {
-    public function __construct(private IngredientRepository $ingredientRepository, private PriceCategoryRepository $priceCategoryRepository)
-    {
+    private readonly IngredientHierarchyManager $ingredientHierarchy;
+
+    public function __construct(
+        private IngredientRepository $ingredientRepository,
+        private PriceCategoryRepository $priceCategoryRepository,
+    ) {
+        $this->ingredientHierarchy = new IngredientHierarchyManager($ingredientRepository);
     }
 
     /**
@@ -56,6 +62,15 @@ final readonly class IngredientService
 
         $ingredient = $this->ingredientRepository->save($ingredient);
 
+        if ($ingredientRequest->parentIngredientId !== null) {
+            $parentIngredient = $this->ingredientRepository->findById(new IngredientId($ingredientRequest->parentIngredientId));
+            if ($parentIngredient === null) {
+                throw new ApplicationServiceException('The specified parent ingredient was not found');
+            }
+
+            $ingredient = $this->ingredientHierarchy->changeParent($ingredient, $parentIngredient);
+        }
+
         return IngredientResult::fromIngredient($ingredient);
     }
 
@@ -87,6 +102,17 @@ final readonly class IngredientService
         }
 
         $ingredient = $this->ingredientRepository->save($ingredient);
+
+        if ($ingredientRequest->parentIngredientId !== null) {
+            $parentIngredient = $this->ingredientRepository->findById(new IngredientId($ingredientRequest->parentIngredientId));
+            if ($parentIngredient === null) {
+                throw new ApplicationServiceException('The specified parent ingredient was not found');
+            }
+
+            $ingredient = $this->ingredientHierarchy->changeParent($ingredient, $parentIngredient);
+        } else {
+            // $ingredient = $this->ingredientHierarchy->makeRoot()
+        }
 
         return IngredientResult::fromIngredient($ingredient);
     }
