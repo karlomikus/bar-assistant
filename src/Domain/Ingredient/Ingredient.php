@@ -78,7 +78,7 @@ final class Ingredient implements AggregateRoot
 
         $this->parentIngredientId = $parentIngredient?->getId();
         $this->materializedPath = $parentIngredient
-            ? $parentIngredient->getMaterializedPath()->append($parentIngredient->getId()->id)
+            ? $parentIngredient->getMaterializedPath()->append($parentIngredient->getId())
             : MaterializedPath::root();
 
         return $this;

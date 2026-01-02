@@ -49,7 +49,7 @@ final readonly class IngredientHierarchyManager
         }
 
         // Get all descendants before changing the parent
-        $descendants = $this->repository->findDescendants($ingredient->getId());
+        $descendants = $this->repository->findDescendants($ingredient);
 
         // Store the old materialized path structure
         $oldPath = $ingredient->getMaterializedPath();
@@ -62,7 +62,7 @@ final readonly class IngredientHierarchyManager
 
         // Update all descendants with their new paths
         foreach ($descendants as $descendant) {
-            $this->rebuildDescendantPath($descendant, $oldPath, $newPath);
+            
         }
 
         $this->repository->saveHierarchyChanges($ingredient, $descendants);
@@ -103,36 +103,5 @@ final readonly class IngredientHierarchyManager
         }
 
         $this->repository->saveHierarchyChanges($ingredient, $descendants);
-    }
-
-    /**
-     * Rebuild a descendant's path after its ancestor's path has changed.
-     *
-     * This method reconstructs the descendant's materialized path by:
-     * 1. Finding where the descendant was relative to the old ancestor path
-     * 2. Rebuilding the path starting from the new ancestor path
-     * 3. Finding and setting the descendant's new parent
-     *
-     * @param Ingredient $descendant The descendant to update
-     * @param MaterializedPath $oldAncestorPath The ancestor's old path
-     * @param MaterializedPath $newAncestorPath The ancestor's new path
-     */
-    private function rebuildDescendantPath(
-        Ingredient $descendant,
-        MaterializedPath $oldAncestorPath,
-        MaterializedPath $newAncestorPath
-    ): void {
-        $descendantPath = $descendant->getMaterializedPath();
-        $oldAncestorIds = $oldAncestorPath->getAncestorIds();
-        $descendantIds = $descendantPath->getAncestorIds();
-
-        // Find the IDs that come after the old ancestor path
-        $relativeIds = array_slice($descendantIds, count($oldAncestorIds));
-
-        // Build new path: new ancestor path + relative path
-        $newPath = $newAncestorPath;
-        foreach ($relativeIds as $id) {
-            $newPath = $newPath->append($id->id);
-        }
     }
 }

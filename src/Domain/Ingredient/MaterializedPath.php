@@ -16,7 +16,7 @@ final readonly class MaterializedPath
     private const TAXONOMY_MAX_DEPTH = 10;
 
     /**
-     * @param array<IngredientId> $basePath
+     * @param IngredientId[] $basePath
      */
     private function __construct(private array $basePath = [])
     {
@@ -41,7 +41,7 @@ final readonly class MaterializedPath
         return new self($basePath);
     }
 
-    public function append(int $id): self
+    public function append(IngredientId $id): self
     {
         if ($this->getDepth() === self::TAXONOMY_MAX_DEPTH) {
             throw new \Exception('Ingredient has too many descendants, max depth is ' . self::TAXONOMY_MAX_DEPTH);

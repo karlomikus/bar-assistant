@@ -92,6 +92,14 @@ $london = $service->createIngredient(new CreateIngredientDTO(
     userId: $userId,
     parentIngredientId: $gin->id,
 ));
+$speyside = $service->createIngredient(new CreateIngredientDTO(
+    barId: $barId,
+    name: 'Speyside Scotch',
+    description: null,
+    strength: 0.0,
+    userId: $userId,
+    parentIngredientId: $scotch->id,
+));
 
 
 

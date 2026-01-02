@@ -114,9 +114,13 @@ final class EloquentIngredientRepository implements IngredientRepository
         });
     }
 
-    public function findDescendants(IngredientId $ancestorId): array
+    public function findDescendants(Ingredient $ingredient): array
     {
-        $models = ModelIngredient::where('materialized_path', 'LIKE', $ancestorId->id . '/%')->get();
+        if ($ingredient->getMaterializedPath()->isRoot()) {
+            return [];
+        }
+
+        $models = ModelIngredient::where('materialized_path', 'LIKE', $ingredient->getMaterializedPath()->toString() . '%')->get();
 
         $ingredients = [];
         /** @var ModelIngredient $model */

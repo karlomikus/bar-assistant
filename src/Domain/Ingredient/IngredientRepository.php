@@ -49,7 +49,7 @@ interface IngredientRepository
      *
      * @return Ingredient[]
      */
-    public function findDescendants(IngredientId $ancestorId): array;
+    public function findDescendants(Ingredient $ingredient): array;
 
     /**
      * Find all ancestors (parent, grandparent, etc.) of an ingredient
