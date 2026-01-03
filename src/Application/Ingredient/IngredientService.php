@@ -43,6 +43,7 @@ final readonly class IngredientService
         $ingredient = new Ingredient(
             barId: $barId,
             name: $ingredientRequest->name,
+            createdBy: new UserId($ingredientRequest->userId),
             description: $ingredientRequest->description,
             strength: $ingredientRequest->strength,
             origin: $ingredientRequest->origin,
@@ -53,8 +54,6 @@ final readonly class IngredientService
             distillery: $ingredientRequest->distillery,
             units: $ingredientRequest->units ? new Unit($ingredientRequest->units) : null
         );
-
-        $ingredient->wasCreatedBy(new UserId($ingredientRequest->userId));
 
         if (count($ingredientRequest->complexIngredientParts) > 0) {
             $ingredient = $this->assignIngredientParts($ingredient, $ingredientRequest->complexIngredientParts);

@@ -19,6 +19,9 @@ use DateTimeImmutable;
 final class Ingredient implements AggregateRoot
 {
     private ?IngredientId $id = null;
+    private Authors $authors;
+    private RecordTimestamps $recordTimestamps;
+    private MaterializedPath $materializedPath;
 
     /** @var IngredientId[] */
     private array $ingredientParts = [];
@@ -29,13 +32,10 @@ final class Ingredient implements AggregateRoot
     /** @var IngredientPrice[] */
     private array $prices = [];
 
-    private Authors $authors;
-    private RecordTimestamps $recordTimestamps;
-    private MaterializedPath $materializedPath;
-
     public function __construct(
-        private BarId $barId,
+        private readonly BarId $barId,
         private string $name,
+        UserId $createdBy,
         private ?string $description = null,
         private ?float $strength = null,
         private ?string $origin = null,
@@ -47,8 +47,29 @@ final class Ingredient implements AggregateRoot
         private ?Unit $units = null,
         private ?IngredientId $parentIngredientId = null,
         ?MaterializedPath $materializedPath = null,
+        ?DateTimeImmutable $createdAt = null,
     ) {
+        if (trim($name) === '') {
+            throw new DomainException('Ingredient name cannot be empty');
+        }
+
+        if ($strength !== null && ($strength < 0.0 || $strength > 100.0)) {
+            throw new DomainException('Ingredient strength must be between 0.0 and 100.0');
+        }
+
+        $this->name = $name;
+        $this->description = $description;
+        $this->strength = $strength;
+        $this->origin = $origin;
+        $this->color = $color;
+        $this->calculatorId = $calculatorId;
+        $this->sugarContent = $sugarContent;
+        $this->acidity = $acidity;
+        $this->distillery = $distillery;
+        $this->units = $units;
         $this->materializedPath = $materializedPath ?? MaterializedPath::root();
+        $this->authors = Authors::createdBy($createdBy);
+        $this->recordTimestamps = $createdAt ? RecordTimestamps::createdAt($createdAt) : RecordTimestamps::createdNow();
     }
 
     public function isTransient(): bool
@@ -86,16 +107,13 @@ final class Ingredient implements AggregateRoot
         return $this;
     }
 
+    /**
+     * @internal Used only by IngredientHierarchyManager for bulk path updates.
+     * Do not call directly - use IngredientHierarchyManager::changeParent() instead.
+     */
     public function setMaterializedPath(MaterializedPath $path): Ingredient
     {
         $this->materializedPath = $path;
-
-        return $this;
-    }
-
-    public function setParentIngredientId(IngredientId $id): Ingredient
-    {
-        $this->parentIngredientId = $id;
 
         return $this;
     }
@@ -182,7 +200,7 @@ final class Ingredient implements AggregateRoot
     {
         $this->ingredientParts = array_values(array_filter(
             $this->ingredientParts,
-            fn(IngredientId $part) => $part->id !== $ingredientId->id
+            fn(IngredientId $part) => !$part->equals($ingredientId)
         ));
 
         return $this;
@@ -308,12 +326,6 @@ final class Ingredient implements AggregateRoot
     {
         $this->authors = $this->authors->updatedBy($userId);
         $this->recordTimestamps = $updatedAt ? $this->recordTimestamps->updatedAt($updatedAt) : $this->recordTimestamps->updatedNow();
-    }
-
-    public function wasCreatedBy(UserId $userId, ?DateTimeImmutable $createdAt = null): void
-    {
-        $this->authors = Authors::createdBy($userId);
-        $this->recordTimestamps = $createdAt ? RecordTimestamps::createdAt($createdAt) : RecordTimestamps::createdNow();
     }
 
     public function getCalculatorId(): ?CalculatorId

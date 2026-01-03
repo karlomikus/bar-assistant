@@ -9,6 +9,7 @@ use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
+use BarAssistant\Domain\User\UserId;
 use PHPUnit\Framework\TestCase;
 
 final class IngredientHierarchyManagerTest extends TestCase
@@ -20,23 +21,24 @@ final class IngredientHierarchyManagerTest extends TestCase
         $service = new IngredientHierarchyManager($repo);
 
         $barId = new BarId(77);
+        $userId = new UserId(1);
 
-        $spirits = new Ingredient($barId);
-        $spirits->updateDetails('Spirits')->setId(new IngredientId(1));
-        $genever = new Ingredient($barId);
-        $genever->updateDetails('Genever')->setId(new IngredientId(2));
-        $gin = new Ingredient($barId);
-        $gin->updateDetails('Gin')->setId(new IngredientId(3));
-        $whiskey = new Ingredient($barId);
-        $whiskey->updateDetails('Whiskey')->setId(new IngredientId(4));
-        $scotch = new Ingredient($barId);
-        $scotch->updateDetails('Scotch')->setId(new IngredientId(5));
-        $islayScotch = new Ingredient($barId);
-        $islayScotch->updateDetails('Islay Scotch')->setId(new IngredientId(6));
-        $speysideScotch = new Ingredient($barId);
-        $speysideScotch->updateDetails('Speyside Scotch')->setId(new IngredientId(7));
-        $ardbeg = new Ingredient($barId);
-        $ardbeg->updateDetails('Ardbeg')->setId(new IngredientId(8));
+        $spirits = new Ingredient($barId, 'Spirits', $userId);
+        $spirits->setId(new IngredientId(1));
+        $genever = new Ingredient($barId, 'Genever', $userId);
+        $genever->setId(new IngredientId(2));
+        $gin = new Ingredient($barId, 'Gin', $userId);
+        $gin->setId(new IngredientId(3));
+        $whiskey = new Ingredient($barId, 'Whiskey', $userId);
+        $whiskey->setId(new IngredientId(4));
+        $scotch = new Ingredient($barId, 'Scotch', $userId);
+        $scotch->setId(new IngredientId(5));
+        $islayScotch = new Ingredient($barId, 'Islay Scotch', $userId);
+        $islayScotch->setId(new IngredientId(6));
+        $speysideScotch = new Ingredient($barId, 'Speyside Scotch', $userId);
+        $speysideScotch->setId(new IngredientId(7));
+        $ardbeg = new Ingredient($barId, 'Ardbeg', $userId);
+        $ardbeg->setId(new IngredientId(8));
 
         // Adding leaf nodes
         $service->changeParent($genever, $spirits);
