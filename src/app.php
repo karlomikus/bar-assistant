@@ -37,15 +37,7 @@ $spirits = $service->createIngredient(new CreateIngredientDTO(
     description: 'All kinds of spirits',
     strength: 0.0,
     userId: $userId,
-    prices: [
-        new IngredientPriceRequest(
-            priceCategoryId: 27,
-            price: 500,
-            amount: 1.0,
-            units: 'kg',
-            description: 'Base price for fruits',
-        ),
-    ],
+    parentIngredientId: null,
 ));
 $whiskey = $service->createIngredient(new CreateIngredientDTO(
     barId: $barId,
@@ -96,13 +88,13 @@ $speyside = $service->createIngredient(new CreateIngredientDTO(
     parentIngredientId: $scotch->id,
 ));
 
-$test = $service->updateIngredient(new UpdateIngredientDTO(
-    ingredientId: $whiskey->id,
-    name: $whiskey->name,
-    description: null,
-    strength: 0.0,
-    userId: $userId,
-    parentIngredientId: $gin->id,
-));
+// $test = $service->updateIngredient(new UpdateIngredientDTO(
+//     ingredientId: $whiskey->id,
+//     name: $whiskey->name,
+//     description: null,
+//     strength: 0.0,
+//     userId: $userId,
+//     parentIngredientId: $gin->id,
+// ));
 
 dd('done');

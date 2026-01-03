@@ -65,4 +65,9 @@ services:
 
 volumes:
   meilidata:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/karlo/projects/volumetest/meili
   miniiodata:

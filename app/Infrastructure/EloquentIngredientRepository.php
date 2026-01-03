@@ -130,7 +130,9 @@ final class EloquentIngredientRepository implements IngredientRepository
             return [];
         }
 
+        dump($ingredient->getName());
         $models = ModelIngredient::where('materialized_path', 'LIKE', $ingredient->getMaterializedPath()->toString() . '%')->get();
+        dump($models->pluck('name')->toArray());
 
         $ingredients = [];
         /** @var ModelIngredient $model */

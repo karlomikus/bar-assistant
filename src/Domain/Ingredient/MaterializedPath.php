@@ -83,11 +83,18 @@ final readonly class MaterializedPath
 
     public function isAncestorOf(self $other): bool
     {
-        if ($this->isRoot()) {
+        if ($this->isRoot() || $this->equals($other)) {
             return false;
         }
 
-        return in_array($this->getParentId(), $other->getAncestorIds(), true);
+        $parentId = $this->getParentId();
+        foreach ($other->getAncestorIds() as $ancestorId) {
+            if ($parentId->equals($ancestorId)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function isDescendantOf(self $other): bool
@@ -121,5 +128,10 @@ final readonly class MaterializedPath
         }
 
         return new self($relativeBasePath);
+    }
+
+    public function equals(self $other): bool
+    {
+        return $this->toString() === $other->toString();
     }
 }
