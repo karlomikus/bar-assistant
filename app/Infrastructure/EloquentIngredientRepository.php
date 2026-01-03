@@ -189,13 +189,6 @@ final class EloquentIngredientRepository implements IngredientRepository
     {
         $ingredient = new Ingredient(
             barId: new BarId($model->bar_id),
-            materializedPath: MaterializedPath::fromString($model->materialized_path),
-            parentIngredientId: $model->parent_ingredient_id ? new IngredientId($model->parent_ingredient_id) : null,
-        );
-
-        $ingredient->setId(new IngredientId($model->id));
-
-        $ingredient->updateDetails(
             name: $model->name,
             description: $model->description,
             strength: $model->strength,
@@ -206,7 +199,11 @@ final class EloquentIngredientRepository implements IngredientRepository
             acidity: $model->acidity,
             distillery: $model->distillery,
             units: $model->units ? new Unit($model->units) : null,
+            materializedPath: MaterializedPath::fromString($model->materialized_path),
+            parentIngredientId: $model->parent_ingredient_id ? new IngredientId($model->parent_ingredient_id) : null,
         );
+
+        $ingredient->setId(new IngredientId($model->id));
 
         $ingredient->wasCreatedBy(new UserId($model->created_user_id), $model->created_at->toDateTimeImmutable());
         if ($model->updated_user_id !== null) {

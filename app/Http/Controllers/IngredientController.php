@@ -125,8 +125,8 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $ingredientRepo = new \BarAssistant\EloquentIngredientRepository();
-        $priceRepo = new \BarAssistant\EloquentPriceCategoryRepository();
+        $ingredientRepo = new \Kami\Cocktail\Infrastructure\EloquentIngredientRepository();
+        $priceRepo = new \Kami\Cocktail\Infrastructure\EloquentPriceCategoryRepository();
         $service = new \BarAssistant\Application\Ingredient\IngredientService($ingredientRepo, $priceRepo);
 
         $ingredient = $service->createIngredient(

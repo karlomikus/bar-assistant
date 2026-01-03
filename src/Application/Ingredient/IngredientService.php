@@ -42,9 +42,6 @@ final readonly class IngredientService
         $barId = new BarId($ingredientRequest->barId);
         $ingredient = new Ingredient(
             barId: $barId,
-        );
-
-        $ingredient->updateDetails(
             name: $ingredientRequest->name,
             description: $ingredientRequest->description,
             strength: $ingredientRequest->strength,

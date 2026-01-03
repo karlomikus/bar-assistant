@@ -36,6 +36,10 @@ final readonly class IngredientHierarchyManager
             throw new IngredientHierarchyException('Cannot change parent of transient ingredient');
         }
 
+        if ($newParent->isTransient()) {
+            throw new IngredientHierarchyException('Cannot set transient ingredient as parent');
+        }
+
         if (!$ingredient->getBarId()->equals($newParent->getBarId())) {
             throw new IngredientHierarchyException('Ingredients must be from the same bar');
         }

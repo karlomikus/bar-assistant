@@ -30,24 +30,23 @@ final class Ingredient implements AggregateRoot
     private array $prices = [];
 
     private Authors $authors;
-
     private RecordTimestamps $recordTimestamps;
-
-    private string $name;
-    private ?string $description = null;
-    private ?float $strength = null;
-    private ?string $origin = null;
-    private ?Color $color = null;
-    private ?CalculatorId $calculatorId = null;
-    private ?float $sugarContent = null;
-    private ?float $acidity = null;
-    private ?string $distillery = null;
-    private ?Unit $units = null;
+    private MaterializedPath $materializedPath;
 
     public function __construct(
         private BarId $barId,
+        private string $name,
+        private ?string $description = null,
+        private ?float $strength = null,
+        private ?string $origin = null,
+        private ?Color $color = null,
+        private ?CalculatorId $calculatorId = null,
+        private ?float $sugarContent = null,
+        private ?float $acidity = null,
+        private ?string $distillery = null,
+        private ?Unit $units = null,
         private ?IngredientId $parentIngredientId = null,
-        private ?MaterializedPath $materializedPath = null,
+        ?MaterializedPath $materializedPath = null,
     ) {
         $this->materializedPath = $materializedPath ?? MaterializedPath::root();
     }
@@ -80,7 +79,7 @@ final class Ingredient implements AggregateRoot
         }
 
         $this->parentIngredientId = $parentIngredient?->getId();
-        $this->materializedPath = $parentIngredient
+        $this->materializedPath = $parentIngredient?->getId()
             ? $parentIngredient->getMaterializedPath()->append($parentIngredient->getId())
             : MaterializedPath::root();
 

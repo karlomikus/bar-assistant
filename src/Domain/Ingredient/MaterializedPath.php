@@ -83,7 +83,7 @@ final readonly class MaterializedPath
 
     public function isAncestorOf(self $other): bool
     {
-        if ($this->isRoot() || $this->equals($other)) {
+        if ($this->isRoot() || $this->equals($other) || $this->getParentId() === null) {
             return false;
         }
 

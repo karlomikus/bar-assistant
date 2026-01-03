@@ -34,7 +34,7 @@ final readonly class RecordTimestamps
         return new self($this->createdAt, $updatedAt);
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
