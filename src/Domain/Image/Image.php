@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace BarAssistant\Domain\Image;
 
 use BarAssistant\Domain\Exception\DomainException;
-use BarAssistant\Domain\AggregateRoot;
+use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Support\Authors;
 use BarAssistant\Domain\Support\RecordTimestamps;
 
-final class Image implements AggregateRoot
+final class Image implements Identity
 {
     private ?ImageId $id = null;
 
     public function __construct(
         private string $path,
-        private string $placeholderHash,
         private Authors $authors,
         private RecordTimestamps $recordTimestamps,
+        private ?string $placeholderHash = null,
         private ?string $copyright = null,
         private int $sort = 0,
     ) {
@@ -72,7 +72,7 @@ final class Image implements AggregateRoot
         return $this->path;
     }
 
-    public function getPlaceholderHash(): string
+    public function getPlaceholderHash(): ?string
     {
         return $this->placeholderHash;
     }

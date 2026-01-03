@@ -9,6 +9,11 @@ use DateTimeImmutable;
 
 final readonly class IngredientResult
 {
+    /**
+     * @param int[] $images
+     * @param int[] $complexIngredientParts
+     * @param IngredientPriceResult[] $prices
+     */
     public function __construct(
         public int $id,
         public string $name,
@@ -35,6 +40,21 @@ final readonly class IngredientResult
 
     public static function fromIngredient(Ingredient $ingredient): self
     {
+        $images = [];
+        foreach ($ingredient->getImages() as $imageId) {
+            $images[] = $imageId->id;
+        }
+
+        $complexIngredientParts = [];
+        foreach ($ingredient->getIngredientParts() as $ingredientId) {
+            $complexIngredientParts[] = $ingredientId->id;
+        }
+
+        $prices = [];
+        foreach ($ingredient->getPrices() as $price) {
+            $prices[] = IngredientPriceResult::fromIngredientPrice($price);
+        }
+
         return new self(
             id: $ingredient->getId() ? $ingredient->getId()->id : 0,
             name: $ingredient->getName(),
@@ -53,6 +73,8 @@ final readonly class IngredientResult
             units: $ingredient->getUnits()?->value,
             updatedBy: $ingredient->getAuthors()->getUpdatedBy()?->id,
             updatedAt: $ingredient->getRecordTimestamps()->getUpdatedAt(),
+            images: $images,
+            complexIngredientParts: $complexIngredientParts,
         );
     }
 }

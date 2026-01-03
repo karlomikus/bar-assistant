@@ -7,7 +7,7 @@ namespace BarAssistant\Domain\Ingredient;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Image\ImageId;
-use BarAssistant\Domain\AggregateRoot;
+use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\Support\Authors;
 use BarAssistant\Domain\Support\Color;
@@ -16,7 +16,10 @@ use BarAssistant\Domain\Support\Unit;
 use BarAssistant\Domain\User\UserId;
 use DateTimeImmutable;
 
-final class Ingredient implements AggregateRoot
+/**
+ * Ingredient entity
+ */
+final class Ingredient implements Identity
 {
     private ?IngredientId $id = null;
     private Authors $authors;
@@ -34,7 +37,7 @@ final class Ingredient implements AggregateRoot
 
     /**
      * @param BarId $barId Bar identifier
-     * @param non-empty-string $name Name of the ingredient
+     * @param string $name Name of the ingredient
      * @param UserId $createdBy Who created the ingredient
      * @param null|string $description Textual description of the ingredient
      * @param null|float $strength In alcohol percentage (0.0 - 100.0)

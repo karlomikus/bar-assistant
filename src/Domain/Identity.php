@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain;
 
-interface AggregateRoot
+interface Identity
 {
     /**
-     * Get the unique identifier of the aggregate root
+     * Get the unique identifier of the identity
      */
-    public function getId(): ?AggregateRootId;
+    public function getId(): ?Identifier;
 
     /**
-     * Check if the aggregate root has not been persisted yet
+     * Check if the identity has not been persisted yet
      *
      * @phpstan-assert-if-true null $this->getId()
      */

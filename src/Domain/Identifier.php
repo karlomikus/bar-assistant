@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain;
 
-interface AggregateRootId
+interface Identifier
 {
     /**
      * Check if this identifier equals another

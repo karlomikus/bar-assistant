@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace BarAssistant\Domain\Support;
 
 use Stringable;
-use BarAssistant\Domain\AggregateRootId;
+use BarAssistant\Domain\Identifier;
 
-abstract readonly class IntegerIdentifier implements AggregateRootId, Stringable
+abstract readonly class IntegerIdentifier implements Identifier, Stringable
 {
     public function __construct(public int $id)
     {
     }
 
-    public function equals(AggregateRootId $other): bool
+    public function equals(Identifier $other): bool
     {
         if (!$other instanceof self) {
             return false;

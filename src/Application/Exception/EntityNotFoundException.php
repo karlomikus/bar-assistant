@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Exception;
 
-final class EntityNotFoundException extends ApplicationServiceException
+class EntityNotFoundException extends ApplicationServiceException
 {
 }
