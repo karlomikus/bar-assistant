@@ -14,14 +14,14 @@ final class Image implements AggregateRoot
     private ?ImageId $id = null;
 
     public function __construct(
-        private string $filepath,
+        private string $path,
         private string $placeholderHash,
         private Authors $authors,
         private RecordTimestamps $recordTimestamps,
         private ?string $copyright = null,
         private int $sort = 0,
     ) {
-        if (trim($filepath) === '') {
+        if (trim($path) === '') {
             throw new DomainException('Image filepath cannot be empty');
         }
     }
@@ -29,6 +29,17 @@ final class Image implements AggregateRoot
     public function isTransient(): bool
     {
         return $this->id === null;
+    }
+
+    public function setId(ImageId $id): self
+    {
+        if ($this->isTransient() === false) {
+            throw new DomainException('Cannot change the ID of an existing image');
+        }
+
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getId(): ?ImageId
@@ -56,20 +67,9 @@ final class Image implements AggregateRoot
         return $this->recordTimestamps;
     }
 
-    public function setId(ImageId $id): self
+    public function getPath(): string
     {
-        if ($this->isTransient() === false) {
-            throw new DomainException('Cannot change the ID of an existing image');
-        }
-
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getFilepath(): string
-    {
-        return $this->filepath;
+        return $this->path;
     }
 
     public function getPlaceholderHash(): string

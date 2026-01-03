@@ -12,6 +12,8 @@ use BarAssistant\Application\Ingredient\DTO\IngredientResult;
 use BarAssistant\Application\Ingredient\DTO\UpdateIngredient;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Domain\Calculator\CalculatorId;
+use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\Image\ImageRepository;
 use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
 use BarAssistant\Domain\Ingredient\IngredientId;
@@ -30,6 +32,7 @@ final readonly class IngredientService
     public function __construct(
         private IngredientRepository $ingredientRepository,
         private PriceCategoryRepository $priceCategoryRepository,
+        private ImageRepository $imageRepository,
     ) {
         $this->ingredientHierarchy = new IngredientHierarchyManager($ingredientRepository);
     }
@@ -61,6 +64,10 @@ final readonly class IngredientService
 
         if (count($ingredientRequest->prices) > 0) {
             $ingredient = $this->assignIngredientPrices($ingredient, $ingredientRequest->prices);
+        }
+
+        if (count($ingredientRequest->images) > 0) {
+            $ingredient = $this->assignImages($ingredient, $ingredientRequest->images);
         }
 
         $ingredient = $this->ingredientRepository->save($ingredient);
@@ -107,6 +114,11 @@ final readonly class IngredientService
         $ingredient->removeAllPrices();
         if (count($ingredientRequest->prices) > 0) {
             $ingredient = $this->assignIngredientPrices($ingredient, $ingredientRequest->prices);
+        }
+
+        $ingredient->removeAllImages();
+        if (count($ingredientRequest->images) > 0) {
+            $ingredient = $this->assignImages($ingredient, $ingredientRequest->images);
         }
 
         $ingredient = $this->ingredientRepository->save($ingredient);
@@ -202,6 +214,25 @@ final readonly class IngredientService
                     description: $priceData->description,
                 )
             );
+        }
+
+        return $ingredient;
+    }
+
+    /**
+     * Find and assign images to an ingredient.
+     *
+     * @param non-empty-array<int> $imageIds
+     */
+    private function assignImages(Ingredient $ingredient, array $imageIds): Ingredient
+    {
+        $imageCandidates = $this->imageRepository->findMany(array_map(
+            fn (int $id) => new ImageId($id),
+            $imageIds
+        ));
+
+        foreach ($imageCandidates as $image) {
+            $ingredient->addImage($image->getId());
         }
 
         return $ingredient;
