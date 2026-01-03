@@ -13,7 +13,6 @@ use BarAssistant\Application\Ingredient\DTO\UpdateIngredient;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\Image\ImageId;
-use BarAssistant\Domain\Image\ImageRepository;
 use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
 use BarAssistant\Domain\Ingredient\IngredientId;
@@ -32,7 +31,6 @@ final readonly class IngredientService
     public function __construct(
         private IngredientRepository $ingredientRepository,
         private PriceCategoryRepository $priceCategoryRepository,
-        private ImageRepository $imageRepository,
     ) {
         $this->ingredientHierarchy = new IngredientHierarchyManager($ingredientRepository);
     }
@@ -70,16 +68,18 @@ final readonly class IngredientService
             $ingredient = $this->assignImages($ingredient, $ingredientRequest->images);
         }
 
-        $ingredient = $this->ingredientRepository->save($ingredient);
-
+        // Set parent relationship before persisting to ensure atomicity
         if ($ingredientRequest->parentIngredientId !== null) {
             $parentIngredient = $this->ingredientRepository->findById(new IngredientId($ingredientRequest->parentIngredientId));
             if ($parentIngredient === null) {
-                throw new EntityNotFoundException('The specified parent ingredient was not found');
+                throw new EntityNotFoundException('Parent ingredient not found');
             }
 
-            $ingredient = $this->ingredientHierarchy->changeParent($ingredient, $parentIngredient);
+            $ingredient->setAsVariantOf($parentIngredient);
         }
+
+        // Single save operation maintains transaction boundary
+        $ingredient = $this->ingredientRepository->save($ingredient);
 
         return IngredientResult::fromIngredient($ingredient);
     }
@@ -161,13 +161,24 @@ final readonly class IngredientService
      * Find and assign ingredient parts to a complex ingredient.
      *
      * @param non-empty-array<int> $ingredientPartIds
+     * @throws EntityNotFoundException if any ingredient part is not found
      */
     private function assignIngredientParts(Ingredient $ingredient, array $ingredientPartIds): Ingredient
     {
-        $ingredientPartCandidates = $this->ingredientRepository->findMany($ingredient->getBarId(), array_map(
+        $ingredientIdVOs = array_map(
             fn (int $id) => new IngredientId($id),
             $ingredientPartIds
-        ));
+        );
+
+        $ingredientPartCandidates = $this->ingredientRepository->findMany(
+            $ingredient->getBarId(),
+            $ingredientIdVOs
+        );
+
+        // Validate all requested parts were found
+        if (count($ingredientPartCandidates) !== count($ingredientPartIds)) {
+            throw new EntityNotFoundException('One or more ingredient parts not found');
+        }
 
         foreach ($ingredientPartCandidates as $part) {
             $ingredient->addIngredientPart($part);
@@ -220,19 +231,16 @@ final readonly class IngredientService
     }
 
     /**
-     * Find and assign images to an ingredient.
+     * Assign images to an ingredient.
+     *
+     * Images are managed by their own bounded context - we only maintain references via ImageId.
      *
      * @param non-empty-array<int> $imageIds
      */
     private function assignImages(Ingredient $ingredient, array $imageIds): Ingredient
     {
-        $imageCandidates = $this->imageRepository->findMany(array_map(
-            fn (int $id) => new ImageId($id),
-            $imageIds
-        ));
-
-        foreach ($imageCandidates as $image) {
-            $ingredient->addImage($image->getId());
+        foreach ($imageIds as $imageId) {
+            $ingredient->addImage(new ImageId($imageId));
         }
 
         return $ingredient;
