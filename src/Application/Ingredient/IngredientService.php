@@ -31,6 +31,7 @@ final readonly class IngredientService
     public function __construct(
         private IngredientRepository $ingredientRepository,
         private PriceCategoryRepository $priceCategoryRepository,
+        private IngredientResultAssembler $assembler,
     ) {
         $this->ingredientHierarchy = new IngredientHierarchyManager($ingredientRepository);
     }
@@ -81,7 +82,7 @@ final readonly class IngredientService
         // Single save operation maintains transaction boundary
         $ingredient = $this->ingredientRepository->save($ingredient);
 
-        return IngredientResult::fromIngredient($ingredient);
+        return $this->assembler->toResult($ingredient);
     }
 
     public function updateIngredient(UpdateIngredient $ingredientRequest): IngredientResult
@@ -134,7 +135,7 @@ final readonly class IngredientService
             $ingredient = $this->ingredientHierarchy->makeRoot($ingredient);
         }
 
-        return IngredientResult::fromIngredient($ingredient);
+        return $this->assembler->toResult($ingredient);
     }
 
     public function getIngredient(int $ingredientId): IngredientResult
@@ -145,7 +146,7 @@ final readonly class IngredientService
             throw new EntityNotFoundException('Ingredient not found');
         }
 
-        return IngredientResult::fromIngredient($ingredient);
+        return $this->assembler->toResult($ingredient);
     }
 
     public function deleteIngredient(int $ingredientId): void
