@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Ingredient\DTO;
 
+use BarAssistant\Domain\Ingredient\IngredientPrice;
+
 final readonly class IngredientPriceResult
 {
     public function __construct(
@@ -14,5 +16,17 @@ final readonly class IngredientPriceResult
         public string $units,
         public ?string $description = null,
     ) {
+    }
+
+    public static function fromIngredientPrice(IngredientPrice $price): IngredientPriceResult
+    {
+        return new IngredientPriceResult(
+            ingredientPriceId: $price->getPriceCategoryId()->id,
+            price: $price->getPrice()->getPriceAsMinor(),
+            amount: $price->getAmountWithUnits()->amountMin,
+            currency: $price->getPrice()->getCurrency(),
+            units: $price->getAmountWithUnits()->units->value,
+            description: $price->getDescription(),
+        );
     }
 }
