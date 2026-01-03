@@ -97,7 +97,7 @@ final readonly class IngredientHierarchyManager
      *
      * @param Ingredient $ingredient The ingredient to make root
      */
-    public function makeRoot(Ingredient $ingredient): void
+    public function makeRoot(Ingredient $ingredient): Ingredient
     {
         if ($ingredient->isTransient()) {
             throw new IngredientHierarchyException('Cannot make transient ingredient a root');
@@ -138,6 +138,8 @@ final readonly class IngredientHierarchyManager
         }
 
         $this->repository->saveHierarchyChanges($ingredient, $descendants);
+
+        return $ingredient;
     }
 }
 

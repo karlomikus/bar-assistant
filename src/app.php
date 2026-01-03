@@ -88,13 +88,13 @@ $speyside = $service->createIngredient(new CreateIngredientDTO(
     parentIngredientId: $scotch->id,
 ));
 
-// $test = $service->updateIngredient(new UpdateIngredientDTO(
-//     ingredientId: $whiskey->id,
-//     name: $whiskey->name,
-//     description: null,
-//     strength: 0.0,
-//     userId: $userId,
-//     parentIngredientId: $gin->id,
-// ));
+$test = $service->updateIngredient(new UpdateIngredientDTO(
+    ingredientId: $whiskey->id,
+    name: $whiskey->name,
+    description: null,
+    strength: 0.0,
+    userId: $userId,
+    parentIngredientId: null,
+));
 
 dd('done');

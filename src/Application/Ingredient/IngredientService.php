@@ -123,7 +123,7 @@ final readonly class IngredientService
 
             $ingredient = $this->ingredientHierarchy->changeParent($ingredient, $parentIngredient);
         } else {
-            // $ingredient = $this->ingredientHierarchy->makeRoot()
+            $ingredient = $this->ingredientHierarchy->makeRoot($ingredient);
         }
 
         return IngredientResult::fromIngredient($ingredient);
