@@ -137,6 +137,17 @@ final readonly class IngredientService
         return IngredientResult::fromIngredient($ingredient);
     }
 
+    public function getIngredient(int $ingredientId): IngredientResult
+    {
+        $ingredient = $this->ingredientRepository->findById(new IngredientId($ingredientId));
+
+        if ($ingredient === null) {
+            throw new EntityNotFoundException('Ingredient not found');
+        }
+
+        return IngredientResult::fromIngredient($ingredient);
+    }
+
     public function deleteIngredient(int $ingredientId): void
     {
         $ingredientIdVO = new IngredientId($ingredientId);

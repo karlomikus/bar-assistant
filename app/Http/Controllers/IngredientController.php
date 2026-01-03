@@ -76,6 +76,13 @@ class IngredientController extends Controller
     #[BAO\NotFoundResponse]
     public function show(Request $request, string $idOrSlug): JsonResource
     {
+        $ingredientRepo = new \Kami\Cocktail\Infrastructure\EloquentIngredientRepository();
+        $priceRepo = new \Kami\Cocktail\Infrastructure\EloquentPriceCategoryRepository();
+        $service = new \BarAssistant\Application\Ingredient\IngredientService($ingredientRepo, $priceRepo);
+
+        $ingredient = $service->getIngredient(116036);
+        dd($ingredient);
+
         $ingredient = Ingredient::with(
             'cocktails',
             'images',
@@ -124,16 +131,6 @@ class IngredientController extends Controller
         if ($request->user()->cannot('create', Ingredient::class)) {
             abort(403);
         }
-
-        $ingredientRepo = new \Kami\Cocktail\Infrastructure\EloquentIngredientRepository();
-        $priceRepo = new \Kami\Cocktail\Infrastructure\EloquentPriceCategoryRepository();
-        $service = new \BarAssistant\Application\Ingredient\IngredientService($ingredientRepo, $priceRepo);
-
-        $ingredient = $service->createIngredient(
-            \BarAssistant\Application\Ingredient\DTO\CreateIngredient::fromIlluminateRequest($request, bar()->id)
-        );
-
-        $ingredient = Ingredient::findOrFail($ingredient->id);
 
         return (new IngredientResource($ingredient))
             ->response()
