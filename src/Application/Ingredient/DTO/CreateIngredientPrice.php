@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Ingredient\DTO;
 
-final readonly class IngredientPriceRequest
+final readonly class CreateIngredientPrice
 {
     public function __construct(
         public int $priceCategoryId,

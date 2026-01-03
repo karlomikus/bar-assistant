@@ -32,6 +32,25 @@ final class Ingredient implements AggregateRoot
     /** @var IngredientPrice[] */
     private array $prices = [];
 
+    /**
+     * @param BarId $barId Bar identifier
+     * @param non-empty-string $name Name of the ingredient
+     * @param UserId $createdBy Who created the ingredient
+     * @param null|string $description Textual description of the ingredient
+     * @param null|float $strength In alcohol percentage (0.0 - 100.0)
+     * @param null|string $origin Geographical origin of the ingredient
+     * @param null|Color $color Color of the ingredient
+     * @param null|CalculatorId $calculatorId Associated calculator identifier
+     * @param null|float $sugarContent Sugar content in g/ml
+     * @param null|float $acidity Acidity value in percents
+     * @param null|string $distillery Distillery name
+     * @param null|Unit $units Default ingredient measurement units
+     * @param null|IngredientId $parentIngredientId Parent ingredient identifier (for variants)
+     * @param null|MaterializedPath $materializedPath Materialized path in the ingredient hierarchy
+     * @param null|DateTimeImmutable $createdAt Creation timestamp
+     * @return void
+     * @throws DomainException 
+     */
     public function __construct(
         private readonly BarId $barId,
         private string $name,

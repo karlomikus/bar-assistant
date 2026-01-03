@@ -130,7 +130,7 @@ class IngredientController extends Controller
         $service = new \BarAssistant\Application\Ingredient\IngredientService($ingredientRepo, $priceRepo);
 
         $ingredient = $service->createIngredient(
-            \BarAssistant\Application\Ingredient\DTO\CreateIngredientDTO::fromIlluminateRequest($request, bar()->id)
+            \BarAssistant\Application\Ingredient\DTO\CreateIngredient::fromIlluminateRequest($request, bar()->id)
         );
 
         $ingredient = Ingredient::findOrFail($ingredient->id);

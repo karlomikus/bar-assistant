@@ -6,11 +6,11 @@ namespace BarAssistant\Application\Ingredient;
 
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Support\Color;
-use BarAssistant\Application\Ingredient\DTO\CreateIngredientDTO;
-use BarAssistant\Application\Ingredient\DTO\IngredientPriceRequest;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
 use BarAssistant\Application\Ingredient\DTO\IngredientResult;
-use BarAssistant\Application\Ingredient\DTO\UpdateIngredientDTO;
-use BarAssistant\Application\Exception\ApplicationServiceException;
+use BarAssistant\Application\Ingredient\DTO\UpdateIngredient;
+use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
@@ -37,7 +37,7 @@ final readonly class IngredientService
     /**
      * Creates a new ingredient based on the provided request data.
      */
-    public function createIngredient(CreateIngredientDTO $ingredientRequest): IngredientResult
+    public function createIngredient(CreateIngredient $ingredientRequest): IngredientResult
     {
         $barId = new BarId($ingredientRequest->barId);
         $ingredient = new Ingredient(
@@ -68,7 +68,7 @@ final readonly class IngredientService
         if ($ingredientRequest->parentIngredientId !== null) {
             $parentIngredient = $this->ingredientRepository->findById(new IngredientId($ingredientRequest->parentIngredientId));
             if ($parentIngredient === null) {
-                throw new ApplicationServiceException('The specified parent ingredient was not found');
+                throw new EntityNotFoundException('The specified parent ingredient was not found');
             }
 
             $ingredient = $this->ingredientHierarchy->changeParent($ingredient, $parentIngredient);
@@ -77,11 +77,11 @@ final readonly class IngredientService
         return IngredientResult::fromIngredient($ingredient);
     }
 
-    public function updateIngredient(UpdateIngredientDTO $ingredientRequest): IngredientResult
+    public function updateIngredient(UpdateIngredient $ingredientRequest): IngredientResult
     {
         $ingredient = $this->ingredientRepository->findById(new IngredientId($ingredientRequest->ingredientId));
         if ($ingredient === null) {
-            throw new ApplicationServiceException('The ingredient to update was not found');
+            throw new EntityNotFoundException('The ingredient to update was not found');
         }
 
         $ingredient->updateDetails(
@@ -114,7 +114,7 @@ final readonly class IngredientService
         if ($ingredientRequest->parentIngredientId !== null) {
             $parentIngredient = $this->ingredientRepository->findById(new IngredientId($ingredientRequest->parentIngredientId));
             if ($parentIngredient === null) {
-                throw new ApplicationServiceException('The specified parent ingredient was not found');
+                throw new EntityNotFoundException('The specified parent ingredient was not found');
             }
 
             $ingredient = $this->ingredientHierarchy->changeParent($ingredient, $parentIngredient);
@@ -127,7 +127,22 @@ final readonly class IngredientService
 
     public function deleteIngredient(int $ingredientId): void
     {
-        // $this->ingredientRepository->deleteById(new IngredientId($ingredientId));
+        $ingredientIdVO = new IngredientId($ingredientId);
+        $ingredient = $this->ingredientRepository->findById($ingredientIdVO);
+
+        if ($ingredient === null) {
+            throw new EntityNotFoundException('The ingredient to delete was not found');
+        }
+
+        // Update children to be root ingredients
+        $children = $this->ingredientRepository->findChildren($ingredientIdVO);
+        if (!empty($children)) {
+            foreach ($children as $child) {
+                $this->ingredientHierarchy->makeRoot($child);
+            }
+        }
+
+        $this->ingredientRepository->delete($ingredientIdVO);
     }
 
     /**
@@ -152,7 +167,7 @@ final readonly class IngredientService
     /**
      * Find and assign ingredient prices to an ingredient.
      *
-     * @param non-empty-array<IngredientPriceRequest> $prices
+     * @param non-empty-array<CreateIngredientPrice> $prices
      */
     private function assignIngredientPrices(Ingredient $ingredient, array $prices): Ingredient
     {

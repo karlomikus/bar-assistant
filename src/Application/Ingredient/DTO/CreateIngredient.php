@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Ingredient\DTO;
 
-final readonly class UpdateIngredientDTO
+final readonly class CreateIngredient
 {
     /**
      * @param int[] $images
      * @param int[] $complexIngredientParts
-     * @param IngredientPriceRequest[] $prices
+     * @param CreateIngredientPrice[] $prices
      */
     public function __construct(
-        public int $ingredientId,
+        public int $barId,
         public string $name,
         public int $userId,
         public float $strength = 0.0,

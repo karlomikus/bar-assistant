@@ -1,8 +1,8 @@
 <?php
 
-use BarAssistant\Application\Ingredient\DTO\CreateIngredientDTO;
-use BarAssistant\Application\Ingredient\DTO\IngredientPriceRequest;
-use BarAssistant\Application\Ingredient\DTO\UpdateIngredientDTO;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
+use BarAssistant\Application\Ingredient\DTO\UpdateIngredient;
 use BarAssistant\Application\Ingredient\IngredientService;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Http\Kernel;
@@ -31,7 +31,7 @@ $userId = 586;
 
 Ingredient::where('bar_id', $barId)->delete();
 
-$spirits = $service->createIngredient(new CreateIngredientDTO(
+$spirits = $service->createIngredient(new CreateIngredient(
     barId: $barId,
     name: 'Spirits',
     description: 'All kinds of spirits',
@@ -39,7 +39,7 @@ $spirits = $service->createIngredient(new CreateIngredientDTO(
     userId: $userId,
     parentIngredientId: null,
 ));
-$whiskey = $service->createIngredient(new CreateIngredientDTO(
+$whiskey = $service->createIngredient(new CreateIngredient(
     barId: $barId,
     name: 'Whiskey',
     description: null,
@@ -47,7 +47,7 @@ $whiskey = $service->createIngredient(new CreateIngredientDTO(
     userId: $userId,
     parentIngredientId: $spirits->id,
 ));
-$scotch = $service->createIngredient(new CreateIngredientDTO(
+$scotch = $service->createIngredient(new CreateIngredient(
     barId: $barId,
     name: 'Scotch',
     description: null,
@@ -55,7 +55,7 @@ $scotch = $service->createIngredient(new CreateIngredientDTO(
     userId: $userId,
     parentIngredientId: $whiskey->id,
 ));
-$islay = $service->createIngredient(new CreateIngredientDTO(
+$islay = $service->createIngredient(new CreateIngredient(
     barId: $barId,
     name: 'Islay Scotch',
     description: null,
@@ -63,7 +63,7 @@ $islay = $service->createIngredient(new CreateIngredientDTO(
     userId: $userId,
     parentIngredientId: $scotch->id,
 ));
-$gin = $service->createIngredient(new CreateIngredientDTO(
+$gin = $service->createIngredient(new CreateIngredient(
     barId: $barId,
     name: 'Gin',
     description: null,
@@ -71,7 +71,7 @@ $gin = $service->createIngredient(new CreateIngredientDTO(
     userId: $userId,
     parentIngredientId: $spirits->id,
 ));
-$london = $service->createIngredient(new CreateIngredientDTO(
+$london = $service->createIngredient(new CreateIngredient(
     barId: $barId,
     name: 'London dry gin',
     description: null,
@@ -79,7 +79,7 @@ $london = $service->createIngredient(new CreateIngredientDTO(
     userId: $userId,
     parentIngredientId: $gin->id,
 ));
-$speyside = $service->createIngredient(new CreateIngredientDTO(
+$speyside = $service->createIngredient(new CreateIngredient(
     barId: $barId,
     name: 'Speyside Scotch',
     description: null,
@@ -88,7 +88,7 @@ $speyside = $service->createIngredient(new CreateIngredientDTO(
     parentIngredientId: $scotch->id,
 ));
 
-$test = $service->updateIngredient(new UpdateIngredientDTO(
+$test = $service->updateIngredient(new UpdateIngredient(
     ingredientId: $whiskey->id,
     name: $whiskey->name,
     description: null,
@@ -96,5 +96,7 @@ $test = $service->updateIngredient(new UpdateIngredientDTO(
     userId: $userId,
     parentIngredientId: null,
 ));
+
+dump($speyside);
 
 dd('done');
