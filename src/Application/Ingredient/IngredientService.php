@@ -9,11 +9,13 @@ use BarAssistant\Domain\Support\Color;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
 use BarAssistant\Application\Ingredient\DTO\IngredientResult;
+use BarAssistant\Application\Ingredient\DTO\IngredientWithPathResult;
 use BarAssistant\Application\Ingredient\DTO\UpdateIngredient;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Ingredient\Ingredient;
+use BarAssistant\Domain\Ingredient\IngredientAncestorPath;
 use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\IngredientPrice;
@@ -144,6 +146,23 @@ final readonly class IngredientService
         }
 
         return IngredientResult::fromIngredient($ingredient);
+    }
+
+    /**
+     * Get an ingredient with its complete hierarchical path.
+     */
+    public function getPathToIngredient(int $ingredientId): IngredientWithPathResult
+    {
+        $ingredient = $this->ingredientRepository->findById(new IngredientId($ingredientId));
+        if ($ingredient === null) {
+            throw new EntityNotFoundException('Ingredient not found');
+        }
+
+        // TODO: Create a factory method
+        $ancestors = $this->ingredientRepository->findAncestors(new IngredientId($ingredientId));
+        $ancestorPath = IngredientAncestorPath::from($ingredient, $ancestors);
+
+        return IngredientWithPathResult::fromIngredientAncestorPath($ancestorPath);
     }
 
     public function deleteIngredient(int $ingredientId): void

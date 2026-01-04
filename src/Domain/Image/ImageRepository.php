@@ -11,4 +11,6 @@ interface ImageRepository
      * @return Image[]
      */
     public function findMany(array $ids): array;
+
+    public function save(Image $image): Image;
 }
