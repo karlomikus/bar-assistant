@@ -68,7 +68,6 @@ final readonly class IngredientService
             $ingredient = $this->assignImages($ingredient, $ingredientRequest->images);
         }
 
-        // Set parent relationship before persisting to ensure atomicity
         if ($ingredientRequest->parentIngredientId !== null) {
             $parentIngredient = $this->ingredientRepository->findById(new IngredientId($ingredientRequest->parentIngredientId));
             if ($parentIngredient === null) {
@@ -78,7 +77,6 @@ final readonly class IngredientService
             $ingredient->setAsVariantOf($parentIngredient);
         }
 
-        // Single save operation maintains transaction boundary
         $ingredient = $this->ingredientRepository->save($ingredient);
 
         return IngredientResult::fromIngredient($ingredient);
@@ -150,22 +148,22 @@ final readonly class IngredientService
 
     public function deleteIngredient(int $ingredientId): void
     {
-        $ingredientIdVO = new IngredientId($ingredientId);
-        $ingredient = $this->ingredientRepository->findById($ingredientIdVO);
+        $id = new IngredientId($ingredientId);
+        $ingredient = $this->ingredientRepository->findById($id);
 
         if ($ingredient === null) {
             throw new EntityNotFoundException('The ingredient to delete was not found');
         }
 
         // Update children to be root ingredients
-        $children = $this->ingredientRepository->findChildren($ingredientIdVO);
+        $children = $this->ingredientRepository->findChildren($id);
         if (!empty($children)) {
             foreach ($children as $child) {
                 $this->ingredientHierarchy->makeRoot($child);
             }
         }
 
-        $this->ingredientRepository->delete($ingredientIdVO);
+        $this->ingredientRepository->delete($id);
     }
 
     /**

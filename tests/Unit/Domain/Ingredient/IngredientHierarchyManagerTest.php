@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Domain\Ingredient;
 
 use BarAssistant\Domain\Bar\BarId;
+use BarAssistant\Domain\Ingredient\Exception\IngredientHierarchyException;
 use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
 use BarAssistant\Domain\Ingredient\IngredientId;
@@ -14,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 final class IngredientHierarchyManagerTest extends TestCase
 {
-    public function testChangeParent(): void
+    public function test_change_parent_updates_all_descendants(): void
     {
         $repo = $this->createStub(IngredientRepository::class);
 
@@ -79,5 +80,44 @@ final class IngredientHierarchyManagerTest extends TestCase
         $this->assertSame(5, $islayScotch->getParentIngredientId()->id);
         $this->assertSame('1/2/4/5/6/', $ardbeg->getMaterializedPath()->toString());
         $this->assertSame(6, $ardbeg->getParentIngredientId()->id);
+    }
+
+    public function test_change_parent_rejects_move_under_descendant(): void
+    {
+        $repo = $this->createStub(IngredientRepository::class);
+
+        $service = new IngredientHierarchyManager($repo);
+
+        $barId = new BarId(77);
+        $userId = new UserId(1);
+
+        $parent = new Ingredient($barId, 'Parent', $userId);
+        $parent->setId(new IngredientId(1));
+        $child = new Ingredient($barId, 'Direct child', $userId);
+        $child->setId(new IngredientId(2));
+        $desc = new Ingredient($barId, 'Descendant', $userId);
+        $desc->setId(new IngredientId(3));
+
+        $child = $service->changeParent($child, $parent);
+        $desc = $service->changeParent($desc, $child);
+
+        $this->expectException(IngredientHierarchyException::class);
+        $service->changeParent($child, $desc);
+    }
+
+    public function test_change_parent_rejects_its_own_parent(): void
+    {
+        $repo = $this->createStub(IngredientRepository::class);
+
+        $service = new IngredientHierarchyManager($repo);
+
+        $barId = new BarId(77);
+        $userId = new UserId(1);
+
+        $parent = new Ingredient($barId, 'Parent', $userId);
+        $parent->setId(new IngredientId(1));
+
+        $this->expectException(IngredientHierarchyException::class);
+        $service->changeParent($parent, $parent);
     }
 }
