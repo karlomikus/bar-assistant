@@ -9,7 +9,7 @@ use BarAssistant\Domain\Ingredient\IngredientId;
 final readonly class BarInventory
 {
     /**
-     * @param IngredientId[] $ingredients
+     * @param IngredientInventoryItem[] $ingredients
      */
     public function __construct(
         private array $ingredients,
@@ -18,8 +18,8 @@ final readonly class BarInventory
 
     public function hasIngredient(IngredientId $ingredientId): bool
     {
-        foreach ($this->ingredients as $existingIngredientId) {
-            if ($existingIngredientId->equals($ingredientId)) {
+        foreach ($this->ingredients as $existingInventoryItem) {
+            if ($existingInventoryItem->ingredientId->equals($ingredientId)) {
                 return true;
             }
         }
@@ -32,12 +32,23 @@ final readonly class BarInventory
         if ($this->hasIngredient($ingredientId)) {
             $newIngredients = array_filter(
                 $this->ingredients,
-                fn (IngredientId $existingIngredientId) => !$existingIngredientId->equals($ingredientId)
+                fn (IngredientId $existingInventoryItem) => !$existingInventoryItem->ingredientId->equals($ingredientId)
             );
 
             return new self(array_values($newIngredients));
         }
 
         return new self([...$this->ingredients, $ingredientId]);
+    }
+
+    /**
+     * @return IngredientInventoryItem[]
+     */
+    public function getVariantIngredients(): array
+    {
+        return array_filter(
+            $this->ingredients,
+            fn (IngredientInventoryItem $item) => $item->ingredientStatus === IngredientInventoryStatus::Variant
+        );
     }
 }
