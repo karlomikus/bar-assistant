@@ -6,6 +6,8 @@ namespace BarAssistant\Domain\Bar;
 
 /**
  * Represents the status of an ingredient in a bar's inventory
+ *
+ * @internal
  */
 enum IngredientInventoryStatus
 {
@@ -20,4 +22,10 @@ enum IngredientInventoryStatus
      * Example: "Gin" is marked as variant because "London Dry Gin" is in stock
      */
     case Variant;
+
+    /**
+     * The ingredient can be made from other ingredients in stock
+     * Example: "Lemon Juice" can be made from "Lemon" which is in stock
+     */
+    case Makeable;
 }

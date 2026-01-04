@@ -6,5 +6,5 @@ namespace BarAssistant\Domain\Bar;
 
 interface BarRepository
 {
-    public function findById(BarId $id): Bar;
+    public function findById(BarId $id): ?Bar;
 }

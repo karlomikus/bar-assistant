@@ -13,4 +13,19 @@ final readonly class IngredientInventoryItem
         public IngredientInventoryStatus $ingredientStatus,
     ) {
     }
+
+    public function isInStock(): bool
+    {
+        return $this->ingredientStatus === IngredientInventoryStatus::InStock;
+    }
+
+    public function isInStockAsVariant(): bool
+    {
+        return $this->ingredientStatus === IngredientInventoryStatus::Variant;
+    }
+
+    public function isInStockAsMakeable(): bool
+    {
+        return $this->ingredientStatus === IngredientInventoryStatus::Makeable;
+    }
 }
