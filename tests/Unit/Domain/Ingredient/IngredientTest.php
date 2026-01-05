@@ -10,7 +10,6 @@ use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\Ingredient\IngredientPrice;
 use BarAssistant\Domain\Ingredient\MaterializedPath;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Support\Color;
@@ -453,15 +452,13 @@ final class IngredientTest extends TestCase
             createdBy: new UserId(1),
         );
 
-        $price = IngredientPrice::create(
+        $ingredient->addPrice(
             priceCategoryId: new PriceCategoryId(1),
             price: 2500,
             currency: 'USD',
             amount: 750.0,
             units: 'ml',
         );
-
-        $ingredient->addPrice($price);
 
         $prices = $ingredient->getPrices();
         $this->assertCount(1, $prices);
@@ -475,23 +472,20 @@ final class IngredientTest extends TestCase
             createdBy: new UserId(1),
         );
 
-        $price1 = IngredientPrice::create(
+        $ingredient->addPrice(
             priceCategoryId: new PriceCategoryId(1),
             price: 2500,
             currency: 'USD',
             amount: 750.0,
             units: 'ml',
         );
-        $price2 = IngredientPrice::create(
+        $ingredient->addPrice(
             priceCategoryId: new PriceCategoryId(2),
             price: 5000,
             currency: 'USD',
             amount: 1000.0,
             units: 'ml',
         );
-
-        $ingredient->addPrice($price1);
-        $ingredient->addPrice($price2);
         $this->assertCount(2, $ingredient->getPrices());
 
         $ingredient->removeAllPrices();

@@ -9,16 +9,13 @@ use BarAssistant\Domain\Support\Color;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
 use BarAssistant\Application\Ingredient\DTO\IngredientResult;
-use BarAssistant\Application\Ingredient\DTO\IngredientWithPathResult;
 use BarAssistant\Application\Ingredient\DTO\UpdateIngredient;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Ingredient\Ingredient;
-use BarAssistant\Domain\Ingredient\IngredientAncestorPath;
 use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
 use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\Ingredient\IngredientPrice;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
@@ -81,7 +78,9 @@ final readonly class IngredientService
 
         $ingredient = $this->ingredientRepository->save($ingredient);
 
-        return IngredientResult::fromIngredient($ingredient);
+        $ancestors = $this->ingredientRepository->findAncestors($ingredient->getId());
+
+        return IngredientResult::fromIngredient($ingredient, $ancestors);
     }
 
     public function updateIngredient(UpdateIngredient $ingredientRequest): IngredientResult
@@ -134,7 +133,9 @@ final readonly class IngredientService
             $ingredient = $this->ingredientHierarchy->makeRoot($ingredient);
         }
 
-        return IngredientResult::fromIngredient($ingredient);
+        $ancestors = $this->ingredientRepository->findAncestors($ingredient->getId());
+
+        return IngredientResult::fromIngredient($ingredient, $ancestors);
     }
 
     public function getIngredient(int $ingredientId): IngredientResult
@@ -145,24 +146,9 @@ final readonly class IngredientService
             throw new EntityNotFoundException('Ingredient not found');
         }
 
-        return IngredientResult::fromIngredient($ingredient);
-    }
+        $ancestors = $this->ingredientRepository->findAncestors($ingredient->getId());
 
-    /**
-     * Get an ingredient with its complete hierarchical path.
-     */
-    public function getPathToIngredient(int $ingredientId): IngredientWithPathResult
-    {
-        $ingredient = $this->ingredientRepository->findById(new IngredientId($ingredientId));
-        if ($ingredient === null) {
-            throw new EntityNotFoundException('Ingredient not found');
-        }
-
-        // TODO: Create a factory method
-        $ancestors = $this->ingredientRepository->findAncestors(new IngredientId($ingredientId));
-        $ancestorPath = IngredientAncestorPath::from($ingredient, $ancestors);
-
-        return IngredientWithPathResult::fromIngredientAncestorPath($ancestorPath);
+        return IngredientResult::fromIngredient($ingredient, $ancestors);
     }
 
     public function deleteIngredient(int $ingredientId): void
@@ -244,14 +230,12 @@ final readonly class IngredientService
             }
 
             $ingredient->addPrice(
-                IngredientPrice::create(
-                    priceCategoryId: $priceCategory->getId(),
-                    price: $priceData->price,
-                    currency: $priceCategory->getCurrency()->getCurrencyCode(),
-                    amount: $priceData->amount,
-                    units: $priceData->units,
-                    description: $priceData->description,
-                )
+                priceCategoryId: $priceCategory->getId(),
+                price: $priceData->price,
+                currency: $priceCategory->getCurrency()->getCurrencyCode(),
+                amount: $priceData->amount,
+                units: $priceData->units,
+                description: $priceData->description,
             );
         }
 

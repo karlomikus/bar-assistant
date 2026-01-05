@@ -9,8 +9,10 @@ use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Calculator\CalculatorId;
+use BarAssistant\Domain\Support\AmountWithUnits;
 use BarAssistant\Domain\Support\Authors;
 use BarAssistant\Domain\Support\Color;
+use BarAssistant\Domain\Support\Price;
 use BarAssistant\Domain\Support\RecordTimestamps;
 use BarAssistant\Domain\Support\Unit;
 use BarAssistant\Domain\User\UserId;
@@ -286,9 +288,14 @@ final class Ingredient implements Identity
         return $this->prices;
     }
 
-    public function addPrice(IngredientPrice $price): self
+    public function addPrice(PriceCategoryId $priceCategoryId, int $price, string $currency, float $amount, string $units, ?string $description = null): self
     {
-        $this->prices[] = $price;
+        $this->prices[] = new IngredientPrice(
+            priceCategoryId: $priceCategoryId,
+            price: Price::createFromMinor($price, $currency),
+            amountWithUnits: new AmountWithUnits($amount, new Unit($units)),
+            description: $description,
+        );
 
         return $this;
     }

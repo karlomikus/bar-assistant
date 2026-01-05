@@ -20,7 +20,7 @@ final readonly class IngredientResult
         public string $name,
         public int $userId,
         public DateTimeImmutable $createdAt,
-        public string $materializedPath,
+        public IngredientHierarchyResult $hierarchy,
         public ?string $description = null,
         public float $strength = 0.0,
         public ?string $origin = null,
@@ -39,7 +39,10 @@ final readonly class IngredientResult
     ) {
     }
 
-    public static function fromIngredient(Ingredient $ingredient): IngredientResult
+    /**
+     * @param Ingredient[] $ancestors
+     */
+    public static function fromIngredient(Ingredient $ingredient, array $ancestors): IngredientResult
     {
         $images = [];
         foreach ($ingredient->getImages() as $imageId) {
@@ -62,7 +65,7 @@ final readonly class IngredientResult
             name: $ingredient->getName(),
             userId: $ingredient->getAuthors()->getCreatedBy()->id,
             createdAt: $ingredient->getRecordTimestamps()->getCreatedAt(),
-            materializedPath: $ingredient->getMaterializedPath()->toString(),
+            hierarchy: IngredientHierarchyResult::fromAncestors($ancestors),
             description: $ingredient->getDescription(),
             strength: $ingredient->getStrength() ?? 0.0,
             origin: $ingredient->getOrigin(),
