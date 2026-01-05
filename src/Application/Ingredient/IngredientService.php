@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Ingredient;
 
+use BarAssistant\Application\Exception\ApplicationServiceException;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Support\Color;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
@@ -78,6 +79,10 @@ final readonly class IngredientService
 
         $ingredient = $this->ingredientRepository->save($ingredient);
 
+        if ($ingredient->isTransient()) {
+            throw new ApplicationServiceException('Failed to create ingredient');
+        }
+
         $ancestors = $this->ingredientRepository->findAncestors($ingredient->getId());
 
         return IngredientResult::fromIngredient($ingredient, $ancestors);
@@ -133,7 +138,10 @@ final readonly class IngredientService
             $ingredient = $this->ingredientHierarchy->makeRoot($ingredient);
         }
 
-        $ancestors = $this->ingredientRepository->findAncestors($ingredient->getId());
+        $ancestors = [];
+        if (!$ingredient->isTransient()) {
+            $ancestors = $this->ingredientRepository->findAncestors($ingredient->getId());
+        }
 
         return IngredientResult::fromIngredient($ingredient, $ancestors);
     }
@@ -142,7 +150,7 @@ final readonly class IngredientService
     {
         $ingredient = $this->ingredientRepository->findById(new IngredientId($ingredientId));
 
-        if ($ingredient === null) {
+        if ($ingredient === null || $ingredient->isTransient()) {
             throw new EntityNotFoundException('Ingredient not found');
         }
 

@@ -32,13 +32,13 @@ final readonly class BarInventory
         if ($this->hasIngredientInStock($ingredientId)) {
             $newIngredients = array_filter(
                 $this->ingredients,
-                fn (IngredientId $existingInventoryItem) => !$existingInventoryItem->ingredientId->equals($ingredientId)
+                fn (IngredientInventoryItem $existingInventoryItem) => !$existingInventoryItem->ingredientId->equals($ingredientId)
             );
 
             return new self(array_values($newIngredients));
         }
 
-        return new self([...$this->ingredients, $ingredientId]);
+        return new self([...$this->ingredients, new IngredientInventoryItem($ingredientId, IngredientInventoryStatus::InStock)]);
     }
 
     /**

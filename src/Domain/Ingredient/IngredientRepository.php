@@ -9,6 +9,13 @@ use BarAssistant\Domain\Bar\BarId;
 interface IngredientRepository
 {
     /**
+     * List all ingredients in a bar
+     *
+     * @return Ingredient[]
+     */
+    public function list(BarId $barId): array;
+
+    /**
      * Find an ingredient by its ID
      */
     public function findById(IngredientId $id): ?Ingredient;
@@ -36,6 +43,9 @@ interface IngredientRepository
      */
     public function saveHierarchyChanges(Ingredient $ingredient, array $descendants): void;
 
+    /**
+     * Delete an ingredient by its ID
+     */
     public function delete(IngredientId $id): void;
 
     /**

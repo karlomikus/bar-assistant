@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Ingredient\DTO;
 
+use BarAssistant\Domain\Ingredient\Ingredient;
+
 /**
  * Result object containing ingredient data with its hierarchical path.
  *
@@ -34,6 +36,10 @@ final readonly class IngredientHierarchyResult
     {
         $pathItems = [];
         foreach ($ancestors as $ancestor) {
+            if ($ancestor->isTransient()) {
+                continue;
+            }
+
             $pathItems[] = new IngredientPathItem(
                 id: $ancestor->getId()->id,
                 name: $ancestor->getName(),
