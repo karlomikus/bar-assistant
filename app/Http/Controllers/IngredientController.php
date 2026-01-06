@@ -152,7 +152,7 @@ class IngredientController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(BAIngredientService $ingredientService, IngredientRequest $request): JsonResponse
+    public function store(BAIngredientService $ingredientService, IngredientRequest $request): Response
     {
         Validator::make($request->all(), [
             'complex_ingredient_part_ids' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
@@ -181,12 +181,10 @@ class IngredientController extends Controller
             prices: $request->input('prices', []),
         ));
 
-        $ingredient = Ingredient::findOrFail($ingredientResult->id);
-
-        return (new IngredientResource($ingredient))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('ingredients.show', $ingredient->id));
+        return new Response(
+            status: 201,
+            headers: ['Location', route('ingredients.show', $ingredientResult->id)],
+        );
     }
 
     #[OAT\Put(path: '/ingredients/{id}', tags: ['Ingredients'], operationId: 'updateIngredient', description: 'Update a specific ingredient', summary: 'Update ingredient', parameters: [

@@ -9,7 +9,7 @@ use BarAssistant\Domain\Ingredient\IngredientPrice;
 final readonly class IngredientPriceResult
 {
     public function __construct(
-        public int $ingredientPriceId,
+        public int $priceCategoryId,
         public int $price,
         public float $amount,
         public string $currency,
@@ -21,7 +21,7 @@ final readonly class IngredientPriceResult
     public static function fromIngredientPrice(IngredientPrice $price): IngredientPriceResult
     {
         return new IngredientPriceResult(
-            ingredientPriceId: $price->getPriceCategoryId()->id,
+            priceCategoryId: $price->getPriceCategoryId()->id,
             price: $price->getPrice()->getPriceAsMinor(),
             amount: $price->getAmountWithUnits()->amountMin,
             currency: $price->getPrice()->getCurrency(),
