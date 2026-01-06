@@ -43,7 +43,7 @@ class ResourceBelongsToBarTest extends TestCase
         $failed = function () use (&$hasFailed): PotentiallyTranslatedString {
             $hasFailed = true;
 
-            $translator = $this->getMockBuilder(Translator::class)->getMock();
+            $translator = $this->createStub(Translator::class);
 
             return new PotentiallyTranslatedString('', $translator);
         };
@@ -64,7 +64,7 @@ class ResourceBelongsToBarTest extends TestCase
         $failed = function () use (&$hasFailed): PotentiallyTranslatedString {
             $hasFailed = true;
 
-            $translator = $this->getMockBuilder(Translator::class)->getMock();
+            $translator = $this->createStub(Translator::class);
 
             return new PotentiallyTranslatedString('', $translator);
         };

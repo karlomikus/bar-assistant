@@ -1,3 +1,7 @@
+# v5.11.2
+## Fixes
+- Fixed crash when metrics are enabled
+
 # v5.11.1
 ## Fixes
 - Fixed missing calculator reference in datapack import

@@ -23,14 +23,16 @@ class MetricsServiceProvider extends ServiceProvider
             return;
         }
 
-        if (config('cache.default') !== 'redis') {
-            Log::warning('Metrics are enabled, but the cache driver is not set to redis. Metrics will not be persisted!');
-            $storageAdapter = new InMemory();
-        } else {
-            $storageAdapter = Redis::fromExistingConnection(LaravelRedis::connection()->client());
-        }
+        $this->app->scoped(CollectorRegistry::class, function () {
+            if (config('cache.default') !== 'redis') {
+                Log::warning('Metrics are enabled, but the cache driver is not set to redis. Metrics will not be persisted!');
+                $storageAdapter = new InMemory();
+            } else {
+                $storageAdapter = Redis::fromExistingConnection(LaravelRedis::connection()->client());
+            }
 
-        $this->app->scoped(CollectorRegistry::class, fn () => new CollectorRegistry($storageAdapter));
+            return new CollectorRegistry($storageAdapter);
+        });
     }
 
     public function boot(): void

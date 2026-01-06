@@ -77,7 +77,7 @@ class MetricsControllerTest extends TestCase
         config(['bar-assistant.metrics.allowed_ips' => ['*']]);
 
         // Create a mock registry that will throw an exception
-        $mockRegistry = $this->createMock(CollectorRegistry::class);
+        $mockRegistry = $this->createStub(CollectorRegistry::class);
         $mockRegistry->method('getMetricFamilySamples')
             ->willThrowException(new \Exception('Test exception'));
 
