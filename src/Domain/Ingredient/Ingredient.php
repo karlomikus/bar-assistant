@@ -339,7 +339,7 @@ final class Ingredient implements Identity
             throw new DomainException('Ingredient strength must be between 0.0 and 100.0');
         }
 
-        if ($this->strength !== $strength) {
+        if (!$this->isTransient() && $this->strength !== $strength) {
             DomainEventPublisher::instance()->publish(new IngredientStrengthChanged(
                 barId: $this->getBarId(),
                 ingredientId: $this->getId(),
