@@ -6,26 +6,37 @@ namespace Kami\Cocktail\Infrastructure;
 
 use Throwable;
 use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Calculator\CalculatorId;
-use BarAssistant\Domain\Image\ImageId;
 use Illuminate\Support\Facades\DB;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Support\Unit;
+use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Support\Color;
-use BarAssistant\Domain\Support\Price;
 use Kami\Cocktail\Models\ComplexIngredient;
+use Kami\Cocktail\Models\Image as ModelImage;
 use BarAssistant\Domain\Ingredient\Ingredient;
+use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\Support\AmountWithUnits;
-use BarAssistant\Domain\Ingredient\IngredientPrice;
+use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\MaterializedPath;
 use Kami\Cocktail\Models\Ingredient as ModelIngredient;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
-use Kami\Cocktail\Models\Image as ModelImage;
 use Kami\Cocktail\Models\IngredientPrice as ModelIngredientPrice;
 
 final class EloquentIngredientRepository implements IngredientRepository
 {
+    public function list(BarId $barId): array
+    {
+        $models = ModelIngredient::where('bar_id', $barId->id)->get();
+
+        $ingredients = [];
+        /** @var ModelIngredient $model */
+        foreach ($models as $model) {
+            $ingredients[] = self::map($model);
+        }
+
+        return $ingredients;
+    }
+
     public function findById(IngredientId $id): ?Ingredient
     {
         $model = ModelIngredient::find($id->id);
@@ -219,12 +230,12 @@ final class EloquentIngredientRepository implements IngredientRepository
         /** @var ModelIngredientPrice $price */
         foreach ($model->prices as $price) {
             $ingredient->addPrice(
-                new IngredientPrice(
-                    priceCategoryId: new \BarAssistant\Domain\Ingredient\PriceCategoryId($price->price_category_id),
-                    price: Price::createFromMinor($price->price, $price->priceCategory->currency),
-                    amountWithUnits: new AmountWithUnits($price->amount, new Unit($price->units)),
-                    description: $price->description,
-                )
+                priceCategoryId: new PriceCategoryId($price->price_category_id),
+                price: $price->price,
+                currency: $price->priceCategory->currency,
+                amount: $price->amount,
+                units: $price->units,
+                description: $price->description,
             );
         }
 

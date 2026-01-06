@@ -78,11 +78,41 @@ class IngredientController extends Controller
     #[BAO\NotFoundResponse]
     public function show(Request $request, string $idOrSlug): JsonResource
     {
-        $ingredientRepo = new \Kami\Cocktail\Infrastructure\EloquentIngredientRepository();
-        $priceRepo = new \Kami\Cocktail\Infrastructure\EloquentPriceCategoryRepository();
-        $service = new \BarAssistant\Application\Ingredient\IngredientService($ingredientRepo, $priceRepo);
+        $service = app(\BarAssistant\Application\Ingredient\IngredientService::class);
+        $barrepo = app(\BarAssistant\Domain\Bar\BarRepository::class);
 
-        $ingredient = $service->getIngredient(116036);
+        $bar = $barrepo->findById(new \BarAssistant\Domain\Bar\BarId(582));
+        dump($bar);
+        $ingredient = $service->getIngredient(115796);
+        // $in2 = $service->getPathToIngredient(115796);
+        // dump($in2);
+        dd([
+            'id' => $ingredient->id,
+            'slug' => 'TODO',
+            'name' => $ingredient->name,
+            'strength' => $ingredient->strength,
+            'description' => $ingredient->description,
+            'origin' => $ingredient->origin,
+            'created_at' => $ingredient->createdAt->format(\DateTime::ATOM),
+            'updated_at' => $ingredient->updatedAt?->format(\DateTime::ATOM),
+            'hierarchy' => [
+                'path_to_self' => $ingredient->hierarchy->pathToSelf,
+                'parent_ingredient' => $ingredient->parentIngredientId,
+                'ancestors' => $ingredient->hierarchy->ancestors,
+            ],
+            'images' => $ingredient->images,
+            'color' => $ingredient->color,
+            'in_shelf' => 'TODO',
+            'in_shelf_as_variant' => 'TODO',
+            'in_shopping_list' => 'TODO',
+            'ingredient_parts' => $ingredient->complexIngredientParts,
+            'prices' => $ingredient->prices,
+            'calculator_id' => $ingredient->calculatorId,
+            'sugar_g_per_ml' => $ingredient->sugarContent,
+            'acidity' => $ingredient->acidity,
+            'distillery' => $ingredient->distillery,
+            'units' => $ingredient->units,
+        ]);
 
         $ingredient = Ingredient::with(
             'cocktails',
