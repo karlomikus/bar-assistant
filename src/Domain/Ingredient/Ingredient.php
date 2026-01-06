@@ -9,6 +9,8 @@ use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Calculator\CalculatorId;
+use BarAssistant\Domain\Event\DomainEventPublisher;
+use BarAssistant\Domain\Ingredient\Event\IngredientStrengthChanged;
 use BarAssistant\Domain\Support\AmountWithUnits;
 use BarAssistant\Domain\Support\Authors;
 use BarAssistant\Domain\Support\Color;
@@ -335,6 +337,15 @@ final class Ingredient implements Identity
 
         if ($strength !== null && ($strength < 0.0 || $strength > 100.0)) {
             throw new DomainException('Ingredient strength must be between 0.0 and 100.0');
+        }
+
+        if ($this->strength !== $strength) {
+            DomainEventPublisher::instance()->publish(new IngredientStrengthChanged(
+                barId: $this->getBarId(),
+                ingredientId: $this->getId(),
+                oldStrength: $this->strength,
+                newStrength: $strength,
+            ));
         }
 
         $this->name = $name;
