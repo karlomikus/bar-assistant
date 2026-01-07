@@ -26,8 +26,6 @@ use DateTimeImmutable;
 final class Ingredient implements Identity
 {
     private ?IngredientId $id = null;
-    private Authors $authors;
-    private RecordTimestamps $recordTimestamps;
     private MaterializedPath $materializedPath;
 
     /** @var IngredientId[] */
@@ -61,7 +59,8 @@ final class Ingredient implements Identity
     public function __construct(
         private readonly BarId $barId,
         private string $name,
-        UserId $createdBy,
+        private Authors $authors,
+        private RecordTimestamps $recordTimestamps,
         private ?string $description = null,
         private ?float $strength = null,
         private ?string $origin = null,
@@ -73,7 +72,6 @@ final class Ingredient implements Identity
         private ?Unit $units = null,
         private ?IngredientId $parentIngredientId = null,
         ?MaterializedPath $materializedPath = null,
-        ?DateTimeImmutable $createdAt = null,
     ) {
         if (trim($name) === '') {
             throw new DomainException('Ingredient name cannot be empty');
@@ -94,8 +92,6 @@ final class Ingredient implements Identity
         $this->distillery = $distillery;
         $this->units = $units;
         $this->materializedPath = $materializedPath ?? MaterializedPath::root();
-        $this->authors = Authors::createdBy($createdBy);
-        $this->recordTimestamps = $createdAt ? RecordTimestamps::createdAt($createdAt) : RecordTimestamps::createdNow();
     }
 
     public function isTransient(): bool
@@ -119,6 +115,14 @@ final class Ingredient implements Identity
         return $this;
     }
 
+    /**
+     * Set this ingredient as a variant of another ingredient
+     *
+     * Updates materialized path and parent ingredient reference
+     *
+     * @param null|Ingredient $parentIngredient If null will set as a root ingredient
+     * @throws DomainException
+     */
     public function setAsVariantOf(?self $parentIngredient): Ingredient
     {
         if ($parentIngredient !== null && !$parentIngredient->getBarId()->equals($this->getBarId())) {
@@ -134,8 +138,8 @@ final class Ingredient implements Identity
     }
 
     /**
-     * @internal Used only by IngredientHierarchyManager for bulk path updates.
-     * Do not call directly - use IngredientHierarchyManager::changeParent() instead.
+     * Used by IngredientHierarchyManager for bulk path updates.
+     * @internal
      */
     public function setMaterializedPath(MaterializedPath $path): Ingredient
     {
@@ -185,6 +189,8 @@ final class Ingredient implements Identity
     }
 
     /**
+     * Return the ingredient parts (for complex ingredients)
+     *
      * @return IngredientId[]
      */
     public function getIngredientParts(): array
@@ -197,6 +203,11 @@ final class Ingredient implements Identity
         return !empty($this->ingredientParts);
     }
 
+    /**
+     * Add an ingredient part (for complex ingredients)
+     *
+     * @param Ingredient $partIngredient Part ingredient to add
+     */
     public function addIngredientPart(Ingredient $partIngredient): self
     {
         if ($partIngredient->isTransient()) {
@@ -321,6 +332,7 @@ final class Ingredient implements Identity
 
     public function updateDetails(
         string $name,
+        UserId $updatedBy,
         ?string $description = null,
         ?float $strength = null,
         ?string $origin = null,
@@ -358,14 +370,10 @@ final class Ingredient implements Identity
         $this->acidity = $acidity;
         $this->distillery = $distillery;
         $this->units = $units;
+        $this->authors = $this->authors->updatedBy($updatedBy);
+        $this->recordTimestamps = $this->recordTimestamps->updatedNow();
 
         return $this;
-    }
-
-    public function wasUpdatedBy(UserId $userId, ?DateTimeImmutable $updatedAt = null): void
-    {
-        $this->authors = $this->authors->updatedBy($userId);
-        $this->recordTimestamps = $updatedAt ? $this->recordTimestamps->updatedAt($updatedAt) : $this->recordTimestamps->updatedNow();
     }
 
     public function getCalculatorId(): ?CalculatorId

@@ -12,7 +12,9 @@ use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\MaterializedPath;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
+use BarAssistant\Domain\Support\Authors;
 use BarAssistant\Domain\Support\Color;
+use BarAssistant\Domain\Support\RecordTimestamps;
 use BarAssistant\Domain\Support\Unit;
 use BarAssistant\Domain\User\UserId;
 use DateTimeImmutable;
@@ -28,7 +30,8 @@ final class IngredientTest extends TestCase
         new Ingredient(
             barId: new BarId(1),
             name: '',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
     }
 
@@ -40,7 +43,8 @@ final class IngredientTest extends TestCase
         new Ingredient(
             barId: new BarId(1),
             name: '   ',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
     }
 
@@ -49,13 +53,14 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Ingredient name cannot be empty');
 
-        $ingredient->updateDetails(name: '');
+        $ingredient->updateDetails(name: '', updatedBy: new UserId(2));
     }
 
     public function test_strength_cannot_be_negative(): void
@@ -66,7 +71,8 @@ final class IngredientTest extends TestCase
         new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
             strength: -1.0,
         );
     }
@@ -79,7 +85,8 @@ final class IngredientTest extends TestCase
         new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
             strength: 100.1,
         );
     }
@@ -89,7 +96,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Water',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
             strength: 0.0,
         );
 
@@ -101,7 +109,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Pure Alcohol',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
             strength: 100.0,
         );
 
@@ -113,14 +122,15 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
             strength: 40.0,
         );
 
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Ingredient strength must be between 0.0 and 100.0');
 
-        $ingredient->updateDetails(name: 'Vodka', strength: 150.0);
+        $ingredient->updateDetails(name: 'Vodka', updatedBy: new UserId(2), strength: 150.0);
     }
 
     public function test_cannot_change_id_of_persisted_ingredient(): void
@@ -128,7 +138,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $ingredient->setId(new IngredientId(1));
@@ -144,7 +155,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $this->assertTrue($ingredient->isTransient());
@@ -160,14 +172,16 @@ final class IngredientTest extends TestCase
         $parent = new Ingredient(
             barId: new BarId(1),
             name: 'Gin',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
         $parent->setId(new IngredientId(1));
 
         $child = new Ingredient(
             barId: new BarId(2), // Different bar
             name: 'Plymouth Gin',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $this->expectException(DomainException::class);
@@ -181,14 +195,16 @@ final class IngredientTest extends TestCase
         $parent = new Ingredient(
             barId: new BarId(1),
             name: 'Gin',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
         $parent->setId(new IngredientId(5));
 
         $child = new Ingredient(
             barId: new BarId(1), // Same bar
             name: 'Plymouth Gin',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $child->setAsVariantOf($parent);
@@ -202,14 +218,16 @@ final class IngredientTest extends TestCase
         $parent = new Ingredient(
             barId: new BarId(1),
             name: 'Gin',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
         $parent->setId(new IngredientId(5));
 
         $child = new Ingredient(
             barId: new BarId(1),
             name: 'Plymouth Gin',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $child->setAsVariantOf($parent);
@@ -225,13 +243,15 @@ final class IngredientTest extends TestCase
         $mainIngredient = new Ingredient(
             barId: new BarId(1),
             name: 'Complex Mix',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $part = new Ingredient(
             barId: new BarId(2), // Different bar
             name: 'Part A',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
         $part->setId(new IngredientId(1));
 
@@ -246,13 +266,15 @@ final class IngredientTest extends TestCase
         $mainIngredient = new Ingredient(
             barId: new BarId(1),
             name: 'Complex Mix',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $part = new Ingredient(
             barId: new BarId(1),
             name: 'Part A',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
         // Part doesn't have an ID set
 
@@ -267,7 +289,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Self-Referencing Mix',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
         $ingredient->setId(new IngredientId(1));
 
@@ -282,20 +305,23 @@ final class IngredientTest extends TestCase
         $mainIngredient = new Ingredient(
             barId: new BarId(1),
             name: 'Complex Mix',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $part1 = new Ingredient(
             barId: new BarId(1),
             name: 'Part A',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
         $part1->setId(new IngredientId(2));
 
         $part2 = new Ingredient(
             barId: new BarId(1),
             name: 'Part B',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
         $part2->setId(new IngredientId(3));
 
@@ -312,13 +338,15 @@ final class IngredientTest extends TestCase
         $mainIngredient = new Ingredient(
             barId: new BarId(1),
             name: 'Complex Mix',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $part = new Ingredient(
             barId: new BarId(1),
             name: 'Part A',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
         $part->setId(new IngredientId(2));
 
@@ -334,20 +362,23 @@ final class IngredientTest extends TestCase
         $mainIngredient = new Ingredient(
             barId: new BarId(1),
             name: 'Complex Mix',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $part1 = new Ingredient(
             barId: new BarId(1),
             name: 'Part A',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
         $part1->setId(new IngredientId(2));
 
         $part2 = new Ingredient(
             barId: new BarId(1),
             name: 'Part B',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
         $part2->setId(new IngredientId(3));
 
@@ -364,12 +395,13 @@ final class IngredientTest extends TestCase
         $mainIngredient = new Ingredient(
             barId: new BarId(1),
             name: 'Complex Mix',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
-        $part1 = new Ingredient(barId: new BarId(1), name: 'Part A', createdBy: new UserId(1));
+        $part1 = new Ingredient(barId: new BarId(1), name: 'Part A', authors: Authors::createdBy(new UserId(1)), recordTimestamps: RecordTimestamps::createdNow());
         $part1->setId(new IngredientId(2));
-        $part2 = new Ingredient(barId: new BarId(1), name: 'Part B', createdBy: new UserId(1));
+        $part2 = new Ingredient(barId: new BarId(1), name: 'Part B', authors: Authors::createdBy(new UserId(1)), recordTimestamps: RecordTimestamps::createdNow());
         $part2->setId(new IngredientId(3));
 
         $mainIngredient->addIngredientPart($part1);
@@ -386,7 +418,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $ingredient->addImage(new ImageId(1));
@@ -401,7 +434,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $imageId = new ImageId(1);
@@ -417,7 +451,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $ingredient->addImage(new ImageId(1));
@@ -433,7 +468,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $ingredient->addImage(new ImageId(1));
@@ -449,7 +485,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $ingredient->addPrice(
@@ -469,7 +506,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $ingredient->addPrice(
@@ -497,7 +535,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(10),
+            authors: Authors::createdBy( new UserId(10)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $authors = $ingredient->getAuthors();
@@ -511,10 +550,11 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(10),
+            authors: Authors::createdBy( new UserId(10)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
-        $ingredient->wasUpdatedBy(new UserId(20));
+        $ingredient->updateDetails('Vodka', new UserId(20));
 
         $authors = $ingredient->getAuthors();
         $this->assertEquals(10, $authors->getCreatedBy()->id);
@@ -529,7 +569,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $timestamps = $ingredient->getRecordTimestamps();
@@ -540,12 +581,12 @@ final class IngredientTest extends TestCase
     public function test_ingredient_can_have_explicit_creation_timestamp(): void
     {
         $explicitTime = new DateTimeImmutable('2024-01-01 12:00:00');
-        
+
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
-            createdAt: $explicitTime,
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdAt($explicitTime),
         );
 
         $timestamps = $ingredient->getRecordTimestamps();
@@ -557,10 +598,11 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
-        $ingredient->wasUpdatedBy(new UserId(2));
+        $ingredient->updateDetails('Vodka', new UserId(2));
 
         $timestamps = $ingredient->getRecordTimestamps();
         $this->assertNotNull($timestamps->getUpdatedAt());
@@ -572,14 +614,16 @@ final class IngredientTest extends TestCase
         $parent = new Ingredient(
             barId: new BarId(1),
             name: 'Gin',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
             materializedPath: MaterializedPath::fromString('1/'),
         );
 
         $child = new Ingredient(
             barId: new BarId(1),
             name: 'London Dry Gin',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
             materializedPath: MaterializedPath::fromString('1/2/'),
         );
 
@@ -592,14 +636,16 @@ final class IngredientTest extends TestCase
         $ingredient1 = new Ingredient(
             barId: new BarId(1),
             name: 'Gin',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
             materializedPath: MaterializedPath::fromString('1/'),
         );
 
         $ingredient2 = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
             materializedPath: MaterializedPath::fromString('2/'),
         );
 
@@ -612,7 +658,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Premium Gin',
-            createdBy: new UserId(10),
+            authors: Authors::createdBy( new UserId(10)),
+            recordTimestamps: RecordTimestamps::createdAt(new DateTimeImmutable('2024-01-01')),
             description: 'A fine London Dry Gin',
             strength: 47.3,
             origin: 'England',
@@ -624,7 +671,6 @@ final class IngredientTest extends TestCase
             units: new Unit('ml'),
             parentIngredientId: new IngredientId(3),
             materializedPath: MaterializedPath::fromString('3/'),
-            createdAt: new DateTimeImmutable('2024-01-01'),
         );
 
         $this->assertEquals('Premium Gin', $ingredient->getName());
@@ -646,12 +692,14 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $ingredient->updateDetails(
             name: 'Premium Vodka',
             description: 'Updated description',
+            updatedBy: new UserId(5),
             strength: 50.0,
             origin: 'Russia',
             color: Color::fromHexString('#ffffff'),
@@ -679,7 +727,8 @@ final class IngredientTest extends TestCase
         $ingredient = new Ingredient(
             barId: $barId,
             name: 'Vodka',
-            createdBy: new UserId(1),
+            authors: Authors::createdBy( new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $this->assertTrue($ingredient->getBarId()->equals($barId));

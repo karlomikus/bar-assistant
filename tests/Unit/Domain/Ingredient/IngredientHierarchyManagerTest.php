@@ -10,6 +10,8 @@ use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
+use BarAssistant\Domain\Support\Authors;
+use BarAssistant\Domain\Support\RecordTimestamps;
 use BarAssistant\Domain\User\UserId;
 use PHPUnit\Framework\TestCase;
 
@@ -23,22 +25,24 @@ final class IngredientHierarchyManagerTest extends TestCase
 
         $barId = new BarId(77);
         $userId = new UserId(1);
+        $authors = Authors::createdBy($userId);
+        $timestamps = RecordTimestamps::createdNow();
 
-        $spirits = new Ingredient($barId, 'Spirits', $userId);
+        $spirits = new Ingredient($barId, 'Spirits', $authors, $timestamps);
         $spirits->setId(new IngredientId(1));
-        $genever = new Ingredient($barId, 'Genever', $userId);
+        $genever = new Ingredient($barId, 'Genever', $authors, $timestamps);
         $genever->setId(new IngredientId(2));
-        $gin = new Ingredient($barId, 'Gin', $userId);
+        $gin = new Ingredient($barId, 'Gin', $authors, $timestamps);
         $gin->setId(new IngredientId(3));
-        $whiskey = new Ingredient($barId, 'Whiskey', $userId);
+        $whiskey = new Ingredient($barId, 'Whiskey', $authors, $timestamps);
         $whiskey->setId(new IngredientId(4));
-        $scotch = new Ingredient($barId, 'Scotch', $userId);
+        $scotch = new Ingredient($barId, 'Scotch', $authors, $timestamps);
         $scotch->setId(new IngredientId(5));
-        $islayScotch = new Ingredient($barId, 'Islay Scotch', $userId);
+        $islayScotch = new Ingredient($barId, 'Islay Scotch', $authors, $timestamps);
         $islayScotch->setId(new IngredientId(6));
-        $speysideScotch = new Ingredient($barId, 'Speyside Scotch', $userId);
+        $speysideScotch = new Ingredient($barId, 'Speyside Scotch', $authors, $timestamps);
         $speysideScotch->setId(new IngredientId(7));
-        $ardbeg = new Ingredient($barId, 'Ardbeg', $userId);
+        $ardbeg = new Ingredient($barId, 'Ardbeg', $authors, $timestamps);
         $ardbeg->setId(new IngredientId(8));
 
         // Adding leaf nodes
@@ -90,12 +94,14 @@ final class IngredientHierarchyManagerTest extends TestCase
 
         $barId = new BarId(77);
         $userId = new UserId(1);
+        $authors = Authors::createdBy($userId);
+        $timestamps = RecordTimestamps::createdNow();
 
-        $parent = new Ingredient($barId, 'Parent', $userId);
+        $parent = new Ingredient($barId, 'Parent', $authors, $timestamps);
         $parent->setId(new IngredientId(1));
-        $child = new Ingredient($barId, 'Direct child', $userId);
+        $child = new Ingredient($barId, 'Direct child', $authors, $timestamps);
         $child->setId(new IngredientId(2));
-        $desc = new Ingredient($barId, 'Descendant', $userId);
+        $desc = new Ingredient($barId, 'Descendant', $authors, $timestamps);
         $desc->setId(new IngredientId(3));
 
         $child = $service->changeParent($child, $parent);
@@ -113,8 +119,10 @@ final class IngredientHierarchyManagerTest extends TestCase
 
         $barId = new BarId(77);
         $userId = new UserId(1);
+        $authors = Authors::createdBy($userId);
+        $timestamps = RecordTimestamps::createdNow();
 
-        $parent = new Ingredient($barId, 'Parent', $userId);
+        $parent = new Ingredient($barId, 'Parent', $authors, $timestamps);
         $parent->setId(new IngredientId(1));
 
         $this->expectException(IngredientHierarchyException::class);

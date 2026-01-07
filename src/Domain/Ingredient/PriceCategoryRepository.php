@@ -14,4 +14,9 @@ interface PriceCategoryRepository
      * @return PriceCategory[]
      */
     public function findMany(BarId $barId, array $ids): array;
+
+    /**
+     * Save a price category (insert or update)
+     */
+    public function save(PriceCategory $priceCategory): PriceCategory;
 }

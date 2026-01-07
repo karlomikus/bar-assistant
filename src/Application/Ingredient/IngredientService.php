@@ -21,6 +21,8 @@ use BarAssistant\Domain\Ingredient\IngredientRepository;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
+use BarAssistant\Domain\Support\Authors;
+use BarAssistant\Domain\Support\RecordTimestamps;
 use BarAssistant\Domain\Support\Unit;
 use BarAssistant\Domain\User\UserId;
 
@@ -44,7 +46,8 @@ final readonly class IngredientService
         $ingredient = new Ingredient(
             barId: $barId,
             name: $ingredientRequest->name,
-            createdBy: new UserId($ingredientRequest->userId),
+            authors: Authors::createdBy(new UserId($ingredientRequest->userId)),
+            recordTimestamps: RecordTimestamps::createdNow(),
             description: $ingredientRequest->description,
             strength: $ingredientRequest->strength,
             origin: $ingredientRequest->origin,
@@ -97,6 +100,7 @@ final readonly class IngredientService
 
         $ingredient->updateDetails(
             name: $ingredientRequest->name,
+            updatedBy: new UserId($ingredientRequest->userId),
             description: $ingredientRequest->description,
             strength: $ingredientRequest->strength,
             origin: $ingredientRequest->origin,
@@ -107,8 +111,6 @@ final readonly class IngredientService
             distillery: $ingredientRequest->distillery,
             units: $ingredientRequest->units ? new Unit($ingredientRequest->units) : null
         );
-
-        $ingredient->wasUpdatedBy(new UserId($ingredientRequest->userId));
 
         $ingredient->removeAllIngredientParts();
         if (count($ingredientRequest->complexIngredientParts) > 0) {
