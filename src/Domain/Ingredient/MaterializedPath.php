@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Ingredient;
 
+use BarAssistant\Domain\Exception\DomainException;
+
 /**
  * Represents computed materialized path for an ingredient in the ingredient hierarchy.
  *
@@ -44,7 +46,7 @@ final readonly class MaterializedPath
     public function append(IngredientId $id): self
     {
         if ($this->getDepth() === self::TAXONOMY_MAX_DEPTH) {
-            throw new \Exception('Ingredient has too many descendants, max depth is ' . self::TAXONOMY_MAX_DEPTH);
+            throw new DomainException('Ingredient has too many descendants, max depth is ' . self::TAXONOMY_MAX_DEPTH);
         }
 
         $newPath = $this->basePath;

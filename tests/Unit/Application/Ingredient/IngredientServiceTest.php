@@ -44,7 +44,7 @@ final class IngredientServiceTest extends TestCase
         ]);
     }
 
-    public function test_it_creates_ingredient(): void
+    public function test_creates_ingredient(): void
     {
         $service = new IngredientService($this->ingredientRepository, $this->priceCategoryRepository);
         $createPriceRequest = new CreateIngredientPrice(
@@ -76,7 +76,7 @@ final class IngredientServiceTest extends TestCase
         $this->assertCount(2, $result->complexIngredientParts);
     }
 
-    public function test_it_creates_variant_ingredient(): void
+    public function test_creates_variant_ingredient(): void
     {
         $service = new IngredientService($this->ingredientRepository, $this->priceCategoryRepository);
         $createRequest = new CreateIngredient(
@@ -94,7 +94,7 @@ final class IngredientServiceTest extends TestCase
         $this->assertSame('Existing ingredient 65-2', $result->hierarchy->pathToSelf);
     }
 
-    public function test_it_cant_find_parent_ingredient_on_create(): void
+    public function test_cannot_find_parent_ingredient_on_create(): void
     {
         $service = new IngredientService($this->ingredientRepository, $this->priceCategoryRepository);
         $createRequest = new CreateIngredient(
@@ -108,7 +108,7 @@ final class IngredientServiceTest extends TestCase
         $service->createIngredient($createRequest);
     }
 
-    public function test_it_updates_ingredient(): void
+    public function test_updates_ingredient(): void
     {
         $service = new IngredientService($this->ingredientRepository, $this->priceCategoryRepository);
         $createPriceRequest = new CreateIngredientPrice(
@@ -134,5 +134,18 @@ final class IngredientServiceTest extends TestCase
         $this->assertSame(65, $result->barId);
         $this->assertSame(542, $result->id);
         $this->assertSame($updateRequest->name, $result->name);
+    }
+
+    public function test_cannot_update_non_existing_ingredient(): void
+    {
+        $service = new IngredientService($this->ingredientRepository, $this->priceCategoryRepository);
+        $updateRequest = new UpdateIngredient(
+            ingredientId: 999,
+            name: 'Gin',
+            userId: 22,
+        );
+
+        $this->expectException(EntityNotFoundException::class);
+        $service->updateIngredient($updateRequest);
     }
 }
