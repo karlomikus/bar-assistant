@@ -57,33 +57,33 @@ final class IngredientHierarchyManagerTest extends TestCase
         $this->assertSame('', $spirits->getMaterializedPath()->toString());
         $this->assertSame(null, $spirits->getParentIngredientId());
         $this->assertSame('1/', $genever->getMaterializedPath()->toString());
-        $this->assertSame(1, $genever->getParentIngredientId()->id);
+        $this->assertSame(1, $genever->getParentIngredientId()->value);
         $this->assertSame('1/2/', $gin->getMaterializedPath()->toString());
-        $this->assertSame(2, $gin->getParentIngredientId()->id);
+        $this->assertSame(2, $gin->getParentIngredientId()->value);
         $this->assertSame('1/', $whiskey->getMaterializedPath()->toString());
-        $this->assertSame(1, $whiskey->getParentIngredientId()->id);
+        $this->assertSame(1, $whiskey->getParentIngredientId()->value);
         $this->assertSame('1/4/', $scotch->getMaterializedPath()->toString());
-        $this->assertSame(4, $scotch->getParentIngredientId()->id);
+        $this->assertSame(4, $scotch->getParentIngredientId()->value);
         $this->assertSame('1/4/5/', $islayScotch->getMaterializedPath()->toString());
-        $this->assertSame(5, $islayScotch->getParentIngredientId()->id);
+        $this->assertSame(5, $islayScotch->getParentIngredientId()->value);
         $this->assertSame('1/4/5/', $speysideScotch->getMaterializedPath()->toString());
-        $this->assertSame(5, $speysideScotch->getParentIngredientId()->id);
+        $this->assertSame(5, $speysideScotch->getParentIngredientId()->value);
         $this->assertSame('1/4/5/6/', $ardbeg->getMaterializedPath()->toString());
-        $this->assertSame(6, $ardbeg->getParentIngredientId()->id);
+        $this->assertSame(6, $ardbeg->getParentIngredientId()->value);
 
         $repo->method('findDescendants')->willReturn([$scotch, $speysideScotch, $islayScotch, $ardbeg]);
         $service->changeParent($whiskey, $genever);
 
         $this->assertSame('1/2/', $whiskey->getMaterializedPath()->toString());
-        $this->assertSame(2, $whiskey->getParentIngredientId()->id);
+        $this->assertSame(2, $whiskey->getParentIngredientId()->value);
         $this->assertSame('1/2/4/', $scotch->getMaterializedPath()->toString());
-        $this->assertSame(4, $scotch->getParentIngredientId()->id);
+        $this->assertSame(4, $scotch->getParentIngredientId()->value);
         $this->assertSame('1/2/4/5/', $speysideScotch->getMaterializedPath()->toString());
-        $this->assertSame(5, $speysideScotch->getParentIngredientId()->id);
+        $this->assertSame(5, $speysideScotch->getParentIngredientId()->value);
         $this->assertSame('1/2/4/5/', $islayScotch->getMaterializedPath()->toString());
-        $this->assertSame(5, $islayScotch->getParentIngredientId()->id);
+        $this->assertSame(5, $islayScotch->getParentIngredientId()->value);
         $this->assertSame('1/2/4/5/6/', $ardbeg->getMaterializedPath()->toString());
-        $this->assertSame(6, $ardbeg->getParentIngredientId()->id);
+        $this->assertSame(6, $ardbeg->getParentIngredientId()->value);
     }
 
     public function test_change_parent_rejects_move_under_descendant(): void

@@ -14,8 +14,8 @@ use BarAssistant\Domain\Exception\DomainException;
  */
 final readonly class MaterializedPath
 {
-    private const SEPARATOR = '/';
-    private const TAXONOMY_MAX_DEPTH = 10;
+    private const string SEPARATOR = '/';
+    private const int TAXONOMY_MAX_DEPTH = 10;
 
     /**
      * @param IngredientId[] $basePath
@@ -37,7 +37,7 @@ final readonly class MaterializedPath
 
         $basePath = array_map(
             fn(int $id) => new IngredientId($id),
-            array_map('intval', array_filter(explode(self::SEPARATOR, $materializedPath)))
+            array_map(intval(...), array_filter(explode(self::SEPARATOR, $materializedPath)))
         );
 
         return new self($basePath);
@@ -90,13 +90,7 @@ final readonly class MaterializedPath
         }
 
         $parentId = $this->getParentId();
-        foreach ($other->getAncestorIds() as $ancestorId) {
-            if ($parentId->equals($ancestorId)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($other->getAncestorIds(), fn($ancestorId) => $parentId->equals($ancestorId));
     }
 
     public function isDescendantOf(self $other): bool

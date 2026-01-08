@@ -14,12 +14,12 @@ final class Image implements Identity
     private ?ImageId $id = null;
 
     public function __construct(
-        private string $path,
-        private Authors $authors,
-        private RecordTimestamps $recordTimestamps,
-        private ?string $placeholderHash = null,
-        private ?string $copyright = null,
-        private int $sort = 0,
+        private readonly string $path,
+        private readonly Authors $authors,
+        private readonly RecordTimestamps $recordTimestamps,
+        private readonly ?string $placeholderHash = null,
+        private readonly ?string $copyright = null,
+        private readonly int $sort = 0,
     ) {
         if (trim($path) === '') {
             throw new DomainException('Image filepath cannot be empty');

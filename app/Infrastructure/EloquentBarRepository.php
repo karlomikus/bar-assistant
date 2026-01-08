@@ -18,7 +18,7 @@ final class EloquentBarRepository implements BarRepository
 {
     public function findById(BarId $id): ?Bar
     {
-        $model = ModelBar::find($id->id);
+        $model = ModelBar::find($id->value);
 
         if ($model === null) {
             return null;
@@ -40,7 +40,7 @@ final class EloquentBarRepository implements BarRepository
         }
 
         $ingredientIds = array_map(
-            fn (IngredientInventoryItem $item) => $item->ingredientId->id,
+            fn (IngredientInventoryItem $item) => $item->ingredientId->value,
             $barIngredients
         );
         $placeholders = implode(',', array_fill(0, count($ingredientIds), '?'));

@@ -15,7 +15,7 @@ final class EloquentPriceCategoryRepository implements PriceCategoryRepository
 {
     public function findMany(BarId $barId, array $ids): array
     {
-        $models = Model::whereIn('id', array_map(fn(PriceCategoryId $id) => $id->id, $ids))->where('bar_id', $barId->id)->get();
+        $models = Model::whereIn('id', array_map(fn(PriceCategoryId $id) => $id->value, $ids))->where('bar_id', $barId->value)->get();
 
         $ingredients = [];
         /** @var Model $model */

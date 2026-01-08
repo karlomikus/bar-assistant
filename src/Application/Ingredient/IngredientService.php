@@ -230,7 +230,7 @@ final readonly class IngredientService
                 continue;
             }
 
-            $priceCategoriesById[$priceCategory->getId()->id] = $priceCategory;
+            $priceCategoriesById[$priceCategory->getId()->value] = $priceCategory;
         }
 
         foreach ($prices as $priceData) {

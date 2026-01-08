@@ -50,12 +50,12 @@ final class IngredientTest extends TestCase
 
     public function test_update_details_rejects_empty_name(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = (new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
             authors: Authors::createdBy( new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
-        );
+        ))->setId(new IngredientId(24));
 
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Ingredient name cannot be empty');
@@ -119,13 +119,13 @@ final class IngredientTest extends TestCase
 
     public function test_update_details_rejects_invalid_strength(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = (new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
             authors: Authors::createdBy( new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
             strength: 40.0,
-        );
+        ))->setId(new IngredientId(24));
 
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Ingredient strength must be between 0.0 and 100.0');
@@ -164,7 +164,7 @@ final class IngredientTest extends TestCase
         $ingredient->setId(new IngredientId(1));
 
         $this->assertFalse($ingredient->isTransient());
-        $this->assertEquals(1, $ingredient->getId()->id);
+        $this->assertEquals(1, $ingredient->getId()->value);
     }
 
     public function test_parent_ingredient_must_belong_to_same_bar(): void
@@ -209,7 +209,7 @@ final class IngredientTest extends TestCase
 
         $child->setAsVariantOf($parent);
 
-        $this->assertEquals(5, $child->getParentIngredientId()->id);
+        $this->assertEquals(5, $child->getParentIngredientId()->value);
         $this->assertEquals('5/', $child->getMaterializedPath()->toString());
     }
 
@@ -540,25 +540,25 @@ final class IngredientTest extends TestCase
         );
 
         $authors = $ingredient->getAuthors();
-        $this->assertEquals(10, $authors->getCreatedBy()->id);
+        $this->assertEquals(10, $authors->getCreatedBy()->value);
         $this->assertNull($authors->getUpdatedBy());
         $this->assertFalse($authors->isUpdated());
     }
 
     public function test_ingredient_tracks_updates(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = (new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
             authors: Authors::createdBy( new UserId(10)),
             recordTimestamps: RecordTimestamps::createdNow(),
-        );
+        ))->setId(new IngredientId(24));
 
         $ingredient->updateDetails('Vodka', new UserId(20));
 
         $authors = $ingredient->getAuthors();
-        $this->assertEquals(10, $authors->getCreatedBy()->id);
-        $this->assertEquals(20, $authors->getUpdatedBy()->id);
+        $this->assertEquals(10, $authors->getCreatedBy()->value);
+        $this->assertEquals(20, $authors->getUpdatedBy()->value);
         $this->assertTrue($authors->isUpdated());
     }
 
@@ -595,12 +595,12 @@ final class IngredientTest extends TestCase
 
     public function test_ingredient_tracks_update_timestamp(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = (new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
             authors: Authors::createdBy( new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
-        );
+        ))->setId(new IngredientId(24));
 
         $ingredient->updateDetails('Vodka', new UserId(2));
 
@@ -678,23 +678,23 @@ final class IngredientTest extends TestCase
         $this->assertEquals(47.3, $ingredient->getStrength());
         $this->assertEquals('England', $ingredient->getOrigin());
         $this->assertInstanceOf(Color::class, $ingredient->getColor());
-        $this->assertEquals(5, $ingredient->getCalculatorId()->id);
+        $this->assertEquals(5, $ingredient->getCalculatorId()->value);
         $this->assertEquals(0.0, $ingredient->getSugarContent());
         $this->assertEquals(0.0, $ingredient->getAcidity());
         $this->assertEquals('Test Distillery', $ingredient->getDistillery());
         $this->assertEquals('ml', $ingredient->getUnits()->value);
-        $this->assertEquals(3, $ingredient->getParentIngredientId()->id);
+        $this->assertEquals(3, $ingredient->getParentIngredientId()->value);
         $this->assertEquals('3/', $ingredient->getMaterializedPath()->toString());
     }
 
     public function test_update_details_modifies_all_mutable_properties(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = (new Ingredient(
             barId: new BarId(1),
             name: 'Vodka',
             authors: Authors::createdBy( new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
-        );
+        ))->setId(new IngredientId(24));
 
         $ingredient->updateDetails(
             name: 'Premium Vodka',
@@ -714,7 +714,7 @@ final class IngredientTest extends TestCase
         $this->assertEquals('Updated description', $ingredient->getDescription());
         $this->assertEquals(50.0, $ingredient->getStrength());
         $this->assertEquals('Russia', $ingredient->getOrigin());
-        $this->assertEquals(3, $ingredient->getCalculatorId()->id);
+        $this->assertEquals(3, $ingredient->getCalculatorId()->value);
         $this->assertEquals(1.0, $ingredient->getSugarContent());
         $this->assertEquals(0.5, $ingredient->getAcidity());
         $this->assertEquals('New Distillery', $ingredient->getDistillery());

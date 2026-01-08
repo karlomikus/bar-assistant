@@ -46,12 +46,12 @@ final readonly class IngredientResult
     {
         $images = [];
         foreach ($ingredient->getImages() as $imageId) {
-            $images[] = $imageId->id;
+            $images[] = $imageId->value;
         }
 
         $complexIngredientParts = [];
         foreach ($ingredient->getIngredientParts() as $ingredientId) {
-            $complexIngredientParts[] = $ingredientId->id;
+            $complexIngredientParts[] = $ingredientId->value;
         }
 
         $prices = [];
@@ -60,23 +60,23 @@ final readonly class IngredientResult
         }
 
         return new IngredientResult(
-            id: $ingredient->getId() ? $ingredient->getId()->id : 0,
-            barId: $ingredient->getBarId()->id,
+            id: $ingredient->getId() ? $ingredient->getId()->value : 0,
+            barId: $ingredient->getBarId()->value,
             name: $ingredient->getName(),
-            createdBy: $ingredient->getAuthors()->getCreatedBy()->id,
+            createdBy: $ingredient->getAuthors()->getCreatedBy()->value,
             createdAt: $ingredient->getRecordTimestamps()->getCreatedAt(),
             hierarchy: IngredientHierarchyResult::fromAncestors($ancestors),
             description: $ingredient->getDescription(),
             strength: $ingredient->getStrength() ?? 0.0,
             origin: $ingredient->getOrigin(),
             color: $ingredient->getColor()?->toHexString(),
-            parentIngredientId: $ingredient->getParentIngredientId()?->id,
-            calculatorId: $ingredient->getCalculatorId()?->id,
+            parentIngredientId: $ingredient->getParentIngredientId()?->value,
+            calculatorId: $ingredient->getCalculatorId()?->value,
             sugarContent: $ingredient->getSugarContent(),
             acidity: $ingredient->getAcidity(),
             distillery: $ingredient->getDistillery(),
             units: $ingredient->getUnits()?->value,
-            updatedBy: $ingredient->getAuthors()->getUpdatedBy()?->id,
+            updatedBy: $ingredient->getAuthors()->getUpdatedBy()?->value,
             updatedAt: $ingredient->getRecordTimestamps()->getUpdatedAt(),
             images: $images,
             complexIngredientParts: $complexIngredientParts,

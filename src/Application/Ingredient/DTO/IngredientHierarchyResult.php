@@ -41,7 +41,7 @@ final readonly class IngredientHierarchyResult
             }
 
             $pathItems[] = new IngredientPathItem(
-                id: $ancestor->getId()->id,
+                id: $ancestor->getId()->value,
                 name: $ancestor->getName(),
             );
         }

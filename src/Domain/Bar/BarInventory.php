@@ -18,13 +18,7 @@ final readonly class BarInventory
 
     public function hasIngredientInStock(IngredientId $ingredientId): bool
     {
-        foreach ($this->ingredients as $existingInventoryItem) {
-            if ($existingInventoryItem->ingredientId->equals($ingredientId) && $existingInventoryItem->isInStock()) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($this->ingredients, fn($existingInventoryItem) => $existingInventoryItem->ingredientId->equals($ingredientId) && $existingInventoryItem->isInStock());
     }
 
     public function changeIngredientStock(IngredientId $ingredientId): self

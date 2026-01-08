@@ -12,8 +12,8 @@ final class Bar implements Identity
     private ?BarId $id = null;
 
     public function __construct(
-        private string $name,
-        private BarInventory $inventory,
+        private readonly string $name,
+        private readonly BarInventory $inventory,
     ) {
     }
 

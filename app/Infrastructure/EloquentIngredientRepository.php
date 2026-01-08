@@ -28,7 +28,7 @@ final class EloquentIngredientRepository implements IngredientRepository
 {
     public function list(BarId $barId): array
     {
-        $models = ModelIngredient::where('bar_id', $barId->id)->get();
+        $models = ModelIngredient::where('bar_id', $barId->value)->get();
 
         $ingredients = [];
         /** @var ModelIngredient $model */
@@ -41,7 +41,7 @@ final class EloquentIngredientRepository implements IngredientRepository
 
     public function findById(IngredientId $id): ?Ingredient
     {
-        $model = ModelIngredient::find($id->id);
+        $model = ModelIngredient::find($id->value);
 
         if ($model === null) {
             return null;
@@ -53,7 +53,7 @@ final class EloquentIngredientRepository implements IngredientRepository
     /** @param IngredientId[] $ids */
     public function findMany(BarId $barId, array $ids): array
     {
-        $models = ModelIngredient::whereIn('id', array_map(fn(IngredientId $id) => $id->id, $ids))->where('bar_id', $barId->id)->get();
+        $models = ModelIngredient::whereIn('id', array_map(fn(IngredientId $id) => $id->value, $ids))->where('bar_id', $barId->value)->get();
 
         $ingredients = [];
         /** @var ModelIngredient $model */
@@ -67,25 +67,25 @@ final class EloquentIngredientRepository implements IngredientRepository
     public function save(Ingredient $ingredient): Ingredient
     {
         DB::beginTransaction();
-        $ingredientModel = ModelIngredient::findOrNew($ingredient->getId()?->id);
+        $ingredientModel = ModelIngredient::findOrNew($ingredient->getId()?->value);
         try {
-            $ingredientModel->bar_id = $ingredient->getBarId()->id;
+            $ingredientModel->bar_id = $ingredient->getBarId()->value;
             $ingredientModel->name = $ingredient->getName();
             $ingredientModel->strength = $ingredient->getStrength();
             $ingredientModel->description = $ingredient->getDescription();
             $ingredientModel->origin = $ingredient->getOrigin();
             $ingredientModel->color = $ingredient->getColor()?->toHexString();
-            $ingredientModel->created_user_id = $ingredient->getAuthors()->getCreatedBy()->id;
+            $ingredientModel->created_user_id = $ingredient->getAuthors()->getCreatedBy()->value;
             $ingredientModel->created_at = $ingredient->getRecordTimestamps()->getCreatedAt()->format('Y-m-d H:i:s');
-            $ingredientModel->calculator_id = $ingredient->getCalculatorId()?->id;
+            $ingredientModel->calculator_id = $ingredient->getCalculatorId()?->value;
             $ingredientModel->sugar_g_per_ml = $ingredient->getSugarContent();
             $ingredientModel->acidity = $ingredient->getAcidity();
             $ingredientModel->distillery = $ingredient->getDistillery();
             $ingredientModel->units = $ingredient->getUnits()?->value;
             $ingredientModel->materialized_path = $ingredient->getMaterializedPath()->toString();
-            $ingredientModel->parent_ingredient_id = $ingredient->getParentIngredientId()?->id;
+            $ingredientModel->parent_ingredient_id = $ingredient->getParentIngredientId()?->value;
             if ($ingredient->getAuthors()->isUpdated()) {
-                $ingredientModel->updated_user_id = $ingredient->getAuthors()->getUpdatedBy()?->id;
+                $ingredientModel->updated_user_id = $ingredient->getAuthors()->getUpdatedBy()?->value;
                 $ingredientModel->updated_at = $ingredient->getRecordTimestamps()->getUpdatedAt()?->format('Y-m-d H:i:s');
                 $ingredientModel->save();
             }
@@ -97,7 +97,7 @@ final class EloquentIngredientRepository implements IngredientRepository
 
             foreach ($ingredient->getIngredientParts() as $ingredientPartId) {
                 $partModel = new ComplexIngredient();
-                $partModel->ingredient_id = $ingredientPartId->id;
+                $partModel->ingredient_id = $ingredientPartId->value;
                 $partModel->main_ingredient_id = $ingredientModel->id;
                 $partModel->save();
             }
@@ -105,7 +105,7 @@ final class EloquentIngredientRepository implements IngredientRepository
             foreach ($ingredient->getPrices() as $price) {
                 $ingredientPriceModel = new ModelIngredientPrice();
                 $ingredientPriceModel->ingredient_id = $ingredientModel->id;
-                $ingredientPriceModel->price_category_id = $price->getPriceCategoryId()->id;
+                $ingredientPriceModel->price_category_id = $price->getPriceCategoryId()->value;
                 $ingredientPriceModel->price = $price->getPrice()->getPriceAsMinor();
                 $ingredientPriceModel->amount = $price->getAmountWithUnits()->amountMin;
                 $ingredientPriceModel->units = $price->getAmountWithUnits()->units;
@@ -119,7 +119,7 @@ final class EloquentIngredientRepository implements IngredientRepository
         DB::commit();
 
         if (count($ingredient->getImages()) > 0) {
-            $imageModels = ModelImage::findOrFail(array_map(fn (ImageId $img): int => $img->id, $ingredient->getImages()));
+            $imageModels = ModelImage::findOrFail(array_map(fn (ImageId $img): int => $img->value, $ingredient->getImages()));
             $ingredientModel->attachImages($imageModels);
         }
 
@@ -156,12 +156,12 @@ final class EloquentIngredientRepository implements IngredientRepository
 
     public function delete(IngredientId $id): void
     {
-        ModelIngredient::destroy($id->id);
+        ModelIngredient::destroy($id->value);
     }
 
     public function findChildren(IngredientId $parentId): array
     {
-        $models = ModelIngredient::where('parent_ingredient_id', $parentId->id)->get();
+        $models = ModelIngredient::where('parent_ingredient_id', $parentId->value)->get();
 
         $ingredients = [];
         /** @var ModelIngredient $model */
@@ -174,7 +174,7 @@ final class EloquentIngredientRepository implements IngredientRepository
 
     public function findAncestors(IngredientId $descendantId): array
     {
-        $model = ModelIngredient::find($descendantId->id);
+        $model = ModelIngredient::find($descendantId->value);
 
         if ($model === null) {
             return [];
@@ -187,7 +187,7 @@ final class EloquentIngredientRepository implements IngredientRepository
             return [];
         }
 
-        $models = ModelIngredient::whereIn('id', array_map(fn (IngredientId $id): int => $id->id, $ancestorIds))->get();
+        $models = ModelIngredient::whereIn('id', array_map(fn (IngredientId $id): int => $id->value, $ancestorIds))->get();
 
         $ingredients = [];
         /** @var ModelIngredient $model */

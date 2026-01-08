@@ -5,7 +5,7 @@ namespace BarAssistant\Domain\Menu;
 
 use BarAssistant\Domain\Bar\BarId;
 
-final class Menu
+final readonly class Menu
 {
     public function __construct(
         private BarId $barId,

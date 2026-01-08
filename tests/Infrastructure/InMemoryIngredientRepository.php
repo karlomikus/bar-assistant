@@ -39,7 +39,7 @@ final class InMemoryIngredientRepository implements IngredientRepository
      */
     public function findById(IngredientId $id): ?Ingredient
     {
-        return $this->ingredients[$id->id] ?? null;
+        return $this->ingredients[$id->value] ?? null;
     }
 
     /**
@@ -70,7 +70,7 @@ final class InMemoryIngredientRepository implements IngredientRepository
             $ingredient->setId(new IngredientId($this->nextId++));
         }
 
-        $this->ingredients[$ingredient->getId()->id] = $ingredient;
+        $this->ingredients[$ingredient->getId()->value] = $ingredient;
 
         return $ingredient;
     }
@@ -99,7 +99,7 @@ final class InMemoryIngredientRepository implements IngredientRepository
      */
     public function delete(IngredientId $id): void
     {
-        unset($this->ingredients[$id->id]);
+        unset($this->ingredients[$id->value]);
     }
 
     /**

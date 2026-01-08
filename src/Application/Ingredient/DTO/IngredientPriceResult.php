@@ -21,7 +21,7 @@ final readonly class IngredientPriceResult
     public static function fromIngredientPrice(IngredientPrice $price): IngredientPriceResult
     {
         return new IngredientPriceResult(
-            priceCategoryId: $price->getPriceCategoryId()->id,
+            priceCategoryId: $price->getPriceCategoryId()->value,
             price: $price->getPrice()->getPriceAsMinor(),
             amount: $price->getAmountWithUnits()->amountMin,
             currency: $price->getPrice()->getCurrency(),

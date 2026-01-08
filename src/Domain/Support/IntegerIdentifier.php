@@ -9,7 +9,7 @@ use BarAssistant\Domain\Identifier;
 
 abstract readonly class IntegerIdentifier implements Identifier, Stringable
 {
-    public function __construct(public int $id)
+    public function __construct(public int $value)
     {
     }
 
@@ -19,11 +19,11 @@ abstract readonly class IntegerIdentifier implements Identifier, Stringable
             return false;
         }
 
-        return $this->id === $other->id;
+        return $this->value === $other->value;
     }
 
     public function __toString(): string
     {
-        return (string) $this->id;
+        return (string) $this->value;
     }
 }

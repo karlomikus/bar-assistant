@@ -15,11 +15,16 @@ final class InMemoryPriceCategoryRepository implements PriceCategoryRepository
      */
     public function __construct(private array $items = []) {}
 
+    public function save(PriceCategory $priceCategory): PriceCategory
+    {
+        throw new \Exception('Not implemented');
+    }
+
     public function findMany(BarId $barId, array $ids): array
     {
         $result = [];
         foreach ($ids as $id) {
-            $item = $this->items[$id->id] ?? null;
+            $item = $this->items[$id->value] ?? null;
             if ($item !== null && $item->getBarId()->equals($barId)) {
                 $result[] = $item;
             }
