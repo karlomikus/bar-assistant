@@ -20,7 +20,7 @@ final readonly class PriceCategoryResult
     public static function fromPriceCategory(PriceCategory $priceCategory): self
     {
         return new self(
-            id: $priceCategory->getId()->id,
+            id: $priceCategory->getId()->id ?? 0,
             barId: $priceCategory->getBarId()->id,
             name: $priceCategory->getName(),
             currency: $priceCategory->getCurrency()->getCurrencyCode(),

@@ -20,6 +20,8 @@ use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\MaterializedPath;
 use Kami\Cocktail\Models\Ingredient as ModelIngredient;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
+use BarAssistant\Domain\Support\Authors;
+use BarAssistant\Domain\Support\RecordTimestamps;
 use Kami\Cocktail\Models\IngredientPrice as ModelIngredientPrice;
 
 final class EloquentIngredientRepository implements IngredientRepository
@@ -201,7 +203,8 @@ final class EloquentIngredientRepository implements IngredientRepository
         $ingredient = new Ingredient(
             barId: new BarId($model->bar_id),
             name: $model->name,
-            createdBy: new UserId($model->created_user_id),
+            authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
+            recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
             description: $model->description,
             strength: $model->strength,
             origin: $model->origin,
@@ -213,14 +216,9 @@ final class EloquentIngredientRepository implements IngredientRepository
             units: $model->units ? new Unit($model->units) : null,
             materializedPath: MaterializedPath::fromString($model->materialized_path),
             parentIngredientId: $model->parent_ingredient_id ? new IngredientId($model->parent_ingredient_id) : null,
-            createdAt: $model->created_at->toDateTimeImmutable(),
         );
 
         $ingredient->setId(new IngredientId($model->id));
-
-        if ($model->updated_user_id !== null) {
-            $ingredient->wasUpdatedBy(new UserId($model->updated_user_id), $model->updated_at?->toDateTimeImmutable());
-        }
 
         /** @var ComplexIngredient $part */
         foreach ($model->ingredientParts as $part) {

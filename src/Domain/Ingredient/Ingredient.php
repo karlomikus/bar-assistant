@@ -18,7 +18,6 @@ use BarAssistant\Domain\Support\Price;
 use BarAssistant\Domain\Support\RecordTimestamps;
 use BarAssistant\Domain\Support\Unit;
 use BarAssistant\Domain\User\UserId;
-use DateTimeImmutable;
 
 /**
  * Ingredient entity
@@ -37,25 +36,6 @@ final class Ingredient implements Identity
     /** @var IngredientPrice[] */
     private array $prices = [];
 
-    /**
-     * @param BarId $barId Bar identifier
-     * @param string $name Name of the ingredient
-     * @param UserId $createdBy Who created the ingredient
-     * @param null|string $description Textual description of the ingredient
-     * @param null|float $strength In alcohol percentage (0.0 - 100.0)
-     * @param null|string $origin Geographical origin of the ingredient
-     * @param null|Color $color Color of the ingredient
-     * @param null|CalculatorId $calculatorId Associated calculator identifier
-     * @param null|float $sugarContent Sugar content in g/ml
-     * @param null|float $acidity Acidity value in percents
-     * @param null|string $distillery Distillery name
-     * @param null|Unit $units Default ingredient measurement units
-     * @param null|IngredientId $parentIngredientId Parent ingredient identifier (for variants)
-     * @param null|MaterializedPath $materializedPath Materialized path in the ingredient hierarchy
-     * @param null|DateTimeImmutable $createdAt Creation timestamp
-     * @return void
-     * @throws DomainException 
-     */
     public function __construct(
         private readonly BarId $barId,
         private string $name,
@@ -148,41 +128,65 @@ final class Ingredient implements Identity
         return $this;
     }
 
+    /**
+     * Bar identifier
+     */
     public function getBarId(): BarId
     {
         return $this->barId;
     }
 
+    /**
+     * Parent ingredient identifier (for variants), returns null for root ingredients
+     */
     public function getParentIngredientId(): ?IngredientId
     {
         return $this->parentIngredientId;
     }
 
+    /**
+     * Name of the ingredient
+     */
     public function getName(): string
     {
         return $this->name;
     }
 
+    /**
+     * Materialized path in the ingredient hierarchy
+     */
     public function getMaterializedPath(): MaterializedPath
     {
         return $this->materializedPath;
     }
 
+    /**
+     * Textual description of the ingredient
+     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
+    /**
+     * In alcohol percentage (0.0 - 100.0)
+     */
     public function getStrength(): ?float
     {
         return $this->strength;
     }
 
+    /**
+     * Geographical origin of the ingredient
+     */
     public function getOrigin(): ?string
     {
         return $this->origin;
     }
 
+    /**
+     * Color of the ingredient
+     */
     public function getColor(): ?Color
     {
         return $this->color;
@@ -320,16 +324,25 @@ final class Ingredient implements Identity
         return $this;
     }
 
+    /**
+     * Who created or updated the ingredient
+     */
     public function getAuthors(): Authors
     {
         return $this->authors;
     }
 
+    /**
+     * When was ingredient created or updated
+     */
     public function getRecordTimestamps(): RecordTimestamps
     {
         return $this->recordTimestamps;
     }
 
+    /**
+     * Update existing ingredient details
+     */
     public function updateDetails(
         string $name,
         UserId $updatedBy,
@@ -343,6 +356,10 @@ final class Ingredient implements Identity
         ?string $distillery = null,
         ?Unit $units = null,
     ): self {
+        if ($this->isTransient()) {
+            throw new DomainException('Cannot update details of a transient ingredient');
+        }
+
         if (trim($name) === '') {
             throw new DomainException('Ingredient name cannot be empty');
         }
@@ -351,7 +368,7 @@ final class Ingredient implements Identity
             throw new DomainException('Ingredient strength must be between 0.0 and 100.0');
         }
 
-        if (!$this->isTransient() && $this->strength !== $strength) {
+        if ($this->strength !== $strength) {
             DomainEventPublisher::instance()->publish(new IngredientStrengthChanged(
                 barId: $this->getBarId(),
                 ingredientId: $this->getId(),
@@ -376,26 +393,41 @@ final class Ingredient implements Identity
         return $this;
     }
 
+    /**
+     * Associated calculator identifier
+     */
     public function getCalculatorId(): ?CalculatorId
     {
         return $this->calculatorId;
     }
 
+    /**
+     * Sugar content in g/ml
+     */
     public function getSugarContent(): ?float
     {
         return $this->sugarContent;
     }
 
+    /**
+     * Acidity value in percents
+     */
     public function getAcidity(): ?float
     {
         return $this->acidity;
     }
 
+    /**
+     * Distillery name
+     */
     public function getDistillery(): ?string
     {
         return $this->distillery;
     }
 
+    /**
+     * Default ingredient measurement units
+     */
     public function getUnits(): ?Unit
     {
         return $this->units;
