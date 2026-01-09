@@ -17,6 +17,11 @@ final readonly class IngredientStrengthChanged implements DomainEvent
     {
     }
 
+    public function isPropagationStopped(): bool
+    {
+        return false;
+    }
+
     public function occurredOn(): DateTimeImmutable
     {
         return new DateTimeImmutable();

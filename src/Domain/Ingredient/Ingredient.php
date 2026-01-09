@@ -9,7 +9,7 @@ use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Calculator\CalculatorId;
-use BarAssistant\Domain\Event\DomainEventPublisher;
+use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Ingredient\Event\IngredientStrengthChanged;
 use BarAssistant\Domain\Support\AmountWithUnits;
 use BarAssistant\Domain\Support\Authors;
@@ -369,7 +369,7 @@ final class Ingredient implements Identity
         }
 
         if ($this->strength !== $strength) {
-            DomainEventPublisher::instance()->publish(new IngredientStrengthChanged(
+            DomainEventDispatcher::instance()->publish(new IngredientStrengthChanged(
                 barId: $this->getBarId(),
                 ingredientId: $this->getId(),
                 oldStrength: $this->strength,

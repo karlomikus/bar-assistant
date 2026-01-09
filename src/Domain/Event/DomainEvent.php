@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Event;
 
-interface DomainEvent
+use Psr\EventDispatcher\StoppableEventInterface;
+
+interface DomainEvent extends StoppableEventInterface
 {
     /**
      * Get the date and time when the event occurred
