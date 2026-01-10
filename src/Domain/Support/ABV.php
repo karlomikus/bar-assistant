@@ -9,7 +9,7 @@ namespace BarAssistant\Domain\Support;
  */
 final readonly class ABV
 {
-    private function __construct(private float $abv)
+    public function __construct(private float $abv)
     {
     }
 

@@ -12,6 +12,7 @@ use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\MaterializedPath;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
+use BarAssistant\Domain\Support\ABV;
 use BarAssistant\Domain\Support\Authors;
 use BarAssistant\Domain\Support\Color;
 use BarAssistant\Domain\Support\RecordTimestamps;
@@ -61,76 +62,6 @@ final class IngredientTest extends TestCase
         $this->expectExceptionMessage('Ingredient name cannot be empty');
 
         $ingredient->updateDetails(name: '', updatedBy: new UserId(2));
-    }
-
-    public function test_strength_cannot_be_negative(): void
-    {
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('Ingredient strength must be between 0.0 and 100.0');
-
-        new Ingredient(
-            barId: new BarId(1),
-            name: 'Vodka',
-            authors: Authors::createdBy( new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-            strength: -1.0,
-        );
-    }
-
-    public function test_strength_cannot_exceed_100(): void
-    {
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('Ingredient strength must be between 0.0 and 100.0');
-
-        new Ingredient(
-            barId: new BarId(1),
-            name: 'Vodka',
-            authors: Authors::createdBy( new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-            strength: 100.1,
-        );
-    }
-
-    public function test_strength_accepts_zero(): void
-    {
-        $ingredient = new Ingredient(
-            barId: new BarId(1),
-            name: 'Water',
-            authors: Authors::createdBy( new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-            strength: 0.0,
-        );
-
-        $this->assertEquals(0.0, $ingredient->getStrength());
-    }
-
-    public function test_strength_accepts_maximum_value(): void
-    {
-        $ingredient = new Ingredient(
-            barId: new BarId(1),
-            name: 'Pure Alcohol',
-            authors: Authors::createdBy( new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-            strength: 100.0,
-        );
-
-        $this->assertEquals(100.0, $ingredient->getStrength());
-    }
-
-    public function test_update_details_rejects_invalid_strength(): void
-    {
-        $ingredient = (new Ingredient(
-            barId: new BarId(1),
-            name: 'Vodka',
-            authors: Authors::createdBy( new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-            strength: 40.0,
-        ))->setId(new IngredientId(24));
-
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('Ingredient strength must be between 0.0 and 100.0');
-
-        $ingredient->updateDetails(name: 'Vodka', updatedBy: new UserId(2), strength: 150.0);
     }
 
     public function test_cannot_change_id_of_persisted_ingredient(): void
@@ -187,7 +118,7 @@ final class IngredientTest extends TestCase
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Parent ingredient must belong to the same bar');
 
-        $child->withParent($parent);
+        $child->setParentIngredientId($parent);
     }
 
     public function test_can_set_parent_from_same_bar(): void
@@ -207,7 +138,7 @@ final class IngredientTest extends TestCase
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
-        $child = $child->withParent($parent);
+        $child = $child->setParentIngredientId($parent);
 
         $this->assertEquals(5, $child->getParentIngredientId()->value);
         $this->assertEquals('5/', $child->getMaterializedPath()->toString());
@@ -230,10 +161,10 @@ final class IngredientTest extends TestCase
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
-        $child = $child->withParent($parent);
+        $child = $child->setParentIngredientId($parent);
         $this->assertNotNull($child->getParentIngredientId());
 
-        $child = $child->withParent(null);
+        $child = $child->setParentIngredientId(null);
         $this->assertNull($child->getParentIngredientId());
         $this->assertTrue($child->getMaterializedPath()->isRoot());
     }
@@ -661,7 +592,7 @@ final class IngredientTest extends TestCase
             authors: Authors::createdBy( new UserId(10)),
             recordTimestamps: RecordTimestamps::createdAt(new DateTimeImmutable('2024-01-01')),
             description: 'A fine London Dry Gin',
-            strength: 47.3,
+            strength: ABV::from(47.3),
             origin: 'England',
             color: Color::fromHexString('#ffffff'),
             calculatorId: new CalculatorId(5),
@@ -675,7 +606,7 @@ final class IngredientTest extends TestCase
 
         $this->assertEquals('Premium Gin', $ingredient->getName());
         $this->assertEquals('A fine London Dry Gin', $ingredient->getDescription());
-        $this->assertEquals(47.3, $ingredient->getStrength());
+        $this->assertEquals(47.3, $ingredient->getStrength()->toFloat());
         $this->assertEquals('England', $ingredient->getOrigin());
         $this->assertInstanceOf(Color::class, $ingredient->getColor());
         $this->assertEquals(5, $ingredient->getCalculatorId()->value);
@@ -700,7 +631,7 @@ final class IngredientTest extends TestCase
             name: 'Premium Vodka',
             description: 'Updated description',
             updatedBy: new UserId(5),
-            strength: 50.0,
+            strength: ABV::from(50.0),
             origin: 'Russia',
             color: Color::fromHexString('#ffffff'),
             calculatorId: new CalculatorId(3),
@@ -712,7 +643,7 @@ final class IngredientTest extends TestCase
 
         $this->assertEquals('Premium Vodka', $ingredient->getName());
         $this->assertEquals('Updated description', $ingredient->getDescription());
-        $this->assertEquals(50.0, $ingredient->getStrength());
+        $this->assertEquals(50.0, $ingredient->getStrength()->toFloat());
         $this->assertEquals('Russia', $ingredient->getOrigin());
         $this->assertEquals(3, $ingredient->getCalculatorId()->value);
         $this->assertEquals(1.0, $ingredient->getSugarContent());
