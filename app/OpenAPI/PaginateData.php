@@ -11,6 +11,7 @@ class PaginateData extends OAT\JsonContent
 {
     /**
      * @param class-string $className
+     * @param array<\OpenApi\Attributes\Property> $meta
      */
     public function __construct(string $className, array $meta = [])
     {
