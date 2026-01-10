@@ -22,6 +22,7 @@ use Kami\Cocktail\Models\Ingredient as ModelIngredient;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
 use BarAssistant\Domain\Support\ABV;
 use BarAssistant\Domain\Support\Authors;
+use BarAssistant\Domain\Support\Name;
 use BarAssistant\Domain\Support\RecordTimestamps;
 use Kami\Cocktail\Models\IngredientPrice as ModelIngredientPrice;
 
@@ -203,7 +204,7 @@ final class EloquentIngredientRepository implements IngredientRepository
     {
         $ingredient = new Ingredient(
             barId: new BarId($model->bar_id),
-            name: $model->name,
+            name: Name::fromString($model->name),
             authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
             recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
             description: $model->description,

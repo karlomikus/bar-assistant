@@ -7,6 +7,7 @@ namespace BarAssistant\Domain\Ingredient;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Identity;
+use BarAssistant\Domain\Support\Name;
 use Brick\Money\Currency;
 
 /**
@@ -22,20 +23,16 @@ final class PriceCategory implements Identity
 
     /**
      * @param BarId $barId Bar identifier
-     * @param string $name Name of the price category
+     * @param Name $name Name of the price category
      * @param Currency $currency Currency of the price category
      * @param null|string $description Description of the price category
-     * @throws DomainException
      */
     public function __construct(
         private readonly BarId $barId,
-        private string $name,
+        private Name $name,
         private Currency $currency,
         private ?string $description = null,
     ) {
-        if (trim($name) === '') {
-            throw new DomainException('Price category name cannot be empty.');
-        }
     }
 
     public function getId(): ?PriceCategoryId
@@ -64,7 +61,7 @@ final class PriceCategory implements Identity
         return $this->barId;
     }
 
-    public function getName(): string
+    public function getName(): Name
     {
         return $this->name;
     }
@@ -82,16 +79,11 @@ final class PriceCategory implements Identity
     /**
      * Update the price category details
      *
-     * @param string $name New name
+     * @param Name $name New name
      * @param null|string $description New description
-     * @throws DomainException
      */
-    public function updateDetails(string $name, ?string $description = null): self
+    public function updateDetails(Name $name, ?string $description = null): self
     {
-        if (trim($name) === '') {
-            throw new DomainException('Price category name cannot be empty.');
-        }
-
         $this->name = $name;
         $this->description = $description;
 

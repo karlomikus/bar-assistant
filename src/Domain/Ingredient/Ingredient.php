@@ -15,6 +15,7 @@ use BarAssistant\Domain\Support\ABV;
 use BarAssistant\Domain\Support\AmountWithUnits;
 use BarAssistant\Domain\Support\Authors;
 use BarAssistant\Domain\Support\Color;
+use BarAssistant\Domain\Support\Name;
 use BarAssistant\Domain\Support\Price;
 use BarAssistant\Domain\Support\RecordTimestamps;
 use BarAssistant\Domain\Support\Unit;
@@ -39,7 +40,7 @@ final class Ingredient implements Identity
 
     public function __construct(
         private readonly BarId $barId,
-        private string $name,
+        private Name $name,
         private Authors $authors,
         private RecordTimestamps $recordTimestamps,
         private ?string $description = null,
@@ -54,10 +55,6 @@ final class Ingredient implements Identity
         private ?IngredientId $parentIngredientId = null,
         ?MaterializedPath $materializedPath = null,
     ) {
-        if (trim($name) === '') {
-            throw new DomainException('Ingredient name cannot be empty');
-        }
-
         $this->materializedPath = $materializedPath ?? MaterializedPath::root();
     }
 
@@ -131,7 +128,7 @@ final class Ingredient implements Identity
     /**
      * Name of the ingredient
      */
-    public function getName(): string
+    public function getName(): Name
     {
         return $this->name;
     }
@@ -328,7 +325,7 @@ final class Ingredient implements Identity
      * Update existing ingredient details
      */
     public function updateDetails(
-        string $name,
+        Name $name,
         UserId $updatedBy,
         ?string $description = null,
         ABV $strength = new ABV(0.0),
@@ -342,10 +339,6 @@ final class Ingredient implements Identity
     ): self {
         if ($this->isTransient()) {
             throw new DomainException('Cannot update details of a transient ingredient');
-        }
-
-        if (trim($name) === '') {
-            throw new DomainException('Ingredient name cannot be empty');
         }
 
         if ($this->strength !== $strength) {

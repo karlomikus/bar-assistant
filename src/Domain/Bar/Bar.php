@@ -6,13 +6,14 @@ namespace BarAssistant\Domain\Bar;
 
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Identity;
+use BarAssistant\Domain\Support\Name;
 
 final class Bar implements Identity
 {
     private ?BarId $id = null;
 
     public function __construct(
-        private readonly string $name,
+        private readonly Name $name,
         private readonly BarInventory $inventory,
     ) {
     }
@@ -38,7 +39,7 @@ final class Bar implements Identity
         return $this;
     }
 
-    public function getName(): string
+    public function getName(): Name
     {
         return $this->name;
     }

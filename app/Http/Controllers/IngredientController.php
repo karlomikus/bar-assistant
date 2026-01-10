@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
@@ -126,6 +127,17 @@ class IngredientController extends Controller
             abort(403);
         }
 
+        $prices = [];
+        foreach ($request->input('prices', []) as $price) {
+            $prices[] = new CreateIngredientPrice(
+                priceCategoryId: (int) $price['price_category_id'],
+                price: $price['price'],
+                amount: (float) $price['amount'],
+                units: $price['units'],
+                description: $price['description'] ?? null,
+            );
+        }
+
         $ingredientResult = $ingredientService->createIngredient(
             new CreateIngredient(
                 bar()->id,
@@ -138,7 +150,7 @@ class IngredientController extends Controller
                 $request->filled('parent_ingredient_id') ? $request->integer('parent_ingredient_id') : null,
                 $request->input('images', []),
                 $request->input('complex_ingredient_part_ids', []),
-                [],
+                $prices,
                 $request->filled('calculator_id') ? $request->integer('calculator_id') : null,
                 $request->filled('sugar_g_per_ml') ? $request->float('sugar_g_per_ml') : null,
                 $request->filled('acidity') ? $request->float('acidity') : null,

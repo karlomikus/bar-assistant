@@ -23,6 +23,7 @@ use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 use BarAssistant\Domain\Support\ABV;
 use BarAssistant\Domain\Support\Authors;
+use BarAssistant\Domain\Support\Name;
 use BarAssistant\Domain\Support\RecordTimestamps;
 use BarAssistant\Domain\Support\Unit;
 use BarAssistant\Domain\User\UserId;
@@ -46,7 +47,7 @@ final readonly class IngredientService
         $barId = new BarId($ingredientRequest->barId);
         $ingredient = new Ingredient(
             barId: $barId,
-            name: $ingredientRequest->name,
+            name: Name::fromString($ingredientRequest->name),
             authors: Authors::createdBy(new UserId($ingredientRequest->userId)),
             recordTimestamps: RecordTimestamps::createdNow(),
             description: $ingredientRequest->description,
@@ -100,7 +101,7 @@ final readonly class IngredientService
         }
 
         $ingredient->updateDetails(
-            name: $ingredientRequest->name,
+            name: Name::fromString($ingredientRequest->name),
             updatedBy: new UserId($ingredientRequest->userId),
             description: $ingredientRequest->description,
             strength: ABV::from($ingredientRequest->strength ?? 0.0),

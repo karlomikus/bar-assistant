@@ -10,6 +10,7 @@ use BarAssistant\Application\Ingredient\DTO\PriceCategoryResult;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
+use BarAssistant\Domain\Support\Name;
 use Brick\Money\Currency;
 
 final readonly class PriceCategoryService
@@ -26,7 +27,7 @@ final readonly class PriceCategoryService
     {
         $priceCategory = new PriceCategory(
             barId: new BarId($request->barId),
-            name: $request->name,
+            name: Name::fromString($request->name),
             currency: Currency::of($request->currency),
             description: $request->description,
         );

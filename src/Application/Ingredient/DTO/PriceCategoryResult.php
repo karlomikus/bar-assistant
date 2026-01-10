@@ -22,7 +22,7 @@ final readonly class PriceCategoryResult
         return new self(
             id: $priceCategory->getId()->value ?? 0,
             barId: $priceCategory->getBarId()->value,
-            name: $priceCategory->getName(),
+            name: $priceCategory->getName()->toString(),
             currency: $priceCategory->getCurrency()->getCurrencyCode(),
             description: $priceCategory->getDescription(),
         );

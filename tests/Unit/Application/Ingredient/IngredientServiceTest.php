@@ -18,6 +18,7 @@ use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 use BarAssistant\Domain\Support\Authors;
+use BarAssistant\Domain\Support\Name;
 use BarAssistant\Domain\Support\RecordTimestamps;
 use BarAssistant\Domain\User\UserId;
 use Brick\Money\Currency;
@@ -33,14 +34,14 @@ final class IngredientServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->ingredientRepository = new InMemoryIngredientRepository([
-            542 => (new Ingredient(barId: new BarId(65), name: 'Existing ingredient 65-1', recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(45))))->setId(new IngredientId(542)),
-            543 => (new Ingredient(barId: new BarId(65), name: 'Existing ingredient 65-2', recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(45))))->setId(new IngredientId(543)),
-            544 => (new Ingredient(barId: new BarId(55), name: 'Existing ingredient 55-1', recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(32))))->setId(new IngredientId(544)),
-            545 => (new Ingredient(barId: new BarId(55), name: 'Existing ingredient 55-2', recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(33))))->setId(new IngredientId(545)),
+            542 => (new Ingredient(barId: new BarId(65), name: Name::fromString('Existing ingredient 65-1'), recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(45))))->setId(new IngredientId(542)),
+            543 => (new Ingredient(barId: new BarId(65), name: Name::fromString('Existing ingredient 65-2'), recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(45))))->setId(new IngredientId(543)),
+            544 => (new Ingredient(barId: new BarId(55), name: Name::fromString('Existing ingredient 55-1'), recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(32))))->setId(new IngredientId(544)),
+            545 => (new Ingredient(barId: new BarId(55), name: Name::fromString('Existing ingredient 55-2'), recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(33))))->setId(new IngredientId(545)),
         ]);
 
         $this->priceCategoryRepository = new InMemoryPriceCategoryRepository([
-            301 => (new PriceCategory(barId: new BarId(65), name: 'Amazon EU', currency: Currency::of('EUR')))->setId(new PriceCategoryId(301)),
+            301 => (new PriceCategory(barId: new BarId(65), name: Name::fromString('Amazon EU'), currency: Currency::of('EUR')))->setId(new PriceCategoryId(301)),
         ]);
     }
 

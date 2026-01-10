@@ -62,7 +62,7 @@ final readonly class IngredientResult
         return new IngredientResult(
             id: $ingredient->getId() ? $ingredient->getId()->value : 0,
             barId: $ingredient->getBarId()->value,
-            name: $ingredient->getName(),
+            name: $ingredient->getName()->toString(),
             createdBy: $ingredient->getAuthors()->getCreatedBy()->value,
             createdAt: $ingredient->getRecordTimestamps()->getCreatedAt(),
             hierarchy: IngredientHierarchyResult::fromAncestors($ancestors),
