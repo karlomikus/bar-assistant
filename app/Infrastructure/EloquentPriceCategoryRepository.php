@@ -9,6 +9,7 @@ use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use Kami\Cocktail\Models\PriceCategory as Model;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
+use BarAssistant\Domain\Support\Name;
 use Brick\Money\Currency;
 
 final class EloquentPriceCategoryRepository implements PriceCategoryRepository
@@ -35,7 +36,7 @@ final class EloquentPriceCategoryRepository implements PriceCategoryRepository
     {
         $priceCategory = new PriceCategory(
             barId: new BarId($model->bar_id),
-            name: $model->name,
+            name: Name::fromString($model->name),
             currency: Currency::of($model->currency),
             description: $model->description,
         )->setId(new PriceCategoryId($model->id));

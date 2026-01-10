@@ -97,6 +97,7 @@ final class EloquentIngredientRepository implements IngredientRepository
                 $ingredient = $ingredient->setId(new IngredientId($ingredientModel->id));
             }
 
+            $ingredientModel->ingredientParts()->delete();
             foreach ($ingredient->getIngredientParts() as $ingredientPartId) {
                 $partModel = new ComplexIngredient();
                 $partModel->ingredient_id = $ingredientPartId->value;
@@ -104,6 +105,7 @@ final class EloquentIngredientRepository implements IngredientRepository
                 $partModel->save();
             }
 
+            $ingredientModel->prices()->delete();
             foreach ($ingredient->getPrices() as $price) {
                 $ingredientPriceModel = new ModelIngredientPrice();
                 $ingredientPriceModel->ingredient_id = $ingredientModel->id;

@@ -286,11 +286,11 @@ final class Ingredient implements Identity
         return $this->prices;
     }
 
-    public function addPrice(PriceCategoryId $priceCategoryId, int $price, string $currency, float $amount, string $units, ?string $description = null): self
+    public function addPrice(PriceCategoryId $priceCategoryId, float $price, string $currency, float $amount, string $units, ?string $description = null): self
     {
         $this->prices[] = new IngredientPrice(
             priceCategoryId: $priceCategoryId,
-            price: Price::createFromMinor($price, $currency),
+            price: Price::createFromFloat($price, $currency),
             amountWithUnits: new AmountWithUnits($amount, new Unit($units)),
             description: $description,
         );

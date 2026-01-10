@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Support;
 
+use Brick\Math\RoundingMode;
 use Brick\Money\Money;
 
 final readonly class Price
@@ -15,6 +16,11 @@ final readonly class Price
     public static function createFromMinor(int $amountInMinor, string $currency): self
     {
         return new self(Money::ofMinor($amountInMinor, $currency));
+    }
+
+    public static function createFromFloat(float $decimalAmount, string $currency): self
+    {
+        return new self(Money::of($decimalAmount, $currency, roundingMode: RoundingMode::UP));
     }
 
     public function getMoney(): Money

@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
+use BarAssistant\Application\Ingredient\DTO\UpdateIngredient;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
@@ -131,7 +132,7 @@ class IngredientController extends Controller
         foreach ($request->input('prices', []) as $price) {
             $prices[] = new CreateIngredientPrice(
                 priceCategoryId: (int) $price['price_category_id'],
-                price: $price['price'],
+                price: (float) $price['price'],
                 amount: (float) $price['amount'],
                 units: $price['units'],
                 description: $price['description'] ?? null,
@@ -180,7 +181,7 @@ class IngredientController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(IngredientService $ingredientService, IngredientRequest $request, int $id): JsonResource
+    public function update(\BarAssistant\Application\Ingredient\IngredientService $ingredientService, IngredientRequest $request, int $id): JsonResource
     {
         $ingredient = Ingredient::findOrFail($id);
 
@@ -193,10 +194,39 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $ingredient = $ingredientService->updateIngredient(
-            $id,
-            IngredientDTO::fromIlluminateRequest($request, $ingredient->bar_id)
+        $prices = [];
+        foreach ($request->input('prices', []) as $price) {
+            $prices[] = new CreateIngredientPrice(
+                priceCategoryId: (int) $price['price_category_id'],
+                price: (float) $price['price'],
+                amount: (float) $price['amount'],
+                units: $price['units'],
+                description: $price['description'] ?? null,
+            );
+        }
+
+        $ingredientResult = $ingredientService->updateIngredient(
+            new UpdateIngredient(
+                $id,
+                $request->input('name'),
+                $request->user()->id,
+                $request->float('strength'),
+                $request->input('description'),
+                $request->input('origin'),
+                $request->input('color'),
+                $request->filled('parent_ingredient_id') ? $request->integer('parent_ingredient_id') : null,
+                $request->input('images', []),
+                $request->input('complex_ingredient_part_ids', []),
+                $prices,
+                $request->filled('calculator_id') ? $request->integer('calculator_id') : null,
+                $request->filled('sugar_g_per_ml') ? $request->float('sugar_g_per_ml') : null,
+                $request->filled('acidity') ? $request->float('acidity') : null,
+                $request->input('distillery'),
+                $request->input('units'),
+            )
         );
+
+        $ingredient = Ingredient::find($ingredientResult->id);
 
         return new IngredientResource($ingredient);
     }

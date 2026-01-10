@@ -8,7 +8,7 @@ final readonly class CreateIngredientPrice
 {
     public function __construct(
         public int $priceCategoryId,
-        public int $price,
+        public float $price,
         public float $amount,
         public string $units,
         public ?string $description = null,
