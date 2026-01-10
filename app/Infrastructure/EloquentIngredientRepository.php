@@ -28,7 +28,7 @@ final class EloquentIngredientRepository implements IngredientRepository
 {
     public function list(BarId $barId): array
     {
-        $models = ModelIngredient::where('bar_id', $barId->value)->get();
+        $models = ModelIngredient::with('ingredientParts', 'prices.priceCategory')->where('bar_id', $barId->value)->get();
 
         $ingredients = [];
         /** @var ModelIngredient $model */
@@ -53,7 +53,7 @@ final class EloquentIngredientRepository implements IngredientRepository
     /** @param IngredientId[] $ids */
     public function findMany(BarId $barId, array $ids): array
     {
-        $models = ModelIngredient::whereIn('id', array_map(fn(IngredientId $id) => $id->value, $ids))->where('bar_id', $barId->value)->get();
+        $models = ModelIngredient::with('ingredientParts', 'prices.priceCategory')->whereIn('id', array_map(fn(IngredientId $id) => $id->value, $ids))->where('bar_id', $barId->value)->get();
 
         $ingredients = [];
         /** @var ModelIngredient $model */
@@ -67,7 +67,7 @@ final class EloquentIngredientRepository implements IngredientRepository
     public function save(Ingredient $ingredient): Ingredient
     {
         DB::beginTransaction();
-        $ingredientModel = ModelIngredient::findOrNew($ingredient->getId()?->value);
+        $ingredientModel = ModelIngredient::with('ingredientParts', 'prices.priceCategory')->findOrNew($ingredient->getId()?->value);
         try {
             $ingredientModel->bar_id = $ingredient->getBarId()->value;
             $ingredientModel->name = $ingredient->getName();
@@ -143,7 +143,7 @@ final class EloquentIngredientRepository implements IngredientRepository
             return [];
         }
 
-        $models = ModelIngredient::where('materialized_path', 'like', $ingredient->getMaterializedPath()->append($ingredient->getId())->toString() . '%')->get();
+        $models = ModelIngredient::with('ingredientParts', 'prices.priceCategory')->where('materialized_path', 'like', $ingredient->getMaterializedPath()->append($ingredient->getId())->toString() . '%')->get();
 
         $ingredients = [];
         /** @var ModelIngredient $model */
@@ -161,7 +161,7 @@ final class EloquentIngredientRepository implements IngredientRepository
 
     public function findChildren(IngredientId $parentId): array
     {
-        $models = ModelIngredient::where('parent_ingredient_id', $parentId->value)->get();
+        $models = ModelIngredient::with('ingredientParts', 'prices.priceCategory')->where('parent_ingredient_id', $parentId->value)->get();
 
         $ingredients = [];
         /** @var ModelIngredient $model */
@@ -174,7 +174,7 @@ final class EloquentIngredientRepository implements IngredientRepository
 
     public function findAncestors(IngredientId $descendantId): array
     {
-        $model = ModelIngredient::find($descendantId->value);
+        $model = ModelIngredient::with('ingredientParts', 'prices.priceCategory')->find($descendantId->value);
 
         if ($model === null) {
             return [];
@@ -187,7 +187,7 @@ final class EloquentIngredientRepository implements IngredientRepository
             return [];
         }
 
-        $models = ModelIngredient::whereIn('id', array_map(fn (IngredientId $id): int => $id->value, $ancestorIds))->get();
+        $models = ModelIngredient::with('ingredientParts', 'prices.priceCategory')->whereIn('id', array_map(fn (IngredientId $id): int => $id->value, $ancestorIds))->get();
 
         $ingredients = [];
         /** @var ModelIngredient $model */

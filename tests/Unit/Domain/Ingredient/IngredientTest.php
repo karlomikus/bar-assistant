@@ -187,7 +187,7 @@ final class IngredientTest extends TestCase
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Parent ingredient must belong to the same bar');
 
-        $child->setAsVariantOf($parent);
+        $child->withParent($parent);
     }
 
     public function test_can_set_parent_from_same_bar(): void
@@ -207,7 +207,7 @@ final class IngredientTest extends TestCase
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
-        $child->setAsVariantOf($parent);
+        $child = $child->withParent($parent);
 
         $this->assertEquals(5, $child->getParentIngredientId()->value);
         $this->assertEquals('5/', $child->getMaterializedPath()->toString());
@@ -230,10 +230,10 @@ final class IngredientTest extends TestCase
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
-        $child->setAsVariantOf($parent);
+        $child = $child->withParent($parent);
         $this->assertNotNull($child->getParentIngredientId());
 
-        $child->setAsVariantOf(null);
+        $child = $child->withParent(null);
         $this->assertNull($child->getParentIngredientId());
         $this->assertTrue($child->getMaterializedPath()->isRoot());
     }

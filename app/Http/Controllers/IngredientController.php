@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
@@ -26,7 +25,6 @@ use Kami\Cocktail\Http\Resources\CocktailBasicResource;
 use Kami\Cocktail\Http\Resources\IngredientTreeResource;
 use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest as IngredientDTO;
-use BarAssistant\Application\Ingredient\IngredientService as BAIngredientService;
 
 class IngredientController extends Controller
 {
@@ -78,42 +76,6 @@ class IngredientController extends Controller
     #[BAO\NotFoundResponse]
     public function show(Request $request, string $idOrSlug): JsonResource
     {
-        $service = app(\BarAssistant\Application\Ingredient\IngredientService::class);
-        $barrepo = app(\BarAssistant\Domain\Bar\BarRepository::class);
-
-        $bar = $barrepo->findById(new \BarAssistant\Domain\Bar\BarId(582));
-        dump($bar);
-        $ingredient = $service->getIngredient(115796);
-        // $in2 = $service->getPathToIngredient(115796);
-        // dump($in2);
-        dd([
-            'id' => $ingredient->id,
-            'slug' => 'TODO',
-            'name' => $ingredient->name,
-            'strength' => $ingredient->strength,
-            'description' => $ingredient->description,
-            'origin' => $ingredient->origin,
-            'created_at' => $ingredient->createdAt->format(\DateTime::ATOM),
-            'updated_at' => $ingredient->updatedAt?->format(\DateTime::ATOM),
-            'hierarchy' => [
-                'path_to_self' => $ingredient->hierarchy->pathToSelf,
-                'parent_ingredient' => $ingredient->parentIngredientId,
-                'ancestors' => $ingredient->hierarchy->ancestors,
-            ],
-            'images' => $ingredient->images,
-            'color' => $ingredient->color,
-            'in_shelf' => 'TODO',
-            'in_shelf_as_variant' => 'TODO',
-            'in_shopping_list' => 'TODO',
-            'ingredient_parts' => $ingredient->complexIngredientParts,
-            'prices' => $ingredient->prices,
-            'calculator_id' => $ingredient->calculatorId,
-            'sugar_g_per_ml' => $ingredient->sugarContent,
-            'acidity' => $ingredient->acidity,
-            'distillery' => $ingredient->distillery,
-            'units' => $ingredient->units,
-        ]);
-
         $ingredient = Ingredient::with(
             'cocktails',
             'images',
@@ -152,7 +114,7 @@ class IngredientController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(BAIngredientService $ingredientService, IngredientRequest $request): Response
+    public function store(IngredientService $ingredientService, IngredientRequest $request): JsonResponse
     {
         Validator::make($request->all(), [
             'complex_ingredient_part_ids' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
@@ -163,28 +125,14 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $ingredientResult = $ingredientService->createIngredient(new CreateIngredient(
-            barId: bar()->id,
-            name: $request->input('name'),
-            userId: $request->user()->id,
-            description: $request->input('description'),
-            strength: $request->input('strength'),
-            origin: $request->input('origin'),
-            color: $request->input('color'),
-            calculatorId: $request->input('calculator_id'),
-            sugarContent: $request->input('sugar_g_per_ml'),
-            acidity: $request->input('acidity'),
-            distillery: $request->input('distillery'),
-            units: $request->input('units'),
-            parentIngredientId: $request->input('parent_ingredient_id'),
-            complexIngredientParts: $request->input('complex_ingredient_part_ids', []),
-            prices: $request->input('prices', []),
-        ));
-
-        return new Response(
-            status: 201,
-            headers: ['Location', route('ingredients.show', $ingredientResult->id)],
+        $ingredient = $ingredientService->createIngredient(
+            IngredientDTO::fromIlluminateRequest($request, bar()->id)
         );
+
+        return (new IngredientResource($ingredient))
+            ->response()
+            ->setStatusCode(201)
+            ->header('Location', route('ingredients.show', $ingredient->id));
     }
 
     #[OAT\Put(path: '/ingredients/{id}', tags: ['Ingredients'], operationId: 'updateIngredient', description: 'Update a specific ingredient', summary: 'Update ingredient', parameters: [

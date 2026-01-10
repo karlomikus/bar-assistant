@@ -96,14 +96,12 @@ final class Ingredient implements Identity
     }
 
     /**
-     * Set this ingredient as a variant of another ingredient
-     *
      * Updates materialized path and parent ingredient reference
      *
      * @param null|Ingredient $parentIngredient If null will set as a root ingredient
      * @throws DomainException
      */
-    public function setAsVariantOf(?self $parentIngredient): Ingredient
+    public function setParentIngredientId(?self $parentIngredient): self
     {
         if ($parentIngredient !== null && !$parentIngredient->getBarId()->equals($this->getBarId())) {
             throw new DomainException('Parent ingredient must belong to the same bar');
@@ -118,10 +116,9 @@ final class Ingredient implements Identity
     }
 
     /**
-     * Used by IngredientHierarchyManager for bulk path updates.
      * @internal
      */
-    public function setMaterializedPath(MaterializedPath $path): Ingredient
+    public function setMaterializedPath(MaterializedPath $path): self
     {
         $this->materializedPath = $path;
 

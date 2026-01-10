@@ -59,7 +59,7 @@ final readonly class IngredientHierarchyManager
         $oldPath = $ingredient->getMaterializedPath();
 
         // Update path
-        $ingredient->setAsVariantOf($newParent);
+        $ingredient->setParentIngredientId($newParent);
 
         // Calculate path difference for updating descendants
         $newPath = $ingredient->getMaterializedPath();
@@ -114,7 +114,7 @@ final readonly class IngredientHierarchyManager
         $oldPath = $ingredient->getMaterializedPath();
 
         // Make the ingredient a root
-        $ingredient->setAsVariantOf(null);
+        $ingredient->setParentIngredientId(null);
 
         // New path is root (empty)
         $newPath = $ingredient->getMaterializedPath();

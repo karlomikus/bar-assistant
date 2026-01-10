@@ -77,7 +77,7 @@ final readonly class IngredientService
                 throw new EntityNotFoundException('Parent ingredient not found');
             }
 
-            $ingredient->setAsVariantOf($parentIngredient);
+            $ingredient->setParentIngredientId($parentIngredient);
         }
 
         $ingredient = $this->ingredientRepository->save($ingredient);
