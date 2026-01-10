@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BarAssistant\Domain\Support;
 
 use BarAssistant\Domain\Exception\DomainException;
+use JsonSerializable;
 use Stringable;
 
 /**
@@ -12,7 +13,7 @@ use Stringable;
  *
  * Represents a validated, non-empty name string.
  */
-final readonly class Name implements Stringable
+final readonly class Name implements Stringable, JsonSerializable
 {
     private string $value;
 
@@ -38,6 +39,11 @@ final readonly class Name implements Stringable
     public function __toString(): string
     {
         return $this->toString();
+    }
+
+    public function jsonSerialize(): string
+    {
+        return $this->value;
     }
 
     public function equals(self $other): bool
