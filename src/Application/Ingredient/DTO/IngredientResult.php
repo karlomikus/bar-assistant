@@ -67,7 +67,7 @@ final readonly class IngredientResult
             createdAt: $ingredient->getRecordTimestamps()->getCreatedAt(),
             hierarchy: IngredientHierarchyResult::fromAncestors($ancestors),
             description: $ingredient->getDescription(),
-            strength: $ingredient->getStrength() ?? 0.0,
+            strength: $ingredient->getStrength()->toFloat(),
             origin: $ingredient->getOrigin(),
             color: $ingredient->getColor()?->toHexString(),
             parentIngredientId: $ingredient->getParentIngredientId()?->value,

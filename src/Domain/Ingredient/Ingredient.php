@@ -11,6 +11,7 @@ use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Ingredient\Event\IngredientStrengthChanged;
+use BarAssistant\Domain\Support\ABV;
 use BarAssistant\Domain\Support\AmountWithUnits;
 use BarAssistant\Domain\Support\Authors;
 use BarAssistant\Domain\Support\Color;
@@ -42,7 +43,7 @@ final class Ingredient implements Identity
         private Authors $authors,
         private RecordTimestamps $recordTimestamps,
         private ?string $description = null,
-        private ?float $strength = null,
+        private ABV $strength = new ABV(0.0),
         private ?string $origin = null,
         private ?Color $color = null,
         private ?CalculatorId $calculatorId = null,
@@ -57,20 +58,6 @@ final class Ingredient implements Identity
             throw new DomainException('Ingredient name cannot be empty');
         }
 
-        if ($strength !== null && ($strength < 0.0 || $strength > 100.0)) {
-            throw new DomainException('Ingredient strength must be between 0.0 and 100.0');
-        }
-
-        $this->name = $name;
-        $this->description = $description;
-        $this->strength = $strength;
-        $this->origin = $origin;
-        $this->color = $color;
-        $this->calculatorId = $calculatorId;
-        $this->sugarContent = $sugarContent;
-        $this->acidity = $acidity;
-        $this->distillery = $distillery;
-        $this->units = $units;
         $this->materializedPath = $materializedPath ?? MaterializedPath::root();
     }
 
@@ -168,7 +155,7 @@ final class Ingredient implements Identity
     /**
      * In alcohol percentage (0.0 - 100.0)
      */
-    public function getStrength(): ?float
+    public function getStrength(): ABV
     {
         return $this->strength;
     }
@@ -344,7 +331,7 @@ final class Ingredient implements Identity
         string $name,
         UserId $updatedBy,
         ?string $description = null,
-        ?float $strength = null,
+        ABV $strength = new ABV(0.0),
         ?string $origin = null,
         ?Color $color = null,
         ?CalculatorId $calculatorId = null,
@@ -361,16 +348,12 @@ final class Ingredient implements Identity
             throw new DomainException('Ingredient name cannot be empty');
         }
 
-        if ($strength !== null && ($strength < 0.0 || $strength > 100.0)) {
-            throw new DomainException('Ingredient strength must be between 0.0 and 100.0');
-        }
-
         if ($this->strength !== $strength) {
             DomainEventDispatcher::instance()->publish(new IngredientStrengthChanged(
                 barId: $this->getBarId(),
                 ingredientId: $this->getId(),
-                oldStrength: $this->strength,
-                newStrength: $strength,
+                oldStrength: $this->strength->toFloat(),
+                newStrength: $strength->toFloat(),
             ));
         }
 

@@ -13,6 +13,11 @@ use Brick\Money\Currency;
 
 final class EloquentPriceCategoryRepository implements PriceCategoryRepository
 {
+    public function save(PriceCategory $priceCategory): PriceCategory
+    {
+        throw new \Exception('Not implemented');
+    }
+
     public function findMany(BarId $barId, array $ids): array
     {
         $models = Model::whereIn('id', array_map(fn(PriceCategoryId $id) => $id->value, $ids))->where('bar_id', $barId->value)->get();

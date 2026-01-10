@@ -20,6 +20,7 @@ use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\MaterializedPath;
 use Kami\Cocktail\Models\Ingredient as ModelIngredient;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
+use BarAssistant\Domain\Support\ABV;
 use BarAssistant\Domain\Support\Authors;
 use BarAssistant\Domain\Support\RecordTimestamps;
 use Kami\Cocktail\Models\IngredientPrice as ModelIngredientPrice;
@@ -71,7 +72,7 @@ final class EloquentIngredientRepository implements IngredientRepository
         try {
             $ingredientModel->bar_id = $ingredient->getBarId()->value;
             $ingredientModel->name = $ingredient->getName();
-            $ingredientModel->strength = $ingredient->getStrength();
+            $ingredientModel->strength = $ingredient->getStrength()->toFloat();
             $ingredientModel->description = $ingredient->getDescription();
             $ingredientModel->origin = $ingredient->getOrigin();
             $ingredientModel->color = $ingredient->getColor()?->toHexString();
@@ -206,7 +207,7 @@ final class EloquentIngredientRepository implements IngredientRepository
             authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
             recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
             description: $model->description,
-            strength: $model->strength,
+            strength: ABV::from($model->strength ?? 0.0),
             origin: $model->origin,
             color: $model->color ? Color::fromHexString($model->color) : null,
             calculatorId: $model->calculator_id ? new CalculatorId($model->calculator_id) : null,

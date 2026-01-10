@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
@@ -114,7 +115,7 @@ class IngredientController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(IngredientService $ingredientService, IngredientRequest $request): JsonResponse
+    public function store(\BarAssistant\Application\Ingredient\IngredientService $ingredientService, IngredientRequest $request): JsonResponse
     {
         Validator::make($request->all(), [
             'complex_ingredient_part_ids' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
@@ -125,9 +126,28 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $ingredient = $ingredientService->createIngredient(
-            IngredientDTO::fromIlluminateRequest($request, bar()->id)
+        $ingredientResult = $ingredientService->createIngredient(
+            new CreateIngredient(
+                bar()->id,
+                $request->input('name'),
+                $request->user()->id,
+                $request->float('strength'),
+                $request->input('description'),
+                $request->input('origin'),
+                $request->input('color'),
+                $request->filled('parent_ingredient_id') ? $request->integer('parent_ingredient_id') : null,
+                $request->input('images', []),
+                $request->input('complex_ingredient_part_ids', []),
+                [],
+                $request->filled('calculator_id') ? $request->integer('calculator_id') : null,
+                $request->filled('sugar_g_per_ml') ? $request->float('sugar_g_per_ml') : null,
+                $request->filled('acidity') ? $request->float('acidity') : null,
+                $request->input('distillery'),
+                $request->input('units'),
+            )
         );
+
+        $ingredient = Ingredient::find($ingredientResult->id);
 
         return (new IngredientResource($ingredient))
             ->response()

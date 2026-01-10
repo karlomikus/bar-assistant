@@ -21,6 +21,7 @@ use BarAssistant\Domain\Ingredient\IngredientRepository;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
+use BarAssistant\Domain\Support\ABV;
 use BarAssistant\Domain\Support\Authors;
 use BarAssistant\Domain\Support\RecordTimestamps;
 use BarAssistant\Domain\Support\Unit;
@@ -49,7 +50,7 @@ final readonly class IngredientService
             authors: Authors::createdBy(new UserId($ingredientRequest->userId)),
             recordTimestamps: RecordTimestamps::createdNow(),
             description: $ingredientRequest->description,
-            strength: $ingredientRequest->strength,
+            strength: ABV::from($ingredientRequest->strength ?? 0.0),
             origin: $ingredientRequest->origin,
             color: $ingredientRequest->color ? Color::fromHexString($ingredientRequest->color) : null,
             calculatorId: $ingredientRequest->calculatorId ? new CalculatorId($ingredientRequest->calculatorId) : null,
@@ -102,7 +103,7 @@ final readonly class IngredientService
             name: $ingredientRequest->name,
             updatedBy: new UserId($ingredientRequest->userId),
             description: $ingredientRequest->description,
-            strength: $ingredientRequest->strength,
+            strength: ABV::from($ingredientRequest->strength ?? 0.0),
             origin: $ingredientRequest->origin,
             color: $ingredientRequest->color ? Color::fromHexString($ingredientRequest->color) : null,
             calculatorId: $ingredientRequest->calculatorId ? new CalculatorId($ingredientRequest->calculatorId) : null,
