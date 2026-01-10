@@ -5,11 +5,16 @@ Bar Assistant is all-in-one solution for managing your home bar. Compared to oth
 
 ## Quick Facts
 - Stack: PHP 8.4, SQLite, Redis (cache)
+- Development environment is run via docker compose stack
+    - Service `app` runs the API
+    - This means you need to prefix php commands with `docker compose exec app`
 
 ## Folder structure
 - Folder `app` contains the complete Laravel application
 - Folder `src` is a new code that will follow Domain Driven Design principles
 - Folder `tests` contains tests
+    - Unit tests are located in `tests/Unit`
+    - Feature tests (laravel HTTP testing) are located in `tests/Feature`
 
 ## Architecture Guidelines
 - New code should follow DDD and Hexagonal Architecture principles
