@@ -11,8 +11,9 @@ class PaginateData extends OAT\JsonContent
 {
     /**
      * @param class-string $className
+     * @param array<\OpenApi\Attributes\Property> $meta
      */
-    public function __construct(string $className)
+    public function __construct(string $className, array $meta = [])
     {
         parent::__construct(properties: [
             new OAT\Property(property: 'data', type: 'array', items: new OAT\Items(ref: $className), description: 'The data for the current page'),
@@ -35,6 +36,7 @@ class PaginateData extends OAT\JsonContent
                 new OAT\Property(property: 'per_page', type: 'integer', description: 'The number of items per page'),
                 new OAT\Property(property: 'to', type: 'integer', description: 'The ending index of the current page'),
                 new OAT\Property(property: 'total', type: 'integer', description: 'The total number of items'),
+                ...$meta,
             ]),
         ]);
     }

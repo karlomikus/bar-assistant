@@ -17,7 +17,7 @@ class ValidCurrencyTest extends TestCase
         $failed = function () use (&$hasFailed): PotentiallyTranslatedString {
             $hasFailed = true;
 
-            $translator = $this->getMockBuilder(Translator::class)->getMock();
+            $translator = $this->createStub(Translator::class);
 
             return new PotentiallyTranslatedString('', $translator);
         };
@@ -34,7 +34,7 @@ class ValidCurrencyTest extends TestCase
         $failed = function () use (&$hasFailed): PotentiallyTranslatedString {
             $hasFailed = true;
 
-            $translator = $this->getMockBuilder(Translator::class)->getMock();
+            $translator = $this->createStub(Translator::class);
 
             return new PotentiallyTranslatedString('', $translator);
         };

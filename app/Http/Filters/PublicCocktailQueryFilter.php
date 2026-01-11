@@ -28,6 +28,18 @@ final class PublicCocktailQueryFilter extends QueryBuilder
                 AllowedFilter::partial('tag', 'tags.name'),
                 AllowedFilter::partial('glass', 'glass.name'),
                 AllowedFilter::partial('method', 'method.name'),
+                AllowedFilter::callback('collection_id', function ($query, $value) use ($bar) {
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
+
+                    $query->whereHas('collections', function ($query) use ($value, $bar) {
+                        $query->whereIn('collections.id', $value)
+                            ->join('bar_memberships', 'bar_memberships.id', '=', 'collections.bar_membership_id')
+                            ->where('bar_memberships.bar_id', $bar->id)
+                            ->where('collections.is_bar_shared', true);
+                    });
+                }),
                 AllowedFilter::callback('bar_shelf', function ($query, $value) use ($bar) {
                     if ($value === true) {
                         $query->whereIn('cocktails.id', $bar->getShelfCocktailsOnce());

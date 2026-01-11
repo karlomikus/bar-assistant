@@ -1,3 +1,10 @@
+# v5.12.0
+## New
+- Added `filters` property to `meta` property in public cocktails index
+    - Added `collections` list
+        - This will show all collections that are shared with the bar
+- Added `collection_id` filter to public cocktails index
+
 # v5.11.2
 ## Fixes
 - Fixed crash when metrics are enabled
