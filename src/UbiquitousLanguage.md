@@ -16,3 +16,11 @@
 | Ingredient Price | A monetary value associated with an ingredient amount and units within a specific price category. For example, "10 EUR per 750ml in Amazon DE". |
 | Authors | Users that have created or modified a resource. |
 | Record Timestamps | Timestamps that indicate when a resource was created and last modified. |
+| Cocktail Ingredient | Ingredient that is a part of a cocktail recipe, along with the amount and units required. Can also contain substitutes. |
+| Cocktail Ingredient Substitute | An alternative ingredient that can be used in place of a cocktail ingredient, along with the amount and units required. |
+| Specific Cocktail Ingredient | An ingredient that must be used in a cocktail recipe, without automatic substitute suggestions. |
+| Optional Cocktail Ingredient | An ingredient that may be used in a cocktail recipe, but is completely optional. |
+| Cocktail | A recipe that will make a drink that typically contains a mixture of various ingredients. |
+| ABV | Alcohol By Volume - a standard measure used worldwide to quantify the amount of alcohol (ethanol) contained in an alcoholic beverage. |
+| Cocktail Garnish | An ingredient used to decorate or enhance the presentation of a cocktail, often added on top or to the side of the drink. |
+| Cocktail Variant | A variation (also called a riff) of a cocktail recipe that includes modifications such as different ingredients, amounts, or preparation methods. |
