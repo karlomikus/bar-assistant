@@ -89,7 +89,6 @@ final class EloquentIngredientRepository implements IngredientRepository
             if ($ingredient->getAuthors()->isUpdated()) {
                 $ingredientModel->updated_user_id = $ingredient->getAuthors()->getUpdatedBy()?->value;
                 $ingredientModel->updated_at = $ingredient->getRecordTimestamps()->getUpdatedAt()?->format('Y-m-d H:i:s');
-                $ingredientModel->save();
             }
             $ingredientModel->save();
 

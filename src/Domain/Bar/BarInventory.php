@@ -18,7 +18,7 @@ final readonly class BarInventory
 
     public function hasIngredientInStock(IngredientId $ingredientId): bool
     {
-        return array_any($this->ingredients, fn($existingInventoryItem) => $existingInventoryItem->ingredientId->equals($ingredientId) && $existingInventoryItem->isInStock());
+        return array_any($this->ingredients, static fn($existingInventoryItem) => $existingInventoryItem->ingredientId->equals($ingredientId) && $existingInventoryItem->isInStock());
     }
 
     public function changeIngredientStock(IngredientId $ingredientId): self
@@ -26,7 +26,7 @@ final readonly class BarInventory
         if ($this->hasIngredientInStock($ingredientId)) {
             $newIngredients = array_filter(
                 $this->ingredients,
-                fn (IngredientInventoryItem $existingInventoryItem) => !$existingInventoryItem->ingredientId->equals($ingredientId)
+                static fn (IngredientInventoryItem $existingInventoryItem) => !$existingInventoryItem->ingredientId->equals($ingredientId)
             );
 
             return new self(array_values($newIngredients));
@@ -42,7 +42,7 @@ final readonly class BarInventory
     {
         return array_filter(
             $this->ingredients,
-            fn (IngredientInventoryItem $item) => $item->isInStockAsVariant()
+            static fn (IngredientInventoryItem $item) => $item->isInStockAsVariant()
         );
     }
 }

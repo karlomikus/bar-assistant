@@ -36,7 +36,7 @@ final readonly class MaterializedPath
         }
 
         $basePath = array_map(
-            fn(int $id) => new IngredientId($id),
+            static fn(int $id) => new IngredientId($id),
             array_map(intval(...), array_filter(explode(self::SEPARATOR, $materializedPath)))
         );
 
@@ -90,7 +90,8 @@ final readonly class MaterializedPath
         }
 
         $parentId = $this->getParentId();
-        return array_any($other->getAncestorIds(), fn($ancestorId) => $parentId->equals($ancestorId));
+
+        return array_any($other->getAncestorIds(), $parentId->equals(...));
     }
 
     public function isDescendantOf(self $other): bool

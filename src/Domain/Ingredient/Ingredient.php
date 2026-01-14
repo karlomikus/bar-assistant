@@ -222,7 +222,7 @@ final class Ingredient implements Identity
     {
         $this->ingredientParts = array_values(array_filter(
             $this->ingredientParts,
-            fn(IngredientId $part) => !$part->equals($ingredientId)
+            static fn(IngredientId $part) => !$part->equals($ingredientId)
         ));
 
         return $this;
@@ -265,7 +265,7 @@ final class Ingredient implements Identity
     {
         $this->images = array_values(array_filter(
             $this->images,
-            fn(ImageId $existingImageId) => !$existingImageId->equals($imageId)
+            static fn(ImageId $existingImageId) => !$existingImageId->equals($imageId)
         ));
 
         return $this;

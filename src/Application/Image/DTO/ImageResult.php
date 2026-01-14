@@ -9,18 +9,16 @@ use BarAssistant\Domain\Image\Image;
 readonly class ImageResult
 {
     public function __construct(
+        public int $id,
         public string $path,
-        public int $sort,
-        public ?string $copyright = null,
     ) {
     }
 
     public static function fromImage(Image $image): self
     {
         return new self(
+            id: $image->getId()->value,
             path: $image->getPath(),
-            sort: $image->getSort(),
-            copyright: $image->getCopyright(),
         );
     }
 }

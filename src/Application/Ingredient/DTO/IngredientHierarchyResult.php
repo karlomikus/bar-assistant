@@ -48,7 +48,7 @@ final readonly class IngredientHierarchyResult
 
         return new self(
             ancestors: $pathItems,
-            pathToSelf: implode(' > ', array_map(fn($item) => $item->name, $pathItems)),
+            pathToSelf: implode(' > ', array_map(static fn($item) => $item->name, $pathItems)),
         );
     }
 }

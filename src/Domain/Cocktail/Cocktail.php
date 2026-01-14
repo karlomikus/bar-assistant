@@ -64,7 +64,7 @@ final class Cocktail implements Identity
 
         $alcoholVolume = floatval(array_reduce(
             $this->ingredients,
-            fn ($carry, $item) => (($item->amountWithUnits->amountMin * $item->abv) / 100) + $carry,
+            static fn ($carry, $item) => (($item->amountWithUnits->amountMin * $item->abv) / 100) + $carry,
         ));
 
         $afterDilution = ($amountUsed * $this->dilution->toDecimal()) + $amountUsed;

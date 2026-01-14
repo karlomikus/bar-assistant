@@ -6,7 +6,7 @@ use BarAssistant\Domain\Cocktail\Cocktail;
 use BarAssistant\Domain\Cocktail\CocktailIngredient;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Support\AmountWithUnits;
-use BarAssistant\Domain\Support\Dilution;
+
 use BarAssistant\Domain\Support\Name;
 use BarAssistant\Domain\Support\Unit;
 

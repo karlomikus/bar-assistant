@@ -30,7 +30,7 @@ use BarAssistant\Domain\User\UserId;
 
 final readonly class IngredientService
 {
-    private readonly IngredientHierarchyManager $ingredientHierarchy;
+    private  IngredientHierarchyManager $ingredientHierarchy;
 
     public function __construct(
         private IngredientRepository $ingredientRepository,
@@ -192,7 +192,7 @@ final readonly class IngredientService
     private function assignIngredientParts(Ingredient $ingredient, array $ingredientPartIds): Ingredient
     {
         $ingredientIdVOs = array_map(
-            fn (int $id) => new IngredientId($id),
+            static fn (int $id) => new IngredientId($id),
             $ingredientPartIds
         );
 
@@ -221,7 +221,7 @@ final readonly class IngredientService
     private function assignIngredientPrices(Ingredient $ingredient, array $prices): Ingredient
     {
         $priceCategories = $this->priceCategoryRepository->findMany($ingredient->getBarId(), array_map(
-            fn (object $priceData) => new PriceCategoryId($priceData->priceCategoryId),
+            static fn (object $priceData) => new PriceCategoryId($priceData->priceCategoryId),
             $prices
         ));
 
