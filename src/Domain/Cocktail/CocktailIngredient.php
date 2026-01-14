@@ -7,7 +7,7 @@ namespace BarAssistant\Domain\Cocktail;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Support\AmountWithUnits;
 
-final class CocktailIngredient extends Ingredient
+final readonly class CocktailIngredient
 {
     /**
      * @param CocktailIngredientSubstitute[] $substitutes 
@@ -22,10 +22,5 @@ final class CocktailIngredient extends Ingredient
         public array $substitutes = [],
     )
     {
-        parent::__construct(
-            ingredientId: $ingredientId,
-            amountWithUnits: $amountWithUnits,
-            abv: $abv,
-        );
     }
 }

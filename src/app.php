@@ -6,6 +6,8 @@ use BarAssistant\Domain\Cocktail\Cocktail;
 use BarAssistant\Domain\Cocktail\CocktailIngredient;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Support\AmountWithUnits;
+use BarAssistant\Domain\Support\Dilution;
+use BarAssistant\Domain\Support\Name;
 use BarAssistant\Domain\Support\Unit;
 
 require __DIR__.'/../vendor/autoload.php';
@@ -31,9 +33,10 @@ $cocktailIngredient1 = new CocktailIngredient(
     isSpecific: false,
 );
 $cocktail = new Cocktail(
+    name: Name::fromString('asfas'),
     ingredients: [$cocktailIngredient1]
 );
 
-dump($cocktail);
+dump($cocktail->getABV());
 
 dd('done');

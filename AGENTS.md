@@ -19,7 +19,8 @@ Bar Assistant is all-in-one solution for managing your home bar. Compared to oth
 ## Architecture Guidelines
 - New code should follow DDD and Hexagonal Architecture principles
 - Tests will use `Tests\Infrastructure\InMemory*` implementations instead of mocks/stubs where applicable
-- Changes in the `src` should only affect Unit tests
+- Changes in the `src` should only affect `Unit` testsuite
 
 ## Code style
 - Use PHP 8.4+ with strict types
+- Write code comments only to explain more complex business logic
