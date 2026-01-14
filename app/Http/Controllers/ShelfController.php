@@ -256,7 +256,7 @@ class ShelfController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchStoreBarIngredients(ShelfIngredientsRequest $request, int $id): Response
+    public function batchStoreBarIngredients(ShelfIngredientsRequest $request, \BarAssistant\Application\Bar\BarInventoryService $barInventoryService, int $id): Response
     {
         $bar = Bar::findOrFail($id);
         if ($request->user()->cannot('manageShelf', $bar)) {
@@ -271,18 +271,19 @@ class ShelfController extends Controller
             ->whereIn('id', $request->post('ingredients'))
             ->pluck('id');
 
-        $models = [];
-        foreach ($ingredients as $dbIngredientId) {
-            if ($existingBarShelfIngredients->contains($dbIngredientId)) {
-                continue;
-            }
+        $barInventoryService->toggleIngredientStock($bar->id, $ingredients->toArray());
+        // $models = [];
+        // foreach ($ingredients as $dbIngredientId) {
+        //     if ($existingBarShelfIngredients->contains($dbIngredientId)) {
+        //         continue;
+        //     }
 
-            $userIngredient = new BarIngredient();
-            $userIngredient->ingredient_id = $dbIngredientId;
-            $models[] = $userIngredient;
-        }
+        //     $userIngredient = new BarIngredient();
+        //     $userIngredient->ingredient_id = $dbIngredientId;
+        //     $models[] = $userIngredient;
+        // }
 
-        $bar->shelfIngredients()->saveMany($models);
+        // $bar->shelfIngredients()->saveMany($models);
 
         return new Response(null, 204);
     }

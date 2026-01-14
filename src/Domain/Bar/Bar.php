@@ -6,6 +6,7 @@ namespace BarAssistant\Domain\Bar;
 
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Identity;
+use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Support\Name;
 
 final class Bar implements Identity
@@ -14,8 +15,13 @@ final class Bar implements Identity
 
     public function __construct(
         private readonly Name $name,
-        private readonly BarInventory $inventory,
+        private BarInventory $inventory,
     ) {
+    }
+
+    public function toggleIngredientStock(IngredientId $ingredientId): void
+    {
+        $this->inventory = $this->inventory->changeIngredientStock($ingredientId);
     }
 
     public function isTransient(): bool
