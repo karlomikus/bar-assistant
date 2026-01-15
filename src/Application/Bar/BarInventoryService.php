@@ -28,10 +28,13 @@ final readonly class BarInventoryService
 
         $ingredientIds = array_map(fn (int $id) => new IngredientId($id), $toggleRequest->ingredientIds);
 
-        // Only fetch ingredients that are part of a bar
-        $ingredients = $this->ingredientRepository->findMany($bar->getId(), $ingredientIds);
-        foreach ($ingredients as $ingredient) {
-            $bar->toggleIngredientStock($ingredient->getId());
+        $validIngredients = $this->ingredientRepository->checkBarOwnership($bar->getId(), $ingredientIds);
+        if ($validIngredients === false) {
+            throw new EntityNotFoundException('One or more ingredients were not found in the specified bar');
+        }
+
+        foreach ($ingredientIds as $ingredientId) {
+            $bar->changeIngredientStock($ingredientId);
         }
 
         $this->barRepository->save($bar);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use BarAssistant\Application\Bar\DTO\ToggleBarInventoryStatusRequest;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -262,16 +263,16 @@ class ShelfController extends Controller
         if ($request->user()->cannot('manageShelf', $bar)) {
             abort(403);
         }
-        $bar->load('shelfIngredients');
+        // $bar->load('shelfIngredients');
 
-        $existingBarShelfIngredients = $bar->shelfIngredients->pluck('ingredient_id');
-        $ingredients = DB::table('ingredients')
-            ->select('id')
-            ->where('bar_id', $bar->id)
-            ->whereIn('id', $request->post('ingredients'))
-            ->pluck('id');
+        // $existingBarShelfIngredients = $bar->shelfIngredients->pluck('ingredient_id');
+        // $ingredients = DB::table('ingredients')
+        //     ->select('id')
+        //     ->where('bar_id', $bar->id)
+        //     ->whereIn('id', $request->post('ingredients'))
+        //     ->pluck('id');
 
-        $barInventoryService->toggleIngredientStock($bar->id, $ingredients->toArray());
+        $barInventoryService->toggleIngredientStock(new ToggleBarInventoryStatusRequest($bar->id, $request->post('ingredients', [])));
         // $models = [];
         // foreach ($ingredients as $dbIngredientId) {
         //     if ($existingBarShelfIngredients->contains($dbIngredientId)) {

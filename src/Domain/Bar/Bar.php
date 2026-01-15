@@ -13,15 +13,13 @@ final class Bar implements Identity
 {
     private ?BarId $id = null;
 
+    /**
+     * @param IngredientInventoryItem[] $ingredientInventory
+     */
     public function __construct(
-        private readonly Name $name,
-        private BarInventory $inventory,
+        private Name $name,
+        private array $ingredientInventory = [],
     ) {
-    }
-
-    public function toggleIngredientStock(IngredientId $ingredientId): void
-    {
-        $this->inventory = $this->inventory->changeIngredientStock($ingredientId);
     }
 
     public function isTransient(): bool
@@ -45,13 +43,73 @@ final class Bar implements Identity
         return $this;
     }
 
+    /**
+     * Returns the ingredient name
+     *
+     * @return Name
+     */
     public function getName(): Name
     {
         return $this->name;
     }
 
-    public function getInventory(): BarInventory
+    /**
+     * Returns a list of all ingredients that bar has in inventory
+     *
+     * @return IngredientInventoryItem[]
+     */
+    public function getIngredientInventory(): array
     {
-        return $this->inventory;
+        return $this->ingredientInventory;
+    }
+
+    /**
+     * Checks if the ingredient is actually in stock, meaning it
+     * will not match variants and complex ingredients.
+     */
+    public function hasIngredientInStock(IngredientId $ingredientId): bool
+    {
+        return array_any(
+            $this->ingredientInventory,
+            static fn($existingInventoryItem) => $existingInventoryItem->ingredientId->equals($ingredientId) && $existingInventoryItem->isInStock()
+        );
+    }
+
+    public function changeIngredientStock(IngredientId $ingredientId): self
+    {
+        if ($this->hasIngredientInStock($ingredientId)) {
+            $this->ingredientInventory = array_filter(
+                $this->ingredientInventory,
+                static fn (IngredientInventoryItem $existingInventoryItem) => !$existingInventoryItem->ingredientId->equals($ingredientId)
+            );
+
+            return $this;
+        }
+
+        $this->ingredientInventory[] = new IngredientInventoryItem($ingredientId, IngredientInventoryStatus::InStock);
+
+        return $this;
+    }
+
+    /**
+     * @return IngredientInventoryItem[]
+     */
+    public function getVariantIngredients(): array
+    {
+        return array_filter(
+            $this->ingredientInventory,
+            static fn (IngredientInventoryItem $item) => $item->isInStockAsVariant()
+        );
+    }
+
+    /**
+     * @return IngredientInventoryItem[]
+     */
+    public function getInStockIngredients(): array
+    {
+        return array_filter(
+            $this->ingredientInventory,
+            static fn (IngredientInventoryItem $item) => $item->isInStock()
+        );
     }
 }

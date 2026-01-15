@@ -16,6 +16,19 @@ use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 
 final class EloquentBarRepository implements BarRepository
 {
+    public function save(Bar $bar): Bar
+    {
+        $model = ModelBar::findOrNew($bar->getId()?->value);
+
+        $model->name = $bar->getName();
+
+        foreach ($bar->getInStockIngredients() as $inStockIngredient) {
+            
+        }
+
+        return self::map($model);
+    }
+
     public function findById(BarId $id): ?Bar
     {
         $model = ModelBar::find($id->value);

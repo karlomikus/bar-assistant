@@ -246,4 +246,12 @@ final class EloquentIngredientRepository implements IngredientRepository
 
         return $ingredient;
     }
+
+    public function checkBarOwnership(BarId $barId, array $ingredientIds): bool
+    {
+        return DB::table('ingredients')
+            ->where('bar_id', $barId->value)
+            ->whereIn('id', array_map(static fn (IngredientId $id) => $id->value, $ingredientIds))
+            ->count() > 0;
+    }
 }
