@@ -17,7 +17,7 @@ readonly class ImageResult
     public static function fromImage(Image $image): self
     {
         return new self(
-            id: $image->getId()->value,
+            id: $image->getId()?->value ?? 0,
             path: $image->getPath(),
         );
     }

@@ -22,7 +22,7 @@ final readonly class BarInventoryService
     public function putMultipleIngredientsInStock(BarInventoryStockChangeRequest $request): void
     {
         $bar = $this->barRepository->findById(new BarId($request->barId));
-        if ($bar === null) {
+        if ($bar === null || $bar->isTransient()) {
             throw new EntityNotFoundException('The bar was not found');
         }
 
@@ -35,6 +35,27 @@ final readonly class BarInventoryService
 
         foreach ($ingredientIds as $ingredientId) {
             $bar->putIngredientInStock($ingredientId);
+        }
+
+        $this->barRepository->save($bar);
+    }
+
+    public function removeMultipleIngredientsFromStock(BarInventoryStockChangeRequest $request): void
+    {
+        $bar = $this->barRepository->findById(new BarId($request->barId));
+        if ($bar === null || $bar->isTransient()) {
+            throw new EntityNotFoundException('The bar was not found');
+        }
+
+        $ingredientIds = array_map(fn (int $id) => new IngredientId($id), $request->ingredientIds);
+
+        $validIngredients = $this->ingredientRepository->checkBarOwnership($bar->getId(), $ingredientIds);
+        if ($validIngredients === false) {
+            throw new EntityNotFoundException('One or more ingredients were not found in the specified bar');
+        }
+
+        foreach ($ingredientIds as $ingredientId) {
+            $bar->removeIngredientFromStock($ingredientId);
         }
 
         $this->barRepository->save($bar);

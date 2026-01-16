@@ -23,15 +23,37 @@ final class EloquentBarRepository implements BarRepository
         $model = ModelBar::findOrNew($bar->getId()?->value);
 
         $model->name = (string) $bar->getName();
+        $model->save();
 
-        $barIngredientModels = [];
+        // Get current ingredient IDs from the domain model
+        $inStockIngredientIds = array_map(
+            fn (IngredientInventoryItem $item) => $item->ingredientId->value,
+            $bar->getInStockIngredients()
+        );
+
+        // Remove ingredients that are no longer in stock
+        $model->shelfIngredients()
+            ->whereNotIn('ingredient_id', $inStockIngredientIds)
+            ->delete();
+
+        // Get existing ingredient IDs to avoid duplicates
+        $existingIngredientIds = $model->shelfIngredients()
+            ->pluck('ingredient_id')
+            ->toArray();
+
+        // Add new ingredients
+        $newBarIngredients = [];
         foreach ($bar->getInStockIngredients() as $inStockIngredient) {
-            $barIngredientModel = new BarIngredient();
-            $barIngredientModel->ingredient_id = $inStockIngredient->ingredientId->value;
-            $barIngredientModels[] = $barIngredientModel;
+            if (!in_array($inStockIngredient->ingredientId->value, $existingIngredientIds, true)) {
+                $barIngredientModel = new BarIngredient();
+                $barIngredientModel->ingredient_id = $inStockIngredient->ingredientId->value;
+                $newBarIngredients[] = $barIngredientModel;
+            }
         }
 
-        $model->shelfIngredients()->saveMany($barIngredientModels);
+        if (count($newBarIngredients) > 0) {
+            $model->shelfIngredients()->saveMany($newBarIngredients);
+        }
 
         return self::map($model);
     }

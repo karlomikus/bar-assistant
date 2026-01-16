@@ -263,28 +263,8 @@ class ShelfController extends Controller
         if ($request->user()->cannot('manageShelf', $bar)) {
             abort(403);
         }
-        // $bar->load('shelfIngredients');
-
-        // $existingBarShelfIngredients = $bar->shelfIngredients->pluck('ingredient_id');
-        // $ingredients = DB::table('ingredients')
-        //     ->select('id')
-        //     ->where('bar_id', $bar->id)
-        //     ->whereIn('id', $request->post('ingredients'))
-        //     ->pluck('id');
 
         $barInventoryService->putMultipleIngredientsInStock(new BarInventoryStockChangeRequest($bar->id, $request->post('ingredients', [])));
-        // $models = [];
-        // foreach ($ingredients as $dbIngredientId) {
-        //     if ($existingBarShelfIngredients->contains($dbIngredientId)) {
-        //         continue;
-        //     }
-
-        //     $userIngredient = new BarIngredient();
-        //     $userIngredient->ingredient_id = $dbIngredientId;
-        //     $models[] = $userIngredient;
-        // }
-
-        // $bar->shelfIngredients()->saveMany($models);
 
         return new Response(null, 204);
     }
@@ -302,24 +282,14 @@ class ShelfController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchDeleteBarIngredients(ShelfIngredientsRequest $request, int $id): Response
+    public function batchDeleteBarIngredients(ShelfIngredientsRequest $request, \BarAssistant\Application\Bar\BarInventoryService $barInventoryService, int $id): Response
     {
         $bar = Bar::findOrFail($id);
         if ($request->user()->cannot('manageShelf', $bar)) {
             abort(403);
         }
 
-        $ingredients = DB::table('ingredients')
-            ->select('id')
-            ->where('bar_id', $bar->id)
-            ->whereIn('id', $request->post('ingredients'))
-            ->pluck('id');
-
-        try {
-            $bar->shelfIngredients()->whereIn('ingredient_id', $ingredients)->delete();
-        } catch (Throwable $e) {
-            abort(500, $e->getMessage());
-        }
+        $barInventoryService->removeMultipleIngredientsFromStock(new BarInventoryStockChangeRequest($bar->id, $request->post('ingredients', [])));
 
         return new Response(null, 204);
     }
