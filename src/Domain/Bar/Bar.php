@@ -63,30 +63,27 @@ final class Bar implements Identity
         return $this->ingredientInventory;
     }
 
-    /**
-     * Checks if the ingredient is actually in stock, meaning it
-     * will not match variants and complex ingredients.
-     */
-    public function hasIngredientInStock(IngredientId $ingredientId): bool
-    {
-        return array_any(
-            $this->ingredientInventory,
-            static fn($existingInventoryItem) => $existingInventoryItem->ingredientId->equals($ingredientId) && $existingInventoryItem->isInStock()
-        );
-    }
-
-    public function changeIngredientStock(IngredientId $ingredientId): self
+    public function putIngredientInStock(IngredientId $ingredientId): self
     {
         if ($this->hasIngredientInStock($ingredientId)) {
-            $this->ingredientInventory = array_filter(
-                $this->ingredientInventory,
-                static fn (IngredientInventoryItem $existingInventoryItem) => !$existingInventoryItem->ingredientId->equals($ingredientId)
-            );
-
             return $this;
         }
 
         $this->ingredientInventory[] = new IngredientInventoryItem($ingredientId, IngredientInventoryStatus::InStock);
+
+        return $this;
+    }
+
+    public function removeIngredientFromStock(IngredientId $ingredientId): self
+    {
+        if (!$this->hasIngredientInStock($ingredientId)) {
+            return $this;
+        }
+
+        $this->ingredientInventory = array_filter(
+            $this->ingredientInventory,
+            static fn (IngredientInventoryItem $item) => !$item->ingredientId->equals($ingredientId)
+        );
 
         return $this;
     }
@@ -110,6 +107,18 @@ final class Bar implements Identity
         return array_filter(
             $this->ingredientInventory,
             static fn (IngredientInventoryItem $item) => $item->isInStock()
+        );
+    }
+
+    /**
+     * Checks if the ingredient is actually in stock, meaning it
+     * will not match variants and complex ingredients.
+     */
+    public function hasIngredientInStock(IngredientId $ingredientId): bool
+    {
+        return array_any(
+            $this->getInStockIngredients(),
+            static fn($existingInventoryItem) => $existingInventoryItem->ingredientId->equals($ingredientId)
         );
     }
 }

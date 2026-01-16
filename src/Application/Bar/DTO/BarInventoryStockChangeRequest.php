@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Bar\DTO;
 
-readonly class ToggleBarInventoryStatusRequest
+readonly class BarInventoryStockChangeRequest
 {
     /**
      * @param int[] $ingredientIds

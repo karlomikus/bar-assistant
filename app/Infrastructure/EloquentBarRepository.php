@@ -13,6 +13,8 @@ use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Bar\IngredientInventoryItem;
 use BarAssistant\Domain\Bar\IngredientInventoryStatus;
+use BarAssistant\Domain\Support\Name;
+use Kami\Cocktail\Models\BarIngredient;
 
 final class EloquentBarRepository implements BarRepository
 {
@@ -20,11 +22,16 @@ final class EloquentBarRepository implements BarRepository
     {
         $model = ModelBar::findOrNew($bar->getId()?->value);
 
-        $model->name = $bar->getName();
+        $model->name = (string) $bar->getName();
 
+        $barIngredientModels = [];
         foreach ($bar->getInStockIngredients() as $inStockIngredient) {
-            
+            $barIngredientModel = new BarIngredient();
+            $barIngredientModel->ingredient_id = $inStockIngredient->ingredientId->value;
+            $barIngredientModels[] = $barIngredientModel;
         }
+
+        $model->shelfIngredients()->saveMany($barIngredientModels);
 
         return self::map($model);
     }
@@ -73,8 +80,8 @@ final class EloquentBarRepository implements BarRepository
         }
 
         $bar = new Bar(
-            name: $model->name,
-            inventory: new BarInventory($barIngredients),
+            name: Name::fromString($model->name),
+            ingredientInventory: $barIngredients,
         )->setId(new BarId($model->id));
 
         return $bar;
