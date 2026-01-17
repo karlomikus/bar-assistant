@@ -25,6 +25,11 @@ final readonly class Unit implements Stringable, JsonSerializable
         $this->value = trim(mb_strtolower($value ?? ''));
     }
 
+    public static function from(?string $value): self
+    {
+        return new self($value);
+    }
+
     public function getAsEnum(): ?Units
     {
         if ($this->isDash()) {

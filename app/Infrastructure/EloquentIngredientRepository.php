@@ -203,20 +203,20 @@ final class EloquentIngredientRepository implements IngredientRepository
 
     private static function map(ModelIngredient $model): Ingredient
     {
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: new BarId($model->bar_id),
-            name: Name::fromString($model->name),
+            name: $model->name,
             authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
             recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
             description: $model->description,
-            strength: ABV::from($model->strength ?? 0.0),
+            strength: $model->strength ?? 0.0,
             origin: $model->origin,
-            color: $model->color ? Color::fromHexString($model->color) : null,
+            color: $model->color,
             calculatorId: $model->calculator_id ? new CalculatorId($model->calculator_id) : null,
             sugarContent: $model->sugar_g_per_ml,
             acidity: $model->acidity,
             distillery: $model->distillery,
-            units: $model->units ? new Unit($model->units) : null,
+            units: $model->units,
             materializedPath: MaterializedPath::fromString($model->materialized_path),
             parentIngredientId: $model->parent_ingredient_id ? new IngredientId($model->parent_ingredient_id) : null,
         );

@@ -27,7 +27,6 @@ use BarAssistant\Domain\User\UserId;
 final class Ingredient implements Identity
 {
     private ?IngredientId $id = null;
-    private MaterializedPath $materializedPath;
 
     /** @var IngredientId[] */
     private array $ingredientParts = [];
@@ -38,13 +37,14 @@ final class Ingredient implements Identity
     /** @var IngredientPrice[] */
     private array $prices = [];
 
-    public function __construct(
+    private function __construct(
         private readonly BarId $barId,
         private Name $name,
         private Authors $authors,
         private RecordTimestamps $recordTimestamps,
+        private MaterializedPath $materializedPath,
+        private ABV $strength,
         private ?string $description = null,
-        private ABV $strength = new ABV(0.0),
         private ?string $origin = null,
         private ?Color $color = null,
         private ?CalculatorId $calculatorId = null,
@@ -53,9 +53,7 @@ final class Ingredient implements Identity
         private ?string $distillery = null,
         private ?Unit $units = null,
         private ?IngredientId $parentIngredientId = null,
-        ?MaterializedPath $materializedPath = null,
     ) {
-        $this->materializedPath = $materializedPath ?? MaterializedPath::root();
     }
 
     public function isTransient(): bool
@@ -77,6 +75,45 @@ final class Ingredient implements Identity
         $this->id = $id;
 
         return $this;
+    }
+
+    public static function create(
+        BarId $barId,
+        Name $name,
+        Authors $authors,
+        RecordTimestamps $recordTimestamps,
+        ?string $description = null,
+        ?ABV $strength = null,
+        ?string $origin = null,
+        ?Color $color = null,
+        ?CalculatorId $calculatorId = null,
+        ?float $sugarContent = null,
+        ?float $acidity = null,
+        ?string $distillery = null,
+        ?Unit $units = null,
+        ?IngredientId $parentIngredientId = null,
+        ?MaterializedPath $materializedPath = null,
+    ): self
+    {
+        $ingredient = new self(
+            barId: $barId,
+            name: $name,
+            authors: $authors,
+            recordTimestamps: $recordTimestamps,
+            description: $description,
+            strength: $strength ?? ABV::from(0.0),
+            origin: $origin,
+            color: $color,
+            calculatorId: $calculatorId,
+            sugarContent: $sugarContent,
+            acidity: $acidity,
+            distillery: $distillery,
+            units: $units,
+            parentIngredientId: $parentIngredientId,
+            materializedPath: $materializedPath ?? MaterializedPath::root(),
+        );
+
+        return $ingredient;
     }
 
     /**

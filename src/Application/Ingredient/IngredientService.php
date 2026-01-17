@@ -45,7 +45,7 @@ final readonly class IngredientService
     public function createIngredient(CreateIngredient $ingredientRequest): IngredientResult
     {
         $barId = new BarId($ingredientRequest->barId);
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: $barId,
             name: Name::fromString($ingredientRequest->name),
             authors: Authors::createdBy(new UserId($ingredientRequest->userId)),

@@ -9,16 +9,17 @@ use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\Ingredient\IngredientRepository;
 
 final readonly class BarInventoryService
 {
     public function __construct(
         private BarRepository $barRepository,
-        private IngredientRepository $ingredientRepository,
     ) {
     }
 
+    /**
+     * Put multiple ingredients in stock for a bar
+     */
     public function putMultipleIngredientsInStock(BarInventoryStockChangeRequest $request): void
     {
         $bar = $this->barRepository->findById(new BarId($request->barId));
@@ -26,15 +27,8 @@ final readonly class BarInventoryService
             throw new EntityNotFoundException('The bar was not found');
         }
 
-        $ingredientIds = array_map(fn (int $id) => new IngredientId($id), $request->ingredientIds);
-
-        $validIngredients = $this->ingredientRepository->checkBarOwnership($bar->getId(), $ingredientIds);
-        if ($validIngredients === false) {
-            throw new EntityNotFoundException('One or more ingredients were not found in the specified bar');
-        }
-
-        foreach ($ingredientIds as $ingredientId) {
-            $bar->putIngredientInStock($ingredientId);
+        foreach ($request->ingredientIds as $ingredientId) {
+            $bar->putIngredientInStock(new IngredientId($ingredientId));
         }
 
         $this->barRepository->save($bar);
@@ -47,15 +41,8 @@ final readonly class BarInventoryService
             throw new EntityNotFoundException('The bar was not found');
         }
 
-        $ingredientIds = array_map(fn (int $id) => new IngredientId($id), $request->ingredientIds);
-
-        $validIngredients = $this->ingredientRepository->checkBarOwnership($bar->getId(), $ingredientIds);
-        if ($validIngredients === false) {
-            throw new EntityNotFoundException('One or more ingredients were not found in the specified bar');
-        }
-
-        foreach ($ingredientIds as $ingredientId) {
-            $bar->removeIngredientFromStock($ingredientId);
+        foreach ($request->ingredientIds as $ingredientId) {
+            $bar->removeIngredientFromStock(new IngredientId($ingredientId));
         }
 
         $this->barRepository->save($bar);
