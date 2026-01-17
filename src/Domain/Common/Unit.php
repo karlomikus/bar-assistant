@@ -18,7 +18,7 @@ final readonly class Unit implements Stringable, JsonSerializable
 
     public const array CONVERTABLE_UNITS = ['ml', 'oz', 'cl'];
 
-    public function __construct(
+    private function __construct(
         ?string $value,
     ) {
         $this->units = DefaultUnits::get();

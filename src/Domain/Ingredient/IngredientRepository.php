@@ -69,13 +69,4 @@ interface IngredientRepository
      * @return Ingredient[]
      */
     public function findAncestors(IngredientId $descendantId): array;
-
-    /**
-     * Checks if any of the ingredients belong to the provided bar
-     *
-     * @param IngredientId[] $ingredientIds
-     *
-     * @return bool Returns false if any of the ingredients do not belong to the bar
-     */
-    public function checkBarOwnership(BarId $barId, array $ingredientIds): bool;
 }

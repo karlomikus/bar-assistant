@@ -205,18 +205,18 @@ final class EloquentIngredientRepository implements IngredientRepository
     {
         $ingredient = Ingredient::create(
             barId: new BarId($model->bar_id),
-            name: $model->name,
+            name: Name::fromString($model->name),
             authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
             recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
             description: $model->description,
-            strength: $model->strength ?? 0.0,
+            strength: $model->strength ?? ABV::from(0.0),
             origin: $model->origin,
-            color: $model->color,
+            color: $model->color ? Color::fromHexString($model->color) : null,
             calculatorId: $model->calculator_id ? new CalculatorId($model->calculator_id) : null,
             sugarContent: $model->sugar_g_per_ml,
             acidity: $model->acidity,
             distillery: $model->distillery,
-            units: $model->units,
+            units: $model->units ? Unit::from($model->units) : null,
             materializedPath: MaterializedPath::fromString($model->materialized_path),
             parentIngredientId: $model->parent_ingredient_id ? new IngredientId($model->parent_ingredient_id) : null,
         );
@@ -245,13 +245,5 @@ final class EloquentIngredientRepository implements IngredientRepository
         }
 
         return $ingredient;
-    }
-
-    public function checkBarOwnership(BarId $barId, array $ingredientIds): bool
-    {
-        return DB::table('ingredients')
-            ->where('bar_id', $barId->value)
-            ->whereIn('id', array_map(static fn (IngredientId $id) => $id->value, $ingredientIds))
-            ->count() > 0;
     }
 }
