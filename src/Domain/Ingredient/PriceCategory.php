@@ -7,7 +7,7 @@ namespace BarAssistant\Domain\Ingredient;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Identity;
-use BarAssistant\Domain\Support\Name;
+use BarAssistant\Domain\Common\Name;
 use Brick\Money\Currency;
 
 /**

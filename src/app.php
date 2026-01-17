@@ -5,10 +5,10 @@ declare(strict_types=1);
 use BarAssistant\Domain\Cocktail\Cocktail;
 use BarAssistant\Domain\Cocktail\CocktailIngredient;
 use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\Support\AmountWithUnits;
+use BarAssistant\Domain\Common\AmountWithUnits;
 
-use BarAssistant\Domain\Support\Name;
-use BarAssistant\Domain\Support\Unit;
+use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\Unit;
 
 require __DIR__.'/../vendor/autoload.php';
 

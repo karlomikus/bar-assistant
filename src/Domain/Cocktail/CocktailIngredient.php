@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace BarAssistant\Domain\Cocktail;
 
 use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\Support\AmountWithUnits;
+use BarAssistant\Domain\Common\AmountWithUnits;
 
 final readonly class CocktailIngredient
 {

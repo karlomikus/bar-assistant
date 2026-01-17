@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BarAssistant\Domain\Support;
+namespace BarAssistant\Domain\Common;
 
 /**
  * Represent hex color

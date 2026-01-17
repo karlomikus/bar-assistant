@@ -6,8 +6,8 @@ namespace BarAssistant\Domain\Image;
 
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Identity;
-use BarAssistant\Domain\Support\Authors;
-use BarAssistant\Domain\Support\RecordTimestamps;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Common\RecordTimestamps;
 
 final class Image implements Identity
 {

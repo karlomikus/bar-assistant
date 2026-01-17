@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace BarAssistant\Domain\Cocktail;
 
 use BarAssistant\Domain\Identity;
-use BarAssistant\Domain\Support\ABV;
-use BarAssistant\Domain\Support\Dilution;
-use BarAssistant\Domain\Support\Name;
+use BarAssistant\Domain\Common\ABV;
+use BarAssistant\Domain\Common\Dilution;
+use BarAssistant\Domain\Common\Name;
 use DomainException;
 
 final class Cocktail implements Identity

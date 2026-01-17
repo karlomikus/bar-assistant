@@ -8,9 +8,9 @@ use Throwable;
 use BarAssistant\Domain\Bar\BarId;
 use Illuminate\Support\Facades\DB;
 use BarAssistant\Domain\User\UserId;
-use BarAssistant\Domain\Support\Unit;
+use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\Image\ImageId;
-use BarAssistant\Domain\Support\Color;
+use BarAssistant\Domain\Common\Color;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\Models\Image as ModelImage;
 use BarAssistant\Domain\Ingredient\Ingredient;
@@ -20,10 +20,10 @@ use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\MaterializedPath;
 use Kami\Cocktail\Models\Ingredient as ModelIngredient;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
-use BarAssistant\Domain\Support\ABV;
-use BarAssistant\Domain\Support\Authors;
-use BarAssistant\Domain\Support\Name;
-use BarAssistant\Domain\Support\RecordTimestamps;
+use BarAssistant\Domain\Common\ABV;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\RecordTimestamps;
 use Kami\Cocktail\Models\IngredientPrice as ModelIngredientPrice;
 
 final class EloquentIngredientRepository implements IngredientRepository

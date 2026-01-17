@@ -6,7 +6,7 @@ namespace BarAssistant\Application\Ingredient;
 
 use BarAssistant\Application\Exception\ApplicationServiceException;
 use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Support\Color;
+use BarAssistant\Domain\Common\Color;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
 use BarAssistant\Application\Ingredient\DTO\IngredientResult;
@@ -21,11 +21,11 @@ use BarAssistant\Domain\Ingredient\IngredientRepository;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
-use BarAssistant\Domain\Support\ABV;
-use BarAssistant\Domain\Support\Authors;
-use BarAssistant\Domain\Support\Name;
-use BarAssistant\Domain\Support\RecordTimestamps;
-use BarAssistant\Domain\Support\Unit;
+use BarAssistant\Domain\Common\ABV;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
 
 final readonly class IngredientService

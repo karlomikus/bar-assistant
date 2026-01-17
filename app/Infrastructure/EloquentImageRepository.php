@@ -7,8 +7,8 @@ namespace Kami\Cocktail\Infrastructure;
 use BarAssistant\Domain\Image\Image;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Image\ImageRepository;
-use BarAssistant\Domain\Support\Authors;
-use BarAssistant\Domain\Support\RecordTimestamps;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\User\UserId;
 use Kami\Cocktail\Models\Image as Model;
 

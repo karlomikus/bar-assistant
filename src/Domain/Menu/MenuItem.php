@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Menu;
 
-use BarAssistant\Domain\Support\Price;
+use BarAssistant\Domain\Common\Price;
 
 final readonly class MenuItem
 {

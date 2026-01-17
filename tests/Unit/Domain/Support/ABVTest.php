@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Support;
 
-use BarAssistant\Domain\Support\ABV;
+use BarAssistant\Domain\Common\ABV;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

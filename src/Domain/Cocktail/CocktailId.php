@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Cocktail;
 
-use BarAssistant\Domain\Support\IntegerIdentifier;
+use BarAssistant\Domain\Common\IntegerIdentifier;
 
 final readonly class CocktailId extends IntegerIdentifier
 {

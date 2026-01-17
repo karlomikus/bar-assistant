@@ -7,7 +7,7 @@ namespace BarAssistant\Domain\Bar;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\Support\Name;
+use BarAssistant\Domain\Common\Name;
 
 final class Bar implements Identity
 {

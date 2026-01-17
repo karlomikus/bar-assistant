@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Support;
 
-use BarAssistant\Domain\Support\Color;
+use BarAssistant\Domain\Common\Color;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

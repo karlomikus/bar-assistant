@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Menu;
 
-use BarAssistant\Domain\Support\Name;
+use BarAssistant\Domain\Common\Name;
 
 final readonly class MenuCategory
 {

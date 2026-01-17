@@ -9,7 +9,7 @@ use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use Kami\Cocktail\Models\PriceCategory as Model;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
-use BarAssistant\Domain\Support\Name;
+use BarAssistant\Domain\Common\Name;
 use Brick\Money\Currency;
 
 final class EloquentPriceCategoryRepository implements PriceCategoryRepository

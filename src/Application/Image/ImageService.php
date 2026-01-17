@@ -8,8 +8,8 @@ use BarAssistant\Application\Image\DTO\CreateImage;
 use BarAssistant\Application\Image\DTO\ImageResult;
 use BarAssistant\Domain\Image\Image;
 use BarAssistant\Domain\Image\ImageRepository;
-use BarAssistant\Domain\Support\Authors;
-use BarAssistant\Domain\Support\RecordTimestamps;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\User\UserId;
 
 final readonly class ImageService

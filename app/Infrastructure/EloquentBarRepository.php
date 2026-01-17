@@ -13,7 +13,7 @@ use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Bar\IngredientInventoryItem;
 use BarAssistant\Domain\Bar\IngredientInventoryStatus;
-use BarAssistant\Domain\Support\Name;
+use BarAssistant\Domain\Common\Name;
 use Kami\Cocktail\Models\BarIngredient;
 
 final class EloquentBarRepository implements BarRepository

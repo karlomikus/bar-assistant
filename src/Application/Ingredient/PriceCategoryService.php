@@ -10,7 +10,7 @@ use BarAssistant\Application\Ingredient\DTO\PriceCategoryResult;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
-use BarAssistant\Domain\Support\Name;
+use BarAssistant\Domain\Common\Name;
 use Brick\Money\Currency;
 
 final readonly class PriceCategoryService

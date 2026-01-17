@@ -11,14 +11,14 @@ use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Ingredient\Event\IngredientStrengthChanged;
-use BarAssistant\Domain\Support\ABV;
-use BarAssistant\Domain\Support\AmountWithUnits;
-use BarAssistant\Domain\Support\Authors;
-use BarAssistant\Domain\Support\Color;
-use BarAssistant\Domain\Support\Name;
-use BarAssistant\Domain\Support\Price;
-use BarAssistant\Domain\Support\RecordTimestamps;
-use BarAssistant\Domain\Support\Unit;
+use BarAssistant\Domain\Common\ABV;
+use BarAssistant\Domain\Common\AmountWithUnits;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Common\Color;
+use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\Price;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
 
 /**

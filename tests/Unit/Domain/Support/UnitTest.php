@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Support;
 
-use BarAssistant\Domain\Support\Unit;
+use BarAssistant\Domain\Common\Unit;
 use Kami\RecipeUtils\UnitConverter\Units;
 use PHPUnit\Framework\TestCase;
 

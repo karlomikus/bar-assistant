@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Ingredient;
 
-use BarAssistant\Domain\Support\AmountWithUnits;
-use BarAssistant\Domain\Support\Price;
+use BarAssistant\Domain\Common\AmountWithUnits;
+use BarAssistant\Domain\Common\Price;
 
 final readonly class IngredientPrice
 {

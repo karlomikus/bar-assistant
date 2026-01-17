@@ -10,9 +10,9 @@ use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
-use BarAssistant\Domain\Support\Authors;
-use BarAssistant\Domain\Support\Name;
-use BarAssistant\Domain\Support\RecordTimestamps;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\User\UserId;
 use PHPUnit\Framework\TestCase;
 

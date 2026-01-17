@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Domain\Support;
 
 use BarAssistant\Domain\Exception\DomainException;
-use BarAssistant\Domain\Support\Name;
+use BarAssistant\Domain\Common\Name;
 use PHPUnit\Framework\TestCase;
 
 final class NameTest extends TestCase
