@@ -26,7 +26,7 @@ final class IngredientTest extends TestCase
 {
     public function test_cannot_change_id_of_persisted_ingredient(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(1)),
@@ -43,7 +43,7 @@ final class IngredientTest extends TestCase
 
     public function test_transient_ingredient_can_have_id_set(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(1)),
@@ -60,7 +60,7 @@ final class IngredientTest extends TestCase
 
     public function test_parent_ingredient_must_belong_to_same_bar(): void
     {
-        $parent = new Ingredient(
+        $parent = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Gin'),
             authors: Authors::createdBy( new UserId(1)),
@@ -68,7 +68,7 @@ final class IngredientTest extends TestCase
         );
         $parent->setId(new IngredientId(1));
 
-        $child = new Ingredient(
+        $child = Ingredient::create(
             barId: new BarId(2), // Different bar
             name: Name::fromString('Plymouth Gin'),
             authors: Authors::createdBy( new UserId(1)),
@@ -83,7 +83,7 @@ final class IngredientTest extends TestCase
 
     public function test_can_set_parent_from_same_bar(): void
     {
-        $parent = new Ingredient(
+        $parent = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Gin'),
             authors: Authors::createdBy( new UserId(1)),
@@ -91,7 +91,7 @@ final class IngredientTest extends TestCase
         );
         $parent->setId(new IngredientId(5));
 
-        $child = new Ingredient(
+        $child = Ingredient::create(
             barId: new BarId(1), // Same bar
             name: Name::fromString('Plymouth Gin'),
             authors: Authors::createdBy( new UserId(1)),
@@ -106,7 +106,7 @@ final class IngredientTest extends TestCase
 
     public function test_can_clear_parent_by_passing_null(): void
     {
-        $parent = new Ingredient(
+        $parent = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Gin'),
             authors: Authors::createdBy( new UserId(1)),
@@ -114,7 +114,7 @@ final class IngredientTest extends TestCase
         );
         $parent->setId(new IngredientId(5));
 
-        $child = new Ingredient(
+        $child = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Plymouth Gin'),
             authors: Authors::createdBy( new UserId(1)),
@@ -131,14 +131,14 @@ final class IngredientTest extends TestCase
 
     public function test_ingredient_part_must_belong_to_same_bar(): void
     {
-        $mainIngredient = new Ingredient(
+        $mainIngredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Complex Mix'),
             authors: Authors::createdBy( new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
-        $part = new Ingredient(
+        $part = Ingredient::create(
             barId: new BarId(2), // Different bar
             name: Name::fromString('Part A'),
             authors: Authors::createdBy( new UserId(1)),
@@ -154,14 +154,14 @@ final class IngredientTest extends TestCase
 
     public function test_ingredient_part_must_have_id(): void
     {
-        $mainIngredient = new Ingredient(
+        $mainIngredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Complex Mix'),
             authors: Authors::createdBy( new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
-        $part = new Ingredient(
+        $part = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Part A'),
             authors: Authors::createdBy( new UserId(1)),
@@ -177,7 +177,7 @@ final class IngredientTest extends TestCase
 
     public function test_ingredient_cannot_contain_itself_as_part(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Self-Referencing Mix'),
             authors: Authors::createdBy( new UserId(1)),
@@ -193,14 +193,14 @@ final class IngredientTest extends TestCase
 
     public function test_can_add_ingredient_parts_from_same_bar(): void
     {
-        $mainIngredient = new Ingredient(
+        $mainIngredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Complex Mix'),
             authors: Authors::createdBy( new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
-        $part1 = new Ingredient(
+        $part1 = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Part A'),
             authors: Authors::createdBy( new UserId(1)),
@@ -208,7 +208,7 @@ final class IngredientTest extends TestCase
         );
         $part1->setId(new IngredientId(2));
 
-        $part2 = new Ingredient(
+        $part2 = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Part B'),
             authors: Authors::createdBy( new UserId(1)),
@@ -226,14 +226,14 @@ final class IngredientTest extends TestCase
 
     public function test_adding_duplicate_ingredient_part_is_idempotent(): void
     {
-        $mainIngredient = new Ingredient(
+        $mainIngredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Complex Mix'),
             authors: Authors::createdBy( new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
-        $part = new Ingredient(
+        $part = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Part A'),
             authors: Authors::createdBy( new UserId(1)),
@@ -250,14 +250,14 @@ final class IngredientTest extends TestCase
 
     public function test_can_remove_ingredient_part(): void
     {
-        $mainIngredient = new Ingredient(
+        $mainIngredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Complex Mix'),
             authors: Authors::createdBy( new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
-        $part1 = new Ingredient(
+        $part1 = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Part A'),
             authors: Authors::createdBy( new UserId(1)),
@@ -265,7 +265,7 @@ final class IngredientTest extends TestCase
         );
         $part1->setId(new IngredientId(2));
 
-        $part2 = new Ingredient(
+        $part2 = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Part B'),
             authors: Authors::createdBy( new UserId(1)),
@@ -283,16 +283,16 @@ final class IngredientTest extends TestCase
 
     public function test_can_remove_all_ingredient_parts(): void
     {
-        $mainIngredient = new Ingredient(
+        $mainIngredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Complex Mix'),
             authors: Authors::createdBy( new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
-        $part1 = new Ingredient(barId: new BarId(1), name: Name::fromString('Part A'), authors: Authors::createdBy(new UserId(1)), recordTimestamps: RecordTimestamps::createdNow());
+        $part1 = Ingredient::create(barId: new BarId(1), name: Name::fromString('Part A'), authors: Authors::createdBy(new UserId(1)), recordTimestamps: RecordTimestamps::createdNow());
         $part1->setId(new IngredientId(2));
-        $part2 = new Ingredient(barId: new BarId(1), name: Name::fromString('Part B'), authors: Authors::createdBy(new UserId(1)), recordTimestamps: RecordTimestamps::createdNow());
+        $part2 = Ingredient::create(barId: new BarId(1), name: Name::fromString('Part B'), authors: Authors::createdBy(new UserId(1)), recordTimestamps: RecordTimestamps::createdNow());
         $part2->setId(new IngredientId(3));
 
         $mainIngredient->addIngredientPart($part1);
@@ -306,7 +306,7 @@ final class IngredientTest extends TestCase
 
     public function test_can_add_images(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(1)),
@@ -322,7 +322,7 @@ final class IngredientTest extends TestCase
 
     public function test_adding_duplicate_image_is_idempotent(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(1)),
@@ -339,7 +339,7 @@ final class IngredientTest extends TestCase
 
     public function test_can_remove_image(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(1)),
@@ -356,7 +356,7 @@ final class IngredientTest extends TestCase
 
     public function test_can_remove_all_images(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(1)),
@@ -373,7 +373,7 @@ final class IngredientTest extends TestCase
 
     public function test_can_add_prices(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(1)),
@@ -394,7 +394,7 @@ final class IngredientTest extends TestCase
 
     public function test_can_remove_all_prices(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(1)),
@@ -423,7 +423,7 @@ final class IngredientTest extends TestCase
 
     public function test_ingredient_tracks_creator(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(10)),
@@ -438,7 +438,7 @@ final class IngredientTest extends TestCase
 
     public function test_ingredient_tracks_updates(): void
     {
-        $ingredient = (new Ingredient(
+        $ingredient = (Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(10)),
@@ -455,7 +455,7 @@ final class IngredientTest extends TestCase
 
     public function test_ingredient_tracks_creation_timestamp(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(1)),
@@ -471,7 +471,7 @@ final class IngredientTest extends TestCase
     {
         $explicitTime = new DateTimeImmutable('2024-01-01 12:00:00');
 
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(1)),
@@ -484,7 +484,7 @@ final class IngredientTest extends TestCase
 
     public function test_ingredient_tracks_update_timestamp(): void
     {
-        $ingredient = (new Ingredient(
+        $ingredient = (Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(1)),
@@ -500,7 +500,7 @@ final class IngredientTest extends TestCase
 
     public function test_is_ancestor_of_returns_true_for_descendant(): void
     {
-        $parent = new Ingredient(
+        $parent = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Gin'),
             authors: Authors::createdBy( new UserId(1)),
@@ -508,7 +508,7 @@ final class IngredientTest extends TestCase
             materializedPath: MaterializedPath::fromString('1/'),
         );
 
-        $child = new Ingredient(
+        $child = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('London Dry Gin'),
             authors: Authors::createdBy( new UserId(1)),
@@ -522,7 +522,7 @@ final class IngredientTest extends TestCase
 
     public function test_is_ancestor_of_returns_false_for_unrelated_ingredient(): void
     {
-        $ingredient1 = new Ingredient(
+        $ingredient1 = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Gin'),
             authors: Authors::createdBy( new UserId(1)),
@@ -530,7 +530,7 @@ final class IngredientTest extends TestCase
             materializedPath: MaterializedPath::fromString('1/'),
         );
 
-        $ingredient2 = new Ingredient(
+        $ingredient2 = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(1)),
@@ -544,7 +544,7 @@ final class IngredientTest extends TestCase
 
     public function test_can_create_ingredient_with_all_properties(): void
     {
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Premium Gin'),
             authors: Authors::createdBy( new UserId(10)),
@@ -578,7 +578,7 @@ final class IngredientTest extends TestCase
 
     public function test_update_details_modifies_all_mutable_properties(): void
     {
-        $ingredient = (new Ingredient(
+        $ingredient = (Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(1)),
@@ -613,7 +613,7 @@ final class IngredientTest extends TestCase
     public function test_bar_id_is_immutable(): void
     {
         $barId = new BarId(1);
-        $ingredient = new Ingredient(
+        $ingredient = Ingredient::create(
             barId: $barId,
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy( new UserId(1)),
