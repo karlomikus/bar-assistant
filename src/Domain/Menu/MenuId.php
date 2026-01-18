@@ -9,6 +9,9 @@ use Stringable;
 
 final readonly class MenuId implements Identifier, Stringable
 {
+    /**
+     * Menu ID is a publicly available slug chosen by a user
+     */
     public function __construct(public string $value)
     {
     }
