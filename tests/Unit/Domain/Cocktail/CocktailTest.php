@@ -46,7 +46,7 @@ final class CocktailTest extends TestCase
     {
         $ingredient = CocktailIngredient::createRequired(
             ingredientId: new IngredientId(1),
-            amountWithUnits: new AmountWithUnits(60.0, Unit::from('ml')),
+            amountWithUnits: AmountWithUnits::from(60.0, Unit::from('ml')),
             abv: ABV::from(40.0),
         );
 
@@ -66,19 +66,19 @@ final class CocktailTest extends TestCase
     {
         $ingredient1 = CocktailIngredient::createRequired(
             ingredientId: new IngredientId(1),
-            amountWithUnits: new AmountWithUnits(45.0, Unit::from('ml')),
+            amountWithUnits: AmountWithUnits::from(45.0, Unit::from('ml')),
             abv: ABV::from(40.0),
         );
 
         $ingredient2 = CocktailIngredient::createRequired(
             ingredientId: new IngredientId(2),
-            amountWithUnits: new AmountWithUnits(15.0, Unit::from('ml')),
+            amountWithUnits: AmountWithUnits::from(15.0, Unit::from('ml')),
             abv: ABV::from(20.0),
         );
 
         $ingredient3 = CocktailIngredient::createRequired(
             ingredientId: new IngredientId(3),
-            amountWithUnits: new AmountWithUnits(30.0, Unit::from('ml')),
+            amountWithUnits: AmountWithUnits::from(30.0, Unit::from('ml')),
             abv: ABV::from(0.0),
         );
 
@@ -98,7 +98,7 @@ final class CocktailTest extends TestCase
     {
         $ingredient = CocktailIngredient::createRequired(
             ingredientId: new IngredientId(1),
-            amountWithUnits: new AmountWithUnits(50.0, Unit::from('ml')),
+            amountWithUnits: AmountWithUnits::from(50.0, Unit::from('ml')),
             abv: ABV::from(37.5),
         );
 
@@ -118,7 +118,7 @@ final class CocktailTest extends TestCase
     {
         $ingredient = CocktailIngredient::createRequired(
             ingredientId: new IngredientId(1),
-            amountWithUnits: new AmountWithUnits(50.0, Unit::from('ml')),
+            amountWithUnits: AmountWithUnits::from(50.0, Unit::from('ml')),
             abv: ABV::from(40.0),
         );
 

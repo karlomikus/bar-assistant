@@ -557,7 +557,7 @@ final class IngredientTest extends TestCase
             sugarContent: 0.0,
             acidity: 0.0,
             distillery: 'Test Distillery',
-            units: new Unit('ml'),
+            units: Unit::from('ml'),
             parentIngredientId: new IngredientId(3),
             materializedPath: MaterializedPath::fromString('3/'),
         );
@@ -596,7 +596,7 @@ final class IngredientTest extends TestCase
             sugarContent: 1.0,
             acidity: 0.5,
             distillery: 'New Distillery',
-            units: new Unit('oz'),
+            units: Unit::from('oz'),
         );
 
         $this->assertEquals('Premium Vodka', $ingredient->getName());

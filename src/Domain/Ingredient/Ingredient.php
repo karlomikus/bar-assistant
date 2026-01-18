@@ -328,7 +328,7 @@ final class Ingredient implements Identity
         $this->prices[] = new IngredientPrice(
             priceCategoryId: $priceCategoryId,
             price: Price::createFromFloat($price, $currency),
-            amountWithUnits: new AmountWithUnits($amount, new Unit($units)),
+            amountWithUnits: AmountWithUnits::from($amount, Unit::from($units)),
             description: $description,
         );
 
@@ -365,7 +365,7 @@ final class Ingredient implements Identity
         Name $name,
         UserId $updatedBy,
         ?string $description = null,
-        ABV $strength = new ABV(0.0),
+        ?ABV $strength = null,
         ?string $origin = null,
         ?Color $color = null,
         ?CalculatorId $calculatorId = null,
@@ -383,13 +383,13 @@ final class Ingredient implements Identity
                 barId: $this->getBarId(),
                 ingredientId: $this->getId(),
                 oldStrength: $this->strength->toFloat(),
-                newStrength: $strength->toFloat(),
+                newStrength: $strength?->toFloat() ?? 0.0,
             ));
         }
 
         $this->name = $name;
         $this->description = $description;
-        $this->strength = $strength;
+        $this->strength = $strength ?? ABV::from(0.0);
         $this->origin = $origin;
         $this->color = $color;
         $this->calculatorId = $calculatorId;

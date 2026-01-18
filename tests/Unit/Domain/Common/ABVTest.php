@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Domain\Support;
+namespace Tests\Unit\Domain\Common;
 
 use BarAssistant\Domain\Common\ABV;
 use InvalidArgumentException;
