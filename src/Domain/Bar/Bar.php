@@ -19,6 +19,7 @@ final class Bar implements Identity
     public function __construct(
         private Name $name,
         private array $ingredientInventory = [],
+        private bool $isMenuEnabled = false,
     ) {
     }
 

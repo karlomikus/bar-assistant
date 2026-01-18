@@ -8,7 +8,7 @@ use BarAssistant\Domain\Common\Price;
 
 final readonly class MenuItem
 {
-    public function __construct(
+    private function __construct(
         private Price $price,
         private int $sortIndex,
     )

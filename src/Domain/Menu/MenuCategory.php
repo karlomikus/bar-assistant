@@ -8,9 +8,12 @@ use BarAssistant\Domain\Common\Name;
 
 final readonly class MenuCategory
 {
-    public function __construct(
+    /**
+     * @param MenuItem[] $items
+     */
+    private function __construct(
         private Name $name,
-        private array $menuItems,
+        private array $items,
     )
     {
     }
@@ -20,8 +23,8 @@ final readonly class MenuCategory
         return $this->name;
     }
 
-    public function getMenuItems(): array
+    public function getItems(): array
     {
-        return $this->menuItems;
+        return $this->items;
     }
 }
