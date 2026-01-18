@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BarAssistant\Domain\Bar;
+namespace BarAssistant\Domain\Menu;
 
 use BarAssistant\Domain\Identifier;
 use Stringable;
