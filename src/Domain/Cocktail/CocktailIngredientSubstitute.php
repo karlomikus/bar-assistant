@@ -4,16 +4,30 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Cocktail;
 
+use BarAssistant\Domain\Common\ABV;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Common\AmountWithUnits;
 
 final readonly class CocktailIngredientSubstitute
 {
-    public function __construct(
+    private function __construct(
         public IngredientId $ingredientId,
         public AmountWithUnits $amountWithUnits,
-        public float $abv,
+        public ABV $abv,
     )
     {
+    }
+
+    public static function create(
+        IngredientId $ingredientId,
+        AmountWithUnits $amountWithUnits,
+        ABV $abv,
+    ): self
+    {
+        return new self(
+            ingredientId: $ingredientId,
+            amountWithUnits: $amountWithUnits,
+            abv: $abv,
+        );
     }
 }

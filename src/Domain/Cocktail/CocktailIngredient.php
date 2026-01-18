@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Cocktail;
 
+use BarAssistant\Domain\Common\ABV;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Common\AmountWithUnits;
 
@@ -12,15 +13,54 @@ final readonly class CocktailIngredient
     /**
      * @param CocktailIngredientSubstitute[] $substitutes 
      */
-    public function __construct(
+    private function __construct(
         public IngredientId $ingredientId,
         public AmountWithUnits $amountWithUnits,
-        public float $abv,
+        public ABV $abv,
         public bool $isOptional,
         public bool $isSpecific,
         public ?string $note = null,
         public array $substitutes = [],
     )
     {
+    }
+
+    /**
+     * @param CocktailIngredientSubstitute[] $substitutes
+     */
+    public static function create(
+        IngredientId $ingredientId,
+        AmountWithUnits $amountWithUnits,
+        ABV $abv,
+        bool $isOptional = false,
+        bool $isSpecific = false,
+        ?string $note = null,
+        array $substitutes = [],
+    ): self
+    {
+        return new self(
+            ingredientId: $ingredientId,
+            amountWithUnits: $amountWithUnits,
+            abv: $abv,
+            isOptional: $isOptional,
+            isSpecific: $isSpecific,
+            note: $note,
+            substitutes: $substitutes,
+        );
+    }
+
+    public static function createRequired(
+        IngredientId $ingredientId,
+        AmountWithUnits $amountWithUnits,
+        ABV $abv,
+    ): self
+    {
+        return new self(
+            ingredientId: $ingredientId,
+            amountWithUnits: $amountWithUnits,
+            abv: $abv,
+            isOptional: false,
+            isSpecific: false,
+        );
     }
 }

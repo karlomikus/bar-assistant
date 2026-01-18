@@ -17,12 +17,32 @@ final class Cocktail implements Identity
     /**
      * @param CocktailIngredient[] $ingredients
      */
-    public function __construct(
+    private function __construct(
         private Name $name,
+        private string $instructions,
+        private ?string $garnish = null,
         private ?Dilution $dilution = null,
         private array $ingredients = [],
+        private ?CocktailId $variantOf = null,
     )
     {
+    }
+
+    public static function create(
+        Name $name,
+        string $instructions,
+        ?string $garnish = null,
+        ?Dilution $dilution = null,
+        array $ingredients = [],
+    ): self
+    {
+        return new self(
+            name: $name,
+            instructions: $instructions,
+            garnish: $garnish,
+            dilution: $dilution,
+            ingredients: $ingredients,
+        );
     }
 
     public function getId(): ?CocktailId
@@ -51,6 +71,21 @@ final class Cocktail implements Identity
         return $this->name;
     }
 
+    public function getInstructions(): string
+    {
+        return $this->instructions;
+    }
+
+    public function getGarnish(): ?string
+    {
+        return $this->garnish;
+    }
+
+    public function isVariant(): bool
+    {
+        return $this->variantOf !== null;
+    }
+
     public function getABV(): ABV
     {
         if ($this->dilution === null) {
@@ -64,7 +99,7 @@ final class Cocktail implements Identity
 
         $alcoholVolume = floatval(array_reduce(
             $this->ingredients,
-            static fn ($carry, $item) => (($item->amountWithUnits->amountMin * $item->abv) / 100) + $carry,
+            static fn ($carry, $item) => (($item->amountWithUnits->amountMin * $item->abv->toFloat()) / 100) + $carry,
         ));
 
         $afterDilution = ($amountUsed * $this->dilution->toDecimal()) + $amountUsed;

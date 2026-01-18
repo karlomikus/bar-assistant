@@ -10,11 +10,16 @@ use Kami\RecipeUtils\AmountValue;
 
 final readonly class AmountWithUnits implements Stringable
 {
-    public function __construct(
+    private function __construct(
         public float $amountMin,
         public Unit $units,
         public ?float $amountMax = null,
     ) {
+    }
+
+    public static function from(float $amountMin, Unit $units, ?float $amountMax = null): self
+    {
+        return new self($amountMin, $units, $amountMax);
     }
 
     public function convertTo(Unit $toUnits): self
