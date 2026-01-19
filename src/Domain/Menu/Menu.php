@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace BarAssistant\Domain\Menu;
 
 use BarAssistant\Domain\Bar\BarId;
+use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Identity;
 
 final class Menu implements Identity
@@ -15,6 +16,7 @@ final class Menu implements Identity
         private MenuId $id,
         private BarId $barId,
         private array $categories,
+        private RecordTimestamps $recordTimestamps,
     )
     {
     }
@@ -29,6 +31,11 @@ final class Menu implements Identity
         return $this->id;
     }
 
+    public function getRecordTimestamps(): RecordTimestamps
+    {
+        return $this->recordTimestamps;
+    }
+
     public static function create(
         MenuId $id,
         BarId $barId,
@@ -38,6 +45,7 @@ final class Menu implements Identity
             id: $id,
             barId: $barId,
             categories: [],
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
     }
 
@@ -54,6 +62,7 @@ final class Menu implements Identity
             id: $id,
             barId: $barId,
             categories: self::sortCategories($categories),
+            recordTimestamps: RecordTimestamps::createdNow(),
         );
     }
 
@@ -85,6 +94,13 @@ final class Menu implements Identity
             static fn(MenuCategory $category) => $category !== $categoryToRemove
         );
         $this->categories = array_values($this->categories);
+
+        return $this;
+    }
+
+    public function clearAllCategories(): self
+    {
+        $this->categories = [];
 
         return $this;
     }

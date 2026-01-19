@@ -52,7 +52,7 @@ final class MenuServiceTest extends TestCase
                     items: [
                         new CreateMenuItemRequest(
                             cocktailId: 1,
-                            priceMinor: 1200,
+                            price: 1200,
                             priceCurrency: 'USD',
                             sortIndex: 0,
                         ),
@@ -230,7 +230,7 @@ final class MenuServiceTest extends TestCase
 
         $itemRequest = new CreateMenuItemRequest(
             cocktailId: 1,
-            priceMinor: 1200,
+            price: 1200,
             priceCurrency: 'USD',
             sortIndex: 0,
         );
@@ -252,7 +252,7 @@ final class MenuServiceTest extends TestCase
                     items: [
                         new CreateMenuItemRequest(
                             cocktailId: 1,
-                            priceMinor: 1200,
+                            price: 1200,
                             priceCurrency: 'USD',
                             sortIndex: 0,
                         ),
@@ -307,7 +307,7 @@ final class MenuServiceTest extends TestCase
                     items: [
                         new CreateMenuItemRequest(
                             ingredientId: 5,
-                            priceMinor: 500,
+                            price: 500,
                             priceCurrency: 'USD',
                             sortIndex: 0,
                         ),
@@ -331,7 +331,7 @@ final class MenuServiceTest extends TestCase
         new CreateMenuItemRequest(
             cocktailId: null,
             ingredientId: null,
-            priceMinor: 1000,
+            price: 1000,
             priceCurrency: 'USD',
         );
 
@@ -347,7 +347,7 @@ final class MenuServiceTest extends TestCase
                         new CreateMenuItemRequest(
                             cocktailId: null,
                             ingredientId: null,
-                            priceMinor: 1000,
+                            price: 1000,
                             priceCurrency: 'USD',
                         ),
                     ],

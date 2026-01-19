@@ -9,7 +9,7 @@ final readonly class CreateMenuItemRequest
     public function __construct(
         public int|null $cocktailId = null,
         public int|null $ingredientId = null,
-        public int $priceMinor = 0,
+        public float $price = 0.0,
         public string $priceCurrency = 'USD',
         public int $sortIndex = 0,
     ) {

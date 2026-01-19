@@ -17,6 +17,7 @@ use Kami\Cocktail\Http\Resources\MenuResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\OpenAPI\Schemas\MenuItemRequest;
 use Kami\Cocktail\Http\Resources\MenuPublicResource;
+use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 use Kami\Cocktail\OpenAPI\Schemas\MenuRequest as SchemasMenuRequest;
 
 class MenuController extends Controller
@@ -91,16 +92,16 @@ class MenuController extends Controller
         new BAO\WrapObjectWithData(MenuResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function update(MenuRequest $request): MenuResource
+    public function update(\BarAssistant\Application\Menu\MenuService $service, MenuRequest $request): MenuResource
     {
         if ($request->user()->cannot('update', Menu::class)) {
             abort(403);
         }
 
-        $schemaRequest = SchemasMenuRequest::fromIlluminateRequest($request);
+        $bodyRequest = SchemasMenuRequest::fromIlluminateRequest($request);
 
-        $ingredients = $schemaRequest->getIngredients();
-        $cocktails = $schemaRequest->getCocktails();
+        $ingredients = $bodyRequest->getIngredients();
+        $cocktails = $bodyRequest->getCocktails();
 
         Validator::make(collect($ingredients)->map(fn (MenuItemRequest $mi) => ['id' => $mi->id])->toArray(), [
             '*.id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
@@ -110,14 +111,30 @@ class MenuController extends Controller
             '*.id' => [new ResourceBelongsToBar(bar()->id, 'cocktails')],
         ])->validate();
 
-        $menu = Menu::firstOrCreate(['bar_id' => bar()->id]);
-        $menu->is_enabled = $schemaRequest->isEnabled;
-        if (!$menu->created_at) {
-            $menu->created_at = now();
+        $categories = [];
+        $catIdx = 1;
+        foreach ($bodyRequest->items as $bodyItem) {
+            $items = [];
+            $items[$bodyItem->categoryName][] = new \BarAssistant\Application\Menu\DTO\CreateMenuItemRequest(
+                cocktailId: $bodyItem->type === MenuItemTypeEnum::Cocktail ? $bodyItem->id : null,
+                ingredientId: $bodyItem->type === MenuItemTypeEnum::Ingredient ? $bodyItem->id : null,
+            );
+            $catIdx++;
         }
-        $menu->updated_at = now();
-        $menu->syncItems($schemaRequest->items);
-        $menu->save();
+
+        $service->updateOrCreateMenu(new \BarAssistant\Application\Menu\DTO\CreateMenuRequest(
+            barId: bar()->id,
+            menuId: bar()->slug,
+            categories: array_map(function (MenuItemRequest $category) use ($items) {
+                return new \BarAssistant\Application\Menu\DTO\CreateMenuCategoryRequest(
+                    name: $category->categoryName,
+                    sortIndex: $category->sort,
+                    items: $items[$category->categoryName],
+                );
+            }, $bodyRequest->items)
+        ));
+
+        $menu = Menu::first(['bar_id' => bar()->id]);
 
         return new MenuResource($menu);
     }
