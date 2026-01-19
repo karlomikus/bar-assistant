@@ -55,6 +55,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
             $event->extendSocialite('authentik', \SocialiteProviders\Authentik\Provider::class);
             $event->extendSocialite('authelia', \SocialiteProviders\Authelia\Provider::class);
+            $event->extendSocialite('kanidm', \SocialiteProviders\Kanidm\Provider::class);
             $event->extendSocialite('keycloak', \SocialiteProviders\Keycloak\Provider::class);
             $event->extendSocialite('pocketid', \Kami\Cocktail\Services\Auth\PocketIdProvider::class);
             $event->extendSocialite('zitadel', \SocialiteProviders\Zitadel\Provider::class);
