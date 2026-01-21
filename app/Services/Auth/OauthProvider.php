@@ -17,6 +17,7 @@ enum OauthProvider: string
     case GitLab = 'gitlab';
     case Authentik = 'authentik';
     case Authelia = 'authelia';
+    case Kanidm = 'kanidm';
     case Keycloak = 'keycloak';
     case PocketId = 'pocketid';
     case Zitadel = 'zitadel';
@@ -29,6 +30,7 @@ enum OauthProvider: string
             self::GitLab => 'GitLab',
             self::Authentik => 'Authentik',
             self::Authelia => 'Authelia',
+            self::Kanidm => 'Kanidm',
             self::Keycloak => 'Keycloak',
             self::PocketId => 'PocketId',
             self::Zitadel => 'Zitadel',

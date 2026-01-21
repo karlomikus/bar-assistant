@@ -24,6 +24,7 @@
         "sentry/sentry-laravel": "^4.10",
         "socialiteproviders/authelia": "^4.0",
         "socialiteproviders/authentik": "^5.2",
+        "socialiteproviders/kanidm": "^5.0",
         "socialiteproviders/keycloak": "^5.3",
         "socialiteproviders/zitadel": "^4.1",
         "spatie/array-to-xml": "^3.1",

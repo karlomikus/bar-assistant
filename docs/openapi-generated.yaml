@@ -11535,6 +11535,7 @@ components:
         - gitlab
         - authentik
         - authelia
+        - kanidm
         - keycloak
         - pocketid
         - zitadel

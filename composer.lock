@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "721d10359c0551e8c883b8f53f605b5b",
+    "content-hash": "0f54b90e049238cdc0f7c752ed243980",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -5599,6 +5599,56 @@
                 "source": "https://github.com/socialiteproviders/providers"
             },
             "time": "2023-11-07T22:21:16+00:00"
+        },
+        {
+            "name": "socialiteproviders/kanidm",
+            "version": "5.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialiteProviders/Kanidm.git",
+                "reference": "111ad45941e7150e3219ddfdeb8159f758bde2fd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialiteProviders/Kanidm/zipball/111ad45941e7150e3219ddfdeb8159f758bde2fd",
+                "reference": "111ad45941e7150e3219ddfdeb8159f758bde2fd",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^8.0",
+                "socialiteproviders/manager": "^4.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\Kanidm\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tom Hubrecht",
+                    "email": "tom@hubrecht.ovh"
+                }
+            ],
+            "description": "Kanidm OAuth2 Provider for Laravel Socialite",
+            "keywords": [
+                "kanidm",
+                "laravel",
+                "oauth",
+                "provider",
+                "socialite"
+            ],
+            "support": {
+                "docs": "https://socialiteproviders.com/kanidm",
+                "issues": "https://github.com/socialiteproviders/providers/issues",
+                "source": "https://github.com/socialiteproviders/providers"
+            },
+            "time": "2024-02-19T19:49:21+00:00"
         },
         {
             "name": "socialiteproviders/keycloak",
