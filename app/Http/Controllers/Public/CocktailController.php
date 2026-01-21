@@ -33,7 +33,14 @@ class CocktailController extends Controller
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `abv`, `random`.', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(CocktailResource::class),
+        new BAO\PaginateData(CocktailResource::class, [
+            new OAT\Property(property: 'filters', type: 'object', required: ['collections'], properties: [
+                new OAT\Property(property: 'collections', type: 'array', required: ['id', 'name'], items: new OAT\Items(type: 'object', properties: [
+                    new OAT\Property(property: 'id', type: 'integer'),
+                    new OAT\Property(property: 'name', type: 'string'),
+                ]))
+            ])
+        ]),
     ])]
     #[BAO\NotFoundResponse]
     public function index(Request $request, string $slugOrId): JsonResource
@@ -43,6 +50,15 @@ class CocktailController extends Controller
             abort(404);
         }
 
+        $cocktailCollections = \Kami\Cocktail\Models\Collection::where('is_bar_shared', true)
+            ->join('bar_memberships', 'bar_memberships.id', '=', 'collections.bar_membership_id')
+            ->where('bar_memberships.bar_id', $bar->id)
+            ->has('cocktails')
+            ->orderBy('name')
+            ->get(['collections.id', 'collections.name']);
+
+        $additionalData = ['meta' => ['filters' => ['collections' => $cocktailCollections]]];
+
         $queryParams = $request->only(['filter', 'sort', 'page']);
         ksort($queryParams);
         $cacheKey = 'public_cocktails_index:' . $bar->id . ':' . sha1(http_build_query($queryParams));
@@ -50,7 +66,7 @@ class CocktailController extends Controller
         if (Cache::has($cacheKey)) {
             $cocktails = Cache::get($cacheKey);
 
-            return CocktailResource::collection($cocktails->withQueryString());
+            return CocktailResource::collection($cocktails->withQueryString())->additional($additionalData);
         }
 
         try {
@@ -63,7 +79,7 @@ class CocktailController extends Controller
 
         Cache::put($cacheKey, $cocktails, 3600);
 
-        return CocktailResource::collection($cocktails->withQueryString());
+        return CocktailResource::collection($cocktails->withQueryString())->additional($additionalData);
     }
 
     #[OAT\Get(path: '/public/{slugOrId}/cocktails/{cocktailSlug}', tags: ['Public'], operationId: 'showPublicBarCocktail', description: 'Show public information about cocktail.', summary: 'Show cocktail', parameters: [
