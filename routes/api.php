@@ -35,6 +35,8 @@ use Kami\Cocktail\Http\Controllers\SubscriptionController;
 use Kami\Cocktail\Http\Controllers\PriceCategoryController;
 use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
+use Kami\Cocktail\Http\Controllers\GenerateController;
+use Kami\Cocktail\Http\Middleware\AiProviderIsConfigured;
 
 /*
 |--------------------------------------------------------------------------
@@ -294,6 +296,11 @@ Route::middleware($apiMiddleware)->group(function () {
 
     Route::prefix('recommender')->middleware(['ability:*'])->group(function () {
         Route::get('/cocktails', [RecommenderController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);
+    });
+
+    Route::prefix('generate')->middleware(['ability:*', EnsureRequestHasBarQuery::class, AiProviderIsConfigured::class])->group(function () {
+        Route::post('/ingredient', [GenerateController::class, 'completeIngredient']);
+        Route::post('/cocktail-tags', [GenerateController::class, 'completeCocktailTags']);
     });
 });
 

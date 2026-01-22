@@ -79,4 +79,10 @@ return [
         'proxy' => env('SCRAPING_HTTP_PROXY', null),
         'cert' => env('SCRAPING_CLIENT_CERT', null),
     ],
+
+    'ai' => [
+        'provider' => env('GEN_AI_PROVIDER', null),
+        'model' => env('GEN_AI_MODEL', null),
+        'timeout' => env('GEN_AI_TIMEOUT', 60),
+    ],
 ];

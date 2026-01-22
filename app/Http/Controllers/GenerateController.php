@@ -1,0 +1,102 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Kami\Cocktail\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Kami\Cocktail\External\Model\Cocktail as ModelCocktail;
+use Kami\Cocktail\External\Model\Schema;
+use OpenApi\Attributes as OAT;
+use Prism\Prism\Facades\Prism;
+use Prism\Prism\Enums\Provider;
+use Kami\Cocktail\OpenAPI as BAO;
+use Prism\Prism\Schema\ObjectSchema;
+use Prism\Prism\Schema\StringSchema;
+use Kami\Cocktail\Http\Resources\FeedRecipeResource;
+use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\Models\Tag;
+use Prism\Prism\Schema\ArraySchema;
+use Prism\Prism\Schema\NumberSchema;
+
+class GenerateController extends Controller
+{
+    #[OAT\Get(path: '/generate', tags: ['Generation'], operationId: 'completeIngredient', description: 'Complete ingredient information', summary: 'Complete ingredient')]
+    #[BAO\SuccessfulResponse(content: [
+        new BAO\WrapItemsWithData(FeedRecipeResource::class),
+    ])]
+    public function completeIngredient(Request $request)
+    {
+        $provider = Provider::tryFrom(config('bar-assistant.ai.provider'));
+        $model = config('bar-assistant.ai.model');
+        $timeout = config('bar-assistant.ai.timeout');
+        $ingredientName = $request->input('name');
+
+        $schema = new ObjectSchema(
+            name: 'cocktail_ingredient',
+            description: 'Basic information about cocktail ingredient',
+            properties: [
+                new StringSchema('name', 'The name of the ingredient'),
+                new StringSchema('description', 'Helpful description of ingredient (1-2 short paragraphs)'),
+                new NumberSchema('abv', 'Alcohol by volume percentage', true),
+                new StringSchema('color', 'The predominant color of the ingredient as hex value', true),
+                new StringSchema('distilery', 'Name of the distilery producing the ingredient', true),
+                new StringSchema('origin', 'The geographical origin of the ingredient', true),
+            ],
+            requiredFields: ['name', 'description', 'color', 'distilery', 'origin', 'abv']
+        );
+
+        $prompt = <<<PROMPT
+            Tell me more about {$ingredientName}. Keep description in 1-2 short paragraphs. Color must be represented as a hex value.
+        PROMPT;
+
+        $response = Prism::structured()
+            ->using($provider, $model)
+            ->withSchema($schema)
+            ->withPrompt(trim($prompt))
+            ->withClientOptions(['timeout' => $timeout])
+            ->asStructured();
+
+        return $response->structured;
+    }
+
+    public function completeCocktailTags(Request $request)
+    {
+        $cocktailId = $request->input('cocktail_id');
+        $cocktail = Cocktail::where('slug', $cocktailId)
+            ->orWhere('id', $cocktailId)
+            ->firstOrFail();
+
+        $provider = Provider::tryFrom(config('bar-assistant.ai.provider'));
+        $model = config('bar-assistant.ai.model');
+        $timeout = config('bar-assistant.ai.timeout');
+
+        $existingTags = Tag::where('bar_id', $cocktail->bar_id)->pluck('name')->implode(', ');
+
+        $schema = new ObjectSchema(
+            name: 'cocktail_tags',
+            description: 'Cocktail tags',
+            properties: [
+                new ArraySchema('tags', 'List of recommended cocktail tags', new StringSchema('tag', 'A single cocktail tag')),
+            ],
+            requiredFields: ['tags']
+        );
+
+        $cocktailMarkdown = Schema::fromCocktailModel($cocktail)->toMarkdown();
+
+        $prompt = <<<PROMPT
+            Here's a list of existing tags: {$existingTags}. Generate an array of relevant and unique cocktail tags for a cocktail with the following name and instructions. You can generate new tags but try to prefer existing tags. Keep it to 5-6 tags max.
+            Cocktail recipe:
+            {$cocktailMarkdown}
+        PROMPT;
+
+        $response = Prism::structured()
+            ->using($provider, $model)
+            ->withSchema($schema)
+            ->withPrompt(trim($prompt))
+            ->withClientOptions(['timeout' => $timeout])
+            ->asStructured();
+
+        return $response->structured;
+    }
+}
