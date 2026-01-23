@@ -1,3 +1,11 @@
+# v5.13.0
+## New
+- Added generative AI endpoints
+    - Support is added via [PrismPHP library](https://prismphp.com/). So you can use any provider supported by this library.
+    - Added `/generate/ingredient`, used to complete ingredient data based on the name
+    - Added `/generate/cocktail-tags`, used to suggest cocktail tags
+    - Added `/generate/cocktail-recipe-from-text`, used to generate structured recipe output from raw text
+
 # v5.12.0
 ## New
 - Added `filters` property to `meta` property in public cocktails index

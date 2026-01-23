@@ -301,6 +301,7 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::prefix('generate')->middleware(['ability:*', EnsureRequestHasBarQuery::class, AiProviderIsConfigured::class])->group(function () {
         Route::post('/ingredient', [GenerateController::class, 'completeIngredient']);
         Route::post('/cocktail-tags', [GenerateController::class, 'completeCocktailTags']);
+        Route::post('/cocktail-recipe-from-text', [GenerateController::class, 'cocktailRecipeFromText']);
     });
 });
 
