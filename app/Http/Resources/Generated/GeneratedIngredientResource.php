@@ -16,6 +16,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
         new OAT\Property(property: 'description', type: 'string', nullable: true, example: 'Vodka is a clear distilled alcoholic beverage', description: 'Generated description of the ingredient'),
         new OAT\Property(property: 'origin', type: 'string', nullable: true, example: 'Russia', description: 'Generated origin of the ingredient'),
         new OAT\Property(property: 'color', type: 'string', example: '#ffffff', description: 'Generated color of the ingredient', nullable: true),
+        new OAT\Property(property: 'distillery', type: 'string', example: 'Smirnoff', description: 'Generated distillery of the ingredient', nullable: true),
     ],
     required: ['name', 'strength', 'description', 'origin', 'color'],
 )]

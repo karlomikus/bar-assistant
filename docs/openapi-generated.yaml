@@ -9583,6 +9583,10 @@ components:
           description: 'Generated preparation instructions for the cocktail'
           type: string
           example: '1. Muddle mint leaves with sugar and lime juice in a glass.\n2. Add ice cubes and pour in the white rum.\n3. Top up with soda water and stir gently.\n4. Garnish with a sprig of mint and a lime wedge.'
+        method:
+          description: 'Generated cocktail method'
+          type: string
+          example: Shake
         ingredients:
           description: 'List of ingredients required for the cocktail'
           type: array
@@ -9669,6 +9673,12 @@ components:
             - string
             - 'null'
           example: '#ffffff'
+        distillery:
+          description: 'Generated distillery of the ingredient'
+          type:
+            - string
+            - 'null'
+          example: Smirnoff
       type: object
     Glass:
       description: 'Represents glassware'

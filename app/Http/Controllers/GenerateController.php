@@ -218,7 +218,7 @@ class GenerateController extends Controller
 
             Instructions:
             - Extract the recipe name, ingredients, and preparation instructions
-            - Format instructions as a numbered markdown list (e.g., "1. Step one\n2. Step two"). Do NOT include markdown headings.
+            - Format instructions as a numbered markdown list (e.g., "1. Step one\n2. Step two"). Do NOT include markdown headings. Do NOT include ingredient amounts in instructions.
             - For method, choose ONLY one of: "Shake", "Stir", "Build", "Blend", "Muddle", "Layer"
             - Standardize ingredient units to: "ml", "cl", "oz", "dash", "tsp", "tbsp", "cup", "part", "slice", "wedge", "piece", "whole"
             - For ingredient amounts:
