@@ -24,19 +24,19 @@ use Kami\Cocktail\Http\Controllers\ExploreController;
 use Kami\Cocktail\Http\Controllers\ProfileController;
 use Kami\Cocktail\Http\Controllers\SSOAuthController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
+use Kami\Cocktail\Http\Controllers\GenerateController;
 use Kami\Cocktail\Http\Controllers\UtensilsController;
 use Laravel\Paddle\Http\Controllers\WebhookController;
 use Kami\Cocktail\Http\Controllers\CalculatorController;
 use Kami\Cocktail\Http\Controllers\CollectionController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\RecommenderController;
+use Kami\Cocktail\Http\Middleware\AiProviderIsConfigured;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
 use Kami\Cocktail\Http\Controllers\SubscriptionController;
 use Kami\Cocktail\Http\Controllers\PriceCategoryController;
 use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
-use Kami\Cocktail\Http\Controllers\GenerateController;
-use Kami\Cocktail\Http\Middleware\AiProviderIsConfigured;
 
 /*
 |--------------------------------------------------------------------------

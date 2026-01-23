@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Resources\Generated;
 
-use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OAT;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 #[OAT\Schema(
     schema: 'GeneratedCocktailFromTextResource',
