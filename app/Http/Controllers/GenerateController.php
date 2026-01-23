@@ -163,6 +163,7 @@ class GenerateController extends Controller
                 new StringSchema('name', 'Title of the recipe'),
                 new StringSchema('instructions', 'Step by step instructions to prepare the cocktail'),
                 new StringSchema('garnish', 'Recommended garnish for the cocktail', true),
+                new StringSchema('method', 'Cocktail preperation method.', true),
                 new StringSchema('description', 'Helpful description of the cocktail (1-2 short paragraphs)', true),
                 new ArraySchema('ingredients', 'List of ingredients', new ObjectSchema(
                     name: 'cocktail_recipe_ingredient',
@@ -177,12 +178,15 @@ class GenerateController extends Controller
                     requiredFields: ['name', 'amount', 'units']
                 )),
             ],
-            requiredFields: ['name', 'instructions', 'ingredients']
+            requiredFields: ['name', 'instructions', 'ingredients', 'description', 'garnish']
         );
 
         $prompt = <<<PROMPT
-            Here's a text of cocktail recipe. Extract the information in JSON format. Instructions must be a markdown text containg a numbered list of preperation steps.
-            Cocktail recipe:
+            I will provide you a text containing cocktail recipe. Extract the information in JSON format.
+            Instructions must be a markdown text containg a numbered list of preperation steps and nothing else. Do not include any markdown headings.
+            Method must be one of the following: "Shake", "Stir", "Build", "Blend", "Muddle", "Layer".
+            Keep ingredient units as standard as "ml", "cl", "oz", "dash", "tsp", "tbsp", "cup", "part", "slice", "wedge", "piece", "whole".
+            COCKTAIL RECIPE:
             {$textRecipe}
         PROMPT;
 

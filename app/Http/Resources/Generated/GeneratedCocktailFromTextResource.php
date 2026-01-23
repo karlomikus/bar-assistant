@@ -15,6 +15,7 @@ use OpenApi\Attributes as OAT;
         new OAT\Property(property: 'description', type: 'string', nullable: true, example: 'A refreshing Cuban cocktail made with white rum, lime juice, sugar, mint leaves, and soda water.', description: 'Generated description of the cocktail'),
         new OAT\Property(property: 'garnish', type: 'string', nullable: true, example: 'Orange peel.', description: 'Generated garnish of the cocktail'),
         new OAT\Property(property: 'instructions', type: 'string', example: '1. Muddle mint leaves with sugar and lime juice in a glass.\n2. Add ice cubes and pour in the white rum.\n3. Top up with soda water and stir gently.\n4. Garnish with a sprig of mint and a lime wedge.', description: 'Generated preparation instructions for the cocktail'),
+        new OAT\Property(property: 'method', type: 'string', example: 'Shake', description: 'Generated cocktail method'),
         new OAT\Property(
             property: 'ingredients',
             type: 'array',
