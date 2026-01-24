@@ -11703,6 +11703,7 @@ components:
         - is_latest
         - is_feeds_enabled
         - is_password_login_enabled
+        - is_ai_enabled
       properties:
         version:
           description: 'Version of the server'
@@ -11733,6 +11734,10 @@ components:
           example: true
         is_password_login_enabled:
           description: 'Whether password login is enabled'
+          type: boolean
+          example: true
+        is_ai_enabled:
+          description: 'Whether AI features are enabled'
           type: boolean
           example: true
       type: object
