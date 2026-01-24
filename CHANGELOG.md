@@ -5,6 +5,8 @@
     - Added `/generate/ingredient`, used to complete ingredient data based on the name
     - Added `/generate/cocktail-tags`, used to suggest cocktail tags
     - Added `/generate/cocktail-recipe-from-text`, used to generate structured recipe output from raw text
+- Added MCP server (v0.1.0) (alpha)
+    - Following tools are supported: `cocktail-create`, `cocktail-details`, `cocktail-search`, `ingredient-details`, `ingredient-list`, `bar-inventory`
 
 # v5.12.0
 ## New

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Mcp\Tools;
 
-use Illuminate\JsonSchema\JsonSchema;
-use Kami\Cocktail\Models\Cocktail;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Tool;
+use Kami\Cocktail\Models\Cocktail;
+use Illuminate\JsonSchema\JsonSchema;
 use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
 

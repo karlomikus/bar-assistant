@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Mcp\Tools;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\JsonSchema\JsonSchema;
-use Illuminate\Support\Str;
-use Kami\Cocktail\Models\Cocktail;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
+use Illuminate\Support\Str;
 use Laravel\Mcp\Server\Tool;
+use Kami\Cocktail\Models\Cocktail;
+use Illuminate\JsonSchema\JsonSchema;
+use Illuminate\Database\Eloquent\Builder;
 
 class CocktailSearchTool extends Tool
 {

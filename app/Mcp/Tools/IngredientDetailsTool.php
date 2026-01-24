@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Mcp\Tools;
 
-use Illuminate\JsonSchema\JsonSchema;
-use Kami\Cocktail\Models\Ingredient;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Tool;
+use Kami\Cocktail\Models\Ingredient;
+use Illuminate\JsonSchema\JsonSchema;
 
 class IngredientDetailsTool extends Tool
 {

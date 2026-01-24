@@ -2,12 +2,13 @@
 
 namespace Kami\Cocktail\Mcp\Servers;
 
-use Kami\Cocktail\Mcp\Tools\CocktailCreateTool;
-use Kami\Cocktail\Mcp\Tools\CocktailDetailsTool;
-use Kami\Cocktail\Mcp\Tools\CocktailSearchTool;
-use Kami\Cocktail\Mcp\Tools\IngredientDetailsTool;
-use Kami\Cocktail\Mcp\Tools\IngredientListTool;
 use Laravel\Mcp\Server;
+use Kami\Cocktail\Mcp\Tools\BarInventoryTool;
+use Kami\Cocktail\Mcp\Tools\CocktailCreateTool;
+use Kami\Cocktail\Mcp\Tools\CocktailSearchTool;
+use Kami\Cocktail\Mcp\Tools\IngredientListTool;
+use Kami\Cocktail\Mcp\Tools\CocktailDetailsTool;
+use Kami\Cocktail\Mcp\Tools\IngredientDetailsTool;
 
 class CocktailServer extends Server
 {
@@ -19,7 +20,7 @@ class CocktailServer extends Server
     /**
      * The MCP server's version.
      */
-    protected string $version = '0.0.1';
+    protected string $version = '0.1.0';
 
     /**
      * The MCP server's instructions for the LLM.
@@ -39,6 +40,7 @@ class CocktailServer extends Server
         CocktailCreateTool::class,
         IngredientListTool::class,
         IngredientDetailsTool::class,
+        BarInventoryTool::class,
     ];
 
     /**

@@ -81,6 +81,7 @@ return [
     ],
 
     'ai' => [
+        'mcp_server' => env('ENABLE_MCP_SERVER', false),
         'provider' => env('GEN_AI_PROVIDER', null),
         'model' => env('GEN_AI_MODEL', null),
         'timeout' => env('GEN_AI_TIMEOUT', 60),

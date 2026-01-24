@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Mcp\Tools;
 
-use Illuminate\JsonSchema\JsonSchema;
-use Kami\Cocktail\Models\Cocktail;
-use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest;
-use Kami\Cocktail\Services\CocktailService;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Tool;
+use Kami\Cocktail\Models\Cocktail;
+use Illuminate\JsonSchema\JsonSchema;
+use Kami\Cocktail\Services\CocktailService;
+use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest;
 use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
 
 class CocktailCreateTool extends Tool
