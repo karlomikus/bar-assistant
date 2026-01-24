@@ -422,6 +422,9 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         return new UnitValueObject($this->units);
     }
 
+    /**
+     * @param Builder<self> $query
+     */
     #[Scope]
     public function onShoppingList(Builder $query, int $barMembershipId): void
     {
@@ -429,6 +432,9 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
             ->where('user_shopping_lists.bar_membership_id', $barMembershipId);
     }
 
+    /**
+     * @param Builder<self> $query
+     */
     #[Scope]
     public function inUserShelf(Builder $query, int $barMembershipId): void
     {
@@ -436,6 +442,9 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
             ->where('user_ingredients.bar_membership_id', $barMembershipId);
     }
 
+    /**
+     * @param Builder<self> $query
+     */
     #[Scope]
     public function onlyRootIngredients(Builder $query, int $barId): void
     {
@@ -447,6 +456,9 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         });
     }
 
+    /**
+     * @param Builder<self> $query
+     */
     #[Scope]
     public function descendantsOf(Builder $query, int $ingredientId): void
     {
@@ -457,10 +469,12 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         });
     }
 
-    #[Scope]
-    public function withInBarShelfColumn(Builder $query): Builder
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeWithInBarShelfColumn(Builder $query): void
     {
-        return $query
+        $query
             ->leftJoin('bar_ingredients AS bi', function ($join) {
                 $join->on('ingredients.id', '=', 'bi.ingredient_id')
                     ->on('ingredients.bar_id', '=', 'bi.bar_id');
