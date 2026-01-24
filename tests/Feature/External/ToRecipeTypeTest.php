@@ -58,7 +58,7 @@ class ToRecipeTypeTest extends TestCase
 
         $exporter = new ToRecipeType($exportMock);
         $filename = $exporter->process($membership->bar->id, 'recipes.zip');
-        $filename = $exportMock->disk()->path($filename);
+        $filename = $exportMock->path($filename);
 
         $unzippedFilesDisk = Storage::fake('temp-recipes-unzip');
 
@@ -75,14 +75,12 @@ class ToRecipeTypeTest extends TestCase
     }
 
     /**
-     * @return \Illuminate\Contracts\Filesystem\Factory&\PHPUnit\Framework\MockObject\MockObject
+     * @return \Illuminate\Contracts\Filesystem\Filesystem
      */
     private function getFileMock()
     {
         $disk = Storage::fake('exports');
-        $factory = $this->createMock(\Illuminate\Contracts\Filesystem\Factory::class);
-        $factory->method('disk')->willReturn($disk);
 
-        return $factory;
+        return $disk;
     }
 }

@@ -65,8 +65,6 @@ class MenuController extends Controller
             ->where(['slug' => $barSlug])
             ->where('menus.is_enabled', true)
             ->join('bars', 'bars.id', '=', 'menus.bar_id')
-            ->join('menu_cocktails', 'menu_cocktails.menu_id', '=', 'menus.id')
-            ->orderBy('menu_cocktails.sort', 'asc')
             ->with(
                 'bar.images',
                 'menuCocktails.cocktail.ingredients.ingredient',

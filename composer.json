@@ -21,10 +21,12 @@
         "league/flysystem-aws-s3-v3": "^3.0",
         "meilisearch/meilisearch-php": "^1.0",
         "nxp/math-executor": "^2.3",
+        "prism-php/prism": "^0.99.13",
         "promphp/prometheus_client_php": "^2.13",
         "sentry/sentry-laravel": "^4.10",
         "socialiteproviders/authelia": "^4.0",
         "socialiteproviders/authentik": "^5.2",
+        "socialiteproviders/kanidm": "^5.0",
         "socialiteproviders/keycloak": "^5.3",
         "socialiteproviders/zitadel": "^4.1",
         "spatie/array-to-xml": "^3.1",
@@ -48,7 +50,7 @@
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "phpstan/phpstan": "^2.0",
-        "phpunit/phpunit": "^11.0",
+        "phpunit/phpunit": "^12.0",
         "rector/rector": "^2.2"
     },
     "autoload": {

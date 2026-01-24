@@ -210,7 +210,7 @@ class FromDataPack
                 'created_user_id' => $user->id,
                 'created_at' => $externalIngredient->createdAt ?? now(),
                 'updated_at' => $externalIngredient->updatedAt,
-                'calculator_id' => $externalIngredient->calculatorId ? $this->ingredientCalculators[$externalIngredient->calculatorId] : null,
+                'calculator_id' => $externalIngredient->calculatorId ? $this->ingredientCalculators[$externalIngredient->calculatorId] ?? null : null,
                 'sugar_g_per_ml' => $externalIngredient->sugarContent,
                 'acidity' => $externalIngredient->acidity,
                 'distillery' => $externalIngredient->distillery,

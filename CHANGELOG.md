@@ -1,3 +1,54 @@
+# v5.13.0
+## New
+- Added generative AI endpoints
+    - Support is added via [PrismPHP library](https://prismphp.com/). So you can use any provider supported by this library.
+    - Added `/generate/ingredient`, used to complete ingredient data based on the name
+    - Added `/generate/cocktail-tags`, used to suggest cocktail tags
+    - Added `/generate/cocktail-recipe-from-text`, used to generate structured recipe output from raw text
+
+# v5.12.0
+## New
+- Added `filters` property to `meta` property in public cocktails index
+    - Added `collections` list
+        - This will show all collections that are shared with the bar
+- Added `collection_id` filter to public cocktails index
+
+# v5.11.2
+## Fixes
+- Fixed crash when metrics are enabled
+
+# v5.11.1
+## Fixes
+- Fixed missing calculator reference in datapack import
+- Fixed empty menu when only ingredients are added
+
+# v5.11.0
+## New
+- Added `SCRAPING_HTTP_PROXY` env variable
+    - You can now set an HTTP proxy for scraping requests
+    - Example value: `http://username:password@proxyserver:port`
+- Added `SCRAPING_CLIENT_CERT` env variable
+    - You can now set a client certificate for scraping requests
+    - Example value: `/var/www/cocktails/storage/bar-assistant/my-cert.pem`
+
+## Changes
+- Improved search results for queries with multiple words
+
+## Fixes
+- Fixed out of memory errors when exporting large bars
+
+# v5.10.0
+## New
+- Added `locked_user_cocktails` filter to cocktails endpoint
+    - This will show cocktails that are locked for the user (not all ingredients are in user's shelf)
+- Added `locked_bar_cocktails` filter to cocktails endpoint
+    - This will show cocktails that are locked for the bar (not all ingredients are in bar's shelf)
+- Added `potential_bar_shelf_cocktails` sort to ingredients endpoint
+    - This will sort ingredients by how many new cocktails would be unlocked for the bar if the ingredient is added to bar shelf
+    
+## Changes
+- Docker image is now built on top of PHP 8.4 base image
+
 # v5.9.3
 ## Fixes
 - Fixed shopping list access check

@@ -60,6 +60,6 @@ final readonly class MaterializedPath
             return '';
         }
 
-        return implode(self::SEPARATOR, $this->basePath) . '/';
+        return implode(self::SEPARATOR, $this->basePath) . self::SEPARATOR;
     }
 }

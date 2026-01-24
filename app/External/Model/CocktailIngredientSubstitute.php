@@ -29,7 +29,7 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
         }
 
         return new self(
-            Ingredient::fromModel($model->ingredient),
+            Ingredient::fromModelBasic($model->ingredient),
             $amount,
         );
     }

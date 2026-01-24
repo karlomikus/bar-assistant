@@ -18,7 +18,7 @@ final class RecipeFeedsService
         ['url' => 'https://abarabove.com/feed/', 'supportsRecipeImport' => false],
         ['url' => 'https://imbibemagazine.com/category/recipes/cocktails-spirits-recipes/feed/', 'supportsRecipeImport' => true],
         ['url' => 'https://imbibemagazine.com/category/recipes/alcohol-free-recipes/feed/', 'supportsRecipeImport' => true],
-        ['url' => 'https://www.theeducatedbarfly.com/category/recipes/cocktails/feed/', 'supportsRecipeImport' => true],
+        // ['url' => 'https://www.theeducatedbarfly.com/category/recipes/cocktails/feed/', 'supportsRecipeImport' => true],
         ['url' => 'https://feeds-api.dotdashmeredith.com/v1/rss/google/7d333f07-9a05-4a69-aae7-7f2daacd7ebc', 'supportsRecipeImport' => false],
         // ['url' => 'https://cocktailvirgin.blogspot.com/feeds/posts/default', 'supportsRecipeImport' => true],
         // ['url' => 'https://www.reddit.com/r/cocktails/top/.rss?sort=top&t=week', 'supportsRecipeImport' => false],

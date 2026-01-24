@@ -40,8 +40,9 @@ class ServerController extends Controller
                 'type' => config('app.env'),
                 'search_host' => $searchHost,
                 'search_version' => $searchVersion,
-                'is_feeds_enabled' => (bool) config('bar-assistant.enable_feeds') === true,
+                'is_feeds_enabled' => config('bar-assistant.enable_feeds') === true,
                 'is_password_login_enabled' => config('bar-assistant.enable_password_login') === true,
+                'is_ai_enabled' => config('bar-assistant.ai.provider') !== null,
             ]
         ]);
     }

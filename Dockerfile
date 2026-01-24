@@ -1,13 +1,3 @@
-FROM alpine:latest AS datapack
-
-RUN apk add --no-cache git
-
-WORKDIR /app/data
-
-RUN git clone --depth 1 --branch v5 https://github.com/bar-assistant/data.git .
-
-RUN rm -r .git
-
 FROM serversideup/php:8.4-fpm-nginx AS php-base
 
 LABEL org.opencontainers.image.source="https://github.com/karlomikus/bar-assistant"
@@ -24,7 +14,7 @@ RUN install-php-extensions bcmath intl ffi
 
 RUN apt update \
     && apt-get install -y \
-    sqlite3 \
+    sqlite3 git \
     && apt-get install -y --no-install-recommends libvips42 \
     && apt-get autoremove -y \
     && apt-get clean \
@@ -59,7 +49,7 @@ COPY ./resources/docker/dist/php.ini /usr/local/etc/php/conf.d/zzz-bass-php.ini
 
 COPY --chown=www-data:www-data . .
 
-COPY --from=datapack --chown=www-data:www-data /app/data ./resources/data
+ADD --chown=www-data:www-data "https://github.com/bar-assistant/data.git" ./resources/data
 
 RUN composer install --optimize-autoloader --no-dev \
     && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/openapi-generated.yaml \

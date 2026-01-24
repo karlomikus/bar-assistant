@@ -47,7 +47,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
     {
         $images = $model->images->map(fn (ImageModel $image) => Image::fromModel($image, $useFileURI))->toArray();
 
-        $ingredientParts = $model->ingredientParts->map(fn (ComplexIngredient $part) => Ingredient::fromModel($part->ingredient))->toArray();
+        $ingredientParts = $model->ingredientParts->map(fn (ComplexIngredient $part) => Ingredient::fromModelBasic($part->ingredient))->toArray();
 
         $ingredientPrices = $model->prices->map(fn (IngredientPriceModel $price) => IngredientPrice::fromModel($price))->toArray();
 
@@ -75,6 +75,18 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
             acidity: $model->acidity,
             distillery: $model->distillery,
             units: $defaultIngredientUnits,
+        );
+    }
+
+    public static function fromModelBasic(IngredientModel $model): self
+    {
+        return new self(
+            id: $model->getExternalId(),
+            name: $model->name,
+            strength: $model->strength,
+            description: $model->description,
+            origin: $model->origin,
+            color: $model->color,
         );
     }
 

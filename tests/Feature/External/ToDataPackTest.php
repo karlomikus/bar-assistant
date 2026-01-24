@@ -58,7 +58,7 @@ class ToDataPackTest extends TestCase
 
         $exporter = new ToDataPack($exportMock);
         $filename = $exporter->process($membership->bar->id, 'datapack-test.zip');
-        $filename = $exportMock->disk()->path($filename);
+        $filename = $exportMock->path($filename);
 
         $unzippedFilesDisk = Storage::fake('temp-datapack-unzip');
 
@@ -101,14 +101,12 @@ class ToDataPackTest extends TestCase
     }
 
     /**
-     * @return \Illuminate\Contracts\Filesystem\Factory&\PHPUnit\Framework\MockObject\MockObject
+     * @return \Illuminate\Contracts\Filesystem\Filesystem
      */
     private function getFileMock()
     {
         $disk = Storage::fake('exports');
-        $factory = $this->createMock(\Illuminate\Contracts\Filesystem\Factory::class);
-        $factory->method('disk')->willReturn($disk);
 
-        return $factory;
+        return $disk;
     }
 }

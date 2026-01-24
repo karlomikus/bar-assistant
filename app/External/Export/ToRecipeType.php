@@ -9,8 +9,8 @@ use Carbon\Carbon;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Kami\RecipeUtils\UnitConverter\Units;
-use Kami\Cocktail\External\ExportTypeEnum;
 use Illuminate\Contracts\Filesystem\Cloud;
+use Kami\Cocktail\External\ExportTypeEnum;
 use Illuminate\Container\Attributes\Storage;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
 use Kami\Cocktail\Exceptions\ImageFileNotFoundException;
@@ -70,12 +70,19 @@ class ToRecipeType
         $fullPath = $barId . '/' . $filename;
         Log::debug(sprintf('Moving temporary file from "%s" to exports disk at "%s"', $tempFilePath, $fullPath));
         $this->file->makeDirectory((string) $barId);
-        $contents = file_get_contents($tempFilePath);
-        if ($contents === false) {
+        $stream = fopen($tempFilePath, 'r');
+        if ($stream === false) {
             throw new ExportFileNotCreatedException('Could not read temporary export file contents');
         }
 
-        $this->file->put($fullPath, $contents);
+        try {
+            $this->file->put($fullPath, $stream);
+        } finally {
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+            unlink($tempFilePath);
+        }
 
         return $fullPath;
     }
