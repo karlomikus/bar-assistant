@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\Models\Tag;
 use OpenApi\Attributes as OAT;
 use Prism\Prism\Facades\Prism;
@@ -74,6 +75,8 @@ class GenerateController extends Controller
             - For distillery, provide the name of a well-known producer if applicable, otherwise use null
             - For origin, specify the country or region where this ingredient typically originates
         PROMPT;
+
+        Log::info("[LLM] Generating ingredient information for: {$ingredientName}");
 
         $response = Prism::structured()
             ->using($provider, $model)
@@ -153,6 +156,8 @@ class GenerateController extends Controller
             {$cocktailMarkdown}
         PROMPT;
 
+        Log::info("[LLM] Generating cocktail tags for cocktail ID: {$cocktailId}");
+
         $response = Prism::structured()
             ->using($provider, $model)
             ->withSchema($schema)
@@ -231,6 +236,8 @@ class GenerateController extends Controller
             COCKTAIL RECIPE:
             {$textRecipe}
         PROMPT;
+
+        Log::info("[LLM] Generating cocktail recipe from text.");
 
         $response = Prism::structured()
             ->using($provider, $model)

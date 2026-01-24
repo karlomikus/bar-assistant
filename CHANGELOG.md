@@ -5,7 +5,12 @@
     - Added `/generate/ingredient`, used to complete ingredient data based on the name
     - Added `/generate/cocktail-tags`, used to suggest cocktail tags
     - Added `/generate/cocktail-recipe-from-text`, used to generate structured recipe output from raw text
-- Added MCP server (v0.1.0) (alpha)
+- Added MCP server (v0.1.0), keep in mind it's still work in progress
+    - Can be enabled by env variable `ENABLE_MCP_SERVER=true`
+    - Available at endpint `/mcp/cocktails`
+    - Requires following headers:
+        - `Authorization`, I recommend that you can generate personal access token
+        - `Bar-Assistant-Bar-Id`, the ID of a bar you want to manage
     - Following tools are supported: `cocktail-create`, `cocktail-details`, `cocktail-search`, `ingredient-details`, `ingredient-list`, `bar-inventory`
 
 # v5.12.0

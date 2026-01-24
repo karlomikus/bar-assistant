@@ -80,19 +80,30 @@ readonly class CocktailRequest
 
     public static function fromMCPRequest(MCPRequest $request, ?int $barId = null): self
     {
-        // /** @var array<mixed> */
-        // $formIngredients = $request->post('ingredients', []);
+        /** @var array<mixed> */
+        $formIngredients = $request->get('ingredients', []);
 
-        // $ingredients = [];
-        // foreach ($formIngredients as $formIngredient) {
-        //     $ingredients[] = CocktailIngredientRequest::fromArray($formIngredient);
-        // }
+        $ingredients = [];
+        foreach ($formIngredients as $formIngredient) {
+            $ingredients[] = CocktailIngredientRequest::fromArray($formIngredient);
+        }
 
         return new self(
             $request->get('name'),
             $request->get('instructions'),
             $request->user()->id,
             $barId ?? (int) bar()->id,
+            $request->get('description'),
+            $request->get('source'),
+            $request->get('garnish'),
+            $request->has('glass_id') ? $request->get('glass_id') : null,
+            $request->has('method_id') ? $request->get('method_id') : null,
+            $request->get('tags', []),
+            $ingredients,
+            $request->get('images', []),
+            $request->get('utensils', []),
+            $request->has('parent_cocktail_id') ? $request->get('parent_cocktail_id') : null,
+            $request->has('year') ? $request->get('year') : null,
         );
     }
 }
