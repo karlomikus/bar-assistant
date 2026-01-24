@@ -25,14 +25,9 @@ final class IngredientQueryFilter extends QueryBuilder
         $this
             ->allowedFilters([
                 AllowedFilter::exact('id'),
-                AllowedFilter::callback('parent_ingredient_id', function ($query, $value) {
+                AllowedFilter::callback('parent_ingredient_id', function ($query, $value) use ($barMembership) {
                     if ($value === 'null') {
-                        $query->whereNull('parent_ingredient_id')->whereExists(function ($query) {
-                            $query->select('1')
-                                ->from('ingredients as children')
-                                ->where('children.bar_id', bar()->id)
-                                ->whereColumn('children.parent_ingredient_id', 'ingredients.id');
-                        });
+                        $query->onlyRootIngredients($barMembership->bar_id);
                     } else {
                         $query->where('parent_ingredient_id', $value);
                     }
@@ -43,16 +38,12 @@ final class IngredientQueryFilter extends QueryBuilder
                 AllowedFilter::exact('created_user_id'),
                 AllowedFilter::callback('on_shopping_list', function ($query, $value) use ($barMembership) {
                     if ($value === true) {
-                        $query
-                            ->join('user_shopping_lists', 'user_shopping_lists.ingredient_id', '=', 'ingredients.id')
-                            ->where('user_shopping_lists.bar_membership_id', $barMembership->id);
+                        $query->onShoppingList($barMembership->id);
                     }
                 }),
                 AllowedFilter::callback('on_shelf', function ($query, $value) use ($barMembership) {
                     if ($value === true) {
-                        $query
-                            ->join('user_ingredients', 'user_ingredients.ingredient_id', '=', 'ingredients.id')
-                            ->where('user_ingredients.bar_membership_id', $barMembership->id);
+                        $query->inUserShelf($barMembership->id);
                     }
                 }),
                 AllowedFilter::callback('bar_shelf', function ($query, $value) {
@@ -66,9 +57,9 @@ final class IngredientQueryFilter extends QueryBuilder
                 AllowedFilter::callback('strength_max', function ($query, $value) {
                     $query->where('strength', '<=', $value);
                 }),
-                AllowedFilter::callback('main_ingredients', function ($query, $value) use ($ingredientQuery) {
+                AllowedFilter::callback('main_ingredients', function ($query, $value) use ($ingredientQuery, $barMembership) {
                     if ($value === true) {
-                        $ingredients = $ingredientQuery->getMainIngredientsOfCocktails(bar()->id);
+                        $ingredients = $ingredientQuery->getMainIngredientsOfCocktails($barMembership->bar_id);
                         $query->whereIn('ingredients.id', $ingredients->pluck('ingredient_id'));
                     }
                 }),
@@ -84,11 +75,7 @@ final class IngredientQueryFilter extends QueryBuilder
 
                     // TODO: Move to sqlite LIKE ANY when supported
                     foreach ($value as $id) {
-                        $query->orWhere('ingredients.materialized_path', 'LIKE', function ($query) use ($id) {
-                            $query->selectRaw("COALESCE(materialized_path, '') || id || '/%'")
-                                ->from('ingredients')
-                                ->where('id', $id);
-                        });
+                        $query->descendantsOf($id);
                     }
                 }),
             ])
@@ -116,20 +103,12 @@ final class IngredientQueryFilter extends QueryBuilder
                         ->groupBy('ingredients.id')
                         ->orderBy('potential_cocktails_count', $direction);
                 }),
-                AllowedSort::callback('total_cocktails', function ($query, bool $descending) {
-                    $direction = $descending ? 'DESC' : 'ASC';
-
-                    $query
-                        ->selectRaw('ingredients.*, COUNT(ci.ingredient_id) AS cocktails_count')
-                        ->leftJoin('cocktail_ingredients AS ci', 'ci.ingredient_id', '=', 'ingredients.id')
-                        ->groupBy('ingredients.id')
-                        ->orderBy('cocktails_count', $direction);
-                }),
+                AllowedSort::field('total_cocktails', 'cocktails_count'),
             ])
             ->allowedIncludes(['parentIngredient', 'prices', 'ingredientParts', 'images', 'descendants', 'ancestors'])
             ->withCount('cocktails')
             ->filterByBar('ingredients')
-            ->addInBarShelfColumn()
+            ->withInBarShelfColumn()
             ->with('bar.shelfIngredients');
     }
 }
