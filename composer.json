@@ -12,6 +12,7 @@
         "laravel/cashier-paddle": "^2.0",
         "laravel/framework": "^12.0",
         "laravel/horizon": "^5.21",
+        "laravel/mcp": "^0.3.3",
         "laravel/prompts": "^0.3.4",
         "laravel/sanctum": "^4.0",
         "laravel/scout": "^10.4",
