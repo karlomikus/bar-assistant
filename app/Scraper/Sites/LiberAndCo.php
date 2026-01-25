@@ -62,11 +62,13 @@ class LiberAndCo extends AbstractSite
         }
     }
 
+    #[\Override]
     public function tags(): array
     {
         return [];
     }
 
+    #[\Override]
     public function ingredients(): array
     {
         $result = [];

@@ -6,6 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OAT;
+use Laravel\Mcp\Request as MCPRequest;
 
 #[OAT\Schema(required: ['name', 'instructions'])]
 readonly class CocktailRequest
@@ -74,6 +75,35 @@ readonly class CocktailRequest
             $request->input('utensils', []),
             $request->filled('parent_cocktail_id') ? $request->integer('parent_cocktail_id') : null,
             $request->filled('year') ? $request->integer('year') : null,
+        );
+    }
+
+    public static function fromMCPRequest(MCPRequest $request, ?int $barId = null): self
+    {
+        /** @var array<mixed> */
+        $formIngredients = $request->get('ingredients', []);
+
+        $ingredients = [];
+        foreach ($formIngredients as $formIngredient) {
+            $ingredients[] = CocktailIngredientRequest::fromArray($formIngredient);
+        }
+
+        return new self(
+            $request->get('name'),
+            $request->get('instructions'),
+            $request->user()->getAuthIdentifier(),
+            $barId ?? (int) bar()->id,
+            $request->get('description'),
+            $request->get('source'),
+            $request->get('garnish'),
+            $request->has('glass_id') ? $request->get('glass_id') : null,
+            $request->has('method_id') ? $request->get('method_id') : null,
+            $request->get('tags', []),
+            $ingredients,
+            $request->get('images', []),
+            $request->get('utensils', []),
+            $request->has('parent_cocktail_id') ? $request->get('parent_cocktail_id') : null,
+            $request->has('year') ? $request->get('year') : null,
         );
     }
 }

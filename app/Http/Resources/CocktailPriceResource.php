@@ -38,6 +38,7 @@ class CocktailPriceResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array<string, mixed>
      */
+    #[\Override]
     public function toArray($request)
     {
         $prices = $this->cocktail->ingredients->map(function (CocktailIngredient $cocktailIngredient) {

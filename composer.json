@@ -8,10 +8,10 @@
         "jcupitt/vips": "^2.4",
         "karlomikus/recipe-utils": "^0.17",
         "kevinrob/guzzle-cache-middleware": "^6.0",
-        "laminas/laminas-feed": "^2.23",
         "laravel/cashier-paddle": "^2.0",
         "laravel/framework": "^12.0",
         "laravel/horizon": "^5.21",
+        "laravel/mcp": "^0.3.3",
         "laravel/prompts": "^0.3.4",
         "laravel/sanctum": "^4.0",
         "laravel/scout": "^10.4",
@@ -20,6 +20,7 @@
         "league/flysystem-aws-s3-v3": "^3.0",
         "meilisearch/meilisearch-php": "^1.0",
         "nxp/math-executor": "^2.3",
+        "prism-php/prism": "^0.99.13",
         "promphp/prometheus_client_php": "^2.13",
         "sentry/sentry-laravel": "^4.10",
         "socialiteproviders/authelia": "^4.0",
@@ -36,7 +37,7 @@
         "symfony/http-client": "^7.0",
         "symfony/uid": "^7.0",
         "symfony/yaml": "^7.0",
-        "wamania/php-stemmer": "^3.0",
+        "wamania/php-stemmer": "^4.0",
         "zircote/swagger-php": "^5.0"
     },
     "require-dev": {

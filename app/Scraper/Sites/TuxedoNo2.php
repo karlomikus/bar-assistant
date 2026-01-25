@@ -44,6 +44,7 @@ class TuxedoNo2 extends AbstractSite
         return trim($result);
     }
 
+    #[\Override]
     public function tags(): array
     {
         $featuredIngredient = $this->crawler->filter('.site-container div.recipe__footer div.ingredient-card div.label.label--bottom-border.ingredient-card__label a')->last()->text();
@@ -62,6 +63,7 @@ class TuxedoNo2 extends AbstractSite
         );
     }
 
+    #[\Override]
     public function ingredients(): array
     {
         $result = [];

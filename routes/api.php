@@ -10,7 +10,6 @@ use Kami\Cocktail\Http\Controllers\TagController;
 use Kami\Cocktail\Http\Controllers\AuthController;
 use Kami\Cocktail\Http\Controllers\MenuController;
 use Kami\Cocktail\Http\Controllers\NoteController;
-use Kami\Cocktail\Http\Controllers\FeedsController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
@@ -24,12 +23,14 @@ use Kami\Cocktail\Http\Controllers\ExploreController;
 use Kami\Cocktail\Http\Controllers\ProfileController;
 use Kami\Cocktail\Http\Controllers\SSOAuthController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
+use Kami\Cocktail\Http\Controllers\GenerateController;
 use Kami\Cocktail\Http\Controllers\UtensilsController;
 use Laravel\Paddle\Http\Controllers\WebhookController;
 use Kami\Cocktail\Http\Controllers\CalculatorController;
 use Kami\Cocktail\Http\Controllers\CollectionController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\RecommenderController;
+use Kami\Cocktail\Http\Middleware\AiProviderIsConfigured;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
 use Kami\Cocktail\Http\Controllers\SubscriptionController;
 use Kami\Cocktail\Http\Controllers\PriceCategoryController;
@@ -105,10 +106,6 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::prefix('shelf')->middleware(['ability:*'])->group(function () {
         Route::post('/ingredients/batch-store', [ShelfController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/ingredients/batch-delete', [ShelfController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
-    });
-
-    Route::prefix('feeds')->group(function () {
-        Route::get('/', [FeedsController::class, 'feeds']);
     });
 
     Route::prefix('ingredients')->group(function () {
@@ -294,6 +291,12 @@ Route::middleware($apiMiddleware)->group(function () {
 
     Route::prefix('recommender')->middleware(['ability:*'])->group(function () {
         Route::get('/cocktails', [RecommenderController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);
+    });
+
+    Route::prefix('generate')->middleware(['ability:*', EnsureRequestHasBarQuery::class, AiProviderIsConfigured::class])->group(function () {
+        Route::post('/ingredient', [GenerateController::class, 'completeIngredient']);
+        Route::post('/cocktail-tags', [GenerateController::class, 'completeCocktailTags']);
+        Route::post('/cocktail-recipe-from-text', [GenerateController::class, 'cocktailRecipeFromText']);
     });
 });
 

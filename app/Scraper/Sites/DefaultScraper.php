@@ -114,13 +114,14 @@ class DefaultScraper extends AbstractSite
                 continue;
             }
 
-            $result .= $i . ". " . trim($step) . "\n";
+            $result .= $i . ". " . trim((string) $step) . "\n";
             $i++;
         }
 
         return trim($result);
     }
 
+    #[\Override]
     public function tags(): array
     {
         return $this->schemaModel->tags ?? [];
@@ -131,6 +132,7 @@ class DefaultScraper extends AbstractSite
         return null;
     }
 
+    #[\Override]
     public function ingredients(): array
     {
         $result = [];

@@ -29,6 +29,7 @@ class Export extends Model
         return $this->belongsTo(Bar::class);
     }
 
+    #[\Override]
     public function delete(): bool
     {
         if (File::exists($this->getFullPath())) {

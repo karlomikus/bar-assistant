@@ -17,6 +17,7 @@ use Kami\Cocktail\Http\Middleware\TrackSQLQueriesMetric;
 
 class MetricsServiceProvider extends ServiceProvider
 {
+    #[\Override]
     public function register(): void
     {
         if (config('bar-assistant.metrics.enabled') === false) {

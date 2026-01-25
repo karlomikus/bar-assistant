@@ -60,6 +60,7 @@ class IngredientResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array<string, mixed>
      */
+    #[\Override]
     public function toArray($request)
     {
         return [

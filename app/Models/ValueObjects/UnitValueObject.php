@@ -16,7 +16,7 @@ final readonly class UnitValueObject implements Stringable, JsonSerializable
     /** @var array<string, array<string>> */
     public array $units;
 
-    public const CONVERTABLE_UNITS = ['ml', 'oz', 'cl'];
+    public const array CONVERTABLE_UNITS = ['ml', 'oz', 'cl'];
 
     public function __construct(
         ?string $value,

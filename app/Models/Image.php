@@ -17,6 +17,7 @@ class Image extends Model implements IsExternalized
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\ImageFactory> */
     use HasFactory;
 
+    #[\Override]
     public function delete(): ?bool
     {
         $disk = Storage::disk('uploads');

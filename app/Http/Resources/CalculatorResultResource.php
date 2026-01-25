@@ -27,11 +27,12 @@ class CalculatorResultResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array<string, mixed>
      */
+    #[\Override]
     public function toArray($request)
     {
         return [
-            'inputs' => array_map('strval', $this->inputs),
-            'results' => array_map('strval', $this->results),
+            'inputs' => array_map(strval(...), $this->inputs),
+            'results' => array_map(strval(...), $this->results),
         ];
     }
 }

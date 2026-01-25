@@ -10,6 +10,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class CocktailExplorer extends DefaultScraper
 {
+    #[\Override]
     public static function getSupportedUrls(): array
     {
         return [
@@ -17,6 +18,7 @@ class CocktailExplorer extends DefaultScraper
         ];
     }
 
+    #[\Override]
     public function ingredients(): array
     {
         $result = $this->crawler->filter('.video__recipe__ingredients li')->each(function (Crawler $node): RecipeIngredient {
