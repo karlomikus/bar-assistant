@@ -1,5 +1,6 @@
 # v5.13.0
 ## New
+- Added `kanidm` SSO provider
 - Added generative AI endpoints
     - Support is added via [PrismPHP library](https://prismphp.com/). So you can use any provider supported by this library.
     - Added `/generate/ingredient`, used to complete ingredient data based on the name
