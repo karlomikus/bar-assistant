@@ -35,6 +35,7 @@ class EricsCocktailGuide extends AbstractSite
         return $this->crawler->filterXPath("//div[contains(@class, 'recipe_recipeInstructions__')]")->text();
     }
 
+    #[\Override]
     public function tags(): array
     {
         return [];
@@ -45,6 +46,7 @@ class EricsCocktailGuide extends AbstractSite
         return null;
     }
 
+    #[\Override]
     public function ingredients(): array
     {
         $result = [];

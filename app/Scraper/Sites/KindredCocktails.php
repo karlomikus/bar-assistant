@@ -46,6 +46,7 @@ class KindredCocktails extends AbstractSite
         }
     }
 
+    #[\Override]
     public function ingredients(): array
     {
         $result = [];

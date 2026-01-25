@@ -50,6 +50,7 @@ class CraftedPour extends AbstractSite
         return $this->dataRecipeProp['instructions'] ?? '';
     }
 
+    #[\Override]
     public function tags(): array
     {
         return $this->dataRecipeProp['tags'] ?? [];
@@ -70,6 +71,7 @@ class CraftedPour extends AbstractSite
         return $this->dataRecipeProp['build'] ?? null;
     }
 
+    #[\Override]
     public function ingredients(): array
     {
         $result = [];

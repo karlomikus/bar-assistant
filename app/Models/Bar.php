@@ -38,6 +38,7 @@ class Bar extends Model implements UploadableInterface
         return 'logos/';
     }
 
+    #[\Override]
     protected static function booted(): void
     {
         static::retrieved(function (Bar $bar) {
@@ -147,6 +148,7 @@ class Bar extends Model implements UploadableInterface
         return $this->createdUser;
     }
 
+    #[\Override]
     public function delete(): ?bool
     {
         /** @var ImageService */

@@ -180,7 +180,7 @@ abstract class AbstractSite implements Site
 
         $model = new Schema(
             $cocktail,
-            array_map(fn ($ingredient) => Ingredient::fromDraft2Array($ingredient), $ingredients),
+            array_map(Ingredient::fromDraft2Array(...), $ingredients),
         );
 
         return [

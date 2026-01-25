@@ -41,6 +41,7 @@ class SteveTheBartender extends AbstractSite
         ];
     }
 
+    #[\Override]
     public function ingredients(): array
     {
         $result = [];

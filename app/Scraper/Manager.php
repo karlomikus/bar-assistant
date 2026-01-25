@@ -20,7 +20,7 @@ use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
  */
 final class Manager
 {
-    public const USER_AGENT = 'BarAssistantBot/1.0';
+    public const string USER_AGENT = 'BarAssistantBot/1.0';
 
     /**
      * @var array<class-string<AbstractSite>>

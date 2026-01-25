@@ -31,7 +31,7 @@ class GlassRequest
         $result->description = $request->input('description');
         $result->volume = $request->float('volume');
         $result->volumeUnits = $request->input('volume_units');
-        $result->images = array_map('intval', $request->input('images', []));
+        $result->images = array_map(intval(...), $request->input('images', []));
 
         return $result;
     }

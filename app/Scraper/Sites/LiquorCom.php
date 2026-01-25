@@ -43,6 +43,7 @@ class LiquorCom extends AbstractSite
         return $this->url;
     }
 
+    #[\Override]
     public function ingredients(): array
     {
         $ingredients = [];

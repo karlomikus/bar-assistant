@@ -51,6 +51,7 @@ class CocktailDetailsTool extends Tool
      *
      * @return array<string, \Illuminate\JsonSchema\JsonSchema>
      */
+    #[\Override]
     public function schema(JsonSchema $schema): array
     {
         return [

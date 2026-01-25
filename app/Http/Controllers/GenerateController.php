@@ -191,7 +191,7 @@ class GenerateController extends Controller
         $model = config('bar-assistant.ai.model');
         $timeout = config('bar-assistant.ai.timeout');
 
-        $textRecipe = trim($request->input('recipe'));
+        $textRecipe = trim((string) $request->input('recipe'));
 
         $schema = new ObjectSchema(
             name: 'cocktail_recipe',

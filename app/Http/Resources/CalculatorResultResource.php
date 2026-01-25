@@ -30,8 +30,8 @@ class CalculatorResultResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'inputs' => array_map('strval', $this->inputs),
-            'results' => array_map('strval', $this->results),
+            'inputs' => array_map(strval(...), $this->inputs),
+            'results' => array_map(strval(...), $this->results),
         ];
     }
 }

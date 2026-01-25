@@ -8,6 +8,7 @@ use Throwable;
 
 class DiffordsGuide extends DefaultScraper
 {
+    #[\Override]
     public static function getSupportedUrls(): array
     {
         return [
@@ -15,6 +16,7 @@ class DiffordsGuide extends DefaultScraper
         ];
     }
 
+    #[\Override]
     public function tags(): array
     {
         return [];

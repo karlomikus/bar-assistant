@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Scraper\Sites;
 
 class MakeMeACocktail extends DefaultScraper
 {
+    #[\Override]
     public static function getSupportedUrls(): array
     {
         return [
@@ -13,6 +14,7 @@ class MakeMeACocktail extends DefaultScraper
         ];
     }
 
+    #[\Override]
     public function tags(): array
     {
         $result = [];

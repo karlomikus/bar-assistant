@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Scraper\Sites;
 
 class PunchDrink extends DefaultScraper
 {
+    #[\Override]
     public static function getSupportedUrls(): array
     {
         return [
@@ -13,6 +14,7 @@ class PunchDrink extends DefaultScraper
         ];
     }
 
+    #[\Override]
     public function instructions(): ?string
     {
         $instructionsList = $this->crawler->filter('[itemprop="recipeInstructions"] li');
@@ -42,6 +44,7 @@ class PunchDrink extends DefaultScraper
         return $garnishEl->innerText();
     }
 
+    #[\Override]
     public function image(): ?array
     {
         $image = parent::image();

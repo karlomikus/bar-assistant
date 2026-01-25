@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Scraper\Sites;
 
 class ImbibeMagazine extends DefaultScraper
 {
+    #[\Override]
     public static function getSupportedUrls(): array
     {
         return [
@@ -13,11 +14,13 @@ class ImbibeMagazine extends DefaultScraper
         ];
     }
 
+    #[\Override]
     public function name(): string
     {
         return $this->getRecipeSchema()['name'] ?? parent::name();
     }
 
+    #[\Override]
     public function description(): ?string
     {
         $desc = $this->getRecipeSchema()['articleBody'] ?? parent::description();
@@ -25,11 +28,13 @@ class ImbibeMagazine extends DefaultScraper
         return trim((string) $desc);
     }
 
+    #[\Override]
     public function source(): ?string
     {
         return $this->url;
     }
 
+    #[\Override]
     public function instructions(): ?string
     {
         $result = '';
@@ -72,6 +77,7 @@ class ImbibeMagazine extends DefaultScraper
         return $result;
     }
 
+    #[\Override]
     public function ingredients(): array
     {
         $result = [];
@@ -117,6 +123,7 @@ class ImbibeMagazine extends DefaultScraper
         return $result;
     }
 
+    #[\Override]
     public function image(): ?array
     {
         $schema = $this->getRecipeSchema();

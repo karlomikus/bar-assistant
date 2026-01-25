@@ -50,9 +50,7 @@ class CocktailSearchTool extends Tool
 
         $cocktails = $cocktails->get(['cocktails.id', 'cocktails.name', 'cocktails.slug']);
 
-        return Response::text($cocktails->map(function ($cocktail) {
-            return "- {$cocktail->name} (ID: {$cocktail->id})";
-        })->implode("\n"));
+        return Response::text($cocktails->map(fn($cocktail) => "- {$cocktail->name} (ID: {$cocktail->id})")->implode("\n"));
     }
 
     /**
@@ -60,6 +58,7 @@ class CocktailSearchTool extends Tool
      *
      * @return array<string, \Illuminate\JsonSchema\JsonSchema>
      */
+    #[\Override]
     public function schema(JsonSchema $schema): array
     {
         return [

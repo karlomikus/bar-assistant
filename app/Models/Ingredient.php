@@ -269,6 +269,7 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         return $newPrices;
     }
 
+    #[\Override]
     public function delete(): ?bool
     {
         foreach ($this->children as $child) {

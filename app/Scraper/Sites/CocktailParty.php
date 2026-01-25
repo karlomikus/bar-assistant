@@ -37,11 +37,13 @@ class CocktailParty extends AbstractSite
         return $this->joinParagraphs($this->findRecipeContainer()->filter('.elementor-widget-text-editor p'));
     }
 
+    #[\Override]
     public function tags(): array
     {
         return $this->findDescriptionContainer()->filter('.elementor-widget-post-info a')->each(fn ($node): string => $node->text());
     }
 
+    #[\Override]
     public function ingredients(): array
     {
         return $this->findRecipeContainer()
@@ -80,6 +82,7 @@ class CocktailParty extends AbstractSite
         ];
     }
 
+    #[\Override]
     protected function cleanDescription(?string $description): ?string
     {
         // We clean up the description within joinParagraphs already, so we

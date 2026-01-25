@@ -42,6 +42,7 @@ class CocktailsDistilled extends AbstractSite
         return $this->crawler->filter('.directions')->first()->filterXPath('//h2[contains(text(), \'Garnish\')]/following-sibling::p')->text('');
     }
 
+    #[\Override]
     public function ingredients(): array
     {
         $result = [];

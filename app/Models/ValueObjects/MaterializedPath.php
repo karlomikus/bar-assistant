@@ -8,8 +8,8 @@ use Kami\Cocktail\Exceptions\IngredientPathTooDeepException;
 
 final readonly class MaterializedPath
 {
-    private const SEPARATOR = '/';
-    private const TAXONOMY_MAX_DEPTH = 10;
+    private const string SEPARATOR = '/';
+    private const int TAXONOMY_MAX_DEPTH = 10;
 
     /**
      * @param array<int> $basePath
@@ -24,7 +24,7 @@ final readonly class MaterializedPath
             return new self();
         }
 
-        $basePath = array_map('intval', array_filter(explode(self::SEPARATOR, $materializedPath)));
+        $basePath = array_map(intval(...), array_filter(explode(self::SEPARATOR, $materializedPath)));
 
         return new self($basePath);
     }

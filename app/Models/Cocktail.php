@@ -150,6 +150,7 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
         $this->menuCocktails()->delete();
     }
 
+    #[\Override]
     public function delete(): ?bool
     {
         $this->deleteImages();
