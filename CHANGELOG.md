@@ -13,6 +13,9 @@
         - `Bar-Assistant-Bar-Id`, the ID of a bar you want to manage
     - Following tools are supported: `cocktail-create`, `cocktail-details`, `cocktail-search`, `ingredient-details`, `ingredient-list`, `bar-inventory`
 
+## Changes
+- Improved bar delete query plan
+
 # v5.12.0
 ## New
 - Added `filters` property to `meta` property in public cocktails index

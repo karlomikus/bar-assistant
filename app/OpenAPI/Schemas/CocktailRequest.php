@@ -91,7 +91,7 @@ readonly class CocktailRequest
         return new self(
             $request->get('name'),
             $request->get('instructions'),
-            $request->user()->id,
+            $request->user()->getAuthIdentifier(),
             $barId ?? (int) bar()->id,
             $request->get('description'),
             $request->get('source'),
