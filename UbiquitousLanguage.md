@@ -27,3 +27,4 @@
 | Menu | A curated list of cocktails and ingredients offered by a bar, typically organized into categories and including pricing information. |
 | Menu Category | A grouping within a menu that organizes cocktails and ingredients into specific sections, for example: "Tiki", "Gin selection". |
 | Menu Item | An entry in a menu representing either a cocktail or an ingredient, along with its price and sort order. |
+| Member | A user that is part of a bar, with specific roles and permissions. |
