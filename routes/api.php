@@ -10,7 +10,6 @@ use Kami\Cocktail\Http\Controllers\TagController;
 use Kami\Cocktail\Http\Controllers\AuthController;
 use Kami\Cocktail\Http\Controllers\MenuController;
 use Kami\Cocktail\Http\Controllers\NoteController;
-use Kami\Cocktail\Http\Controllers\FeedsController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
@@ -107,10 +106,6 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::prefix('shelf')->middleware(['ability:*'])->group(function () {
         Route::post('/ingredients/batch-store', [ShelfController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
         Route::post('/ingredients/batch-delete', [ShelfController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
-    });
-
-    Route::prefix('feeds')->group(function () {
-        Route::get('/', [FeedsController::class, 'feeds']);
     });
 
     Route::prefix('ingredients')->group(function () {
