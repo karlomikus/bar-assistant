@@ -14,7 +14,9 @@
     - Following tools are supported: `cocktail-create`, `cocktail-details`, `cocktail-search`, `ingredient-details`, `ingredient-list`, `bar-inventory`
 
 ## Changes
+- Removed feeds
 - Improved bar delete query plan
+- Updated default recipes data
 
 # v5.12.0
 ## New

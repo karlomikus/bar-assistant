@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema(required: ['version', 'type', 'search_host', 'search_version', 'latest_version', 'is_latest', 'is_feeds_enabled', 'is_password_login_enabled', 'is_ai_enabled'])]
+#[OAT\Schema(required: ['version', 'type', 'search_host', 'search_version', 'latest_version', 'is_latest', 'is_password_login_enabled', 'is_ai_enabled'])]
 class ServerVersion
 {
     #[OAT\Property(example: '1.0.0', description: 'Version of the server')]
@@ -21,8 +21,6 @@ class ServerVersion
     public string $searchHost;
     #[OAT\Property(property: 'search_version', example: '1.2.0', description: 'Version of the search engine')]
     public string $searchVersion;
-    #[OAT\Property(property: 'is_feeds_enabled', example: true, description: 'Whether feeds are enabled')]
-    public bool $isFeedsEnabled;
     #[OAT\Property(property: 'is_password_login_enabled', example: true, description: 'Whether password login is enabled')]
     public bool $isPasswordLoginEnabled;
     #[OAT\Property(property: 'is_ai_enabled', example: true, description: 'Whether AI features are enabled')]

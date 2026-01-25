@@ -13,11 +13,6 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /** @var array<class-string, class-string> */
-    public $bindings = [
-        \Laminas\Feed\Reader\Http\ClientInterface::class => \Kami\Cocktail\Services\Feeds\FeedsClient::class,
-    ];
-
     /**
      * Register any application services.
      *
