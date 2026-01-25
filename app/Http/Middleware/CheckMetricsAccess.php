@@ -21,6 +21,10 @@ class CheckMetricsAccess
      */
     public function handle(Request $request, Closure $next)
     {
+        if (config('bar-assistant.metrics.enabled') !== true) {
+            abort(404);
+        }
+
         // Allow all local requests
         if (App::environment('local') && IpUtils::isPrivateIp($request->ip())) {
             return $next($request);
