@@ -31,7 +31,7 @@ class BarInventoryTool extends Tool
             ->limit($numberOfIngredients)->orderBy('name', 'asc')
             ->get(['ingredients.id', 'ingredients.name']);
 
-        return Response::text($ingredients->map(fn($ingredient) => "- {$ingredient->name} (ID: {$ingredient->id})")->implode("\n"));
+        return Response::text($ingredients->map(fn ($ingredient) => "- {$ingredient->name} (ID: {$ingredient->id})")->implode("\n"));
     }
 
     /**

@@ -44,7 +44,7 @@ class IngredientListTool extends Tool
 
         $ingredients = $ingredients->get(['ingredients.id', 'ingredients.name']);
 
-        return Response::text($ingredients->map(fn($ingredient) => "- {$ingredient->name} (ID: {$ingredient->id})")->implode("\n"));
+        return Response::text($ingredients->map(fn ($ingredient) => "- {$ingredient->name} (ID: {$ingredient->id})")->implode("\n"));
     }
 
     /**
