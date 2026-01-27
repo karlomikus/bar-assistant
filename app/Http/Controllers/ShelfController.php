@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use BarAssistant\Application\Bar\DTO\BarInventoryStockChangeRequest;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -17,6 +16,7 @@ use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\UserIngredient;
+use Illuminate\Support\Facades\Validator;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\UserShoppingList;
 use Kami\Cocktail\Services\CocktailService;
@@ -25,6 +25,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CocktailBasicResource;
 use Kami\Cocktail\Http\Requests\ShelfIngredientsRequest;
 use Kami\Cocktail\Http\Resources\IngredientBasicResource;
+use BarAssistant\Application\Bar\DTO\BarInventoryStockChangeRequest;
+use Kami\Cocktail\Rules\ResourceBelongsToBar;
 
 class ShelfController extends Controller
 {
@@ -257,14 +259,19 @@ class ShelfController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchStoreBarIngredients(ShelfIngredientsRequest $request, \BarAssistant\Application\Bar\BarInventoryService $barInventoryService, int $id): Response
+    public function batchStoreBarIngredients(ShelfIngredientsRequest $request, \BarAssistant\Application\Bar\InventoryService $barInventoryService, int $id): Response
     {
         $bar = Bar::findOrFail($id);
         if ($request->user()->cannot('manageShelf', $bar)) {
             abort(403);
         }
 
-        $barInventoryService->putMultipleIngredientsInStock(new BarInventoryStockChangeRequest($bar->id, $request->post('ingredients', [])));
+        $ingredientIds = $request->post('ingredients', []);
+        Validator::make($ingredientIds, [
+            '*' => [new ResourceBelongsToBar($bar->id, 'ingredients')],
+        ])->validate();
+
+        $barInventoryService->putMultipleIngredientsInStock(new BarInventoryStockChangeRequest($bar->id, $ingredientIds));
 
         return new Response(null, 204);
     }
@@ -282,14 +289,19 @@ class ShelfController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchDeleteBarIngredients(ShelfIngredientsRequest $request, \BarAssistant\Application\Bar\BarInventoryService $barInventoryService, int $id): Response
+    public function batchDeleteBarIngredients(ShelfIngredientsRequest $request, \BarAssistant\Application\Bar\InventoryService $barInventoryService, int $id): Response
     {
         $bar = Bar::findOrFail($id);
         if ($request->user()->cannot('manageShelf', $bar)) {
             abort(403);
         }
 
-        $barInventoryService->removeMultipleIngredientsFromStock(new BarInventoryStockChangeRequest($bar->id, $request->post('ingredients', [])));
+        $ingredientIds = $request->post('ingredients', []);
+        Validator::make($ingredientIds, [
+            '*' => [new ResourceBelongsToBar($bar->id, 'ingredients')],
+        ])->validate();
+
+        $barInventoryService->removeMultipleIngredientsFromStock(new BarInventoryStockChangeRequest($bar->id, $ingredientIds));
 
         return new Response(null, 204);
     }

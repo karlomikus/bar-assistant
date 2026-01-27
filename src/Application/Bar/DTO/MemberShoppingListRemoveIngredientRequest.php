@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Bar\DTO;
 
-readonly class MemberShoppingListChangeRequest
+readonly class MemberShoppingListRemoveIngredientRequest
 {
     /**
-     * @param array<int, int> $ingredientQuantities
+     * @param int[] $ingredientIds
      */
     public function __construct(
         public int $memberId,
-        public array $ingredientQuantities,
+        public array $ingredientIds,
     ) {
     }
 }

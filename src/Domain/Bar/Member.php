@@ -7,6 +7,7 @@ namespace BarAssistant\Domain\Bar;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\User\UserId;
+use DomainException;
 
 final class Member implements Identity
 {
@@ -18,14 +19,36 @@ final class Member implements Identity
     private function __construct(
         private UserId $userId,
         private BarId $barId,
+        private MemberRole $role,
         private array $shoppingListIngredients = [],
     )
     {
     }
 
+    public static function create(UserId $userId, BarId $barId, MemberRole $role, array $shoppingListIngredients = []): self
+    {
+        return new self(
+            userId: $userId,
+            barId: $barId,
+            role: $role,
+            shoppingListIngredients: $shoppingListIngredients,
+        );
+    }
+
     public function getId(): ?MemberId
     {
         return $this->id;
+    }
+
+    public function setId(MemberId $id): self
+    {
+        if ($this->isTransient() === false) {
+            throw new DomainException('Cannot change the ID of an existing member');
+        }
+
+        $this->id = $id;
+
+        return $this;
     }
 
     public function isTransient(): bool
@@ -41,6 +64,11 @@ final class Member implements Identity
     public function getBarId(): BarId
     {
         return $this->barId;
+    }
+
+    public function getRole(): MemberRole
+    {
+        return $this->role;
     }
 
     /**
@@ -61,11 +89,7 @@ final class Member implements Identity
 
     public function addIngredientToShoppingList(IngredientId $ingredientId, int $quantity): self
     {
-        // Replace item with increased quantity
-        if ($this->isIngredientOnShoppingList($ingredientId)) {
-            $this->removeIngredientFromShoppingList($ingredientId);
-            $quantity += 1;
-        }
+        $this->removeIngredientFromShoppingList($ingredientId);
 
         $this->shoppingListIngredients[] = ShoppingListItem::create($ingredientId, $quantity);
 

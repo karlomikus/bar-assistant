@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use BarAssistant\Application\Bar\DTO\MemberShoppingListChangeRequest;
+use BarAssistant\Application\Bar\DTO\MemberShoppingListRemoveIngredientRequest;
+use BarAssistant\Application\Bar\ShoppingListService;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -51,7 +54,7 @@ class ShoppingListController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchStore(IngredientsBatchRequest $request, int $id): Response
+    public function batchStore(IngredientsBatchRequest $request, ShoppingListService $shoppingListService, int $id): Response
     {
         $user = User::findOrFail($id);
         if ($request->user()->id !== $user->id) {
@@ -60,34 +63,15 @@ class ShoppingListController extends Controller
 
         $barMembership = $user->getBarMembership(bar()->id);
 
-        $requestIngredients = $request->collect('ingredients');
-        $ingredients = DB::table('ingredients')
-            ->select('id')
-            ->where('bar_id', $barMembership->bar_id)
-            ->whereIn('id', $requestIngredients->pluck('id'))
-            ->pluck('id');
-
-        $existingShoppingListIngredients = UserShoppingList::where('bar_membership_id', $barMembership->id)
-            ->whereIn('ingredient_id', $ingredients)
-            ->get()
-            ->keyBy('ingredient_id');
-
-        $models = [];
-        foreach ($ingredients as $ingId) {
-            if ($usl = $existingShoppingListIngredients[$ingId] ?? null) {
-                $usl->quantity = $requestIngredients->where('id', $ingId)->first()['quantity'] ?? 1;
-                $usl->save();
-            } else {
-                $usl = new UserShoppingList();
-                $usl->ingredient_id = $ingId;
-                $usl->bar_membership_id = $barMembership->id;
-                $usl->quantity = $requestIngredients->where('id', $ingId)->first()['quantity'] ?? 1;
-                try {
-                    $models[] = $barMembership->shoppingListIngredients()->save($usl);
-                } catch (Throwable) {
-                }
-            }
+        $ingredientQuantityPairs = [];
+        foreach ($request->input('ingredients', []) as $input) {
+            $ingredientQuantityPairs[$input['id']] = $input['quantity'] ?? 1;
         }
+
+        $shoppingListService->addIngredientsToMemberShoppingList(new MemberShoppingListChangeRequest(
+            memberId: $barMembership->id,
+            ingredientQuantities: $ingredientQuantityPairs,
+        ));
 
         return new Response(null, 204);
     }
@@ -108,7 +92,7 @@ class ShoppingListController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchDelete(IngredientsBatchRequest $request, int $id): Response
+    public function batchDelete(IngredientsBatchRequest $request, ShoppingListService $shoppingListService, int $id): Response
     {
         $user = User::findOrFail($id);
         if ($request->user()->id !== $user->id) {
@@ -117,18 +101,10 @@ class ShoppingListController extends Controller
 
         $barMembership = $user->getBarMembership(bar()->id);
 
-        $requestIngredients = $request->collect('ingredients');
-        $ingredients = DB::table('ingredients')
-            ->select('id')
-            ->where('bar_id', $barMembership->bar_id)
-            ->whereIn('id', $requestIngredients->pluck('id'))
-            ->pluck('id');
-
-        try {
-            $barMembership->shoppingListIngredients()->whereIn('ingredient_id', $ingredients)->delete();
-        } catch (Throwable $e) {
-            abort(500, $e->getMessage());
-        }
+        $shoppingListService->removeIngredientsFromMemberShoppingList(new MemberShoppingListRemoveIngredientRequest(
+            memberId: $barMembership->id,
+            ingredientIds: $request->collect('ingredients')->pluck('id')->toArray()
+        ));
 
         return new Response(null, 204);
     }

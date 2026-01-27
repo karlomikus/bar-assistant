@@ -10,7 +10,7 @@ use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Ingredient\IngredientId;
 
-final readonly class BarInventoryService
+final readonly class InventoryService
 {
     public function __construct(
         private BarRepository $barRepository,
