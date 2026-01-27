@@ -7,15 +7,12 @@ namespace Kami\Cocktail\Http\Controllers;
 use BarAssistant\Application\Bar\DTO\MemberShoppingListChangeRequest;
 use BarAssistant\Application\Bar\DTO\MemberShoppingListRemoveIngredientRequest;
 use BarAssistant\Application\Bar\ShoppingListService;
-use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
-use Illuminate\Support\Facades\DB;
-use Kami\Cocktail\Models\UserShoppingList;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\IngredientsBatchRequest;
 use Kami\Cocktail\Http\Resources\UserShoppingListResource;
@@ -62,6 +59,9 @@ class ShoppingListController extends Controller
         }
 
         $barMembership = $user->getBarMembership(bar()->id);
+        if ($barMembership === null) {
+            abort(403);
+        }
 
         $ingredientQuantityPairs = [];
         foreach ($request->input('ingredients', []) as $input) {
@@ -100,6 +100,9 @@ class ShoppingListController extends Controller
         }
 
         $barMembership = $user->getBarMembership(bar()->id);
+        if ($barMembership === null) {
+            abort(403);
+        }
 
         $shoppingListService->removeIngredientsFromMemberShoppingList(new MemberShoppingListRemoveIngredientRequest(
             memberId: $barMembership->id,

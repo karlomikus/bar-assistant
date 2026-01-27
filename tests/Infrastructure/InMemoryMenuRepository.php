@@ -35,9 +35,11 @@ final class InMemoryMenuRepository implements MenuRepository
         return null;
     }
 
-    public function save(Menu $menu): void
+    public function save(Menu $menu): Menu
     {
         $this->menus[$menu->getId()->value] = $menu;
+
+        return $menu;
     }
 
     public function delete(MenuId $id): void
