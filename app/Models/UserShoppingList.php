@@ -13,6 +13,8 @@ class UserShoppingList extends Model
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\UserShoppingListFactory> */
     use HasFactory;
 
+    public $timestamps = false;
+
     /**
      * @return BelongsTo<Ingredient, $this>
      */
