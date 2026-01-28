@@ -32,7 +32,7 @@ return new class () extends Migration
                 ->nullable()
                 ->after('id')
                 ->constrained('menu_categories')
-                ->nullOnDelete();
+                ->cascadeOnDelete();
 
             $table->index('menu_category_id');
         });
@@ -43,7 +43,7 @@ return new class () extends Migration
                 ->nullable()
                 ->after('id')
                 ->constrained('menu_categories')
-                ->nullOnDelete();
+                ->cascadeOnDelete();
 
             $table->index('menu_category_id');
         });

@@ -17,8 +17,15 @@ final class EloquentMenuRepository implements MenuRepository
 {
     public function save(Menu $menu): Menu
     {
-        $model = Model::firstOrNew(['bar_id' => $menu->getBarId()->value]);
+        $model = Model::firstOrNew(['bar_id' => $menu->getBarId()->value])->load('bar', 'categories.menuCocktails', 'categories.menuIngredients');
+        $model->is_enabled = $menu->isEnabled();
         $model->save();
+
+        // Enabled menus require bars to have slugs
+        if (!isset($model->bar->slug) && $menu->isEnabled()) {
+            $model->bar->generateSlug();
+            $model->bar->save();
+        }
 
         $model->categories()->delete();
         foreach ($menu->getCategories() as $category) {
@@ -75,6 +82,12 @@ final class EloquentMenuRepository implements MenuRepository
             barId: new BarId($model->bar_id),
             categories: $categories,
         );
+
+        if ($model->is_enabled) {
+            $menu->enable();
+        } else {
+            $menu->disable();
+        }
 
         return $menu;
     }

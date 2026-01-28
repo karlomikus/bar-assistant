@@ -101,13 +101,21 @@ class MenuController extends Controller
         if ($request->user()->cannot('update', Menu::class)) {
             abort(403);
         }
+        $bar = bar();
 
         $bodyRequest = SchemasMenuRequest::fromIlluminateRequest($request);
 
+        $validateCocktailIds = [];
+        $validateIngredientIds = [];
         $categories = [];
         foreach ($bodyRequest->categories as $bodyCategory) {
             $items = [];
             foreach ($bodyCategory->items as $bodyMenuItem) {
+                if ($bodyMenuItem->type === MenuItemTypeEnum::Cocktail) {
+                    $validateCocktailIds[] = $bodyMenuItem->id;
+                } else {
+                    $validateIngredientIds[] = $bodyMenuItem->id;
+                }
                 $items[] = new CreateMenuItemRequest(
                     cocktailId: $bodyMenuItem->type === MenuItemTypeEnum::Cocktail ? $bodyMenuItem->id : null,
                     ingredientId: $bodyMenuItem->type === MenuItemTypeEnum::Ingredient ? $bodyMenuItem->id : null,
@@ -119,9 +127,17 @@ class MenuController extends Controller
             $categories[] = new CreateMenuCategoryRequest(name: $bodyCategory->name, sortIndex: $bodyCategory->sort, items: $items);
         }
 
+        Validator::make($validateCocktailIds, [
+            '*' => [new ResourceBelongsToBar($bar->id, 'cocktails')],
+        ])->validate();
+
+        Validator::make($validateIngredientIds, [
+            '*' => [new ResourceBelongsToBar($bar->id, 'ingredients')],
+        ])->validate();
+
         $service->updateOrCreateMenu(new CreateMenuRequest(
-            barId: bar()->id,
-            menuId: bar()->slug,
+            barId: $bar->id,
+            menuId: $bar->slug,
             categories: $categories,
         ));
 

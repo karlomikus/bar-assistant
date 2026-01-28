@@ -69,13 +69,6 @@ return new class () extends Migration
      */
     public function down(): void
     {
-        // Set menu_category_id to NULL for all menu_ingredients
-        DB::table('menu_ingredients')->update(['menu_category_id' => null]);
-
-        // Set menu_category_id to NULL for all menu_cocktails
-        DB::table('menu_cocktails')->update(['menu_category_id' => null]);
-
-        // Delete all menu_categories records
         DB::table('menu_categories')->delete();
     }
 };

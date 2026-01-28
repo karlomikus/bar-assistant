@@ -17,6 +17,7 @@ final class Menu implements Identity
         private BarId $barId,
         private array $categories,
         private RecordTimestamps $recordTimestamps,
+        private bool $enabled = false,
     )
     {
     }
@@ -34,6 +35,25 @@ final class Menu implements Identity
     public function getRecordTimestamps(): RecordTimestamps
     {
         return $this->recordTimestamps;
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function disable(): self
+    {
+        $this->enabled = false;
+
+        return $this;
+    }
+
+    public function enable(): self
+    {
+        $this->enabled = true;
+
+        return $this;
     }
 
     public static function create(
