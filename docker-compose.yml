@@ -56,18 +56,12 @@ services:
     volumes:
       - meilidata:/meili_data
 
-  metrics:
-    image: prom/prometheus
-    volumes:
-      - ./resources/docker/localdev/prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - 9090:9090
+  # metrics:
+  #   image: prom/prometheus
+  #   volumes:
+  #     - ./resources/docker/localdev/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   ports:
+  #     - 9090:9090
 
 volumes:
   meilidata:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/karlo/projects/volumetest/meili
-  miniiodata:
