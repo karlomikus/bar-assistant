@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use BarAssistant\Application\Menu\DTO\CreateMenuCategoryRequest;
+use BarAssistant\Application\Menu\DTO\CreateMenuItemRequest;
+use BarAssistant\Application\Menu\DTO\CreateMenuRequest;
 use League\Csv\Writer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,6 +22,7 @@ use Kami\Cocktail\OpenAPI\Schemas\MenuItemRequest;
 use Kami\Cocktail\Http\Resources\MenuPublicResource;
 use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 use Kami\Cocktail\OpenAPI\Schemas\MenuRequest as SchemasMenuRequest;
+use BarAssistant\Application\Menu\MenuService;
 
 class MenuController extends Controller
 {
@@ -42,12 +46,12 @@ class MenuController extends Controller
         }
 
         $menu = Menu::with(
-            'menuCocktails.cocktail.ingredients.ingredient',
-            'menuCocktails.cocktail.images',
-            'menuCocktails.cocktail.bar.shelfIngredients',
-            'menuIngredients.ingredient.ancestors',
-            'menuIngredients.ingredient.images',
-            'menuIngredients.ingredient.bar.shelfIngredients',
+            'categories.menuCocktails.cocktail.ingredients.ingredient',
+            'categories.menuCocktails.cocktail.images',
+            'categories.menuCocktails.cocktail.bar.shelfIngredients',
+            'categories.menuIngredients.ingredient.ancestors',
+            'categories.menuIngredients.ingredient.images',
+            'categories.menuIngredients.ingredient.bar.shelfIngredients',
         )->firstOrCreate(['bar_id' => $bar->id]);
 
         return new MenuResource($menu);
@@ -92,7 +96,7 @@ class MenuController extends Controller
         new BAO\WrapObjectWithData(MenuResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function update(\BarAssistant\Application\Menu\MenuService $service, MenuRequest $request): MenuResource
+    public function update(MenuService $service, MenuRequest $request): Response
     {
         if ($request->user()->cannot('update', Menu::class)) {
             abort(403);
@@ -100,43 +104,28 @@ class MenuController extends Controller
 
         $bodyRequest = SchemasMenuRequest::fromIlluminateRequest($request);
 
-        $ingredients = $bodyRequest->getIngredients();
-        $cocktails = $bodyRequest->getCocktails();
-
-        Validator::make(collect($ingredients)->map(fn (MenuItemRequest $mi) => ['id' => $mi->id])->toArray(), [
-            '*.id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
-        ])->validate();
-
-        Validator::make(collect($cocktails)->map(fn (MenuItemRequest $mi) => ['id' => $mi->id])->toArray(), [
-            '*.id' => [new ResourceBelongsToBar(bar()->id, 'cocktails')],
-        ])->validate();
-
         $categories = [];
-        $catIdx = 1;
-        foreach ($bodyRequest->items as $bodyItem) {
+        foreach ($bodyRequest->categories as $bodyCategory) {
             $items = [];
-            $items[$bodyItem->categoryName][] = new \BarAssistant\Application\Menu\DTO\CreateMenuItemRequest(
-                cocktailId: $bodyItem->type === MenuItemTypeEnum::Cocktail ? $bodyItem->id : null,
-                ingredientId: $bodyItem->type === MenuItemTypeEnum::Ingredient ? $bodyItem->id : null,
-            );
-            $catIdx++;
+            foreach ($bodyCategory->items as $bodyMenuItem) {
+                $items[] = new CreateMenuItemRequest(
+                    cocktailId: $bodyMenuItem->type === MenuItemTypeEnum::Cocktail ? $bodyMenuItem->id : null,
+                    ingredientId: $bodyMenuItem->type === MenuItemTypeEnum::Ingredient ? $bodyMenuItem->id : null,
+                    price: $bodyMenuItem->price,
+                    priceCurrency: $bodyMenuItem->currency,
+                    sortIndex: $bodyMenuItem->sort,
+                );
+            }
+            $categories[] = new CreateMenuCategoryRequest(name: $bodyCategory->name, sortIndex: $bodyCategory->sort, items: $items);
         }
 
-        $service->updateOrCreateMenu(new \BarAssistant\Application\Menu\DTO\CreateMenuRequest(
+        $service->updateOrCreateMenu(new CreateMenuRequest(
             barId: bar()->id,
             menuId: bar()->slug,
-            categories: array_map(function (MenuItemRequest $category) use ($items) {
-                return new \BarAssistant\Application\Menu\DTO\CreateMenuCategoryRequest(
-                    name: $category->categoryName,
-                    sortIndex: $category->sort,
-                    items: $items[$category->categoryName],
-                );
-            }, $bodyRequest->items)
+            categories: $categories,
         ));
 
-        $menu = Menu::first(['bar_id' => bar()->id]);
-
-        return new MenuResource($menu);
+        return new Response(status: 204);
     }
 
     #[OAT\Get(path: '/menu/export', tags: ['Menu'], operationId: 'exportMenu', summary: 'Export menu', description: 'Export menu as CSV', parameters: [

@@ -34,10 +34,10 @@ final class IngredientServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->ingredientRepository = new InMemoryIngredientRepository([
-            542 => (new Ingredient(barId: new BarId(65), name: Name::fromString('Existing ingredient 65-1'), recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(45))))->setId(new IngredientId(542)),
-            543 => (new Ingredient(barId: new BarId(65), name: Name::fromString('Existing ingredient 65-2'), recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(45))))->setId(new IngredientId(543)),
-            544 => (new Ingredient(barId: new BarId(55), name: Name::fromString('Existing ingredient 55-1'), recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(32))))->setId(new IngredientId(544)),
-            545 => (new Ingredient(barId: new BarId(55), name: Name::fromString('Existing ingredient 55-2'), recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(33))))->setId(new IngredientId(545)),
+            542 => (Ingredient::create(barId: new BarId(65), name: Name::fromString('Existing ingredient 65-1'), recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(45))))->setId(new IngredientId(542)),
+            543 => (Ingredient::create(barId: new BarId(65), name: Name::fromString('Existing ingredient 65-2'), recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(45))))->setId(new IngredientId(543)),
+            544 => (Ingredient::create(barId: new BarId(55), name: Name::fromString('Existing ingredient 55-1'), recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(32))))->setId(new IngredientId(544)),
+            545 => (Ingredient::create(barId: new BarId(55), name: Name::fromString('Existing ingredient 55-2'), recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(33))))->setId(new IngredientId(545)),
         ]);
 
         $this->priceCategoryRepository = new InMemoryPriceCategoryRepository([

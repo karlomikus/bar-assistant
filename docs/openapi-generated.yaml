@@ -11460,11 +11460,29 @@ components:
             - 'null'
           example: 'My device'
       type: object
+    MenuCategoryRequest:
+      required:
+        - id
+        - name
+        - items
+      properties:
+        id:
+          type: integer
+          example: 1
+        sort:
+          type: integer
+          example: 1
+        name:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItemRequest'
+      type: object
     MenuItemRequest:
       required:
         - id
         - type
-        - category_name
         - sort
         - price
         - currency
@@ -11474,9 +11492,6 @@ components:
           example: 1
         type:
           $ref: '#/components/schemas/MenuItemTypeEnum'
-        category_name:
-          type: string
-          example: 'Category name'
         sort:
           type: integer
           example: 1
@@ -11492,14 +11507,14 @@ components:
     MenuRequest:
       required:
         - is_enabled
-        - items
+        - categories
       properties:
         is_enabled:
           type: boolean
-        items:
+        categories:
           type: array
           items:
-            $ref: '#/components/schemas/MenuItemRequest'
+            $ref: '#/components/schemas/MenuCategoryRequest'
       type: object
     NoteRequest:
       required:

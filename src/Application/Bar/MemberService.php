@@ -37,9 +37,4 @@ final readonly class MemberService
 
         return $member;
     }
-
-    public function changeMemberRole()
-    {
-        
-    }
 }
