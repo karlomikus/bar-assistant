@@ -43,6 +43,11 @@ final class EloquentMemberRepository implements MemberRepository
         return self::map($model);
     }
 
+    public function delete(Member $member): void
+    {
+        throw new \Exception('Not implemented');
+    }
+
     public function findById(MemberId $memberId): ?Member
     {
         $model = Model::find($memberId->value);

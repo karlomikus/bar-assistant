@@ -117,7 +117,7 @@ class IngredientController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(\BarAssistant\Application\Ingredient\IngredientService $ingredientService, IngredientRequest $request): JsonResponse
+    public function store(\BarAssistant\Application\Ingredient\IngredientService $ingredientService, IngredientRequest $request): Response
     {
         Validator::make($request->all(), [
             'complex_ingredient_part_ids' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
@@ -128,44 +128,43 @@ class IngredientController extends Controller
             abort(403);
         }
 
+        $dto = IngredientDTO::fromIlluminateRequest($request, bar()->id);
+
         $prices = [];
-        foreach ($request->input('prices', []) as $price) {
+        foreach ($dto->prices as $price) {
             $prices[] = new CreateIngredientPrice(
-                priceCategoryId: (int) $price['price_category_id'],
-                price: (float) $price['price'],
-                amount: (float) $price['amount'],
-                units: $price['units'],
-                description: $price['description'] ?? null,
+                priceCategoryId: $price->priceCategoryId,
+                price: $price->price,
+                amount: $price->amount,
+                units: $price->units,
+                description: $price->description,
             );
         }
 
         $ingredientResult = $ingredientService->createIngredient(
             new CreateIngredient(
                 bar()->id,
-                $request->input('name'),
+                $dto->name,
                 $request->user()->id,
-                $request->float('strength'),
-                $request->input('description'),
-                $request->input('origin'),
-                $request->input('color'),
-                $request->filled('parent_ingredient_id') ? $request->integer('parent_ingredient_id') : null,
-                $request->input('images', []),
-                $request->input('complex_ingredient_part_ids', []),
+                $dto->strength,
+                $dto->description,
+                $dto->origin,
+                $dto->color,
+                $dto->parentIngredientId,
+                $dto->images,
+                $dto->complexIngredientParts,
                 $prices,
-                $request->filled('calculator_id') ? $request->integer('calculator_id') : null,
-                $request->filled('sugar_g_per_ml') ? $request->float('sugar_g_per_ml') : null,
-                $request->filled('acidity') ? $request->float('acidity') : null,
-                $request->input('distillery'),
-                $request->input('units'),
+                $dto->calculatorId,
+                $dto->sugarContent,
+                $dto->acidity,
+                $dto->distillery,
+                $dto->units,
             )
         );
 
-        $ingredient = Ingredient::find($ingredientResult->id);
-
-        return (new IngredientResource($ingredient))
-            ->response()
+        return new Response()
             ->setStatusCode(201)
-            ->header('Location', route('ingredients.show', $ingredient->id));
+            ->header('Location', route('ingredients.show', $ingredientResult->id, false));
     }
 
     #[OAT\Put(path: '/ingredients/{id}', tags: ['Ingredients'], operationId: 'updateIngredient', description: 'Update a specific ingredient', summary: 'Update ingredient', parameters: [
@@ -181,7 +180,7 @@ class IngredientController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(\BarAssistant\Application\Ingredient\IngredientService $ingredientService, IngredientRequest $request, int $id): JsonResource
+    public function update(\BarAssistant\Application\Ingredient\IngredientService $ingredientService, IngredientRequest $request, int $id): Response
     {
         $ingredient = Ingredient::findOrFail($id);
 
@@ -194,41 +193,41 @@ class IngredientController extends Controller
             abort(403);
         }
 
+        $dto = IngredientDTO::fromIlluminateRequest($request, $ingredient->bar_id);
+
         $prices = [];
-        foreach ($request->input('prices', []) as $price) {
+        foreach ($dto->prices as $price) {
             $prices[] = new CreateIngredientPrice(
-                priceCategoryId: (int) $price['price_category_id'],
-                price: (float) $price['price'],
-                amount: (float) $price['amount'],
-                units: $price['units'],
-                description: $price['description'] ?? null,
+                priceCategoryId: $price->priceCategoryId,
+                price: $price->price,
+                amount: $price->amount,
+                units: $price->units,
+                description: $price->description,
             );
         }
 
-        $ingredientResult = $ingredientService->updateIngredient(
+        $ingredientService->updateIngredient(
             new UpdateIngredient(
                 $id,
-                $request->input('name'),
+                $dto->name,
                 $request->user()->id,
-                $request->float('strength'),
-                $request->input('description'),
-                $request->input('origin'),
-                $request->input('color'),
-                $request->filled('parent_ingredient_id') ? $request->integer('parent_ingredient_id') : null,
-                $request->input('images', []),
-                $request->input('complex_ingredient_part_ids', []),
+                $dto->strength,
+                $dto->description,
+                $dto->origin,
+                $dto->color,
+                $dto->parentIngredientId,
+                $dto->images,
+                $dto->complexIngredientParts,
                 $prices,
-                $request->filled('calculator_id') ? $request->integer('calculator_id') : null,
-                $request->filled('sugar_g_per_ml') ? $request->float('sugar_g_per_ml') : null,
-                $request->filled('acidity') ? $request->float('acidity') : null,
-                $request->input('distillery'),
-                $request->input('units'),
+                $dto->calculatorId,
+                $dto->sugarContent,
+                $dto->acidity,
+                $dto->distillery,
+                $dto->units,
             )
         );
 
-        $ingredient = Ingredient::find($ingredientResult->id);
-
-        return new IngredientResource($ingredient);
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/ingredients/{id}', tags: ['Ingredients'], operationId: 'deleteIngredient', description: 'Delete a specific ingredient', summary: 'Delete ingredient', parameters: [
@@ -237,7 +236,7 @@ class IngredientController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(Request $request, int $id): Response
+    public function delete(\BarAssistant\Application\Ingredient\IngredientService $ingredientService, Request $request, int $id): Response
     {
         $ingredient = Ingredient::findOrFail($id);
 
@@ -245,7 +244,7 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $ingredient->delete();
+        $ingredientService->deleteIngredient($id);
 
         return new Response(null, 204);
     }

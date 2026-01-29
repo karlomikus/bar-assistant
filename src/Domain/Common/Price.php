@@ -28,17 +28,17 @@ final readonly class Price
         return $this->money;
     }
 
-    public function getPriceAsFloat(): float
+    public function getAsFloat(): float
     {
         return $this->money->getAmount()->toFloat();
     }
 
-    public function getPriceAsMinor(): int
+    public function getAsMinor(): int
     {
         return $this->money->getMinorAmount()->toInt();
     }
 
-    public function getFormattedPrice(): string
+    public function getFormatted(): string
     {
         return (string) $this->money;
     }

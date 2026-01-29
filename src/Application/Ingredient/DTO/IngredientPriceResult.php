@@ -22,7 +22,7 @@ final readonly class IngredientPriceResult
     {
         return new IngredientPriceResult(
             priceCategoryId: $price->getPriceCategoryId()->value,
-            price: $price->getPrice()->getPriceAsMinor(),
+            price: $price->getPrice()->getAsMinor(),
             amount: $price->getAmountWithUnits()->amountMin,
             currency: $price->getPrice()->getCurrency(),
             units: $price->getAmountWithUnits()->units->value,

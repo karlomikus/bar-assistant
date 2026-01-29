@@ -90,8 +90,8 @@ final class MenuItemTest extends TestCase
         $newPrice = Price::createFromMinor(1500, 'USD');
         $updatedItem = $item->withPrice($newPrice);
 
-        $this->assertEquals(1500, $updatedItem->getPrice()->getPriceAsMinor());
-        $this->assertEquals(1000, $item->getPrice()->getPriceAsMinor()); // Original unchanged
+        $this->assertEquals(1500, $updatedItem->getPrice()->getAsMinor());
+        $this->assertEquals(1000, $item->getPrice()->getAsMinor()); // Original unchanged
     }
 
     public function test_can_update_sort_index(): void

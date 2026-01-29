@@ -6,15 +6,34 @@ namespace BarAssistant\Domain\Ingredient;
 
 use BarAssistant\Domain\Common\AmountWithUnits;
 use BarAssistant\Domain\Common\Price;
+use DomainException;
 
 final readonly class IngredientPrice
 {
-    public function __construct(
+    private function __construct(
         private PriceCategoryId $priceCategoryId,
         private Price $price,
         private AmountWithUnits $amountWithUnits,
         private ?string $description = null,
     ) {
+        if ($price->getAsMinor() <= 0) {
+            throw new DomainException('Price must be greater than zero');
+        }
+    }
+
+    public static function create(
+        PriceCategoryId $priceCategoryId,
+        Price $price,
+        AmountWithUnits $amountWithUnits,
+        ?string $description = null,
+    ): self
+    {
+        return new self(
+            priceCategoryId: $priceCategoryId,
+            price: $price,
+            amountWithUnits: $amountWithUnits,
+            description: $description,
+        );
     }
 
     public function getPriceCategoryId(): PriceCategoryId

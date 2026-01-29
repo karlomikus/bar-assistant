@@ -18,7 +18,6 @@ use Kami\Cocktail\Http\Requests\MenuRequest;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Kami\Cocktail\Http\Resources\MenuResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\OpenAPI\Schemas\MenuItemRequest;
 use Kami\Cocktail\Http\Resources\MenuPublicResource;
 use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 use Kami\Cocktail\OpenAPI\Schemas\MenuRequest as SchemasMenuRequest;
@@ -72,12 +71,12 @@ class MenuController extends Controller
             ->join('bars', 'bars.id', '=', 'menus.bar_id')
             ->with(
                 'bar.images',
-                'menuCocktails.cocktail.ingredients.ingredient',
-                'menuCocktails.cocktail.images',
-                'menuCocktails.cocktail.bar.shelfIngredients',
-                'menuIngredients.ingredient.ancestors',
-                'menuIngredients.ingredient.images',
-                'menuIngredients.ingredient.bar.shelfIngredients',
+                'categories.menuCocktails.cocktail.ingredients.ingredient',
+                'categories.menuCocktails.cocktail.images',
+                'categories.menuCocktails.cocktail.bar.shelfIngredients',
+                'categories.menuIngredients.ingredient.ancestors',
+                'categories.menuIngredients.ingredient.images',
+                'categories.menuIngredients.ingredient.bar.shelfIngredients',
             )
             ->firstOrFail();
 
@@ -159,11 +158,11 @@ class MenuController extends Controller
 
         $menu = Menu::where('bar_id', bar()->id)
             ->with(
-                'menuCocktails.cocktail.ingredients.ingredient',
-                'menuCocktails.cocktail.images',
-                'menuIngredients.ingredient',
-                'menuIngredients.ingredient.ancestors',
-                'menuIngredients.ingredient.images',
+                'categories.menuCocktails.cocktail.ingredients.ingredient',
+                'categories.menuCocktails.cocktail.images',
+                'categories.menuIngredients.ingredient',
+                'categories.menuIngredients.ingredient.ancestors',
+                'categories.menuIngredients.ingredient.images',
             )
             ->firstOrFail();
 
@@ -179,22 +178,23 @@ class MenuController extends Controller
             ]
         ];
 
-        /** @var \Kami\Cocktail\Models\ValueObjects\MenuItem $menuItem */
-        foreach ($menu->getMenuItems() as $menuItem) {
-            $record = [
-                $menuItem->type->value,
-                e(preg_replace("/\s+/u", " ", $menuItem->name)),
-                e($menuItem->description),
-                e($menuItem->categoryName),
-                $menuItem->price->getMoney()->getAmount()->toFloat(),
-                $menuItem->price->getMoney()->getCurrency()->getCurrencyCode(),
-                (string) $menuItem->price->getMoney(),
-            ];
-
-            $records[] = $record;
+        foreach ($menu->categories as $menuCategory) {
+            /** @var \Kami\Cocktail\Models\ValueObjects\MenuItem $menuItem */
+            foreach ($menuCategory->getMenuItems() as $menuItem) {
+                $record = [
+                    $menuItem->type->value,
+                    e(preg_replace("/\s+/u", " ", $menuItem->name)),
+                    e($menuItem->description),
+                    e($menuCategory->name),
+                    $menuItem->price->getMoney()->getAmount()->toFloat(),
+                    $menuItem->price->getMoney()->getCurrency()->getCurrencyCode(),
+                    (string) $menuItem->price->getMoney(),
+                ];
+                $records[] = $record;
+            }
         }
 
-        $writer = Writer::createFromString();
+        $writer = Writer::fromString();
         $writer->insertAll($records);
 
         return new Response($writer->toString(), 200, ['Content-Type' => 'text/csv']);

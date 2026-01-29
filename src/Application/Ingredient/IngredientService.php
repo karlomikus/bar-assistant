@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Ingredient;
 
-use BarAssistant\Application\Exception\ApplicationServiceException;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\Color;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
@@ -58,7 +57,7 @@ final readonly class IngredientService
             sugarContent: $ingredientRequest->sugarContent,
             acidity: $ingredientRequest->acidity,
             distillery: $ingredientRequest->distillery,
-            units: $ingredientRequest->units ? new Unit($ingredientRequest->units) : null
+            units: $ingredientRequest->units ? Unit::from($ingredientRequest->units) : null
         );
 
         if (count($ingredientRequest->complexIngredientParts) > 0) {
@@ -84,13 +83,7 @@ final readonly class IngredientService
 
         $ingredient = $this->ingredientRepository->save($ingredient);
 
-        if ($ingredient->isTransient()) {
-            throw new ApplicationServiceException('Failed to create ingredient');
-        }
-
-        $ancestors = $this->ingredientRepository->findAncestors($ingredient->getId());
-
-        return IngredientResult::fromIngredient($ingredient, $ancestors);
+        return IngredientResult::fromIngredient($ingredient);
     }
 
     public function updateIngredient(UpdateIngredient $ingredientRequest): IngredientResult
@@ -142,25 +135,7 @@ final readonly class IngredientService
             $ingredient = $this->ingredientHierarchy->makeRoot($ingredient);
         }
 
-        $ancestors = [];
-        if (!$ingredient->isTransient()) {
-            $ancestors = $this->ingredientRepository->findAncestors($ingredient->getId());
-        }
-
-        return IngredientResult::fromIngredient($ingredient, $ancestors);
-    }
-
-    public function getIngredient(int $ingredientId): IngredientResult
-    {
-        $ingredient = $this->ingredientRepository->findById(new IngredientId($ingredientId));
-
-        if ($ingredient === null || $ingredient->isTransient()) {
-            throw new EntityNotFoundException('Ingredient not found');
-        }
-
-        $ancestors = $this->ingredientRepository->findAncestors($ingredient->getId());
-
-        return IngredientResult::fromIngredient($ingredient, $ancestors);
+        return IngredientResult::fromIngredient($ingredient);
     }
 
     public function deleteIngredient(int $ingredientId): void

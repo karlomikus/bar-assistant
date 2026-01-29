@@ -7,6 +7,8 @@ namespace Kami\Cocktail\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
+use Kami\Cocktail\Models\ValueObjects\MenuItem;
 
 class MenuCategory extends Model
 {
@@ -18,6 +20,22 @@ class MenuCategory extends Model
     public function menu(): BelongsTo
     {
         return $this->belongsTo(Menu::class);
+    }
+
+    /**
+     * @return Collection<MenuItem>
+     */
+    public function getMenuItems(): Collection
+    {
+        $results = [];
+        foreach ($this->menuCocktails as $menuCocktail) {
+            $results[] = MenuItem::fromMenuCocktail($menuCocktail);
+        }
+        foreach ($this->menuIngredients as $menuIngredient) {
+            $results[] = MenuItem::fromMenuIngredient($menuIngredient);
+        }
+
+        return collect($results)->sortBy('sort');
     }
 
     /**

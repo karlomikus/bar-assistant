@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace BarAssistant\Application\Bar;
 
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
+use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Bar\Member;
+use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Bar\MemberRepository;
 use BarAssistant\Domain\Bar\MemberRole;
 use BarAssistant\Domain\User\UserId;
@@ -19,7 +21,7 @@ final readonly class MemberService
     ) {
     }
 
-    public function addMemberToBar(CreateMemberRequest $request): Member
+    public function joinBar(CreateMemberRequest $request): Member
     {
         $userId = new UserId($request->userId);
         $barId = new BarId($request->barId);
@@ -36,5 +38,16 @@ final readonly class MemberService
         $this->memberRepository->save($member);
 
         return $member;
+    }
+
+    public function leaveBar(RemoveMemberRequest $request): void
+    {
+        $memberId = new MemberId($request->memberId);
+        $existingMember = $this->memberRepository->findById($memberId);
+        if ($existingMember === null) {
+            throw new DomainException('Member not found');
+        }
+
+        $this->memberRepository->delete($existingMember);
     }
 }

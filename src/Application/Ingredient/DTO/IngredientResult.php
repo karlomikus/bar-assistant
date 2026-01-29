@@ -9,31 +9,10 @@ use DateTimeImmutable;
 
 final readonly class IngredientResult
 {
-    /**
-     * @param int[] $images
-     * @param int[] $complexIngredientParts
-     * @param IngredientPriceResult[] $prices
-     */
     public function __construct(
         public int $id,
-        public int $barId,
-        public string $name,
         public int $createdBy,
         public DateTimeImmutable $createdAt,
-        public IngredientHierarchyResult $hierarchy,
-        public ?string $description = null,
-        public float $strength = 0.0,
-        public ?string $origin = null,
-        public ?string $color = null,
-        public ?int $parentIngredientId = null,
-        public array $images = [],
-        public array $complexIngredientParts = [],
-        public array $prices = [],
-        public ?int $calculatorId = null,
-        public ?float $sugarContent = null,
-        public ?float $acidity = null,
-        public ?string $distillery = null,
-        public ?string $units = null,
         public ?int $updatedBy = null,
         public ?DateTimeImmutable $updatedAt = null,
     ) {
@@ -42,45 +21,14 @@ final readonly class IngredientResult
     /**
      * @param Ingredient[] $ancestors
      */
-    public static function fromIngredient(Ingredient $ingredient, array $ancestors): IngredientResult
+    public static function fromIngredient(Ingredient $ingredient): IngredientResult
     {
-        $images = [];
-        foreach ($ingredient->getImages() as $imageId) {
-            $images[] = $imageId->value;
-        }
-
-        $complexIngredientParts = [];
-        foreach ($ingredient->getIngredientParts() as $ingredientId) {
-            $complexIngredientParts[] = $ingredientId->value;
-        }
-
-        $prices = [];
-        foreach ($ingredient->getPrices() as $price) {
-            $prices[] = IngredientPriceResult::fromIngredientPrice($price);
-        }
-
         return new IngredientResult(
             id: $ingredient->getId() ? $ingredient->getId()->value : 0,
-            barId: $ingredient->getBarId()->value,
-            name: $ingredient->getName()->toString(),
             createdBy: $ingredient->getAuthors()->getCreatedBy()->value,
             createdAt: $ingredient->getRecordTimestamps()->getCreatedAt(),
-            hierarchy: IngredientHierarchyResult::fromAncestors($ancestors),
-            description: $ingredient->getDescription(),
-            strength: $ingredient->getStrength()->toFloat(),
-            origin: $ingredient->getOrigin(),
-            color: $ingredient->getColor()?->toHexString(),
-            parentIngredientId: $ingredient->getParentIngredientId()?->value,
-            calculatorId: $ingredient->getCalculatorId()?->value,
-            sugarContent: $ingredient->getSugarContent(),
-            acidity: $ingredient->getAcidity(),
-            distillery: $ingredient->getDistillery(),
-            units: $ingredient->getUnits()?->value,
             updatedBy: $ingredient->getAuthors()->getUpdatedBy()?->value,
             updatedAt: $ingredient->getRecordTimestamps()->getUpdatedAt(),
-            images: $images,
-            complexIngredientParts: $complexIngredientParts,
-            prices: $prices,
         );
     }
 }

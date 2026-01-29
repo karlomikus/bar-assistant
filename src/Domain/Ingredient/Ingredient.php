@@ -325,7 +325,7 @@ final class Ingredient implements Identity
 
     public function addPrice(PriceCategoryId $priceCategoryId, float $price, string $currency, float $amount, string $units, ?string $description = null): self
     {
-        $this->prices[] = new IngredientPrice(
+        $this->prices[] = IngredientPrice::create(
             priceCategoryId: $priceCategoryId,
             price: Price::createFromFloat($price, $currency),
             amountWithUnits: AmountWithUnits::from($amount, Unit::from($units)),

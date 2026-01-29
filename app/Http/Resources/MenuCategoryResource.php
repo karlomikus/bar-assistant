@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Resources;
 
 use OpenApi\Attributes as OAT;
+use Kami\Cocktail\Models\ValueObjects\MenuItem;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 
 /**
- * @mixin \Kami\Cocktail\Models\Menu
+ * @mixin \Kami\Cocktail\Models\MenuCategory
  */
 #[OAT\Schema(
     schema: 'Menu',
@@ -33,7 +34,7 @@ use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
     ],
     required: ['id', 'is_enabled', 'created_at', 'updated_at', 'categories']
 )]
-class MenuResource extends JsonResource
+class MenuCategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -45,11 +46,16 @@ class MenuResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'is_enabled' => (bool) $this->is_enabled,
-            'created_at' => $this->created_at->toAtomString(),
-            'updated_at' => $this->updated_at?->toAtomString(),
-            'categories' => MenuCategoryResource::collection($this->categories),
+            'name' => $this->name,
+            'sort' => $this->sort,
+            'items' => $this->getMenuItems()->map(fn (MenuItem $menuItem) => [
+                'id' => $menuItem->id,
+                'type' => $menuItem->type->value,
+                'sort' => $menuItem->sort,
+                'price' => new PriceResource($menuItem->price),
+                'name' => $menuItem->name,
+                'description' => $menuItem->description,
+            ])->toArray(),
         ];
     }
 }

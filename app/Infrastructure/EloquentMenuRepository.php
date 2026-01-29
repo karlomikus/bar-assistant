@@ -40,7 +40,7 @@ final class EloquentMenuRepository implements MenuRepository
                         'ingredient_id' => $menuItem->getIngredientId()
                     ], [
                         'sort' => $menuItem->getSortIndex(),
-                        'price' => $menuItem->getPrice()->getPriceAsMinor(),
+                        'price' => $menuItem->getPrice()->getAsMinor(),
                         'currency' => $menuItem->getPrice()->getCurrency(),
                     ]);
                 } else {
@@ -48,7 +48,7 @@ final class EloquentMenuRepository implements MenuRepository
                         'cocktail_id' => $menuItem->getCocktailId()
                     ], [
                         'sort' => $menuItem->getSortIndex(),
-                        'price' => $menuItem->getPrice()->getPriceAsMinor(),
+                        'price' => $menuItem->getPrice()->getAsMinor(),
                         'currency' => $menuItem->getPrice()->getCurrency(),
                     ]);
                 }

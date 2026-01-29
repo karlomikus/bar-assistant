@@ -109,7 +109,7 @@ final class EloquentIngredientRepository implements IngredientRepository
                 $ingredientPriceModel = new ModelIngredientPrice();
                 $ingredientPriceModel->ingredient_id = $ingredientModel->id;
                 $ingredientPriceModel->price_category_id = $price->getPriceCategoryId()->value;
-                $ingredientPriceModel->price = $price->getPrice()->getPriceAsMinor();
+                $ingredientPriceModel->price = $price->getPrice()->getAsMinor();
                 $ingredientPriceModel->amount = $price->getAmountWithUnits()->amountMin;
                 $ingredientPriceModel->units = $price->getAmountWithUnits()->units;
                 $ingredientPriceModel->description = $price->getDescription();
@@ -209,7 +209,7 @@ final class EloquentIngredientRepository implements IngredientRepository
             authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
             recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
             description: $model->description,
-            strength: $model->strength ?? ABV::from(0.0),
+            strength: ABV::from($model->strength ?? 0.0),
             origin: $model->origin,
             color: $model->color ? Color::fromHexString($model->color) : null,
             calculatorId: $model->calculator_id ? new CalculatorId($model->calculator_id) : null,

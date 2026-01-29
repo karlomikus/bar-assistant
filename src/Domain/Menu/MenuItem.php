@@ -26,7 +26,7 @@ final readonly class MenuItem
             throw new DomainException('Menu item cannot reference both a cocktail and an ingredient');
         }
 
-        if ($price->getPriceAsMinor() <= 0) {
+        if ($price->getAsMinor() <= 0) {
             throw new DomainException('Menu item price must be greater than zero');
         }
 
