@@ -6,13 +6,12 @@ namespace BarAssistant\Application\Bar;
 
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
+use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Bar\Member;
-use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Bar\MemberRepository;
 use BarAssistant\Domain\Bar\MemberRole;
 use BarAssistant\Domain\User\UserId;
-use DomainException;
 
 final readonly class MemberService
 {
@@ -28,11 +27,10 @@ final readonly class MemberService
 
         $existingMember = $this->memberRepository->findUserInBar($userId, $barId);
         if ($existingMember !== null) {
-            throw new DomainException('User is already a member of this bar');
+            throw new EntityNotFoundException('User is already a member of this bar');
         }
 
         $role = MemberRole::fromString($request->role);
-
         $member = Member::create($userId, $barId, $role);
 
         $this->memberRepository->save($member);
@@ -40,14 +38,16 @@ final readonly class MemberService
         return $member;
     }
 
-    public function leaveBar(RemoveMemberRequest $request): void
+    public function removeUserMembershipFromBar(RemoveMemberRequest $request): void
     {
-        $memberId = new MemberId($request->memberId);
-        $existingMember = $this->memberRepository->findById($memberId);
-        if ($existingMember === null) {
-            throw new DomainException('Member not found');
+        $userId = new UserId($request->userId);
+        $barId = new BarId($request->barId);
+
+        $member = $this->memberRepository->findUserInBar($userId, $barId);
+        if ($member === null) {
+            throw new EntityNotFoundException('Member not found');
         }
 
-        $this->memberRepository->delete($existingMember);
+        $this->memberRepository->delete($member);
     }
 }

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
+use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
+use BarAssistant\Application\Bar\MemberService;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -213,7 +216,7 @@ class BarController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function join(Request $request): JsonResource
+    public function join(MemberService $memberService, Request $request): Response
     {
         $barToJoin = Bar::where('invite_code', $request->post('invite_code'))->firstOrFail();
 
@@ -221,9 +224,13 @@ class BarController extends Controller
             abort(403);
         }
 
-        $request->user()->joinBarAs($barToJoin, UserRoleEnum::Guest);
+        $memberService->joinBar(new CreateMemberRequest(
+            userId: $request->user()->id,
+            barId: $barToJoin->id,
+            role: 'guest',
+        ));
 
-        return new BarResource($barToJoin);
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/bars/{id}/memberships', tags: ['Bars'], operationId: 'leaveBar', description: 'Deletes a user\'s membership to a bar', summary: 'Leave a bar', parameters: [
@@ -231,13 +238,16 @@ class BarController extends Controller
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotFoundResponse]
-    public function leave(Request $request, int $id): Response
+    public function leave(MemberService $memberService, Request $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
 
-        $request->user()->leaveBar($bar);
+        $memberService->removeUserMembershipFromBar(new RemoveMemberRequest(
+            $request->user()->id,
+            $bar->id,
+        ));
 
-        return new Response(null, 204);
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/bars/{id}/memberships/{userId}', tags: ['Bars'], operationId: 'removeBarMembership', description: 'Removes a specific user\'s membership from a bar', summary: 'Remove member', parameters: [
@@ -247,7 +257,7 @@ class BarController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotFoundResponse]
     #[BAO\NotAuthorizedResponse]
-    public function removeMembership(Request $request, int $id, int $userId): Response
+    public function removeMembership(MemberService $memberService, Request $request, int $id, int $userId): Response
     {
         $bar = Bar::findOrFail($id);
 
@@ -259,9 +269,12 @@ class BarController extends Controller
             abort(400, 'You cannot remove your own bar membership.');
         }
 
-        $bar->memberships()->where('user_id', $userId)->delete();
+        $memberService->removeUserMembershipFromBar(new RemoveMemberRequest(
+            $userId,
+            $bar->id,
+        ));
 
-        return new Response(null, 204);
+        return new Response(status: 204);
     }
 
     #[OAT\Get(path: '/bars/{id}/memberships', tags: ['Bars'], operationId: 'listBarMembership', description: 'List all bar members', summary: 'List members', parameters: [
