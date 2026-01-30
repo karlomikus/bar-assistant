@@ -8,6 +8,7 @@ readonly class CreateImage
 {
     public function __construct(
         public string $imageFilePath,
+        public string $imageFileExtension,
         public int $userId,
         public int $sort = 1,
         public ?string $copyright = null,

@@ -14,7 +14,7 @@ final readonly class Unit implements Stringable, JsonSerializable
     public string $value;
 
     /** @var array<string, array<string>> */
-    public array $units;
+    private array $units;
 
     public const array CONVERTABLE_UNITS = ['ml', 'oz', 'cl'];
 

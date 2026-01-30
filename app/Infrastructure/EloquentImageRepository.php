@@ -21,8 +21,9 @@ final class EloquentImageRepository implements ImageRepository
         $model->file_path = $image->getPath();
         $model->placeholder_hash = $image->getPlaceholderHash();
         $model->copyright = $image->getCopyright();
+        $model->file_extension = $image->getFileExtension();
         $model->sort = $image->getSort();
-        $model->updated_user_id = $image->getAuthors()->getCreatedBy()->value;
+        $model->created_user_id = $image->getAuthors()->getCreatedBy()->value;
         $model->created_at = $image->getRecordTimestamps()->getCreatedAt()->format('Y-m-d H:i:s');
         if ($image->getAuthors()->isUpdated()) {
             $model->updated_user_id = $image->getAuthors()->getUpdatedBy()?->value;
@@ -48,8 +49,9 @@ final class EloquentImageRepository implements ImageRepository
 
     private static function map(Model $model): Image
     {
-        return new Image(
+        return Image::create(
             path: $model->file_path,
+            fileExtension: $model->file_extension,
             authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
             recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
             placeholderHash: $model->placeholder_hash,

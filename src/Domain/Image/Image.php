@@ -13,8 +13,9 @@ final class Image implements Identity
 {
     private ?ImageId $id = null;
 
-    public function __construct(
+    private function __construct(
         private readonly string $path,
+        private readonly string $fileExtension,
         private readonly Authors $authors,
         private readonly RecordTimestamps $recordTimestamps,
         private readonly ?string $placeholderHash = null,
@@ -24,6 +25,27 @@ final class Image implements Identity
         if (trim($path) === '') {
             throw new DomainException('Image filepath cannot be empty');
         }
+    }
+
+    public static function create(
+        string $path,
+        string $fileExtension,
+        Authors $authors,
+        RecordTimestamps $recordTimestamps,
+        ?string $placeholderHash = null,
+        ?string $copyright = null,
+        int $sort = 0,
+    )
+    {
+        return new self(
+            path: $path,
+            fileExtension: $fileExtension,
+            authors: $authors,
+            recordTimestamps: $recordTimestamps,
+            placeholderHash: $placeholderHash,
+            copyright: $copyright,
+            sort: $sort,
+        );
     }
 
     public function isTransient(): bool
@@ -75,5 +97,10 @@ final class Image implements Identity
     public function getPlaceholderHash(): ?string
     {
         return $this->placeholderHash;
+    }
+
+    public function getFileExtension(): string
+    {
+        return $this->fileExtension;
     }
 }

@@ -7,13 +7,15 @@ namespace Kami\Cocktail\Infrastructure;
 use BarAssistant\Domain\Bar\Bar;
 use BarAssistant\Domain\Bar\BarId;
 use Illuminate\Support\Facades\DB;
-use BarAssistant\Domain\Bar\BarInventory;
 use Kami\Cocktail\Models\Bar as ModelBar;
 use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Bar\IngredientInventoryItem;
 use BarAssistant\Domain\Bar\IngredientInventoryStatus;
+use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\User\UserId;
 use Kami\Cocktail\Models\BarIngredient;
 
 final class EloquentBarRepository implements BarRepository
@@ -23,6 +25,19 @@ final class EloquentBarRepository implements BarRepository
         $model = ModelBar::findOrNew($bar->getId()?->value);
 
         $model->name = (string) $bar->getName();
+        $model->subtitle = $bar->getSubtitle();
+        $model->description = $bar->getDescription();
+        $model->is_public = $bar->isPublic();
+
+        $settings = $model->settings ?? [];
+        if ($bar->getDefaultUnits()) {
+            $settings['default_units'] = $bar->getDefaultUnits()->value;
+        }
+        if ($bar->getDefaultCurrency()) {
+            $settings['default_currency'] = $bar->getDefaultCurrency()->getCurrencyCode();
+        }
+        $model->settings = $settings;
+
         $model->save();
 
         // Get current ingredient IDs from the domain model
@@ -103,6 +118,8 @@ final class EloquentBarRepository implements BarRepository
 
         $bar = new Bar(
             name: Name::fromString($model->name),
+            authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
+            recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
             ingredientInventory: $barIngredients,
         )->setId(new BarId($model->id));
 

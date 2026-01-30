@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BarAssistant\Application\Ingredient;
+namespace BarAssistant\Application\Image;
 
 use BarAssistant\Application\Image\DTO\CreateImage;
 use BarAssistant\Application\Image\DTO\ImageResult;
@@ -21,8 +21,9 @@ final readonly class ImageService
 
     public function createImage(CreateImage $imageRequest): ImageResult
     {
-        $image = new Image(
+        $image = Image::create(
             path: $imageRequest->imageFilePath,
+            fileExtension: $imageRequest->imageFileExtension,
             authors: Authors::createdBy(new UserId($imageRequest->userId)),
             recordTimestamps: RecordTimestamps::createdNow(),
             placeholderHash: $imageRequest->placeholderHash,

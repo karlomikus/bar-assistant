@@ -1,3 +1,9 @@
+# v6.0.0
+## Breaking changes
+- Reworked how menu categories are stored
+    - Menu request payload is now updated
+- Response of POST and PUT `/ingredients` no longer returns the whole object
+
 # v5.13.0
 ## New
 - Added `kanidm` SSO provider

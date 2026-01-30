@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use BarAssistant\Application\Image\DTO\CreateImage;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -70,28 +71,30 @@ class ImageController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(ImageResource::class),
     ])]
-    public function store(ImageService $imageservice, Request $request): JsonResource
+    public function store(\Kami\Cocktail\Services\Image\ImageUploadService $imageUploadService, \BarAssistant\Application\Image\ImageService $imageService, Request $request): JsonResource
     {
-        $images = [];
-        foreach ($request->images ?? [] as $formImage) {
-            $imageSource = $this->getValidImageSource($formImage);
+        $imageIds = [];
+        foreach ($request->images ?? [] as $requestImage) {
+            $imageSource = $this->getValidImageSource($requestImage);
+            $uploadedImage = $imageUploadService->uploadImage($imageSource);
 
-            try {
-                $image = new ImageRequest(
-                    $imageSource,
-                    isset($formImage['id']) ? (int) $formImage['id'] : null,
-                    (int) ($formImage['sort'] ?? 0),
-                    $formImage['copyright'] ?? null,
-                );
-                $images[] = $image;
-            } catch (Throwable $e) {
-                Log::error($e->getMessage());
+            if ($uploadedImage === null) {
+                continue;
             }
+
+            $imageResult = $imageService->createImage(new CreateImage(
+                imageFilePath: $uploadedImage->path,
+                imageFileExtension: $uploadedImage->extension,
+                userId: $request->user()->id,
+                sort: (int) ($requestImage['sort'] ?? 0),
+                copyright: $requestImage['copyright'] ?? null,
+                placeholderHash: $uploadedImage->placeholderHash,
+            ));
+
+            $imageIds[] = $imageResult->id;
         }
 
-        $images = $imageservice->uploadAndSaveImages($images, $request->user()->id);
-
-        return ImageResource::collection($images);
+        return ImageResource::collection(Image::find($imageIds));
     }
 
     #[OAT\Post(path: '/images/{id}', tags: ['Images'], operationId: 'updateImage', description: 'Update a specific image', summary: 'Update image', parameters: [
