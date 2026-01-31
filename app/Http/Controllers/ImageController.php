@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use BarAssistant\Application\Image\DTO\CreateImage;
+use BarAssistant\Application\Image\DTO\UpdateImageRequest;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -76,62 +77,40 @@ class ImageController extends Controller
         $imageIds = [];
         foreach ($request->images ?? [] as $requestImage) {
             $imageSource = $this->getValidImageSource($requestImage);
-            $uploadedImage = $imageUploadService->uploadImage($imageSource);
-
-            if ($uploadedImage === null) {
-                continue;
+            $uploadedImage = null;
+            if ($imageSource !== null) {
+                $uploadedImage = $imageUploadService->uploadImage($imageSource);
             }
 
-            $imageResult = $imageService->createImage(new CreateImage(
-                imageFilePath: $uploadedImage->path,
-                imageFileExtension: $uploadedImage->extension,
-                userId: $request->user()->id,
-                sort: (int) ($requestImage['sort'] ?? 0),
-                copyright: $requestImage['copyright'] ?? null,
-                placeholderHash: $uploadedImage->placeholderHash,
-            ));
+            if (isset($requestImage['id'])) {
+                $imageResult = $imageService->updateImage(new UpdateImageRequest(
+                    id: (int) $requestImage['id'],
+                    imageFilePath: $uploadedImage?->path,
+                    imageFileExtension: $uploadedImage?->extension,
+                    userId: $request->user()->id,
+                    sort: (int) ($requestImage['sort'] ?? 0),
+                    copyright: $requestImage['copyright'] ?? null,
+                    placeholderHash: $uploadedImage?->placeholderHash,
+                ));
+            } else {
+                if ($uploadedImage === null) {
+                    continue;
+                }
+
+                $imageResult = $imageService->createImage(new CreateImage(
+                    imageFilePath: $uploadedImage->path,
+                    imageFileExtension: $uploadedImage->extension,
+                    userId: $request->user()->id,
+                    sort: (int) ($requestImage['sort'] ?? 0),
+                    copyright: $requestImage['copyright'] ?? null,
+                    placeholderHash: $uploadedImage->placeholderHash,
+                ));
+            }
 
             $imageIds[] = $imageResult->id;
         }
 
         return ImageResource::collection(Image::find($imageIds));
-    }
-
-    #[OAT\Post(path: '/images/{id}', tags: ['Images'], operationId: 'updateImage', description: 'Update a specific image', summary: 'Update image', parameters: [
-        new BAO\Parameters\DatabaseIdParameter(),
-    ], requestBody: new OAT\RequestBody(
-        required: true,
-        content: [
-            new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(ref: BAO\Schemas\ImageRequest::class)),
-        ]
-    ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(ImageResource::class),
-    ])]
-    #[BAO\NotAuthorizedResponse]
-    public function update(int $id, ImageService $imageservice, ImageUpdateRequest $request): JsonResource
-    {
-        $image = Image::findOrFail($id);
-
-        if ($request->user()->cannot('edit', $image)) {
-            abort(403);
-        }
-
-        $imageFile = $request->hasFile('image') ? $request->file('image') : $request->input('image');
-
-        $imageSource = $this->getValidImageSource(['image' => $imageFile]);
-
-        $imageDTO = new ImageRequest(
-            image: $imageSource,
-            copyright: $request->input('copyright') ?? null,
-            sort: $request->filled('sort') ? $request->integer('sort') : $image->sort,
-        );
-
-        $image = $imageservice->updateImage($id, $imageDTO, $request->user()->id);
-
-        Cache::forget('image_thumb_' . $id);
-
-        return new ImageResource($image);
     }
 
     #[OAT\Delete(path: '/images/{id}', tags: ['Images'], operationId: 'deleteImage', description: 'Delete a specific image', summary: 'Delete image', parameters: [

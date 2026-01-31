@@ -12,5 +12,7 @@ interface ImageRepository
      */
     public function findMany(array $ids): array;
 
+    public function findById(ImageId $id): ?Image;
+
     public function save(Image $image): Image;
 }

@@ -7,45 +7,61 @@ namespace BarAssistant\Domain\Image;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Common\File;
 use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\User\UserId;
+use DateTimeImmutable;
 
 final class Image implements Identity
 {
     private ?ImageId $id = null;
 
     private function __construct(
-        private readonly string $path,
-        private readonly string $fileExtension,
-        private readonly Authors $authors,
-        private readonly RecordTimestamps $recordTimestamps,
-        private readonly ?string $placeholderHash = null,
-        private readonly ?string $copyright = null,
-        private readonly int $sort = 0,
+        private File $file,
+        private Authors $authors,
+        private RecordTimestamps $recordTimestamps,
+        private ?string $copyright = null,
+        private int $sort = 0,
     ) {
-        if (trim($path) === '') {
-            throw new DomainException('Image filepath cannot be empty');
-        }
     }
 
     public static function create(
-        string $path,
-        string $fileExtension,
+        File $file,
         Authors $authors,
         RecordTimestamps $recordTimestamps,
-        ?string $placeholderHash = null,
         ?string $copyright = null,
         int $sort = 0,
     )
     {
         return new self(
-            path: $path,
-            fileExtension: $fileExtension,
+            file: $file,
             authors: $authors,
             recordTimestamps: $recordTimestamps,
-            placeholderHash: $placeholderHash,
             copyright: $copyright,
             sort: $sort,
         );
+    }
+
+    public function updateDetails(
+        UserId $userId,
+        DateTimeImmutable $updatedAt,
+        ?string $copyright = null,
+        int $sort = 0,
+    ): self
+    {
+        $this->authors = $this->authors->updatedBy($userId);
+        $this->recordTimestamps = $this->recordTimestamps->updatedAt($updatedAt);
+        $this->copyright = $copyright;
+        $this->sort = $sort;
+
+        return $this;
+    }
+
+    public function changeFile(File $newFile): self
+    {
+        $this->file = $newFile;
+
+        return $this;
     }
 
     public function isTransient(): bool
@@ -89,18 +105,8 @@ final class Image implements Identity
         return $this->recordTimestamps;
     }
 
-    public function getPath(): string
+    public function getFile(): File
     {
-        return $this->path;
-    }
-
-    public function getPlaceholderHash(): ?string
-    {
-        return $this->placeholderHash;
-    }
-
-    public function getFileExtension(): string
-    {
-        return $this->fileExtension;
+        return $this->file;
     }
 }

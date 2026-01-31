@@ -8,20 +8,26 @@ use BarAssistant\Domain\Image\Image;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Image\ImageRepository;
 use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Common\File;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\User\UserId;
 use Kami\Cocktail\Models\Image as Model;
 
 final class EloquentImageRepository implements ImageRepository
 {
+    public function findById(ImageId $id): ?Image
+    {
+        return self::map(Model::findOrFail($id->value));
+    }
+
     public function save(Image $image): Image
     {
         $model = Model::findOrNew($image->getId()?->value);
 
-        $model->file_path = $image->getPath();
-        $model->placeholder_hash = $image->getPlaceholderHash();
+        $model->file_path = $image->getFile()->path;
+        $model->placeholder_hash = $image->getFile()->placeholderHash;
         $model->copyright = $image->getCopyright();
-        $model->file_extension = $image->getFileExtension();
+        $model->file_extension = $image->getFile()->extension;
         $model->sort = $image->getSort();
         $model->created_user_id = $image->getAuthors()->getCreatedBy()->value;
         $model->created_at = $image->getRecordTimestamps()->getCreatedAt()->format('Y-m-d H:i:s');
@@ -50,11 +56,9 @@ final class EloquentImageRepository implements ImageRepository
     private static function map(Model $model): Image
     {
         return Image::create(
-            path: $model->file_path,
-            fileExtension: $model->file_extension,
+            file: File::from($model->file_path, $model->file_extension, $model->placeholder_hash),
             authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
             recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
-            placeholderHash: $model->placeholder_hash,
             copyright: $model->copyright,
             sort: $model->sort,
         )->setId(new ImageId($model->id));

@@ -217,32 +217,4 @@ class ImageControllerTest extends TestCase
         $response->assertJsonPath('data.copyright', 'New copyright');
         $response->assertJsonPath('data.sort', 1);
     }
-
-    public function test_image_update_fails(): void
-    {
-        Storage::fake('uploads');
-        $imageFile = UploadedFile::fake()->createWithContent('image1.jpg', $this->getFakeImageContent('jpg'));
-        $cocktailImage = Image::factory()->for(Cocktail::factory(), 'imageable')->create([
-            'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'uploads'),
-            'file_extension' => $imageFile->extension(),
-            'copyright' => 'initial',
-            'sort' => 7,
-            'created_user_id' => auth('sanctum')->user()->id
-        ]);
-
-        $response = $this->post('/api/images/' . $cocktailImage->id, [
-            'image' => UploadedFile::fake()->create('new_image.doc')
-        ], ['Accept' => 'application/json']);
-        $response->assertUnprocessable();
-
-        $response = $this->post('/api/images/' . $cocktailImage->id, [
-            'image_url' => 'not-url'
-        ], ['Accept' => 'application/json']);
-        $response->assertUnprocessable();
-
-        $response = $this->post('/api/images/' . $cocktailImage->id, [
-            'sort' => 'one'
-        ], ['Accept' => 'application/json']);
-        $response->assertUnprocessable();
-    }
 }

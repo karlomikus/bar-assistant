@@ -26,39 +26,26 @@ final readonly class ImageUploadService
     public function uploadImage(string $imageBuffer): ?ImageUploadResult
     {
         $imageResult = null;
+        $fileExtension = 'webp';
+        $path = 'temp/' . Str::random(40) . '.' . $fileExtension;
+
         try {
-            $imageResult = $this->processImagePipeline($imageBuffer);
+            $vipsImage = ImageResizeService::resizeImageTo($imageBuffer);
+            $thumbHash = ImageHashingService::generatePlaceholderHashFromBuffer($imageBuffer);
+            $this->filesystem->put(
+                $path,
+                $vipsImage->writeToBuffer('.' . $fileExtension, ['Q' => 85])
+            );
+
+            $imageResult = new ImageUploadResult(
+                path: $path,
+                extension: $fileExtension,
+                placeholderHash: $thumbHash,
+            );
         } catch (Throwable $e) {
             $this->log->error('[IMAGE_UPLOAD_SERVICE] File upload error | ' . $e->getMessage());
         }
 
         return $imageResult;
-    }
-
-    private function processImagePipeline(string $image, ?string $filename = null): ImageUploadResult
-    {
-        $filename ??= Str::random(40);
-
-        try {
-            $fileExtension = 'webp';
-            $filepath = 'temp/' . $filename . '.' . $fileExtension;
-
-            $vipsImage = ImageResizeService::resizeImageTo($image);
-            $thumbHash = ImageHashingService::generatePlaceholderHashFromBuffer($image);
-            $this->filesystem->put(
-                $filepath,
-                $vipsImage->writeToBuffer('.' . $fileExtension, ['Q' => 85])
-            );
-        } catch (Throwable $e) {
-            $this->log->error('[IMAGE_SERVICE] ' . $e->getMessage());
-
-            throw $e;
-        }
-
-        return new ImageUploadResult(
-            path: $filepath,
-            extension: $fileExtension,
-            placeholderHash: $thumbHash,
-        );
     }
 }

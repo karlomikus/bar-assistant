@@ -18,7 +18,7 @@ readonly class ImageResult
     {
         return new self(
             id: $image->getId()?->value ?? 0,
-            path: $image->getPath(),
+            path: $image->getFile()->path,
         );
     }
 }

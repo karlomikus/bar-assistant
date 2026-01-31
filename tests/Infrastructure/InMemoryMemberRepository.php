@@ -22,6 +22,11 @@ final class InMemoryMemberRepository implements MemberRepository
     {
     }
 
+    public function delete(Member $member): void
+    {
+        unset($this->members[$member->getId()->value]);
+    }
+
     public function save(Member $member): Member
     {
         if ($member->isTransient()) {

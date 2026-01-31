@@ -3,6 +3,7 @@
 - Reworked how menu categories are stored
     - Menu request payload is now updated
 - Response of POST and PUT `/ingredients` no longer returns the whole object
+- Removed POST `images/{id}` endpoint
 
 # v5.13.0
 ## New
