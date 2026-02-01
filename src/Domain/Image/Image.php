@@ -22,6 +22,7 @@ final class Image implements Identity
         private RecordTimestamps $recordTimestamps,
         private ?string $copyright = null,
         private int $sort = 0,
+        private bool $temporary = true,
     ) {
     }
 
@@ -31,6 +32,7 @@ final class Image implements Identity
         RecordTimestamps $recordTimestamps,
         ?string $copyright = null,
         int $sort = 0,
+        bool $temporary = true,
     )
     {
         return new self(
@@ -39,6 +41,7 @@ final class Image implements Identity
             recordTimestamps: $recordTimestamps,
             copyright: $copyright,
             sort: $sort,
+            temporary: $temporary,
         );
     }
 
@@ -59,9 +62,18 @@ final class Image implements Identity
 
     public function changeFile(File $newFile): self
     {
+        if (!$this->isTemporary()) {
+            throw new DomainException('You can only change the file of a temporary image');
+        }
+
         $this->file = $newFile;
 
         return $this;
+    }
+
+    public function isTemporary(): bool
+    {
+        return $this->temporary;
     }
 
     public function isTransient(): bool
