@@ -54,6 +54,51 @@ class ImageControllerTest extends TestCase
         Storage::disk('uploads')->assertExists($filename);
     }
 
+    public function test_single_image_upload_updates_old_image(): void
+    {
+        $s = Storage::fake('uploads');
+        File::ensureDirectoryExists($s->path('temp'));
+
+        $response = $this->post('/api/images', [
+            'images' => [
+                [
+                    'image' => UploadedFile::fake()->createWithContent('image.jpg', $this->getFakeImageContent('jpg')),
+                    'copyright' => 'Made with test',
+                    'sort' => 1,
+                ]
+            ],
+        ]);
+
+        $response->assertJson(function (AssertableJson $json) {
+            $json->has('data', 1, function ($json) {
+                $json->has('id')
+                    ->has('file_path')
+                    ->where('copyright', 'Made with test')
+                    ->etc();
+            });
+        });
+
+        $filename = $response->json('data.0.file_path');
+
+        Storage::disk('uploads')->assertExists($filename);
+
+        $oldId = $response->json('data.0.id');
+        $response = $this->post('/api/images', [
+            'images' => [
+                [
+                    'id' => $oldId,
+                    'image' => UploadedFile::fake()->createWithContent('image.jpg', $this->getFakeImageContent('jpg')),
+                    'copyright' => 'New image',
+                    'sort' => 2,
+                ]
+            ],
+        ]);
+        $newFilename = $response->json('data.0.file_path');
+
+        Storage::disk('uploads')->assertExists($newFilename);
+        Storage::disk('uploads')->assertMissing($filename);
+    }
+
     public function test_multiple_image_upload(): void
     {
         $s = Storage::fake('uploads');
