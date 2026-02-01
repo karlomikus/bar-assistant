@@ -1,0 +1,180 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit\Domain\Image;
+
+use BarAssistant\Domain\Exception\DomainException;
+use BarAssistant\Domain\Image\Image;
+use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Common\File;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\User\UserId;
+use DateTimeImmutable;
+use PHPUnit\Framework\TestCase;
+
+final class ImageTest extends TestCase
+{
+    public function test_creates_image_with_file_and_authors(): void
+    {
+        $file = File::from('/uploads/image.jpg', 'jpg');
+        $authors = Authors::createdBy(new UserId(1));
+        $timestamps = RecordTimestamps::createdNow();
+
+        $image = Image::create(
+            file: $file,
+            authors: $authors,
+            recordTimestamps: $timestamps
+        );
+
+        $this->assertNull($image->getId());
+        $this->assertTrue($image->isTransient());
+        $this->assertEquals($file, $image->getFile());
+        $this->assertEquals($authors, $image->getAuthors());
+        $this->assertEquals($timestamps, $image->getRecordTimestamps());
+    }
+
+    public function test_creates_image_with_all_properties(): void
+    {
+        $file = File::from('/uploads/image.jpg', 'jpg', 'placeholder123');
+        $authors = Authors::createdBy(new UserId(5));
+        $timestamps = RecordTimestamps::createdNow();
+        $copyright = 'Copyright © 2024';
+        $sort = 3;
+        $temporary = false;
+
+        $image = Image::create(
+            file: $file,
+            authors: $authors,
+            recordTimestamps: $timestamps,
+            copyright: $copyright,
+            sort: $sort,
+            temporary: $temporary
+        );
+
+        $this->assertEquals($copyright, $image->getCopyright());
+        $this->assertEquals($sort, $image->getSort());
+        $this->assertFalse($image->isTemporary());
+    }
+
+    public function test_creates_temporary_image_by_default(): void
+    {
+        $file = File::from('/uploads/image.jpg', 'jpg');
+        $authors = Authors::createdBy(new UserId(1));
+        $timestamps = RecordTimestamps::createdNow();
+
+        $image = Image::create(
+            file: $file,
+            authors: $authors,
+            recordTimestamps: $timestamps
+        );
+
+        $this->assertTrue($image->isTemporary());
+    }
+
+    public function test_sets_image_id(): void
+    {
+        $file = File::from('/uploads/image.jpg', 'jpg');
+        $authors = Authors::createdBy(new UserId(1));
+        $timestamps = RecordTimestamps::createdNow();
+        $image = Image::create($file, $authors, $timestamps);
+
+        $imageId = new ImageId(42);
+        $result = $image->setId($imageId);
+
+        $this->assertSame($image, $result);
+        $this->assertEquals($imageId, $image->getId());
+        $this->assertFalse($image->isTransient());
+    }
+
+    public function test_cannot_change_id_on_existing_image(): void
+    {
+        $file = File::from('/uploads/image.jpg', 'jpg');
+        $authors = Authors::createdBy(new UserId(1));
+        $timestamps = RecordTimestamps::createdNow();
+        $image = Image::create($file, $authors, $timestamps);
+        $image->setId(new ImageId(42));
+
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Cannot change the ID of an existing image');
+
+        $image->setId(new ImageId(43));
+    }
+
+    public function test_changes_file_on_temporary_image(): void
+    {
+        $originalFile = File::from('/uploads/original.jpg', 'jpg');
+        $authors = Authors::createdBy(new UserId(1));
+        $timestamps = RecordTimestamps::createdNow();
+        $image = Image::create($originalFile, $authors, $timestamps, temporary: true);
+
+        $newFile = File::from('/uploads/new.jpg', 'jpg');
+        $result = $image->changeFile($newFile);
+
+        $this->assertSame($image, $result);
+        $this->assertEquals($newFile, $image->getFile());
+    }
+
+    public function test_cannot_change_file_on_permanent_image(): void
+    {
+        $file = File::from('/uploads/image.jpg', 'jpg');
+        $authors = Authors::createdBy(new UserId(1));
+        $timestamps = RecordTimestamps::createdNow();
+        $image = Image::create($file, $authors, $timestamps, temporary: false);
+
+        $newFile = File::from('/uploads/new.jpg', 'jpg');
+
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('You can only change the file of a temporary image');
+
+        $image->changeFile($newFile);
+    }
+
+    public function test_updates_image_details(): void
+    {
+        $file = File::from('/uploads/image.jpg', 'jpg');
+        $authors = Authors::createdBy(new UserId(1));
+        $timestamps = RecordTimestamps::createdNow();
+        $image = Image::create($file, $authors, $timestamps);
+
+        $newCopyright = 'Updated Copyright © 2025';
+        $newSort = 5;
+        $newUserId = new UserId(2);
+        $updatedAt = new DateTimeImmutable();
+
+        $result = $image->updateDetails(
+            userId: $newUserId,
+            updatedAt: $updatedAt,
+            copyright: $newCopyright,
+            sort: $newSort
+        );
+
+        $this->assertSame($image, $result);
+        $this->assertEquals($newCopyright, $image->getCopyright());
+        $this->assertEquals($newSort, $image->getSort());
+        $this->assertTrue($image->getAuthors()->isUpdated());
+        $this->assertEquals($newUserId, $image->getAuthors()->getUpdatedBy());
+        $this->assertEquals($updatedAt, $image->getRecordTimestamps()->getUpdatedAt());
+    }
+
+    public function test_multiple_file_changes_on_temporary_image(): void
+    {
+        $file = File::from('/uploads/image.jpg', 'jpg');
+        $authors = Authors::createdBy(new UserId(1));
+        $timestamps = RecordTimestamps::createdNow();
+        $image = Image::create($file, $authors, $timestamps, temporary: true);
+
+        $file1 = File::from('/uploads/first.jpg', 'jpg');
+        $image->changeFile($file1);
+        $this->assertEquals($file1, $image->getFile());
+
+        $file2 = File::from('/uploads/second.png', 'png');
+        $image->changeFile($file2);
+        $this->assertEquals($file2, $image->getFile());
+
+        $file3 = File::from('/uploads/third.webp', 'webp');
+        $image->changeFile($file3);
+        $this->assertEquals($file3, $image->getFile());
+    }
+}

@@ -15,6 +15,12 @@ use Kami\Cocktail\Models\Image as Model;
 
 final class EloquentImageRepository implements ImageRepository
 {
+    public function delete(ImageId $id): void
+    {
+        $image = Model::findOrFail($id);
+        $image->delete();
+    }
+
     public function findById(ImageId $id): ?Image
     {
         return self::map(Model::findOrFail($id->value));

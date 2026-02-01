@@ -6,6 +6,7 @@ namespace BarAssistant\Application\Image;
 
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Image\DTO\CreateImage;
+use BarAssistant\Application\Image\DTO\DeleteImageRequest;
 use BarAssistant\Application\Image\DTO\ImageResult;
 use BarAssistant\Application\Image\DTO\UpdateImageRequest;
 use BarAssistant\Domain\Image\Image;
@@ -60,5 +61,10 @@ final readonly class ImageService
         $image = $this->imageRepository->save($image);
 
         return ImageResult::fromImage($image);
+    }
+
+    public function deleteImage(DeleteImageRequest $request): void
+    {
+        $this->imageRepository->delete(new ImageId($request->id));
     }
 }
