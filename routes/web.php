@@ -19,6 +19,4 @@ Route::get('/', fn () => 'This is your Bar Assistant instance. Checkout /docs to
 
 Route::get('/docs', fn () => view('elements'));
 
-if (config('bar-assistant.metrics.enabled') === true) {
-    Route::get('/metrics', [MetricsController::class, 'index'])->name('metrics')->middleware(CheckMetricsAccess::class);
-}
+Route::get('/metrics', [MetricsController::class, 'index'])->name('metrics')->middleware(CheckMetricsAccess::class);

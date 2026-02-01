@@ -7,6 +7,7 @@ use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class Authenticate extends Middleware
 {
+    #[\Override]
     protected function redirectTo(Request $request): ?string
     {
         if (!$request->expectsJson()) {

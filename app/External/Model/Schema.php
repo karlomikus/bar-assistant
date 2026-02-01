@@ -47,7 +47,7 @@ readonly class Schema implements SupportsDraft2, SupportsXML, SupportsMarkdown, 
     {
         return new self(
             Cocktail::fromDraft2Array($source['recipe']),
-            array_map(fn ($ingredient) => Ingredient::fromDraft2Array($ingredient), $source['ingredients']),
+            array_map(Ingredient::fromDraft2Array(...), $source['ingredients']),
         );
     }
 

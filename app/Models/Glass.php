@@ -71,6 +71,7 @@ class Glass extends Model
         return $this->belongsTo(Bar::class);
     }
 
+    #[\Override]
     public function delete(): bool
     {
         if (!empty(config('scout.driver'))) {

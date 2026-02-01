@@ -63,6 +63,13 @@ return [
         'redirect' => env('AUTHELIA_REDIRECT_URI')
     ],
 
+    'kanidm' => [
+        'client_id' => env('KANIDM_CLIENT_ID'),
+        'client_secret' => env('KANIDM_CLIENT_SECRET'),
+        'redirect' => env('KANIDM_REDIRECT_URI'),
+        'base_url' => env('KANIDM_BASE_URL'),
+    ],
+
     'keycloak' => [
         'client_id' => env('KEYCLOAK_CLIENT_ID'),
         'client_secret' => env('KEYCLOAK_CLIENT_SECRET'),

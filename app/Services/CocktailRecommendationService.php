@@ -11,13 +11,13 @@ use Kami\Cocktail\Models\BarMembership;
 
 class CocktailRecommendationService
 {
-    private const TAG_MATCH_WEIGHT = 0.8;
-    private const INGREDIENT_MATCH_WEIGHT = 0.5;
-    private const BAR_SHELF_INGREDIENT_MATCH_WEIGHT = 0.7;
-    private const BAR_SHELF_COMPLETE_MATCH_WEIGHT = 1;
-    private const RECENCY_BOOST_WEIGHT = 0.3;
+    private const float TAG_MATCH_WEIGHT = 0.8;
+    private const float INGREDIENT_MATCH_WEIGHT = 0.5;
+    private const float BAR_SHELF_INGREDIENT_MATCH_WEIGHT = 0.7;
+    private const int BAR_SHELF_COMPLETE_MATCH_WEIGHT = 1;
+    private const float RECENCY_BOOST_WEIGHT = 0.3;
 
-    private const NEGATIVE_RATING_PENALTY = -0.5;
+    private const float NEGATIVE_RATING_PENALTY = -0.5;
 
     public function __construct(private readonly CocktailService $cocktailService)
     {

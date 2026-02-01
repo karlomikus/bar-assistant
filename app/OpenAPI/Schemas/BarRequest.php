@@ -61,7 +61,7 @@ class BarRequest
             $result->defaultCurrency = $defaultCurrency;
         }
 
-        $result->images = array_map('intval', $request->input('images', []));
+        $result->images = array_map(intval(...), $request->input('images', []));
 
         return $result;
     }

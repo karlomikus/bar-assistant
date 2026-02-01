@@ -45,6 +45,7 @@ class HausAlpenz extends AbstractSite
         return trim($result);
     }
 
+    #[\Override]
     public function tags(): array
     {
         return [];
@@ -73,6 +74,7 @@ class HausAlpenz extends AbstractSite
         };
     }
 
+    #[\Override]
     public function ingredients(): array
     {
         $result = [];

@@ -32,6 +32,7 @@ class UserSubscriptionResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array<string, mixed>
      */
+    #[\Override]
     public function toArray($request)
     {
         $customer = $this->customer;

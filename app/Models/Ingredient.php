@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Concerns\IsExternalized;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Kami\Cocktail\Models\Relations\HasManyAncestors;
@@ -202,24 +203,6 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         return $this->bar->shelfIngredients->contains('ingredient_id', $this->id);
     }
 
-    /**
-     * Add a column to the query indicating if the ingredient is in the current bar's shelf
-     *
-     * @param Builder<self> $query
-     * @return Builder<self>
-     */
-    public function scopeAddInBarShelfColumn(Builder $query): Builder
-    {
-        return $query
-            ->leftJoin('bar_ingredients AS bi', function ($join) {
-                $join->on('ingredients.id', '=', 'bi.ingredient_id')
-                    ->on('ingredients.bar_id', '=', 'bi.bar_id');
-            })
-            ->addSelect('ingredients.*')
-            ->addSelect(DB::raw('CASE WHEN bi.id IS NOT NULL THEN true ELSE false END AS in_bar_shelf'))
-            ->groupBy('ingredients.id');
-    }
-
     public function barHasInShelfAsComplexIngredient(): bool
     {
         $requiredIngredientIds = $this->ingredientParts->pluck('ingredient_id');
@@ -286,6 +269,7 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         return $newPrices;
     }
 
+    #[\Override]
     public function delete(): ?bool
     {
         foreach ($this->children as $child) {
@@ -437,6 +421,67 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         }
 
         return new UnitValueObject($this->units);
+    }
+
+    /**
+     * @param Builder<self> $query
+     */
+    #[Scope]
+    public function onShoppingList(Builder $query, int $barMembershipId): void
+    {
+        $query->join('user_shopping_lists', 'user_shopping_lists.ingredient_id', '=', 'ingredients.id')
+            ->where('user_shopping_lists.bar_membership_id', $barMembershipId);
+    }
+
+    /**
+     * @param Builder<self> $query
+     */
+    #[Scope]
+    public function inUserShelf(Builder $query, int $barMembershipId): void
+    {
+        $query->join('user_ingredients', 'user_ingredients.ingredient_id', '=', 'ingredients.id')
+            ->where('user_ingredients.bar_membership_id', $barMembershipId);
+    }
+
+    /**
+     * @param Builder<self> $query
+     */
+    #[Scope]
+    public function onlyRootIngredients(Builder $query, int $barId): void
+    {
+        $query->whereNull('parent_ingredient_id')->whereExists(function ($query) use ($barId) {
+            $query->select('1')
+                ->from('ingredients as children')
+                ->where('children.bar_id', $barId)
+                ->whereColumn('children.parent_ingredient_id', 'ingredients.id');
+        });
+    }
+
+    /**
+     * @param Builder<self> $query
+     */
+    #[Scope]
+    public function descendantsOf(Builder $query, int $ingredientId): void
+    {
+        $query->orWhere('ingredients.materialized_path', 'LIKE', function ($query) use ($ingredientId) {
+            $query->selectRaw("COALESCE(materialized_path, '') || id || '/%'")
+                ->from('ingredients')
+                ->where('id', $ingredientId);
+        });
+    }
+
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeWithInBarShelfColumn(Builder $query): void
+    {
+        $query
+            ->leftJoin('bar_ingredients AS bi', function ($join) {
+                $join->on('ingredients.id', '=', 'bi.ingredient_id')
+                    ->on('ingredients.bar_id', '=', 'bi.bar_id');
+            })
+            ->addSelect(DB::raw('CASE WHEN bi.id IS NOT NULL THEN true ELSE false END AS in_bar_shelf'))
+            ->groupBy('ingredients.id');
     }
 
     /**

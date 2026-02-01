@@ -68,6 +68,7 @@ class TheCocktailDB extends AbstractSite
         return $this->apiDrinkData['strInstructions'];
     }
 
+    #[\Override]
     public function tags(): array
     {
         return explode(',', $this->apiDrinkData['strTags'] ?? '');
@@ -78,6 +79,7 @@ class TheCocktailDB extends AbstractSite
         return $this->apiDrinkData['strGlass'];
     }
 
+    #[\Override]
     public function ingredients(): array
     {
         $result = [];

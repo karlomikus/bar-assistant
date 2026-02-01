@@ -34,7 +34,7 @@ class FilterNameSearch implements Filter
         }, $value);
 
         // Filter out empty values
-        $value = array_filter($value, fn ($val) => strlen($val) > 0);
+        $value = array_filter($value, fn ($val) => strlen((string) $val) > 0);
 
         if (count($value) === 0) {
             return $query;
