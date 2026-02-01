@@ -11,6 +11,7 @@ use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Common\Unit;
+use BarAssistant\Domain\Image\ImageId;
 use Brick\Money\Currency;
 
 final class Bar implements Identity
@@ -18,6 +19,7 @@ final class Bar implements Identity
     private ?BarId $id = null;
 
     /**
+     * @param ImageId[] $images
      * @param IngredientInventoryItem[] $ingredientInventory
      */
     private function __construct(
@@ -56,6 +58,9 @@ final class Bar implements Identity
         return $this;
     }
 
+    /**
+     * @param IngredientInventoryItem[] $ingredientInventory
+     */
     public static function create(
         Name $name,
         Authors $authors,
@@ -99,7 +104,7 @@ final class Bar implements Identity
      */
     public function isPublic(): bool
     {
-        return $this->isPublic();
+        return $this->isPublic;
     }
 
     /**
@@ -116,6 +121,29 @@ final class Bar implements Identity
     public function getDefaultCurrency(): ?Currency
     {
         return $this->defaultCurrency;
+    }
+
+    /**
+     * @return ImageId[]
+     */
+    public function getImages(): array
+    {
+        return $this->images;
+    }
+
+    public function getAuthors(): Authors
+    {
+        return $this->authors;
+    }
+
+    public function getRecordTimestamps(): RecordTimestamps
+    {
+        return $this->recordTimestamps;
+    }
+
+    public function isInviteCodeEnabled(): bool
+    {
+        return $this->isInviteCodeEnabled;
     }
 
     /**

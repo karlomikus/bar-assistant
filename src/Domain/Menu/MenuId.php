@@ -18,6 +18,10 @@ final readonly class MenuId implements Identifier, Stringable
 
     public function equals(Identifier $other): bool
     {
+        if (!$other instanceof self) {
+            return false;
+        }
+
         return $this->value === $other->value;
     }
 

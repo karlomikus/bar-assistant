@@ -47,7 +47,7 @@ final readonly class ImageService
             throw new EntityNotFoundException('Image not found');
         }
 
-        if ($imageRequest->imageFilePath !== null) {
+        if ($imageRequest->imageFilePath !== null && $imageRequest->imageFileExtension) {
             $image->changeFile(File::from($imageRequest->imageFilePath, $imageRequest->imageFileExtension, $imageRequest->placeholderHash));
         }
 

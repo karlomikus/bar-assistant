@@ -27,7 +27,7 @@ final class Menu implements Identity
         return false;
     }
 
-    public function getId(): ?MenuId
+    public function getId(): MenuId
     {
         return $this->id;
     }

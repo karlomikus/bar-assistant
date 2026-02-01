@@ -33,7 +33,7 @@ final class Image implements Identity
         ?string $copyright = null,
         int $sort = 0,
         bool $temporary = true,
-    )
+    ): self
     {
         return new self(
             file: $file,
@@ -60,6 +60,9 @@ final class Image implements Identity
         return $this;
     }
 
+    /**
+     * Change the file of a temporary image
+     */
     public function changeFile(File $newFile): self
     {
         if (!$this->isTemporary()) {
@@ -71,6 +74,9 @@ final class Image implements Identity
         return $this;
     }
 
+    /**
+     * An image that is uploaded but not yet associated with any resource
+     */
     public function isTemporary(): bool
     {
         return $this->temporary;
@@ -97,6 +103,9 @@ final class Image implements Identity
         return $this->id;
     }
 
+    /**
+     * Returns the copyright information of the image
+     */
     public function getCopyright(): ?string
     {
         return $this->copyright;

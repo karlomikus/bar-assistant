@@ -18,9 +18,6 @@ final readonly class IngredientResult
     ) {
     }
 
-    /**
-     * @param Ingredient[] $ancestors
-     */
     public static function fromIngredient(Ingredient $ingredient): IngredientResult
     {
         return new IngredientResult(

@@ -104,7 +104,7 @@ final readonly class IngredientService
             sugarContent: $ingredientRequest->sugarContent,
             acidity: $ingredientRequest->acidity,
             distillery: $ingredientRequest->distillery,
-            units: $ingredientRequest->units ? new Unit($ingredientRequest->units) : null
+            units: $ingredientRequest->units ? Unit::from($ingredientRequest->units) : null
         );
 
         $ingredient->removeAllIngredientParts();

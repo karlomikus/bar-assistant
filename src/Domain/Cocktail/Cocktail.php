@@ -28,6 +28,9 @@ final class Cocktail implements Identity
     {
     }
 
+    /**
+     * @param CocktailIngredient[] $ingredients
+     */
     public static function create(
         Name $name,
         string $instructions,

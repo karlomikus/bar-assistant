@@ -25,6 +25,9 @@ final class Member implements Identity
     {
     }
 
+    /**
+     * @param ShoppingListItem[] $shoppingListIngredients
+     */
     public static function create(UserId $userId, BarId $barId, MemberRole $role, array $shoppingListIngredients = []): self
     {
         return new self(
