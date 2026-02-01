@@ -20,6 +20,9 @@
         OPENAI_ORGANIZATION= #Optional
         ```
 
+## Fixes
+- Correctly clean up old image when new one is uploaded
+
 ## Changes
 - Removed feeds
 - Improved bar delete query plan

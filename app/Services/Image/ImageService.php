@@ -39,7 +39,9 @@ final readonly class ImageService
 
                 if ($dtoImage->image) {
                     try {
+                        $oldFilePath = $image->file_path;
                         [$filepath, $fileExtension, $thumbHash] = $this->processImageFile($dtoImage->image);
+                        $this->filesystem->delete($oldFilePath);
 
                         $image->file_path = $filepath;
                         $image->placeholder_hash = $thumbHash;
