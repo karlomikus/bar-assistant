@@ -409,8 +409,6 @@ class FromDataPack
                         'amount' => $substitute->amount->amountMin,
                         'amount_max' => $substitute->amount->amountMax,
                         'units' => $substitute->amount->units->value,
-                        'created_at' => now(),
-                        'updated_at' => null,
                     ];
                 }
             }
