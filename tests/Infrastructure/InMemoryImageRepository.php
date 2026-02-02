@@ -18,6 +18,11 @@ final class InMemoryImageRepository implements ImageRepository
      */
     public function __construct(private array $images = []) {}
 
+    public function delete(ImageId $id): void
+    {
+        unset($this->images[$id->value]);
+    }
+
     public function findById(ImageId $id): ?Image
     {
         return $this->images[$id->value] ?? null;

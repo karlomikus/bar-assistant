@@ -18,9 +18,9 @@ class Image extends Model implements IsExternalized
     use HasFactory;
 
     #[\Override]
-    public function delete(): ?bool
+    public function delete(string $disk = 'uploads'): ?bool
     {
-        $disk = Storage::disk('uploads');
+        $disk = Storage::disk($disk);
 
         if ($disk->exists($this->file_path)) {
             $disk->delete($this->file_path);
