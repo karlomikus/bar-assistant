@@ -5,6 +5,10 @@
 - Response of POST and PUT `/ingredients` no longer returns the whole object
 - Removed POST `images/{id}` endpoint
 
+# v5.13.1
+## Fixes
+- Fixed datapack import trying to set wrong unknown columns
+
 # v5.13.0
 ## New
 - Added `kanidm` SSO provider
