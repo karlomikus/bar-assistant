@@ -116,7 +116,7 @@ final class EloquentBarRepository implements BarRepository
             );
         }
 
-        $bar = new Bar(
+        $bar = Bar::create(
             name: Name::fromString($model->name),
             authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
             recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),

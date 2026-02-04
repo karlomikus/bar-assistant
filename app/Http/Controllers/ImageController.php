@@ -83,6 +83,10 @@ class ImageController extends Controller
             }
 
             if (isset($requestImage['id'])) {
+                if ($uploadedImage) {
+                    $uploadedImage = $imageUploadService->changeImage((int) $requestImage['id'], $uploadedImage);
+                }
+
                 $imageResult = $imageService->updateImage(new UpdateImageRequest(
                     id: (int) $requestImage['id'],
                     imageFilePath: $uploadedImage?->path,

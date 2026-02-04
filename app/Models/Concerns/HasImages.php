@@ -79,4 +79,9 @@ trait HasImages
 
         $this->images()->saveMany($images);
     }
+
+    public function generateImagePath(string $extension): string
+    {
+        return $this->getUploadPath() . $this->slug . '_' . Str::random(6) . '.' . $extension;
+    }
 }

@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface;
 use Illuminate\Container\Attributes\Storage;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Services\Image\DTO\ImageUploadResult;
 
 final readonly class ImageUploadService
@@ -47,5 +48,37 @@ final readonly class ImageUploadService
         }
 
         return $imageResult;
+    }
+
+    /**
+     * Change image file of existing image
+     */
+    public function changeImage(int $imageId, ImageUploadResult $newImage): ImageUploadResult
+    {
+        $imageModel = Image::findOrFail($imageId);
+
+        // Delete old image file
+        if ($this->filesystem->exists($imageModel->file_path)) {
+            $this->filesystem->delete($imageModel->file_path);
+        }
+
+        // For temporary images we can just use the new image that is also temporary
+        if ($imageModel->isTemporaryImage()) {
+            return $newImage;
+        }
+
+        // For images with attached resource, we need to move it to correct
+        // upload folder and then update the path
+        $newImagePath = $imageModel->imageable->generateImagePath($newImage->extension);
+
+        if ($this->filesystem->exists($newImage->path)) {
+            $this->filesystem->move($newImage->path, $newImagePath);
+        }
+
+        return new ImageUploadResult(
+            path: $newImagePath,
+            extension: $newImage->extension,
+            placeholderHash: $newImage->placeholderHash,
+        );
     }
 }

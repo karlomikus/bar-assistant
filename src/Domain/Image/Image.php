@@ -65,10 +65,6 @@ final class Image implements Identity
      */
     public function changeFile(File $newFile): self
     {
-        if (!$this->isTemporary()) {
-            throw new DomainException('You can only change the file of a temporary image');
-        }
-
         $this->file = $newFile;
 
         return $this;
