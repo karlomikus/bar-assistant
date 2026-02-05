@@ -3951,63 +3951,6 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-    post:
-      tags:
-        - Images
-      summary: 'Update image'
-      description: 'Update a specific image'
-      operationId: updateImage
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ImageRequest'
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Image' }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
     delete:
       tags:
         - Images
@@ -9959,6 +9902,51 @@ components:
           items:
             $ref: '#/components/schemas/IngredientTree'
       type: object
+    MenuCategory:
+      description: 'Menu Category resource'
+      required:
+        - name
+        - sort
+        - items
+      properties:
+        name:
+          type: string
+          example: 'Category name'
+        sort:
+          type: integer
+          example: 1
+        items:
+          type: array
+          items:
+            required:
+              - id
+              - type
+              - sort
+              - price
+              - name
+              - description
+            properties:
+              id:
+                type: integer
+                example: 1
+              type:
+                $ref: '#/components/schemas/MenuItemTypeEnum'
+              sort:
+                type: integer
+                example: 1
+              price:
+                $ref: '#/components/schemas/Price'
+              name:
+                description: 'Cocktail name'
+                type: string
+                example: 'Cocktail name'
+              description:
+                type:
+                  - string
+                  - 'null'
+                example: 'Cocktail description'
+            type: object
+      type: object
     MenuPublic:
       description: 'Menu resource'
       required:
@@ -10041,22 +10029,10 @@ components:
             - 'null'
           format: date-time
         categories:
+          description: 'Menu categories'
           type: array
           items:
-            required:
-              - name
-              - items
-            properties:
-              name:
-                type: string
-                example: 'Category name'
-              items:
-                type: array
-                items:
-                  required: [id, type, sort, price, name, description]
-                  properties: { id: { type: integer, example: 1 }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, name: { description: 'Cocktail name', type: string, example: 'Cocktail name' }, description: { type: [string, 'null'], example: 'Cocktail description' } }
-                  type: object
-            type: object
+            $ref: '#/components/schemas/MenuCategory'
       type: object
     Note:
       description: 'Note resource'
@@ -11344,7 +11320,8 @@ components:
         price_category_id:
           type: integer
         price:
-          type: integer
+          type: number
+          format: float
         amount:
           type: number
           format: float
@@ -11462,13 +11439,10 @@ components:
       type: object
     MenuCategoryRequest:
       required:
-        - id
         - name
+        - sort
         - items
       properties:
-        id:
-          type: integer
-          example: 1
         sort:
           type: integer
           example: 1

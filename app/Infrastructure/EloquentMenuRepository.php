@@ -7,6 +7,10 @@ namespace Kami\Cocktail\Infrastructure;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Menu\Menu;
 use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Menu\MenuItem;
+use BarAssistant\Domain\Common\Price;
+use BarAssistant\Domain\Cocktail\CocktailId;
+use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Menu\MenuId;
 use Kami\Cocktail\Models\Menu as Model;
 use BarAssistant\Domain\Menu\MenuCategory;
@@ -15,6 +19,22 @@ use Kami\Cocktail\Models\MenuCategory as ModelMenuCategory;
 
 final class EloquentMenuRepository implements MenuRepository
 {
+    public function findById(MenuId $id): ?Menu
+    {
+        $model = Model::query()
+            ->join('bars', 'bars.id', '=', 'menus.bar_id')
+            ->where('bars.slug', $id->value)
+            ->select('menus.*')
+            ->with('bar', 'categories.menuCocktails.cocktail', 'categories.menuIngredients.ingredient')
+            ->first();
+
+        if ($model === null) {
+            return null;
+        }
+
+        return self::map($model);
+    }
+
     public function save(Menu $menu): Menu
     {
         $model = Model::firstOrNew(['bar_id' => $menu->getBarId()->value])->load('bar', 'categories.menuCocktails', 'categories.menuIngredients');
@@ -60,7 +80,14 @@ final class EloquentMenuRepository implements MenuRepository
 
     public function findByBarId(BarId $barId): ?Menu
     {
-        $model = Model::firstWhere('bar_id', $barId->value);
+        $model = Model::query()
+            ->where('bar_id', $barId->value)
+            ->with('bar', 'categories.menuCocktails.cocktail', 'categories.menuIngredients.ingredient')
+            ->first();
+
+        if ($model === null) {
+            return null;
+        }
 
         return self::map($model);
     }
@@ -70,6 +97,21 @@ final class EloquentMenuRepository implements MenuRepository
         $categories = [];
         foreach ($model->categories as $modelCategory) {
             $items = [];
+            foreach ($modelCategory->menuCocktails as $menuCocktail) {
+                $items[] = MenuItem::forCocktail(
+                    cocktailId: new CocktailId($menuCocktail->cocktail_id),
+                    price: Price::createFromMinor($menuCocktail->price, $menuCocktail->currency ?? 'EUR'),
+                    sortIndex: $menuCocktail->sort,
+                );
+            }
+            foreach ($modelCategory->menuIngredients as $menuIngredient) {
+                $items[] = MenuItem::forIngredient(
+                    ingredientId: new IngredientId($menuIngredient->ingredient_id),
+                    price: Price::createFromMinor($menuIngredient->price, $menuIngredient->currency ?? 'EUR'),
+                    sortIndex: $menuIngredient->sort,
+                );
+            }
+
             $categories[] = MenuCategory::createWithItems(
                 name: Name::fromString($modelCategory->name),
                 sortIndex: $modelCategory->sort,

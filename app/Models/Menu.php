@@ -20,6 +20,15 @@ class Menu extends Model
 
     protected $fillable = ['bar_id'];
 
+    protected $with = [
+        'categories.menuCocktails.cocktail.ingredients.ingredient',
+        'categories.menuCocktails.cocktail.images',
+        'categories.menuCocktails.cocktail.bar.shelfIngredients',
+        'categories.menuIngredients.ingredient.ancestors',
+        'categories.menuIngredients.ingredient.images',
+        'categories.menuIngredients.ingredient.bar.shelfIngredients'
+    ];
+
     /**
      * @return HasMany<MenuCategory, $this>
      */

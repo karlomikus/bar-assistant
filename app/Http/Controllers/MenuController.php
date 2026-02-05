@@ -44,14 +44,7 @@ class MenuController extends Controller
             $bar->save();
         }
 
-        $menu = Menu::with(
-            'categories.menuCocktails.cocktail.ingredients.ingredient',
-            'categories.menuCocktails.cocktail.images',
-            'categories.menuCocktails.cocktail.bar.shelfIngredients',
-            'categories.menuIngredients.ingredient.ancestors',
-            'categories.menuIngredients.ingredient.images',
-            'categories.menuIngredients.ingredient.bar.shelfIngredients',
-        )->firstOrCreate(['bar_id' => $bar->id]);
+        $menu = Menu::firstOrCreate(['bar_id' => $bar->id]);
 
         return new MenuResource($menu);
     }
@@ -69,15 +62,6 @@ class MenuController extends Controller
             ->where(['slug' => $barSlug])
             ->where('menus.is_enabled', true)
             ->join('bars', 'bars.id', '=', 'menus.bar_id')
-            ->with(
-                'bar.images',
-                'categories.menuCocktails.cocktail.ingredients.ingredient',
-                'categories.menuCocktails.cocktail.images',
-                'categories.menuCocktails.cocktail.bar.shelfIngredients',
-                'categories.menuIngredients.ingredient.ancestors',
-                'categories.menuIngredients.ingredient.images',
-                'categories.menuIngredients.ingredient.bar.shelfIngredients',
-            )
             ->firstOrFail();
 
         return new MenuPublicResource($menu);
@@ -156,15 +140,7 @@ class MenuController extends Controller
             abort(403);
         }
 
-        $menu = Menu::where('bar_id', bar()->id)
-            ->with(
-                'categories.menuCocktails.cocktail.ingredients.ingredient',
-                'categories.menuCocktails.cocktail.images',
-                'categories.menuIngredients.ingredient',
-                'categories.menuIngredients.ingredient.ancestors',
-                'categories.menuIngredients.ingredient.images',
-            )
-            ->firstOrFail();
+        $menu = Menu::where('bar_id', bar()->id)->firstOrFail();
 
         $records = [
             [
