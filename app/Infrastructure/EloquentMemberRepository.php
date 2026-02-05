@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Infrastructure;
 
 use BarAssistant\Domain\Bar\BarId;
-use Kami\Cocktail\Models\BarMembership as Model;
-use BarAssistant\Domain\Bar\MemberRepository;
 use BarAssistant\Domain\Bar\Member;
+use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Bar\MemberRole;
+use Kami\Cocktail\Models\UserShoppingList;
+use BarAssistant\Domain\Bar\MemberRepository;
 use BarAssistant\Domain\Bar\ShoppingListItem;
 use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\User\UserId;
-use Kami\Cocktail\Models\UserShoppingList;
+use Kami\Cocktail\Models\BarMembership as Model;
 
 final class EloquentMemberRepository implements MemberRepository
 {

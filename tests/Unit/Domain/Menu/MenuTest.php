@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Menu;
 
-use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Cocktail\CocktailId;
-use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\Price;
-use BarAssistant\Domain\Menu\Menu;
-use BarAssistant\Domain\Menu\MenuCategory;
-use BarAssistant\Domain\Menu\MenuId;
-use BarAssistant\Domain\Menu\MenuItem;
-use DomainException;
 use PHPUnit\Framework\TestCase;
+use BarAssistant\Domain\Bar\BarId;
+use BarAssistant\Domain\Menu\Menu;
+use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Menu\MenuId;
+use BarAssistant\Domain\Common\Price;
+use BarAssistant\Domain\Menu\MenuItem;
+use BarAssistant\Domain\Menu\MenuCategory;
+use BarAssistant\Domain\Cocktail\CocktailId;
 
 final class MenuTest extends TestCase
 {

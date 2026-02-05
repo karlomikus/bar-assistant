@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Common;
 
-use BarAssistant\Domain\Common\Color;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use BarAssistant\Domain\Common\Color;
 
 final class ColorTest extends TestCase
 {

@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Ingredient;
 
-use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Calculator\CalculatorId;
-use BarAssistant\Domain\Exception\DomainException;
-use BarAssistant\Domain\Image\ImageId;
-use BarAssistant\Domain\Ingredient\Ingredient;
-use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\Ingredient\MaterializedPath;
-use BarAssistant\Domain\Ingredient\PriceCategoryId;
-use BarAssistant\Domain\Common\ABV;
-use BarAssistant\Domain\Common\Authors;
-use BarAssistant\Domain\Common\Color;
-use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\Common\Unit;
-use BarAssistant\Domain\User\UserId;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use BarAssistant\Domain\Bar\BarId;
+use BarAssistant\Domain\Common\ABV;
+use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\Unit;
+use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Common\Color;
+use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Ingredient\Ingredient;
+use BarAssistant\Domain\Calculator\CalculatorId;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Domain\Exception\DomainException;
+use BarAssistant\Domain\Ingredient\PriceCategoryId;
+use BarAssistant\Domain\Ingredient\MaterializedPath;
 
 final class IngredientTest extends TestCase
 {
@@ -29,7 +29,7 @@ final class IngredientTest extends TestCase
         $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
@@ -46,7 +46,7 @@ final class IngredientTest extends TestCase
         $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
@@ -63,7 +63,7 @@ final class IngredientTest extends TestCase
         $parent = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Gin'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
         $parent->setId(new IngredientId(1));
@@ -71,7 +71,7 @@ final class IngredientTest extends TestCase
         $child = Ingredient::create(
             barId: new BarId(2), // Different bar
             name: Name::fromString('Plymouth Gin'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
@@ -86,7 +86,7 @@ final class IngredientTest extends TestCase
         $parent = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Gin'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
         $parent->setId(new IngredientId(5));
@@ -94,7 +94,7 @@ final class IngredientTest extends TestCase
         $child = Ingredient::create(
             barId: new BarId(1), // Same bar
             name: Name::fromString('Plymouth Gin'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
@@ -109,7 +109,7 @@ final class IngredientTest extends TestCase
         $parent = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Gin'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
         $parent->setId(new IngredientId(5));
@@ -117,7 +117,7 @@ final class IngredientTest extends TestCase
         $child = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Plymouth Gin'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
@@ -134,14 +134,14 @@ final class IngredientTest extends TestCase
         $mainIngredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Complex Mix'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $part = Ingredient::create(
             barId: new BarId(2), // Different bar
             name: Name::fromString('Part A'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
         $part->setId(new IngredientId(1));
@@ -157,14 +157,14 @@ final class IngredientTest extends TestCase
         $mainIngredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Complex Mix'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $part = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Part A'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
         // Part doesn't have an ID set
@@ -180,7 +180,7 @@ final class IngredientTest extends TestCase
         $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Self-Referencing Mix'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
         $ingredient->setId(new IngredientId(1));
@@ -196,14 +196,14 @@ final class IngredientTest extends TestCase
         $mainIngredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Complex Mix'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $part1 = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Part A'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
         $part1->setId(new IngredientId(2));
@@ -211,7 +211,7 @@ final class IngredientTest extends TestCase
         $part2 = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Part B'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
         $part2->setId(new IngredientId(3));
@@ -229,14 +229,14 @@ final class IngredientTest extends TestCase
         $mainIngredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Complex Mix'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $part = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Part A'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
         $part->setId(new IngredientId(2));
@@ -253,14 +253,14 @@ final class IngredientTest extends TestCase
         $mainIngredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Complex Mix'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $part1 = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Part A'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
         $part1->setId(new IngredientId(2));
@@ -268,7 +268,7 @@ final class IngredientTest extends TestCase
         $part2 = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Part B'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
         $part2->setId(new IngredientId(3));
@@ -286,7 +286,7 @@ final class IngredientTest extends TestCase
         $mainIngredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Complex Mix'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
@@ -309,7 +309,7 @@ final class IngredientTest extends TestCase
         $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
@@ -325,7 +325,7 @@ final class IngredientTest extends TestCase
         $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
@@ -342,7 +342,7 @@ final class IngredientTest extends TestCase
         $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
@@ -359,7 +359,7 @@ final class IngredientTest extends TestCase
         $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
@@ -376,7 +376,7 @@ final class IngredientTest extends TestCase
         $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
@@ -397,7 +397,7 @@ final class IngredientTest extends TestCase
         $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
@@ -426,7 +426,7 @@ final class IngredientTest extends TestCase
         $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(10)),
+            authors: Authors::createdBy(new UserId(10)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
@@ -441,7 +441,7 @@ final class IngredientTest extends TestCase
         $ingredient = (Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(10)),
+            authors: Authors::createdBy(new UserId(10)),
             recordTimestamps: RecordTimestamps::createdNow(),
         ))->setId(new IngredientId(24));
 
@@ -458,7 +458,7 @@ final class IngredientTest extends TestCase
         $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
@@ -474,7 +474,7 @@ final class IngredientTest extends TestCase
         $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdAt($explicitTime),
         );
 
@@ -487,7 +487,7 @@ final class IngredientTest extends TestCase
         $ingredient = (Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         ))->setId(new IngredientId(24));
 
@@ -503,7 +503,7 @@ final class IngredientTest extends TestCase
         $parent = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Gin'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
             materializedPath: MaterializedPath::fromString('1/'),
         );
@@ -511,7 +511,7 @@ final class IngredientTest extends TestCase
         $child = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('London Dry Gin'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
             materializedPath: MaterializedPath::fromString('1/2/'),
         );
@@ -525,7 +525,7 @@ final class IngredientTest extends TestCase
         $ingredient1 = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Gin'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
             materializedPath: MaterializedPath::fromString('1/'),
         );
@@ -533,7 +533,7 @@ final class IngredientTest extends TestCase
         $ingredient2 = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
             materializedPath: MaterializedPath::fromString('2/'),
         );
@@ -547,7 +547,7 @@ final class IngredientTest extends TestCase
         $ingredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Premium Gin'),
-            authors: Authors::createdBy( new UserId(10)),
+            authors: Authors::createdBy(new UserId(10)),
             recordTimestamps: RecordTimestamps::createdAt(new DateTimeImmutable('2024-01-01')),
             description: 'A fine London Dry Gin',
             strength: ABV::from(47.3),
@@ -581,7 +581,7 @@ final class IngredientTest extends TestCase
         $ingredient = (Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         ))->setId(new IngredientId(24));
 
@@ -616,12 +616,12 @@ final class IngredientTest extends TestCase
         $ingredient = Ingredient::create(
             barId: $barId,
             name: Name::fromString('Vodka'),
-            authors: Authors::createdBy( new UserId(1)),
+            authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
         $this->assertTrue($ingredient->getBarId()->equals($barId));
-        
+
         // BarId should remain the same - there's no setter for it
         // This test documents that barId is a readonly property
     }

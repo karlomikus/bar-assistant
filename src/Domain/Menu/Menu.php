@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace BarAssistant\Domain\Menu;
 
+use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\Identity;
 
 final class Menu implements Identity
 {
@@ -18,8 +19,7 @@ final class Menu implements Identity
         private array $categories,
         private RecordTimestamps $recordTimestamps,
         private bool $enabled = false,
-    )
-    {
+    ) {
     }
 
     public function isTransient(): bool
@@ -59,8 +59,7 @@ final class Menu implements Identity
     public static function create(
         MenuId $id,
         BarId $barId,
-    ): self
-    {
+    ): self {
         return new self(
             id: $id,
             barId: $barId,
@@ -76,8 +75,7 @@ final class Menu implements Identity
         MenuId $id,
         BarId $barId,
         array $categories,
-    ): self
-    {
+    ): self {
         return new self(
             id: $id,
             barId: $barId,
@@ -111,7 +109,7 @@ final class Menu implements Identity
     {
         $this->categories = array_filter(
             $this->categories,
-            static fn(MenuCategory $category) => $category !== $categoryToRemove
+            static fn (MenuCategory $category) => $category !== $categoryToRemove
         );
         $this->categories = array_values($this->categories);
 
@@ -131,7 +129,7 @@ final class Menu implements Identity
      */
     private static function sortCategories(array $categories): array
     {
-        usort($categories, static fn(MenuCategory $a, MenuCategory $b) => $a->getSortIndex() <=> $b->getSortIndex());
+        usort($categories, static fn (MenuCategory $a, MenuCategory $b) => $a->getSortIndex() <=> $b->getSortIndex());
 
         return $categories;
     }

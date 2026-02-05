@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Common;
 
-use BarAssistant\Domain\Common\ABV;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use BarAssistant\Domain\Common\ABV;
 
 final class ABVTest extends TestCase
 {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Menu;
 
-use BarAssistant\Domain\Identifier;
 use Stringable;
+use BarAssistant\Domain\Identifier;
 
 final readonly class MenuId implements Identifier, Stringable
 {

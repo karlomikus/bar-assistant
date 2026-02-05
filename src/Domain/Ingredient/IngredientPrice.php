@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Ingredient;
 
-use BarAssistant\Domain\Common\AmountWithUnits;
-use BarAssistant\Domain\Common\Price;
 use DomainException;
+use BarAssistant\Domain\Common\Price;
+use BarAssistant\Domain\Common\AmountWithUnits;
 
 final readonly class IngredientPrice
 {
@@ -26,8 +26,7 @@ final readonly class IngredientPrice
         Price $price,
         AmountWithUnits $amountWithUnits,
         ?string $description = null,
-    ): self
-    {
+    ): self {
         return new self(
             priceCategoryId: $priceCategoryId,
             price: $price,

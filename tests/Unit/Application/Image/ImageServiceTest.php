@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Application\Image;
 
+use PHPUnit\Framework\TestCase;
+use BarAssistant\Domain\Image\ImageRepository;
+use BarAssistant\Application\Image\ImageService;
+use Tests\Infrastructure\InMemoryImageRepository;
 use BarAssistant\Application\Image\DTO\CreateImage;
 use BarAssistant\Application\Image\DTO\ImageResult;
-use BarAssistant\Application\Image\ImageService;
-use BarAssistant\Domain\Image\ImageRepository;
-use PHPUnit\Framework\TestCase;
-use Tests\Infrastructure\InMemoryImageRepository;
 
 final class ImageServiceTest extends TestCase
 {

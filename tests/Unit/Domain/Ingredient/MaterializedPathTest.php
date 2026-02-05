@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Ingredient;
 
+use PHPUnit\Framework\TestCase;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\MaterializedPath;
-use PHPUnit\Framework\TestCase;
 
 final class MaterializedPathTest extends TestCase
 {

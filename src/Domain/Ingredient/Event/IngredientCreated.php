@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Ingredient\Event;
 
+use DateTimeImmutable;
 use BarAssistant\Domain\Event\DomainEvent;
 use BarAssistant\Domain\Event\DomainEventName;
-use DateTimeImmutable;
 
 #[DomainEventName('ingredientCreated')]
 final readonly class IngredientCreated implements DomainEvent

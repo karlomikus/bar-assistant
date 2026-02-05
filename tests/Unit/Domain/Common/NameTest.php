@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Common;
 
-use BarAssistant\Domain\Exception\DomainException;
-use BarAssistant\Domain\Common\Name;
 use PHPUnit\Framework\TestCase;
+use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Exception\DomainException;
 
 final class NameTest extends TestCase
 {

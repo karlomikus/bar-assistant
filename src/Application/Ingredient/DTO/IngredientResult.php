@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Ingredient\DTO;
 
-use BarAssistant\Domain\Ingredient\Ingredient;
 use DateTimeImmutable;
+use BarAssistant\Domain\Ingredient\Ingredient;
 
 final readonly class IngredientResult
 {

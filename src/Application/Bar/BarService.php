@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace BarAssistant\Application\Bar;
 
 use BarAssistant\Domain\Bar\Bar;
-use BarAssistant\Domain\Bar\BarRepository;
-use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Bar\BarRepository;
+use BarAssistant\Domain\Common\RecordTimestamps;
 
 final readonly class MemberService
 {

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Common;
 
+use PHPUnit\Framework\TestCase;
 use BarAssistant\Domain\Common\Unit;
 use Kami\RecipeUtils\UnitConverter\Units;
-use PHPUnit\Framework\TestCase;
 
 final class UnitTest extends TestCase
 {

@@ -4,27 +4,27 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Application\Ingredient;
 
-use BarAssistant\Application\Exception\EntityNotFoundException;
-use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
-use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
-use BarAssistant\Application\Ingredient\DTO\IngredientResult;
-use BarAssistant\Application\Ingredient\DTO\UpdateIngredient;
-use BarAssistant\Application\Ingredient\IngredientService;
-use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Ingredient\Ingredient;
-use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\Ingredient\IngredientRepository;
-use BarAssistant\Domain\Ingredient\PriceCategory;
-use BarAssistant\Domain\Ingredient\PriceCategoryId;
-use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
-use BarAssistant\Domain\Common\Authors;
-use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\User\UserId;
 use Brick\Money\Currency;
 use PHPUnit\Framework\TestCase;
+use BarAssistant\Domain\Bar\BarId;
+use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Ingredient\Ingredient;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Domain\Ingredient\PriceCategory;
+use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use Tests\Infrastructure\InMemoryIngredientRepository;
+use BarAssistant\Domain\Ingredient\IngredientRepository;
 use Tests\Infrastructure\InMemoryPriceCategoryRepository;
+use BarAssistant\Application\Ingredient\IngredientService;
+use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
+use BarAssistant\Application\Ingredient\DTO\IngredientResult;
+use BarAssistant\Application\Ingredient\DTO\UpdateIngredient;
+use BarAssistant\Application\Exception\EntityNotFoundException;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
 
 final class IngredientServiceTest extends TestCase
 {

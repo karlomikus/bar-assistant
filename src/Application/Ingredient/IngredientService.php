@@ -5,31 +5,31 @@ declare(strict_types=1);
 namespace BarAssistant\Application\Ingredient;
 
 use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Common\Color;
-use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
-use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
-use BarAssistant\Application\Ingredient\DTO\IngredientResult;
-use BarAssistant\Application\Ingredient\DTO\UpdateIngredient;
-use BarAssistant\Application\Exception\EntityNotFoundException;
-use BarAssistant\Domain\Calculator\CalculatorId;
-use BarAssistant\Domain\Image\ImageId;
-use BarAssistant\Domain\Ingredient\Ingredient;
-use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
-use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\Ingredient\IngredientRepository;
-use BarAssistant\Domain\Ingredient\PriceCategory;
-use BarAssistant\Domain\Ingredient\PriceCategoryId;
-use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 use BarAssistant\Domain\Common\ABV;
-use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Common\Color;
+use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Ingredient\Ingredient;
+use BarAssistant\Domain\Calculator\CalculatorId;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Domain\Ingredient\PriceCategory;
+use BarAssistant\Domain\Ingredient\PriceCategoryId;
+use BarAssistant\Domain\Ingredient\IngredientRepository;
+use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
+use BarAssistant\Application\Ingredient\DTO\IngredientResult;
+use BarAssistant\Application\Ingredient\DTO\UpdateIngredient;
+use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
+use BarAssistant\Application\Exception\EntityNotFoundException;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
 
 final readonly class IngredientService
 {
-    private  IngredientHierarchyManager $ingredientHierarchy;
+    private IngredientHierarchyManager $ingredientHierarchy;
 
     public function __construct(
         private IngredientRepository $ingredientRepository,

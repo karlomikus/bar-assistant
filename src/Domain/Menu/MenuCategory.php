@@ -15,8 +15,7 @@ final readonly class MenuCategory
         private Name $name,
         private int $sortIndex,
         private array $items,
-    )
-    {
+    ) {
     }
 
     public static function create(Name $name, int $sortIndex = 0): self
@@ -94,7 +93,7 @@ final readonly class MenuCategory
      */
     private static function sortItems(array $items): array
     {
-        usort($items, static fn(MenuItem $a, MenuItem $b) => $a->getSortIndex() <=> $b->getSortIndex());
+        usort($items, static fn (MenuItem $a, MenuItem $b) => $a->getSortIndex() <=> $b->getSortIndex());
 
         return $items;
     }

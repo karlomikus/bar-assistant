@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Menu;
 
-use BarAssistant\Domain\Cocktail\CocktailId;
+use PHPUnit\Framework\TestCase;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\Price;
-use BarAssistant\Domain\Menu\MenuCategory;
 use BarAssistant\Domain\Menu\MenuItem;
-use PHPUnit\Framework\TestCase;
+use BarAssistant\Domain\Menu\MenuCategory;
+use BarAssistant\Domain\Cocktail\CocktailId;
 
 final class MenuCategoryTest extends TestCase
 {

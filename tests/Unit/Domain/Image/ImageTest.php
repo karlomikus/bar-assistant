@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Image;
 
-use BarAssistant\Domain\Exception\DomainException;
-use BarAssistant\Domain\Image\Image;
-use BarAssistant\Domain\Image\ImageId;
-use BarAssistant\Domain\Common\Authors;
-use BarAssistant\Domain\Common\File;
-use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\User\UserId;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use BarAssistant\Domain\Common\File;
+use BarAssistant\Domain\Image\Image;
+use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Exception\DomainException;
 
 final class ImageTest extends TestCase
 {

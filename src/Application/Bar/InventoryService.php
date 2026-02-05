@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Bar;
 
-use BarAssistant\Application\Bar\DTO\BarInventoryStockChangeRequest;
-use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Application\Exception\EntityNotFoundException;
+use BarAssistant\Application\Bar\DTO\BarInventoryStockChangeRequest;
 
 final readonly class InventoryService
 {

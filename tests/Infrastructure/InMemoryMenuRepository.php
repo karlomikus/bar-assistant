@@ -17,7 +17,9 @@ final class InMemoryMenuRepository implements MenuRepository
     /**
      * @param array<string, Menu> $menus
      */
-    public function __construct(private array $menus = []) {}
+    public function __construct(private array $menus = [])
+    {
+    }
 
     public function findById(MenuId $id): ?Menu
     {

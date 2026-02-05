@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Ingredient;
 
-use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Exception\DomainException;
-use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Identity;
-use BarAssistant\Domain\Calculator\CalculatorId;
-use BarAssistant\Domain\DomainEventDispatcher;
-use BarAssistant\Domain\Ingredient\Event\IngredientStrengthChanged;
+use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\ABV;
-use BarAssistant\Domain\Common\AmountWithUnits;
-use BarAssistant\Domain\Common\Authors;
-use BarAssistant\Domain\Common\Color;
 use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\Price;
-use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Common\Color;
+use BarAssistant\Domain\Common\Price;
+use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\DomainEventDispatcher;
+use BarAssistant\Domain\Common\AmountWithUnits;
+use BarAssistant\Domain\Calculator\CalculatorId;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Exception\DomainException;
+use BarAssistant\Domain\Ingredient\Event\IngredientStrengthChanged;
 
 /**
  * Ingredient entity
@@ -93,8 +93,7 @@ final class Ingredient implements Identity
         ?Unit $units = null,
         ?IngredientId $parentIngredientId = null,
         ?MaterializedPath $materializedPath = null,
-    ): self
-    {
+    ): self {
         $ingredient = new self(
             barId: $barId,
             name: $name,
@@ -259,7 +258,7 @@ final class Ingredient implements Identity
     {
         $this->ingredientParts = array_values(array_filter(
             $this->ingredientParts,
-            static fn(IngredientId $part) => !$part->equals($ingredientId)
+            static fn (IngredientId $part) => !$part->equals($ingredientId)
         ));
 
         return $this;
@@ -302,7 +301,7 @@ final class Ingredient implements Identity
     {
         $this->images = array_values(array_filter(
             $this->images,
-            static fn(ImageId $existingImageId) => !$existingImageId->equals($imageId)
+            static fn (ImageId $existingImageId) => !$existingImageId->equals($imageId)
         ));
 
         return $this;

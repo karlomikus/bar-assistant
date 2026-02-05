@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Common;
 
-use BarAssistant\Domain\Exception\DomainException;
-use JsonSerializable;
 use Stringable;
+use JsonSerializable;
+use BarAssistant\Domain\Exception\DomainException;
 
 /**
  * Name value object

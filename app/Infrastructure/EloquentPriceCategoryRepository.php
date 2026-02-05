@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Infrastructure;
 
+use Brick\Money\Currency;
 use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Ingredient\PriceCategoryId;
+use BarAssistant\Domain\Common\Name;
 use Kami\Cocktail\Models\PriceCategory as Model;
 use BarAssistant\Domain\Ingredient\PriceCategory;
+use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
-use BarAssistant\Domain\Common\Name;
-use Brick\Money\Currency;
 
 final class EloquentPriceCategoryRepository implements PriceCategoryRepository
 {
@@ -21,7 +21,7 @@ final class EloquentPriceCategoryRepository implements PriceCategoryRepository
 
     public function findMany(BarId $barId, array $ids): array
     {
-        $models = Model::whereIn('id', array_map(fn(PriceCategoryId $id) => $id->value, $ids))->where('bar_id', $barId->value)->get();
+        $models = Model::whereIn('id', array_map(fn (PriceCategoryId $id) => $id->value, $ids))->where('bar_id', $barId->value)->get();
 
         $ingredients = [];
         /** @var Model $model */

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use BarAssistant\Application\Image\DTO\CreateImage;
-use BarAssistant\Application\Image\DTO\UpdateImageRequest;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -13,16 +11,14 @@ use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Http\UploadedFile;
 use Kami\Cocktail\OpenAPI as BAO;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\Http\Resources\ImageResource;
-use Kami\Cocktail\OpenAPI\Schemas\ImageRequest;
 use Symfony\Component\HttpFoundation\File\File;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\Http\Requests\ImageUpdateRequest;
+use BarAssistant\Application\Image\DTO\CreateImage;
 use Kami\Cocktail\Services\Image\ImageThumbnailService;
+use BarAssistant\Application\Image\DTO\UpdateImageRequest;
 
 class ImageController extends Controller
 {

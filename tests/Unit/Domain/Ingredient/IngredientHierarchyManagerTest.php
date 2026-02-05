@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Ingredient;
 
+use PHPUnit\Framework\TestCase;
 use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Ingredient\Exception\IngredientHierarchyException;
+use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Ingredient\Ingredient;
-use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
+use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
-use BarAssistant\Domain\Common\Authors;
-use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\User\UserId;
-use PHPUnit\Framework\TestCase;
+use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
+use BarAssistant\Domain\Ingredient\Exception\IngredientHierarchyException;
 
 final class IngredientHierarchyManagerTest extends TestCase
 {

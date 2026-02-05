@@ -16,7 +16,9 @@ final class InMemoryImageRepository implements ImageRepository
     /**
      * @param array<int, Image> $images
      */
-    public function __construct(private array $images = []) {}
+    public function __construct(private array $images = [])
+    {
+    }
 
     public function delete(ImageId $id): void
     {

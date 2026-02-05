@@ -7,16 +7,16 @@ namespace Kami\Cocktail\Infrastructure;
 use BarAssistant\Domain\Bar\Bar;
 use BarAssistant\Domain\Bar\BarId;
 use Illuminate\Support\Facades\DB;
+use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Common\Authors;
+use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\Bar as ModelBar;
 use BarAssistant\Domain\Bar\BarRepository;
+use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Bar\IngredientInventoryItem;
 use BarAssistant\Domain\Bar\IngredientInventoryStatus;
-use BarAssistant\Domain\Common\Authors;
-use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\User\UserId;
-use Kami\Cocktail\Models\BarIngredient;
 
 final class EloquentBarRepository implements BarRepository
 {

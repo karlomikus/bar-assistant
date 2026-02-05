@@ -19,7 +19,9 @@ final class InMemoryIngredientRepository implements IngredientRepository
     /**
      * @param array<int, Ingredient> $ingredients
      */
-    public function __construct(private array $ingredients = []) {}
+    public function __construct(private array $ingredients = [])
+    {
+    }
 
     /**
      * List all ingredients in a bar
@@ -30,7 +32,7 @@ final class InMemoryIngredientRepository implements IngredientRepository
     {
         return array_values(array_filter(
             $this->ingredients,
-            fn(Ingredient $ingredient) => $ingredient->getBarId()->equals($barId)
+            fn (Ingredient $ingredient) => $ingredient->getBarId()->equals($barId)
         ));
     }
 
@@ -139,8 +141,8 @@ final class InMemoryIngredientRepository implements IngredientRepository
             $this->ingredients,
             function (Ingredient $candidate) use ($searchPath, $ingredient) {
                 // Skip the ingredient itself
-                if ($ingredient->getId() !== null && 
-                    $candidate->getId() !== null && 
+                if ($ingredient->getId() !== null &&
+                    $candidate->getId() !== null &&
                     $candidate->getId()->equals($ingredient->getId())) {
                     return false;
                 }

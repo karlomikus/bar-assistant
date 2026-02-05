@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Cocktail;
 
+use DomainException;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Common\ABV;
-use BarAssistant\Domain\Common\Dilution;
 use BarAssistant\Domain\Common\Name;
-use DomainException;
+use BarAssistant\Domain\Common\Dilution;
 
 final class Cocktail implements Identity
 {
@@ -24,8 +24,7 @@ final class Cocktail implements Identity
         private ?Dilution $dilution = null,
         private array $ingredients = [],
         private ?CocktailId $variantOf = null,
-    )
-    {
+    ) {
     }
 
     /**
@@ -37,8 +36,7 @@ final class Cocktail implements Identity
         ?string $garnish = null,
         ?Dilution $dilution = null,
         array $ingredients = [],
-    ): self
-    {
+    ): self {
         return new self(
             name: $name,
             instructions: $instructions,

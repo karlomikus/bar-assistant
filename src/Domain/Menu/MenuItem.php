@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Menu;
 
+use DomainException;
 use BarAssistant\Domain\Common\Price;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Ingredient\IngredientId;
-use DomainException;
 
 final readonly class MenuItem
 {
@@ -16,8 +16,7 @@ final readonly class MenuItem
         private int $sortIndex,
         private ?CocktailId $cocktailId = null,
         private ?IngredientId $ingredientId = null,
-    )
-    {
+    ) {
         if ($cocktailId === null && $ingredientId === null) {
             throw new DomainException('Menu item must reference either a cocktail or an ingredient');
         }
@@ -39,8 +38,7 @@ final readonly class MenuItem
         CocktailId $cocktailId,
         Price $price,
         int $sortIndex,
-    ): self
-    {
+    ): self {
         return new self(
             price: $price,
             sortIndex: $sortIndex,
@@ -52,8 +50,7 @@ final readonly class MenuItem
         IngredientId $ingredientId,
         Price $price,
         int $sortIndex,
-    ): self
-    {
+    ): self {
         return new self(
             price: $price,
             sortIndex: $sortIndex,

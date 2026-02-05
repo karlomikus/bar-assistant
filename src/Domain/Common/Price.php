@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Common;
 
-use Brick\Math\RoundingMode;
 use Brick\Money\Money;
+use Brick\Math\RoundingMode;
 
 final readonly class Price
 {

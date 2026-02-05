@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Providers;
 
+use Illuminate\Support\ServiceProvider;
 use BarAssistant\Domain\Bar\BarRepository;
+use BarAssistant\Domain\Menu\MenuRepository;
 use BarAssistant\Domain\Bar\MemberRepository;
 use BarAssistant\Domain\Image\ImageRepository;
-use BarAssistant\Domain\Ingredient\IngredientRepository;
-use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
-use BarAssistant\Domain\Menu\MenuRepository;
-use Illuminate\Support\ServiceProvider;
 use Kami\Cocktail\Infrastructure\EloquentBarRepository;
-use Kami\Cocktail\Infrastructure\EloquentImageRepository;
-use Kami\Cocktail\Infrastructure\EloquentIngredientRepository;
-use Kami\Cocktail\Infrastructure\EloquentMemberRepository;
+use BarAssistant\Domain\Ingredient\IngredientRepository;
 use Kami\Cocktail\Infrastructure\EloquentMenuRepository;
+use Kami\Cocktail\Infrastructure\EloquentImageRepository;
+use Kami\Cocktail\Infrastructure\EloquentMemberRepository;
+use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
+use Kami\Cocktail\Infrastructure\EloquentIngredientRepository;
 use Kami\Cocktail\Infrastructure\EloquentPriceCategoryRepository;
 
 class InfrastructureServiceProvider extends ServiceProvider

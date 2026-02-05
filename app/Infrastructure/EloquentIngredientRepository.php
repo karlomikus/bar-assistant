@@ -7,23 +7,23 @@ namespace Kami\Cocktail\Infrastructure;
 use Throwable;
 use BarAssistant\Domain\Bar\BarId;
 use Illuminate\Support\Facades\DB;
-use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Common\ABV;
+use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\Unit;
-use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Common\Color;
+use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\Common\Authors;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\Models\Image as ModelImage;
 use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Calculator\CalculatorId;
+use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\MaterializedPath;
 use Kami\Cocktail\Models\Ingredient as ModelIngredient;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
-use BarAssistant\Domain\Common\ABV;
-use BarAssistant\Domain\Common\Authors;
-use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\RecordTimestamps;
 use Kami\Cocktail\Models\IngredientPrice as ModelIngredientPrice;
 
 final class EloquentIngredientRepository implements IngredientRepository
@@ -55,7 +55,7 @@ final class EloquentIngredientRepository implements IngredientRepository
     /** @param IngredientId[] $ids */
     public function findMany(BarId $barId, array $ids): array
     {
-        $models = ModelIngredient::with('ingredientParts', 'prices.priceCategory')->whereIn('id', array_map(fn(IngredientId $id) => $id->value, $ids))->where('bar_id', $barId->value)->get();
+        $models = ModelIngredient::with('ingredientParts', 'prices.priceCategory')->whereIn('id', array_map(fn (IngredientId $id) => $id->value, $ids))->where('bar_id', $barId->value)->get();
 
         $ingredients = [];
         /** @var ModelIngredient $model */

@@ -13,7 +13,9 @@ final class InMemoryPriceCategoryRepository implements PriceCategoryRepository
     /**
      * @param array<int, PriceCategory> $items
      */
-    public function __construct(private array $items = []) {}
+    public function __construct(private array $items = [])
+    {
+    }
 
     public function save(PriceCategory $priceCategory): PriceCategory
     {

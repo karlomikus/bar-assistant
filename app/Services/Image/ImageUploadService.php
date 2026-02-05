@@ -7,9 +7,9 @@ namespace Kami\Cocktail\Services\Image;
 use Throwable;
 use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface;
+use Kami\Cocktail\Models\Image;
 use Illuminate\Container\Attributes\Storage;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Services\Image\DTO\ImageUploadResult;
 
 final readonly class ImageUploadService

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace BarAssistant\Domain\Cocktail;
 
 use BarAssistant\Domain\Common\ABV;
-use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Common\AmountWithUnits;
+use BarAssistant\Domain\Ingredient\IngredientId;
 
 final readonly class CocktailIngredientSubstitute
 {
@@ -14,16 +14,14 @@ final readonly class CocktailIngredientSubstitute
         public IngredientId $ingredientId,
         public AmountWithUnits $amountWithUnits,
         public ABV $abv,
-    )
-    {
+    ) {
     }
 
     public static function create(
         IngredientId $ingredientId,
         AmountWithUnits $amountWithUnits,
         ABV $abv,
-    ): self
-    {
+    ): self {
         return new self(
             ingredientId: $ingredientId,
             amountWithUnits: $amountWithUnits,

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Bar;
 
-use BarAssistant\Domain\Identity;
-use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\User\UserId;
 use DomainException;
+use BarAssistant\Domain\Identity;
+use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Ingredient\IngredientId;
 
 final class Member implements Identity
 {
@@ -21,8 +21,7 @@ final class Member implements Identity
         private BarId $barId,
         private MemberRole $role,
         private array $shoppingListIngredients = [],
-    )
-    {
+    ) {
     }
 
     /**
@@ -86,7 +85,7 @@ final class Member implements Identity
     {
         return array_any(
             $this->shoppingListIngredients,
-            static fn(ShoppingListItem $existingShoppingListItem): bool => $existingShoppingListItem->ingredientId->equals($ingredientId)
+            static fn (ShoppingListItem $existingShoppingListItem): bool => $existingShoppingListItem->ingredientId->equals($ingredientId)
         );
     }
 

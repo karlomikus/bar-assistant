@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain;
 
+use ReflectionClass;
 use BarAssistant\Domain\Event\DomainEvent;
 use BarAssistant\Domain\Event\DomainEventName;
 use BarAssistant\Domain\Event\EventSubscriber;
 use BarAssistant\Domain\Exception\DomainException;
-use ReflectionClass;
 
 final class DomainEventDispatcher
 {

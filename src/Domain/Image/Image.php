@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Image;
 
-use BarAssistant\Domain\Exception\DomainException;
-use BarAssistant\Domain\Identity;
-use BarAssistant\Domain\Common\Authors;
-use BarAssistant\Domain\Common\File;
-use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\User\UserId;
 use DateTimeImmutable;
+use BarAssistant\Domain\Identity;
+use BarAssistant\Domain\Common\File;
+use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Exception\DomainException;
 
 final class Image implements Identity
 {
@@ -33,8 +33,7 @@ final class Image implements Identity
         ?string $copyright = null,
         int $sort = 0,
         bool $temporary = true,
-    ): self
-    {
+    ): self {
         return new self(
             file: $file,
             authors: $authors,
@@ -50,8 +49,7 @@ final class Image implements Identity
         DateTimeImmutable $updatedAt,
         ?string $copyright = null,
         int $sort = 0,
-    ): self
-    {
+    ): self {
         $this->authors = $this->authors->updatedBy($userId);
         $this->recordTimestamps = $this->recordTimestamps->updatedAt($updatedAt);
         $this->copyright = $copyright;

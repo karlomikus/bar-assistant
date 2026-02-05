@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Bar;
 
-use BarAssistant\Domain\Common\Authors;
-use BarAssistant\Domain\Exception\DomainException;
+use Brick\Money\Currency;
 use BarAssistant\Domain\Identity;
-use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\Image\ImageId;
-use Brick\Money\Currency;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Domain\Exception\DomainException;
 
 final class Bar implements Identity
 {
@@ -211,7 +211,7 @@ final class Bar implements Identity
     {
         return array_any(
             $this->getInStockIngredients(),
-            static fn($existingInventoryItem) => $existingInventoryItem->ingredientId->equals($ingredientId)
+            static fn ($existingInventoryItem) => $existingInventoryItem->ingredientId->equals($ingredientId)
         );
     }
 }

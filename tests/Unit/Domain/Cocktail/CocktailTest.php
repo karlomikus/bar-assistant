@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Cocktail;
 
-use BarAssistant\Domain\Cocktail\Cocktail;
-use BarAssistant\Domain\Cocktail\CocktailIngredient;
+use PHPUnit\Framework\TestCase;
 use BarAssistant\Domain\Common\ABV;
-use BarAssistant\Domain\Common\AmountWithUnits;
-use BarAssistant\Domain\Common\Dilution;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\Unit;
+use BarAssistant\Domain\Common\Dilution;
+use BarAssistant\Domain\Cocktail\Cocktail;
+use BarAssistant\Domain\Common\AmountWithUnits;
 use BarAssistant\Domain\Ingredient\IngredientId;
-use PHPUnit\Framework\TestCase;
+use BarAssistant\Domain\Cocktail\CocktailIngredient;
 
 final class CocktailTest extends TestCase
 {

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Infrastructure;
 
-use BarAssistant\Domain\Image\Image;
-use BarAssistant\Domain\Image\ImageId;
-use BarAssistant\Domain\Image\ImageRepository;
-use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\File;
-use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Image\Image;
 use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\Common\Authors;
 use Kami\Cocktail\Models\Image as Model;
+use BarAssistant\Domain\Image\ImageRepository;
+use BarAssistant\Domain\Common\RecordTimestamps;
 
 final class EloquentImageRepository implements ImageRepository
 {
@@ -48,7 +48,7 @@ final class EloquentImageRepository implements ImageRepository
 
     public function findMany(array $ids): array
     {
-        $models = Model::whereIn('id', array_map(fn(ImageId $id) => $id->value, $ids))->get();
+        $models = Model::whereIn('id', array_map(fn (ImageId $id) => $id->value, $ids))->get();
 
         $ingredients = [];
         /** @var Model $model */

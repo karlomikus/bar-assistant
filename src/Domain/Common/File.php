@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Common;
 
-use DomainException;
 use Stringable;
+use DomainException;
 
 final readonly class File implements Stringable
 {
@@ -18,8 +18,7 @@ final readonly class File implements Stringable
         public string $path,
         public string $extension,
         public ?string $placeholderHash = null,
-    )
-    {
+    ) {
         if (trim($path) === '') {
             throw new DomainException('File path cannot be empty');
         }
@@ -29,8 +28,7 @@ final readonly class File implements Stringable
         string $path,
         string $extension,
         ?string $placeholderHash = null,
-    ): self
-    {
+    ): self {
         return new self($path, $extension, $placeholderHash);
     }
 

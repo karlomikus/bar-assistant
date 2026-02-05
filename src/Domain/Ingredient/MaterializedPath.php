@@ -36,7 +36,7 @@ final readonly class MaterializedPath
         }
 
         $basePath = array_map(
-            static fn(int $id) => new IngredientId($id),
+            static fn (int $id) => new IngredientId($id),
             array_map(intval(...), array_filter(explode(self::SEPARATOR, $materializedPath)))
         );
 

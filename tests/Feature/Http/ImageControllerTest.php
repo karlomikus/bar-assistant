@@ -219,47 +219,4 @@ class ImageControllerTest extends TestCase
 
         $response->assertOk();
     }
-
-    public function test_image_update(): void
-    {
-        $membership = $this->setupBarMembership();
-        $this->actingAs($membership->user);
-
-        Storage::fake('uploads');
-
-        $imageFile = UploadedFile::fake()->createWithContent('image1.jpg', $this->getFakeImageContent('jpg'));
-        $cocktailImage = Image::factory()
-            ->recycle($membership->bar, $membership->user)
-            ->for(Cocktail::factory()->recycle($membership->bar, $membership->user)->create(), 'imageable')
-            ->create([
-                'file_path' => $imageFile->storeAs('temp', 'image1.jpg', 'uploads'),
-                'file_extension' => $imageFile->extension(),
-                'copyright' => 'initial',
-                'sort' => 7,
-            ]);
-
-        $response = $this->postJson('/api/images/' . $cocktailImage->id, [
-            'copyright' => 'New copyright'
-        ]);
-        $response->assertJsonPath('data.id', $cocktailImage->id);
-        $response->assertJsonPath('data.file_path', 'temp/image1.jpg');
-        $response->assertJsonPath('data.copyright', 'New copyright');
-        $response->assertJsonPath('data.sort', 7);
-
-        $response = $this->postJson('/api/images/' . $cocktailImage->id, [
-            'sort' => 1
-        ]);
-        $response->assertJsonPath('data.id', $cocktailImage->id);
-        $response->assertJsonPath('data.file_path', 'temp/image1.jpg');
-        $response->assertJsonPath('data.copyright', 'New copyright');
-        $response->assertJsonPath('data.sort', 1);
-
-        $response = $this->postJson('/api/images/' . $cocktailImage->id, [
-            'image' => UploadedFile::fake()->createWithContent('new_image.png', $this->getFakeImageContent('png'))
-        ]);
-        $response->assertJsonPath('data.id', $cocktailImage->id);
-        $this->assertNotSame('temp/image1.jpg', $response->json('data.file_path'));
-        $response->assertJsonPath('data.copyright', 'New copyright');
-        $response->assertJsonPath('data.sort', 1);
-    }
 }

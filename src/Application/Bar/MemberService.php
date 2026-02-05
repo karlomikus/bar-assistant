@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Bar;
 
+use BarAssistant\Domain\Bar\BarId;
+use BarAssistant\Domain\Bar\Member;
+use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Bar\MemberRole;
+use BarAssistant\Domain\Bar\MemberRepository;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
-use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Bar\Member;
-use BarAssistant\Domain\Bar\MemberRepository;
-use BarAssistant\Domain\Bar\MemberRole;
-use BarAssistant\Domain\User\UserId;
 
 final readonly class MemberService
 {

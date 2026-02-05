@@ -146,4 +146,3 @@ final readonly class IngredientHierarchyManager
         return $ingredient;
     }
 }
-
