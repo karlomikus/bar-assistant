@@ -102,6 +102,7 @@ final class EloquentMenuRepository implements MenuRepository
                     cocktailId: new CocktailId($menuCocktail->cocktail_id),
                     price: Price::createFromMinor($menuCocktail->price, $menuCocktail->currency ?? 'EUR'),
                     sortIndex: $menuCocktail->sort,
+                    inBarInventory: true,
                 );
             }
             foreach ($modelCategory->menuIngredients as $menuIngredient) {
@@ -109,6 +110,7 @@ final class EloquentMenuRepository implements MenuRepository
                     ingredientId: new IngredientId($menuIngredient->ingredient_id),
                     price: Price::createFromMinor($menuIngredient->price, $menuIngredient->currency ?? 'EUR'),
                     sortIndex: $menuIngredient->sort,
+                    inBarInventory: $menuIngredient->ingredient->barHasInShelf() || $menuIngredient->ingredient->barHasInShelfAsComplexIngredient(),
                 );
             }
 

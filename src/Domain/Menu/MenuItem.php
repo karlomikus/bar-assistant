@@ -16,6 +16,7 @@ final readonly class MenuItem
         private int $sortIndex,
         private ?CocktailId $cocktailId = null,
         private ?IngredientId $ingredientId = null,
+        private bool $inBarInventory = true,
     ) {
         if ($cocktailId === null && $ingredientId === null) {
             throw new DomainException('Menu item must reference either a cocktail or an ingredient');
@@ -38,11 +39,13 @@ final readonly class MenuItem
         CocktailId $cocktailId,
         Price $price,
         int $sortIndex,
+        bool $inBarInventory = true,
     ): self {
         return new self(
             price: $price,
             sortIndex: $sortIndex,
             cocktailId: $cocktailId,
+            inBarInventory: $inBarInventory,
         );
     }
 
@@ -50,11 +53,13 @@ final readonly class MenuItem
         IngredientId $ingredientId,
         Price $price,
         int $sortIndex,
+        bool $inBarInventory = true,
     ): self {
         return new self(
             price: $price,
             sortIndex: $sortIndex,
             ingredientId: $ingredientId,
+            inBarInventory: $inBarInventory,
         );
     }
 
@@ -88,6 +93,11 @@ final readonly class MenuItem
         return $this->ingredientId !== null;
     }
 
+    public function isInBarInventory(): bool
+    {
+        return $this->inBarInventory;
+    }
+
     public function withPrice(Price $price): self
     {
         return new self(
@@ -95,6 +105,7 @@ final readonly class MenuItem
             sortIndex: $this->sortIndex,
             cocktailId: $this->cocktailId,
             ingredientId: $this->ingredientId,
+            inBarInventory: $this->inBarInventory,
         );
     }
 
@@ -105,6 +116,7 @@ final readonly class MenuItem
             sortIndex: $sortIndex,
             cocktailId: $this->cocktailId,
             ingredientId: $this->ingredientId,
+            inBarInventory: $this->inBarInventory,
         );
     }
 }
