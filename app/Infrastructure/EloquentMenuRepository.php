@@ -25,7 +25,6 @@ final class EloquentMenuRepository implements MenuRepository
             ->join('bars', 'bars.id', '=', 'menus.bar_id')
             ->where('bars.slug', $id->value)
             ->select('menus.*')
-            ->with('bar', 'categories.menuCocktails.cocktail', 'categories.menuIngredients.ingredient')
             ->first();
 
         if ($model === null) {
