@@ -12,6 +12,7 @@ final readonly class CreateMenuItemRequest
         public float $price = 0.0,
         public string $priceCurrency = 'USD',
         public int $sortIndex = 0,
+        public bool $isBarInventoryAware = false,
     ) {
     }
 }

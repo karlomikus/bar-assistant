@@ -105,6 +105,7 @@ class MenuController extends Controller
                     price: $bodyMenuItem->price,
                     priceCurrency: $bodyMenuItem->currency,
                     sortIndex: $bodyMenuItem->sort,
+                    isBarInventoryAware: $bodyMenuItem->isBarInventoryAware,
                 );
             }
             $categories[] = new CreateMenuCategoryRequest(name: $bodyCategory->name, sortIndex: $bodyCategory->sort, items: $items);

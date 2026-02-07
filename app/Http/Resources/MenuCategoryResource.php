@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Resources;
 
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\Models\ValueObjects\MenuItem;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
+use Kami\Cocktail\Models\ValueObjects\MenuItem;
 
 /**
  * @mixin \Kami\Cocktail\Models\MenuCategory
@@ -25,7 +25,8 @@ use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
             new OAT\Property(property: 'price', ref: PriceResource::class),
             new OAT\Property(type: 'string', property: 'name', example: 'Cocktail name', description: 'Cocktail name'),
             new OAT\Property(type: 'string', property: 'description', nullable: true, example: 'Cocktail description'),
-        ], required: ['id', 'type', 'sort', 'price', 'name', 'description'])),
+            new OAT\Property(type: 'bool', property: 'is_bar_inventory_aware', example: false, description: 'Indicates if the item is in the bar inventory'),
+        ], required: ['id', 'type', 'sort', 'price', 'name', 'description', 'is_bar_inventory_aware'])),
     ],
     required: ['name', 'sort', 'items']
 )]
@@ -42,15 +43,17 @@ class MenuCategoryResource extends JsonResource
     {
         return [
             'name' => $this->name,
-            'sort' => $this->sort,
-            'items' => $this->getMenuItems()->map(fn (MenuItem $menuItem) => [
+            'sort' => $this->sortIndex,
+            'items' => $this->getMenuItems()->map(static fn (MenuItem $menuItem): array => [
                 'id' => $menuItem->id,
                 'type' => $menuItem->type->value,
                 'sort' => $menuItem->sort,
                 'price' => new PriceResource($menuItem->price),
                 'name' => $menuItem->name,
                 'description' => $menuItem->description,
-            ])->toArray(),
+                'is_bar_inventory_aware' => $menuItem->isBarInventoryAware,
+                'in_shelf' => $menuItem->inShelf,
+            ]),
         ];
     }
 }

@@ -47,29 +47,32 @@ final class EloquentMenuRepository implements MenuRepository
             $model->bar->save();
         }
 
-        $model->categories()->delete();
         foreach ($menu->getCategories() as $category) {
-            $modelCategory = new ModelMenuCategory();
-            $modelCategory->name = $category->getName();
-            $modelCategory->sort = $category->getSortIndex();
-            $model->categories()->save($modelCategory);
+            $modelCategory = ModelMenuCategory::firstOrCreate([
+                'name' => $category->getName(),
+                'menu_id' => $model->id,
+            ], [
+                'sort' => $category->getSortIndex(),
+            ]);
 
             foreach ($category->getItems() as $menuItem) {
                 if ($menuItem->isIngredient()) {
                     $modelCategory->menuIngredients()->updateOrCreate([
-                        'ingredient_id' => $menuItem->getIngredientId()
+                        'ingredient_id' => $menuItem->getIngredientId(),
                     ], [
                         'sort' => $menuItem->getSortIndex(),
                         'price' => $menuItem->getPrice()->getAsMinor(),
                         'currency' => $menuItem->getPrice()->getCurrency(),
+                        'is_bar_inventory_aware' => $menuItem->isBarInventoryAware(),
                     ]);
                 } else {
                     $modelCategory->menuCocktails()->updateOrCreate([
-                        'cocktail_id' => $menuItem->getCocktailId()
+                        'cocktail_id' => $menuItem->getCocktailId(),
                     ], [
                         'sort' => $menuItem->getSortIndex(),
                         'price' => $menuItem->getPrice()->getAsMinor(),
                         'currency' => $menuItem->getPrice()->getCurrency(),
+                        'is_bar_inventory_aware' => $menuItem->isBarInventoryAware(),
                     ]);
                 }
             }
@@ -102,7 +105,7 @@ final class EloquentMenuRepository implements MenuRepository
                     cocktailId: new CocktailId($menuCocktail->cocktail_id),
                     price: Price::createFromMinor($menuCocktail->price, $menuCocktail->currency ?? 'EUR'),
                     sortIndex: $menuCocktail->sort,
-                    inBarInventory: true,
+                    barInventoryAware: $menuCocktail->is_bar_inventory_aware,
                 );
             }
             foreach ($modelCategory->menuIngredients as $menuIngredient) {
@@ -110,7 +113,7 @@ final class EloquentMenuRepository implements MenuRepository
                     ingredientId: new IngredientId($menuIngredient->ingredient_id),
                     price: Price::createFromMinor($menuIngredient->price, $menuIngredient->currency ?? 'EUR'),
                     sortIndex: $menuIngredient->sort,
-                    inBarInventory: $menuIngredient->ingredient->barHasInShelf() || $menuIngredient->ingredient->barHasInShelfAsComplexIngredient(),
+                    barInventoryAware: $menuIngredient->is_bar_inventory_aware,
                 );
             }
 

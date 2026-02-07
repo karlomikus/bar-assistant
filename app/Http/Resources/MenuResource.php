@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Http\Resources;
 
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 
 /**
  * @mixin \Kami\Cocktail\Models\Menu

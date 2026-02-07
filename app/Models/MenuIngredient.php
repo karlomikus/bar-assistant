@@ -20,11 +20,19 @@ class MenuIngredient extends Model
 
     protected $fillable = [
         'ingredient_id',
-        'category_name',
         'sort',
         'price',
         'currency',
+        'is_bar_inventory_aware',
+        'menu_category_id',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_bar_inventory_aware' => 'boolean',
+        ];
+    }
 
     /**
      * @return BelongsTo<Ingredient, $this>

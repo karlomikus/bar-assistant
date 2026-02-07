@@ -15,6 +15,8 @@ use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Menu\MenuRepository;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Application\Menu\DTO\CreateMenuRequest;
+use BarAssistant\Application\Menu\DTO\MenuResult;
+use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Exception\ValidationException;
 use BarAssistant\Application\Menu\DTO\CreateMenuItemRequest;
 
@@ -54,6 +56,16 @@ final readonly class MenuService
         return $menu;
     }
 
+    public function getMenu(int $barId): MenuResult
+    {
+        $menu = $this->menuRepository->findByBarId(new BarId($barId));
+        if ($menu === null) {
+            throw new EntityNotFoundException('Menu not found');
+        }
+
+        return MenuResult::fromMenu($menu);
+    }
+
     private function createMenuItem(CreateMenuItemRequest $request): MenuItem
     {
         $price = Price::createFromFloat($request->price, $request->priceCurrency);
@@ -61,6 +73,7 @@ final readonly class MenuService
         if ($request->cocktailId !== null) {
             return MenuItem::forCocktail(
                 cocktailId: new CocktailId($request->cocktailId),
+                barInventoryAware: $request->isBarInventoryAware,
                 price: $price,
                 sortIndex: $request->sortIndex,
             );
@@ -69,6 +82,7 @@ final readonly class MenuService
         if ($request->ingredientId !== null) {
             return MenuItem::forIngredient(
                 ingredientId: new IngredientId($request->ingredientId),
+                barInventoryAware: $request->isBarInventoryAware,
                 price: $price,
                 sortIndex: $request->sortIndex,
             );

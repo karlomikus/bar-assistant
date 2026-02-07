@@ -20,6 +20,7 @@ readonly class MenuItem
         public ?string $publicId = null,
         public ?string $image = null,
         public bool $inShelf = false,
+        public bool $isBarInventoryAware = false,
     ) {
     }
 
@@ -31,12 +32,13 @@ readonly class MenuItem
             id: $menuCocktail->cocktail_id,
             type: MenuItemTypeEnum::Cocktail,
             sort: $menuCocktail->sort,
-            price: new Price($menuCocktail->getMoney()),
+            price: Price::fromMoney($menuCocktail->getMoney()),
             name: $menuCocktail->cocktail->name,
             description: $menuCocktail->cocktail->getIngredientNames()->implode(', '),
             publicId: $menuCocktail->cocktail->public_id,
             image: $thumbnail,
             inShelf: $menuCocktail->cocktail->inBarShelf(),
+            isBarInventoryAware: $menuCocktail->is_bar_inventory_aware,
         );
     }
 
@@ -48,12 +50,13 @@ readonly class MenuItem
             id: $menuIngredient->ingredient_id,
             type: MenuItemTypeEnum::Ingredient,
             sort: $menuIngredient->sort,
-            price: new Price($menuIngredient->getMoney()),
+            price: Price::fromMoney($menuIngredient->getMoney()),
             name: $menuIngredient->ingredient->name,
             description: $menuIngredient->ingredient->getMaterializedPathAsString(),
             publicId: null,
             image: $thumbnail,
             inShelf: $menuIngredient->ingredient->barHasInShelf(),
+            isBarInventoryAware: $menuIngredient->is_bar_inventory_aware,
         );
     }
 }

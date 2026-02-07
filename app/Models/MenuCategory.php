@@ -14,6 +14,12 @@ class MenuCategory extends Model
 {
     public $timestamps = false;
 
+    protected $fillable = [
+        'menu_id',
+        'sort',
+        'name',
+    ];
+
     /**
      * @return BelongsTo<Menu, $this>
      */

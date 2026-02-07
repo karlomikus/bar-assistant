@@ -16,7 +16,7 @@ final readonly class MenuItem
         private int $sortIndex,
         private ?CocktailId $cocktailId = null,
         private ?IngredientId $ingredientId = null,
-        private bool $inBarInventory = true,
+        private bool $barInventoryAware = true,
     ) {
         if ($cocktailId === null && $ingredientId === null) {
             throw new DomainException('Menu item must reference either a cocktail or an ingredient');
@@ -39,13 +39,13 @@ final readonly class MenuItem
         CocktailId $cocktailId,
         Price $price,
         int $sortIndex,
-        bool $inBarInventory = true,
+        bool $barInventoryAware = true,
     ): self {
         return new self(
             price: $price,
             sortIndex: $sortIndex,
             cocktailId: $cocktailId,
-            inBarInventory: $inBarInventory,
+            barInventoryAware: $barInventoryAware,
         );
     }
 
@@ -53,13 +53,13 @@ final readonly class MenuItem
         IngredientId $ingredientId,
         Price $price,
         int $sortIndex,
-        bool $inBarInventory = true,
+        bool $barInventoryAware = true,
     ): self {
         return new self(
             price: $price,
             sortIndex: $sortIndex,
             ingredientId: $ingredientId,
-            inBarInventory: $inBarInventory,
+            barInventoryAware: $barInventoryAware,
         );
     }
 
@@ -93,9 +93,9 @@ final readonly class MenuItem
         return $this->ingredientId !== null;
     }
 
-    public function isInBarInventory(): bool
+    public function isBarInventoryAware(): bool
     {
-        return $this->inBarInventory;
+        return $this->barInventoryAware;
     }
 
     public function withPrice(Price $price): self
@@ -105,7 +105,7 @@ final readonly class MenuItem
             sortIndex: $this->sortIndex,
             cocktailId: $this->cocktailId,
             ingredientId: $this->ingredientId,
-            inBarInventory: $this->inBarInventory,
+            barInventoryAware: $this->barInventoryAware,
         );
     }
 
@@ -116,7 +116,7 @@ final readonly class MenuItem
             sortIndex: $sortIndex,
             cocktailId: $this->cocktailId,
             ingredientId: $this->ingredientId,
-            inBarInventory: $this->inBarInventory,
+            barInventoryAware: $this->barInventoryAware,
         );
     }
 }
