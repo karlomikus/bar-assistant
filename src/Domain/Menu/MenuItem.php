@@ -16,7 +16,7 @@ final readonly class MenuItem
         private int $sortIndex,
         private ?CocktailId $cocktailId = null,
         private ?IngredientId $ingredientId = null,
-        private bool $barInventoryAware = true,
+        private bool $barInventoryAware = false,
     ) {
         if ($cocktailId === null && $ingredientId === null) {
             throw new DomainException('Menu item must reference either a cocktail or an ingredient');
@@ -26,8 +26,8 @@ final readonly class MenuItem
             throw new DomainException('Menu item cannot reference both a cocktail and an ingredient');
         }
 
-        if ($price->getAsMinor() <= 0) {
-            throw new DomainException('Menu item price must be greater than zero');
+        if ($price->getAsMinor() < 0) {
+            throw new DomainException('Menu item price must be non-negative');
         }
 
         if ($sortIndex < 0) {
@@ -39,7 +39,7 @@ final readonly class MenuItem
         CocktailId $cocktailId,
         Price $price,
         int $sortIndex,
-        bool $barInventoryAware = true,
+        bool $barInventoryAware = false,
     ): self {
         return new self(
             price: $price,
@@ -53,7 +53,7 @@ final readonly class MenuItem
         IngredientId $ingredientId,
         Price $price,
         int $sortIndex,
-        bool $barInventoryAware = true,
+        bool $barInventoryAware = false,
     ): self {
         return new self(
             price: $price,

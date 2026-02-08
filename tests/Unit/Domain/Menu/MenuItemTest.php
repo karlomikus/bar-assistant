@@ -23,7 +23,7 @@ final class MenuItemTest extends TestCase
 
         $this->assertTrue($item->isCocktail());
         $this->assertFalse($item->isIngredient());
-        $this->assertTrue($item->isInBarInventory());
+        $this->assertFalse($item->isBarInventoryAware());
         $this->assertInstanceOf(CocktailId::class, $item->getCocktailId());
         $this->assertNull($item->getIngredientId());
         $this->assertEquals(0, $item->getSortIndex());
@@ -35,33 +35,21 @@ final class MenuItemTest extends TestCase
             ingredientId: new IngredientId(1),
             price: Price::createFromMinor(500, 'USD'),
             sortIndex: 1,
-            inBarInventory: false,
+            barInventoryAware: true,
         );
 
         $this->assertTrue($item->isIngredient());
         $this->assertFalse($item->isCocktail());
-        $this->assertFalse($item->isInBarInventory());
+        $this->assertTrue($item->isBarInventoryAware());
         $this->assertInstanceOf(IngredientId::class, $item->getIngredientId());
         $this->assertNull($item->getCocktailId());
         $this->assertEquals(1, $item->getSortIndex());
     }
 
-    public function test_cannot_create_menu_item_with_zero_price(): void
-    {
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('Menu item price must be greater than zero');
-
-        MenuItem::forCocktail(
-            cocktailId: new CocktailId(1),
-            price: Price::createFromMinor(0, 'USD'),
-            sortIndex: 0,
-        );
-    }
-
     public function test_cannot_create_menu_item_with_negative_price(): void
     {
         $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('Menu item price must be greater than zero');
+        $this->expectExceptionMessage('Menu item price must be non-negative');
 
         MenuItem::forIngredient(
             ingredientId: new IngredientId(1),
@@ -103,14 +91,14 @@ final class MenuItemTest extends TestCase
             cocktailId: new CocktailId(1),
             price: Price::createFromMinor(1000, 'USD'),
             sortIndex: 0,
-            inBarInventory: false,
+            barInventoryAware: false,
         );
 
         $updatedItem = $item->withSortIndex(5);
 
         $this->assertEquals(5, $updatedItem->getSortIndex());
         $this->assertEquals(0, $item->getSortIndex()); // Original unchanged
-        $this->assertFalse($updatedItem->isInBarInventory());
+        $this->assertFalse($updatedItem->isBarInventoryAware());
     }
 
     public function test_menu_item_is_immutable(): void
@@ -124,19 +112,5 @@ final class MenuItemTest extends TestCase
         $updatedItem = $item->withPrice(Price::createFromMinor(2000, 'USD'));
 
         $this->assertNotSame($item, $updatedItem);
-    }
-
-    public function test_can_update_in_bar_inventory(): void
-    {
-        $item = MenuItem::forCocktail(
-            cocktailId: new CocktailId(1),
-            price: Price::createFromMinor(1000, 'USD'),
-            sortIndex: 0,
-        );
-
-        $updatedItem = $item->withInBarInventory(false);
-
-        $this->assertFalse($updatedItem->isInBarInventory());
-        $this->assertTrue($item->isInBarInventory()); // Original unchanged
     }
 }
