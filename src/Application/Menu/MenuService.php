@@ -37,6 +37,12 @@ final readonly class MenuService
             );
         }
 
+        if ($request->isEnabled) {
+            $menu->enable();
+        } else {
+            $menu->disable();
+        }
+
         $menu->clearAllCategories();
         foreach ($request->categories as $categoryRequest) {
             $items = [];

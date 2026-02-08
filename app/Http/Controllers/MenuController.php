@@ -123,6 +123,7 @@ class MenuController extends Controller
             barId: $bar->id,
             menuId: $bar->slug,
             categories: $categories,
+            isEnabled: $bodyRequest->isEnabled,
         ));
 
         return new Response(status: 204);

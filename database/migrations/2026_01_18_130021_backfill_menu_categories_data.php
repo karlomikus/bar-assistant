@@ -40,8 +40,6 @@ return new class () extends Migration {
                     'menu_id' => $menuId,
                     'name' => $category->category_name,
                     'sort' => $sortIndex++,
-                    'created_at' => now(),
-                    'updated_at' => now(),
                 ]);
 
                 $categoryMap[$category->category_name] = $categoryId;

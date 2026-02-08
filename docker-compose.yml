@@ -56,6 +56,18 @@ services:
     volumes:
       - meilidata:/meili_data
 
+  rustfs:
+    image: rustfs/rustfs:latest
+    restart: unless-stopped
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      - RUSTFS_ROOT_USER=rustfsadmin
+      - RUSTFS_ROOT_PASSWORD=rustfsadmin
+    volumes:
+      - rustfsdata:/data
+
   # metrics:
   #   image: prom/prometheus
   #   volumes:
@@ -65,3 +77,4 @@ services:
 
 volumes:
   meilidata:
+  rustfsdata:

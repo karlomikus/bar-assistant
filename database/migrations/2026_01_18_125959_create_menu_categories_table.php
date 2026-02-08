@@ -18,7 +18,6 @@ return new class () extends Migration {
             $table->foreignId('menu_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->integer('sort')->default(0);
-            $table->timestamps();
 
             // Ensure category names are unique per menu
             $table->unique(['menu_id', 'name']);

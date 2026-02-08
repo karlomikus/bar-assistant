@@ -36,7 +36,7 @@ final class EloquentMenuRepository implements MenuRepository
 
     public function save(Menu $menu): Menu
     {
-        $model = Model::firstOrNew(['bar_id' => $menu->getBarId()->value])->load('bar', 'categories.menuCocktails', 'categories.menuIngredients');
+        $model = Model::firstOrNew(['bar_id' => $menu->getBarId()->value]);
         $model->is_enabled = $menu->isEnabled();
         $model->save();
 
@@ -46,28 +46,26 @@ final class EloquentMenuRepository implements MenuRepository
             $model->bar->save();
         }
 
+        $model->categories()->delete();
         foreach ($menu->getCategories() as $category) {
-            $modelCategory = ModelMenuCategory::firstOrCreate([
+            $modelCategory = ModelMenuCategory::create([
                 'name' => $category->getName(),
                 'menu_id' => $model->id,
-            ], [
                 'sort' => $category->getSortIndex(),
             ]);
 
             foreach ($category->getItems() as $menuItem) {
                 if ($menuItem->isIngredient()) {
-                    $modelCategory->menuIngredients()->updateOrCreate([
+                    $modelCategory->menuIngredients()->create([
                         'ingredient_id' => $menuItem->getIngredientId(),
-                    ], [
                         'sort' => $menuItem->getSortIndex(),
                         'price' => $menuItem->getPrice()->getAsMinor(),
                         'currency' => $menuItem->getPrice()->getCurrency(),
                         'is_bar_inventory_aware' => $menuItem->isBarInventoryAware(),
                     ]);
                 } else {
-                    $modelCategory->menuCocktails()->updateOrCreate([
+                    $modelCategory->menuCocktails()->create([
                         'cocktail_id' => $menuItem->getCocktailId(),
-                    ], [
                         'sort' => $menuItem->getSortIndex(),
                         'price' => $menuItem->getPrice()->getAsMinor(),
                         'currency' => $menuItem->getPrice()->getCurrency(),

@@ -12,6 +12,7 @@ final readonly class CreateMenuRequest
     public function __construct(
         public int $barId,
         public string $menuId,
+        public bool $isEnabled,
         public array $categories = [],
     ) {
     }
