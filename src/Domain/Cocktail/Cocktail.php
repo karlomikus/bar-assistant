@@ -6,9 +6,14 @@ namespace BarAssistant\Domain\Cocktail;
 
 use DomainException;
 use BarAssistant\Domain\Identity;
+use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\ABV;
 use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\Dilution;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use DateTimeImmutable;
 
 final class Cocktail implements Identity
 {
@@ -16,14 +21,27 @@ final class Cocktail implements Identity
 
     /**
      * @param CocktailIngredient[] $ingredients
+     * @param string[] $tags
+     * @param ImageId[] $images
      */
     private function __construct(
+        private BarId $barId,
         private Name $name,
         private string $instructions,
+        private Authors $authors,
+        private RecordTimestamps $recordTimestamps,
+        private PublicStatus $publicStatus,
+        private ?GlassId $glassId = null,
+        private ?MethodId $methodId = null,
+        private ?string $description = null,
+        private ?string $source = null,
         private ?string $garnish = null,
         private ?Dilution $dilution = null,
         private array $ingredients = [],
+        private array $tags = [],
+        private array $images = [],
         private ?CocktailId $variantOf = null,
+        private ?int $year = null,
     ) {
     }
 
@@ -31,18 +49,38 @@ final class Cocktail implements Identity
      * @param CocktailIngredient[] $ingredients
      */
     public static function create(
+        BarId $barId,
         Name $name,
         string $instructions,
+        Authors $authors,
+        RecordTimestamps $recordTimestamps,
+        PublicStatus $publicStatus,
+        ?string $description = null,
         ?string $garnish = null,
+        ?string $source = null,
         ?Dilution $dilution = null,
         array $ingredients = [],
+        ?int $year = null,
+        ?GlassId $glassId = null,
+        ?MethodId $methodId = null,
+        ?CocktailId $variantOf = null,
     ): self {
         return new self(
+            barId: $barId,
             name: $name,
             instructions: $instructions,
             garnish: $garnish,
             dilution: $dilution,
             ingredients: $ingredients,
+            authors: $authors,
+            source: $source,
+            recordTimestamps: $recordTimestamps,
+            description: $description,
+            year: $year,
+            glassId: $glassId,
+            methodId: $methodId,
+            publicStatus: $publicStatus,
+            variantOf: $variantOf,
         );
     }
 
@@ -131,5 +169,87 @@ final class Cocktail implements Identity
     public function getIngredients(): array
     {
         return $this->ingredients;
+    }
+
+    public function getBarId(): BarId
+    {
+        return $this->barId;
+    }
+
+    public function getAuthors(): Authors
+    {
+        return $this->authors;
+    }
+
+    public function getRecordTimestamps(): RecordTimestamps
+    {
+        return $this->recordTimestamps;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function getSource(): ?string
+    {
+        return $this->source;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @return ImageId[]
+     */
+    public function getImages(): array
+    {
+        return $this->images;
+    }
+
+    public function getYear(): ?int
+    {
+        return $this->year;
+    }
+
+    public function getMethodId(): ?MethodId
+    {
+        return $this->methodId;
+    }
+
+    public function getGlassId(): ?GlassId
+    {
+        return $this->glassId;
+    }
+
+    public function isPublic(): bool
+    {
+        return $this->publicStatus->publicId !== null;
+    }
+
+    public function makePublic(?DateTimeImmutable $expiresAt = null): self
+    {
+        if ($this->isPublic()) {
+            return $this;
+        }
+
+        $this->publicStatus = PublicStatus::createNowWithFutureExpirationDate($expiresAt);
+
+        return $this;
+    }
+
+    public function getPublicStatus(): PublicStatus
+    {
+        return $this->publicStatus;
+    }
+
+    public function getVariantOf(): ?CocktailId
+    {
+        return $this->variantOf;
     }
 }

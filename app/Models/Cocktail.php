@@ -46,6 +46,7 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
 
     protected $casts = [
         'public_at' => 'datetime',
+        'public_expires_at' => 'datetime',
     ];
 
     public function getUploadPath(): string

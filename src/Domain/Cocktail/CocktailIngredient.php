@@ -19,6 +19,7 @@ final readonly class CocktailIngredient
         public ABV $abv,
         public bool $isOptional,
         public bool $isSpecific,
+        public int $sortIndex = 0,
         public ?string $note = null,
         public array $substitutes = [],
     ) {
