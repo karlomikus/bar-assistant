@@ -11,13 +11,13 @@ final readonly class CocktailIngredientSubstitute
 {
     private function __construct(
         public IngredientId $ingredientId,
-        public AmountWithUnits $amountWithUnits,
+        public ?AmountWithUnits $amountWithUnits = null,
     ) {
     }
 
     public static function create(
         IngredientId $ingredientId,
-        AmountWithUnits $amountWithUnits,
+        ?AmountWithUnits $amountWithUnits = null,
     ): self {
         return new self(
             ingredientId: $ingredientId,

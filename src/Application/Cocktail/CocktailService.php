@@ -4,26 +4,29 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Cocktail;
 
-use BarAssistant\Application\Cocktail\DTO\CreateCocktail;
-use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Cocktail\Cocktail;
-use BarAssistant\Domain\Cocktail\CocktailId;
-use BarAssistant\Domain\Cocktail\CocktailIngredient as CocktailCocktailIngredient;
-use BarAssistant\Domain\Cocktail\CocktailIngredientSubstitute;
-use BarAssistant\Domain\Cocktail\CocktailRepository;
-use BarAssistant\Domain\Cocktail\GlassId;
-use BarAssistant\Domain\Cocktail\MethodId;
-use BarAssistant\Domain\Cocktail\PublicStatus;
 use BarAssistant\Domain\Common\ABV;
-use BarAssistant\Domain\Common\AmountWithUnits;
+use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\Unit;
+use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\Dilution;
-use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Cocktail\GlassId;
+use BarAssistant\Domain\Cocktail\Cocktail;
+use BarAssistant\Domain\Cocktail\MethodId;
+use BarAssistant\Domain\Cocktail\UtensilId;
+use BarAssistant\Domain\Cocktail\CocktailId;
+use BarAssistant\Domain\Cocktail\PublicStatus;
+use BarAssistant\Domain\Common\AmountWithUnits;
 use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Cocktail\CocktailRepository;
+use BarAssistant\Application\Cocktail\DTO\CreateCocktail;
+use BarAssistant\Application\Cocktail\DTO\UpdateCocktail;
+use BarAssistant\Domain\Cocktail\CocktailIngredientSubstitute;
+use BarAssistant\Application\Exception\EntityNotFoundException;
+use BarAssistant\Domain\Cocktail\CocktailIngredient as CocktailCocktailIngredient;
 
 final readonly class CocktailService
 {
@@ -53,14 +56,17 @@ final readonly class CocktailService
             source: $request->source,
             dilution: Dilution::fromFloat($request->dilution),
             year: $request->year,
-            glassId: new GlassId($request->glassId),
-            methodId: new MethodId($request->methodId),
+            glassId: $request->glassId ? new GlassId($request->glassId) : null,
+            methodId: $request->methodId ? new MethodId($request->methodId) : null,
             variantOf: $variantOf?->getId(),
         );
 
         foreach ($request->ingredients as $requestIngredient) {
             $substitutes = [];
             foreach ($requestIngredient->substitutes as $requestSubstitute) {
+                if ($requestSubstitute->amount === null || $requestSubstitute->units === null) {
+                    continue;
+                }
                 $substitutes[] = CocktailIngredientSubstitute::create(
                     ingredientId: new IngredientId($requestSubstitute->ingredientId),
                     amountWithUnits: AmountWithUnits::from($requestSubstitute->amount, Unit::from($requestSubstitute->units), $requestSubstitute->amountMax),
@@ -80,6 +86,78 @@ final readonly class CocktailService
 
         foreach ($request->tags as $tag) {
             $cocktail->addTag($tag);
+        }
+
+        $this->cocktailRepository->save($cocktail);
+    }
+
+    public function updateCocktail(UpdateCocktail $request): void
+    {
+        $cocktail = $this->cocktailRepository->findById(new CocktailId($request->cocktailId));
+        if ($cocktail === null) {
+            throw new EntityNotFoundException('Cocktail not found');
+        }
+
+        $variantOf = null;
+        if ($request->parentCocktailId) {
+            $variantOf = $this->cocktailRepository->findById(new CocktailId($request->parentCocktailId));
+            if ($variantOf === null) {
+                throw new EntityNotFoundException('Parent cocktail not found');
+            }
+        }
+
+        $cocktail->updateDetails(
+            name: Name::fromString($request->name),
+            instructions: $request->instructions,
+            updatedBy: new UserId($request->userId),
+            publicStatus: $cocktail->getPublicStatus(),
+            glassId: $request->glassId ? new GlassId($request->glassId) : null,
+            methodId: $request->methodId ? new MethodId($request->methodId) : null,
+            description: $request->description,
+            source: $request->source,
+            garnish: $request->garnish,
+            dilution: Dilution::fromFloat($request->dilution),
+            variantOf: $variantOf?->getId(),
+            year: $request->year,
+        );
+
+        $cocktail->removeAllIngredients();
+        foreach ($request->ingredients as $requestIngredient) {
+            $substitutes = [];
+            foreach ($requestIngredient->substitutes as $requestSubstitute) {
+                if ($requestSubstitute->amount === null || $requestSubstitute->units === null) {
+                    continue;
+                }
+                $substitutes[] = CocktailIngredientSubstitute::create(
+                    ingredientId: new IngredientId($requestSubstitute->ingredientId),
+                    amountWithUnits: AmountWithUnits::from($requestSubstitute->amount, Unit::from($requestSubstitute->units), $requestSubstitute->amountMax),
+                );
+            }
+
+            $cocktail->addIngredient(CocktailCocktailIngredient::create(
+                ingredientId: new IngredientId($requestIngredient->ingredientId),
+                amountWithUnits: AmountWithUnits::from($requestIngredient->amount, Unit::from($requestIngredient->units), $requestIngredient->amountMax),
+                abv: ABV::from($requestIngredient->abv),
+                isOptional: $requestIngredient->isOptional,
+                isSpecific: $requestIngredient->isSpecified,
+                note: $requestIngredient->note,
+                substitutes: $substitutes,
+            ));
+        }
+
+        $cocktail->clearTags();
+        foreach ($request->tags as $tag) {
+            $cocktail->addTag($tag);
+        }
+
+        $cocktail->removeAllImages();
+        foreach ($request->images as $imageId) {
+            $cocktail->addImage(new ImageId($imageId));
+        }
+
+        $cocktail->removeAllUtensils();
+        foreach ($request->utensils as $utensilId) {
+            $cocktail->addUtensil(new UtensilId($utensilId));
         }
 
         $this->cocktailRepository->save($cocktail);

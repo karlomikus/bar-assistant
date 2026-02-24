@@ -172,6 +172,13 @@ final class Cocktail implements Identity
         return $this->ingredients;
     }
 
+    public function removeAllIngredients(): self
+    {
+        $this->ingredients = [];
+
+        return $this;
+    }
+
     public function getBarId(): BarId
     {
         return $this->barId;
@@ -248,6 +255,13 @@ final class Cocktail implements Identity
         }
 
         $this->utensils[] = $utensilId;
+
+        return $this;
+    }
+
+    public function removeAllUtensils(): self
+    {
+        $this->utensils = [];
 
         return $this;
     }
