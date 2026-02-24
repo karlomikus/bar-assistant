@@ -19,7 +19,7 @@ final readonly class PublicStatus
         }
     }
 
-    public static function createNowWithFutureExpirationDate(DateTimeImmutable $publicExpiresAt): self
+    public static function createNowWithFutureExpirationDate(?DateTimeImmutable $publicExpiresAt): self
     {
         return new self(
             publicId: PublicId::create(),

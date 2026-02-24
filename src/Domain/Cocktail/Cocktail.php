@@ -48,9 +48,6 @@ final class Cocktail implements Identity
     ) {
     }
 
-    /**
-     * @param CocktailIngredient[] $ingredients
-     */
     public static function create(
         BarId $barId,
         Name $name,
