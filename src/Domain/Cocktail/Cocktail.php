@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace BarAssistant\Domain\Cocktail;
 
 use DomainException;
+use DateTimeImmutable;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\ABV;
+use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\Dilution;
 use BarAssistant\Domain\Common\RecordTimestamps;
-use DateTimeImmutable;
 
 final class Cocktail implements Identity
 {
@@ -23,6 +24,7 @@ final class Cocktail implements Identity
      * @param CocktailIngredient[] $ingredients
      * @param string[] $tags
      * @param ImageId[] $images
+     * @param UtensilId[] $images
      */
     private function __construct(
         private BarId $barId,
@@ -40,6 +42,7 @@ final class Cocktail implements Identity
         private array $ingredients = [],
         private array $tags = [],
         private array $images = [],
+        private array $utensils = [],
         private ?CocktailId $variantOf = null,
         private ?int $year = null,
     ) {
@@ -59,7 +62,6 @@ final class Cocktail implements Identity
         ?string $garnish = null,
         ?string $source = null,
         ?Dilution $dilution = null,
-        array $ingredients = [],
         ?int $year = null,
         ?GlassId $glassId = null,
         ?MethodId $methodId = null,
@@ -71,7 +73,6 @@ final class Cocktail implements Identity
             instructions: $instructions,
             garnish: $garnish,
             dilution: $dilution,
-            ingredients: $ingredients,
             authors: $authors,
             source: $source,
             recordTimestamps: $recordTimestamps,
@@ -204,12 +205,81 @@ final class Cocktail implements Identity
         return $this->tags;
     }
 
+    public function addTag(string $tag): self
+    {
+        if (in_array($tag, $this->tags, true)) {
+            return $this;
+        }
+
+        $this->tags[] = $tag;
+
+        return $this;
+    }
+
+    public function clearTags(): self
+    {
+        $this->tags = [];
+
+        return $this;
+    }
+
     /**
      * @return ImageId[]
      */
     public function getImages(): array
     {
         return $this->images;
+    }
+
+    /**
+     * @return UtensilId[]
+     */
+    public function getUtensils(): array
+    {
+        return $this->utensils;
+    }
+
+    public function addUtensil(UtensilId $utensilId): self
+    {
+        foreach ($this->utensils as $existingUtensilId) {
+            if ($existingUtensilId->equals($utensilId)) {
+                return $this;
+            }
+        }
+
+        $this->utensils[] = $utensilId;
+
+        return $this;
+    }
+
+    public function addImage(ImageId $imageId): self
+    {
+        foreach ($this->images as $existingImageId) {
+            if ($existingImageId->equals($imageId)) {
+                return $this;
+            }
+        }
+
+        $this->images[] = $imageId;
+
+        return $this;
+    }
+
+    public function removeImage(ImageId $imageId): self
+    {
+        $this->images = array_values(array_filter(
+            $this->images,
+            static fn (ImageId $existingImageId) => !$existingImageId->equals($imageId)
+        ));
+
+        return $this;
+    }
+
+    public function removeAllImages(): self
+    {
+        $this->images = [];
+
+        return $this;
     }
 
     public function getYear(): ?int
@@ -251,5 +321,40 @@ final class Cocktail implements Identity
     public function getVariantOf(): ?CocktailId
     {
         return $this->variantOf;
+    }
+
+    public function updateDetails(
+        Name $name,
+        string $instructions,
+        UserId $updatedBy,
+        PublicStatus $publicStatus,
+        ?GlassId $glassId = null,
+        ?MethodId $methodId = null,
+        ?string $description = null,
+        ?string $source = null,
+        ?string $garnish = null,
+        ?Dilution $dilution = null,
+        ?CocktailId $variantOf = null,
+        ?int $year = null,
+    ): self {
+        if ($this->isTransient()) {
+            throw new DomainException('Cannot update details of a transient cocktail');
+        }
+
+        $this->name = $name;
+        $this->instructions = $instructions;
+        $this->garnish = $garnish;
+        $this->dilution = $dilution;
+        $this->source = $source;
+        $this->description = $description;
+        $this->year = $year;
+        $this->glassId = $glassId;
+        $this->methodId = $methodId;
+        $this->publicStatus = $publicStatus;
+        $this->variantOf = $variantOf;
+        $this->authors = $this->authors->updatedBy($updatedBy);
+        $this->recordTimestamps = $this->recordTimestamps->updatedNow();
+
+        return $this;
     }
 }

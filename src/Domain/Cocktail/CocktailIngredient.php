@@ -47,18 +47,4 @@ final readonly class CocktailIngredient
             substitutes: $substitutes,
         );
     }
-
-    public static function createRequired(
-        IngredientId $ingredientId,
-        AmountWithUnits $amountWithUnits,
-        ABV $abv,
-    ): self {
-        return new self(
-            ingredientId: $ingredientId,
-            amountWithUnits: $amountWithUnits,
-            abv: $abv,
-            isOptional: false,
-            isSpecific: false,
-        );
-    }
 }

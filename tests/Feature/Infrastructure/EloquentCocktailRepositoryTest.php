@@ -20,6 +20,7 @@ use BarAssistant\Domain\Common\Dilution;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Common\Unit;
+use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\User\UserId;
 use DateTimeImmutable;
@@ -29,6 +30,7 @@ use Kami\Cocktail\Infrastructure\EloquentCocktailRepository;
 use Kami\Cocktail\Models\Cocktail as ModelsCocktail;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\Models\Glass;
+use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Ingredient;
 
 class EloquentCocktailRepositoryTest extends TestCase
@@ -45,6 +47,7 @@ class EloquentCocktailRepositoryTest extends TestCase
         $subIngredient = Ingredient::factory()->for($membership->bar)->create();
         $cocktailMethod = CocktailMethod::factory()->for($membership->bar)->create(['id' => 30]);
         $glass = Glass::factory()->for($membership->bar)->create(['id' => 20]);
+        $image = Image::factory()->create();
 
         $cocktail = Cocktail::create(
             barId: new BarId($membership->bar_id),
@@ -61,26 +64,27 @@ class EloquentCocktailRepositoryTest extends TestCase
             methodId: new MethodId($cocktailMethod->id),
             publicStatus: PublicStatus::createFrom(PublicId::createFrom('test'), new DateTimeImmutable('2020-01-01'), new DateTimeImmutable('2020-02-01')),
             variantOf: new CocktailId($parentCocktail->id),
-            ingredients: [
-                CocktailIngredient::create(
-                    ingredientId: new IngredientId($ingredient->id),
-                    amountWithUnits: AmountWithUnits::from(30, Unit::from('ml'), 60),
-                    abv: ABV::from($ingredient->strength),
-                    note: 'Note',
-                    isSpecific: true,
-                    isOptional: true,
-                    substitutes: [
-                        CocktailIngredientSubstitute::create(
-                            ingredientId: new IngredientId($subIngredient->id),
-                            amountWithUnits: AmountWithUnits::from(7.5, Unit::from('ml'), 15),
-                        ),
-                    ]
-                )
-            ],
         );
 
+        $cocktail->addIngredient(CocktailIngredient::create(
+            ingredientId: new IngredientId($ingredient->id),
+            amountWithUnits: AmountWithUnits::from(30, Unit::from('ml'), 60),
+            abv: ABV::from($ingredient->strength),
+            note: 'Note',
+            isSpecific: true,
+            isOptional: true,
+            substitutes: [
+                CocktailIngredientSubstitute::create(
+                    ingredientId: new IngredientId($subIngredient->id),
+                    amountWithUnits: AmountWithUnits::from(7.5, Unit::from('ml'), 15),
+                ),
+            ]
+        ));
+
+        $cocktail->addImage(new ImageId($image->id));
+
         $repo = new EloquentCocktailRepository();
-        $repo->save($cocktail);
+        $cocktail = $repo->save($cocktail);
 
         $this->assertDatabaseCount('cocktails', 2);
         $this->assertDatabaseHas('cocktails', [
@@ -92,8 +96,8 @@ class EloquentCocktailRepositoryTest extends TestCase
             'bar_id' => $membership->bar_id,
             'created_user_id' => $membership->user_id,
             'updated_user_id' => null,
-            'glass_id' => $cocktail->getGlassId()->value,
-            'cocktail_method_id' => $cocktail->getMethodId()->value,
+            'glass_id' => $glass->id,
+            'cocktail_method_id' => $cocktailMethod->id,
             'public_id' => 'test',
             'public_at' => '2020-01-01 00:00:00',
             'public_expires_at' => '2020-02-01 00:00:00',
@@ -120,6 +124,12 @@ class EloquentCocktailRepositoryTest extends TestCase
             'amount' => 7.5,
             'units' => 'ml',
             'amount_max' => 15,
+        ]);
+
+        $this->assertDatabaseCount('images', 1);
+        $this->assertDatabaseHas('images', [
+            'imageable_type' => ModelsCocktail::class,
+            'imageable_id' => $cocktail->getId()->value,
         ]);
     }
 }

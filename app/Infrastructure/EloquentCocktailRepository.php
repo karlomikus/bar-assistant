@@ -14,9 +14,16 @@ use BarAssistant\Domain\Cocktail\CocktailRepository;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Cocktail\Cocktail;
 use BarAssistant\Domain\Cocktail\CocktailId;
+use BarAssistant\Domain\Cocktail\GlassId;
+use BarAssistant\Domain\Cocktail\MethodId;
 use BarAssistant\Domain\Cocktail\PublicId;
 use BarAssistant\Domain\Cocktail\PublicStatus;
+use BarAssistant\Domain\Common\ABV;
+use BarAssistant\Domain\Common\AmountWithUnits;
+use BarAssistant\Domain\Common\Dilution;
+use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\Ingredient\IngredientId;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 use Kami\Cocktail\Models\Tag;
@@ -40,7 +47,7 @@ final class EloquentCocktailRepository implements CocktailRepository
         $model->public_id = $cocktail->getPublicStatus()->publicId->value;
         $model->public_at = $cocktail->getPublicStatus()->publicAt;
         $model->public_expires_at = $cocktail->getPublicStatus()->publicExpiresAt;
-        $model->parent_cocktail_id = $cocktail->getVariantOf();
+        $model->parent_cocktail_id = $cocktail->getVariantOf()->value;
         $model->created_user_id = $cocktail->getAuthors()->getCreatedBy()->value;
         $model->created_at = $cocktail->getRecordTimestamps()->getCreatedAt()->format('Y-m-d H:i:s');
         if ($cocktail->getAuthors()->isUpdated()) {
@@ -108,7 +115,7 @@ final class EloquentCocktailRepository implements CocktailRepository
 
     private static function map(Model $model): Cocktail
     {
-        $bar = Cocktail::create(
+        $cocktail = Cocktail::create(
             barId: new BarId($model->bar_id),
             name: Name::fromString($model->name),
             authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
@@ -121,8 +128,36 @@ final class EloquentCocktailRepository implements CocktailRepository
                     $model->public_expires_at ? $model->public_expires_at->toDateTimeImmutable() : null
                 )
                 : PublicStatus::createPrivate(),
+            description: $model->description,
+            garnish: $model->garnish,
+            source: $model->source,
+            dilution: Dilution::fromFloat($model->method->dilution_percentage ?? 0.0),
+            year: $model->year,
+            glassId: $model->glass_id ? new GlassId($model->glass_id) : null,
+            methodId: $model->cocktail_method_id ? new MethodId($model->cocktail_method_id) : null,
+            variantOf: $model->parent_cocktail_id ? new CocktailId($model->parent_cocktail_id) : null,
         )->setId(new CocktailId($model->id));
 
-        return $bar;
+        foreach ($model->ingredients as $cocktailIngredient) {
+            $substitutes = [];
+            foreach ($cocktailIngredient->substitutes as $cocktailIngredientSubstitute) {
+                $substitutes[] = CocktailIngredientSubstitute::create(
+                    ingredientId: new IngredientId($cocktailIngredientSubstitute->ingredient_id),
+                    amountWithUnits: AmountWithUnits::from($cocktailIngredientSubstitute->amount, Unit::from($cocktailIngredientSubstitute->units), $cocktailIngredientSubstitute->amount_max),
+                );
+            }
+
+            $cocktail->addIngredient(CocktailIngredient::create(
+                ingredientId: new IngredientId($cocktailIngredient->ingredient_id),
+                amountWithUnits: AmountWithUnits::from($cocktailIngredient->amount, Unit::from($cocktailIngredient->units), $cocktailIngredient->amount_max),
+                abv: ABV::from($cocktailIngredient->ingredient->strength ?? 0.0),
+                isOptional: $cocktailIngredient->optional,
+                isSpecific: $cocktailIngredient->is_specified,
+                note: $cocktailIngredient->note,
+                substitutes: $substitutes,
+            ));
+        }
+
+        return $cocktail;
     }
 }
