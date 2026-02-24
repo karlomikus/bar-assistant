@@ -14,6 +14,8 @@ use BarAssistant\Domain\Cocktail\CocktailRepository;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Cocktail\Cocktail;
 use BarAssistant\Domain\Cocktail\CocktailId;
+use BarAssistant\Domain\Cocktail\CocktailIngredient;
+use BarAssistant\Domain\Cocktail\CocktailIngredientSubstitute;
 use BarAssistant\Domain\Cocktail\GlassId;
 use BarAssistant\Domain\Cocktail\MethodId;
 use BarAssistant\Domain\Cocktail\PublicId;
@@ -24,8 +26,8 @@ use BarAssistant\Domain\Common\Dilution;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Ingredient\IngredientId;
-use Kami\Cocktail\Models\CocktailIngredient;
-use Kami\Cocktail\Models\CocktailIngredientSubstitute;
+use Kami\Cocktail\Models\CocktailIngredient as ModelCocktailIngredient;
+use Kami\Cocktail\Models\CocktailIngredientSubstitute as ModelCocktailIngredientSubstitute;
 use Kami\Cocktail\Models\Tag;
 
 final class EloquentCocktailRepository implements CocktailRepository
@@ -41,13 +43,13 @@ final class EloquentCocktailRepository implements CocktailRepository
         $model->description = $cocktail->getDescription();
         $model->source = $cocktail->getSource();
         $model->year = $cocktail->getYear();
-        $model->glass_id = $cocktail->getGlassId()->value;
-        $model->cocktail_method_id = $cocktail->getMethodId()->value;
+        $model->glass_id = $cocktail->getGlassId()?->value;
+        $model->cocktail_method_id = $cocktail->getMethodId()?->value;
         $model->abv = $cocktail->getABV()->toFloat();
-        $model->public_id = $cocktail->getPublicStatus()->publicId->value;
+        $model->public_id = $cocktail->getPublicStatus()->publicId?->value;
         $model->public_at = $cocktail->getPublicStatus()->publicAt;
         $model->public_expires_at = $cocktail->getPublicStatus()->publicExpiresAt;
-        $model->parent_cocktail_id = $cocktail->getVariantOf()->value;
+        $model->parent_cocktail_id = $cocktail->getVariantOf()?->value;
         $model->created_user_id = $cocktail->getAuthors()->getCreatedBy()->value;
         $model->created_at = $cocktail->getRecordTimestamps()->getCreatedAt()->format('Y-m-d H:i:s');
         if ($cocktail->getAuthors()->isUpdated()) {
@@ -57,10 +59,10 @@ final class EloquentCocktailRepository implements CocktailRepository
         $model->save();
 
         foreach ($cocktail->getIngredients() as $cocktailIngredient) {
-            $cocktailIngredientModel = new CocktailIngredient();
-            $cocktailIngredientModel->ingredient_id = $cocktailIngredient->ingredientId;
+            $cocktailIngredientModel = new ModelCocktailIngredient();
+            $cocktailIngredientModel->ingredient_id = $cocktailIngredient->ingredientId->value;
             $cocktailIngredientModel->amount = $cocktailIngredient->amountWithUnits->amountMin;
-            $cocktailIngredientModel->units = $cocktailIngredient->amountWithUnits->units;
+            $cocktailIngredientModel->units = $cocktailIngredient->amountWithUnits->units->value;
             $cocktailIngredientModel->optional = $cocktailIngredient->isOptional;
             $cocktailIngredientModel->sort = $cocktailIngredient->sortIndex;
             $cocktailIngredientModel->amount_max = $cocktailIngredient->amountWithUnits->amountMax;
@@ -69,11 +71,11 @@ final class EloquentCocktailRepository implements CocktailRepository
             $model->ingredients()->save($cocktailIngredientModel);
 
             foreach ($cocktailIngredient->substitutes as $cocktailIngredientSubstitute) {
-                $substitute = new CocktailIngredientSubstitute();
-                $substitute->ingredient_id = $cocktailIngredientSubstitute->ingredientId;
-                $substitute->amount = $cocktailIngredientSubstitute->amountWithUnits->amountMin;
-                $substitute->amount_max = $cocktailIngredientSubstitute->amountWithUnits->amountMax;
-                $substitute->units = $cocktailIngredientSubstitute->amountWithUnits->units;
+                $substitute = new ModelCocktailIngredientSubstitute();
+                $substitute->ingredient_id = $cocktailIngredientSubstitute->ingredientId->value;
+                $substitute->amount = $cocktailIngredientSubstitute->amountWithUnits?->amountMin;
+                $substitute->amount_max = $cocktailIngredientSubstitute->amountWithUnits?->amountMax;
+                $substitute->units = $cocktailIngredientSubstitute->amountWithUnits?->units->value;
                 $cocktailIngredientModel->substitutes()->save($substitute);
             }
         }
@@ -141,9 +143,14 @@ final class EloquentCocktailRepository implements CocktailRepository
         foreach ($model->ingredients as $cocktailIngredient) {
             $substitutes = [];
             foreach ($cocktailIngredient->substitutes as $cocktailIngredientSubstitute) {
+                $amountWithUnits = null;
+                if ($cocktailIngredientSubstitute->amount !== null && $cocktailIngredientSubstitute->units !== null) {
+                    $amountWithUnits = AmountWithUnits::from($cocktailIngredientSubstitute->amount, Unit::from($cocktailIngredientSubstitute->units), $cocktailIngredientSubstitute->amount_max);
+                }
+
                 $substitutes[] = CocktailIngredientSubstitute::create(
                     ingredientId: new IngredientId($cocktailIngredientSubstitute->ingredient_id),
-                    amountWithUnits: AmountWithUnits::from($cocktailIngredientSubstitute->amount, Unit::from($cocktailIngredientSubstitute->units), $cocktailIngredientSubstitute->amount_max),
+                    amountWithUnits: $amountWithUnits,
                 );
             }
 

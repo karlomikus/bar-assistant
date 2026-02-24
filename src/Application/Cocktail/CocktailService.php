@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Cocktail;
 
+use BarAssistant\Application\Cocktail\DTO\CocktailResult;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\ABV;
 use BarAssistant\Domain\Common\Name;
@@ -34,7 +35,7 @@ final readonly class CocktailService
     {
     }
 
-    public function createCocktail(CreateCocktail $request): void
+    public function createCocktail(CreateCocktail $request): CocktailResult
     {
         $variantOf = null;
         if ($request->parentCocktailId) {
@@ -45,7 +46,7 @@ final readonly class CocktailService
         }
 
         $cocktail = Cocktail::create(
-            barId: new BarId(142),
+            barId: new BarId($request->barId),
             name: Name::fromString($request->name),
             instructions: $request->instructions,
             authors: Authors::createdBy(new UserId($request->userId)),
@@ -89,7 +90,12 @@ final readonly class CocktailService
             $cocktail->addTag($tag);
         }
 
-        $this->cocktailRepository->save($cocktail);
+        $cocktail = $this->cocktailRepository->save($cocktail);
+
+        return new CocktailResult(
+            id: $cocktail->getId()->value,
+            slug: 'TODO',
+        );
     }
 
     public function updateCocktail(UpdateCocktail $request): void

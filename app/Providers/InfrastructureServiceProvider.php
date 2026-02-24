@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Menu\MenuRepository;
 use BarAssistant\Domain\Bar\MemberRepository;
+use BarAssistant\Domain\Cocktail\CocktailRepository;
 use BarAssistant\Domain\Image\ImageRepository;
 use Kami\Cocktail\Infrastructure\EloquentBarRepository;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
@@ -15,6 +16,7 @@ use Kami\Cocktail\Infrastructure\EloquentMenuRepository;
 use Kami\Cocktail\Infrastructure\EloquentImageRepository;
 use Kami\Cocktail\Infrastructure\EloquentMemberRepository;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
+use Kami\Cocktail\Infrastructure\EloquentCocktailRepository;
 use Kami\Cocktail\Infrastructure\EloquentIngredientRepository;
 use Kami\Cocktail\Infrastructure\EloquentPriceCategoryRepository;
 
@@ -28,5 +30,6 @@ class InfrastructureServiceProvider extends ServiceProvider
         $this->app->bind(ImageRepository::class, EloquentImageRepository::class);
         $this->app->bind(MemberRepository::class, EloquentMemberRepository::class);
         $this->app->bind(MenuRepository::class, EloquentMenuRepository::class);
+        $this->app->bind(CocktailRepository::class, EloquentCocktailRepository::class);
     }
 }

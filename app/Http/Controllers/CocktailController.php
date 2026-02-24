@@ -123,7 +123,7 @@ class CocktailController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\ValidationFailedResponse]
-    public function store(CocktailService $cocktailService, CocktailRequest $request): JsonResponse
+    public function store(\BarAssistant\Application\Cocktail\CocktailService $cocktailService, CocktailRequest $request): Response
     {
         Validator::make($request->input('ingredients', []), [
             '*.ingredient_id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
@@ -133,20 +133,64 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $cocktailDTO = CocktailDTO::fromIlluminateRequest($request);
+        $requestDTO = CocktailDTO::fromIlluminateRequest($request);
 
-        try {
-            $cocktail = $cocktailService->createCocktail($cocktailDTO);
-        } catch (Throwable $e) {
-            abort(500, $e->getMessage());
-        }
+        // try {
+            $ingredients = [];
+            foreach ($requestDTO->ingredients as $requestIngredientDTO) {
+                $substitutes = [];
+                foreach ($requestIngredientDTO->substitutes as $requestSub) {
+                    $substitutes[] = new \BarAssistant\Application\Cocktail\DTO\CocktailIngredientSubstitute(
+                        ingredientId: $requestSub->ingredientId,
+                        amount: $requestSub->amount,
+                        units: $requestSub->units,
+                        amountMax: $requestSub->amountMax,
+                    );
+                }
 
-        $cocktail->loadDefaultRelations();
+                $ingredients[] = new \BarAssistant\Application\Cocktail\DTO\CocktailIngredient(
+                    ingredientId: $requestIngredientDTO->id,
+                    abv: 0.0,
+                    amount: $requestIngredientDTO->amount,
+                    units: $requestIngredientDTO->units,
+                    sort: $requestIngredientDTO->sort,
+                    isOptional: $requestIngredientDTO->optional,
+                    isSpecified: $requestIngredientDTO->isSpecified,
+                    substitutes: $substitutes,
+                    amountMax: $requestIngredientDTO->amountMax,
+                    note: $requestIngredientDTO->note,
+                );
+            }
 
-        return (new CocktailResource($cocktail))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('cocktails.show', $cocktail->id));
+            $dilution = 0.0;
+            if ($requestDTO->methodId) {
+                $dilution = \Kami\Cocktail\Models\CocktailMethod::find($requestDTO->methodId)?->dilution_percentage ?? 0.0;
+            }
+
+            $cocktail = $cocktailService->createCocktail(new \BarAssistant\Application\Cocktail\DTO\CreateCocktail(
+                barId: $requestDTO->barId,
+                name: $requestDTO->name,
+                instructions: $requestDTO->instructions,
+                userId: $requestDTO->userId,
+                dilution: $dilution,
+                description: $requestDTO->description,
+                source: $requestDTO->source,
+                garnish: $requestDTO->garnish,
+                glassId: $requestDTO->glassId,
+                methodId: $requestDTO->methodId,
+                tags: $requestDTO->tags,
+                ingredients: $ingredients,
+                images: $requestDTO->images,
+                utensils: $requestDTO->utensils,
+                parentCocktailId: $requestDTO->parentCocktailId,
+                year: $requestDTO->year,
+            ));
+        // } catch (Throwable $e) {
+        //     abort(500, $e->getMessage());
+        // }
+
+        return new Response()
+            ->setStatusCode(201);
     }
 
     #[OAT\Put(path: '/cocktails/{id}', tags: ['Cocktails'], operationId: 'updateCocktail', description: 'Update a specific cocktail', summary: 'Update cocktail', parameters: [
