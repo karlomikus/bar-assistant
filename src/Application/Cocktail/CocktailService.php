@@ -64,12 +64,13 @@ final readonly class CocktailService
         foreach ($request->ingredients as $requestIngredient) {
             $substitutes = [];
             foreach ($requestIngredient->substitutes as $requestSubstitute) {
-                if ($requestSubstitute->amount === null || $requestSubstitute->units === null) {
-                    continue;
+                $amountWithUnits = null;
+                if ($requestSubstitute->amount !== null && $requestSubstitute->units !== null) {
+                    $amountWithUnits = AmountWithUnits::from($requestSubstitute->amount, Unit::from($requestSubstitute->units), $requestSubstitute->amountMax);
                 }
                 $substitutes[] = CocktailIngredientSubstitute::create(
                     ingredientId: new IngredientId($requestSubstitute->ingredientId),
-                    amountWithUnits: AmountWithUnits::from($requestSubstitute->amount, Unit::from($requestSubstitute->units), $requestSubstitute->amountMax),
+                    amountWithUnits: $amountWithUnits,
                 );
             }
 
@@ -125,12 +126,13 @@ final readonly class CocktailService
         foreach ($request->ingredients as $requestIngredient) {
             $substitutes = [];
             foreach ($requestIngredient->substitutes as $requestSubstitute) {
-                if ($requestSubstitute->amount === null || $requestSubstitute->units === null) {
-                    continue;
+                $amountWithUnits = null;
+                if ($requestSubstitute->amount !== null && $requestSubstitute->units !== null) {
+                    $amountWithUnits = AmountWithUnits::from($requestSubstitute->amount, Unit::from($requestSubstitute->units), $requestSubstitute->amountMax);
                 }
                 $substitutes[] = CocktailIngredientSubstitute::create(
                     ingredientId: new IngredientId($requestSubstitute->ingredientId),
-                    amountWithUnits: AmountWithUnits::from($requestSubstitute->amount, Unit::from($requestSubstitute->units), $requestSubstitute->amountMax),
+                    amountWithUnits: $amountWithUnits,
                 );
             }
 
