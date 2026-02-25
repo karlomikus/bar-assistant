@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Cocktail;
 
-use BarAssistant\Application\Cocktail\DTO\CocktailResult;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\ABV;
 use BarAssistant\Domain\Common\Name;
@@ -23,6 +22,7 @@ use BarAssistant\Domain\Common\AmountWithUnits;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Cocktail\CocktailRepository;
+use BarAssistant\Application\Cocktail\DTO\CocktailResult;
 use BarAssistant\Application\Cocktail\DTO\CreateCocktail;
 use BarAssistant\Application\Cocktail\DTO\UpdateCocktail;
 use BarAssistant\Domain\Cocktail\CocktailIngredientSubstitute;

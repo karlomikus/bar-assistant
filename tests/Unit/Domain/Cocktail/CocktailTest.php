@@ -27,7 +27,6 @@ final class CocktailTest extends TestCase
         $cocktail = Cocktail::create(
             barId: new BarId(1),
             name: Name::fromString('Test Cocktail'),
-            slug: Slug::fromString('test-cocktail'),
             instructions: '',
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
@@ -44,7 +43,6 @@ final class CocktailTest extends TestCase
         $cocktail = Cocktail::create(
             barId: new BarId(1),
             name: Name::fromString('Test Cocktail'),
-            slug: Slug::fromString('test-cocktail'),
             instructions: '',
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
@@ -68,7 +66,6 @@ final class CocktailTest extends TestCase
         $cocktail = Cocktail::create(
             barId: new BarId(1),
             name: Name::fromString('Test Cocktail'),
-            slug: Slug::fromString('test-cocktail'),
             instructions: '',
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
@@ -106,7 +103,6 @@ final class CocktailTest extends TestCase
         $cocktail = Cocktail::create(
             barId: new BarId(1),
             name: Name::fromString('Test Cocktail'),
-            slug: Slug::fromString('test-cocktail'),
             instructions: '',
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
@@ -134,7 +130,6 @@ final class CocktailTest extends TestCase
         $cocktail = Cocktail::create(
             barId: new BarId(1),
             name: Name::fromString('Test Cocktail'),
-            slug: Slug::fromString('test-cocktail'),
             instructions: '',
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
@@ -160,7 +155,6 @@ final class CocktailTest extends TestCase
         $cocktail = Cocktail::create(
             barId: new BarId(1),
             name: Name::fromString('Test Cocktail'),
-            slug: Slug::fromString('test-cocktail'),
             instructions: '',
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
@@ -180,7 +174,6 @@ final class CocktailTest extends TestCase
         $cocktail = Cocktail::create(
             barId: new BarId(1),
             name: Name::fromString('Test Cocktail'),
-            slug: Slug::fromString('test-cocktail'),
             instructions: '',
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),

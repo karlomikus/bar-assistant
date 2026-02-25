@@ -11,7 +11,6 @@ use Kami\Cocktail\Models\Image;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\ABV;
 use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\Slug;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
 use Kami\Cocktail\Models\Ingredient;
@@ -53,7 +52,6 @@ class EloquentCocktailRepositoryTest extends TestCase
         $cocktail = Cocktail::create(
             barId: new BarId($membership->bar_id),
             name: Name::fromString('Koktel 1'),
-            slug: Slug::fromString('koktel-1'),
             garnish: 'Garnish',
             description: 'Desc',
             instructions: "1. Add to glass\n2. Stir",
@@ -91,6 +89,7 @@ class EloquentCocktailRepositoryTest extends TestCase
         $this->assertDatabaseCount('cocktails', 2);
         $this->assertDatabaseHas('cocktails', [
             'name' => (string) $cocktail->getName(),
+            'slug' => 'koktel-1-1',
             'instructions' => $cocktail->getInstructions(),
             'garnish' => $cocktail->getGarnish(),
             'description' => $cocktail->getDescription(),
