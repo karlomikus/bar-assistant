@@ -94,7 +94,7 @@ final readonly class CocktailService
 
         return new CocktailResult(
             id: $cocktail->getId()->value,
-            slug: 'TODO',
+            slug: $cocktail->getSlug()->toString(),
         );
     }
 

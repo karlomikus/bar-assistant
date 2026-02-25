@@ -4,31 +4,32 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Infrastructure;
 
+use Kami\Cocktail\Models\Tag;
 use BarAssistant\Domain\Bar\BarId;
+use BarAssistant\Domain\Common\ABV;
 use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\Slug;
+use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
-use Kami\Cocktail\Models\Cocktail as Model;
-use Kami\Cocktail\Models\Image as ModelImage;
-use BarAssistant\Domain\Cocktail\CocktailRepository;
-use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\Cocktail\Cocktail;
-use BarAssistant\Domain\Cocktail\CocktailId;
-use BarAssistant\Domain\Cocktail\CocktailIngredient;
-use BarAssistant\Domain\Cocktail\CocktailIngredientSubstitute;
+use BarAssistant\Domain\Common\Dilution;
 use BarAssistant\Domain\Cocktail\GlassId;
+use BarAssistant\Domain\Cocktail\Cocktail;
 use BarAssistant\Domain\Cocktail\MethodId;
 use BarAssistant\Domain\Cocktail\PublicId;
+use Kami\Cocktail\Models\Cocktail as Model;
+use BarAssistant\Domain\Cocktail\CocktailId;
+use Kami\Cocktail\Models\Image as ModelImage;
 use BarAssistant\Domain\Cocktail\PublicStatus;
-use BarAssistant\Domain\Common\ABV;
 use BarAssistant\Domain\Common\AmountWithUnits;
-use BarAssistant\Domain\Common\Dilution;
-use BarAssistant\Domain\Common\Unit;
-use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Domain\Cocktail\CocktailIngredient;
+use BarAssistant\Domain\Cocktail\CocktailRepository;
+use BarAssistant\Domain\Cocktail\CocktailIngredientSubstitute;
 use Kami\Cocktail\Models\CocktailIngredient as ModelCocktailIngredient;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute as ModelCocktailIngredientSubstitute;
-use Kami\Cocktail\Models\Tag;
 
 final class EloquentCocktailRepository implements CocktailRepository
 {
@@ -138,7 +139,9 @@ final class EloquentCocktailRepository implements CocktailRepository
             glassId: $model->glass_id ? new GlassId($model->glass_id) : null,
             methodId: $model->cocktail_method_id ? new MethodId($model->cocktail_method_id) : null,
             variantOf: $model->parent_cocktail_id ? new CocktailId($model->parent_cocktail_id) : null,
-        )->setId(new CocktailId($model->id));
+        )
+        ->setId(new CocktailId($model->id))
+        ->setSlug(Slug::fromString($model->slug));
 
         foreach ($model->ingredients as $cocktailIngredient) {
             $substitutes = [];

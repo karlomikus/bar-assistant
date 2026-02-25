@@ -9,8 +9,9 @@ use DateTimeImmutable;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\ABV;
-use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\Slug;
+use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\Dilution;
@@ -19,6 +20,7 @@ use BarAssistant\Domain\Common\RecordTimestamps;
 final class Cocktail implements Identity
 {
     private ?CocktailId $id = null;
+    private ?Slug $slug = null;
 
     /**
      * @param CocktailIngredient[] $ingredients
@@ -106,6 +108,18 @@ final class Cocktail implements Identity
     public function getName(): Name
     {
         return $this->name;
+    }
+
+    public function setSlug(Slug $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getSlug(): Slug
+    {
+        return $this->slug;
     }
 
     public function getInstructions(): string

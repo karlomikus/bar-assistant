@@ -4,34 +4,35 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Infrastructure;
 
-use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Cocktail\Cocktail;
-use BarAssistant\Domain\Cocktail\CocktailId;
-use BarAssistant\Domain\Cocktail\CocktailIngredient;
-use BarAssistant\Domain\Cocktail\CocktailIngredientSubstitute;
-use BarAssistant\Domain\Cocktail\GlassId;
-use BarAssistant\Domain\Cocktail\MethodId;
-use BarAssistant\Domain\Cocktail\PublicId;
-use BarAssistant\Domain\Cocktail\PublicStatus;
-use BarAssistant\Domain\Common\ABV;
-use BarAssistant\Domain\Common\AmountWithUnits;
-use BarAssistant\Domain\Common\Authors;
-use BarAssistant\Domain\Common\Dilution;
-use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\Common\Unit;
-use BarAssistant\Domain\Image\ImageId;
-use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\User\UserId;
-use DateTimeImmutable;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Kami\Cocktail\Infrastructure\EloquentCocktailRepository;
-use Kami\Cocktail\Models\Cocktail as ModelsCocktail;
-use Kami\Cocktail\Models\CocktailMethod;
+use DateTimeImmutable;
 use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\Models\Image;
+use BarAssistant\Domain\Bar\BarId;
+use BarAssistant\Domain\Common\ABV;
+use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\Slug;
+use BarAssistant\Domain\Common\Unit;
+use BarAssistant\Domain\User\UserId;
 use Kami\Cocktail\Models\Ingredient;
+use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Common\Dilution;
+use Kami\Cocktail\Models\CocktailMethod;
+use BarAssistant\Domain\Cocktail\GlassId;
+use BarAssistant\Domain\Cocktail\Cocktail;
+use BarAssistant\Domain\Cocktail\MethodId;
+use BarAssistant\Domain\Cocktail\PublicId;
+use BarAssistant\Domain\Cocktail\CocktailId;
+use BarAssistant\Domain\Cocktail\PublicStatus;
+use BarAssistant\Domain\Common\AmountWithUnits;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Ingredient\IngredientId;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use BarAssistant\Domain\Cocktail\CocktailIngredient;
+use Kami\Cocktail\Models\Cocktail as ModelsCocktail;
+use Kami\Cocktail\Infrastructure\EloquentCocktailRepository;
+use BarAssistant\Domain\Cocktail\CocktailIngredientSubstitute;
 
 class EloquentCocktailRepositoryTest extends TestCase
 {
@@ -52,6 +53,7 @@ class EloquentCocktailRepositoryTest extends TestCase
         $cocktail = Cocktail::create(
             barId: new BarId($membership->bar_id),
             name: Name::fromString('Koktel 1'),
+            slug: Slug::fromString('koktel-1'),
             garnish: 'Garnish',
             description: 'Desc',
             instructions: "1. Add to glass\n2. Stir",
