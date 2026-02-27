@@ -135,7 +135,7 @@ class CocktailController extends Controller
 
         $requestDTO = CocktailDTO::fromIlluminateRequest($request);
 
-        // try {
+        try {
             $ingredients = [];
             foreach ($requestDTO->ingredients as $requestIngredientDTO) {
                 $substitutes = [];
@@ -167,7 +167,7 @@ class CocktailController extends Controller
                 $dilution = \Kami\Cocktail\Models\CocktailMethod::find($requestDTO->methodId)?->dilution_percentage ?? 0.0;
             }
 
-            $cocktail = $cocktailService->createCocktail(new \BarAssistant\Application\Cocktail\DTO\CreateCocktail(
+            $cocktailResult = $cocktailService->createCocktail(new \BarAssistant\Application\Cocktail\DTO\CreateCocktail(
                 barId: $requestDTO->barId,
                 name: $requestDTO->name,
                 instructions: $requestDTO->instructions,
@@ -185,12 +185,13 @@ class CocktailController extends Controller
                 parentCocktailId: $requestDTO->parentCocktailId,
                 year: $requestDTO->year,
             ));
-        // } catch (Throwable $e) {
-        //     abort(500, $e->getMessage());
-        // }
+        } catch (Throwable $e) {
+            abort(500, $e->getMessage());
+        }
 
         return new Response()
-            ->setStatusCode(201);
+            ->setStatusCode(201)
+            ->header('Location', route('cocktails.show', $cocktailResult->id, false));
     }
 
     #[OAT\Put(path: '/cocktails/{id}', tags: ['Cocktails'], operationId: 'updateCocktail', description: 'Update a specific cocktail', summary: 'Update cocktail', parameters: [

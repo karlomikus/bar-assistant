@@ -59,27 +59,39 @@ final class EloquentCocktailRepository implements CocktailRepository
         }
         $model->save();
 
+        Model::unguard();
+        $currentIngredients = [];
         foreach ($cocktail->getIngredients() as $cocktailIngredient) {
-            $cocktailIngredientModel = new ModelCocktailIngredient();
-            $cocktailIngredientModel->ingredient_id = $cocktailIngredient->ingredientId->value;
-            $cocktailIngredientModel->amount = $cocktailIngredient->amountWithUnits->amountMin;
-            $cocktailIngredientModel->units = $cocktailIngredient->amountWithUnits->units->value;
-            $cocktailIngredientModel->optional = $cocktailIngredient->isOptional;
-            $cocktailIngredientModel->sort = $cocktailIngredient->sortIndex;
-            $cocktailIngredientModel->amount_max = $cocktailIngredient->amountWithUnits->amountMax;
-            $cocktailIngredientModel->note = $cocktailIngredient->note;
-            $cocktailIngredientModel->is_specified = $cocktailIngredient->isSpecific;
-            $model->ingredients()->save($cocktailIngredientModel);
+            $currentIngredients[] = $cocktailIngredient->ingredientId->value;
+            $cocktailIngredientModel = $model->ingredients()->updateOrCreate([
+                'ingredient_id' => $cocktailIngredient->ingredientId->value
+            ], [
+                'amount' => $cocktailIngredient->amountWithUnits->amountMin,
+                'units' => $cocktailIngredient->amountWithUnits->units->value,
+                'optional' => $cocktailIngredient->isOptional,
+                'sort' => $cocktailIngredient->sortIndex,
+                'amount_max' => $cocktailIngredient->amountWithUnits->amountMax,
+                'note' => $cocktailIngredient->note,
+                'is_specified' => $cocktailIngredient->isSpecific,
+            ]);
 
+            $currentSubIngredients = [];
             foreach ($cocktailIngredient->substitutes as $cocktailIngredientSubstitute) {
-                $substitute = new ModelCocktailIngredientSubstitute();
-                $substitute->ingredient_id = $cocktailIngredientSubstitute->ingredientId->value;
-                $substitute->amount = $cocktailIngredientSubstitute->amountWithUnits?->amountMin;
-                $substitute->amount_max = $cocktailIngredientSubstitute->amountWithUnits?->amountMax;
-                $substitute->units = $cocktailIngredientSubstitute->amountWithUnits?->units->value;
-                $cocktailIngredientModel->substitutes()->save($substitute);
+                $currentSubIngredients[] = $cocktailIngredientSubstitute->ingredientId->value;
+                $cocktailIngredientModel->substitutes()->updateOrCreate([
+                    'ingredient_id' => $cocktailIngredientSubstitute->ingredientId->value
+                ], [
+                    'amount' => $cocktailIngredientSubstitute->amountWithUnits?->amountMin,
+                    'amount_max' => $cocktailIngredientSubstitute->amountWithUnits?->amountMax,
+                    'units' => $cocktailIngredientSubstitute->amountWithUnits?->units->value,
+                ]);
             }
+
+            $cocktailIngredientModel->substitutes()->whereNotIn('ingredient_id', $currentSubIngredients)->delete();
         }
+        Model::reguard();
+
+        $model->ingredients()->whereNotIn('ingredient_id', $currentIngredients)->delete();
 
         $tagModels = [];
         foreach (array_filter($cocktail->getTags()) as $tagName) {
