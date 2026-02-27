@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\ABV;
 use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\Slug;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Common\Authors;

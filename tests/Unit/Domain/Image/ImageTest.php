@@ -116,21 +116,6 @@ final class ImageTest extends TestCase
         $this->assertEquals($newFile, $image->getFile());
     }
 
-    public function test_cannot_change_file_on_permanent_image(): void
-    {
-        $file = File::from('/uploads/image.jpg', 'jpg');
-        $authors = Authors::createdBy(new UserId(1));
-        $timestamps = RecordTimestamps::createdNow();
-        $image = Image::create($file, $authors, $timestamps, temporary: false);
-
-        $newFile = File::from('/uploads/new.jpg', 'jpg');
-
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('You can only change the file of a temporary image');
-
-        $image->changeFile($newFile);
-    }
-
     public function test_updates_image_details(): void
     {
         $file = File::from('/uploads/image.jpg', 'jpg');

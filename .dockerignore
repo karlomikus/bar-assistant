@@ -17,6 +17,7 @@ tests
 pint.json
 .spectral.yml
 .todo
+.opencode/
 
 Dockerfile
 Dockerfile.dev
