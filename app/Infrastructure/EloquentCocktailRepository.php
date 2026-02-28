@@ -28,8 +28,6 @@ use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Cocktail\CocktailIngredient;
 use BarAssistant\Domain\Cocktail\CocktailRepository;
 use BarAssistant\Domain\Cocktail\CocktailIngredientSubstitute;
-use Kami\Cocktail\Models\CocktailIngredient as ModelCocktailIngredient;
-use Kami\Cocktail\Models\CocktailIngredientSubstitute as ModelCocktailIngredientSubstitute;
 
 final class EloquentCocktailRepository implements CocktailRepository
 {

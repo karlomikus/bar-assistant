@@ -135,6 +135,8 @@ class CocktailController extends Controller
 
         $requestDTO = CocktailDTO::fromIlluminateRequest($request);
 
+        $ingredientAbvs = \Kami\Cocktail\Models\Ingredient::whereIn('id', collect($requestDTO->ingredients)->pluck('id'))->pluck('abv', 'id');
+
         try {
             $ingredients = [];
             foreach ($requestDTO->ingredients as $requestIngredientDTO) {
@@ -150,7 +152,7 @@ class CocktailController extends Controller
 
                 $ingredients[] = new \BarAssistant\Application\Cocktail\DTO\CocktailIngredient(
                     ingredientId: $requestIngredientDTO->id,
-                    abv: 0.0,
+                    abv: $ingredientAbvs[$requestIngredientDTO->id] ?? 0.0,
                     amount: $requestIngredientDTO->amount,
                     units: $requestIngredientDTO->units,
                     sort: $requestIngredientDTO->sort,
@@ -191,7 +193,7 @@ class CocktailController extends Controller
 
         return new Response()
             ->setStatusCode(201)
-            ->header('Location', route('cocktails.show', $cocktailResult->id, false));
+            ->header('Location', route('cocktails.show', $cocktailResult->slug, false));
     }
 
     #[OAT\Put(path: '/cocktails/{id}', tags: ['Cocktails'], operationId: 'updateCocktail', description: 'Update a specific cocktail', summary: 'Update cocktail', parameters: [
