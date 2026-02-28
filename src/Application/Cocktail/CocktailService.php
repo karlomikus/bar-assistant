@@ -93,8 +93,8 @@ final readonly class CocktailService
         $cocktail = $this->cocktailRepository->save($cocktail);
 
         return new CocktailResult(
-            id: $cocktail->getId()->value,
-            slug: $cocktail->getSlug()->toString(),
+            id: $cocktail->getId()->value ?? 0,
+            slug: $cocktail->getSlug()?->toString() ?? '',
         );
     }
 

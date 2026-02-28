@@ -117,7 +117,7 @@ final class Cocktail implements Identity
         return $this;
     }
 
-    public function getSlug(): Slug
+    public function getSlug(): ?Slug
     {
         return $this->slug;
     }
