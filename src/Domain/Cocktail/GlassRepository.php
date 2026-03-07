@@ -15,4 +15,9 @@ interface GlassRepository
      * Save a glass (insert or update)
      */
     public function save(Glass $glass): Glass;
+
+    /**
+     * Delete a glass by its ID
+     */
+    public function delete(GlassId $id): void;
 }

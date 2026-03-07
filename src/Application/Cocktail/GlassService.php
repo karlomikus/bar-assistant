@@ -30,6 +30,7 @@ final readonly class GlassService
             barId: new BarId($request->barId),
             name: Name::fromString($request->name),
             recordTimestamps: RecordTimestamps::createdNow(),
+            description: $request->description,
             volume: $request->units ? AmountWithUnits::from($request->volume ?? 0, Unit::from($request->units)) : null,
         );
 
@@ -51,6 +52,7 @@ final readonly class GlassService
 
         $glass->updateDetails(
             name: Name::fromString($request->name),
+            description: $request->description,
             volume: $request->units ? AmountWithUnits::from($request->volume ?? 0, Unit::from($request->units)) : null,
         );
 
@@ -62,6 +64,17 @@ final readonly class GlassService
         $glass = $this->glassRepository->save($glass);
 
         return GlassResult::fromGlass($glass);
+    }
+
+    public function deleteGlass(int $glassId): void
+    {
+        $id = new GlassId($glassId);
+        $glass = $this->glassRepository->findById($id);
+        if ($glass === null) {
+            throw new EntityNotFoundException('Glass not found');
+        }
+
+        $this->glassRepository->delete($id);
     }
 
     /**

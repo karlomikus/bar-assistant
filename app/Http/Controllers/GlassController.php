@@ -80,6 +80,7 @@ class GlassController extends Controller
         $glassResult = $glassService->createGlass(new CreateGlass(
             barId: bar()->id,
             name: $glassRequest->name,
+            description: $glassRequest->description,
             volume: $glassRequest->volume,
             units: $glassRequest->volumeUnits,
             images: $glassRequest->images,
@@ -115,6 +116,7 @@ class GlassController extends Controller
         $glassService->updateGlass(new UpdateGlass(
             glassId: $id,
             name: $glassRequest->name,
+            description: $glassRequest->description,
             volume: $glassRequest->volume,
             units: $glassRequest->volumeUnits,
             images: $glassRequest->images,
@@ -134,7 +136,7 @@ class GlassController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(Request $request, int $id): Response
+    public function delete(GlassService $glassService, Request $request, int $id): Response
     {
         $glass = Glass::findOrFail($id);
 
@@ -142,7 +144,7 @@ class GlassController extends Controller
             abort(403);
         }
 
-        $glass->delete();
+        $glassService->deleteGlass($id);
 
         return new Response(null, 204);
     }

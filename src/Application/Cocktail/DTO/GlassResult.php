@@ -16,6 +16,7 @@ final readonly class GlassResult
         public int $id,
         public int $barId,
         public string $name,
+        public ?string $description,
         public ?float $volume,
         public ?string $units,
         public array $images,
@@ -28,6 +29,7 @@ final readonly class GlassResult
             id: $glass->getId()->value ?? 0,
             barId: $glass->getBarId()->value,
             name: $glass->getName()->toString(),
+            description: $glass->getDescription(),
             volume: $glass->getVolume()?->amountMin,
             units: $glass->getVolume()?->units->value,
             images: array_map(

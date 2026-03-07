@@ -36,4 +36,9 @@ final class InMemoryGlassRepository implements GlassRepository
 
         return $glass;
     }
+
+    public function delete(GlassId $id): void
+    {
+        unset($this->items[$id->value]);
+    }
 }

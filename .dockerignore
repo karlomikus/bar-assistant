@@ -32,3 +32,5 @@ ecs.php
 
 SECURITY.md
 CONTRIBUTING.md
+.agents/
+skills-lock.json

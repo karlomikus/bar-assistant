@@ -12,6 +12,7 @@ final readonly class UpdateGlass
     public function __construct(
         public int $glassId,
         public string $name,
+        public ?string $description = null,
         public ?float $volume = null,
         public ?string $units = null,
         public array $images = [],

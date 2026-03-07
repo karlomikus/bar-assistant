@@ -35,6 +35,7 @@ final class EloquentGlassRepository implements GlassRepository
 
         $model->bar_id = $glass->getBarId()->value;
         $model->name = (string) $glass->getName();
+        $model->description = $glass->getDescription();
         $model->volume = $glass->getVolume()?->amountMin;
         $model->volume_units = $glass->getVolume()?->units->value;
         $model->created_at = $glass->getRecordTimestamps()->getCreatedAt()->format('Y-m-d H:i:s');
@@ -54,6 +55,16 @@ final class EloquentGlassRepository implements GlassRepository
         return self::map($model);
     }
 
+    public function delete(GlassId $id): void
+    {
+        $model = Model::find($id->value);
+        if ($model === null) {
+            return;
+        }
+
+        $model->delete();
+    }
+
     private static function map(Model $model): Glass
     {
         $glass = Glass::create(
@@ -61,6 +72,7 @@ final class EloquentGlassRepository implements GlassRepository
             name: Name::fromString($model->name),
             recordTimestamps: RecordTimestamps::createdAt($model->created_at?->toDateTimeImmutable() ?? new \DateTimeImmutable())
                 ->updatedAt($model->updated_at?->toDateTimeImmutable()),
+            description: $model->description,
             volume: $model->volume_units ? AmountWithUnits::from($model->volume ?? 0, Unit::from($model->volume_units)) : null,
         )->setId(new GlassId($model->id));
 

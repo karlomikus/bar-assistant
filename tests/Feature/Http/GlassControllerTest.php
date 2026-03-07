@@ -92,20 +92,21 @@ class GlassControllerTest extends TestCase
         ], ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
         $response->assertCreated();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data.id')
-                ->where('data.name', 'Glass 1')
-                ->where('data.description', 'Glass 1 Description')
-                ->where('data.volume', 250)
-                ->where('data.volume_units', 'ml')
-                ->etc()
-        );
+        $response->assertHeader('Location');
+
+        $glass = Glass::query()->where('name', 'Glass 1')->firstOrFail();
+
+        $this->assertDatabaseHas('glasses', [
+            'id' => $glass->id,
+            'name' => 'Glass 1',
+            'description' => 'Glass 1 Description',
+            'volume' => 250,
+            'volume_units' => 'ml',
+        ]);
         $this->assertDatabaseHas('images', [
             'id' => $image->id,
             'imageable_type' => Glass::class,
-            'imageable_id' => $response->json('data.id'),
+            'imageable_id' => $glass->id,
         ]);
     }
 
@@ -138,21 +139,18 @@ class GlassControllerTest extends TestCase
             'images' => [$image->id],
         ]);
 
-        $response->assertOk();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data.id')
-                ->where('data.name', 'Glass updated')
-                ->where('data.description', 'Glass updated Description')
-                ->where('data.volume', 3.2)
-                ->where('data.volume_units', 'cl')
-                ->etc()
-        );
+        $response->assertNoContent();
+        $this->assertDatabaseHas('glasses', [
+            'id' => $glass->id,
+            'name' => 'Glass updated',
+            'description' => 'Glass updated Description',
+            'volume' => 3.2,
+            'volume_units' => 'cl',
+        ]);
         $this->assertDatabaseHas('images', [
             'id' => $image->id,
             'imageable_type' => Glass::class,
-            'imageable_id' => $response->json('data.id'),
+            'imageable_id' => $glass->id,
         ]);
     }
 

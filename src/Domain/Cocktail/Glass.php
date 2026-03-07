@@ -23,6 +23,7 @@ final class Glass implements Identity
         private readonly BarId $barId,
         private Name $name,
         private RecordTimestamps $recordTimestamps,
+        private ?string $description = null,
         private ?AmountWithUnits $volume = null,
         private array $images = [],
     ) {
@@ -35,6 +36,7 @@ final class Glass implements Identity
         BarId $barId,
         Name $name,
         RecordTimestamps $recordTimestamps,
+        ?string $description = null,
         ?AmountWithUnits $volume = null,
         array $images = [],
     ): self {
@@ -42,6 +44,7 @@ final class Glass implements Identity
             barId: $barId,
             name: $name,
             recordTimestamps: $recordTimestamps,
+            description: $description,
             volume: $volume,
             images: $images,
         );
@@ -81,6 +84,11 @@ final class Glass implements Identity
     public function getRecordTimestamps(): RecordTimestamps
     {
         return $this->recordTimestamps;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
     }
 
     public function getVolume(): ?AmountWithUnits
@@ -128,6 +136,7 @@ final class Glass implements Identity
 
     public function updateDetails(
         Name $name,
+        ?string $description = null,
         ?AmountWithUnits $volume = null,
     ): self {
         if ($this->isTransient()) {
@@ -135,6 +144,7 @@ final class Glass implements Identity
         }
 
         $this->name = $name;
+        $this->description = $description;
         $this->volume = $volume;
         $this->recordTimestamps = $this->recordTimestamps->updatedNow();
 
