@@ -27,6 +27,8 @@ use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\CocktailPriceResource;
 use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest as CocktailDTO;
+use BarAssistant\Application\Cocktail\DTO\ForceCocktailVisibility;
+use BarAssistant\Application\Cocktail\DTO\ToggleCocktailVisibility;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientRequest as IngredientDTO;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientSubstituteRequest as SubstituteDTO;
 
@@ -282,7 +284,7 @@ class CocktailController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function makePublic(Request $request, string $idOrSlug): JsonResource
+    public function makePublic(\BarAssistant\Application\Cocktail\CocktailService $cocktailService, Request $request, string $idOrSlug): Response
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
@@ -292,13 +294,12 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        if ($cocktail->public_id) {
-            return new CocktailResource($cocktail);
-        }
+        $cocktailService->toggleVisibility(new ToggleCocktailVisibility(
+            $cocktail->id,
+            ForceCocktailVisibility::PUBLIC,
+        ));
 
-        $cocktail = $cocktail->makePublic(now());
-
-        return new CocktailResource($cocktail);
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/cocktails/{id}/public-link', tags: ['Cocktails'], operationId: 'deleteCocktailPublicLink', description: 'Delete a cocktail public link', summary: 'Delete public link', parameters: [

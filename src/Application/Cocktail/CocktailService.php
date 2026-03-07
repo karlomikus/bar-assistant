@@ -24,6 +24,8 @@ use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Cocktail\CocktailRepository;
 use BarAssistant\Application\Cocktail\DTO\CocktailResult;
 use BarAssistant\Application\Cocktail\DTO\CreateCocktail;
+use BarAssistant\Application\Cocktail\DTO\ForceCocktailVisibility;
+use BarAssistant\Application\Cocktail\DTO\ToggleCocktailVisibility;
 use BarAssistant\Application\Cocktail\DTO\UpdateCocktail;
 use BarAssistant\Domain\Cocktail\CocktailIngredientSubstitute;
 use BarAssistant\Application\Exception\EntityNotFoundException;
@@ -166,6 +168,24 @@ final readonly class CocktailService
         $cocktail->removeAllUtensils();
         foreach ($request->utensils as $utensilId) {
             $cocktail->addUtensil(new UtensilId($utensilId));
+        }
+
+        $this->cocktailRepository->save($cocktail);
+    }
+
+    public function toggleVisibility(ToggleCocktailVisibility $request): void
+    {
+        $cocktail = $this->cocktailRepository->findById(new CocktailId($request->cocktailId));
+        if ($cocktail === null) {
+            throw new EntityNotFoundException('Cocktail not found');
+        }
+
+        if ($cocktail->isPublic() || $request->forceVisibility === ForceCocktailVisibility::PRIVATE) {
+            $cocktail->makePrivate();
+        }
+        
+        if (!$cocktail->isPublic() || $request->forceVisibility === ForceCocktailVisibility::PUBLIC) {
+            $cocktail->makePublic();
         }
 
         $this->cocktailRepository->save($cocktail);

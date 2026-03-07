@@ -338,6 +338,17 @@ final class Cocktail implements Identity
         return $this;
     }
 
+    public function makePrivate(): self
+    {
+        if (!$this->isPublic()) {
+            return $this;
+        }
+
+        $this->publicStatus = PublicStatus::createPrivate();
+
+        return $this;
+    }
+
     public function getPublicStatus(): PublicStatus
     {
         return $this->publicStatus;

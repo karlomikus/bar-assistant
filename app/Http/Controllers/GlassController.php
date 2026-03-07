@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Throwable;
+use BarAssistant\Application\Cocktail\DTO\CreateGlass;
+use BarAssistant\Application\Cocktail\DTO\UpdateGlass;
+use BarAssistant\Application\Cocktail\GlassService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Glass;
-use Kami\Cocktail\Models\Image;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Http\Requests\GlassRequest;
 use Kami\Cocktail\Http\Resources\GlassResource;
@@ -69,7 +69,7 @@ class GlassController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(GlassRequest $request): JsonResponse
+    public function store(GlassService $glassService, GlassRequest $request): Response
     {
         if ($request->user()->cannot('create', Glass::class)) {
             abort(403);
@@ -77,23 +77,16 @@ class GlassController extends Controller
 
         $glassRequest = BAO\Schemas\GlassRequest::fromLaravelRequest($request);
 
-        $glass = $glassRequest->toLaravelModel();
-        $glass->bar_id = bar()->id;
-        $glass->save();
+        $glassResult = $glassService->createGlass(new CreateGlass(
+            barId: bar()->id,
+            name: $glassRequest->name,
+            volume: $glassRequest->volume,
+            units: $glassRequest->volumeUnits,
+            images: $glassRequest->images,
+        ));
 
-        if (count($glassRequest->images) > 0) {
-            try {
-                $imageModels = Image::findOrFail($glassRequest->images);
-                $glass->attachImages($imageModels);
-            } catch (Throwable $e) {
-                abort(500, $e->getMessage());
-            }
-        }
-
-        return (new GlassResource($glass))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('glasses.show', $glass->id));
+        return new Response(status: 201)
+            ->header('Location', route('glasses.show', $glassResult->id));
     }
 
     #[OAT\Put(path: '/glasses/{id}', tags: ['Glasses'], operationId: 'updateGlassware', description: 'Update a specific glassware', summary: 'Update glassware', parameters: [
@@ -109,7 +102,7 @@ class GlassController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(int $id, GlassRequest $request): JsonResource
+    public function update(GlassService $glassService, int $id, GlassRequest $request): Response
     {
         $glass = Glass::findOrFail($id);
 
@@ -119,24 +112,20 @@ class GlassController extends Controller
 
         $glassRequest = BAO\Schemas\GlassRequest::fromLaravelRequest($request);
 
-        $glass = $glassRequest->toLaravelModel($glass);
-        $glass->updated_at = now();
-        $glass->save();
+        $glassService->updateGlass(new UpdateGlass(
+            glassId: $id,
+            name: $glassRequest->name,
+            volume: $glassRequest->volume,
+            units: $glassRequest->volumeUnits,
+            images: $glassRequest->images,
+        ));
 
-        if (count($glassRequest->images) > 0) {
-            try {
-                $imageModels = Image::findOrFail($glassRequest->images);
-                $glass->attachImages($imageModels);
-            } catch (Throwable $e) {
-                abort(500, $e->getMessage());
-            }
-        }
+        // TODO
+        // if (!empty(config('scout.driver'))) {
+        //     $glass->cocktails->each(fn ($cocktail) => $cocktail->searchable());
+        // }
 
-        if (!empty(config('scout.driver'))) {
-            $glass->cocktails->each(fn ($cocktail) => $cocktail->searchable());
-        }
-
-        return new GlassResource($glass);
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/glasses/{id}', tags: ['Glasses'], operationId: 'deleteGlassware', description: 'Delete a specific glassware', summary: 'Delete glassware', parameters: [
