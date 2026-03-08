@@ -189,10 +189,11 @@ class ImageController extends Controller
     {
         $imageSource = null;
 
-        $rules = ['image' => 'image|max:51200'];
+        $imageFileRules = ['image' => 'image|max:51200'];
+        $imageUrlRules = ['image' => 'url:http,https'];
 
         if (isset($formImage['image']) && $formImage['image'] instanceof UploadedFile) {
-            Validator::make($formImage, $rules)->validate();
+            Validator::make($formImage, $imageFileRules)->validate();
 
             if ($sourceData = $formImage['image']->get()) {
                 $imageSource = $sourceData;
@@ -200,6 +201,8 @@ class ImageController extends Controller
         }
 
         if (isset($formImage['image']) && is_string($formImage['image'])) {
+            Validator::make($formImage, $imageUrlRules)->validate();
+
             $tempFileObject = null;
             try {
                 if ($imageSource = file_get_contents($formImage['image'])) {
@@ -212,7 +215,7 @@ class ImageController extends Controller
             } catch (Throwable) {
             }
 
-            Validator::make(['image' => $tempFileObject], $rules)->validate();
+            Validator::make(['image' => $tempFileObject], $imageFileRules)->validate();
         }
 
         return $imageSource;
