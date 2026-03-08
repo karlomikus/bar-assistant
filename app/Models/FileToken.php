@@ -26,6 +26,9 @@ final class FileToken
             return false;
         }
 
-        return $token === self::generate($id, $filename, $expires);
+        return hash_equals(
+            self::generate($id, $filename, $expires),
+            $token,
+        );
     }
 }

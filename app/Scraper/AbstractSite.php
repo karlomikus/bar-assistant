@@ -9,6 +9,7 @@ use Kami\RecipeUtils\Parser\Parser;
 use Kami\RecipeUtils\ParserFactory;
 use Kami\RecipeUtils\RecipeIngredient;
 use Kami\Cocktail\External\Model\Schema;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\DomCrawler\Crawler;
 use Kami\Cocktail\External\Model\Cocktail;
 use Kami\Cocktail\External\Model\Ingredient;
@@ -232,6 +233,8 @@ abstract class AbstractSite implements Site
         if ($image['uri'] && !blank($image['uri'])) {
             $url = parse_url($image['uri']);
             $cleanUrl = ($url['scheme'] ?? '') . '://' . ($url['host'] ?? '') . ($url['path'] ?? '');
+
+            Validator::make(['image_url' => $cleanUrl], ['image_url' => 'url:http,https'])->validate();
 
             $dataUri = null;
             $type = pathinfo($cleanUrl, PATHINFO_EXTENSION);

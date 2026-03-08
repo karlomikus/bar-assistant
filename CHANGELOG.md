@@ -5,6 +5,12 @@
 - Response of POST and PUT `/ingredients` no longer returns the whole object
 - Removed POST `/images/{id}` endpoint
 
+# v5.13.2
+## Fixes
+- Correctly check `bar_id` alongside `public_id` for public cocktails
+- Validate image URLs when uploading images
+- Fixed vulnerable dependency
+
 # v5.13.1
 ## Fixes
 - Fixed datapack import trying to set wrong unknown columns
