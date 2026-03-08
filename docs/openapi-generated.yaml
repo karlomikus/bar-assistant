@@ -3551,14 +3551,6 @@ paths:
               description: 'URL of the new resource'
               schema:
                 type: string
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Glass' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -3666,25 +3658,8 @@ paths:
             schema:
               $ref: '#/components/schemas/GlassRequest'
       responses:
-        '200':
+        '204':
           description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Glass' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -9925,6 +9900,7 @@ components:
               - price
               - name
               - description
+              - is_bar_inventory_aware
             properties:
               id:
                 type: integer
@@ -9945,6 +9921,10 @@ components:
                   - string
                   - 'null'
                 example: 'Cocktail description'
+              is_bar_inventory_aware:
+                description: 'Indicates if the item is in the bar inventory'
+                type: boolean
+                example: false
             type: object
       type: object
     MenuPublic:
@@ -11460,6 +11440,7 @@ components:
         - sort
         - price
         - currency
+        - is_bar_inventory_aware
       properties:
         id:
           type: integer
@@ -11477,6 +11458,8 @@ components:
           type: string
           format: 'ISO 4217'
           example: EUR
+        is_bar_inventory_aware:
+          type: boolean
       type: object
     MenuRequest:
       required:

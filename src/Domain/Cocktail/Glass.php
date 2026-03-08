@@ -8,9 +8,11 @@ use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\AmountWithUnits;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\Cocktail\Event\GlassUpdated;
 
 final class Glass implements Identity
 {
@@ -147,6 +149,14 @@ final class Glass implements Identity
         $this->description = $description;
         $this->volume = $volume;
         $this->recordTimestamps = $this->recordTimestamps->updatedNow();
+
+        DomainEventDispatcher::instance()->publish(new GlassUpdated(
+            newName: $name->toString(),
+            newDescription: $description,
+            newVolume: $volume?->amountMin,
+            newVolumeUnits: $volume?->units->value,
+            newVolumeMax: $volume?->amountMax,
+        ));
 
         return $this;
     }

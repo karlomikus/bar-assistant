@@ -63,9 +63,7 @@ class GlassController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\GlassRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(GlassResource::class),
-    ], headers: [
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -87,7 +85,7 @@ class GlassController extends Controller
         ));
 
         return new Response(status: 201)
-            ->header('Location', route('glasses.show', $glassResult->id));
+            ->header('Location', route('glasses.show', $glassResult->id, false));
     }
 
     #[OAT\Put(path: '/glasses/{id}', tags: ['Glasses'], operationId: 'updateGlassware', description: 'Update a specific glassware', summary: 'Update glassware', parameters: [
@@ -98,9 +96,7 @@ class GlassController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\GlassRequest::class),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(GlassResource::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     public function update(GlassService $glassService, int $id, GlassRequest $request): Response

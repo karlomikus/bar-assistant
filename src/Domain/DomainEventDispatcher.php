@@ -54,7 +54,9 @@ final class DomainEventDispatcher
             throw new DomainException('Domain event class must have a DomainEventName attribute.');
         }
 
-        $eventName = $attributes[0]->name;
+        /** @var DomainEventName $domainEventName */
+        $domainEventName = $attributes[0]->newInstance();
+        $eventName = $domainEventName->name;
 
         if (!isset($this->subscribers[$eventName])) {
             return;
