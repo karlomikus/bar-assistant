@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Uid\Ulid;
 use Kami\RecipeUtils\Parser\Parser;
 use Kami\RecipeUtils\ParserFactory;
@@ -232,6 +233,8 @@ abstract class AbstractSite implements Site
         if ($image['uri'] && !blank($image['uri'])) {
             $url = parse_url($image['uri']);
             $cleanUrl = ($url['scheme'] ?? '') . '://' . ($url['host'] ?? '') . ($url['path'] ?? '');
+
+            Validator::make(['image_url' => $cleanUrl], ['image_url' => 'url:http,https'])->validate();
 
             $dataUri = null;
             $type = pathinfo($cleanUrl, PATHINFO_EXTENSION);
