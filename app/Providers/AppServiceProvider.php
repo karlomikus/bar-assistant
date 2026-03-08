@@ -3,6 +3,7 @@
 namespace Kami\Cocktail\Providers;
 
 use Throwable;
+use BarAssistant\Domain\DomainEventDispatcher;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
+use Kami\Cocktail\Infrastructure\DomainEventSubscriber\GlassUpdatedSearchReindexSubscriber;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,10 +36,12 @@ class AppServiceProvider extends ServiceProvider
         Cache::macro('forgetWildcardRedis', function (string $key) {
             try {
                 $prefix = config('database.redis.options.prefix');
+                $prefix = is_string($prefix) ? $prefix : '';
                 $redisCache = Redis::connection('cache');
                 $foundKeys = $redisCache->keys('*' . $key);
                 foreach ($foundKeys as $foundKey) {
-                    $keyToDelete = $prefix ? Str::after($foundKey, $prefix) : $foundKey;
+                    $foundKey = (string) $foundKey;
+                    $keyToDelete = $prefix !== '' ? Str::after($foundKey, $prefix) : $foundKey;
                     Log::debug('Clearing cache key via wildcard', ['key' => $foundKey]);
                     $redisCache->unlink($keyToDelete);
                 }
@@ -56,6 +60,8 @@ class AppServiceProvider extends ServiceProvider
             $event->extendSocialite('pocketid', \Kami\Cocktail\Services\Auth\PocketIdProvider::class);
             $event->extendSocialite('zitadel', \SocialiteProviders\Zitadel\Provider::class);
         });
+
+        DomainEventDispatcher::instance()->subscribe(app(GlassUpdatedSearchReindexSubscriber::class));
 
         if (DB::getDriverName() === 'sqlite') {
             try {

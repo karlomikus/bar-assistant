@@ -151,6 +151,8 @@ final class Glass implements Identity
         $this->recordTimestamps = $this->recordTimestamps->updatedNow();
 
         DomainEventDispatcher::instance()->publish(new GlassUpdated(
+            barId: $this->barId,
+            glassId: $this->id,
             newName: $name->toString(),
             newDescription: $description,
             newVolume: $volume?->amountMin,

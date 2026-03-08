@@ -118,11 +118,6 @@ class GlassController extends Controller
             images: $glassRequest->images,
         ));
 
-        // TODO
-        // if (!empty(config('scout.driver'))) {
-        //     $glass->cocktails->each(fn ($cocktail) => $cocktail->searchable());
-        // }
-
         return new Response(status: 204);
     }
 
