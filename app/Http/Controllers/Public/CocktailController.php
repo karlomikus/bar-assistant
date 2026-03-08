@@ -98,6 +98,7 @@ class CocktailController extends Controller
         }
 
         $cocktail = Cocktail::where('slug', $cocktailSlug)
+            ->where('bar_id', $bar->id)
             ->with('ingredients.ingredient', 'ingredients.substitutes.ingredient', 'images', 'tags', 'utensils')
             ->firstOrFail();
 
