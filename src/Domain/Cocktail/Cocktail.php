@@ -15,7 +15,9 @@ use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\Dilution;
+use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Cocktail\Event\CocktailUpdated;
 
 final class Cocktail implements Identity
 {
@@ -390,6 +392,11 @@ final class Cocktail implements Identity
         $this->variantOf = $variantOf;
         $this->authors = $this->authors->updatedBy($updatedBy);
         $this->recordTimestamps = $this->recordTimestamps->updatedNow();
+
+        DomainEventDispatcher::instance()->publish(new CocktailUpdated(
+            barId: $this->barId,
+            cocktailId: $this->id ?? throw new DomainException('Cannot dispatch event for a transient cocktail'),
+        ));
 
         return $this;
     }
