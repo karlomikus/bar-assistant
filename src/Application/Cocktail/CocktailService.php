@@ -80,7 +80,7 @@ final readonly class CocktailService
             $cocktail->addIngredient(CocktailCocktailIngredient::create(
                 ingredientId: new IngredientId($requestIngredient->ingredientId),
                 amountWithUnits: AmountWithUnits::from($requestIngredient->amount, Unit::from($requestIngredient->units), $requestIngredient->amountMax),
-                abv: ABV::from($requestIngredient->abv),
+                abv: ABV::from($requestIngredient->strength),
                 isOptional: $requestIngredient->isOptional,
                 isSpecific: $requestIngredient->isSpecified,
                 note: $requestIngredient->note,
@@ -147,7 +147,7 @@ final readonly class CocktailService
             $cocktail->addIngredient(CocktailCocktailIngredient::create(
                 ingredientId: new IngredientId($requestIngredient->ingredientId),
                 amountWithUnits: AmountWithUnits::from($requestIngredient->amount, Unit::from($requestIngredient->units), $requestIngredient->amountMax),
-                abv: ABV::from($requestIngredient->abv),
+                abv: ABV::from($requestIngredient->strength),
                 isOptional: $requestIngredient->isOptional,
                 isSpecific: $requestIngredient->isSpecified,
                 note: $requestIngredient->note,

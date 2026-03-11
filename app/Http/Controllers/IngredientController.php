@@ -61,7 +61,7 @@ class IngredientController extends Controller
     public function index(IngredientService $ingredientQuery, Request $request): JsonResource
     {
         try {
-            $ingredients = (new IngredientQueryFilter($ingredientQuery))->paginate($request->get('per_page', 50));
+            $ingredients = (new IngredientQueryFilter($ingredientQuery))->paginate($request->input('per_page', 50));
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }
@@ -111,9 +111,7 @@ class IngredientController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\IngredientRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(IngredientResource::class),
-    ], headers: [
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
@@ -175,9 +173,7 @@ class IngredientController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\IngredientRequest::class),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(IngredientResource::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     public function update(\BarAssistant\Application\Ingredient\IngredientService $ingredientService, IngredientRequest $request, int $id): Response

@@ -11,7 +11,7 @@ final readonly class CocktailIngredient
      */
     public function __construct(
         public int $ingredientId,
-        public float $abv,
+        public float $strength,
         public float $amount,
         public string $units,
         public int $sort,

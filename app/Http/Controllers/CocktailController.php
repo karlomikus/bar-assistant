@@ -137,7 +137,7 @@ class CocktailController extends Controller
 
         $requestDTO = CocktailDTO::fromIlluminateRequest($request);
 
-        $ingredientAbvs = \Kami\Cocktail\Models\Ingredient::whereIn('id', collect($requestDTO->ingredients)->pluck('id'))->pluck('abv', 'id');
+        $ingredientStrengths = \Kami\Cocktail\Models\Ingredient::whereIn('id', collect($requestDTO->ingredients)->pluck('id'))->pluck('strength', 'id');
 
         try {
             $ingredients = [];
@@ -154,7 +154,7 @@ class CocktailController extends Controller
 
                 $ingredients[] = new \BarAssistant\Application\Cocktail\DTO\CocktailIngredient(
                     ingredientId: $requestIngredientDTO->id,
-                    abv: $ingredientAbvs[$requestIngredientDTO->id] ?? 0.0,
+                    strength: $ingredientStrengths[$requestIngredientDTO->id] ?? 0.0,
                     amount: $requestIngredientDTO->amount,
                     units: $requestIngredientDTO->units,
                     sort: $requestIngredientDTO->sort,
