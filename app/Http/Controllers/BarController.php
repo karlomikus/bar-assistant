@@ -28,6 +28,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\BarMembershipResource;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
+use BarAssistant\Application\Bar\DTO\UpdateBarRequest;
 use Kami\Cocktail\OpenAPI\Schemas\BarRequest as SchemasBarRequest;
 
 class BarController extends Controller
@@ -138,7 +139,7 @@ class BarController extends Controller
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     #[BAO\ValidationFailedResponse]
-    public function update(int $id, BarRequest $request): JsonResource
+    public function update(int $id, BarService $barService, BarRequest $request): Response
     {
         $bar = Bar::findOrFail($id);
 
@@ -153,29 +154,36 @@ class BarController extends Controller
         Cache::forget('ba:bar:' . $bar->id);
 
         $barRequest = SchemasBarRequest::fromLaravelRequest($request);
-        $bar = $barRequest->toLaravelModel($bar);
 
-        if ($request->filled('slug')) {
-            $bar->slug = $barRequest->slug;
-        }
+        $barService->updateBar(new UpdateBarRequest(
+            barId: $bar->id,
+            name: $barRequest->name,
+            userId: $request->user()->id,
+        ));
 
-        $bar->status = BarStatusEnum::Active->value;
-        $bar->updated_user_id = $request->user()->id;
-        $bar->updated_at = now();
-        $bar->save();
+        // $bar = $barRequest->toLaravelModel($bar);
 
-        if (count($barRequest->images) > 0) {
-            try {
-                $imageModels = Image::findOrFail($barRequest->images);
-                $bar->attachImages($imageModels);
-            } catch (Throwable $e) {
-                abort(500, $e->getMessage());
-            }
-        }
+        // if ($request->filled('slug')) {
+        //     $bar->slug = $barRequest->slug;
+        // }
 
-        $bar->load('createdUser', 'updatedUser', 'images');
+        // $bar->status = BarStatusEnum::Active->value;
+        // $bar->updated_user_id = $request->user()->id;
+        // $bar->updated_at = now();
+        // $bar->save();
 
-        return new BarResource($bar);
+        // if (count($barRequest->images) > 0) {
+        //     try {
+        //         $imageModels = Image::findOrFail($barRequest->images);
+        //         $bar->attachImages($imageModels);
+        //     } catch (Throwable $e) {
+        //         abort(500, $e->getMessage());
+        //     }
+        // }
+
+        // $bar->load('createdUser', 'updatedUser', 'images');
+
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/bars/{id}', tags: ['Bars'], operationId: 'deleteBar', description: 'Delete a specific bar', summary: 'Delete bar', parameters: [

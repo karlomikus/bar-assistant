@@ -13,6 +13,7 @@ use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Application\Bar\DTO\CreateBarRequest;
 use BarAssistant\Application\Bar\DTO\UpdateBarRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
+use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Image\ImageId;
 
@@ -40,17 +41,17 @@ final readonly class BarService
         return new BarResult(id: $bar->getId()->value);
     }
 
-    public function updateBar(UpdateBarRequest $request, UserId $userId): Bar
+    public function updateBar(UpdateBarRequest $request): Bar
     {
-        $bar = $this->barRepository->findById($request->barId);
+        $bar = $this->barRepository->findById(new BarId($request->barId));
 
         if ($bar === null) {
             throw new EntityNotFoundException('Bar not found');
         }
 
         $bar = $bar->updateDetails(
-            name: $request->name,
-            updatedBy: $userId,
+            name: Name::fromString($request->name),
+            updatedBy: new UserId($request->userId),
         );
 
         $this->barRepository->save($bar);
