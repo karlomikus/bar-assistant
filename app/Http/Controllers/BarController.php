@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use BarAssistant\Application\Bar\BarService;
+use BarAssistant\Application\Bar\DTO\CreateBarRequest;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -81,14 +83,12 @@ class BarController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\BarRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BarResource::class),
-    ], headers: [
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\ValidationFailedResponse]
-    public function store(BarRequest $request): JsonResponse
+    public function store(BarService $barService, MemberService $memberService, BarRequest $request): Response
     {
         if ($request->user()->cannot('create', Bar::class)) {
             abort(403, 'You can not create any more bars.');
@@ -102,29 +102,26 @@ class BarController extends Controller
 
         $barRequest = SchemasBarRequest::fromLaravelRequest($request);
 
-        $bar = $barRequest->toLaravelModel();
-        $bar->created_user_id = $request->user()->id;
-        $bar->save();
+        $barCreateResult = $barService->createBar(new CreateBarRequest(
+            name: $barRequest->name,
+            createdUserId: $request->user()->id,
+            subtitle: $barRequest->subtitle,
+            description: $barRequest->description,
+            isPublic: $barRequest->isPublic,
+            isInviteCodeEnabled: $barRequest->invitesEnabled,
+            images: $barRequest->images,
+        ));
 
-        if (count($barRequest->images) > 0) {
-            try {
-                $imageModels = Image::findOrFail($barRequest->images);
-                $bar->attachImages($imageModels);
-            } catch (Throwable $e) {
-                abort(500, $e->getMessage());
-            }
-        }
+        $memberService->addMemberToBar(new CreateMemberRequest(
+            userId: $request->user()->id,
+            barId: $barCreateResult->id,
+            role: 'admin',
+        ));
 
-        $bar->load('createdUser', 'updatedUser', 'images');
+        SetupBar::dispatch($barCreateResult->id, $request->user()->id, $barRequest->options);
 
-        $request->user()->joinBarAs($bar, UserRoleEnum::Admin);
-
-        SetupBar::dispatch($bar, $request->user(), $barRequest->options);
-
-        return (new BarResource($bar))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('bars.show', $bar->id));
+        return new Response(status: 201)
+            ->header('Location', route('bars.show', $barCreateResult->id, false));
     }
 
     #[OAT\Put(path: '/bars/{id}', tags: ['Bars'], operationId: 'updateBar', description: 'Update a specific bar', summary: 'Update bar', parameters: [
@@ -224,7 +221,7 @@ class BarController extends Controller
             abort(403);
         }
 
-        $memberService->joinBar(new CreateMemberRequest(
+        $memberService->addMemberToBar(new CreateMemberRequest(
             userId: $request->user()->id,
             barId: $barToJoin->id,
             role: 'guest',

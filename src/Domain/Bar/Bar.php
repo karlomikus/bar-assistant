@@ -8,15 +8,18 @@ use Brick\Money\Currency;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\Unit;
+use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Common\Slug;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Exception\DomainException;
 
 final class Bar implements Identity
 {
     private ?BarId $id = null;
+    private ?Slug $slug = null;
 
     /**
      * @param ImageId[] $images
@@ -26,15 +29,16 @@ final class Bar implements Identity
         private Name $name,
         private Authors $authors,
         private RecordTimestamps $recordTimestamps,
+        private ?BarSettings $settings = null,
         private array $images = [],
         private bool $isPublic = false,
-        private bool $isInviteCodeEnabled = false,
         private ?string $subtitle = null,
         private ?string $description = null,
-        private ?Unit $defaultUnits = null,
-        private ?Currency $defaultCurrency = null,
         private array $ingredientInventory = [],
     ) {
+        if ($settings === null) {
+            $this->settings = BarSettings::createDefault();
+        }
     }
 
     public function isTransient(): bool
@@ -58,6 +62,18 @@ final class Bar implements Identity
         return $this;
     }
 
+    public function getSlug(): ?Slug
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(Slug $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
     /**
      * @param IngredientInventoryItem[] $ingredientInventory
      */
@@ -65,13 +81,15 @@ final class Bar implements Identity
         Name $name,
         Authors $authors,
         RecordTimestamps $recordTimestamps,
-        array $ingredientInventory = []
+        array $ingredientInventory = [],
+        ?BarSettings $settings = null,
     ): Bar {
         return new self(
             name: $name,
             authors: $authors,
             recordTimestamps: $recordTimestamps,
             ingredientInventory: $ingredientInventory,
+            settings: $settings,
         );
     }
 
@@ -112,7 +130,7 @@ final class Bar implements Identity
      */
     public function getDefaultUnits(): ?Unit
     {
-        return $this->defaultUnits;
+        return $this->settings->defaultUnits;
     }
 
     /**
@@ -120,7 +138,7 @@ final class Bar implements Identity
      */
     public function getDefaultCurrency(): ?Currency
     {
-        return $this->defaultCurrency;
+        return $this->settings->defaultCurrency;
     }
 
     /**
@@ -129,6 +147,36 @@ final class Bar implements Identity
     public function getImages(): array
     {
         return $this->images;
+    }
+
+    public function addImage(ImageId $imageId): self
+    {
+        foreach ($this->images as $existingImageId) {
+            if ($existingImageId->equals($imageId)) {
+                return $this;
+            }
+        }
+
+        $this->images[] = $imageId;
+
+        return $this;
+    }
+
+    public function removeImage(ImageId $imageId): self
+    {
+        $this->images = array_values(array_filter(
+            $this->images,
+            static fn (ImageId $existingImageId) => !$existingImageId->equals($imageId)
+        ));
+
+        return $this;
+    }
+
+    public function removeAllImages(): self
+    {
+        $this->images = [];
+
+        return $this;
     }
 
     public function getAuthors(): Authors
@@ -143,7 +191,7 @@ final class Bar implements Identity
 
     public function isInviteCodeEnabled(): bool
     {
-        return $this->isInviteCodeEnabled;
+        return $this->settings->isInviteCodeEnabled;
     }
 
     /**
@@ -213,5 +261,45 @@ final class Bar implements Identity
             $this->getInStockIngredients(),
             static fn ($existingInventoryItem) => $existingInventoryItem->ingredientId->equals($ingredientId)
         );
+    }
+
+    public function makePublic(): self
+    {
+        $this->isPublic = true;
+
+        return $this;
+    }
+
+    public function makePrivate(): self
+    {
+        $this->isPublic = false;
+
+        return $this;
+    }
+
+    public function updateSettings(BarSettings $settings): self
+    {
+        if ($this->isTransient()) {
+            throw new DomainException('Cannot update settings of a transient bar');
+        }
+
+        $this->settings = $settings;
+
+        return $this;
+    }
+
+    public function updateDetails(
+        Name $name,
+        UserId $updatedBy,
+    ): self {
+        if ($this->isTransient()) {
+            throw new DomainException('Cannot update details of a transient bar');
+        }
+
+        $this->name = $name;
+        $this->authors = $this->authors->updatedBy($updatedBy);
+        $this->recordTimestamps = $this->recordTimestamps->updatedNow();
+
+        return $this;
     }
 }

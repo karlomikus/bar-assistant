@@ -13,6 +13,7 @@ use BarAssistant\Domain\Common\Authors;
 use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\Bar as ModelBar;
 use BarAssistant\Domain\Bar\BarRepository;
+use BarAssistant\Domain\Bar\BarSettings;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Bar\IngredientInventoryItem;
@@ -28,6 +29,11 @@ final class EloquentBarRepository implements BarRepository
         $model->subtitle = $bar->getSubtitle();
         $model->description = $bar->getDescription();
         $model->is_public = $bar->isPublic();
+        $model->created_user_id = $bar->getAuthors()->getCreatedBy()->value;
+        if ($bar->getRecordTimestamps()->wasUpdated()) {
+            $model->updated_at = $bar->getRecordTimestamps()->getUpdatedAt();
+            $model->updated_user_id = $bar->getAuthors()->getUpdatedBy()->value;
+        }
 
         $settings = $model->settings ?? [];
         if ($bar->getDefaultUnits()) {
@@ -116,11 +122,20 @@ final class EloquentBarRepository implements BarRepository
             );
         }
 
+        $modelBarSettings = $model->settings ?? [];
+
+        $barSettings = BarSettings::create(
+            isInviteCodeEnabled: $model->invite_code !== null,
+            defaultUnits: $modelBarSettings['default_units'] ?? null,
+            defaultCurrency: $modelBarSettings['default_currency'] ?? null,
+        );
+
         $bar = Bar::create(
             name: Name::fromString($model->name),
             authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
             recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
             ingredientInventory: $barIngredients,
+            settings: $barSettings,
         )->setId(new BarId($model->id));
 
         return $bar;

@@ -107,7 +107,7 @@ class BarImportRecipes extends Command
         Cache::flush();
 
         try {
-            $this->importer->process($tempUnzipDisk, $bar, $user, BarOptionsEnum::Cocktails);
+            $this->importer->process($tempUnzipDisk, $bar->id, $user->id, BarOptionsEnum::Cocktails);
         } catch (Throwable $e) {
             // TODO: Reset "stuck" bar status
             // $bar->status = null;

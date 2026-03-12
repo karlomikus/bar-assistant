@@ -51,7 +51,7 @@ final class EloquentCocktailRepository implements CocktailRepository
         $model->parent_cocktail_id = $cocktail->getVariantOf()?->value;
         $model->created_user_id = $cocktail->getAuthors()->getCreatedBy()->value;
         $model->created_at = $cocktail->getRecordTimestamps()->getCreatedAt()->format('Y-m-d H:i:s');
-        if ($cocktail->getAuthors()->isUpdated()) {
+        if ($cocktail->getAuthors()->isUpdated()) { // TODO: Change...
             $model->updated_user_id = $cocktail->getAuthors()->getUpdatedBy()?->value;
             $model->updated_at = $cocktail->getRecordTimestamps()->getUpdatedAt()?->format('Y-m-d H:i:s');
         }

@@ -65,13 +65,21 @@ final class EloquentMemberRepository implements MemberRepository
     public function findById(MemberId $memberId): ?Member
     {
         $model = Model::find($memberId->value);
+        if ($model === null) {
+            return null;
+        }
 
         return self::map($model);
     }
 
     public function findUserInBar(UserId $userId, BarId $barId): ?Member
     {
-        throw new \Exception('Not implemented');
+        $model = Model::where('bar_id', $barId->value)->where('user_id', $userId->value)->first();
+        if ($model === null) {
+            return null;
+        }
+
+        return self::map($model);
     }
 
     private static function map(Model $model): Member

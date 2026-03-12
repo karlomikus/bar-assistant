@@ -232,8 +232,6 @@ final readonly class IngredientService
     /**
      * Assign images to an ingredient.
      *
-     * Images are managed by their own bounded context - we only maintain references via ImageId.
-     *
      * @param non-empty-array<int> $imageIds
      */
     private function assignImages(Ingredient $ingredient, array $imageIds): Ingredient

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Kami\Cocktail\Models\Bar;
-use Kami\Cocktail\Models\User;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
@@ -14,7 +12,6 @@ use Kami\Cocktail\External\BarOptionsEnum;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Kami\Cocktail\External\Import\FromDataPack;
-use Illuminate\Queue\Attributes\WithoutRelations;
 
 class SetupBar implements ShouldQueue
 {
@@ -24,10 +21,8 @@ class SetupBar implements ShouldQueue
     use SerializesModels;
 
     public function __construct(
-        #[WithoutRelations]
-        private readonly Bar $bar,
-        #[WithoutRelations]
-        private readonly User $user,
+        private readonly int $barId,
+        private readonly int $userId,
         private ?BarOptionsEnum $barOptions = null,
     ) {
     }
@@ -39,6 +34,6 @@ class SetupBar implements ShouldQueue
     {
         $dataDisk = Storage::disk('data-files');
 
-        $import->process($dataDisk, $this->bar, $this->user, $this->barOptions);
+        $import->process($dataDisk, $this->barId, $this->userId, $this->barOptions);
     }
 }

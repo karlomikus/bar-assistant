@@ -38,8 +38,11 @@ class FromDataPack
         $this->uploadsDisk = Storage::disk('uploads');
     }
 
-    public function process(Filesystem $dataDisk, Bar $bar, User $user, ?BarOptionsEnum $flag = null): bool
+    public function process(Filesystem $dataDisk, int $barId, int $userId, ?BarOptionsEnum $flag = null): bool
     {
+        $bar = Bar::findOrFail($barId);
+        $user = User::findOrFail($userId);
+
         Log::debug(sprintf('Starting datapack import for "%s"', $bar->name));
 
         $timerStart = microtime(true);

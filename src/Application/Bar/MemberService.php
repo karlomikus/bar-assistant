@@ -20,7 +20,7 @@ final readonly class MemberService
     ) {
     }
 
-    public function joinBar(CreateMemberRequest $request): Member
+    public function addMemberToBar(CreateMemberRequest $request): Member
     {
         $userId = new UserId($request->userId);
         $barId = new BarId($request->barId);
