@@ -35,6 +35,7 @@ final class Bar implements Identity
         private ?string $subtitle = null,
         private ?string $description = null,
         private array $ingredientInventory = [],
+        private BarStatus $status = BarStatus::Active,
     ) {
         if ($settings === null) {
             $this->settings = BarSettings::createDefault();
@@ -107,6 +108,14 @@ final class Bar implements Identity
     public function getSubtitle(): ?string
     {
         return $this->subtitle;
+    }
+
+    /**
+     * Returns the bar status
+     */
+    public function getStatus(): BarStatus
+    {
+        return $this->status;
     }
 
     /**
@@ -204,27 +213,22 @@ final class Bar implements Identity
         return $this->ingredientInventory;
     }
 
-    public function putIngredientInStock(IngredientId $ingredientId): self
+    public function putIngredientInInventory(IngredientId $ingredientId, IngredientInventoryStatus $status): self
     {
-        if ($this->hasIngredientInStock($ingredientId)) {
-            return $this;
-        }
+        // Remove existing ingredient so we can update it's status
+        $this->removeIngredientFromInventory($ingredientId);
 
-        $this->ingredientInventory[] = new IngredientInventoryItem($ingredientId, IngredientInventoryStatus::InStock);
+        $this->ingredientInventory[] = new IngredientInventoryItem($ingredientId, $status);
 
         return $this;
     }
 
-    public function removeIngredientFromStock(IngredientId $ingredientId): self
+    public function removeIngredientFromInventory(IngredientId $ingredientId): self
     {
-        if (!$this->hasIngredientInStock($ingredientId)) {
-            return $this;
-        }
-
-        $this->ingredientInventory = array_filter(
+        $this->ingredientInventory = array_values(array_filter(
             $this->ingredientInventory,
-            static fn (IngredientInventoryItem $item) => !$item->ingredientId->equals($ingredientId)
-        );
+            static fn (IngredientInventoryItem $inventoryIngredient) => !$inventoryIngredient->ingredientId->equals($ingredientId)
+        ));
 
         return $this;
     }
@@ -248,18 +252,6 @@ final class Bar implements Identity
         return array_filter(
             $this->ingredientInventory,
             static fn (IngredientInventoryItem $item) => $item->isInStock()
-        );
-    }
-
-    /**
-     * Checks if the ingredient is actually in stock, meaning it
-     * will not match variants and complex ingredients.
-     */
-    public function hasIngredientInStock(IngredientId $ingredientId): bool
-    {
-        return array_any(
-            $this->getInStockIngredients(),
-            static fn ($existingInventoryItem) => $existingInventoryItem->ingredientId->equals($ingredientId)
         );
     }
 

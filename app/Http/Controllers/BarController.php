@@ -192,7 +192,7 @@ class BarController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(Request $request, int $id): Response
+    public function delete(Request $request, BarService $barService, int $id): Response
     {
         $bar = Bar::findOrFail($id);
 
@@ -203,7 +203,7 @@ class BarController extends Controller
         Cache::forget('metrics_bass_total_bars');
         Cache::forget('ba:bar:' . $bar->id);
 
-        $bar->delete();
+        $barService->deleteBar($bar->id);
 
         return new Response(null, 204);
     }

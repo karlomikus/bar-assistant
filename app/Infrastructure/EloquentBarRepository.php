@@ -14,10 +14,12 @@ use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\Bar as ModelBar;
 use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Bar\BarSettings;
+use BarAssistant\Domain\Bar\BarStatus;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Bar\IngredientInventoryItem;
 use BarAssistant\Domain\Bar\IngredientInventoryStatus;
+use BarAssistant\Domain\Common\Slug;
 
 final class EloquentBarRepository implements BarRepository
 {
@@ -29,11 +31,16 @@ final class EloquentBarRepository implements BarRepository
         $model->subtitle = $bar->getSubtitle();
         $model->description = $bar->getDescription();
         $model->is_public = $bar->isPublic();
+        $model->status = match ($bar->getStatus()) {
+            BarStatus::Active => 'active',
+            BarStatus::Provisioning => 'provisioning',
+            BarStatus::Deactivated => 'deactivated',
+        };
         $model->created_user_id = $bar->getAuthors()->getCreatedBy()->value;
-        if ($bar->getRecordTimestamps()->wasUpdated()) {
-            $model->updated_at = $bar->getRecordTimestamps()->getUpdatedAt();
-            $model->updated_user_id = $bar->getAuthors()->getUpdatedBy()->value;
-        }
+        // if ($bar->getRecordTimestamps()->wasUpdated()) {
+        //     $model->updated_at = $bar->getRecordTimestamps()->getUpdatedAt();
+        //     $model->updated_user_id = $bar->getAuthors()->getUpdatedBy()->value;
+        // }
 
         $settings = $model->settings ?? [];
         if ($bar->getDefaultUnits()) {
@@ -90,37 +97,30 @@ final class EloquentBarRepository implements BarRepository
         return self::map($model);
     }
 
+    public function delete(BarId $id): void
+    {
+        $model = ModelBar::find($id->value);
+        if ($model === null) {
+            return;
+        }
+
+        $model->delete();
+    }
+
     private static function map(ModelBar $model): Bar
     {
         $model->load('shelfIngredients.ingredient');
 
-        $barIngredients = [];
-        foreach ($model->shelfIngredients as $barShelfIngredient) {
-            $barIngredients[] = new IngredientInventoryItem(
-                ingredientId: new IngredientId($barShelfIngredient->ingredient_id),
-                ingredientStatus: IngredientInventoryStatus::InStock,
-            );
-        }
+        $barShelfIngredientIds = $model->shelfIngredients->pluck('ingredient_id')->toArray();
 
-        $ingredientIds = array_map(
-            fn (IngredientInventoryItem $item) => $item->ingredientId->value,
-            $barIngredients
-        );
-        $placeholders = implode(',', array_fill(0, count($ingredientIds), '?'));
+        $placeholders = implode(',', array_fill(0, count($barShelfIngredientIds), '?'));
         $complexIngredients = DB::table('complex_ingredients')
             ->select('main_ingredient_id as ingredient_id')
             ->join('ingredients', 'ingredients.id', 'complex_ingredients.main_ingredient_id')
             ->where('ingredients.bar_id', $model->id)
             ->groupBy('main_ingredient_id')
-            ->havingRaw('MIN(ingredient_id IN ('.$placeholders.')) = 1', [$ingredientIds])
+            ->havingRaw('MIN(ingredient_id IN ('.$placeholders.')) = 1', [$barShelfIngredientIds])
             ->get();
-
-        foreach ($complexIngredients as $ing) {
-            $barIngredients[] = new IngredientInventoryItem(
-                ingredientId: new IngredientId($ing->ingredient_id),
-                ingredientStatus: IngredientInventoryStatus::Makeable,
-            );
-        }
 
         $modelBarSettings = $model->settings ?? [];
 
@@ -134,9 +134,18 @@ final class EloquentBarRepository implements BarRepository
             name: Name::fromString($model->name),
             authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
             recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
-            ingredientInventory: $barIngredients,
             settings: $barSettings,
-        )->setId(new BarId($model->id));
+        )
+        ->setId(new BarId($model->id))
+        ->setSlug(Slug::fromString($model->slug));
+
+        foreach ($model->shelfIngredients as $barShelfIngredient) {
+            $bar->putIngredientInInventory(new IngredientId($barShelfIngredient->ingredient_id), IngredientInventoryStatus::InStock);
+        }
+
+        foreach ($complexIngredients as $complexIngredient) {
+            $bar->putIngredientInInventory(new IngredientId($complexIngredient->ingredient_id), IngredientInventoryStatus::Makeable);
+        }
 
         return $bar;
     }

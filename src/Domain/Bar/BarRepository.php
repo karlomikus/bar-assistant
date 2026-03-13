@@ -9,4 +9,6 @@ interface BarRepository
     public function save(Bar $bar): Bar;
 
     public function findById(BarId $id): ?Bar;
+
+    public function delete(BarId $id): void;
 }

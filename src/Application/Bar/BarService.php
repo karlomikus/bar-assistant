@@ -38,7 +38,7 @@ final readonly class BarService
 
         $bar = $this->barRepository->save($bar);
 
-        return new BarResult(id: $bar->getId()->value);
+        return new BarResult(id: $bar->getId()->value, slug: $bar->getSlug()?->toString() ?? '');
     }
 
     public function updateBar(UpdateBarRequest $request): Bar
@@ -57,6 +57,18 @@ final readonly class BarService
         $this->barRepository->save($bar);
 
         return $bar;
+    }
+
+    public function deleteBar(int $barId): void
+    {
+        $id = new BarId($barId);
+        $bar = $this->barRepository->findById($id);
+
+        if ($bar === null) {
+            throw new EntityNotFoundException('Bar not found');
+        }
+
+        $this->barRepository->delete($id);
     }
 
     /**

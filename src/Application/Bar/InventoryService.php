@@ -9,6 +9,7 @@ use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Bar\DTO\BarInventoryStockChangeRequest;
+use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 
 final readonly class InventoryService
 {
@@ -28,7 +29,7 @@ final readonly class InventoryService
         }
 
         foreach ($request->ingredientIds as $ingredientId) {
-            $bar->putIngredientInStock(new IngredientId($ingredientId));
+            $bar->putIngredientInInventory(new IngredientId($ingredientId), IngredientInventoryStatus::InStock);
         }
 
         $this->barRepository->save($bar);
@@ -42,7 +43,7 @@ final readonly class InventoryService
         }
 
         foreach ($request->ingredientIds as $ingredientId) {
-            $bar->removeIngredientFromStock(new IngredientId($ingredientId));
+            $bar->removeIngredientFromInventory(new IngredientId($ingredientId));
         }
 
         $this->barRepository->save($bar);
