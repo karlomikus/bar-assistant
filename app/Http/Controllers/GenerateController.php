@@ -22,6 +22,7 @@ use Kami\Cocktail\Http\Requests\CocktailRecipeFromTextRequest;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedIngredientResource;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedCocktailTagsResource;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedCocktailFromTextResource;
+use Kami\Cocktail\Models\CocktailMethod;
 use Prism\Prism\Exceptions\PrismStructuredDecodingException;
 
 class GenerateController extends Controller
@@ -219,26 +220,56 @@ class GenerateController extends Controller
             requiredFields: ['name', 'instructions', 'ingredients', 'description', 'garnish']
         );
 
-        $prompt = <<<PROMPT
-            You are a cocktail recipe parser. Extract structured information from the following cocktail recipe text.
+        $allowedMethods = CocktailMethod::where('bar_id', bar()->id)->pluck('name')->implode('|');
 
-            Instructions:
-            - Extract the recipe name, ingredients, and preparation instructions
-            - Format instructions as a numbered markdown list (e.g., "1. Step one\n2. Step two"). Do NOT include markdown headings. Do NOT include ingredient amounts in instructions.
-            - For method, choose ONLY one of: "Shake", "Stir", "Build", "Blend", "Muddle", "Layer"
-            - Standardize ingredient units to: "ml", "cl", "oz", "dash", "tsp", "tbsp", "cup", "part", "slice", "wedge", "piece", "whole"
-            - For ingredient amounts:
-              * If a range is given (e.g., "2-3 oz"), use amount for minimum and amount_max for maximum
-              * If a fraction is given (e.g., "1/2 oz"), convert to decimal (0.5)
-              * If no amount is specified, use a sensible default or estimation
-            - If the recipe text is incomplete or ambiguous, extract what you can and make reasonable assumptions
-            - Provide a brief, engaging description (1-2 paragraphs) if one isn't included in the text
+        $prompt = <<<PROMPT
+            Extract the cocktail recipe from the input text into the provided schema.
+
+            Output requirements:
+            - Return only schema-compatible structured data
+            - Include all top-level keys expected by schema
+            - Use null only where schema allows nullable values
+
+            Field rules:
+            1) name
+            - Cocktail name as a short string
+
+            2) ingredients (array, preserve source order)
+            For each ingredient object, output:
+            - name: ingredient name, normalized but recognizable
+            - amount_max: only for ranges, otherwise null
+            - units: normalized unit string
+            - note: optional clarification (brand, preparation, estimate) or null
+
+            Range handling:
+            - "1-2 oz" => amount=1, amount_max=2, units="oz"
+            - "2 oz" => amount=2, amount_max=null
+
+            3) instructions
+            - Single string formatted as a numbered markdown list:
+              1. ...
+              2. ...
+            - Keep concise, imperative steps
+            - Do not include ingredient amounts in instructions
+
+            4) method
+            - If inferable, set exactly one of: {$allowedMethods}
+            - If not inferable, set null
+
+            5) garnish
+            - If explicitly stated or clearly implied, output string
+            - Otherwise null
+
+            6) description
+            - One brief sentence (max 25 words) describing flavor or style
+            - If missing in source, generate a neutral non-marketing summary
 
             COCKTAIL RECIPE:
             {$textRecipe}
         PROMPT;
 
         Log::info("[LLM] Generating cocktail recipe from text.");
+        Log::debug("[LLM] Sending prompt: {$prompt}");
 
         try {
             $response = Prism::structured()
