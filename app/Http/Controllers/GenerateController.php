@@ -22,6 +22,7 @@ use Kami\Cocktail\Http\Requests\CocktailRecipeFromTextRequest;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedIngredientResource;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedCocktailTagsResource;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedCocktailFromTextResource;
+use Prism\Prism\Exceptions\PrismStructuredDecodingException;
 
 class GenerateController extends Controller
 {
@@ -239,12 +240,20 @@ class GenerateController extends Controller
 
         Log::info("[LLM] Generating cocktail recipe from text.");
 
-        $response = Prism::structured()
-            ->using($provider, $model)
-            ->withSchema($schema)
-            ->withPrompt(trim($prompt))
-            ->withClientOptions(['timeout' => $timeout])
-            ->asStructured();
+        try {
+            $response = Prism::structured()
+                ->using($provider, $model)
+                ->withSchema($schema)
+                ->withPrompt(trim($prompt))
+                ->withClientOptions(['timeout' => $timeout])
+                ->asStructured();
+        } catch (PrismStructuredDecodingException $e) {
+            Log::error("[LLM] Structured response error", $e->getMessage());
+
+            abort(500, 'Failed to parse LLM response.');
+        } finally {
+            Log::debug("[LLM] Finish reason: {$response->finishReason->name}");
+        }
 
         return new GeneratedCocktailFromTextResource($response->structured);
     }
