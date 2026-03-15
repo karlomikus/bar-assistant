@@ -9,7 +9,7 @@ use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
-use BarAssistant\Application\Ingredient\DTO\CreatePriceCategory;
+use BarAssistant\Application\Ingredient\DTO\CreatePriceCategoryRequest;
 use BarAssistant\Application\Ingredient\DTO\PriceCategoryResult;
 use BarAssistant\Application\Exception\ApplicationServiceException;
 
@@ -23,7 +23,7 @@ final readonly class PriceCategoryService
     /**
      * Creates a new price category based on the provided request data.
      */
-    public function createPriceCategory(CreatePriceCategory $request): PriceCategoryResult
+    public function createPriceCategory(CreatePriceCategoryRequest $request): PriceCategoryResult
     {
         $priceCategory = new PriceCategory(
             barId: new BarId($request->barId),

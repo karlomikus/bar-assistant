@@ -22,7 +22,7 @@ use BarAssistant\Domain\Ingredient\IngredientRepository;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use BarAssistant\Application\Ingredient\DTO\IngredientResult;
-use BarAssistant\Application\Ingredient\DTO\UpdateIngredient;
+use BarAssistant\Application\Ingredient\DTO\UpdateIngredientRequest;
 use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
@@ -86,7 +86,7 @@ final readonly class IngredientService
         return IngredientResult::fromIngredient($ingredient);
     }
 
-    public function updateIngredient(UpdateIngredient $ingredientRequest): IngredientResult
+    public function updateIngredient(UpdateIngredientRequest $ingredientRequest): IngredientResult
     {
         $ingredient = $this->ingredientRepository->findById(new IngredientId($ingredientRequest->ingredientId));
         if ($ingredient === null) {

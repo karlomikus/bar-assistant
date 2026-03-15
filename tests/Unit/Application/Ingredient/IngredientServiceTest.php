@@ -22,7 +22,7 @@ use BarAssistant\Application\Ingredient\IngredientService;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use BarAssistant\Application\Ingredient\DTO\IngredientResult;
-use BarAssistant\Application\Ingredient\DTO\UpdateIngredient;
+use BarAssistant\Application\Ingredient\DTO\UpdateIngredientRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
 
@@ -114,7 +114,7 @@ final class IngredientServiceTest extends TestCase
             units: 'ml',
             description: 'A bottle',
         );
-        $updateRequest = new UpdateIngredient(
+        $updateRequest = new UpdateIngredientRequest(
             ingredientId: 542,
             name: 'Gin',
             userId: 22,
@@ -133,7 +133,7 @@ final class IngredientServiceTest extends TestCase
     public function test_cannot_update_non_existing_ingredient(): void
     {
         $service = new IngredientService($this->ingredientRepository, $this->priceCategoryRepository);
-        $updateRequest = new UpdateIngredient(
+        $updateRequest = new UpdateIngredientRequest(
             ingredientId: 999,
             name: 'Gin',
             userId: 22,
