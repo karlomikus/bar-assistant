@@ -16,11 +16,9 @@ final readonly class GlassUpdated implements DomainEvent
     public function __construct(
         public BarId $barId,
         public GlassId $glassId,
-        public string $newName,
-        public ?string $newDescription,
-        public ?float $newVolume,
-        public ?string $newVolumeUnits,
-        public ?float $newVolumeMax,
+        public ?float $volume,
+        public ?string $volumeUnits,
+        public ?float $volumeMax,
     ) {
     }
 

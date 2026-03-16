@@ -217,6 +217,11 @@ final class Cocktail implements Identity
         return $this->source;
     }
 
+    public function getDilution(): ?Dilution
+    {
+        return $this->dilution;
+    }
+
     /**
      * @return string[]
      */

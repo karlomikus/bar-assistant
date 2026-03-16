@@ -23,6 +23,7 @@ use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Cocktail\CocktailRepository;
 use BarAssistant\Application\Cocktail\DTO\CocktailResult;
+use BarAssistant\Application\Cocktail\DTO\CopyCocktailRequest;
 use BarAssistant\Application\Cocktail\DTO\CreateCocktail;
 use BarAssistant\Application\Cocktail\DTO\ForceCocktailVisibility;
 use BarAssistant\Application\Cocktail\DTO\ToggleCocktailVisibility;
@@ -90,6 +91,10 @@ final readonly class CocktailService
 
         foreach ($request->tags as $tag) {
             $cocktail->addTag($tag);
+        }
+
+        foreach ($request->images as $imageId) {
+            $cocktail->addImage(new ImageId($imageId));
         }
 
         $cocktail = $this->cocktailRepository->save($cocktail);
@@ -180,14 +185,58 @@ final readonly class CocktailService
             throw new EntityNotFoundException('Cocktail not found');
         }
 
-        if ($cocktail->isPublic() || $request->forceVisibility === ForceCocktailVisibility::PRIVATE) {
+        if ($cocktail->isPublic() || $request->forceVisibility === ForceCocktailVisibility::Private) {
             $cocktail->makePrivate();
         }
         
-        if (!$cocktail->isPublic() || $request->forceVisibility === ForceCocktailVisibility::PUBLIC) {
+        if (!$cocktail->isPublic() || $request->forceVisibility === ForceCocktailVisibility::Public) {
             $cocktail->makePublic();
         }
 
         $this->cocktailRepository->save($cocktail);
+    }
+
+    public function copyCocktail(CopyCocktailRequest $request): CocktailResult
+    {
+        $originalCocktail = $this->cocktailRepository->findById(new CocktailId($request->cocktailId));
+        if ($originalCocktail === null) {
+            throw new EntityNotFoundException('Cocktail not found');
+        }
+
+        $newCocktail = Cocktail::create(
+            barId: new BarId($request->barId),
+            name: Name::fromString($originalCocktail->getName()->toString() . ' Copy'),
+            instructions: $originalCocktail->getInstructions(),
+            authors: Authors::createdBy(new UserId($request->userId)),
+            recordTimestamps: RecordTimestamps::createdNow(),
+            publicStatus: PublicStatus::createPrivate(),
+            description: $originalCocktail->getDescription(),
+            garnish: $originalCocktail->getGarnish(),
+            source: $originalCocktail->getSource(),
+            dilution: $originalCocktail->getDilution(),
+            year: $originalCocktail->getYear(),
+            glassId: $originalCocktail->getGlassId(),
+            methodId: $originalCocktail->getMethodId(),
+            variantOf: $originalCocktail->getId(),
+        );
+
+        foreach ($originalCocktail->getIngredients() as $originalIngredient) {
+            $newCocktail->addIngredient($originalIngredient);
+        }
+
+        foreach ($originalCocktail->getTags() as $tag) {
+            $newCocktail->addTag($tag);
+        }
+
+        foreach ($request->images as $image) {
+            $newCocktail->addImage(new ImageId($image));
+        }
+
+        $newCocktail = $this->cocktailRepository->save($newCocktail);
+
+        return new CocktailResult(
+            id: $newCocktail->getId()->value ?? 0,
+            slug: $newCocktail->getSlug()?->toString() ?? '',
+        );
     }
 }

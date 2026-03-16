@@ -4,6 +4,14 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use BarAssistant\Application\Bar\DTO\FavoriteRequest;
+use BarAssistant\Application\Bar\FavoriteService;
+use BarAssistant\Application\Bar\MemberService;
+use BarAssistant\Application\Cocktail\CocktailService;
+use BarAssistant\Application\Cocktail\DTO\CocktailIngredient;
+use BarAssistant\Application\Cocktail\DTO\CocktailIngredientSubstitute;
+use BarAssistant\Application\Cocktail\DTO\CopyCocktailRequest;
+use BarAssistant\Application\Cocktail\DTO\CreateCocktail;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,7 +23,6 @@ use Kami\Cocktail\Models\CocktailPrice;
 use Kami\Cocktail\Models\PriceCategory;
 use Illuminate\Support\Facades\Validator;
 use Kami\RecipeUtils\UnitConverter\Units;
-use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\OpenAPI\Schemas\ImageRequest;
@@ -29,6 +36,10 @@ use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest as CocktailDTO;
 use BarAssistant\Application\Cocktail\DTO\ForceCocktailVisibility;
 use BarAssistant\Application\Cocktail\DTO\ToggleCocktailVisibility;
+use BarAssistant\Application\Cocktail\DTO\UpdateCocktail;
+use Kami\Cocktail\Models\CocktailMethod;
+use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Services\CocktailService as InfrastructureCocktailService;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientRequest as IngredientDTO;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientSubstituteRequest as SubstituteDTO;
 
@@ -73,15 +84,15 @@ class CocktailController extends Controller
         new BAO\PaginateData(CocktailResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function index(CocktailService $cocktailRepo, Request $request): JsonResource
+    public function index(InfrastructureCocktailService $service, Request $request): JsonResource
     {
         try {
-            $cocktails = new CocktailQueryFilter($cocktailRepo);
+            $cocktails = new CocktailQueryFilter($service);
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }
 
-        $cocktails = $cocktails->paginate($request->get('per_page', 25));
+        $cocktails = $cocktails->paginate($request->input('per_page', 25));
 
         return CocktailResource::collection($cocktails->withQueryString());
     }
@@ -118,14 +129,12 @@ class CocktailController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\CocktailRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(CocktailResource::class),
-    ], headers: [
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\ValidationFailedResponse]
-    public function store(\BarAssistant\Application\Cocktail\CocktailService $cocktailService, CocktailRequest $request): Response
+    public function store(CocktailService $cocktailService, CocktailRequest $request): Response
     {
         Validator::make($request->input('ingredients', []), [
             '*.ingredient_id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
@@ -135,67 +144,60 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $requestDTO = CocktailDTO::fromIlluminateRequest($request);
+        $cocktailRequest = CocktailDTO::fromIlluminateRequest($request);
+        $ingredientStrengths = Ingredient::whereIn('id', collect($cocktailRequest->ingredients)->pluck('id'))->pluck('strength', 'id');
 
-        $ingredientStrengths = \Kami\Cocktail\Models\Ingredient::whereIn('id', collect($requestDTO->ingredients)->pluck('id'))->pluck('strength', 'id');
-
-        try {
-            $ingredients = [];
-            foreach ($requestDTO->ingredients as $requestIngredientDTO) {
-                $substitutes = [];
-                foreach ($requestIngredientDTO->substitutes as $requestSub) {
-                    $substitutes[] = new \BarAssistant\Application\Cocktail\DTO\CocktailIngredientSubstitute(
-                        ingredientId: $requestSub->ingredientId,
-                        amount: $requestSub->amount,
-                        units: $requestSub->units,
-                        amountMax: $requestSub->amountMax,
-                    );
-                }
-
-                $ingredients[] = new \BarAssistant\Application\Cocktail\DTO\CocktailIngredient(
-                    ingredientId: $requestIngredientDTO->id,
-                    strength: $ingredientStrengths[$requestIngredientDTO->id] ?? 0.0,
-                    amount: $requestIngredientDTO->amount,
-                    units: $requestIngredientDTO->units,
-                    sort: $requestIngredientDTO->sort,
-                    isOptional: $requestIngredientDTO->optional,
-                    isSpecified: $requestIngredientDTO->isSpecified,
-                    substitutes: $substitutes,
-                    amountMax: $requestIngredientDTO->amountMax,
-                    note: $requestIngredientDTO->note,
+        $ingredients = [];
+        foreach ($cocktailRequest->ingredients as $requestIngredientDTO) {
+            $substitutes = [];
+            foreach ($requestIngredientDTO->substitutes as $requestSub) {
+                $substitutes[] = new CocktailIngredientSubstitute(
+                    ingredientId: $requestSub->ingredientId,
+                    amount: $requestSub->amount,
+                    units: $requestSub->units,
+                    amountMax: $requestSub->amountMax,
                 );
             }
 
-            $dilution = 0.0;
-            if ($requestDTO->methodId) {
-                $dilution = \Kami\Cocktail\Models\CocktailMethod::find($requestDTO->methodId)?->dilution_percentage ?? 0.0;
-            }
-
-            $cocktailResult = $cocktailService->createCocktail(new \BarAssistant\Application\Cocktail\DTO\CreateCocktail(
-                barId: $requestDTO->barId,
-                name: $requestDTO->name,
-                instructions: $requestDTO->instructions,
-                userId: $requestDTO->userId,
-                dilution: $dilution,
-                description: $requestDTO->description,
-                source: $requestDTO->source,
-                garnish: $requestDTO->garnish,
-                glassId: $requestDTO->glassId,
-                methodId: $requestDTO->methodId,
-                tags: $requestDTO->tags,
-                ingredients: $ingredients,
-                images: $requestDTO->images,
-                utensils: $requestDTO->utensils,
-                parentCocktailId: $requestDTO->parentCocktailId,
-                year: $requestDTO->year,
-            ));
-        } catch (Throwable $e) {
-            abort(500, $e->getMessage());
+            $ingredients[] = new CocktailIngredient(
+                ingredientId: $requestIngredientDTO->id,
+                strength: $ingredientStrengths[$requestIngredientDTO->id] ?? 0.0,
+                amount: $requestIngredientDTO->amount,
+                units: $requestIngredientDTO->units,
+                sort: $requestIngredientDTO->sort,
+                isOptional: $requestIngredientDTO->optional,
+                isSpecified: $requestIngredientDTO->isSpecified,
+                substitutes: $substitutes,
+                amountMax: $requestIngredientDTO->amountMax,
+                note: $requestIngredientDTO->note,
+            );
         }
 
-        return new Response()
-            ->setStatusCode(201)
-            ->header('Location', route('cocktails.show', $cocktailResult->slug, false));
+        $dilution = 0.0;
+        if ($cocktailRequest->methodId) {
+            $dilution = CocktailMethod::find($cocktailRequest->methodId)?->dilution_percentage ?? 0.0;
+        }
+
+        $cocktailResult = $cocktailService->createCocktail(new CreateCocktail(
+            barId: $cocktailRequest->barId,
+            name: $cocktailRequest->name,
+            instructions: $cocktailRequest->instructions,
+            userId: $cocktailRequest->userId,
+            dilution: $dilution,
+            description: $cocktailRequest->description,
+            source: $cocktailRequest->source,
+            garnish: $cocktailRequest->garnish,
+            glassId: $cocktailRequest->glassId,
+            methodId: $cocktailRequest->methodId,
+            tags: $cocktailRequest->tags,
+            ingredients: $ingredients,
+            images: $cocktailRequest->images,
+            utensils: $cocktailRequest->utensils,
+            parentCocktailId: $cocktailRequest->parentCocktailId,
+            year: $cocktailRequest->year,
+        ));
+
+        return new Response(status: 201, headers: ['Location' => route('cocktails.show', $cocktailResult->slug, false)]);
     }
 
     #[OAT\Put(path: '/cocktails/{id}', tags: ['Cocktails'], operationId: 'updateCocktail', description: 'Update a specific cocktail', summary: 'Update cocktail', parameters: [
@@ -212,29 +214,73 @@ class CocktailController extends Controller
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     #[BAO\ValidationFailedResponse]
-    public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): JsonResource
+    public function update(CocktailService $cocktailService, CocktailRequest $request, int $id): Response
     {
         $cocktail = Cocktail::findOrFail($id);
-
-        Validator::make($request->input('ingredients', []), [
-            '*.ingredient_id' => [new ResourceBelongsToBar($cocktail->bar_id, 'ingredients')],
-        ])->validate();
 
         if ($request->user()->cannot('edit', $cocktail)) {
             abort(403);
         }
 
-        $cocktailDTO = CocktailDTO::fromIlluminateRequest($request);
+        Validator::make($request->input('ingredients', []), [
+            '*.ingredient_id' => [new ResourceBelongsToBar($cocktail->bar_id, 'ingredients')],
+        ])->validate();
 
-        try {
-            $cocktail = $cocktailService->updateCocktail($id, $cocktailDTO);
-        } catch (Throwable $e) {
-            abort(500, $e->getMessage());
+        $cocktailRequest = CocktailDTO::fromIlluminateRequest($request);
+        $ingredientStrengths = Ingredient::whereIn('id', collect($cocktailRequest->ingredients)->pluck('id'))->pluck('strength', 'id');
+
+        $ingredients = [];
+        foreach ($cocktailRequest->ingredients as $requestIngredientDTO) {
+            $substitutes = [];
+            foreach ($requestIngredientDTO->substitutes as $requestSub) {
+                $substitutes[] = new CocktailIngredientSubstitute(
+                    ingredientId: $requestSub->ingredientId,
+                    amount: $requestSub->amount,
+                    units: $requestSub->units,
+                    amountMax: $requestSub->amountMax,
+                );
+            }
+
+            $ingredients[] = new CocktailIngredient(
+                ingredientId: $requestIngredientDTO->id,
+                strength: $ingredientStrengths[$requestIngredientDTO->id] ?? 0.0,
+                amount: $requestIngredientDTO->amount,
+                units: $requestIngredientDTO->units,
+                sort: $requestIngredientDTO->sort,
+                isOptional: $requestIngredientDTO->optional,
+                isSpecified: $requestIngredientDTO->isSpecified,
+                substitutes: $substitutes,
+                amountMax: $requestIngredientDTO->amountMax,
+                note: $requestIngredientDTO->note,
+            );
         }
 
-        $cocktail->loadDefaultRelations();
+        $dilution = 0.0;
+        if ($cocktailRequest->methodId) {
+            $dilution = CocktailMethod::find($cocktailRequest->methodId)?->dilution_percentage ?? 0.0;
+        }
 
-        return new CocktailResource($cocktail);
+        $cocktailService->updateCocktail(new UpdateCocktail(
+            cocktailId: $cocktail->id,
+            barId: $cocktailRequest->barId,
+            name: $cocktailRequest->name,
+            instructions: $cocktailRequest->instructions,
+            userId: $cocktailRequest->userId,
+            dilution: $dilution,
+            description: $cocktailRequest->description,
+            source: $cocktailRequest->source,
+            garnish: $cocktailRequest->garnish,
+            glassId: $cocktailRequest->glassId,
+            methodId: $cocktailRequest->methodId,
+            tags: $cocktailRequest->tags,
+            ingredients: $ingredients,
+            images: $cocktailRequest->images,
+            utensils: $cocktailRequest->utensils,
+            parentCocktailId: $cocktailRequest->parentCocktailId,
+            year: $cocktailRequest->year,
+        ));
+
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/cocktails/{id}', tags: ['Cocktails'], operationId: 'deleteCocktail', description: 'Delete a specific cocktail', summary: 'Delete cocktail', parameters: [
@@ -267,12 +313,18 @@ class CocktailController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function toggleFavorite(CocktailService $cocktailService, Request $request, int $id): JsonResponse
+    public function toggleFavorite(FavoriteService $favoriteService, Request $request, int $id): JsonResponse
     {
-        $userFavorite = $cocktailService->toggleFavorite($request->user(), $id);
+        $cocktail = Cocktail::findOrFail($id);
+        if ($request->user()->cannot('show', $cocktail)) {
+            abort(403);
+        }
+
+        $barMembership = $request->user()->getBarMembership($cocktail->bar_id);
+        $userFavorite = $favoriteService->toggleFavorite(new FavoriteRequest($barMembership->id, $cocktail->id));
 
         return response()->json([
-            'data' => ['id' => $id, 'is_favorited' => $userFavorite !== null]
+            'data' => ['id' => $id, 'is_favorited' => $userFavorite->isFavorited]
         ]);
     }
 
@@ -284,7 +336,7 @@ class CocktailController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function makePublic(\BarAssistant\Application\Cocktail\CocktailService $cocktailService, Request $request, string $idOrSlug): Response
+    public function makePublic(CocktailService $cocktailService, Request $request, string $idOrSlug): Response
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
@@ -296,7 +348,7 @@ class CocktailController extends Controller
 
         $cocktailService->toggleVisibility(new ToggleCocktailVisibility(
             $cocktail->id,
-            ForceCocktailVisibility::PUBLIC,
+            ForceCocktailVisibility::Public,
         ));
 
         return new Response(status: 204);
@@ -308,7 +360,7 @@ class CocktailController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function makePrivate(Request $request, string $idOrSlug): Response
+    public function makePrivate(CocktailService $cocktailService, Request $request, string $idOrSlug): Response
     {
         $cocktail = Cocktail::where('id', $idOrSlug)
             ->orWhere('slug', $idOrSlug)
@@ -318,7 +370,10 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $cocktail = $cocktail->makePrivate();
+        $cocktailService->toggleVisibility(new ToggleCocktailVisibility(
+            $cocktail->id,
+            ForceCocktailVisibility::Private,
+        ));
 
         return new Response(null, 204);
     }
@@ -350,8 +405,8 @@ class CocktailController extends Controller
 
         $cocktail->loadDefaultRelations();
 
-        $type = $request->get('type', 'json');
-        $units = Units::tryFrom($request->get('units', ''));
+        $type = $request->input('type', 'json');
+        $units = Units::tryFrom($request->input('units', ''));
 
         $data = SchemaDraft2::fromCocktailModel($cocktail, $units);
 
@@ -397,7 +452,7 @@ class CocktailController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function similar(CocktailService $cocktailRepo, Request $request, string $idOrSlug): JsonResource
+    public function similar(InfrastructureCocktailService $cocktailRepo, Request $request, string $idOrSlug): JsonResource
     {
         $cocktail = Cocktail::where('id', $idOrSlug)->orWhere('slug', $idOrSlug)->with('ingredients.ingredient')->firstOrFail();
 
@@ -421,99 +476,27 @@ class CocktailController extends Controller
     #[OAT\Post(path: '/cocktails/{id}/copy', tags: ['Cocktails'], operationId: 'copyCocktail', description: 'Create a copy of a cocktail', summary: 'Copy cocktail', parameters: [
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id or slug of a resource', schema: new OAT\Schema(type: 'string')),
     ])]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(CocktailResource::class),
-    ], headers: [
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function copy(string $idOrSlug, CocktailService $cocktailService, ImageService $imageservice, Request $request): JsonResponse
+    public function copy(string $idOrSlug, CocktailService $cocktailService, Request $request): Response
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)
             ->firstOrFail();
 
-        if ($request->user()->cannot('show', $cocktail) || $request->user()->cannot('create', Cocktail::class)) {
+        if ($request->user()->cannot('show', $cocktail) && $request->user()->cannot('create', Cocktail::class)) {
             abort(403);
         }
 
-        $cocktail->loadDefaultRelations();
+        $newCocktailResult = $cocktailService->copyCocktail(new CopyCocktailRequest(
+            barId: bar()->id,
+            cocktailId: $cocktail->id,
+            userId: $request->user()->id,
+        ));
 
-        // Copy images
-        $imageDTOs = [];
-        foreach ($cocktail->images as $image) {
-            if ($imageContents = file_get_contents($image->getPath())) {
-                try {
-                    $imageDTOs[] = new ImageRequest(
-                        image: $imageContents,
-                        copyright: $image->copyright,
-                        sort: $image->sort,
-                    );
-                } catch (Throwable) {
-                }
-            }
-        }
-
-        $images = array_map(
-            fn ($image) => $image->id,
-            $imageservice->uploadAndSaveImages($imageDTOs, $request->user()->id)
-        );
-
-        // Copy ingredients
-        $ingredients = [];
-        foreach ($cocktail->ingredients as $ingredient) {
-            $substitutes = [];
-            foreach ($ingredient->substitutes as $sub) {
-                $substitutes[] = new SubstituteDTO(
-                    $sub->ingredient_id,
-                    $sub->amount,
-                    $sub->amount_max,
-                    $sub->units,
-                );
-            }
-
-            $ingredient = new IngredientDTO(
-                $ingredient->ingredient_id,
-                null,
-                $ingredient->amount,
-                $ingredient->units,
-                $ingredient->sort,
-                $ingredient->optional,
-                $ingredient->is_specified,
-                $substitutes,
-                $ingredient->amount_max,
-                $ingredient->note
-            );
-            $ingredients[] = $ingredient;
-        }
-
-        $cocktailDTO = new CocktailDTO(
-            $cocktail->name . ' Copy',
-            $cocktail->instructions,
-            $request->user()->id,
-            $cocktail->bar_id,
-            $cocktail->description,
-            $cocktail->source,
-            $cocktail->garnish,
-            $cocktail->glass_id,
-            $cocktail->cocktail_method_id,
-            $cocktail->tags->pluck('name')->toArray(),
-            $ingredients,
-            $images,
-            $cocktail->utensils->pluck('id')->toArray(),
-            $cocktail->id,
-        );
-
-        try {
-            $cocktail = $cocktailService->createCocktail($cocktailDTO);
-        } catch (Throwable $e) {
-            abort(500, $e->getMessage());
-        }
-
-        return (new CocktailResource($cocktail))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('cocktails.show', $cocktail->id));
+        return new Response(status: 201, headers: ['Location' => route('cocktails.show', $newCocktailResult->id, false)]);
     }
 
     #[OAT\Get(path: '/cocktails/{id}/prices', tags: ['Cocktails'], operationId: 'getCocktailPrices', summary: 'Show cocktail prices', description: 'Show calculated prices categorized by bar price categories. Prices are calculated using ingredient prices. If price category is missing, the ingredients don\'t have a price in that category. If there are multiple prices in category, the minimum price is used. Keep in mind that the price is just an estimate and might not be accurate.', parameters: [

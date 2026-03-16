@@ -84,8 +84,7 @@ class GlassController extends Controller
             images: $glassRequest->images,
         ));
 
-        return new Response(status: 201)
-            ->header('Location', route('glasses.show', $glassResult->id, false));
+        return new Response(status: 201, headers: ['Location' => route('glasses.show', $glassResult->id, false)]);
     }
 
     #[OAT\Put(path: '/glasses/{id}', tags: ['Glasses'], operationId: 'updateGlassware', description: 'Update a specific glassware', summary: 'Update glassware', parameters: [

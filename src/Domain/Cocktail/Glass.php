@@ -153,11 +153,9 @@ final class Glass implements Identity
         DomainEventDispatcher::instance()->publish(new GlassUpdated(
             barId: $this->barId,
             glassId: $this->id,
-            newName: $name->toString(),
-            newDescription: $description,
-            newVolume: $volume?->amountMin,
-            newVolumeUnits: $volume?->units->value,
-            newVolumeMax: $volume?->amountMax,
+            volume: $volume?->amountMin,
+            volumeUnits: $volume?->units->value,
+            volumeMax: $volume?->amountMax,
         ));
 
         return $this;

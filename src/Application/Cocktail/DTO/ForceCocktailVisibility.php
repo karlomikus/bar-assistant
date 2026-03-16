@@ -6,6 +6,6 @@ namespace BarAssistant\Application\Cocktail\DTO;
 
 enum ForceCocktailVisibility
 {
-    case PUBLIC;
-    case PRIVATE;
+    case Public;
+    case Private;
 }
