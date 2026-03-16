@@ -188,7 +188,7 @@ final readonly class CocktailService
         if ($cocktail->isPublic() || $request->forceVisibility === ForceCocktailVisibility::Private) {
             $cocktail->makePrivate();
         }
-        
+
         if (!$cocktail->isPublic() || $request->forceVisibility === ForceCocktailVisibility::Public) {
             $cocktail->makePublic();
         }
@@ -230,6 +230,10 @@ final readonly class CocktailService
 
         foreach ($request->images as $image) {
             $newCocktail->addImage(new ImageId($image));
+        }
+
+        foreach ($originalCocktail->getUtensils() as $utensil) {
+            $newCocktail->addUtensil($utensil);
         }
 
         $newCocktail = $this->cocktailRepository->save($newCocktail);

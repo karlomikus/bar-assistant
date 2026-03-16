@@ -38,7 +38,7 @@ final readonly class BarService
 
         $bar = $this->barRepository->save($bar);
 
-        return new BarResult(id: $bar->getId()->value, slug: $bar->getSlug()?->toString() ?? '');
+        return new BarResult(id: $bar->getId()->value ?? 0, slug: $bar->getSlug()?->toString() ?? '');
     }
 
     public function updateBar(UpdateBarRequest $request): Bar

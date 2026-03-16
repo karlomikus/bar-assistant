@@ -139,7 +139,7 @@ final class Bar implements Identity
      */
     public function getDefaultUnits(): ?Unit
     {
-        return $this->settings->defaultUnits;
+        return $this->settings?->defaultUnits;
     }
 
     /**
@@ -147,7 +147,7 @@ final class Bar implements Identity
      */
     public function getDefaultCurrency(): ?Currency
     {
-        return $this->settings->defaultCurrency;
+        return $this->settings?->defaultCurrency;
     }
 
     /**
@@ -200,7 +200,7 @@ final class Bar implements Identity
 
     public function isInviteCodeEnabled(): bool
     {
-        return $this->settings->isInviteCodeEnabled;
+        return $this->settings->isInviteCodeEnabled ?? false;
     }
 
     /**

@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Bar\DTO;
 
-use BarAssistant\Domain\Common\Name;
-
 final readonly class CreateBarRequest
 {
+    /**
+     * @param int[] $images
+     */
     public function __construct(
         public string $name,
         public int $createdUserId,

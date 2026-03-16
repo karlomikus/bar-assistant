@@ -6,13 +6,11 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use BarAssistant\Application\Bar\DTO\FavoriteRequest;
 use BarAssistant\Application\Bar\FavoriteService;
-use BarAssistant\Application\Bar\MemberService;
 use BarAssistant\Application\Cocktail\CocktailService;
 use BarAssistant\Application\Cocktail\DTO\CocktailIngredient;
 use BarAssistant\Application\Cocktail\DTO\CocktailIngredientSubstitute;
 use BarAssistant\Application\Cocktail\DTO\CopyCocktailRequest;
 use BarAssistant\Application\Cocktail\DTO\CreateCocktail;
-use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
@@ -24,8 +22,6 @@ use Kami\Cocktail\Models\PriceCategory;
 use Illuminate\Support\Facades\Validator;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
-use Kami\Cocktail\Services\Image\ImageService;
-use Kami\Cocktail\OpenAPI\Schemas\ImageRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailRequest;
 use Kami\Cocktail\Http\Resources\CocktailResource;
@@ -37,11 +33,12 @@ use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest as CocktailDTO;
 use BarAssistant\Application\Cocktail\DTO\ForceCocktailVisibility;
 use BarAssistant\Application\Cocktail\DTO\ToggleCocktailVisibility;
 use BarAssistant\Application\Cocktail\DTO\UpdateCocktail;
+use BarAssistant\Application\Image\DTO\CreateImage;
+use BarAssistant\Application\Image\ImageService;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Services\CocktailService as InfrastructureCocktailService;
-use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientRequest as IngredientDTO;
-use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientSubstituteRequest as SubstituteDTO;
+use Kami\Cocktail\Services\Image\ImageUploadService;
 
 class CocktailController extends Controller
 {
@@ -480,7 +477,7 @@ class CocktailController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function copy(string $idOrSlug, CocktailService $cocktailService, Request $request): Response
+    public function copy(string $idOrSlug, CocktailService $cocktailService, ImageUploadService $imageUploadService, ImageService $imageService, Request $request): Response
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)
@@ -490,10 +487,28 @@ class CocktailController extends Controller
             abort(403);
         }
 
+        $images = [];
+        foreach ($cocktail->images as $image) {
+            if ($imageContents = file_get_contents($image->getPath())) {
+                $uploadedImage = $imageUploadService->uploadImage($imageContents);
+                $imageResult = $imageService->createImage(new CreateImage(
+                    imageFilePath: $uploadedImage->path,
+                    imageFileExtension: $uploadedImage->extension,
+                    userId: $request->user()->id,
+                    sort: $image->sort,
+                    copyright: $image->copyright,
+                    placeholderHash: $uploadedImage->placeholderHash,
+                ));
+
+                $images[] = $imageResult->id;
+            }
+        }
+
         $newCocktailResult = $cocktailService->copyCocktail(new CopyCocktailRequest(
             barId: bar()->id,
             cocktailId: $cocktail->id,
             userId: $request->user()->id,
+            images: $images,
         ));
 
         return new Response(status: 201, headers: ['Location' => route('cocktails.show', $newCocktailResult->id, false)]);
