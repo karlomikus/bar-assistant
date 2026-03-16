@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use BarAssistant\Application\Cocktail\CocktailMethodService;
+use BarAssistant\Application\Cocktail\DTO\CreateCocktailMethod;
+use BarAssistant\Application\Cocktail\DTO\UpdateCocktailMethod;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
-use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\Models\CocktailMethod;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailMethodRequest;
@@ -61,28 +62,26 @@ class CocktailMethodController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\CocktailMethodRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(CocktailMethodResource::class),
-    ], headers: [
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(CocktailMethodRequest $request): JsonResponse
+    public function store(CocktailMethodService $cocktailMethodService, CocktailMethodRequest $request): Response
     {
         if ($request->user()->cannot('create', CocktailMethod::class)) {
             abort(403);
         }
 
-        $method = new CocktailMethod();
-        $method->name = $request->input('name');
-        $method->dilution_percentage = (int) $request->input('dilution_percentage');
-        $method->bar_id = bar()->id;
-        $method->save();
+        $methodRequest = BAO\Schemas\CocktailMethodRequest::fromLaravelRequest($request);
 
-        return (new CocktailMethodResource($method))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('cocktail-methods.show', $method->id));
+        $methodResult = $cocktailMethodService->createCocktailMethod(new CreateCocktailMethod(
+            barId: bar()->id,
+            name: $methodRequest->name,
+            dilutionPercentage: $methodRequest->dilutionPercentage,
+            description: $methodRequest->description,
+        ));
+
+        return new Response(status: 201, headers: ['Location' => route('cocktail-methods.show', $methodResult->id, false)]);
     }
 
     #[OAT\Put(path: '/cocktail-methods/{id}', tags: ['Cocktail method'], operationId: 'updateCocktailMethod', description: 'Update a specific cocktail method', summary: 'Update method', parameters: [
@@ -93,12 +92,10 @@ class CocktailMethodController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\CocktailMethodRequest::class),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(CocktailMethodResource::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(CocktailMethodRequest $request, int $id): JsonResource
+    public function update(CocktailMethodService $cocktailMethodService, int $id, CocktailMethodRequest $request): Response
     {
         $method = CocktailMethod::findOrFail($id);
 
@@ -106,25 +103,16 @@ class CocktailMethodController extends Controller
             abort(403);
         }
 
-        $originalDilutionPercentage = $method->dilution_percentage;
+        $methodRequest = BAO\Schemas\CocktailMethodRequest::fromLaravelRequest($request);
 
-        $method->name = $request->input('name');
-        $method->dilution_percentage = (int) $request->input('dilution_percentage');
-        $method->updated_at = now();
-        $method->save();
+        $cocktailMethodService->updateCocktailMethod(new UpdateCocktailMethod(
+            id: $id,
+            name: $methodRequest->name,
+            dilutionPercentage: $methodRequest->dilutionPercentage,
+            description: $methodRequest->description,
+        ));
 
-        if ($originalDilutionPercentage !== $method->dilution_percentage) {
-            Log::info('Updating ABV for cocktails using method ID: ' . $method->id);
-            $cocktailsToUpdateAbv = $method->cocktails()->get();
-
-            foreach ($cocktailsToUpdateAbv as $cocktail) {
-                $calculatedAbv = $cocktail->getABV();
-                $cocktail->abv = $calculatedAbv;
-                $cocktail->save();
-            }
-        }
-
-        return new CocktailMethodResource($method);
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/cocktail-methods/{id}', tags: ['Cocktail method'], operationId: 'deleteCocktailMethod', description: 'Delete a specific cocktail method', summary: 'Delete method', parameters: [
@@ -133,7 +121,7 @@ class CocktailMethodController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(Request $request, int $id): Response
+    public function delete(CocktailMethodService $cocktailMethodService, Request $request, int $id): Response
     {
         $method = CocktailMethod::findOrFail($id);
 
@@ -141,7 +129,7 @@ class CocktailMethodController extends Controller
             abort(403);
         }
 
-        $method->delete();
+        $cocktailMethodService->deleteCocktailMethod($id);
 
         return new Response(null, 204);
     }

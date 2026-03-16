@@ -36,4 +36,9 @@ final class InMemoryCocktailMethodRepository implements CocktailMethodRepository
 
         return $cocktailMethod;
     }
+
+    public function delete(MethodId $id): void
+    {
+        unset($this->items[$id->value]);
+    }
 }

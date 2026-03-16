@@ -43,6 +43,16 @@ final class EloquentCocktailMethodRepository implements CocktailMethodRepository
         return self::map($model);
     }
 
+    public function delete(MethodId $id): void
+    {
+        $model = Model::find($id->value);
+        if ($model === null) {
+            return;
+        }
+
+        $model->delete();
+    }
+
     private static function map(Model $model): CocktailMethod
     {
         return CocktailMethod::create(

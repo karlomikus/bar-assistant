@@ -8,6 +8,8 @@ use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\Dilution;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Cocktail\Event\CocktailMethodUpdated;
+use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Identity;
 
@@ -115,10 +117,18 @@ final class CocktailMethod implements Identity
             throw new DomainException('Cannot update details of a transient cocktail method');
         }
 
+        $previousDilutionPercentage = $this->dilution->toFloat();
         $this->name = $name;
         $this->dilution = $dilution;
         $this->description = $description;
         $this->recordTimestamps = $this->recordTimestamps->updatedNow();
+
+        DomainEventDispatcher::instance()->publish(new CocktailMethodUpdated(
+            barId: $this->barId,
+            methodId: $this->getId(),
+            previousDilutionPercentage: $previousDilutionPercentage,
+            currentDilutionPercentage: $this->dilution->toFloat(),
+        ));
 
         return $this;
     }

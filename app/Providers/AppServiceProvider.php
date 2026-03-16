@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
+use Kami\Cocktail\Infrastructure\DomainEventSubscriber\CocktailMethodUpdatedRecalculateAbvSubscriber;
 use Kami\Cocktail\Infrastructure\DomainEventSubscriber\ClearPublicCocktailsCacheSubscriber;
 use Kami\Cocktail\Infrastructure\DomainEventSubscriber\GlassUpdatedSearchReindexSubscriber;
 
@@ -64,6 +65,7 @@ class AppServiceProvider extends ServiceProvider
 
         DomainEventDispatcher::instance()->subscribe(app(GlassUpdatedSearchReindexSubscriber::class));
         DomainEventDispatcher::instance()->subscribe(app(ClearPublicCocktailsCacheSubscriber::class));
+        DomainEventDispatcher::instance()->subscribe(app(CocktailMethodUpdatedRecalculateAbvSubscriber::class));
 
         if (DB::getDriverName() === 'sqlite') {
             try {

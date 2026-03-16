@@ -61,4 +61,15 @@ final readonly class CocktailMethodService
 
         return CocktailMethodResult::fromCocktailMethod($cocktailMethod);
     }
+
+    public function deleteCocktailMethod(int $id): void
+    {
+        $methodId = new MethodId($id);
+        $cocktailMethod = $this->cocktailMethodRepository->findById($methodId);
+        if ($cocktailMethod === null) {
+            throw new EntityNotFoundException('Cocktail method not found');
+        }
+
+        $this->cocktailMethodRepository->delete($methodId);
+    }
 }
