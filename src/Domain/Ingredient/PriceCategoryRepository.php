@@ -8,6 +8,8 @@ use BarAssistant\Domain\Bar\BarId;
 
 interface PriceCategoryRepository
 {
+    public function findById(PriceCategoryId $id): ?PriceCategory;
+
     /**
      * @param BarId $barId
      * @param PriceCategoryId[] $ids

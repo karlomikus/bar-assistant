@@ -8,10 +8,13 @@ use Brick\Money\Currency;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Ingredient\PriceCategory;
+use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
-use BarAssistant\Application\Ingredient\DTO\CreatePriceCategoryRequest;
+use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Ingredient\DTO\PriceCategoryResult;
 use BarAssistant\Application\Exception\ApplicationServiceException;
+use BarAssistant\Application\Ingredient\DTO\CreatePriceCategoryRequest;
+use BarAssistant\Application\Ingredient\DTO\UpdatePriceCategoryRequest;
 
 final readonly class PriceCategoryService
 {
@@ -37,6 +40,25 @@ final readonly class PriceCategoryService
         if ($priceCategory->isTransient()) {
             throw new ApplicationServiceException('Failed to create price category');
         }
+
+        return PriceCategoryResult::fromPriceCategory($priceCategory);
+    }
+
+    public function updatePriceCategory(UpdatePriceCategoryRequest $request): PriceCategoryResult
+    {
+        $priceCategory = $this->priceCategoryRepository->findById(new PriceCategoryId($request->priceCategoryId));
+        if ($priceCategory === null) {
+            throw new EntityNotFoundException('Price category not found');
+        }
+
+        $priceCategory
+            ->updateDetails(
+                name: Name::fromString($request->name),
+                description: $request->description,
+            )
+            ->changeCurrency(Currency::of($request->currency));
+
+        $priceCategory = $this->priceCategoryRepository->save($priceCategory);
 
         return PriceCategoryResult::fromPriceCategory($priceCategory);
     }

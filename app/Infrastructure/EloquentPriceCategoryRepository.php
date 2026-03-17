@@ -14,9 +14,28 @@ use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 
 final class EloquentPriceCategoryRepository implements PriceCategoryRepository
 {
+    public function findById(PriceCategoryId $id): ?PriceCategory
+    {
+        $model = Model::find($id->value);
+
+        if ($model === null) {
+            return null;
+        }
+
+        return $this->map($model);
+    }
+
     public function save(PriceCategory $priceCategory): PriceCategory
     {
-        throw new \Exception('Not implemented');
+        $model = Model::findOrNew($priceCategory->getId()?->value);
+
+        $model->bar_id = $priceCategory->getBarId()->value;
+        $model->name = (string) $priceCategory->getName();
+        $model->currency = $priceCategory->getCurrency()->getCurrencyCode();
+        $model->description = $priceCategory->getDescription();
+        $model->save();
+
+        return $this->map($model);
     }
 
     public function findMany(BarId $barId, array $ids): array

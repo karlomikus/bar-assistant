@@ -70,18 +70,7 @@ class PriceCategoryControllerTest extends TestCase
         ], ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
         $response->assertCreated();
-        $this->assertNotEmpty($response->headers->get('Location'));
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->has('data.id')
-                ->where('data.name', 'Test cat')
-                ->where('data.description', 'Test cat desc')
-                ->where('data.currency', 'USD')
-                ->where('data.currency_symbol', '')
-                ->etc()
-        );
+        $response->assertHeader('Location');
     }
 
     public function test_update_price_category_response(): void

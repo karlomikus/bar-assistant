@@ -24,8 +24,11 @@
 | ABV | Alcohol By Volume - a standard measure used worldwide to quantify the amount of alcohol (ethanol) contained in an alcoholic beverage. |
 | Cocktail Garnish | An ingredient used to decorate or enhance the presentation of a cocktail, often added on top or to the side of the drink. |
 | Cocktail Variant | A variation (also called a riff) of a cocktail recipe that includes modifications such as different ingredients, amounts, or preparation methods. |
+| Cocktail Instructions | Step-by-step directions for preparing a cocktail, including the order of adding ingredients, preparation techniques, and any specific notes or tips for making the drink. |
 | Menu | A curated list of cocktails and ingredients offered by a bar, typically organized into categories and including pricing information. |
 | Menu Category | A grouping within a menu that organizes cocktails and ingredients into specific sections, for example: "Tiki", "Gin selection". |
 | Menu Item | An entry in a menu representing either a cocktail or an ingredient, along with its price and sort order. |
 | Cocktail Method | A preparation technique used to make a cocktail, such as stirring, shaking, or blending. Each method has a standard dilution percentage that affects the final drink's ABV calculation. |
 | Member | A user that is part of a bar, with specific roles and permissions. |
+| Glass | A type of glassware used to serve cocktails, such as "Martini Glass", "Highball Glass", etc. |
+| Cocktail price | A monetary value associated with a cocktail, typically based on the cost of its ingredients and preparation, and can vary based on the price category. |

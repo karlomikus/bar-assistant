@@ -6,10 +6,13 @@ namespace Tests\Infrastructure;
 
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Ingredient\PriceCategory;
+use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 
 final class InMemoryPriceCategoryRepository implements PriceCategoryRepository
 {
+    private int $nextId = 1;
+
     /**
      * @param array<int, PriceCategory> $items
      */
@@ -17,9 +20,22 @@ final class InMemoryPriceCategoryRepository implements PriceCategoryRepository
     {
     }
 
+    public function findById(PriceCategoryId $id): ?PriceCategory
+    {
+        return $this->items[$id->value] ?? null;
+    }
+
     public function save(PriceCategory $priceCategory): PriceCategory
     {
-        throw new \Exception('Not implemented');
+        if ($priceCategory->isTransient()) {
+            $priceCategory->setId(new PriceCategoryId($this->nextId++));
+        }
+
+        /** @var PriceCategoryId $id */
+        $id = $priceCategory->getId();
+        $this->items[$id->value] = $priceCategory;
+
+        return $priceCategory;
     }
 
     public function findMany(BarId $barId, array $ids): array
