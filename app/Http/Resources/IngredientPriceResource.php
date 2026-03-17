@@ -38,7 +38,7 @@ class IngredientPriceResource extends JsonResource
     {
         return [
             'price_category' => new PriceCategoryResource($this->priceCategory),
-            'price' => new PriceResource(new Price($this->getMoney())),
+            'price' => new PriceResource(Price::fromMoney($this->getMoney())),
             'units' => $this->units,
             'amount' => $this->amount,
             'description' => $this->description,

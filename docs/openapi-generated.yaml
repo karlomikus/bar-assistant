@@ -279,14 +279,6 @@ paths:
               description: 'URL of the new resource'
               schema:
                 type: string
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Bar' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -1559,14 +1551,6 @@ paths:
               description: 'URL of the new resource'
               schema:
                 type: string
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Cocktail' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -2177,14 +2161,6 @@ paths:
               description: 'URL of the new resource'
               schema:
                 type: string
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Cocktail' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -2345,14 +2321,6 @@ paths:
               description: 'URL of the new resource'
               schema:
                 type: string
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/CocktailMethod' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -2460,25 +2428,8 @@ paths:
             schema:
               $ref: '#/components/schemas/CocktailMethodRequest'
       responses:
-        '200':
+        '204':
           description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/CocktailMethod' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -4376,14 +4327,6 @@ paths:
               description: 'URL of the new resource'
               schema:
                 type: string
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Ingredient' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -4491,25 +4434,8 @@ paths:
             schema:
               $ref: '#/components/schemas/IngredientRequest'
       responses:
-        '200':
+        '204':
           description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Ingredient' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -5509,14 +5435,6 @@ paths:
               description: 'URL of the new resource'
               schema:
                 type: string
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/PriceCategory' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -5624,25 +5542,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PriceCategoryRequest'
       responses:
-        '200':
+        '204':
           description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/PriceCategory' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -8326,25 +8227,8 @@ paths:
             schema:
               $ref: '#/components/schemas/UtensilRequest'
       responses:
-        '200':
+        '204':
           description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Utensil' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -11100,8 +10984,14 @@ components:
           type: string
           example: Shake
         dilution_percentage:
-          type: integer
+          type: number
+          format: float
           example: 20
+        description:
+          type:
+            - string
+            - 'null'
+          example: 'Shake with ice to chill and dilute'
       type: object
     CocktailRequest:
       required:
