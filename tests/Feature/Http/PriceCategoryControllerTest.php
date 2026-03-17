@@ -61,6 +61,16 @@ class PriceCategoryControllerTest extends TestCase
         );
     }
 
+    public function test_show_price_category_forbidden_when_user_has_no_bar_membership(): void
+    {
+        $otherBarMembership = $this->setupBarMembership();
+        $cat = PriceCategory::factory()->for($otherBarMembership->bar)->create();
+
+        $response = $this->getJson('/api/price-categories/' . $cat->id);
+
+        $response->assertForbidden();
+    }
+
     public function test_create_price_category_response(): void
     {
         $response = $this->postJson('/api/price-categories', [
