@@ -29,6 +29,11 @@
 | Menu Category | A grouping within a menu that organizes cocktails and ingredients into specific sections, for example: "Tiki", "Gin selection". |
 | Menu Item | An entry in a menu representing either a cocktail or an ingredient, along with its price and sort order. |
 | Cocktail Method | A preparation technique used to make a cocktail, such as stirring, shaking, or blending. Each method has a standard dilution percentage that affects the final drink's ABV calculation. |
+| User | An individual who interacts with the system. |
 | Member | A user that is part of a bar, with specific roles and permissions. |
 | Glass | A type of glassware used to serve cocktails, such as "Martini Glass", "Highball Glass", etc. |
-| Cocktail price | A monetary value associated with a cocktail, typically based on the cost of its ingredients and preparation, and can vary based on the price category. |
+| Cocktail Price | A monetary value associated with a cocktail, typically based on the cost of its ingredients and preparation, and can vary based on the price category. |
+| Utensils | Tools used in the preparation of cocktails, such as shakers, strainers, muddlers, etc. |
+| Calculator | User created custom calculators used to calculate required ingredient amounts for custom infusions, juices, etc. |
+| Amount | A specific quantity of an ingredient, represented as a combination of a numeric value and its corresponding units (e.g., "50 ml", "2 oz", "1 slice"). |
+| Slug | A URL-friendly string that uniquely identifies a resource, typically generated from the resource's name or title. For example, a cocktail named "Mojito" might have a slug of "mojito". |

@@ -71,6 +71,7 @@ final class EloquentIngredientRepository implements IngredientRepository
         DB::beginTransaction();
         $ingredientModel = ModelIngredient::with('ingredientParts', 'prices.priceCategory')->findOrNew($ingredient->getId()?->value);
         try {
+            $materializedPath = $ingredient->getMaterializedPath()->toString();
             $ingredientModel->bar_id = $ingredient->getBarId()->value;
             $ingredientModel->name = $ingredient->getName();
             $ingredientModel->strength = $ingredient->getStrength()->toFloat();
@@ -84,10 +85,12 @@ final class EloquentIngredientRepository implements IngredientRepository
             $ingredientModel->acidity = $ingredient->getAcidity();
             $ingredientModel->distillery = $ingredient->getDistillery();
             $ingredientModel->units = $ingredient->getUnits()?->value;
-            $ingredientModel->materialized_path = $ingredient->getMaterializedPath()->toString();
+            $ingredientModel->materialized_path = empty($materializedPath) ? null : $materializedPath;
             $ingredientModel->parent_ingredient_id = $ingredient->getParentIngredientId()?->value;
             if ($ingredient->getAuthors()->isUpdated()) {
                 $ingredientModel->updated_user_id = $ingredient->getAuthors()->getUpdatedBy()?->value;
+            }
+            if ($ingredient->getRecordTimestamps()->wasUpdated()) {
                 $ingredientModel->updated_at = $ingredient->getRecordTimestamps()->getUpdatedAt()?->format('Y-m-d H:i:s');
             }
             $ingredientModel->save();
