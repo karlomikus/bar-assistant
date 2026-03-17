@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Infrastructure;
+namespace Tests\Integration\Infrastructure;
 
 use Tests\TestCase;
 use DateTimeImmutable;

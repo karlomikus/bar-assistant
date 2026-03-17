@@ -239,17 +239,6 @@ class IngredientControllerTest extends TestCase
         ]);
 
         $response->assertStatus(201);
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data.id')
-                ->where('data.name', 'Ingredient name')
-                ->where('data.strength', 12.2)
-                ->where('data.description', 'Description text')
-                ->where('data.origin', 'Worldwide')
-                ->where('data.color', '#000000')
-                ->etc()
-        );
     }
 
     public function test_ingredient_store_fails_validation_response(): void
@@ -293,16 +282,7 @@ class IngredientControllerTest extends TestCase
             'parent_ingredient_id' => null
         ]);
 
-        $response->assertSuccessful();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data.id')
-                ->where('data.name', 'Ingredient name')
-                ->where('data.strength', 12.2)
-                ->where('data.description', 'Description text')
-                ->etc()
-        );
+        $response->assertNoContent();
     }
 
     public function test_ingredient_update_fails_validation_response(): void
@@ -447,14 +427,16 @@ class IngredientControllerTest extends TestCase
             'parent_ingredient_id' => $spirits->id,
         ]);
 
-        $genever = Ingredient::find($response->json('data.id'));
+        $geneverId = (int) basename($response->headers->get('Location'));
+        $genever = Ingredient::find($geneverId);
 
         $response = $this->postJson('/api/ingredients/', [
             'name' => "Gin",
             'parent_ingredient_id' => $genever->id,
         ]);
 
-        $gin = Ingredient::find($response->json('data.id'));
+        $ginId = (int) basename($response->headers->get('Location'));
+        $gin = Ingredient::find($ginId);
 
         $response = $this->postJson('/api/ingredients/', [
             'name' => "Bombay Sapphire",
@@ -471,7 +453,8 @@ class IngredientControllerTest extends TestCase
             'parent_ingredient_id' => $spirits->id,
         ]);
 
-        $grain = Ingredient::find($response->json('data.id'));
+        $grainId = (int) basename($response->headers->get('Location'));
+        $grain = Ingredient::find($grainId);
 
         $response = $this->getJson('/api/ingredients?filter[descendants_of]=' . $genever->id);
         $response->assertJsonCount(3, 'data');

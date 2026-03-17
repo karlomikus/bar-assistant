@@ -15,7 +15,6 @@ use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Validator;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
-use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\IngredientRequest;
 use Kami\Cocktail\Http\Resources\IngredientResource;
@@ -27,6 +26,7 @@ use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use BarAssistant\Application\Ingredient\DTO\UpdateIngredientRequest;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
+use BarAssistant\Application\Ingredient\IngredientService;
 use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest as IngredientDTO;
 
 class IngredientController extends Controller
@@ -58,7 +58,7 @@ class IngredientController extends Controller
         new BAO\PaginateData(IngredientResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function index(IngredientService $ingredientQuery, Request $request): JsonResource
+    public function index(\Kami\Cocktail\Services\IngredientService $ingredientQuery, Request $request): JsonResource
     {
         try {
             $ingredients = (new IngredientQueryFilter($ingredientQuery))->paginate($request->input('per_page', 50));
@@ -115,7 +115,7 @@ class IngredientController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(\BarAssistant\Application\Ingredient\IngredientService $ingredientService, IngredientRequest $request): Response
+    public function store(IngredientService $ingredientService, IngredientRequest $request): Response
     {
         Validator::make($request->all(), [
             'complex_ingredient_part_ids' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
@@ -176,7 +176,7 @@ class IngredientController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(\BarAssistant\Application\Ingredient\IngredientService $ingredientService, IngredientRequest $request, int $id): Response
+    public function update(IngredientService $ingredientService, IngredientRequest $request, int $id): Response
     {
         $ingredient = Ingredient::findOrFail($id);
 
@@ -232,7 +232,7 @@ class IngredientController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(\BarAssistant\Application\Ingredient\IngredientService $ingredientService, Request $request, int $id): Response
+    public function delete(IngredientService $ingredientService, Request $request, int $id): Response
     {
         $ingredient = Ingredient::findOrFail($id);
 

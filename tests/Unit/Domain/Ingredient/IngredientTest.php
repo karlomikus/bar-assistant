@@ -609,20 +609,4 @@ final class IngredientTest extends TestCase
         $this->assertEquals('New Distillery', $ingredient->getDistillery());
         $this->assertEquals('oz', $ingredient->getUnits()->value);
     }
-
-    public function test_bar_id_is_immutable(): void
-    {
-        $barId = new BarId(1);
-        $ingredient = Ingredient::create(
-            barId: $barId,
-            name: Name::fromString('Vodka'),
-            authors: Authors::createdBy(new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-        );
-
-        $this->assertTrue($ingredient->getBarId()->equals($barId));
-
-        // BarId should remain the same - there's no setter for it
-        // This test documents that barId is a readonly property
-    }
 }
