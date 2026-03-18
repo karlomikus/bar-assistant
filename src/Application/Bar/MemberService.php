@@ -10,8 +10,12 @@ use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Bar\MemberRole;
 use BarAssistant\Domain\Bar\MemberRepository;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
+use BarAssistant\Application\Bar\DTO\MemberInventoryStockChangeRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
+use BarAssistant\Domain\Bar\IngredientInventoryStatus;
+use BarAssistant\Domain\Bar\MemberId;
+use BarAssistant\Domain\Ingredient\IngredientId;
 
 final readonly class MemberService
 {
@@ -49,5 +53,33 @@ final readonly class MemberService
         }
 
         $this->memberRepository->delete($member);
+    }
+
+    public function putMultipleIngredientsInStock(MemberInventoryStockChangeRequest $request): void
+    {
+        $member = $this->memberRepository->findById(new MemberId($request->memberId));
+        if ($member === null || $member->isTransient()) {
+            throw new EntityNotFoundException('The member was not found');
+        }
+
+        foreach ($request->ingredientIds as $ingredientId) {
+            $member->putIngredientInInventory(new IngredientId($ingredientId), IngredientInventoryStatus::InStock);
+        }
+
+        $this->memberRepository->save($member);
+    }
+
+    public function removeMultipleIngredientsFromStock(MemberInventoryStockChangeRequest $request): void
+    {
+        $member = $this->memberRepository->findById(new MemberId($request->memberId));
+        if ($member === null || $member->isTransient()) {
+            throw new EntityNotFoundException('The bar was not found');
+        }
+
+        foreach ($request->ingredientIds as $ingredientId) {
+            $member->removeIngredientFromInventory(new IngredientId($ingredientId));
+        }
+
+        $this->memberRepository->save($member);
     }
 }

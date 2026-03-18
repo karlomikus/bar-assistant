@@ -18,6 +18,7 @@ use BarAssistant\Domain\Bar\ShoppingListItem;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use Kami\Cocktail\Models\BarMembership as Model;
 use Kami\Cocktail\Models\CocktailFavorite as CocktailFavoriteModel;
+use Kami\Cocktail\Models\UserIngredient;
 
 final class EloquentMemberRepository implements MemberRepository
 {
@@ -52,6 +53,15 @@ final class EloquentMemberRepository implements MemberRepository
             $cocktailFavoriteModel->created_at = $cocktailFavorite->favoritedAt->format('Y-m-d H:i:s');
 
             $model->cocktailFavorites()->save($cocktailFavoriteModel);
+        }
+
+        $model->userIngredients()->delete();
+        foreach ($member->getIngredientInventory() as $inventoryIngredient) {
+            $userIngredient = new UserIngredient();
+            $userIngredient->ingredient_id = $inventoryIngredient->ingredientId->value;
+            $userIngredient->bar_membership_id = $model->id;
+
+            $model->userIngredients()->save($userIngredient);
         }
 
         return self::map($model);

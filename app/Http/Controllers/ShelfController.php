@@ -26,6 +26,9 @@ use Kami\Cocktail\Http\Resources\CocktailBasicResource;
 use Kami\Cocktail\Http\Requests\ShelfIngredientsRequest;
 use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 use BarAssistant\Application\Bar\DTO\BarInventoryStockChangeRequest;
+use BarAssistant\Application\Bar\DTO\MemberInventoryStockChangeRequest;
+use BarAssistant\Application\Bar\InventoryService;
+use BarAssistant\Application\Bar\MemberService;
 
 class ShelfController extends Controller
 {
@@ -124,7 +127,7 @@ class ShelfController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchStore(ShelfIngredientsRequest $request, int $id): Response
+    public function batchStore(MemberService $memberService, ShelfIngredientsRequest $request, int $id): Response
     {
         $user = User::findOrFail($id);
         if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
@@ -132,28 +135,16 @@ class ShelfController extends Controller
         }
 
         $barMembership = $user->getBarMembership(bar()->id);
-        $existingBarIngredients = $barMembership->userIngredients->pluck('ingredient_id');
+        $ingredientIds = $request->post('ingredients');
 
-        $ingredients = DB::table('ingredients')
-            ->select('id')
-            ->where('bar_id', $barMembership->bar_id)
-            ->whereIn('id', $request->post('ingredients'))
-            ->pluck('id');
+        Validator::make($ingredientIds, [
+            '*' => [new ResourceBelongsToBar($barMembership->bar_id, 'ingredients')],
+        ])->validate();
 
-        // Let's remove ingredients from shopping list since they are on our shelf now
-        UserShoppingList::whereIn('ingredient_id', $ingredients)->delete();
-
-        $models = [];
-        foreach ($ingredients as $dbIngredientId) {
-            if ($existingBarIngredients->contains($dbIngredientId)) {
-                continue;
-            }
-            $userIngredient = new UserIngredient();
-            $userIngredient->ingredient_id = $dbIngredientId;
-            $models[] = $userIngredient;
-        }
-
-        $barMembership->userIngredients()->saveMany($models);
+        $memberService->putMultipleIngredientsInStock(new MemberInventoryStockChangeRequest(
+            memberId: $barMembership->id,
+            ingredientIds: $ingredientIds,
+        ));
 
         return new Response(null, 204);
     }
@@ -172,7 +163,7 @@ class ShelfController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchDelete(ShelfIngredientsRequest $request, int $id): Response
+    public function batchDelete(MemberService $memberService, ShelfIngredientsRequest $request, int $id): Response
     {
         $user = User::findOrFail($id);
         if ($request->user()->id !== $user->id && $request->user()->cannot('show', $user)) {
@@ -180,18 +171,16 @@ class ShelfController extends Controller
         }
 
         $barMembership = $user->getBarMembership(bar()->id);
+        $ingredientIds = $request->post('ingredients');
 
-        $ingredients = DB::table('ingredients')
-            ->select('id')
-            ->where('bar_id', $barMembership->bar_id)
-            ->whereIn('id', $request->post('ingredients'))
-            ->pluck('id');
+        Validator::make($ingredientIds, [
+            '*' => [new ResourceBelongsToBar($barMembership->bar_id, 'ingredients')],
+        ])->validate();
 
-        try {
-            $barMembership->userIngredients()->whereIn('ingredient_id', $ingredients)->delete();
-        } catch (Throwable $e) {
-            abort(500, $e->getMessage());
-        }
+        $memberService->removeMultipleIngredientsFromStock(new MemberInventoryStockChangeRequest(
+            memberId: $barMembership->id,
+            ingredientIds: $ingredientIds,
+        ));
 
         return new Response(null, 204);
     }
@@ -258,7 +247,7 @@ class ShelfController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchStoreBarIngredients(ShelfIngredientsRequest $request, \BarAssistant\Application\Bar\InventoryService $barInventoryService, int $id): Response
+    public function batchStoreBarIngredients(ShelfIngredientsRequest $request, InventoryService $barInventoryService, int $id): Response
     {
         $bar = Bar::findOrFail($id);
         if ($request->user()->cannot('manageShelf', $bar)) {
@@ -288,7 +277,7 @@ class ShelfController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchDeleteBarIngredients(ShelfIngredientsRequest $request, \BarAssistant\Application\Bar\InventoryService $barInventoryService, int $id): Response
+    public function batchDeleteBarIngredients(ShelfIngredientsRequest $request, InventoryService $barInventoryService, int $id): Response
     {
         $bar = Bar::findOrFail($id);
         if ($request->user()->cannot('manageShelf', $bar)) {
