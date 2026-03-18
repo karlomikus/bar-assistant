@@ -43,11 +43,11 @@ class MenuCocktail extends Model
     }
 
     /**
-     * @return BelongsTo<Menu, $this>
+     * @return BelongsTo<MenuCategory, $this>
      */
-    public function menu(): BelongsTo
+    public function menuCategory(): BelongsTo
     {
-        return $this->belongsTo(Menu::class);
+        return $this->belongsTo(MenuCategory::class);
     }
 
     public function getMoney(): Money

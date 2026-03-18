@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Infrastructure;
 
+use LogicException;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Menu\Menu;
 use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Menu\MenuItem;
-use BarAssistant\Domain\Common\Price;
-use BarAssistant\Domain\Cocktail\CocktailId;
-use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Menu\MenuId;
+use BarAssistant\Domain\Common\Price;
+use BarAssistant\Domain\Menu\MenuItem;
 use Kami\Cocktail\Models\Menu as Model;
 use BarAssistant\Domain\Menu\MenuCategory;
+use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Menu\MenuRepository;
+use BarAssistant\Domain\Ingredient\IngredientId;
 use Kami\Cocktail\Models\MenuCategory as ModelMenuCategory;
 
 final class EloquentMenuRepository implements MenuRepository
@@ -40,10 +41,15 @@ final class EloquentMenuRepository implements MenuRepository
         $model->is_enabled = $menu->isEnabled();
         $model->save();
 
+        $bar = $model->bar;
+        if ($bar === null) {
+            throw new LogicException('Menu must belong to an existing bar');
+        }
+
         // Enabled menus require bars to have slugs
-        if (!isset($model->bar->slug) && $menu->isEnabled()) {
-            $model->bar->generateSlug();
-            $model->bar->save();
+        if (!isset($bar->slug) && $menu->isEnabled()) {
+            $bar->generateSlug();
+            $bar->save();
         }
 
         $model->categories()->delete();
@@ -57,6 +63,7 @@ final class EloquentMenuRepository implements MenuRepository
             foreach ($category->getItems() as $menuItem) {
                 if ($menuItem->isIngredient()) {
                     $modelCategory->menuIngredients()->create([
+                       'menu_id' => $model->id,
                         'ingredient_id' => $menuItem->getIngredientId(),
                         'sort' => $menuItem->getSortIndex(),
                         'price' => $menuItem->getPrice()->getAsMinor(),
@@ -65,6 +72,7 @@ final class EloquentMenuRepository implements MenuRepository
                     ]);
                 } else {
                     $modelCategory->menuCocktails()->create([
+                       'menu_id' => $model->id,
                         'cocktail_id' => $menuItem->getCocktailId(),
                         'sort' => $menuItem->getSortIndex(),
                         'price' => $menuItem->getPrice()->getAsMinor(),
@@ -94,6 +102,11 @@ final class EloquentMenuRepository implements MenuRepository
 
     private static function map(Model $model): Menu
     {
+        $bar = $model->bar;
+        if ($bar === null || $bar->slug === null) {
+            throw new LogicException('Menu must belong to a bar with a slug');
+        }
+
         $categories = [];
         foreach ($model->categories as $modelCategory) {
             $items = [];
@@ -122,7 +135,7 @@ final class EloquentMenuRepository implements MenuRepository
         }
 
         $menu = Menu::createWithCategories(
-            id: new MenuId($model->bar->slug),
+            id: new MenuId($bar->slug),
             barId: new BarId($model->bar_id),
             categories: $categories,
         );

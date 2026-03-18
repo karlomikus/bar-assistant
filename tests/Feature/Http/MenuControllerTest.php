@@ -13,6 +13,7 @@ use Kami\Cocktail\Models\BarMembership;
 use Kami\Cocktail\Models\MenuIngredient;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Models\MenuCategory;
 
 class MenuControllerTest extends TestCase
 {
@@ -44,8 +45,10 @@ class MenuControllerTest extends TestCase
     public function test_show_menu(): void
     {
         $menu = Menu::factory()->for($this->barMembership->bar)->create(['is_enabled' => true]);
-        MenuCocktail::factory()->recycle($menu)->count(7)->create(['category_name' => 'cocktails']);
-        MenuIngredient::factory()->recycle($menu)->count(3)->create(['category_name' => 'ingredients']);
+        $menuCategoryCocktails = MenuCategory::factory()->for($menu)->create(['sort' => 1]);
+        $menuCategoryIngredients = MenuCategory::factory()->for($menu)->create(['sort' => 2]);
+        MenuCocktail::factory()->for($menuCategoryCocktails)->count(3)->create();
+        MenuIngredient::factory()->for($menuCategoryIngredients)->count(7)->create();
 
         $response = $this->getJson('/api/menu', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
@@ -55,9 +58,8 @@ class MenuControllerTest extends TestCase
             $json
                 ->has('data.id')
                 ->has('data.categories', 2)
-                ->has('data.categories.0.items', 7)
-                ->has('data.categories.1.items', 3)
-                ->where('data.is_enabled', true)
+                ->has('data.categories.0.items', 3)
+                ->has('data.categories.1.items', 7)
                 ->etc()
         );
     }

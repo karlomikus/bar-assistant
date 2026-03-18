@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\ValueObjects\MenuItem;
@@ -12,6 +13,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MenuCategory extends Model
 {
+    /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\MenuCategoryFactory> */
+    use HasFactory;
+
     public $timestamps = false;
 
     protected $fillable = [
