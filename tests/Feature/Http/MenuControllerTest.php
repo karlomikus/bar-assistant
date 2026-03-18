@@ -8,13 +8,13 @@ use Tests\TestCase;
 use Kami\Cocktail\Models\Menu;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\MenuCategory;
 use Kami\Cocktail\Models\MenuCocktail;
 use Kami\Cocktail\Models\BarMembership;
 use Kami\Cocktail\Models\MenuIngredient;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
-use Kami\Cocktail\Models\MenuCategory;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class MenuControllerTest extends TestCase
 {

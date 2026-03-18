@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use BarAssistant\Application\Cocktail\CocktailMethodService;
-use BarAssistant\Application\Cocktail\DTO\CreateCocktailMethod;
-use BarAssistant\Application\Cocktail\DTO\UpdateCocktailMethod;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
@@ -16,6 +13,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CocktailMethodRequest;
 use Kami\Cocktail\Http\Resources\CocktailMethodResource;
 use Kami\Cocktail\Http\Filters\CocktailMethodQueryFilter;
+use BarAssistant\Application\Cocktail\CocktailMethodService;
+use BarAssistant\Application\Cocktail\DTO\CreateCocktailMethod;
+use BarAssistant\Application\Cocktail\DTO\UpdateCocktailMethod;
 
 class CocktailMethodController extends Controller
 {

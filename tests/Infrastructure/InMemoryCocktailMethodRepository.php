@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Infrastructure;
 
+use BarAssistant\Domain\Cocktail\MethodId;
 use BarAssistant\Domain\Cocktail\CocktailMethod;
 use BarAssistant\Domain\Cocktail\CocktailMethodRepository;
-use BarAssistant\Domain\Cocktail\MethodId;
 
 final class InMemoryCocktailMethodRepository implements CocktailMethodRepository
 {

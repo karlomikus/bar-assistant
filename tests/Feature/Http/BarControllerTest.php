@@ -7,7 +7,6 @@ namespace Tests\Feature\Http;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
-use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\Config;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;

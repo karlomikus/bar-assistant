@@ -12,8 +12,7 @@ final readonly class GenAIProviderConfig
         public Provider $provider,
         public string $model,
         public int $timeout,
-    )
-    {
+    ) {
     }
 
     public static function fromConfig()

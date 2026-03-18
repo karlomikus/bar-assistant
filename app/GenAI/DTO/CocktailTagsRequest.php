@@ -9,7 +9,6 @@ final readonly class CocktailTagsRequest
     public function __construct(
         public string $cocktailRecipe,
         public array $existingTags = [],
-    )
-    {
+    ) {
     }
 }

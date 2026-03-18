@@ -16,9 +16,9 @@ use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Kami\Cocktail\Services\MeilisearchService;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Kami\Cocktail\Services\Image\ImageUploadService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Kami\Cocktail\Services\Image\ImageUploadService;
 
 class Bar extends Model implements UploadableInterface
 {

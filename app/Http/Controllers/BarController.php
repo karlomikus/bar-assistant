@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use BarAssistant\Application\Bar\BarService;
-use BarAssistant\Application\Bar\DTO\CreateBarRequest;
 use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,16 +17,18 @@ use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Jobs\SyncBarRecipes;
 use Kami\Cocktail\Http\Requests\BarRequest;
+use BarAssistant\Application\Bar\BarService;
 use Kami\Cocktail\Jobs\StartBarOptimization;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Kami\Cocktail\Http\Resources\BarResource;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use BarAssistant\Application\Bar\MemberService;
 use Illuminate\Http\Resources\Json\JsonResource;
+use BarAssistant\Application\Bar\DTO\CreateBarRequest;
+use BarAssistant\Application\Bar\DTO\UpdateBarRequest;
 use Kami\Cocktail\Http\Resources\BarMembershipResource;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
-use BarAssistant\Application\Bar\DTO\UpdateBarRequest;
 use Kami\Cocktail\OpenAPI\Schemas\BarRequest as SchemasBarRequest;
 
 class BarController extends Controller

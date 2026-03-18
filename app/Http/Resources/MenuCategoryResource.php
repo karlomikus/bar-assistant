@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Resources;
 
 use OpenApi\Attributes as OAT;
+use Kami\Cocktail\Models\ValueObjects\MenuItem;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
-use Kami\Cocktail\Models\ValueObjects\MenuItem;
 
 /**
  * @mixin \Kami\Cocktail\Models\MenuCategory

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Infrastructure\DomainEventSubscriber;
 
+use Kami\Cocktail\Models\Cocktail;
 use BarAssistant\Domain\Event\DomainEvent;
 use BarAssistant\Domain\Event\EventSubscriber;
 use BarAssistant\Domain\Cocktail\Event\GlassUpdated;
-use Kami\Cocktail\Models\Cocktail;
 
 final class GlassUpdatedSearchReindexSubscriber implements EventSubscriber
 {

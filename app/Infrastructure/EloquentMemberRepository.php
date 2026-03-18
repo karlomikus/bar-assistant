@@ -10,6 +10,7 @@ use BarAssistant\Domain\Bar\Member;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Bar\MemberRole;
+use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\UserShoppingList;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Bar\CocktailFavorite;
@@ -18,7 +19,6 @@ use BarAssistant\Domain\Bar\ShoppingListItem;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use Kami\Cocktail\Models\BarMembership as Model;
 use Kami\Cocktail\Models\CocktailFavorite as CocktailFavoriteModel;
-use Kami\Cocktail\Models\UserIngredient;
 
 final class EloquentMemberRepository implements MemberRepository
 {

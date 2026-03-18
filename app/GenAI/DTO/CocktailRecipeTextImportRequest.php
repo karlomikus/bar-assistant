@@ -9,7 +9,6 @@ final readonly class CocktailRecipeTextImportRequest
     public function __construct(
         public string $textRecipe,
         public array $allowedMethods = [],
-    )
-    {
+    ) {
     }
 }

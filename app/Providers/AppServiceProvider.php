@@ -3,7 +3,6 @@
 namespace Kami\Cocktail\Providers;
 
 use Throwable;
-use BarAssistant\Domain\DomainEventDispatcher;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -11,9 +10,10 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
-use Kami\Cocktail\Infrastructure\DomainEventSubscriber\CocktailMethodUpdatedRecalculateAbvSubscriber;
+use BarAssistant\Domain\DomainEventDispatcher;
 use Kami\Cocktail\Infrastructure\DomainEventSubscriber\ClearPublicCocktailsCacheSubscriber;
 use Kami\Cocktail\Infrastructure\DomainEventSubscriber\GlassUpdatedSearchReindexSubscriber;
+use Kami\Cocktail\Infrastructure\DomainEventSubscriber\CocktailMethodUpdatedRecalculateAbvSubscriber;
 
 class AppServiceProvider extends ServiceProvider
 {

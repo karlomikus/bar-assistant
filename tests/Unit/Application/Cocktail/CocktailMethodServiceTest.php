@@ -14,9 +14,9 @@ use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Cocktail\CocktailMethodRepository;
 use Tests\Infrastructure\InMemoryCocktailMethodRepository;
 use BarAssistant\Application\Cocktail\CocktailMethodService;
+use BarAssistant\Application\Cocktail\DTO\CocktailMethodResult;
 use BarAssistant\Application\Cocktail\DTO\CreateCocktailMethod;
 use BarAssistant\Application\Cocktail\DTO\UpdateCocktailMethod;
-use BarAssistant\Application\Cocktail\DTO\CocktailMethodResult;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 
 final class CocktailMethodServiceTest extends TestCase

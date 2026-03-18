@@ -23,10 +23,10 @@ use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\CocktailBasicResource;
 use Kami\Cocktail\Http\Resources\IngredientTreeResource;
 use Kami\Cocktail\Http\Resources\IngredientBasicResource;
-use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
-use BarAssistant\Application\Ingredient\DTO\UpdateIngredientRequest;
-use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
 use BarAssistant\Application\Ingredient\IngredientService;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
+use BarAssistant\Application\Ingredient\DTO\UpdateIngredientRequest;
 use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest as IngredientDTO;
 
 class IngredientController extends Controller

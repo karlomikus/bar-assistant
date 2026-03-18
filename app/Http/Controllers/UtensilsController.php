@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use BarAssistant\Application\Cocktail\DTO\CreateUtensil;
-use BarAssistant\Application\Cocktail\DTO\UpdateUtensil;
-use BarAssistant\Application\Cocktail\UtensilService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
@@ -15,6 +12,9 @@ use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Http\Requests\UtensilRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\UtensilResource;
+use BarAssistant\Application\Cocktail\UtensilService;
+use BarAssistant\Application\Cocktail\DTO\CreateUtensil;
+use BarAssistant\Application\Cocktail\DTO\UpdateUtensil;
 
 class UtensilsController extends Controller
 {

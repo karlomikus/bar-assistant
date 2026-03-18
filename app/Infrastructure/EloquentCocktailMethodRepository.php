@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Infrastructure;
 
 use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Cocktail\CocktailMethod;
-use BarAssistant\Domain\Cocktail\CocktailMethodRepository;
-use BarAssistant\Domain\Cocktail\MethodId;
-use BarAssistant\Domain\Common\Dilution;
 use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\Dilution;
+use BarAssistant\Domain\Cocktail\MethodId;
+use BarAssistant\Domain\Cocktail\CocktailMethod;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use Kami\Cocktail\Models\CocktailMethod as Model;
+use BarAssistant\Domain\Cocktail\CocktailMethodRepository;
 
 final class EloquentCocktailMethodRepository implements CocktailMethodRepository
 {

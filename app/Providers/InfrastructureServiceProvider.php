@@ -7,24 +7,26 @@ namespace Kami\Cocktail\Providers;
 use Illuminate\Support\ServiceProvider;
 use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Menu\MenuRepository;
+use BarAssistant\Domain\User\UserRepository;
 use BarAssistant\Domain\Bar\MemberRepository;
-use BarAssistant\Domain\Cocktail\CocktailRepository;
-use BarAssistant\Domain\Cocktail\CocktailMethodRepository;
 use BarAssistant\Domain\Image\ImageRepository;
 use BarAssistant\Domain\Cocktail\GlassRepository;
 use BarAssistant\Domain\Cocktail\UtensilRepository;
+use BarAssistant\Domain\Cocktail\CocktailRepository;
 use Kami\Cocktail\Infrastructure\EloquentBarRepository;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
 use Kami\Cocktail\Infrastructure\EloquentMenuRepository;
-use Kami\Cocktail\Infrastructure\EloquentImageRepository;
+use Kami\Cocktail\Infrastructure\EloquentUserRepository;
 use Kami\Cocktail\Infrastructure\EloquentGlassRepository;
-use Kami\Cocktail\Infrastructure\EloquentUtensilRepository;
-use Kami\Cocktail\Infrastructure\EloquentCocktailMethodRepository;
+use Kami\Cocktail\Infrastructure\EloquentImageRepository;
+use BarAssistant\Domain\Cocktail\CocktailMethodRepository;
 use Kami\Cocktail\Infrastructure\EloquentMemberRepository;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
+use Kami\Cocktail\Infrastructure\EloquentUtensilRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailRepository;
 use Kami\Cocktail\Infrastructure\EloquentIngredientRepository;
 use Kami\Cocktail\Infrastructure\EloquentPriceCategoryRepository;
+use Kami\Cocktail\Infrastructure\EloquentCocktailMethodRepository;
 
 class InfrastructureServiceProvider extends ServiceProvider
 {
@@ -40,5 +42,6 @@ class InfrastructureServiceProvider extends ServiceProvider
         $this->app->bind(MemberRepository::class, EloquentMemberRepository::class);
         $this->app->bind(MenuRepository::class, EloquentMenuRepository::class);
         $this->app->bind(CocktailRepository::class, EloquentCocktailRepository::class);
+        $this->app->bind(UserRepository::class, EloquentUserRepository::class);
     }
 }

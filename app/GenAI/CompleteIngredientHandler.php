@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\GenAI;
 
-use Kami\Cocktail\GenAI\DTO\CompleteIngredientRequest;
-use Kami\Cocktail\GenAI\DTO\PromptConfiguration;
 use Prism\Prism\Schema\NumberSchema;
 use Prism\Prism\Schema\ObjectSchema;
 use Prism\Prism\Schema\StringSchema;
+use Kami\Cocktail\GenAI\DTO\PromptConfiguration;
+use Kami\Cocktail\GenAI\DTO\CompleteIngredientRequest;
 
 final readonly class CompleteIngredientHandler
 {

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use BarAssistant\Application\Cocktail\DTO\CreateGlass;
-use BarAssistant\Application\Cocktail\DTO\UpdateGlass;
-use BarAssistant\Application\Cocktail\GlassService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
@@ -16,6 +13,9 @@ use Kami\Cocktail\Http\Requests\GlassRequest;
 use Kami\Cocktail\Http\Resources\GlassResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Filters\GlassQueryFilter;
+use BarAssistant\Application\Cocktail\GlassService;
+use BarAssistant\Application\Cocktail\DTO\CreateGlass;
+use BarAssistant\Application\Cocktail\DTO\UpdateGlass;
 
 class GlassController extends Controller
 {

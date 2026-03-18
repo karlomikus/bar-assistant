@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Infrastructure\DomainEventSubscriber;
 
-use BarAssistant\Domain\Cocktail\Event\CocktailMethodUpdated;
+use Kami\Cocktail\Models\Cocktail;
 use BarAssistant\Domain\Event\DomainEvent;
 use BarAssistant\Domain\Event\EventSubscriber;
-use Kami\Cocktail\Models\Cocktail;
+use BarAssistant\Domain\Cocktail\Event\CocktailMethodUpdated;
 
 final class CocktailMethodUpdatedRecalculateAbvSubscriber implements EventSubscriber
 {

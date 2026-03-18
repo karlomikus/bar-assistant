@@ -22,9 +22,9 @@ use BarAssistant\Application\Ingredient\IngredientService;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use BarAssistant\Application\Ingredient\DTO\IngredientResult;
-use BarAssistant\Application\Ingredient\DTO\UpdateIngredientRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
+use BarAssistant\Application\Ingredient\DTO\UpdateIngredientRequest;
 
 final class IngredientServiceTest extends TestCase
 {

@@ -17,14 +17,14 @@ use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Kami\Cocktail\Services\IngredientService;
+use BarAssistant\Application\Bar\MemberService;
 use Illuminate\Http\Resources\Json\JsonResource;
+use BarAssistant\Application\Bar\InventoryService;
 use Kami\Cocktail\Http\Resources\CocktailBasicResource;
 use Kami\Cocktail\Http\Requests\ShelfIngredientsRequest;
 use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 use BarAssistant\Application\Bar\DTO\BarInventoryStockChangeRequest;
 use BarAssistant\Application\Bar\DTO\MemberInventoryStockChangeRequest;
-use BarAssistant\Application\Bar\InventoryService;
-use BarAssistant\Application\Bar\MemberService;
 
 class ShelfController extends Controller
 {

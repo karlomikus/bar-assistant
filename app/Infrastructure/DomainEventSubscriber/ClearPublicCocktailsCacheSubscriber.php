@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Infrastructure\DomainEventSubscriber;
 
+use Illuminate\Support\Facades\Cache;
 use BarAssistant\Domain\Event\DomainEvent;
 use BarAssistant\Domain\Event\EventSubscriber;
 use BarAssistant\Domain\Cocktail\Event\CocktailUpdated;
-use Illuminate\Support\Facades\Cache;
 
 final class ClearPublicCocktailsCacheSubscriber implements EventSubscriber
 {

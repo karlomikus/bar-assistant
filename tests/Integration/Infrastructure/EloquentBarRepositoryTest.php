@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Infrastructure;
 
-use BarAssistant\Domain\Bar\Bar;
 use Tests\TestCase;
-use BarAssistant\Domain\Bar\BarSettings;
-use BarAssistant\Domain\Common\Authors;
+use DateTimeImmutable;
+use Brick\Money\Currency;
+use BarAssistant\Domain\Bar\Bar;
 use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
-use Brick\Money\Currency;
-use DateTimeImmutable;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Bar\BarSettings;
+use Kami\Cocktail\Models\Bar as BarModel;
+use BarAssistant\Domain\Common\RecordTimestamps;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Infrastructure\EloquentBarRepository;
-use Kami\Cocktail\Models\Bar as BarModel;
 
 final class EloquentBarRepositoryTest extends TestCase
 {
