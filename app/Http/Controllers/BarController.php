@@ -111,6 +111,8 @@ class BarController extends Controller
             isPublic: $barRequest->isPublic,
             isInviteCodeEnabled: $barRequest->invitesEnabled,
             images: $barRequest->images,
+            defaultCurrency: $barRequest->defaultCurrency,
+            defaultUnits: $barRequest->defaultUnits,
         ));
 
         $memberService->addMemberToBar(new CreateMemberRequest(
@@ -158,6 +160,7 @@ class BarController extends Controller
         $barService->updateBar(new UpdateBarRequest(
             barId: $bar->id,
             name: $barRequest->name,
+            description: $barRequest->description,
             userId: $request->user()->id,
         ));
 

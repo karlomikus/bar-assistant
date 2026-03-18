@@ -17,6 +17,8 @@ final readonly class CreateBarRequest
         public ?bool $isPublic = null,
         public ?bool $isInviteCodeEnabled = null,
         public array $images = [],
+        public ?string $defaultUnits = null,
+        public ?string $defaultCurrency = null,
     ) {
     }
 }

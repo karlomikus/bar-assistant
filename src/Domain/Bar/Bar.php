@@ -84,6 +84,8 @@ final class Bar implements Identity
         RecordTimestamps $recordTimestamps,
         array $ingredientInventory = [],
         ?BarSettings $settings = null,
+        ?string $subtitle = null,
+        ?string $description = null,
     ): Bar {
         return new self(
             name: $name,
@@ -91,6 +93,8 @@ final class Bar implements Identity
             recordTimestamps: $recordTimestamps,
             ingredientInventory: $ingredientInventory,
             settings: $settings,
+            subtitle: $subtitle,
+            description: $description,
         );
     }
 
@@ -283,12 +287,14 @@ final class Bar implements Identity
     public function updateDetails(
         Name $name,
         UserId $updatedBy,
+        ?string $description = null,
     ): self {
         if ($this->isTransient()) {
             throw new DomainException('Cannot update details of a transient bar');
         }
 
         $this->name = $name;
+        $this->description = $description;
         $this->authors = $this->authors->updatedBy($updatedBy);
         $this->recordTimestamps = $this->recordTimestamps->updatedNow();
 

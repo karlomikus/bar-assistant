@@ -10,6 +10,8 @@ use Psr\Log\LoggerInterface;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Container\Attributes\Storage;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Services\Image\DTO\ImageUploadResult;
 
 final readonly class ImageUploadService
@@ -80,5 +82,36 @@ final readonly class ImageUploadService
             extension: $newImage->extension,
             placeholderHash: $newImage->placeholderHash,
         );
+    }
+
+    public function cleanBarImages(int $barId): void
+    {
+        $bar = Bar::findOrFail($barId);
+        $cocktailIds = $bar->cocktails()->pluck('id');
+        $ingredientIds = $bar->ingredients()->pluck('id');
+        $barLogoPath = $bar->images->first()?->file_path;
+
+        DB::transaction(function () use ($cocktailIds, $ingredientIds, $bar) {
+            DB::table('images')
+                ->where('imageable_type', \Kami\Cocktail\Models\Cocktail::class)
+                ->whereIn('imageable_id', $cocktailIds)
+                ->delete();
+
+            DB::table('images')
+                ->where('imageable_type', \Kami\Cocktail\Models\Ingredient::class)
+                ->whereIn('imageable_id', $ingredientIds)
+                ->delete();
+
+            DB::table('images')
+                ->where('imageable_type', \Kami\Cocktail\Models\Bar::class)
+                ->where('imageable_id', $bar->id)
+                ->delete();
+        });
+
+        $this->filesystem->deleteDirectory('cocktails/' . $bar->id . '/');
+        $this->filesystem->deleteDirectory('ingredients/' . $bar->id . '/');
+        if ($barLogoPath) {
+            $this->filesystem->delete($barLogoPath);
+        }
     }
 }

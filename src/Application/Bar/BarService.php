@@ -14,8 +14,11 @@ use BarAssistant\Application\Bar\DTO\CreateBarRequest;
 use BarAssistant\Application\Bar\DTO\UpdateBarRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Domain\Bar\BarId;
+use BarAssistant\Domain\Bar\BarSettings;
 use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\Image\ImageId;
+use Brick\Money\Currency;
 
 final readonly class BarService
 {
@@ -26,10 +29,19 @@ final readonly class BarService
 
     public function createBar(CreateBarRequest $request): BarResult
     {
+        $barSettings = BarSettings::create(
+            isInviteCodeEnabled: $request->isInviteCodeEnabled ?? false,
+            defaultUnits: $request->defaultUnits ? Unit::from($request->defaultUnits) : null,
+            defaultCurrency: $request->defaultCurrency ? Currency::of($request->defaultCurrency) : null,
+        );
+
         $bar = Bar::create(
             name: Name::fromString($request->name),
             authors: Authors::createdBy(new UserId($request->createdUserId)),
             recordTimestamps: RecordTimestamps::createdNow(),
+            settings: $barSettings,
+            subtitle: $request->subtitle,
+            description: $request->description,
         );
 
         if (count($request->images) > 0) {
@@ -51,6 +63,7 @@ final readonly class BarService
 
         $bar = $bar->updateDetails(
             name: Name::fromString($request->name),
+            description: $request->description,
             updatedBy: new UserId($request->userId),
         );
 

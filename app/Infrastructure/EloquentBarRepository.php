@@ -20,6 +20,9 @@ use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Bar\IngredientInventoryItem;
 use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 use BarAssistant\Domain\Common\Slug;
+use BarAssistant\Domain\Common\Unit;
+use Brick\Money\Currency;
+use Symfony\Component\Uid\Ulid;
 
 final class EloquentBarRepository implements BarRepository
 {
@@ -36,11 +39,14 @@ final class EloquentBarRepository implements BarRepository
             BarStatus::Provisioning => 'provisioning',
             BarStatus::Deactivated => 'deactivated',
         };
+        $model->created_at = $bar->getRecordTimestamps()->getCreatedAt();
         $model->created_user_id = $bar->getAuthors()->getCreatedBy()->value;
-        // if ($bar->getRecordTimestamps()->wasUpdated()) {
-        //     $model->updated_at = $bar->getRecordTimestamps()->getUpdatedAt();
-        //     $model->updated_user_id = $bar->getAuthors()->getUpdatedBy()->value;
-        // }
+        if ($bar->getRecordTimestamps()->wasUpdated()) {
+            $model->updated_at = $bar->getRecordTimestamps()->getUpdatedAt();
+        }
+        if ($bar->getAuthors()->isUpdated()) {
+            $model->updated_user_id = $bar->getAuthors()->getUpdatedBy()->value;
+        }
 
         $settings = $model->settings ?? [];
         if ($bar->getDefaultUnits()) {
@@ -50,6 +56,12 @@ final class EloquentBarRepository implements BarRepository
             $settings['default_currency'] = $bar->getDefaultCurrency()->getCurrencyCode();
         }
         $model->settings = $settings;
+
+        if ($bar->isInviteCodeEnabled()) {
+            $model->invite_code = (string) new Ulid();
+        } else {
+            $model->invite_code = null;
+        }
 
         $model->save();
 
@@ -126,8 +138,8 @@ final class EloquentBarRepository implements BarRepository
 
         $barSettings = BarSettings::create(
             isInviteCodeEnabled: $model->invite_code !== null,
-            defaultUnits: $modelBarSettings['default_units'] ?? null,
-            defaultCurrency: $modelBarSettings['default_currency'] ?? null,
+            defaultUnits: $modelBarSettings['default_units'] ? Unit::from($modelBarSettings['default_units']) : null,
+            defaultCurrency: $modelBarSettings['default_currency'] ? Currency::of($modelBarSettings['default_currency']) : null,
         );
 
         $bar = Bar::create(
