@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Bar;
 
-use BarAssistant\Domain\Common\Unit;
 use Brick\Money\Currency;
+use BarAssistant\Domain\Common\Unit;
 
 final readonly class BarSettings
 {
@@ -25,8 +25,7 @@ final readonly class BarSettings
         bool $isInviteCodeEnabled,
         ?Unit $defaultUnits,
         ?Currency $defaultCurrency,
-    ): self
-    {
+    ): self {
         return new self(
             isInviteCodeEnabled: $isInviteCodeEnabled,
             defaultUnits: $defaultUnits,

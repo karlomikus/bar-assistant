@@ -22,10 +22,10 @@ use BarAssistant\Domain\Ingredient\IngredientRepository;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use BarAssistant\Application\Ingredient\DTO\IngredientResult;
-use BarAssistant\Application\Ingredient\DTO\UpdateIngredientRequest;
 use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
+use BarAssistant\Application\Ingredient\DTO\UpdateIngredientRequest;
 
 final readonly class IngredientService
 {

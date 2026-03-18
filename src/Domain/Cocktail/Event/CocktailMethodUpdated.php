@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Cocktail\Event;
 
+use DateTimeImmutable;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Cocktail\MethodId;
 use BarAssistant\Domain\Event\DomainEvent;
 use BarAssistant\Domain\Event\DomainEventName;
-use DateTimeImmutable;
 
 #[DomainEventName('cocktailMethodUpdated')]
 final readonly class CocktailMethodUpdated implements DomainEvent

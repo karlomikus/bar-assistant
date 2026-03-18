@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Cocktail\Event;
 
-use BarAssistant\Domain\Bar\BarId;
 use DateTimeImmutable;
+use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Event\DomainEvent;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Event\DomainEventName;

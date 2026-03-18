@@ -7,9 +7,9 @@ namespace BarAssistant\Application\Bar;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Bar\DTO\BarInventoryStockChangeRequest;
-use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 
 final readonly class InventoryService
 {

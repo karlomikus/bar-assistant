@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Cocktail;
 
-use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Common\Dilution;
-use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\Cocktail\Event\CocktailMethodUpdated;
-use BarAssistant\Domain\DomainEventDispatcher;
-use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Identity;
+use BarAssistant\Domain\Bar\BarId;
+use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\Dilution;
+use BarAssistant\Domain\DomainEventDispatcher;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Exception\DomainException;
+use BarAssistant\Domain\Cocktail\Event\CocktailMethodUpdated;
 
 /**
  * CocktailMethod Aggregate Root

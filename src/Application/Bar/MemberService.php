@@ -7,15 +7,15 @@ namespace BarAssistant\Application\Bar;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Bar\Member;
 use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Bar\MemberRole;
 use BarAssistant\Domain\Bar\MemberRepository;
+use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
-use BarAssistant\Application\Bar\DTO\MemberInventoryStockChangeRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
-use BarAssistant\Domain\Bar\IngredientInventoryStatus;
-use BarAssistant\Domain\Bar\MemberId;
-use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Application\Bar\DTO\MemberInventoryStockChangeRequest;
 
 final readonly class MemberService
 {

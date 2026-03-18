@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Cocktail\DTO;
 
-use BarAssistant\Domain\Cocktail\Glass;
 use BarAssistant\Domain\Image\ImageId;
+use BarAssistant\Domain\Cocktail\Glass;
 
 final readonly class GlassResult
 {

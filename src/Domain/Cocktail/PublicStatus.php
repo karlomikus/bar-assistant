@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Cocktail;
 
-use DateTimeImmutable;
 use DomainException;
+use DateTimeImmutable;
 
 final readonly class PublicStatus
 {
@@ -50,8 +50,7 @@ final readonly class PublicStatus
         ?PublicId $publicId,
         ?DateTimeImmutable $publicAt,
         ?DateTimeImmutable $publicExpiresAt,
-    ): self
-    {
+    ): self {
         return new self(
             publicId: $publicId,
             publicAt: $publicAt,

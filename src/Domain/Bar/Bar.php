@@ -7,12 +7,12 @@ namespace BarAssistant\Domain\Bar;
 use Brick\Money\Currency;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Common\Slug;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\Common\Slug;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Exception\DomainException;
 
