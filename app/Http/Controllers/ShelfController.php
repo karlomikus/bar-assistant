@@ -4,20 +4,16 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
-use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\Models\UserIngredient;
 use Illuminate\Support\Facades\Validator;
 use Kami\Cocktail\Models\CocktailFavorite;
-use Kami\Cocktail\Models\UserShoppingList;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Kami\Cocktail\Services\IngredientService;
@@ -54,7 +50,7 @@ class ShelfController extends Controller
             ->userIngredients
             ->pluck('ingredient_id');
 
-        $ingredients = Ingredient::whereIn('id', $userIngredientIds)->orderBy('name')->paginate($request->get('per_page', 100));
+        $ingredients = Ingredient::whereIn('id', $userIngredientIds)->orderBy('name')->paginate($request->input('per_page', 100));
 
         return IngredientBasicResource::collection($ingredients->withQueryString());
     }
@@ -83,7 +79,7 @@ class ShelfController extends Controller
             null,
         );
 
-        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->get('per_page', 100));
+        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->input('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails->withQueryString());
     }
@@ -108,7 +104,7 @@ class ShelfController extends Controller
 
         $cocktailIds = CocktailFavorite::where('bar_membership_id', $barMembership->id)->pluck('cocktail_id');
 
-        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->get('per_page', 100));
+        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->input('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails->withQueryString());
     }
@@ -229,7 +225,7 @@ class ShelfController extends Controller
 
         $ingredientIds = $bar->shelfIngredients->pluck('ingredient_id');
 
-        $ingredients = Ingredient::whereIn('id', $ingredientIds)->orderBy('name')->paginate($request->get('per_page', 100));
+        $ingredients = Ingredient::whereIn('id', $ingredientIds)->orderBy('name')->paginate($request->input('per_page', 100));
 
         return IngredientBasicResource::collection($ingredients->withQueryString());
     }
@@ -314,7 +310,7 @@ class ShelfController extends Controller
             $bar->id,
         );
 
-        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->get('per_page', 100));
+        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->input('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails->withQueryString());
     }
