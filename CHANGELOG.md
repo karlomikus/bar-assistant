@@ -2,6 +2,7 @@
 ## Breaking changes
 - Reworked how menu categories are stored
     - Menu request payload is now updated
+    TODO: Menu price can be null
 - Response of POST and PUT `/ingredients` no longer returns the whole object
 - Removed POST `/images/{id}` endpoint
 
