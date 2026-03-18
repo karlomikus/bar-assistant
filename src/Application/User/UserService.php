@@ -16,12 +16,30 @@ use BarAssistant\Application\User\DTO\UpdateUserSettings;
 use BarAssistant\Application\User\DTO\VerifyEmailRequest;
 use BarAssistant\Application\User\DTO\AnonymizeUserRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
+use BarAssistant\Application\User\DTO\RegisterUserRequest;
+use BarAssistant\Domain\User\User;
 
 final readonly class UserService
 {
     public function __construct(
         private UserRepository $userRepository,
     ) {
+    }
+
+    public function register(RegisterUserRequest $request): UserResult
+    {
+        $user = User::create(
+            name: UserName::fromString($request->name),
+            email: UserEmail::fromString($request->email),
+        );
+
+        if ($request->confirmAccount === true) {
+            $user->verifyEmail();
+        }
+
+        $user = $this->userRepository->save($user);
+
+        return UserResult::fromEntity($user);
     }
 
     public function updateUserProfile(UpdateUserProfile $request): UserResult
@@ -32,6 +50,14 @@ final readonly class UserService
         }
 
         $user->changeName(UserName::fromString($request->name));
+        $currentSettings = $user->getSettings();
+        $newSettings = new UserSettings(
+            language: $request->language ?? $currentSettings->language,
+            theme: $request->theme ?? $currentSettings->theme,
+        );
+
+        $user->updateSettings($newSettings);
+
         $this->userRepository->save($user);
 
         return UserResult::fromEntity($user);
@@ -63,25 +89,6 @@ final readonly class UserService
         return UserResult::fromEntity($user);
     }
 
-    public function updateUserSettings(UpdateUserSettings $request): UserResult
-    {
-        $user = $this->userRepository->findById(new UserId($request->userId));
-        if ($user === null || $user->isTransient()) {
-            throw new EntityNotFoundException('User not found');
-        }
-
-        $currentSettings = $user->getSettings();
-        $newSettings = new UserSettings(
-            language: $request->language ?? $currentSettings->language,
-            theme: $request->theme ?? $currentSettings->theme,
-        );
-
-        $user->updateSettings($newSettings);
-        $this->userRepository->save($user);
-
-        return UserResult::fromEntity($user);
-    }
-
     public function anonymizeUserAccount(AnonymizeUserRequest $request): void
     {
         $user = $this->userRepository->findById(new UserId($request->userId));
@@ -91,15 +98,5 @@ final readonly class UserService
 
         $user->makeAnonymous();
         $this->userRepository->save($user);
-    }
-
-    public function getUserById(int $userId): UserResult
-    {
-        $user = $this->userRepository->findById(new UserId($userId));
-        if ($user === null || $user->isTransient()) {
-            throw new EntityNotFoundException('User not found');
-        }
-
-        return UserResult::fromEntity($user);
     }
 }

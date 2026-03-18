@@ -138,15 +138,14 @@ final class User implements Identity
 
     public function verifyEmail(): self
     {
-        $this->emailVerifiedAt = new DateTimeImmutable();
-
-        $userId = $this->getId();
-        if ($userId === null) {
-            throw new DomainException('User ID must be set before publishing events');
+        if ($this->isTransient()) {
+            throw new DomainException('Cannot verify email of a transient user');
         }
 
+        $this->emailVerifiedAt = new DateTimeImmutable();
+
         DomainEventDispatcher::instance()->publish(new EmailVerified(
-            userId: $userId,
+            userId: $this->getId(),
             email: $this->email,
             verifiedAt: $this->emailVerifiedAt,
         ));

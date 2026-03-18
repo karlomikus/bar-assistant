@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use BarAssistant\Application\User\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\User;
@@ -80,11 +81,13 @@ class UsersController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(UserRequest $request): JsonResponse
+    public function store(UserService $userService, UserRequest $request): JsonResponse
     {
         if ($request->user()->cannot('create', User::class)) {
             abort(403);
         }
+
+        $userService->registerUser();
 
         $requireConfirmation = config('bar-assistant.mail_require_confirmation');
         $roleId = $request->post('role_id');
