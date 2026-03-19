@@ -9,7 +9,7 @@ readonly class CreateMemberRequest
     public function __construct(
         public int $userId,
         public int $barId,
-        public string $role,
+        public int $roleId,
     ) {
     }
 }

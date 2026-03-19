@@ -151,19 +151,20 @@ final class User implements Identity
 
     public function makeAnonymous(): self
     {
+        if ($this->isTransient()) {
+            throw new DomainException('Cannot anonymize a transient user');
+        }
+
         $this->name = UserName::fromString('Deleted User');
         $this->email = UserEmail::fromString('userdeleted' . bin2hex(random_bytes(4)));
         $this->emailVerifiedAt = null;
+        $this->passwordHash = 'deleted';
         $this->timestamps = $this->timestamps->updatedNow();
 
-        $userId = $this->getId();
         $updatedAt = $this->timestamps->getUpdatedAt();
-        if ($userId === null || $updatedAt === null) {
-            throw new DomainException('User ID and updated timestamp must be set before publishing events');
-        }
 
         DomainEventDispatcher::instance()->publish(new UserAnonymized(
-            userId: $userId,
+            userId: $this->getId(),
             anonymizedAt: $updatedAt,
         ));
 
@@ -178,6 +179,7 @@ final class User implements Identity
     public function isAnonymous(): bool
     {
         return $this->name->toString() === 'Deleted User'
-            && str_starts_with($this->email->toString(), 'userdeleted');
+            && str_starts_with($this->email->toString(), 'userdeleted')
+            && $this->passwordHash === 'deleted';
     }
 }

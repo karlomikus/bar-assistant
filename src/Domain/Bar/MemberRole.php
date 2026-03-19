@@ -21,4 +21,15 @@ enum MemberRole
             default => self::Guest
         };
     }
+
+    public static function fromInt(int $input): self
+    {
+        return match ($input) {
+            1 => self::Admin,
+            2 => self::Moderator,
+            3 => self::General,
+            4 => self::Guest,
+            default => self::Guest
+        };
+    }
 }

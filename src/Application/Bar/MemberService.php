@@ -34,7 +34,7 @@ final readonly class MemberService
             throw new EntityNotFoundException('User is already a member of this bar');
         }
 
-        $role = MemberRole::fromString($request->role);
+        $role = MemberRole::fromInt($request->roleId);
         $member = Member::create($userId, $barId, $role);
 
         $this->memberRepository->save($member);
