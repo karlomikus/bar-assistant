@@ -9,9 +9,9 @@ use DateTimeImmutable;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\User\Event\EmailVerified;
 use BarAssistant\Domain\User\Event\UserAnonymized;
 use BarAssistant\Domain\User\Event\UserProfileUpdated;
+use SensitiveParameter;
 
 final class User implements Identity
 {
@@ -19,7 +19,10 @@ final class User implements Identity
 
     private function __construct(
         private UserName $name,
+        #[SensitiveParameter]
         private UserEmail $email,
+        #[SensitiveParameter]
+        private string $passwordHash,
         private ?DateTimeImmutable $emailVerifiedAt,
         private UserSettings $settings,
         private RecordTimestamps $timestamps,
@@ -28,12 +31,16 @@ final class User implements Identity
 
     public static function create(
         UserName $name,
+        #[SensitiveParameter]
         UserEmail $email,
+        #[SensitiveParameter]
+        string $passwordHash,
         ?UserSettings $settings = null,
     ): self {
         return new self(
             name: $name,
             email: $email,
+            passwordHash: $passwordHash,
             emailVerifiedAt: null,
             settings: $settings ?? UserSettings::default(),
             timestamps: RecordTimestamps::createdNow(),
@@ -71,6 +78,11 @@ final class User implements Identity
         return $this->email;
     }
 
+    public function getPassword(): ?string
+    {
+        return $this->passwordHash;
+    }
+
     public function getEmailVerifiedAt(): ?DateTimeImmutable
     {
         return $this->emailVerifiedAt;
@@ -93,22 +105,8 @@ final class User implements Identity
 
     public function changeName(UserName $name): self
     {
-        $oldName = $this->name;
         $this->name = $name;
         $this->timestamps = $this->timestamps->updatedNow();
-
-        $userId = $this->getId();
-        if ($userId === null) {
-            throw new DomainException('User ID must be set before publishing events');
-        }
-
-        DomainEventDispatcher::instance()->publish(new UserProfileUpdated(
-            userId: $userId,
-            oldName: $oldName,
-            newName: $name,
-            oldEmail: $this->email,
-            newEmail: $this->email,
-        ));
 
         return $this;
     }
@@ -138,17 +136,7 @@ final class User implements Identity
 
     public function verifyEmail(): self
     {
-        if ($this->isTransient()) {
-            throw new DomainException('Cannot verify email of a transient user');
-        }
-
         $this->emailVerifiedAt = new DateTimeImmutable();
-
-        DomainEventDispatcher::instance()->publish(new EmailVerified(
-            userId: $this->getId(),
-            email: $this->email,
-            verifiedAt: $this->emailVerifiedAt,
-        ));
 
         return $this;
     }
