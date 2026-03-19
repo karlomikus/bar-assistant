@@ -11,11 +11,9 @@ use BarAssistant\Domain\User\UserSettings;
 use BarAssistant\Domain\User\UserRepository;
 use BarAssistant\Application\User\DTO\UserResult;
 use BarAssistant\Application\User\DTO\UpdateUserProfile;
-use BarAssistant\Application\User\DTO\ChangeEmailRequest;
-use BarAssistant\Application\User\DTO\UpdateUserSettings;
-use BarAssistant\Application\User\DTO\VerifyEmailRequest;
 use BarAssistant\Application\User\DTO\AnonymizeUserRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
+use BarAssistant\Application\Exception\ValidationException;
 use BarAssistant\Application\User\DTO\RegisterUserRequest;
 use BarAssistant\Domain\User\User;
 
@@ -28,9 +26,17 @@ final readonly class UserService
 
     public function register(RegisterUserRequest $request): UserResult
     {
+        $email = UserEmail::fromString($request->email);
+
+        $existing = $this->userRepository->findByEmail($email);
+        if ($existing !== null) {
+            throw new ValidationException('Email already exists');
+        }
+
         $user = User::create(
             name: UserName::fromString($request->name),
             email: UserEmail::fromString($request->email),
+            passwordHash: $request->passwordHash,
         );
 
         if ($request->confirmAccount === true) {
@@ -58,32 +64,6 @@ final readonly class UserService
 
         $user->updateSettings($newSettings);
 
-        $this->userRepository->save($user);
-
-        return UserResult::fromEntity($user);
-    }
-
-    public function changeUserEmail(ChangeEmailRequest $request): UserResult
-    {
-        $user = $this->userRepository->findById(new UserId($request->userId));
-        if ($user === null || $user->isTransient()) {
-            throw new EntityNotFoundException('User not found');
-        }
-
-        $user->changeEmail(UserEmail::fromString($request->email));
-        $this->userRepository->save($user);
-
-        return UserResult::fromEntity($user);
-    }
-
-    public function verifyUserEmail(VerifyEmailRequest $request): UserResult
-    {
-        $user = $this->userRepository->findById(new UserId($request->userId));
-        if ($user === null || $user->isTransient()) {
-            throw new EntityNotFoundException('User not found');
-        }
-
-        $user->verifyEmail();
         $this->userRepository->save($user);
 
         return UserResult::fromEntity($user);
