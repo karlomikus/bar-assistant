@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services\Auth;
 
-use BarAssistant\Application\User\DTO\RegisterUserRequest;
-use BarAssistant\Application\User\UserService;
+use Psr\Log\LoggerInterface;
 use Kami\Cocktail\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Kami\Cocktail\Mail\ConfirmAccount;
+use BarAssistant\Application\User\UserService;
 use Kami\Cocktail\OpenAPI\Schemas\RegisterRequest;
-use Psr\Log\LoggerInterface;
+use BarAssistant\Application\User\DTO\RegisterUserRequest;
 
 final readonly class RegisterUserService
 {

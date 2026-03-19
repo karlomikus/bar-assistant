@@ -9,8 +9,8 @@ use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\User\UserName;
 use BarAssistant\Domain\User\UserEmail;
 use BarAssistant\Domain\User\UserSettings;
-use BarAssistant\Domain\User\UserRepository;
 use Kami\Cocktail\Models\User as UserModel;
+use BarAssistant\Domain\User\UserRepository;
 
 final class EloquentUserRepository implements UserRepository
 {

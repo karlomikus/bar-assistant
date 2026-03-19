@@ -6,12 +6,12 @@ namespace BarAssistant\Domain\User;
 
 use DomainException;
 use DateTimeImmutable;
+use SensitiveParameter;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\User\Event\UserAnonymized;
 use BarAssistant\Domain\User\Event\UserProfileUpdated;
-use SensitiveParameter;
 
 final class User implements Identity
 {

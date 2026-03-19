@@ -6,8 +6,8 @@ namespace Tests\Infrastructure;
 
 use BarAssistant\Domain\User\User;
 use BarAssistant\Domain\User\UserId;
-use BarAssistant\Domain\User\UserEmail;
 use BarAssistant\Domain\User\UserName;
+use BarAssistant\Domain\User\UserEmail;
 use BarAssistant\Domain\User\UserSettings;
 use BarAssistant\Domain\User\UserRepository;
 

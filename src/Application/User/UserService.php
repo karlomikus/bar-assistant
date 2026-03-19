@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\User;
 
+use BarAssistant\Domain\User\User;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\User\UserName;
 use BarAssistant\Domain\User\UserEmail;
@@ -11,11 +12,10 @@ use BarAssistant\Domain\User\UserSettings;
 use BarAssistant\Domain\User\UserRepository;
 use BarAssistant\Application\User\DTO\UserResult;
 use BarAssistant\Application\User\DTO\UpdateUserProfile;
+use BarAssistant\Application\User\DTO\RegisterUserRequest;
+use BarAssistant\Application\Exception\ValidationException;
 use BarAssistant\Application\User\DTO\AnonymizeUserRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
-use BarAssistant\Application\Exception\ValidationException;
-use BarAssistant\Application\User\DTO\RegisterUserRequest;
-use BarAssistant\Domain\User\User;
 
 final readonly class UserService
 {

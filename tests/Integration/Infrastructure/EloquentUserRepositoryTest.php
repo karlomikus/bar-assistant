@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Infrastructure;
 
-use BarAssistant\Domain\User\User;
-use BarAssistant\Domain\User\UserEmail;
-use BarAssistant\Domain\User\UserName;
-use BarAssistant\Domain\User\UserSettings;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use BarAssistant\Domain\User\User;
 use Illuminate\Support\Facades\Hash;
-use Kami\Cocktail\Infrastructure\EloquentUserRepository;
+use BarAssistant\Domain\User\UserName;
+use BarAssistant\Domain\User\UserEmail;
+use BarAssistant\Domain\User\UserSettings;
 use Kami\Cocktail\Models\User as ModelsUser;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Infrastructure\EloquentUserRepository;
 
 final class EloquentUserRepositoryTest extends TestCase
 {

@@ -4,24 +4,20 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
-use BarAssistant\Application\Bar\MemberService;
-use BarAssistant\Application\User\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Kami\Cocktail\Mail\AccountDeleted;
-use Kami\Cocktail\Mail\ConfirmAccount;
 use Kami\Cocktail\Http\Requests\UserRequest;
 use Kami\Cocktail\Http\Resources\UserResource;
+use BarAssistant\Application\Bar\MemberService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\OpenAPI\Schemas\RegisterRequest;
 use Kami\Cocktail\Services\Auth\RegisterUserService;
+use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 
 class UsersController extends Controller
 {
