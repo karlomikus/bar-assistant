@@ -21,7 +21,7 @@ final readonly class RegisterUserService
     public function register(RegisterRequest $registerRequest): User
     {
         $registrationsEnabled = config('bar-assistant.allow_registration');
-        $requireConfirmation = config('bar-assistant.mail_require_confirmation');
+        $newAccountsRequireConfirmation = config('bar-assistant.mail_require_confirmation');
 
         if ($registrationsEnabled === false) {
             throw new \Exception('Registrations are disabled');
@@ -31,12 +31,12 @@ final readonly class RegisterUserService
             name: $registerRequest->name,
             email: $registerRequest->email,
             passwordHash: $registerRequest->hashedPassword,
-            confirmAccount: $requireConfirmation === false,
+            confirmAccount: $newAccountsRequireConfirmation === false,
         ));
 
         $userModel = User::find($userResult->id);
 
-        if ($requireConfirmation === true) {
+        if ($newAccountsRequireConfirmation === true) {
             Mail::to($userModel)->queue(new ConfirmAccount($userModel->id, sha1($userModel->email)));
             $this->log->info('Confirmation email sent', [
                 'email' => $userModel->email,

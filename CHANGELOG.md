@@ -5,6 +5,18 @@
     TODO: Menu price can be null
 - Response of POST and PUT `/ingredients` no longer returns the whole object
 - Removed POST `/images/{id}` endpoint
+- Changed user and member management endpoints
+    - Moved GET `/users` to GET `/members`
+    - Removed GET `/bars/{id}/memberships`
+    - Moved POST `/bars/{id}/memberships/{userId}` to POST `/members`
+    - Moved PUT `/bars/{id}/memberships` to PUT `/members/{userId}`
+    - Moved DELETE `/bars/{id}/memberships` to PUT `/members`
+    - Moved GET `/users/{id}/ingredients` to GET `/members/{id}/ingredients`
+    - Moved GET `/users/{id}/cocktails` to GET `/members/{id}/cocktails`
+    - Moved GET `/users/{id}/cocktails/favorites` to GET `/members/{id}/cocktails/favorites`
+    - Moved POST `/users/{id}/ingredients/batch-store` to POST `/members/{id}/ingredients/batch-store`
+    - Moved POST `/users/{id}/ingredients/batch-delete` to POST `/members/{id}/ingredients/batch-delete`
+    - Moved GET `/users/{id}/ingredients/recommend` to GET `/members/{id}/ingredients/recommend`
 
 # v5.13.2
 ## Fixes

@@ -88,6 +88,13 @@ final class Member implements Identity
         return $this->role;
     }
 
+    public function changeRole(MemberRole $newRole): self
+    {
+        $this->role = $newRole;
+
+        return $this;
+    }
+
     /**
      * @return ShoppingListItem[]
      */

@@ -6,9 +6,12 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Kami\Cocktail\Mail\AccountDeleted;
 use Kami\Cocktail\Services\Auth\OauthProvider;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\ProfileResource;
@@ -87,6 +90,35 @@ class ProfileController extends Controller
         }
 
         $request->user()->oauthCredentials()->where('provider', $validProvider->value)->delete();
+
+        return new Response(null, 204);
+    }
+
+    #[OAT\Delete(path: '/profile', tags: ['Profile'], operationId: 'deleteProfile', description: 'Delete your profile and account', summary: 'Delete profile', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function delete(Request $request, int $id): Response
+    {
+        $user = User::findOrFail($id);
+
+        if ($request->user()->cannot('delete', $user)) {
+            abort(403);
+        }
+
+        $email = $user->email;
+
+        if ($user->subscription()) {
+            $user->subscription()->cancelNow();
+        }
+
+        $user->tokens()->delete();
+        $user->makeAnonymous();
+        $user->save();
+
+        Mail::to($email)->queue(new AccountDeleted());
 
         return new Response(null, 204);
     }

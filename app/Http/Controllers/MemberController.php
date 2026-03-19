@@ -9,8 +9,6 @@ use Illuminate\Http\Response;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
-use Illuminate\Support\Facades\Mail;
-use Kami\Cocktail\Mail\AccountDeleted;
 use Kami\Cocktail\Http\Requests\UserRequest;
 use Kami\Cocktail\Http\Resources\UserResource;
 use BarAssistant\Application\Bar\MemberService;
@@ -18,10 +16,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\OpenAPI\Schemas\RegisterRequest;
 use Kami\Cocktail\Services\Auth\RegisterUserService;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
+use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
+use BarAssistant\Application\Bar\DTO\ChangeMemberRoleRequest;
 
-class UsersController extends Controller
+class MemberController extends Controller
 {
-    #[OAT\Get(path: '/users', tags: ['Users'], operationId: 'listUsers', description: 'Show a list of all users in a bar', summary: 'List users', parameters: [
+    #[OAT\Get(path: '/members', tags: ['Members'], operationId: 'listUsers', description: 'Show a list of all users in a bar', summary: 'List users', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
@@ -43,7 +43,7 @@ class UsersController extends Controller
         return UserResource::collection($users);
     }
 
-    #[OAT\Get(path: '/users/{id}', tags: ['Users'], operationId: 'showUser', description: 'Show a single user', summary: 'Show user', parameters: [
+    #[OAT\Get(path: '/members/{id}', tags: ['Members'], operationId: 'showUser', description: 'Show a single user', summary: 'Show user', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
@@ -67,7 +67,7 @@ class UsersController extends Controller
         return new UserResource($user);
     }
 
-    #[OAT\Post(path: '/users', tags: ['Users'], operationId: 'saveUser', description: 'Create a new user', summary: 'Create user', parameters: [
+    #[OAT\Post(path: '/members', tags: ['Members'], operationId: 'saveUser', description: 'Create a new user', summary: 'Create user', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -98,7 +98,7 @@ class UsersController extends Controller
         return new Response(status: 204, headers: ['Location' => route('users.show', $user->id, false)]);
     }
 
-    #[OAT\Put(path: '/users/{id}', tags: ['Users'], operationId: 'updateUser', description: 'Update a single user', summary: 'Update user', parameters: [
+    #[OAT\Put(path: '/members/{id}', tags: ['Members'], operationId: 'updateUser', description: 'Update a single user', summary: 'Update user', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -112,53 +112,41 @@ class UsersController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(int $id, UserRequest $request): JsonResource
+    public function update(int $id, MemberService $memberService, UserRequest $request): JsonResource
     {
         $user = User::findOrFail($id);
-
-        if ($request->user()->cannot('edit', $user)) {
+        if ($request->user()->cannot('edit', $user) || $request->user()->isBarAdmin(bar()->id)) {
             abort(403);
         }
 
-        $user->name = $request->input('name');
-
-        if ($request->has('role_id') && $request->user()->isBarAdmin(bar()->id)) {
-            $barMembership = $user->getBarMembership(bar()->id);
-            $barMembership->user_role_id = $request->post('role_id');
-            $barMembership->save();
-        }
-
-        $user->save();
+        $barMembership = $user->getBarMembership(bar()->id);
+        $memberService->changeMemberRole(new ChangeMemberRoleRequest(
+            memberId: $barMembership->id,
+            roleId: (int) $request->input('role_id'),
+        ));
 
         return new UserResource($user);
     }
 
-    #[OAT\Delete(path: '/users/{id}', tags: ['Users'], operationId: 'deleteUser', description: 'Delete a single user', summary: 'Delete user', parameters: [
+    #[OAT\Delete(path: '/members/{userId}', tags: ['Members'], operationId: 'removeMember', description: 'Removes a specific user\'s membership from a bar', summary: 'Remove member', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
+        new OAT\Parameter(name: 'userId', in: 'path', required: true, description: 'Database id of a user', schema: new OAT\Schema(type: 'integer')),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
-    #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(Request $request, int $id): Response
+    #[BAO\NotAuthorizedResponse]
+    public function delete(MemberService $memberService, Request $request, int $id): Response
     {
         $user = User::findOrFail($id);
-
-        if ($request->user()->cannot('delete', $user)) {
+        if (!$request->user()->isBarAdmin(bar()->id)) {
             abort(403);
         }
 
-        $email = $user->email;
+        $memberService->removeUserMembershipFromBar(new RemoveMemberRequest(
+            $user->id,
+            bar()->id,
+        ));
 
-        if ($user->subscription()) {
-            $user->subscription()->cancelNow();
-        }
-
-        $user->tokens()->delete();
-        $user->makeAnonymous();
-        $user->save();
-
-        Mail::to($email)->queue(new AccountDeleted());
-
-        return new Response(null, 204);
+        return new Response(status: 204);
     }
 }

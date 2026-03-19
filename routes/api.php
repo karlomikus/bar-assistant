@@ -14,9 +14,9 @@ use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
 use Kami\Cocktail\Http\Controllers\ShelfController;
 use Kami\Cocktail\Http\Controllers\StatsController;
-use Kami\Cocktail\Http\Controllers\UsersController;
 use Kami\Cocktail\Http\Controllers\ExportController;
 use Kami\Cocktail\Http\Controllers\ImportController;
+use Kami\Cocktail\Http\Controllers\MemberController;
 use Kami\Cocktail\Http\Controllers\RatingController;
 use Kami\Cocktail\Http\Controllers\ServerController;
 use Kami\Cocktail\Http\Controllers\ExploreController;
@@ -171,12 +171,12 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::delete('/{id}', [TagController::class, 'delete']);
     });
 
-    Route::prefix('users')->middleware(['ability:*'])->group(function () {
-        Route::get('/', [UsersController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/', [UsersController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/{id}', [UsersController::class, 'show'])->middleware(EnsureRequestHasBarQuery::class)->name('users.show');
-        Route::put('/{id}', [UsersController::class, 'update'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::delete('/{id}', [UsersController::class, 'delete']);
+    Route::prefix('members')->middleware(['ability:*'])->group(function () {
+        Route::get('/', [MemberController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/', [MemberController::class, 'store'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/{id}', [MemberController::class, 'show'])->middleware(EnsureRequestHasBarQuery::class)->name('users.show');
+        Route::put('/{id}', [MemberController::class, 'update'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::delete('/{id}', [MemberController::class, 'delete'])->middleware(EnsureRequestHasBarQuery::class);
 
         Route::get('/{id}/ingredients', [ShelfController::class, 'ingredients'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}/cocktails', [ShelfController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);

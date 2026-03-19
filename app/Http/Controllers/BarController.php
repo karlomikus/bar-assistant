@@ -26,9 +26,7 @@ use BarAssistant\Application\Bar\MemberService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use BarAssistant\Application\Bar\DTO\CreateBarRequest;
 use BarAssistant\Application\Bar\DTO\UpdateBarRequest;
-use Kami\Cocktail\Http\Resources\BarMembershipResource;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
-use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
 use Kami\Cocktail\OpenAPI\Schemas\BarRequest as SchemasBarRequest;
 
 class BarController extends Controller
@@ -239,71 +237,6 @@ class BarController extends Controller
         ));
 
         return new Response(status: 204);
-    }
-
-    #[OAT\Delete(path: '/bars/{id}/memberships', tags: ['Bars'], operationId: 'leaveBar', description: 'Deletes a user\'s membership to a bar', summary: 'Leave a bar', parameters: [
-        new BAO\Parameters\DatabaseIdParameter(),
-    ])]
-    #[OAT\Response(response: 204, description: 'Successful response')]
-    #[BAO\NotFoundResponse]
-    public function leave(MemberService $memberService, Request $request, int $id): Response
-    {
-        $bar = Bar::findOrFail($id);
-
-        $memberService->removeUserMembershipFromBar(new RemoveMemberRequest(
-            $request->user()->id,
-            $bar->id,
-        ));
-
-        return new Response(status: 204);
-    }
-
-    #[OAT\Delete(path: '/bars/{id}/memberships/{userId}', tags: ['Bars'], operationId: 'removeBarMembership', description: 'Removes a specific user\'s membership from a bar', summary: 'Remove member', parameters: [
-        new BAO\Parameters\DatabaseIdParameter(),
-        new OAT\Parameter(name: 'userId', in: 'path', required: true, description: 'Database id of a user', schema: new OAT\Schema(type: 'integer')),
-    ])]
-    #[OAT\Response(response: 204, description: 'Successful response')]
-    #[BAO\NotFoundResponse]
-    #[BAO\NotAuthorizedResponse]
-    public function removeMembership(MemberService $memberService, Request $request, int $id, int $userId): Response
-    {
-        $bar = Bar::findOrFail($id);
-
-        if ($request->user()->cannot('deleteMembership', $bar)) {
-            abort(403);
-        }
-
-        if ((int) $request->user()->id === (int) $userId) {
-            abort(400, 'You cannot remove your own bar membership.');
-        }
-
-        $memberService->removeUserMembershipFromBar(new RemoveMemberRequest(
-            $userId,
-            $bar->id,
-        ));
-
-        return new Response(status: 204);
-    }
-
-    #[OAT\Get(path: '/bars/{id}/memberships', tags: ['Bars'], operationId: 'listBarMembership', description: 'List all bar members', summary: 'List members', parameters: [
-        new BAO\Parameters\DatabaseIdParameter(),
-    ])]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BarMembershipResource::class),
-    ])]
-    #[BAO\NotAuthorizedResponse]
-    #[BAO\NotFoundResponse]
-    public function memberships(Request $request, int $id): JsonResource
-    {
-        $bar = Bar::findOrFail($id);
-
-        if ($request->user()->cannot('show', $bar)) {
-            abort(403);
-        }
-
-        $bar->load('memberships');
-
-        return BarMembershipResource::collection($bar->memberships);
     }
 
     #[OAT\Post(path: '/bars/{id}/transfer', tags: ['Bars'], operationId: 'transferBarOwnership', description: 'Transfer a bar to another user.', summary: 'Transfer ownership', parameters: [

@@ -14,6 +14,7 @@ use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
+use BarAssistant\Application\Bar\DTO\ChangeMemberRoleRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Bar\DTO\MemberInventoryStockChangeRequest;
 
@@ -73,7 +74,7 @@ final readonly class MemberService
     {
         $member = $this->memberRepository->findById(new MemberId($request->memberId));
         if ($member === null || $member->isTransient()) {
-            throw new EntityNotFoundException('The bar was not found');
+            throw new EntityNotFoundException('The member was not found');
         }
 
         foreach ($request->ingredientIds as $ingredientId) {
@@ -81,5 +82,16 @@ final readonly class MemberService
         }
 
         $this->memberRepository->save($member);
+    }
+
+    public function changeMemberRole(ChangeMemberRoleRequest $request): void
+    {
+        $member = $this->memberRepository->findById(new MemberId($request->memberId));
+        if ($member === null || $member->isTransient()) {
+            throw new EntityNotFoundException('The member was not found');
+        }
+
+        $newRole = MemberRole::fromInt($request->roleId);
+        $member->changeRole($newRole);
     }
 }
