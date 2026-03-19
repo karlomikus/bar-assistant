@@ -7,6 +7,8 @@ namespace Tests\Infrastructure;
 use BarAssistant\Domain\User\User;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\User\UserEmail;
+use BarAssistant\Domain\User\UserName;
+use BarAssistant\Domain\User\UserSettings;
 use BarAssistant\Domain\User\UserRepository;
 
 final class InMemoryUserRepository implements UserRepository
@@ -54,5 +56,32 @@ final class InMemoryUserRepository implements UserRepository
     public function delete(User $user): void
     {
         unset($this->users[$user->getId()->value]);
+    }
+
+    public function createWithPassword(
+        UserName $name,
+        UserEmail $email,
+        string $passwordHash,
+        UserSettings $settings,
+        bool $emailVerified,
+    ): User {
+        $existing = $this->findByEmail($email);
+        if ($existing !== null) {
+            throw new \RuntimeException('Email already exists');
+        }
+
+        $user = User::create(
+            name: $name,
+            email: $email,
+            settings: $settings,
+        );
+
+        if ($emailVerified) {
+            $user->verifyEmail();
+        }
+
+        $this->save($user);
+
+        return $user;
     }
 }
