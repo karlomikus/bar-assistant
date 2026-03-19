@@ -118,7 +118,7 @@ class BarController extends Controller
         $memberService->addMemberToBar(new CreateMemberRequest(
             userId: $request->user()->id,
             barId: $barCreateResult->id,
-            role: 'admin',
+            roleId: 1,
         ));
 
         SetupBar::dispatch($barCreateResult->id, $request->user()->id, $barRequest->options);
@@ -235,7 +235,7 @@ class BarController extends Controller
         $memberService->addMemberToBar(new CreateMemberRequest(
             userId: $request->user()->id,
             barId: $barToJoin->id,
-            role: 'guest',
+            roleId: 4,
         ));
 
         return new Response(status: 204);

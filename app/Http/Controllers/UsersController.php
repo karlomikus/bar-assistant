@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
+use BarAssistant\Application\Bar\MemberService;
 use BarAssistant\Application\User\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -18,6 +20,8 @@ use Kami\Cocktail\Mail\ConfirmAccount;
 use Kami\Cocktail\Http\Requests\UserRequest;
 use Kami\Cocktail\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\OpenAPI\Schemas\RegisterRequest;
+use Kami\Cocktail\Services\Auth\RegisterUserService;
 
 class UsersController extends Controller
 {
@@ -75,46 +79,27 @@ class UsersController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\UserRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(UserResource::class),
-    ], headers: [
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(UserService $userService, UserRequest $request): JsonResponse
+    public function store(RegisterUserService $registerService, MemberService $memberService, UserRequest $request): Response
     {
         if ($request->user()->cannot('create', User::class)) {
             abort(403);
         }
 
-        $userService->registerUser();
-
-        $requireConfirmation = config('bar-assistant.mail_require_confirmation');
-        $roleId = $request->post('role_id');
+        $roleId = (int) $request->post('role_id');
         $email = $request->post('email');
 
         $user = User::where('email', $email)->first();
         if ($user === null) {
-            $user = new User();
-            $user->name = $request->input('name');
-            $user->email = $request->input('email');
-            $user->password = Hash::make($request->input('password'));
-            if ($requireConfirmation === false) {
-                $user->email_verified_at = now();
-            }
-            $user->save();
+            $user = $registerService->register(RegisterRequest::fromIlluminateRequest($request));
         }
 
-        if ($requireConfirmation === true) {
-            Mail::to($user)->queue(new ConfirmAccount($user->id, sha1((string) $user->email)));
-        }
+        $memberService->addMemberToBar(new CreateMemberRequest(userId: $user->id, barId: bar()->id, roleId: $roleId));
 
-        bar()->users()->save($user, ['user_role_id' => $roleId]);
-
-        return (new UserResource($user))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('users.show', $user->id));
+        return new Response(status: 204, headers: ['Location' => route('users.show', $user->id, false)]);
     }
 
     #[OAT\Put(path: '/users/{id}', tags: ['Users'], operationId: 'updateUser', description: 'Update a single user', summary: 'Update user', parameters: [

@@ -14,13 +14,14 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Kami\Cocktail\Mail\PasswordReset;
-use Kami\Cocktail\Mail\ConfirmAccount;
 use Kami\Cocktail\Mail\PasswordChanged;
 use Illuminate\Support\Facades\Password;
 use Kami\Cocktail\Http\Resources\TokenResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\RegisterRequest;
 use Kami\Cocktail\Http\Resources\ProfileResource;
+use Kami\Cocktail\Services\Auth\RegisterUserService;
+use Kami\Cocktail\OpenAPI\Schemas\RegisterRequest as SchemaRegisterRequest;
 
 class AuthController extends Controller
 {
@@ -94,29 +95,15 @@ class AuthController extends Controller
         new BAO\WrapObjectWithData(ProfileResource::class),
     ])]
     #[BAO\NotFoundResponse]
-    public function register(RegisterRequest $req): JsonResource
+    public function register(RegisterUserService $registerService, RegisterRequest $req): JsonResource
     {
         if (config('bar-assistant.allow_registration') === false) {
             abort(404, 'Registrations are disabled.');
         }
 
-        $requireConfirmation = config('bar-assistant.mail_require_confirmation');
-
-        $user = new User();
-        $user->name = $req->input('name');
-        $user->password = Hash::make($req->input('password'));
-        $user->email = $req->input('email');
-        if ($requireConfirmation === false) {
-            $user->email_verified_at = now();
-        }
-        $user->save();
-
-        if ($requireConfirmation === true) {
-            Mail::to($user)->queue(new ConfirmAccount($user->id, sha1((string) $user->email)));
-            Log::info('User registered and confirmation email sent', [
-                'email' => $user->email,
-            ]);
-        }
+        $user = $registerService->register(
+            SchemaRegisterRequest::fromIlluminateRequest($req)
+        );
 
         return new ProfileResource($user);
     }
