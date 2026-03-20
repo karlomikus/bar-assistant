@@ -56,16 +56,27 @@ final readonly class BarService
     public function updateBar(UpdateBarRequest $request): Bar
     {
         $bar = $this->barRepository->findById(new BarId($request->barId));
-
         if ($bar === null) {
             throw new EntityNotFoundException('Bar not found');
         }
 
-        $bar = $bar->updateDetails(
+        $bar->updateDetails(
             name: Name::fromString($request->name),
+            subtitle: $request->subtitle,
             description: $request->description,
             updatedBy: new UserId($request->userId),
         );
+
+        $bar->updateSettings(BarSettings::create(
+            isInviteCodeEnabled: $request->isInviteCodeEnabled ?? false,
+            defaultUnits: $request->defaultUnits ? Unit::from($request->defaultUnits) : null,
+            defaultCurrency: $request->defaultCurrency ? Currency::of($request->defaultCurrency) : null,
+        ));
+
+        $bar->removeAllImages();
+        if (count($request->images) > 0) {
+            $this->assignImages($bar, $request->images);
+        }
 
         $this->barRepository->save($bar);
 

@@ -287,6 +287,7 @@ final class Bar implements Identity
     public function updateDetails(
         Name $name,
         UserId $updatedBy,
+        ?string $subtitle = null,
         ?string $description = null,
     ): self {
         if ($this->isTransient()) {
@@ -294,6 +295,7 @@ final class Bar implements Identity
         }
 
         $this->name = $name;
+        $this->subtitle = $subtitle;
         $this->description = $description;
         $this->authors = $this->authors->updatedBy($updatedBy);
         $this->recordTimestamps = $this->recordTimestamps->updatedNow();

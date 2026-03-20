@@ -21,7 +21,7 @@ use BarAssistant\Application\Bar\DTO\ChangeMemberRoleRequest;
 
 class MemberController extends Controller
 {
-    #[OAT\Get(path: '/members', tags: ['Members'], operationId: 'listUsers', description: 'Show a list of all users in a bar', summary: 'List users', parameters: [
+    #[OAT\Get(path: '/members', tags: ['Members'], operationId: 'listMembers', description: 'Show a list of all members in a bar', summary: 'List members', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
@@ -43,7 +43,7 @@ class MemberController extends Controller
         return UserResource::collection($users);
     }
 
-    #[OAT\Get(path: '/members/{id}', tags: ['Members'], operationId: 'showUser', description: 'Show a single user', summary: 'Show user', parameters: [
+    #[OAT\Get(path: '/members/{id}', tags: ['Members'], operationId: 'showMember', description: 'Show member information', summary: 'Show member', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
@@ -67,7 +67,7 @@ class MemberController extends Controller
         return new UserResource($user);
     }
 
-    #[OAT\Post(path: '/members', tags: ['Members'], operationId: 'saveUser', description: 'Create a new user', summary: 'Create user', parameters: [
+    #[OAT\Post(path: '/members', tags: ['Members'], operationId: 'saveMember', description: 'Create a new member', summary: 'Create member', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -98,7 +98,7 @@ class MemberController extends Controller
         return new Response(status: 204, headers: ['Location' => route('users.show', $user->id, false)]);
     }
 
-    #[OAT\Put(path: '/members/{id}', tags: ['Members'], operationId: 'updateUser', description: 'Update a single user', summary: 'Update user', parameters: [
+    #[OAT\Put(path: '/members/{id}', tags: ['Members'], operationId: 'updateMember', description: 'Update a single member', summary: 'Update member', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -128,9 +128,8 @@ class MemberController extends Controller
         return new UserResource($user);
     }
 
-    #[OAT\Delete(path: '/members/{userId}', tags: ['Members'], operationId: 'removeMember', description: 'Removes a specific user\'s membership from a bar', summary: 'Remove member', parameters: [
+    #[OAT\Delete(path: '/members/{id}', tags: ['Members'], operationId: 'removeMember', description: 'Removes a specific user\'s membership from a bar', summary: 'Remove member', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
-        new OAT\Parameter(name: 'userId', in: 'path', required: true, description: 'Database id of a user', schema: new OAT\Schema(type: 'integer')),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotFoundResponse]

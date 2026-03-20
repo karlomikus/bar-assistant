@@ -10,7 +10,7 @@
     - Removed GET `/bars/{id}/memberships`
     - Moved POST `/bars/{id}/memberships/{userId}` to POST `/members`
     - Moved PUT `/bars/{id}/memberships` to PUT `/members/{userId}`
-    - Moved DELETE `/bars/{id}/memberships` to PUT `/members`
+    - Moved DELETE `/bars/{id}/memberships/{userId}` to DELETE `/members/{userId}`
     - Moved GET `/users/{id}/ingredients` to GET `/members/{id}/ingredients`
     - Moved GET `/users/{id}/cocktails` to GET `/members/{id}/cocktails`
     - Moved GET `/users/{id}/cocktails/favorites` to GET `/members/{id}/cocktails/favorites`

@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Jobs\SetupBar;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
@@ -161,28 +159,6 @@ class BarController extends Controller
             description: $barRequest->description,
             userId: $request->user()->id,
         ));
-
-        // $bar = $barRequest->toLaravelModel($bar);
-
-        // if ($request->filled('slug')) {
-        //     $bar->slug = $barRequest->slug;
-        // }
-
-        // $bar->status = BarStatusEnum::Active->value;
-        // $bar->updated_user_id = $request->user()->id;
-        // $bar->updated_at = now();
-        // $bar->save();
-
-        // if (count($barRequest->images) > 0) {
-        //     try {
-        //         $imageModels = Image::findOrFail($barRequest->images);
-        //         $bar->attachImages($imageModels);
-        //     } catch (Throwable $e) {
-        //         abort(500, $e->getMessage());
-        //     }
-        // }
-
-        // $bar->load('createdUser', 'updatedUser', 'images');
 
         return new Response(status: 204);
     }
