@@ -405,4 +405,49 @@ final class Cocktail implements Identity
 
         return $this;
     }
+
+    /**
+     * @param ImageId[] $images
+     */
+    public function copyTo(BarId $barId, UserId $userId, array $images = []): self
+    {
+        if ($this->isTransient()) {
+            throw new DomainException('Cannot copy a transient cocktail');
+        }
+
+        $newCocktail = self::create(
+            barId: $barId,
+            name: Name::fromString($this->getName()->toString() . ' Copy'),
+            instructions: $this->getInstructions(),
+            authors: Authors::createdBy($userId),
+            recordTimestamps: RecordTimestamps::createdNow(),
+            publicStatus: PublicStatus::createPrivate(),
+            description: $this->getDescription(),
+            garnish: $this->getGarnish(),
+            source: $this->getSource(),
+            dilution: $this->getDilution(),
+            year: $this->getYear(),
+            glassId: $this->getGlassId(),
+            methodId: $this->getMethodId(),
+            variantOf: $this->getId(),
+        );
+
+        foreach ($this->getIngredients() as $originalIngredient) {
+            $newCocktail->addIngredient($originalIngredient);
+        }
+
+        foreach ($this->getTags() as $tag) {
+            $newCocktail->addTag($tag);
+        }
+
+        foreach ($images as $imageId) {
+            $newCocktail->addImage($imageId);
+        }
+
+        foreach ($this->getUtensils() as $utensil) {
+            $newCocktail->addUtensil($utensil);
+        }
+
+        return $newCocktail;
+    }
 }

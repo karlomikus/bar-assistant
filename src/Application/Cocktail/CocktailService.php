@@ -203,38 +203,11 @@ final readonly class CocktailService
             throw new EntityNotFoundException('Cocktail not found');
         }
 
-        $newCocktail = Cocktail::create(
+        $newCocktail = $originalCocktail->copyTo(
             barId: new BarId($request->barId),
-            name: Name::fromString($originalCocktail->getName()->toString() . ' Copy'),
-            instructions: $originalCocktail->getInstructions(),
-            authors: Authors::createdBy(new UserId($request->userId)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-            publicStatus: PublicStatus::createPrivate(),
-            description: $originalCocktail->getDescription(),
-            garnish: $originalCocktail->getGarnish(),
-            source: $originalCocktail->getSource(),
-            dilution: $originalCocktail->getDilution(),
-            year: $originalCocktail->getYear(),
-            glassId: $originalCocktail->getGlassId(),
-            methodId: $originalCocktail->getMethodId(),
-            variantOf: $originalCocktail->getId(),
+            userId: new UserId($request->barId),
+            images: array_map(static fn (int $imageId) => new ImageId($imageId), $request->images),
         );
-
-        foreach ($originalCocktail->getIngredients() as $originalIngredient) {
-            $newCocktail->addIngredient($originalIngredient);
-        }
-
-        foreach ($originalCocktail->getTags() as $tag) {
-            $newCocktail->addTag($tag);
-        }
-
-        foreach ($request->images as $image) {
-            $newCocktail->addImage(new ImageId($image));
-        }
-
-        foreach ($originalCocktail->getUtensils() as $utensil) {
-            $newCocktail->addUtensil($utensil);
-        }
 
         $newCocktail = $this->cocktailRepository->save($newCocktail);
 
