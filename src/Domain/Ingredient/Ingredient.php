@@ -12,7 +12,6 @@ use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Common\Color;
 use BarAssistant\Domain\Common\Price;
-use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Common\AmountWithUnits;
@@ -20,19 +19,19 @@ use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Ingredient\Event\IngredientStrengthChanged;
+use BarAssistant\Domain\Common\Traits\HasImages;
 
 /**
  * Ingredient entity
  */
 final class Ingredient implements Identity
 {
+    use HasImages;
+
     private ?IngredientId $id = null;
 
     /** @var IngredientId[] */
     private array $ingredientParts = [];
-
-    /** @var ImageId[] */
-    private array $images = [];
 
     /** @var IngredientPrice[] */
     private array $prices = [];

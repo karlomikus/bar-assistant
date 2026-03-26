@@ -7,40 +7,34 @@ namespace BarAssistant\Domain\Cocktail;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Common\AmountWithUnits;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Cocktail\Event\GlassUpdated;
+use BarAssistant\Domain\Common\Traits\HasImages;
 
 final class Glass implements Identity
 {
+    use HasImages;
+
     private ?GlassId $id = null;
 
-    /**
-     * @param ImageId[] $images
-     */
     private function __construct(
         private readonly BarId $barId,
         private Name $name,
         private RecordTimestamps $recordTimestamps,
         private ?string $description = null,
         private ?AmountWithUnits $volume = null,
-        private array $images = [],
     ) {
     }
 
-    /**
-     * @param ImageId[] $images
-     */
     public static function create(
         BarId $barId,
         Name $name,
         RecordTimestamps $recordTimestamps,
         ?string $description = null,
         ?AmountWithUnits $volume = null,
-        array $images = [],
     ): self {
         return new self(
             barId: $barId,
@@ -48,7 +42,6 @@ final class Glass implements Identity
             recordTimestamps: $recordTimestamps,
             description: $description,
             volume: $volume,
-            images: $images,
         );
     }
 
@@ -96,44 +89,6 @@ final class Glass implements Identity
     public function getVolume(): ?AmountWithUnits
     {
         return $this->volume;
-    }
-
-    /**
-     * @return ImageId[]
-     */
-    public function getImages(): array
-    {
-        return $this->images;
-    }
-
-    public function addImage(ImageId $imageId): self
-    {
-        foreach ($this->images as $existingImageId) {
-            if ($existingImageId->equals($imageId)) {
-                return $this;
-            }
-        }
-
-        $this->images[] = $imageId;
-
-        return $this;
-    }
-
-    public function removeImage(ImageId $imageId): self
-    {
-        $this->images = array_values(array_filter(
-            $this->images,
-            static fn (ImageId $existingImageId) => !$existingImageId->equals($imageId)
-        ));
-
-        return $this;
-    }
-
-    public function removeAllImages(): self
-    {
-        $this->images = [];
-
-        return $this;
     }
 
     public function updateDetails(

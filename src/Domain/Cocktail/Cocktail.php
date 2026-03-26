@@ -18,9 +18,12 @@ use BarAssistant\Domain\Common\Dilution;
 use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Cocktail\Event\CocktailUpdated;
+use BarAssistant\Domain\Common\Traits\HasImages;
 
 final class Cocktail implements Identity
 {
+    use HasImages;
+
     private ?CocktailId $id = null;
     private ?Slug $slug = null;
 
@@ -45,7 +48,6 @@ final class Cocktail implements Identity
         private ?Dilution $dilution = null,
         private array $ingredients = [],
         private array $tags = [],
-        private array $images = [],
         private array $utensils = [],
         private ?CocktailId $variantOf = null,
         private ?int $year = null,
@@ -249,14 +251,6 @@ final class Cocktail implements Identity
     }
 
     /**
-     * @return ImageId[]
-     */
-    public function getImages(): array
-    {
-        return $this->images;
-    }
-
-    /**
      * @return UtensilId[]
      */
     public function getUtensils(): array
@@ -280,36 +274,6 @@ final class Cocktail implements Identity
     public function removeAllUtensils(): self
     {
         $this->utensils = [];
-
-        return $this;
-    }
-
-    public function addImage(ImageId $imageId): self
-    {
-        foreach ($this->images as $existingImageId) {
-            if ($existingImageId->equals($imageId)) {
-                return $this;
-            }
-        }
-
-        $this->images[] = $imageId;
-
-        return $this;
-    }
-
-    public function removeImage(ImageId $imageId): self
-    {
-        $this->images = array_values(array_filter(
-            $this->images,
-            static fn (ImageId $existingImageId) => !$existingImageId->equals($imageId)
-        ));
-
-        return $this;
-    }
-
-    public function removeAllImages(): self
-    {
-        $this->images = [];
 
         return $this;
     }
