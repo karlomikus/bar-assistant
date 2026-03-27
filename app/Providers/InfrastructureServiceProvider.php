@@ -24,9 +24,11 @@ use Kami\Cocktail\Infrastructure\EloquentMemberRepository;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentUtensilRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailRepository;
+use BarAssistant\Domain\Cocktail\CocktailCollectionRepository;
 use Kami\Cocktail\Infrastructure\EloquentIngredientRepository;
 use Kami\Cocktail\Infrastructure\EloquentPriceCategoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailMethodRepository;
+use Kami\Cocktail\Infrastructure\EloquentCocktailCollectionRepository;
 
 class InfrastructureServiceProvider extends ServiceProvider
 {
@@ -42,6 +44,7 @@ class InfrastructureServiceProvider extends ServiceProvider
         $this->app->bind(MemberRepository::class, EloquentMemberRepository::class);
         $this->app->bind(MenuRepository::class, EloquentMenuRepository::class);
         $this->app->bind(CocktailRepository::class, EloquentCocktailRepository::class);
+        $this->app->bind(CocktailCollectionRepository::class, EloquentCocktailCollectionRepository::class);
         $this->app->bind(UserRepository::class, EloquentUserRepository::class);
     }
 }

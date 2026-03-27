@@ -165,10 +165,7 @@ final readonly class CocktailService
             $cocktail->addTag($tag);
         }
 
-        $cocktail->removeAllImages();
-        foreach ($request->images as $imageId) {
-            $cocktail->addImage(new ImageId($imageId));
-        }
+        $cocktail->setImages(array_map(static fn (int $id) => new ImageId($id), $request->images));
 
         $cocktail->removeAllUtensils();
         foreach ($request->utensils as $utensilId) {

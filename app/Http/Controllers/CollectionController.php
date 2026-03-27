@@ -9,14 +9,16 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Bar;
 use OpenApi\Attributes as OAT;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CollectionRequest;
 use Kami\Cocktail\Http\Resources\CollectionResource;
 use Kami\Cocktail\Http\Filters\CollectionQueryFilter;
+use BarAssistant\Application\Cocktail\CollectionService;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
+use BarAssistant\Application\Cocktail\DTO\CreateCollectionRequest;
+use BarAssistant\Application\Cocktail\DTO\UpdateCollectionRequest;
+use BarAssistant\Application\Cocktail\DTO\SyncCollectionCocktailsRequest;
 
 class CollectionController extends Controller
 {
@@ -94,13 +96,11 @@ class CollectionController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\CollectionRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(CollectionResource::class),
-    ], headers: [
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(CollectionRequest $request): JsonResponse
+    public function store(CollectionService $collectionService, CollectionRequest $request): Response
     {
         if ($request->user()->cannot('create', CocktailCollection::class)) {
             abort(403);
@@ -108,28 +108,16 @@ class CollectionController extends Controller
 
         $barMembership = $request->user()->getBarMembership(bar()->id);
 
-        $collection = new CocktailCollection();
-        $collection->name = $request->input('name');
-        $collection->description = $request->input('description');
-        $collection->bar_membership_id = $barMembership->id;
-        $collection->is_bar_shared = $request->boolean('is_bar_shared');
-        $collection->save();
+        $collectionResult = $collectionService->createCollection(new CreateCollectionRequest(
+            barId: bar()->id,
+            memberId: $barMembership->id,
+            name: $request->input('name'),
+            description: $request->input('description'),
+            isBarShared: $request->boolean('is_bar_shared'),
+            cocktailIds: $request->post('cocktails', []),
+        ));
 
-        $cocktailIds = $request->post('cocktails', []);
-        if (!empty($cocktailIds)) {
-            $cocktails = DB::table('cocktails')
-                ->select('id')
-                ->where('bar_id', $barMembership->bar_id)
-                ->whereIn('id', $cocktailIds)
-                ->pluck('id');
-            $collection->cocktails()->attach($cocktails);
-        }
-        $collection->load('barMembership', 'cocktails');
-
-        return (new CollectionResource($collection))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('collection.show', $collection->id));
+        return new Response(status: 201, headers: ['Location' => route('collection.show', $collectionResult->id, false)]);
     }
 
     #[OAT\Put(path: '/collections/{id}', tags: ['Collections'], operationId: 'updateCollection', description: 'Update a specific collection', summary: 'Update collection', parameters: [
@@ -140,12 +128,10 @@ class CollectionController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\CollectionRequest::class),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(CollectionResource::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(CollectionRequest $request, int $id): JsonResource
+    public function update(CollectionService $collectionService, CollectionRequest $request, int $id): Response
     {
         $collection = CocktailCollection::findOrFail($id)->load('barMembership');
 
@@ -153,15 +139,14 @@ class CollectionController extends Controller
             abort(403);
         }
 
-        $collection->name = $request->input('name');
-        $collection->description = $request->input('description');
-        $collection->updated_at = now();
-        $collection->is_bar_shared = $request->boolean('is_bar_shared');
-        $collection->save();
+        $collectionService->updateCollection(new UpdateCollectionRequest(
+            collectionId: $id,
+            name: $request->input('name'),
+            description: $request->input('description'),
+            isBarShared: $request->boolean('is_bar_shared'),
+        ));
 
-        $collection->load('barMembership', 'cocktails');
-
-        return new CollectionResource($collection);
+        return new Response(status: 204);
     }
 
     #[OAT\Put(path: '/collections/{id}/cocktails', tags: ['Collections'], operationId: 'syncCocktailsInCollection', summary: 'Sync cocktails in a collection', description: 'Used to updated/add/delete cocktails in a collection. To delete all cocktails pass an empty array.', parameters: [
@@ -178,7 +163,7 @@ class CollectionController extends Controller
         new BAO\WrapObjectWithData(CollectionResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function cocktails(Request $request, int $id): JsonResource
+    public function cocktails(CollectionService $collectionService, Request $request, int $id): JsonResource
     {
         $collection = CocktailCollection::findOrFail($id)->load('barMembership');
 
@@ -186,27 +171,16 @@ class CollectionController extends Controller
             abort(403);
         }
 
-        $cocktailIds = $request->post('cocktails', []);
-
         try {
-            if (!empty($cocktailIds)) {
-                $cocktails = DB::table('cocktails')
-                    ->select('id')
-                    ->where('bar_id', $collection->barMembership->bar_id)
-                    ->whereIn('id', $cocktailIds)
-                    ->pluck('id');
-                $collection->cocktails()->sync($cocktails);
-            } else {
-                $collection->cocktails()->detach();
-            }
-
-            $collection->updated_at = now();
-            $collection->save();
+            $collectionService->syncCocktails(new SyncCollectionCocktailsRequest(
+                collectionId: $id,
+                cocktailIds: $request->post('cocktails', []),
+            ));
         } catch (Throwable) {
             abort(500, 'Unable to add cocktails to collection!');
         }
 
-        $collection->load('barMembership', 'cocktails');
+        $collection = CocktailCollection::findOrFail($id)->load('barMembership', 'cocktails');
 
         return new CollectionResource($collection);
     }
@@ -217,7 +191,7 @@ class CollectionController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(Request $request, int $id): Response
+    public function delete(CollectionService $collectionService, Request $request, int $id): Response
     {
         $collection = CocktailCollection::findOrFail($id);
 
@@ -225,7 +199,7 @@ class CollectionController extends Controller
             abort(403);
         }
 
-        $collection->delete();
+        $collectionService->deleteCollection($id);
 
         return new Response(null, 204);
     }
