@@ -7,8 +7,10 @@ namespace Kami\Cocktail\Providers;
 use Illuminate\Support\ServiceProvider;
 use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Menu\MenuRepository;
+use BarAssistant\Domain\Note\NoteRepository;
 use BarAssistant\Domain\User\UserRepository;
 use BarAssistant\Domain\Bar\MemberRepository;
+use BarAssistant\Application\Note\NoteService;
 use BarAssistant\Domain\Image\ImageRepository;
 use BarAssistant\Domain\Cocktail\GlassRepository;
 use BarAssistant\Domain\Cocktail\UtensilRepository;
@@ -16,6 +18,7 @@ use BarAssistant\Domain\Cocktail\CocktailRepository;
 use Kami\Cocktail\Infrastructure\EloquentBarRepository;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
 use Kami\Cocktail\Infrastructure\EloquentMenuRepository;
+use Kami\Cocktail\Infrastructure\EloquentNoteRepository;
 use Kami\Cocktail\Infrastructure\EloquentUserRepository;
 use Kami\Cocktail\Infrastructure\EloquentGlassRepository;
 use Kami\Cocktail\Infrastructure\EloquentImageRepository;
@@ -46,5 +49,7 @@ class InfrastructureServiceProvider extends ServiceProvider
         $this->app->bind(CocktailRepository::class, EloquentCocktailRepository::class);
         $this->app->bind(CocktailCollectionRepository::class, EloquentCocktailCollectionRepository::class);
         $this->app->bind(UserRepository::class, EloquentUserRepository::class);
+        $this->app->bind(NoteRepository::class, EloquentNoteRepository::class);
+        $this->app->bind(NoteService::class);
     }
 }

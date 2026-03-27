@@ -19,6 +19,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use BarAssistant\Application\Image\DTO\CreateImage;
 use Kami\Cocktail\Services\Image\ImageThumbnailService;
 use BarAssistant\Application\Image\DTO\UpdateImageRequest;
+use BarAssistant\Application\Image\ImageService;
+use Kami\Cocktail\Services\Image\ImageUploadService;
 
 class ImageController extends Controller
 {
@@ -68,7 +70,7 @@ class ImageController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(ImageResource::class),
     ])]
-    public function store(\Kami\Cocktail\Services\Image\ImageUploadService $imageUploadService, \BarAssistant\Application\Image\ImageService $imageService, Request $request): JsonResource
+    public function store(ImageUploadService $imageUploadService, ImageService $imageService, Request $request): JsonResource
     {
         $imageIds = [];
         foreach ($request->images ?? [] as $requestImage) {

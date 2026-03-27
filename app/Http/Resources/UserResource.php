@@ -48,6 +48,7 @@ class UserResource extends JsonResource
     #[\Override]
     public function toArray($request)
     {
+        // TODO: Remove
         $bar = bar();
 
         return [

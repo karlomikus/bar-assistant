@@ -9,6 +9,8 @@ final readonly class UpdateUserProfile
     public function __construct(
         public int $userId,
         public string $name,
+        public string $language,
+        public string $theme,
     ) {
     }
 }

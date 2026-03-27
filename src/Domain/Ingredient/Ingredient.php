@@ -276,44 +276,6 @@ final class Ingredient implements Identity
     }
 
     /**
-     * @return ImageId[]
-     */
-    public function getImages(): array
-    {
-        return $this->images;
-    }
-
-    public function addImage(ImageId $imageId): self
-    {
-        foreach ($this->images as $existingImageId) {
-            if ($existingImageId->equals($imageId)) {
-                return $this;
-            }
-        }
-
-        $this->images[] = $imageId;
-
-        return $this;
-    }
-
-    public function removeImage(ImageId $imageId): self
-    {
-        $this->images = array_values(array_filter(
-            $this->images,
-            static fn (ImageId $existingImageId) => !$existingImageId->equals($imageId)
-        ));
-
-        return $this;
-    }
-
-    public function removeAllImages(): self
-    {
-        $this->images = [];
-
-        return $this;
-    }
-
-    /**
      * @return IngredientPrice[]
      */
     public function getPrices(): array

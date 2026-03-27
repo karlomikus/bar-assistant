@@ -21,9 +21,16 @@ use BarAssistant\Application\Bar\DTO\ChangeMemberRoleRequest;
 
 class MemberController extends Controller
 {
-    #[OAT\Get(path: '/members', tags: ['Members'], operationId: 'listMembers', description: 'Show a list of all members in a bar', summary: 'List members', parameters: [
-        new BAO\Parameters\BarIdHeaderParameter(),
-    ])]
+    #[OAT\Get(
+        path: '/members',
+        tags: ['Members'],
+        operationId: 'listMembers',
+        description: 'Show a list of all members in the bar. This endpoint is only accessible for bar admins and moderators.',
+        summary: 'List members',
+        parameters: [
+            new BAO\Parameters\BarIdHeaderParameter(),
+        ]
+    )]
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(UserResource::class),
     ])]

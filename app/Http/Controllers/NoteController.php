@@ -12,12 +12,19 @@ use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Http\Requests\NoteRequest;
+use BarAssistant\Application\Note\NoteService;
 use Kami\Cocktail\Http\Resources\NoteResource;
 use Kami\Cocktail\Http\Filters\NoteQueryFilter;
 use Illuminate\Http\Resources\Json\JsonResource;
+use BarAssistant\Application\Note\DTO\CreateNoteRequest;
 
 class NoteController extends Controller
 {
+    public function __construct(
+        private readonly NoteService $noteService,
+    ) {
+    }
+
     #[OAT\Get(path: '/notes', tags: ['Notes'], operationId: 'listNotes', description: 'Show list of all user notes', summary: 'List notes', parameters: [
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
@@ -78,12 +85,24 @@ class NoteController extends Controller
             abort(403);
         }
 
-        $note = $resourceModel->addNote($request->input('note'), $request->user()->id);
+        $createRequest = new CreateNoteRequest(
+            userId: $request->user()->id,
+            resourceId: (int) $resourceId,
+            resource: $resourceType,
+            note: $request->input('note'),
+        );
 
-        return (new NoteResource($note))
+        $noteResult = $this->noteService->createNote($createRequest);
+
+        return (new NoteResource((object) [
+            'id' => $noteResult->id,
+            'note' => $noteResult->note,
+            'user_id' => $noteResult->userId,
+            'created_at' => $noteResult->createdAt,
+        ]))
             ->response()
             ->setStatusCode(201)
-            ->header('Location', route('notes.show', $note->id));
+            ->header('Location', route('notes.show', $noteResult->id));
     }
 
     #[OAT\Delete(path: '/notes/{id}', tags: ['Notes'], operationId: 'deleteNote', description: 'Delete a single note', summary: 'Delete note', parameters: [
@@ -100,7 +119,7 @@ class NoteController extends Controller
             abort(403);
         }
 
-        $note->delete();
+        $this->noteService->deleteNote($id);
 
         return new Response(null, 204);
     }

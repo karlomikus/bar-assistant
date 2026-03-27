@@ -23,6 +23,9 @@ final class Bar implements Identity
     private ?BarId $id = null;
     private ?Slug $slug = null;
 
+    /**
+     * @param IngredientInventoryItem[] $ingredientInventory
+     */
     private function __construct(
         private Name $name,
         private Authors $authors,

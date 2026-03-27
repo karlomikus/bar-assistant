@@ -30,7 +30,6 @@ final class Cocktail implements Identity
     /**
      * @param CocktailIngredient[] $ingredients
      * @param string[] $tags
-     * @param ImageId[] $images
      * @param UtensilId[] $utensils
      */
     private function __construct(

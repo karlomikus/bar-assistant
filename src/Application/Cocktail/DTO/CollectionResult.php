@@ -25,7 +25,7 @@ final readonly class CollectionResult
     public static function fromCollection(CocktailCollection $collection): self
     {
         return new self(
-            id: $collection->getId()?->value ?? 0,
+            id: $collection->getId()->value ?? 0,
             barId: $collection->getBarId()->value,
             memberId: $collection->getMemberId()->value,
             name: $collection->getName()->toString(),

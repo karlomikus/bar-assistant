@@ -78,7 +78,7 @@ final class User implements Identity
         return $this->email;
     }
 
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
         return $this->passwordHash;
     }
@@ -165,7 +165,7 @@ final class User implements Identity
 
         DomainEventDispatcher::instance()->publish(new UserAnonymized(
             userId: $this->getId(),
-            anonymizedAt: $updatedAt,
+            anonymizedAt: $updatedAt ?? new DateTimeImmutable(),
         ));
 
         return $this;
