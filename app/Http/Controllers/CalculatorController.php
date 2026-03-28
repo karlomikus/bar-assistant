@@ -107,12 +107,10 @@ class CalculatorController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\CalculatorRequest::class),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(CalculatorResource::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(CalculatorFormRequest $request, int $id): JsonResource
+    public function update(CalculatorFormRequest $request, int $id): Response
     {
         $calculator = Calculator::findOrFail($id);
 
@@ -141,7 +139,7 @@ class CalculatorController extends Controller
             $calculatorBlock->save();
         }
 
-        return new CalculatorResource($calculator);
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/calculators/{id}', tags: ['Calculator'], operationId: 'deleteCalculator', description: 'Delete a specific calculator', summary: 'Delete calculator', parameters: [
