@@ -233,7 +233,7 @@ paths:
       tags:
         - Bars
       summary: 'List bars'
-      description: 'Show a list of bars user has access to. Includes bars that user has made and bars he is a member of.'
+      description: 'Show a list of bars current authenticated user has access to. Includes bars he is a member of.'
       operationId: listBars
       responses:
         '200':
@@ -259,7 +259,7 @@ paths:
       tags:
         - Bars
       summary: 'Create bar'
-      description: 'Create a new bar'
+      description: 'Create a new bar with optional default data included. Assigns current authenticated user as a member with admin role.'
       operationId: saveBar
       requestBody:
         required: true
@@ -312,7 +312,7 @@ paths:
       tags:
         - Bars
       summary: 'Show bar'
-      description: 'Show information about a specific bar'
+      description: 'Show information about a specific bar.'
       operationId: showBar
       parameters:
         -
@@ -380,7 +380,7 @@ paths:
       tags:
         - Bars
       summary: 'Update bar'
-      description: 'Update a specific bar'
+      description: 'Update a specific bar.'
       operationId: updateBar
       parameters:
         -
@@ -469,7 +469,7 @@ paths:
       tags:
         - Bars
       summary: 'Delete bar'
-      description: 'Delete a specific bar'
+      description: 'Delete a specific bar.'
       operationId: deleteBar
       parameters:
         -
@@ -521,7 +521,7 @@ paths:
       tags:
         - Bars
       summary: 'Join a bar'
-      description: 'Join a bar via invite code'
+      description: 'Join a bar as a guest role via invite code. Target bar must be active and have invite code enabled.'
       operationId: joinBar
       requestBody:
         required: true
@@ -592,7 +592,7 @@ paths:
       tags:
         - Bars
       summary: 'Transfer ownership'
-      description: 'Transfer a bar to another user.'
+      description: 'Transfer a bar to another user. Gives another use complete access of a bar. Only bar owners can start bar transfer.'
       operationId: transferBarOwnership
       parameters:
         -
@@ -6366,7 +6366,7 @@ paths:
       tags:
         - Authentication
       summary: 'SSO redirect'
-      description: 'Redirect to SSO authentication'
+      description: 'Redirect to SSO authentication.'
       operationId: ssoRedirect
       parameters:
         -
@@ -6402,7 +6402,7 @@ paths:
       tags:
         - Authentication
       summary: 'SSO callback'
-      description: 'Callback for SSO login'
+      description: 'Callback for SSO login.'
       operationId: ssoCallback
       parameters:
         -
@@ -6479,7 +6479,7 @@ paths:
       tags:
         - Authentication
       summary: 'SSO providers'
-      description: 'Configured SSO providers'
+      description: 'List of server supported and configured SSO providers.'
       operationId: ssoProviders
       responses:
         '200':

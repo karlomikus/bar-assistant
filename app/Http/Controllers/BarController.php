@@ -29,7 +29,7 @@ use Kami\Cocktail\OpenAPI\Schemas\BarRequest as SchemasBarRequest;
 
 class BarController extends Controller
 {
-    #[OAT\Get(path: '/bars', tags: ['Bars'], summary: 'List bars', operationId: 'listBars', description: 'Show a list of bars user has access to. Includes bars that user has made and bars he is a member of.')]
+    #[OAT\Get(path: '/bars', tags: ['Bars'], summary: 'List bars', operationId: 'listBars', description: 'Show a list of bars current authenticated user has access to. Includes bars he is a member of.')]
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BarResource::class),
     ])]
@@ -44,7 +44,7 @@ class BarController extends Controller
         return BarResource::collection($bars);
     }
 
-    #[OAT\Get(path: '/bars/{id}', tags: ['Bars'], operationId: 'showBar', description: 'Show information about a specific bar', summary: 'Show bar', parameters: [
+    #[OAT\Get(path: '/bars/{id}', tags: ['Bars'], operationId: 'showBar', description: 'Show information about a specific bar.', summary: 'Show bar', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
@@ -74,7 +74,7 @@ class BarController extends Controller
         return new BarResource($bar);
     }
 
-    #[OAT\Post(path: '/bars', tags: ['Bars'], operationId: 'saveBar', description: 'Create a new bar', summary: 'Create bar', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/bars', tags: ['Bars'], operationId: 'saveBar', description: 'Create a new bar with optional default data included. Assigns current authenticated user as a member with admin role.', summary: 'Create bar', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\BarRequest::class),
@@ -119,11 +119,10 @@ class BarController extends Controller
 
         SetupBar::dispatch($barCreateResult->id, $request->user()->id, $barRequest->options);
 
-        return new Response(status: 201)
-            ->header('Location', route('bars.show', $barCreateResult->id, false));
+        return new Response(status: 201)->header('Location', route('bars.show', $barCreateResult->id, false));
     }
 
-    #[OAT\Put(path: '/bars/{id}', tags: ['Bars'], operationId: 'updateBar', description: 'Update a specific bar', summary: 'Update bar', parameters: [
+    #[OAT\Put(path: '/bars/{id}', tags: ['Bars'], operationId: 'updateBar', description: 'Update a specific bar.', summary: 'Update bar', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -163,7 +162,7 @@ class BarController extends Controller
         return new Response(status: 204);
     }
 
-    #[OAT\Delete(path: '/bars/{id}', tags: ['Bars'], operationId: 'deleteBar', description: 'Delete a specific bar', summary: 'Delete bar', parameters: [
+    #[OAT\Delete(path: '/bars/{id}', tags: ['Bars'], operationId: 'deleteBar', description: 'Delete a specific bar.', summary: 'Delete bar', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
@@ -185,7 +184,7 @@ class BarController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Post(path: '/bars/join', tags: ['Bars'], operationId: 'joinBar', description: 'Join a bar via invite code', summary: 'Join a bar', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/bars/join', tags: ['Bars'], operationId: 'joinBar', description: 'Join a bar as a guest role via invite code. Target bar must be active and have invite code enabled.', summary: 'Join a bar', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
@@ -215,7 +214,7 @@ class BarController extends Controller
         return new Response(status: 204);
     }
 
-    #[OAT\Post(path: '/bars/{id}/transfer', tags: ['Bars'], operationId: 'transferBarOwnership', description: 'Transfer a bar to another user.', summary: 'Transfer ownership', parameters: [
+    #[OAT\Post(path: '/bars/{id}/transfer', tags: ['Bars'], operationId: 'transferBarOwnership', description: 'Transfer a bar to another user. Gives another use complete access of a bar. Only bar owners can start bar transfer.', summary: 'Transfer ownership', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
