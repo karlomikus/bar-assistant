@@ -18,22 +18,32 @@ final class Calculator implements Identity
      */
     private array $blocks = [];
 
+    /**
+     * @param CalculatorBlock[] $blocks
+     */
     private function __construct(
         private readonly BarId $barId,
         private string $name,
         private ?string $description,
+        array $blocks = [],
     ) {
+        $this->blocks = $blocks;
     }
 
+    /**
+     * @param CalculatorBlock[] $blocks
+     */
     public static function create(
         BarId $barId,
         string $name,
         ?string $description = null,
+        array $blocks = [],
     ): self {
         return new self(
             barId: $barId,
             name: $name,
             description: $description,
+            blocks: $blocks,
         );
     }
 
@@ -95,11 +105,17 @@ final class Calculator implements Identity
         return $this->blocks;
     }
 
-    public function addBlock(CalculatorBlock $block): self
+    /**
+     * @param CalculatorBlock[] $blocks
+     */
+    public function replaceBlocks(array $blocks): self
     {
-        $this->blocks[] = $block;
-
-        return $this;
+        return new self(
+            barId: $this->barId,
+            name: $this->name,
+            description: $this->description,
+            blocks: $blocks,
+        );
     }
 
     /**

@@ -9,9 +9,12 @@ use BarAssistant\Domain\Bar\BarId;
 use Illuminate\Support\Facades\DB;
 use BarAssistant\Domain\Calculator\Calculator;
 use BarAssistant\Domain\Calculator\CalculatorId;
+use BarAssistant\Domain\Calculator\CalculatorBlock;
+use BarAssistant\Domain\Calculator\CalculatorBlockType;
 use Kami\Cocktail\Models\Calculator as ModelCalculator;
 use Kami\Cocktail\Models\Enums\CalculatorBlockTypeEnum;
 use BarAssistant\Domain\Calculator\CalculatorRepository;
+use BarAssistant\Domain\Calculator\CalculatorBlockSettings;
 use Kami\Cocktail\Models\CalculatorBlock as ModelCalculatorBlock;
 
 final class EloquentCalculatorRepository implements CalculatorRepository
@@ -25,6 +28,17 @@ final class EloquentCalculatorRepository implements CalculatorRepository
         }
 
         return self::map($model);
+    }
+
+    public function findByIdWithBlocks(CalculatorId $id): ?Calculator
+    {
+        $model = ModelCalculator::with('blocks')->find($id->value);
+
+        if ($model === null) {
+            return null;
+        }
+
+        return self::mapWithBlocks($model);
     }
 
     public function save(Calculator $calculator): Calculator
@@ -41,45 +55,13 @@ final class EloquentCalculatorRepository implements CalculatorRepository
                 $calculator = $calculator->setId(new CalculatorId($calculatorModel->id));
             }
 
-            foreach ($calculator->getBlocks() as $block) {
-                $blockModel = new ModelCalculatorBlock();
-                $blockModel->calculator_id = $calculatorModel->id;
-                $blockModel->label = $block->getLabel();
-                $blockModel->variable_name = $block->getVariableName();
-                $blockModel->value = $block->getValue();
-                $blockModel->type = CalculatorBlockTypeEnum::from($block->getType()->value);
-                $blockModel->sort = $block->getSort();
-                $blockModel->description = $block->getDescription();
-                $blockModel->settings = $block->getSettings()->toArray();
-                $blockModel->save();
-
-                if ($block->isTransient()) {
-                    $block->setId(new \BarAssistant\Domain\Calculator\CalculatorBlockId($blockModel->id));
-                }
-            }
-        } catch (Throwable $e) {
-            DB::rollBack();
-            throw $e;
-        }
-        DB::commit();
-
-        return $calculator;
-    }
-
-    public function saveWithBlocks(Calculator $calculator): Calculator
-    {
-        DB::beginTransaction();
-        try {
-            $calculatorModel = ModelCalculator::findOrFail($calculator->getId()?->value);
-            $calculatorModel->name = $calculator->getName();
-            $calculatorModel->description = $calculator->getDescription();
-            $calculatorModel->save();
-
             $calculatorModel->blocks()->delete();
 
+            $calculatorId = $calculator->getId();
+            assert($calculatorId !== null);
             foreach ($calculator->getBlocks() as $block) {
                 $blockModel = new ModelCalculatorBlock();
-                $blockModel->calculator_id = $calculatorModel->id;
+                $blockModel->calculator_id = $calculatorId->value;
                 $blockModel->label = $block->getLabel();
                 $blockModel->variable_name = $block->getVariableName();
                 $blockModel->value = $block->getValue();
@@ -114,5 +96,37 @@ final class EloquentCalculatorRepository implements CalculatorRepository
         $calculator->setId(new CalculatorId($model->id));
 
         return $calculator;
+    }
+
+    private static function mapWithBlocks(ModelCalculator $model): Calculator
+    {
+        $calculator = Calculator::create(
+            barId: new BarId($model->bar_id),
+            name: $model->name,
+            description: $model->description,
+        );
+
+        $calculatorId = new CalculatorId($model->id);
+        $calculator->setId($calculatorId);
+
+        $blocks = [];
+        /** @var ModelCalculatorBlock $blockModel */
+        foreach ($model->blocks as $blockModel) {
+            /** @var array<string, mixed> $settingsData */
+            $settingsData = (array) ($blockModel->settings ?? []);
+            $block = CalculatorBlock::create(
+                label: $blockModel->label,
+                type: CalculatorBlockType::fromString($blockModel->type->value),
+                variableName: $blockModel->variable_name,
+                value: $blockModel->value,
+                sort: $blockModel->sort,
+                description: $blockModel->description,
+                settings: CalculatorBlockSettings::fromArray($settingsData),
+            )->withCalculatorId($calculatorId);
+
+            $blocks[] = $block;
+        }
+
+        return $calculator->replaceBlocks($blocks);
     }
 }
