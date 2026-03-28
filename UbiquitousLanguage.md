@@ -35,5 +35,7 @@
 | Cocktail Price | A monetary value associated with a cocktail, typically based on the cost of its ingredients and preparation, and can vary based on the price category. |
 | Utensils | Tools used in the preparation of cocktails, such as shakers, strainers, muddlers, etc. |
 | Calculator | User created custom calculators used to calculate required ingredient amounts for custom infusions, juices, etc. |
+| Calculator Block | A block within a calculator that represents a specific input values or evaluation of input values. A block can contain properties like value name, label, decimal places, etc. |
 | Amount | A specific quantity of an ingredient, represented as a combination of a numeric value and its corresponding units (e.g., "50 ml", "2 oz", "1 slice"). |
 | Slug | A URL-friendly string that uniquely identifies a resource, typically generated from the resource's name or title. For example, a cocktail named "Mojito" might have a slug of "mojito". |
+| Rating | A numerical value representing a user's evaluation of a resource, typically on a scale (e.g., 1 to 5 stars). |

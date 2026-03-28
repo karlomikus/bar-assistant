@@ -10,5 +10,7 @@ interface CalculatorRepository
 
     public function save(Calculator $calculator): Calculator;
 
+    public function saveWithBlocks(Calculator $calculator): Calculator;
+
     public function delete(CalculatorId $id): void;
 }

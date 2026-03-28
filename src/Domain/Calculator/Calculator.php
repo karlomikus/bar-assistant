@@ -20,8 +20,8 @@ final class Calculator implements Identity
 
     private function __construct(
         private readonly BarId $barId,
-        private readonly string $name,
-        private readonly ?string $description,
+        private string $name,
+        private ?string $description,
     ) {
     }
 
@@ -71,6 +71,20 @@ final class Calculator implements Identity
     public function getDescription(): ?string
     {
         return $this->description;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
     }
 
     /**
