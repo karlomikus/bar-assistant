@@ -138,8 +138,8 @@ final class EloquentBarRepository implements BarRepository
 
         $barSettings = BarSettings::create(
             isInviteCodeEnabled: $model->invite_code !== null,
-            defaultUnits: $modelBarSettings['default_units'] ? Unit::from($modelBarSettings['default_units']) : null,
-            defaultCurrency: $modelBarSettings['default_currency'] ? Currency::of($modelBarSettings['default_currency']) : null,
+            defaultUnits: isset($modelBarSettings['default_units']) ? Unit::from($modelBarSettings['default_units']) : null,
+            defaultCurrency: isset($modelBarSettings['default_currency']) ? Currency::of($modelBarSettings['default_currency']) : null,
         );
 
         $bar = Bar::create(

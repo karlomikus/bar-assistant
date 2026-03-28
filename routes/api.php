@@ -230,9 +230,6 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/{id}', [BarController::class, 'show'])->name('bars.show')->middleware(['ability:bars.read']);
         Route::put('/{id}', [BarController::class, 'update'])->middleware(['ability:bars.write']);
         Route::delete('/{id}', [BarController::class, 'delete'])->middleware(['ability:*']);
-        Route::get('/{id}/memberships', [BarController::class, 'memberships'])->middleware(['ability:*']);
-        Route::delete('/{id}/memberships', [BarController::class, 'leave'])->middleware(['ability:*']);
-        Route::delete('/{id}/memberships/{userId}', [BarController::class, 'removeMembership'])->middleware(['ability:*']);
         Route::post('/{id}/status', [BarController::class, 'toggleBarStatus'])->middleware(['ability:*']);
         Route::post('/{id}/transfer', [BarController::class, 'transfer'])->middleware(['ability:*']);
         Route::get('/{id}/collections', [CollectionController::class, 'shared'])->middleware(['ability:bars.read']);

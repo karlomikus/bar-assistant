@@ -139,4 +139,41 @@ class UsersControllerTest extends TestCase
         $this->assertNull($anonUser->email_verified_at);
         $this->assertNull($anonUser->remember_token);
     }
+
+    public function test_show_bar_members(): void
+    {
+        $response = $this->getJson('/api/bars/3/memberships');
+
+        $response->assertJsonCount(1, 'data');
+    }
+
+    public function test_show_bar_members_forbidden(): void
+    {
+        $response = $this->getJson('/api/bars/1/memberships');
+
+        $response->assertForbidden();
+    }
+
+    public function test_leave_bar(): void
+    {
+        $this->assertSame(1, Bar::find(3)->memberships()->count());
+        $response = $this->deleteJson('/api/bars/3/memberships');
+
+        $response->assertNoContent();
+        $this->assertSame(0, Bar::find(3)->memberships()->count());
+    }
+
+    public function test_remove_member_from_bar(): void
+    {
+        $memberToRemove = User::factory()->create();
+        $bar = Bar::find(3);
+        $memberToRemove->joinBarAs($bar);
+
+        $this->assertSame(2, $bar->memberships()->count());
+
+        $response = $this->deleteJson('/api/bars/3/memberships/' . $memberToRemove->id);
+
+        $response->assertNoContent();
+        $this->assertSame(1, $bar->memberships()->count());
+    }
 }
