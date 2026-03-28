@@ -18,14 +18,14 @@ use Kami\Cocktail\Mail\PasswordChanged;
 use Illuminate\Support\Facades\Password;
 use Kami\Cocktail\Http\Resources\TokenResource;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Response;
 use Kami\Cocktail\Http\Requests\RegisterRequest;
-use Kami\Cocktail\Http\Resources\ProfileResource;
 use Kami\Cocktail\Services\Auth\RegisterUserService;
 use Kami\Cocktail\OpenAPI\Schemas\RegisterRequest as SchemaRegisterRequest;
 
 class AuthController extends Controller
 {
-    #[OAT\Post(path: '/auth/login', tags: ['Authentication'], operationId: 'authenticate', summary: 'Authenticate user', description: 'Authenticate user and get auth token', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/auth/login', tags: ['Authentication'], operationId: 'authenticate', summary: 'Authenticate user', description: 'Authenticate user and get bearer token. Depending on server settings user might also require verified email.', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\LoginRequest::class),
@@ -74,7 +74,7 @@ class AuthController extends Controller
         return new TokenResource($token);
     }
 
-    #[OAT\Post(path: '/auth/logout', tags: ['Authentication'], operationId: 'logout', description: 'Logout currently authenticated user', summary: 'Logout')]
+    #[OAT\Post(path: '/auth/logout', tags: ['Authentication'], operationId: 'logout', description: 'Logout currently authenticated user. This will delete and disable bearer token.', summary: 'Logout')]
     #[OAT\Response(response: 204, description: 'Successful response')]
     public function logout(Request $request): JsonResponse
     {
@@ -85,17 +85,17 @@ class AuthController extends Controller
         return response()->json(status: 204);
     }
 
-    #[OAT\Post(path: '/auth/register', tags: ['Authentication'], operationId: 'register', description: 'Register a new user', summary: 'Register', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/auth/register', tags: ['Authentication'], operationId: 'register', description: 'Register a new user account. If server has disabled registrations this will return 404 not found.', summary: 'Register', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\RegisterRequest::class),
         ]
     ), security: [])]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(ProfileResource::class),
+    #[BAO\SuccessfulResponse(response: 201, headers: [
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotFoundResponse]
-    public function register(RegisterUserService $registerService, RegisterRequest $req): JsonResource
+    public function register(RegisterUserService $registerService, RegisterRequest $req): Response
     {
         if (config('bar-assistant.allow_registration') === false) {
             abort(404, 'Registrations are disabled.');
@@ -105,10 +105,10 @@ class AuthController extends Controller
             SchemaRegisterRequest::fromIlluminateRequest($req)
         );
 
-        return new ProfileResource($user);
+        return new Response(status: 201, headers: ['Location' => route('profile.show', $user->id, false)]);
     }
 
-    #[OAT\Post(path: '/auth/forgot-password', tags: ['Authentication'], operationId: 'passwordForgot', description: 'Request a new password reset link', summary: 'Request password reset', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/auth/forgot-password', tags: ['Authentication'], operationId: 'passwordForgot', description: 'Send a new password reset link to users email address.', summary: 'Request password reset', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
@@ -138,7 +138,7 @@ class AuthController extends Controller
         abort(400);
     }
 
-    #[OAT\Post(path: '/auth/reset-password', tags: ['Authentication'], operationId: 'passwordReset', description: 'Reset user password', summary: 'Reset password', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/auth/reset-password', tags: ['Authentication'], operationId: 'passwordReset', description: 'Reset user password with data from password reset request.', summary: 'Reset password', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
@@ -180,7 +180,7 @@ class AuthController extends Controller
         abort(400, $status);
     }
 
-    #[OAT\Get(path: '/auth/verify/{id}/{hash}', tags: ['Authentication'], operationId: 'confirmAccount', description: 'Confirm user account, if applicable', summary: 'Confirm account', parameters: [
+    #[OAT\Get(path: '/auth/verify/{id}/{hash}', tags: ['Authentication'], operationId: 'confirmAccount', description: 'Verify user email. This will return 404 if email verifications is disabled.', summary: 'Confirm account', parameters: [
         new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id of a user', schema: new OAT\Schema(type: 'integer')),
         new OAT\Parameter(name: 'hash', in: 'path', required: true, description: 'Hash string sent to user email', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
@@ -210,14 +210,5 @@ class AuthController extends Controller
         }
 
         return response()->json(status: 204);
-    }
-
-    public function passwordCheck(Request $request): JsonResponse
-    {
-        $status = Hash::check($request->input('password'), $request->user()->password);
-
-        return response()->json(['data' => [
-            'status' => $status,
-        ]]);
     }
 }

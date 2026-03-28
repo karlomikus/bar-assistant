@@ -23,7 +23,7 @@ paths:
       tags:
         - Authentication
       summary: 'Authenticate user'
-      description: 'Authenticate user and get auth token'
+      description: 'Authenticate user and get bearer token. Depending on server settings user might also require verified email.'
       operationId: authenticate
       requestBody:
         required: true
@@ -59,7 +59,7 @@ paths:
       tags:
         - Authentication
       summary: Logout
-      description: 'Logout currently authenticated user'
+      description: 'Logout currently authenticated user. This will delete and disable bearer token.'
       operationId: logout
       responses:
         '204':
@@ -69,7 +69,7 @@ paths:
       tags:
         - Authentication
       summary: Register
-      description: 'Register a new user'
+      description: 'Register a new user account. If server has disabled registrations this will return 404 not found.'
       operationId: register
       requestBody:
         required: true
@@ -78,7 +78,7 @@ paths:
             schema:
               $ref: '#/components/schemas/RegisterRequest'
       responses:
-        '200':
+        '201':
           description: 'Successful response'
           headers:
             x-ratelimit-limit:
@@ -89,14 +89,10 @@ paths:
               description: 'Remaining number of attempts.'
               schema:
                 type: integer
-          content:
-            application/json:
+            Location:
+              description: 'URL of the new resource'
               schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Profile' }
-                type: object
+                type: string
         '404':
           description: 'Resource record not found.'
           headers:
@@ -120,7 +116,7 @@ paths:
       tags:
         - Authentication
       summary: 'Request password reset'
-      description: 'Request a new password reset link'
+      description: 'Send a new password reset link to users email address.'
       operationId: passwordForgot
       requestBody:
         required: true
@@ -143,7 +139,7 @@ paths:
       tags:
         - Authentication
       summary: 'Reset password'
-      description: 'Reset user password'
+      description: 'Reset user password with data from password reset request.'
       operationId: passwordReset
       requestBody:
         required: true
@@ -177,7 +173,7 @@ paths:
       tags:
         - Authentication
       summary: 'Confirm account'
-      description: 'Confirm user account, if applicable'
+      description: 'Verify user email. This will return 404 if email verifications is disabled.'
       operationId: confirmAccount
       parameters:
         -

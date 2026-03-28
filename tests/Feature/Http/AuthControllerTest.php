@@ -73,9 +73,8 @@ class AuthControllerTest extends TestCase
             'name' => 'Test Guy',
         ]);
 
-        $response->assertSuccessful();
-        $response->assertJsonPath('data.name', 'Test Guy');
-        $response->assertJsonPath('data.email', 'test@test.com');
+        $response->assertCreated();
+        $response->assertHeader('Location');
     }
 
     public function test_register_response_sends_confirm_email(): void

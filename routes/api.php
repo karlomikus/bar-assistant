@@ -97,9 +97,8 @@ Route::prefix('public')->group(function () {
 // Private API routes
 Route::middleware($apiMiddleware)->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware(['ability:*']);
-    Route::post('password-check', [AuthController::class, 'passwordCheck'])->middleware(['ability:*']);
 
-    Route::get('/profile', [ProfileController::class, 'show'])->middleware(['ability:*']);
+    Route::get('/profile', [ProfileController::class, 'show'])->middleware(['ability:*'])->name('profile.show');
     Route::post('/profile', [ProfileController::class, 'update'])->middleware(['ability:*']);
     Route::delete('/profile/sso/{provider}', [ProfileController::class, 'deleteSSOProvider'])->middleware(['ability:*']);
 
