@@ -83,4 +83,10 @@ final class Note implements Identity
     {
         return $this->recordTimestamps;
     }
+
+    public function updateNoteContent(string $newContent): void
+    {
+        $this->noteContent = $newContent;
+        $this->recordTimestamps = $this->recordTimestamps->updatedNow();
+    }
 }

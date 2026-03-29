@@ -24,9 +24,9 @@ class NoteControllerTest extends TestCase
     public function test_list_notes_response(): void
     {
         $cocktail = Cocktail::factory()->create();
-        $cocktail->addNote('Test note 1', auth()->user()->id);
-        $cocktail->addNote('Test note 2', auth()->user()->id);
-        $cocktail->addNote('Test note 3', auth()->user()->id);
+        $cocktail->addNote('Test note 1', auth('sanctum')->user()->id);
+        $cocktail->addNote('Test note 2', auth('sanctum')->user()->id);
+        $cocktail->addNote('Test note 3', auth('sanctum')->user()->id);
 
         $response = $this->getJson('/api/notes');
 
@@ -38,8 +38,8 @@ class NoteControllerTest extends TestCase
     {
         $cocktail1 = Cocktail::factory()->create();
         $cocktail2 = Cocktail::factory()->create();
-        $cocktail1->addNote('Test note 1', auth()->user()->id);
-        $cocktail2->addNote('Test note 2', auth()->user()->id);
+        $cocktail1->addNote('Test note 1', auth('sanctum')->user()->id);
+        $cocktail2->addNote('Test note 2', auth('sanctum')->user()->id);
 
         $response = $this->getJson('/api/notes?filter[cocktail_id]=' . $cocktail1->id);
 
@@ -50,7 +50,7 @@ class NoteControllerTest extends TestCase
     public function test_show_note_response(): void
     {
         $cocktail = Cocktail::factory()->create();
-        $note = $cocktail->addNote('Test note', auth()->user()->id);
+        $note = $cocktail->addNote('Test note', auth('sanctum')->user()->id);
 
         $response = $this->getJson('/api/notes/' . $note->id);
 
@@ -60,7 +60,7 @@ class NoteControllerTest extends TestCase
             $json
                 ->has('data.id')
                 ->where('data.note', 'Test note')
-                ->where('data.user_id', auth()->user()->id)
+                ->where('data.user_id', auth('sanctum')->user()->id)
                 ->has('data.created_at')
                 ->etc()
         );
@@ -77,15 +77,6 @@ class NoteControllerTest extends TestCase
         ]);
 
         $response->assertCreated();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data.id')
-                ->where('data.note', 'A new note')
-                ->where('data.user_id', auth()->user()->id)
-                ->has('data.created_at')
-                ->etc()
-        );
     }
 
     public function test_save_cocktail_note_forbidden_response(): void
@@ -109,7 +100,7 @@ class NoteControllerTest extends TestCase
     public function test_delete_cocktail_note_response(): void
     {
         $cocktail = Cocktail::factory()->create();
-        $note = $cocktail->addNote('Test note', auth()->user()->id);
+        $note = $cocktail->addNote('Test note', auth('sanctum')->user()->id);
 
         $response = $this->deleteJson('/api/notes/' . $note->id);
 

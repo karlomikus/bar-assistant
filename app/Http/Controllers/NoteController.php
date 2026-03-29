@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Note;
 use OpenApi\Attributes as OAT;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Http\Requests\NoteRequest;
@@ -34,7 +33,7 @@ class NoteController extends Controller
     ])]
     public function index(Request $request): JsonResource
     {
-        $notes = (new NoteQueryFilter())->paginate($request->get('per_page', 100));
+        $notes = (new NoteQueryFilter())->paginate($request->query('per_page', 100));
 
         return NoteResource::collection($notes->withQueryString());
     }
@@ -71,7 +70,7 @@ class NoteController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function store(NoteRequest $request): JsonResponse
+    public function store(NoteRequest $request): Response
     {
         $resourceId = $request->input('resource_id');
         $resourceType = $request->input('resource');
@@ -85,24 +84,14 @@ class NoteController extends Controller
             abort(403);
         }
 
-        $createRequest = new CreateNoteRequest(
+        $noteResult = $this->noteService->createNote(new CreateNoteRequest(
             userId: $request->user()->id,
             resourceId: (int) $resourceId,
             resource: $resourceType,
             note: $request->input('note'),
-        );
+        ));
 
-        $noteResult = $this->noteService->createNote($createRequest);
-
-        return (new NoteResource((object) [
-            'id' => $noteResult->id,
-            'note' => $noteResult->note,
-            'user_id' => $noteResult->userId,
-            'created_at' => $noteResult->createdAt,
-        ]))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('notes.show', $noteResult->id));
+        return new Response(status: 201, headers: ['Location' => route('notes.show', $noteResult->id, false)]);
     }
 
     #[OAT\Delete(path: '/notes/{id}', tags: ['Notes'], operationId: 'deleteNote', description: 'Delete a single note', summary: 'Delete note', parameters: [
