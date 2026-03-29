@@ -12,9 +12,9 @@ use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Common\Traits\HasImages;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Exception\DomainException;
-use BarAssistant\Domain\Common\Traits\HasImages;
 
 final class Bar implements Identity
 {

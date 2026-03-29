@@ -17,8 +17,8 @@ use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\Dilution;
 use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\Cocktail\Event\CocktailUpdated;
 use BarAssistant\Domain\Common\Traits\HasImages;
+use BarAssistant\Domain\Cocktail\Event\CocktailUpdated;
 
 final class Cocktail implements Identity
 {

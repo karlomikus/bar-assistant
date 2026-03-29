@@ -33,19 +33,8 @@ final readonly class CalculatorBlock
             value: $value,
             sort: $sort,
             description: $description,
-            settings: $settings ?? CalculatorBlockSettings::empty(),
+            settings: $settings ?? CalculatorBlockSettings::default(),
         );
-    }
-
-    public function equals(CalculatorBlock $other): bool
-    {
-        return $this->label === $other->label
-            && $this->type === $other->type
-            && $this->variableName === $other->variableName
-            && $this->value === $other->value
-            && $this->sort === $other->sort
-            && $this->description === $other->description
-            && $this->settings->toArray() === $other->settings->toArray();
     }
 
     public function getLabel(): string

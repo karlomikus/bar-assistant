@@ -21,28 +21,28 @@ final readonly class CalculatorBlockSettings
         return new self(
             suffix: is_string($data['suffix'] ?? null) ? $data['suffix'] : null,
             prefix: is_string($data['prefix'] ?? null) ? $data['prefix'] : null,
-            decimalPlaces: isset($data['decimal_places']) && is_numeric($data['decimal_places']) ? (int) $data['decimal_places'] : null,
+            decimalPlaces: isset($data['decimal_places']) ? (int) $data['decimal_places'] : null,
         );
     }
 
-    public static function empty(): self
+    public static function default(): self
     {
         return new self(
             suffix: null,
             prefix: null,
-            decimalPlaces: null,
+            decimalPlaces: 2,
         );
     }
 
     /**
-     * @return array<string, string|null>
+     * @return array<string, string|int|null>
      */
     public function toArray(): array
     {
         return [
             'suffix' => $this->suffix,
             'prefix' => $this->prefix,
-            'decimal_places' => $this->decimalPlaces !== null ? (string) $this->decimalPlaces : null,
+            'decimal_places' => $this->decimalPlaces,
         ];
     }
 }

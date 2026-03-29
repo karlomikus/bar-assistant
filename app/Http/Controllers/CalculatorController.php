@@ -7,15 +7,18 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Calculator;
-use Kami\Cocktail\Models\CalculatorBlock;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CalculatorResource;
 use Kami\Cocktail\OpenAPI\Schemas\CalculatorRequest;
-use Kami\Cocktail\OpenAPI\Schemas\CalculatorSolveRequest;
+use Kami\Cocktail\OpenAPI\Schemas\CalculatorBlockRequest;
+use BarAssistant\Application\Calculator\CalculatorService;
 use Kami\Cocktail\Http\Resources\CalculatorResultResource;
+use BarAssistant\Application\Calculator\DTO\SolveCalculator;
+use BarAssistant\Application\Calculator\DTO\CreateCalculator;
+use BarAssistant\Application\Calculator\DTO\UpdateCalculator;
+use BarAssistant\Application\Calculator\DTO\CreateCalculatorBlock;
 use Kami\Cocktail\Http\Requests\CalculatorRequest as CalculatorFormRequest;
 
 class CalculatorController extends Controller
@@ -60,13 +63,11 @@ class CalculatorController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\CalculatorRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(CalculatorResource::class),
-    ], headers: [
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(CalculatorFormRequest $request): JsonResponse
+    public function store(CalculatorService $calculatorService, CalculatorFormRequest $request): Response
     {
         if ($request->user()->cannot('create', Calculator::class)) {
             abort(403);
@@ -74,29 +75,24 @@ class CalculatorController extends Controller
 
         $requestSchema = CalculatorRequest::fromArray($request->all());
 
-        $calculator = new Calculator();
-        $calculator->name = $requestSchema->name;
-        $calculator->description = $requestSchema->description;
-        $calculator->bar_id = bar()->id;
-        $calculator->save();
+        $calculatorResult = $calculatorService->createCalculator(new CreateCalculator(
+            barId: bar()->id,
+            name: $requestSchema->name,
+            description: $requestSchema->description,
+            blocks: array_map(static function (CalculatorBlockRequest $block) {
+                return new CreateCalculatorBlock(
+                    label: $block->label,
+                    variableName: $block->variableName,
+                    value: $block->value,
+                    type: $block->type->value,
+                    settings: $block->settings->toArray(),
+                    description: $block->description,
+                    sort: $block->sort,
+                );
+            }, $requestSchema->blocks),
+        ));
 
-        foreach ($requestSchema->blocks as $block) {
-            $calculatorBlock = new CalculatorBlock();
-            $calculatorBlock->type = $block->type;
-            $calculatorBlock->label = $block->label;
-            $calculatorBlock->variable_name = $block->variableName;
-            $calculatorBlock->value = $block->value;
-            $calculatorBlock->sort = $block->sort;
-            $calculatorBlock->description = $block->description;
-            $calculatorBlock->calculator_id = $calculator->id;
-            $calculatorBlock->settings = $block->settings->toArray();
-            $calculatorBlock->save();
-        }
-
-        return (new CalculatorResource($calculator))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('calculators.show', $calculator->id));
+        return new Response(status: 201, headers: ['Location' => route('calculators.show', $calculatorResult->id, false)]);
     }
 
     #[OAT\Put(path: '/calculators/{id}', tags: ['Calculator'], operationId: 'updateCalculator', description: 'Update a specific calculator', summary: 'Update calculator', parameters: [
@@ -110,7 +106,7 @@ class CalculatorController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(CalculatorFormRequest $request, int $id): Response
+    public function update(CalculatorService $calculatorService, CalculatorFormRequest $request, int $id): Response
     {
         $calculator = Calculator::findOrFail($id);
 
@@ -120,24 +116,22 @@ class CalculatorController extends Controller
 
         $requestSchema = CalculatorRequest::fromArray($request->all());
 
-        $calculator->name = $requestSchema->name;
-        $calculator->description = $requestSchema->description;
-        $calculator->updated_at = now();
-        $calculator->save();
-
-        $calculator->blocks()->delete();
-        foreach ($requestSchema->blocks as $block) {
-            $calculatorBlock = new CalculatorBlock();
-            $calculatorBlock->type = $block->type;
-            $calculatorBlock->label = $block->label;
-            $calculatorBlock->variable_name = $block->variableName;
-            $calculatorBlock->value = $block->value;
-            $calculatorBlock->sort = $block->sort;
-            $calculatorBlock->description = $block->description;
-            $calculatorBlock->calculator_id = $calculator->id;
-            $calculatorBlock->settings = $block->settings->toArray();
-            $calculatorBlock->save();
-        }
+        $calculatorService->updateCalculator(new UpdateCalculator(
+            calculatorId: $id,
+            name: $requestSchema->name,
+            description: $requestSchema->description,
+            blocks: array_map(static function (CalculatorBlockRequest $block) {
+                return new CreateCalculatorBlock(
+                    label: $block->label,
+                    variableName: $block->variableName,
+                    value: $block->value,
+                    type: $block->type->value,
+                    settings: $block->settings->toArray(),
+                    description: $block->description,
+                    sort: $block->sort,
+                );
+            }, $requestSchema->blocks),
+        ));
 
         return new Response(status: 204);
     }
@@ -174,7 +168,7 @@ class CalculatorController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function solve(Request $request, int $id): CalculatorResultResource
+    public function solve(CalculatorService $calculatorService, Request $request, int $id): CalculatorResultResource
     {
         $calculator = Calculator::with('blocks')->findOrFail($id);
 
@@ -182,9 +176,11 @@ class CalculatorController extends Controller
             abort(403);
         }
 
-        $userInputs = CalculatorSolveRequest::fromArray($request->all());
-        $calculatorResult = $calculator->solve($userInputs);
+        $result = $calculatorService->solveCalculator(new SolveCalculator(
+            $id,
+            $request->input('inputs')
+        ));
 
-        return new CalculatorResultResource($calculatorResult);
+        return new CalculatorResultResource($result);
     }
 }

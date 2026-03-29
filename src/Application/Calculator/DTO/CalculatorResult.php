@@ -4,19 +4,10 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Calculator\DTO;
 
-/**
- * @param array<string, string> $inputs
- * @param array<string, string> $results
- */
 final readonly class CalculatorResult
 {
-    /**
-     * @param array<string, string> $inputs
-     * @param array<string, string> $results
-     */
     public function __construct(
-        public array $inputs,
-        public array $results,
+        public int $id,
     ) {
     }
 }

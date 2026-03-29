@@ -9,6 +9,7 @@ use BarAssistant\Domain\Bar\BarId;
 use Illuminate\Support\Facades\DB;
 use BarAssistant\Domain\Calculator\Calculator;
 use BarAssistant\Domain\Calculator\CalculatorId;
+use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Calculator\CalculatorBlock;
 use BarAssistant\Domain\Calculator\CalculatorBlockType;
 use Kami\Cocktail\Models\Calculator as ModelCalculator;
@@ -30,17 +31,6 @@ final class EloquentCalculatorRepository implements CalculatorRepository
         return self::map($model);
     }
 
-    public function findByIdWithBlocks(CalculatorId $id): ?Calculator
-    {
-        $model = ModelCalculator::with('blocks')->find($id->value);
-
-        if ($model === null) {
-            return null;
-        }
-
-        return self::mapWithBlocks($model);
-    }
-
     public function save(Calculator $calculator): Calculator
     {
         DB::beginTransaction();
@@ -49,6 +39,11 @@ final class EloquentCalculatorRepository implements CalculatorRepository
             $calculatorModel->bar_id = $calculator->getBarId()->value;
             $calculatorModel->name = $calculator->getName();
             $calculatorModel->description = $calculator->getDescription();
+            $calculatorModel->created_at = $calculator->getRecordTimestamps()->getCreatedAt();
+            $calculatorModel->updated_at = null;
+            if ($calculator->getRecordTimestamps()->wasUpdated()) {
+                $calculatorModel->updated_at = $calculator->getRecordTimestamps()->getUpdatedAt();
+            }
             $calculatorModel->save();
 
             if ($calculator->isTransient()) {
@@ -56,12 +51,9 @@ final class EloquentCalculatorRepository implements CalculatorRepository
             }
 
             $calculatorModel->blocks()->delete();
-
-            $calculatorId = $calculator->getId();
-            assert($calculatorId !== null);
             foreach ($calculator->getBlocks() as $block) {
                 $blockModel = new ModelCalculatorBlock();
-                $blockModel->calculator_id = $calculatorId->value;
+                $blockModel->calculator_id = $calculatorModel->id;
                 $blockModel->label = $block->getLabel();
                 $blockModel->variable_name = $block->getVariableName();
                 $blockModel->value = $block->getValue();
@@ -91,23 +83,10 @@ final class EloquentCalculatorRepository implements CalculatorRepository
             barId: new BarId($model->bar_id),
             name: $model->name,
             description: $model->description,
+            recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
         );
 
         $calculator->setId(new CalculatorId($model->id));
-
-        return $calculator;
-    }
-
-    private static function mapWithBlocks(ModelCalculator $model): Calculator
-    {
-        $calculator = Calculator::create(
-            barId: new BarId($model->bar_id),
-            name: $model->name,
-            description: $model->description,
-        );
-
-        $calculatorId = new CalculatorId($model->id);
-        $calculator->setId($calculatorId);
 
         $blocks = [];
         /** @var ModelCalculatorBlock $blockModel */
@@ -116,13 +95,13 @@ final class EloquentCalculatorRepository implements CalculatorRepository
             $settingsData = (array) ($blockModel->settings ?? []);
             $block = CalculatorBlock::create(
                 label: $blockModel->label,
-                type: CalculatorBlockType::fromString($blockModel->type->value),
+                type: CalculatorBlockType::from($blockModel->type->value),
                 variableName: $blockModel->variable_name,
                 value: $blockModel->value,
                 sort: $blockModel->sort,
                 description: $blockModel->description,
                 settings: CalculatorBlockSettings::fromArray($settingsData),
-            )->withCalculatorId($calculatorId);
+            );
 
             $blocks[] = $block;
         }

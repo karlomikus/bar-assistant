@@ -17,9 +17,9 @@ use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Common\AmountWithUnits;
 use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Common\Traits\HasImages;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Ingredient\Event\IngredientStrengthChanged;
-use BarAssistant\Domain\Common\Traits\HasImages;
 
 /**
  * Ingredient entity

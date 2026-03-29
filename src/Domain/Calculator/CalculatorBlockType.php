@@ -8,9 +8,4 @@ enum CalculatorBlockType: string
 {
     case Input = 'input';
     case Eval = 'eval';
-
-    public static function fromString(string $input): self
-    {
-        return self::from($input);
-    }
 }

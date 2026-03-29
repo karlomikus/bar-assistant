@@ -7,6 +7,7 @@ namespace BarAssistant\Domain\Calculator;
 use NXP\MathExecutor;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Bar\BarId;
+use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Exception\DomainException;
 
 final class Calculator implements Identity
@@ -25,6 +26,7 @@ final class Calculator implements Identity
         private readonly BarId $barId,
         private string $name,
         private ?string $description,
+        private RecordTimestamps $recordTimestamps,
         array $blocks = [],
     ) {
         $this->blocks = $blocks;
@@ -36,6 +38,7 @@ final class Calculator implements Identity
     public static function create(
         BarId $barId,
         string $name,
+        RecordTimestamps $recordTimestamps,
         ?string $description = null,
         array $blocks = [],
     ): self {
@@ -44,6 +47,7 @@ final class Calculator implements Identity
             name: $name,
             description: $description,
             blocks: $blocks,
+            recordTimestamps: $recordTimestamps,
         );
     }
 
@@ -78,6 +82,11 @@ final class Calculator implements Identity
         return $this->name;
     }
 
+    public function getRecordTimestamps(): RecordTimestamps
+    {
+        return $this->recordTimestamps;
+    }
+
     public function getDescription(): ?string
     {
         return $this->description;
@@ -110,12 +119,9 @@ final class Calculator implements Identity
      */
     public function replaceBlocks(array $blocks): self
     {
-        return new self(
-            barId: $this->barId,
-            name: $this->name,
-            description: $this->description,
-            blocks: $blocks,
-        );
+        $this->blocks = $blocks;
+
+        return $this;
     }
 
     /**
@@ -162,7 +168,7 @@ final class Calculator implements Identity
             $value = $inputs[$variableName] ?? $block->getValue();
             $resultInputs[$variableName] = $value;
 
-            $executor->setVar($variableName, (float) $value);
+            $executor->setVar($variableName, $value);
         }
 
         foreach ($this->getEvaluations() as $block) {

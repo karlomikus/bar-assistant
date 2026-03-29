@@ -7,6 +7,7 @@ namespace BarAssistant\Application\Calculator;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Calculator\Calculator;
 use BarAssistant\Domain\Calculator\CalculatorId;
+use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Calculator\CalculatorBlock;
 use BarAssistant\Domain\Calculator\CalculatorBlockType;
 use BarAssistant\Domain\Calculator\CalculatorRepository;
@@ -16,6 +17,8 @@ use BarAssistant\Application\Calculator\DTO\CalculatorResult;
 use BarAssistant\Application\Calculator\DTO\CreateCalculator;
 use BarAssistant\Application\Calculator\DTO\UpdateCalculator;
 use BarAssistant\Application\Exception\EntityNotFoundException;
+use BarAssistant\Application\Calculator\DTO\CalculatorSolveResult;
+use BarAssistant\Application\Calculator\DTO\CreateCalculatorBlock;
 
 final readonly class CalculatorService
 {
@@ -24,14 +27,14 @@ final readonly class CalculatorService
     ) {
     }
 
-    public function createCalculator(CreateCalculator $request): Calculator
+    public function createCalculator(CreateCalculator $request): CalculatorResult
     {
         $barId = new BarId($request->barId);
 
         $blocks = array_map(
-            fn (object $blockData) => CalculatorBlock::create(
+            fn (CreateCalculatorBlock $blockData) => CalculatorBlock::create(
                 label: $blockData->label,
-                type: CalculatorBlockType::fromString($blockData->type),
+                type: CalculatorBlockType::from($blockData->type),
                 variableName: $blockData->variableName,
                 value: $blockData->value,
                 sort: $blockData->sort,
@@ -45,10 +48,13 @@ final readonly class CalculatorService
             barId: $barId,
             name: $request->name,
             description: $request->description,
+            recordTimestamps: RecordTimestamps::createdNow(),
             blocks: $blocks,
         );
 
-        return $this->calculatorRepository->save($calculator);
+        $calculator = $this->calculatorRepository->save($calculator);
+
+        return new CalculatorResult(id: $calculator->getId()->value);
     }
 
     public function updateCalculator(UpdateCalculator $request): Calculator
@@ -61,7 +67,7 @@ final readonly class CalculatorService
         $blocks = array_map(
             fn (object $blockData) => CalculatorBlock::create(
                 label: $blockData->label,
-                type: CalculatorBlockType::fromString($blockData->type),
+                type: CalculatorBlockType::from($blockData->type),
                 variableName: $blockData->variableName,
                 value: $blockData->value,
                 sort: $blockData->sort,
@@ -90,16 +96,16 @@ final readonly class CalculatorService
         $this->calculatorRepository->delete($id);
     }
 
-    public function solveCalculator(SolveCalculator $request): CalculatorResult
+    public function solveCalculator(SolveCalculator $request): CalculatorSolveResult
     {
-        $calculator = $this->calculatorRepository->findByIdWithBlocks(new CalculatorId($request->calculatorId));
+        $calculator = $this->calculatorRepository->findById(new CalculatorId($request->calculatorId));
         if ($calculator === null) {
             throw new EntityNotFoundException('The calculator was not found');
         }
 
         $result = $calculator->solve($request->inputs);
 
-        return new CalculatorResult(
+        return new CalculatorSolveResult(
             inputs: $result->inputs,
             results: $result->results,
         );

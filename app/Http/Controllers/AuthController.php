@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
@@ -18,7 +19,6 @@ use Kami\Cocktail\Mail\PasswordChanged;
 use Illuminate\Support\Facades\Password;
 use Kami\Cocktail\Http\Resources\TokenResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Response;
 use Kami\Cocktail\Http\Requests\RegisterRequest;
 use Kami\Cocktail\Services\Auth\RegisterUserService;
 use Kami\Cocktail\OpenAPI\Schemas\RegisterRequest as SchemaRegisterRequest;

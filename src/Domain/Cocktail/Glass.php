@@ -10,9 +10,9 @@ use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Common\AmountWithUnits;
 use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Common\Traits\HasImages;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Cocktail\Event\GlassUpdated;
-use BarAssistant\Domain\Common\Traits\HasImages;
 
 final class Glass implements Identity
 {
