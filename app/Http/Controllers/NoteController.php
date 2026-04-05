@@ -16,6 +16,7 @@ use Kami\Cocktail\Http\Resources\NoteResource;
 use Kami\Cocktail\Http\Filters\NoteQueryFilter;
 use Illuminate\Http\Resources\Json\JsonResource;
 use BarAssistant\Application\Note\DTO\CreateNoteRequest;
+use BarAssistant\Domain\Note\NoteableResourceType;
 
 class NoteController extends Controller
 {
@@ -75,9 +76,12 @@ class NoteController extends Controller
         $resourceId = $request->input('resource_id');
         $resourceType = $request->input('resource');
 
+        if ($resourceType === null) {
+            abort(404);
+        }
+
         $resourceModel = match ($resourceType) {
-            'cocktail' => Cocktail::findOrFail((int) $resourceId),
-            default => abort(404)
+            NoteableResourceType::Cocktail => Cocktail::findOrFail((int) $resourceId),
         };
 
         if ($request->user()->cannot('addNote', $resourceModel)) {

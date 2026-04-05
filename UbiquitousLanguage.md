@@ -1,41 +1,80 @@
 # Ubiquitous Language
 
-| Term | Definition |
-|------|------------|
-| Bar | Main resource representing a bar. A bar is main tenant for all other resources. |
-| Ingredient | A basic item that can be used to make a drink. For example, "lemon", "vodka", and "sugar" are all ingredients. |
-| Complex Ingredient | Any ingredient that is made up of multiple ingredients (one or more). For example, a "lemon juice" is made of "lemon". |
-| Ingredient Part | An ingredient that is part of a complex ingredient. For example, "lemon" is an ingredient part of "lemon juice". |
-| Ingredient Variant | An ingredient that has a parent ingredient. For example, "Rye Whisky" is a variant of "Whisky". |
-| Materialized Path | A list of ingredient ids represeting a hierarchy for a given ingredient. |
-| Cocktail | A recipe that will make a drink that typically contains a mixture of various ingredients. |
-| Image | A picture associated with a bar, ingredient, or cocktail. |
-| Temporary Image | An image that is uploaded but not yet associated with any resource. |
-| Main image | An image that is designated as the primary image for a resource that contains multiple images. Image is considered as main when it's first in the sort order. |
-| Price Category | A classification for prices of ingredients, typically based on market locale, like "Amazon US", "Local Store", etc. |
-| Ingredient Price | A monetary value associated with an ingredient amount and units within a specific price category. For example, "10 EUR per 750ml in Amazon DE". |
-| Authors | Users that have created or modified a resource. |
-| Record Timestamps | Timestamps that indicate when a resource was created and last modified. |
-| Cocktail Ingredient | Ingredient that is a part of a cocktail recipe, along with the amount and units required. Can also contain substitutes. |
-| Cocktail Ingredient Substitute | An alternative ingredient that can be used in place of a cocktail ingredient, along with the amount and units required. |
-| Specific Cocktail Ingredient | An ingredient that must be used in a cocktail recipe, without automatic substitute suggestions. |
-| Optional Cocktail Ingredient | An ingredient that may be used in a cocktail recipe, but is completely optional. |
-| Cocktail | A recipe that will make a drink that typically contains a mixture of various ingredients. |
-| ABV | Alcohol By Volume - a standard measure used worldwide to quantify the amount of alcohol (ethanol) contained in an alcoholic beverage. |
-| Cocktail Garnish | An ingredient used to decorate or enhance the presentation of a cocktail, often added on top or to the side of the drink. |
-| Cocktail Variant | A variation (also called a riff) of a cocktail recipe that includes modifications such as different ingredients, amounts, or preparation methods. |
-| Cocktail Instructions | Step-by-step directions for preparing a cocktail, including the order of adding ingredients, preparation techniques, and any specific notes or tips for making the drink. |
-| Menu | A curated list of cocktails and ingredients offered by a bar, typically organized into categories and including pricing information. |
-| Menu Category | A grouping within a menu that organizes cocktails and ingredients into specific sections, for example: "Tiki", "Gin selection". |
-| Menu Item | An entry in a menu representing either a cocktail or an ingredient, along with its price and sort order. |
-| Cocktail Method | A preparation technique used to make a cocktail, such as stirring, shaking, or blending. Each method has a standard dilution percentage that affects the final drink's ABV calculation. |
-| User | An individual who interacts with the system. |
-| Member | A user that is part of a bar, with specific roles and permissions. |
-| Glass | A type of glassware used to serve cocktails, such as "Martini Glass", "Highball Glass", etc. |
-| Cocktail Price | A monetary value associated with a cocktail, typically based on the cost of its ingredients and preparation, and can vary based on the price category. |
-| Utensils | Tools used in the preparation of cocktails, such as shakers, strainers, muddlers, etc. |
-| Calculator | User created custom calculators used to calculate required ingredient amounts for custom infusions, juices, etc. |
-| Calculator Block | A block within a calculator that represents a specific input values or evaluation of input values. A block can contain properties like value name, label, decimal places, etc. |
-| Amount | A specific quantity of an ingredient, represented as a combination of a numeric value and its corresponding units (e.g., "50 ml", "2 oz", "1 slice"). |
-| Slug | A URL-friendly string that uniquely identifies a resource, typically generated from the resource's name or title. For example, a cocktail named "Mojito" might have a slug of "mojito". |
-| Rating | A numerical value representing a user's evaluation of a resource, typically on a scale (e.g., 1 to 5 stars). |
+## Core Domain
+
+| Term | Definition | Aliases to avoid |
+| :--- | :--- | :--- |
+| **Bar** | Main tenant resource representing a bar and its associated data. | Tenant |
+| **Cocktail** | A recipe for a drink containing a mixture of ingredients. | Drink, Recipe |
+| **Ingredient** | A basic item used to make a drink. | Component |
+| **Complex Ingredient** | An ingredient made up of one or more other ingredients. | Compound |
+| **Ingredient Part** | A constituent ingredient of a complex ingredient. | Sub-ingredient |
+| **Ingredient Variant** | An ingredient that has a parent ingredient relationship. | Sub-type |
+| **Materialized Path** | A list of ingredient IDs representing an ingredient's hierarchy. | Hierarchy Path |
+
+## Inventory & Pricing
+
+| Term | Definition | Aliases to avoid |
+| :--- | :--- | :--- |
+| **Price Category** | A classification for ingredient prices, often by locale. | Market, Region |
+| **Ingredient Price** | A monetary value for an ingredient amount in a price category. | Cost |
+| **Cocktail Price** | A monetary value associated with a cocktail recipe. | Cost |
+| **Amount** | A specific quantity of an ingredient with numeric value and units. | Quantity, Measure |
+| **Rating** | A numerical evaluation of a resource by a user. | Score, Review |
+
+## Menu & Presentation
+
+| Term | Definition | Aliases to avoid |
+| :--- | :--- | :--- |
+| **Menu** | A curated list of cocktails and ingredients offered by a bar. | Catalog |
+| **Menu Category** | A grouping within a menu for organization. | Section |
+| **Menu Item** | A cocktail or ingredient entry in a menu with price and sort order. | Listing |
+| **Image** | A visual associated with a bar, ingredient, or cocktail. | Photo, Picture |
+| **Temporary Image** | An uploaded image not yet associated with a resource. | Pending Image |
+| **Main Image** | The primary image for a resource (first in sort order). | Default Image |
+| **Slug** | A URL-friendly identifier generated from a resource name. | Permalink |
+
+## Actors
+
+| Term | Definition | Aliases to avoid |
+| :--- | :--- | :--- |
+| **User** | An individual who interacts with the system. | Person |
+| **Member** | A user assigned to a bar with specific roles and permissions. | Employee |
+| **Authors** | Users that created or modified a resource. | Creator, Editor |
+
+## Preparation
+
+| Term | Definition | Aliases to avoid |
+| :--- | :--- | :--- |
+| **Cocktail Ingredient** | An ingredient within a recipe, including amount, units, and substitutes. | Recipe Item |
+| **Cocktail Ingredient Substitute** | An alternative ingredient for a cocktail ingredient. | Replacement |
+| **Specific Cocktail Ingredient** | A mandatory ingredient without automatic substitute suggestions. | Required Item |
+| **Optional Cocktail Ingredient** | An ingredient that may optionally be used in a recipe. | Extra |
+| **Cocktail Garnish** | An ingredient used to decorate or enhance presentation. | Decoration |
+| **Cocktail Variant** | A riff on a cocktail recipe with modifications. | Riff, Variation |
+| **Cocktail Instructions** | Step-by-step directions for preparing a cocktail. | Recipe steps |
+| **Cocktail Method** | A preparation technique (e.g., stirring) affecting ABV dilution. | Technique |
+| **ABV** | Alcohol By Volume; a measure of alcohol concentration. | Alcohol Content |
+| **Glass** | A type of vessel used to serve cocktails. | Glassware |
+| **Utensils** | Tools used in cocktail preparation (e.g., shakers). | Equipment |
+| **Calculator** | A tool for calculating ingredient amounts for infusions. | Custom tool |
+| **Calculator Block** | An input or evaluation component within a calculator. | Input field |
+
+## Metadata
+
+| Term | Definition | Aliases to avoid |
+| :--- | :--- | :--- |
+| **Record Timestamps** | Timestamps for resource creation and last modification. | Audit fields |
+
+## Relationships
+
+- A **Bar** contains many **Cocktails**, **Ingredients**, and one **Menu**.
+- A **Cocktail** consists of one or more **Cocktail Ingredients**.
+- A **Cocktail Ingredient** may have zero or more **Cocktail Ingredient Substitutes**.
+- A **Member** is a **User** assigned to one or more **Bars**.
+- **Authors** are **Users** who modified a resource.
+
+## Flagged ambiguities
+
+- **Ingredient** vs **Cocktail Ingredient**: An **Ingredient** is the base domain entity; a **Cocktail Ingredient** is a recipe-specific application of an **Ingredient** with additional metadata like amount and units.
+- **Author** vs **User**: An **Author** is a role definition for audit tracking, while a **User** is the identity of an individual interacting with the system.

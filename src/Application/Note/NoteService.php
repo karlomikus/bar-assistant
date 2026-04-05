@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Note;
 
+use BarAssistant\Application\Exception\ApplicationServiceException;
 use BarAssistant\Domain\Note\Note;
 use BarAssistant\Domain\Note\NoteId;
 use BarAssistant\Domain\User\UserId;
@@ -12,13 +13,10 @@ use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Application\Note\DTO\NoteResult;
 use BarAssistant\Application\Note\DTO\CreateNoteRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
+use BarAssistant\Domain\Note\NoteableResourceType;
 
 final readonly class NoteService
 {
-    private const RESOURCE_TYPE_MAP = [
-        'cocktail' => 'Kami\Cocktail\Models\Cocktail',
-    ];
-
     public function __construct(
         private NoteRepository $noteRepository,
     ) {
@@ -26,12 +24,13 @@ final readonly class NoteService
 
     public function createNote(CreateNoteRequest $request): NoteResult
     {
-        $resourceModelClass = $this->resolveResourceModelClass($request->resource);
-
         $note = Note::create(
             userId: new UserId($request->userId),
             noteableId: (string) $request->resourceId,
-            noteableType: $resourceModelClass,
+            noteableType: match ($request->resource) {
+                'cocktail' => NoteableResourceType::Cocktail,
+                default => throw new ApplicationServiceException('Unknown resource type'),
+            },
             noteContent: $request->note,
             recordTimestamps: RecordTimestamps::createdNow(),
         );
@@ -61,14 +60,5 @@ final readonly class NoteService
         }
 
         $this->noteRepository->delete(new NoteId($noteId));
-    }
-
-    private function resolveResourceModelClass(string $resource): string
-    {
-        if (!isset(self::RESOURCE_TYPE_MAP[$resource])) {
-            throw new \InvalidArgumentException("Unsupported resource type: {$resource}");
-        }
-
-        return self::RESOURCE_TYPE_MAP[$resource];
     }
 }

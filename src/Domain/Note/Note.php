@@ -16,7 +16,7 @@ final class Note implements Identity
     private function __construct(
         private readonly UserId $userId,
         private readonly string $noteableId,
-        private readonly string $noteableType,
+        private readonly NoteableResourceType $noteableType,
         private string $noteContent,
         private RecordTimestamps $recordTimestamps,
     ) {
@@ -25,7 +25,7 @@ final class Note implements Identity
     public static function create(
         UserId $userId,
         string $noteableId,
-        string $noteableType,
+        NoteableResourceType $noteableType,
         string $noteContent,
         RecordTimestamps $recordTimestamps,
     ): self {
@@ -69,7 +69,7 @@ final class Note implements Identity
         return $this->noteableId;
     }
 
-    public function getNoteableType(): string
+    public function getNoteableType(): NoteableResourceType
     {
         return $this->noteableType;
     }

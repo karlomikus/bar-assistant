@@ -10,6 +10,7 @@ use BarAssistant\Domain\User\UserId;
 use Kami\Cocktail\Models\Note as ModelNote;
 use BarAssistant\Domain\Note\NoteRepository;
 use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Note\NoteableResourceType;
 
 final class EloquentNoteRepository implements NoteRepository
 {
@@ -29,7 +30,9 @@ final class EloquentNoteRepository implements NoteRepository
         $model = ModelNote::findOrNew($note->getId()?->value);
         $model->user_id = $note->getUserId()->value;
         $model->noteable_id = $note->getNoteableId();
-        $model->noteable_type = $note->getNoteableType();
+        $model->noteable_type = match ($note->getNoteableType()) {
+            NoteableResourceType::Cocktail => Cocktail::class,
+        };
         $model->note = $note->getNoteContent();
         $model->created_at = $note->getRecordTimestamps()->getCreatedAt()->format('Y-m-d H:i:s');
 
