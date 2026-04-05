@@ -158,13 +158,7 @@ class CollectionControllerTest extends TestCase
             'cocktails' => [$newCocktailToAdd->id],
         ]);
 
-        $response->assertSuccessful();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data.cocktails', 1)
-                ->etc()
-        );
+        $response->assertNoContent();
     }
 
     public function test_sync_cocktails_in_collection_fails_for_unknown_cocktails(): void

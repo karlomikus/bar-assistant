@@ -157,7 +157,7 @@ class CollectionController extends Controller
         return new Response(status: 204);
     }
 
-    #[OAT\Put(path: '/collections/{id}/cocktails', tags: ['Collections'], operationId: 'syncCocktailsInCollection', summary: 'Sync cocktails in a collection', description: 'Used to updated/add/delete cocktails in a collection. To delete all cocktails pass an empty array.', parameters: [
+    #[OAT\Put(path: '/collections/{id}/cocktails', tags: ['Collections'], operationId: 'syncCocktailsInCollection', summary: 'Sync cocktails in a collection', description: 'Used to add and remove cocktails in a collection. To delete all cocktails pass an empty array.', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -167,11 +167,9 @@ class CollectionController extends Controller
             ]),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(CollectionResource::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
-    public function cocktails(CollectionService $collectionService, Request $request, int $id): JsonResource
+    public function sync(CollectionService $collectionService, Request $request, int $id): Response
     {
         $collection = CocktailCollection::findOrFail($id)->load('barMembership');
 
@@ -194,9 +192,7 @@ class CollectionController extends Controller
             abort(500, 'Unable to add cocktails to collection!');
         }
 
-        $collection = CocktailCollection::findOrFail($id)->load('barMembership', 'cocktails');
-
-        return new CollectionResource($collection);
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/collections/{id}', tags: ['Collections'], operationId: 'deleteCollection', description: 'Delete a specific collection', summary: 'Delete collection', parameters: [

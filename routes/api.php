@@ -213,7 +213,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/{id}', [CollectionController::class, 'show'])->name('collection.show');
         Route::put('/{id}', [CollectionController::class, 'update']);
         Route::delete('/{id}', [CollectionController::class, 'delete']);
-        Route::put('/{id}/cocktails', [CollectionController::class, 'cocktails']);
+        Route::put('/{id}/cocktails', [CollectionController::class, 'sync']);
     });
 
     Route::prefix('import')->middleware(['throttle:importing'])->group(function () {

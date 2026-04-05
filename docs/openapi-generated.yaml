@@ -900,14 +900,6 @@ paths:
               description: 'URL of the new resource'
               schema:
                 type: string
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Calculator' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -1015,25 +1007,8 @@ paths:
             schema:
               $ref: '#/components/schemas/CalculatorRequest'
       responses:
-        '200':
+        '204':
           description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Calculator' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -2707,7 +2682,7 @@ paths:
       tags:
         - Collections
       summary: 'Sync cocktails in a collection'
-      description: 'Used to updated/add/delete cocktails in a collection. To delete all cocktails pass an empty array.'
+      description: 'Used to add and remove cocktails in a collection. To delete all cocktails pass an empty array.'
       operationId: syncCocktailsInCollection
       parameters:
         -
@@ -2728,25 +2703,8 @@ paths:
                   items: { type: integer }
               type: object
       responses:
-        '200':
+        '204':
           description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Collection' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -10735,7 +10693,7 @@ components:
             - 'null'
         decimal_places:
           type:
-            - string
+            - integer
             - 'null'
       type: object
     CalculatorRequest:
@@ -10915,19 +10873,28 @@ components:
         - name
       properties:
         name:
+          description: 'Name of the collection'
           type: string
-          example: 'Collection name'
+          example: 'My summer cocktails'
         description:
+          description: 'A short description of the collection'
           type:
             - string
             - 'null'
-          example: 'Collection description'
+          example: 'Refreshing cocktails for a hot summer day.'
         is_bar_shared:
+          description: 'Whether the collection should be shared with the bar. Shared collections are visible to all bar members. Default `false`.'
           type: boolean
+          example: false
         cocktails:
+          description: 'List of cocktail ids that belong to this collection'
           type: array
           items:
             type: integer
+          example:
+            - 1
+            - 2
+            - 3
       type: object
     ExportRequest:
       properties:
