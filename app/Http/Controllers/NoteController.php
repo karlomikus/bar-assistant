@@ -15,8 +15,8 @@ use BarAssistant\Application\Note\NoteService;
 use Kami\Cocktail\Http\Resources\NoteResource;
 use Kami\Cocktail\Http\Filters\NoteQueryFilter;
 use Illuminate\Http\Resources\Json\JsonResource;
-use BarAssistant\Application\Note\DTO\CreateNoteRequest;
 use BarAssistant\Domain\Note\NoteableResourceType;
+use BarAssistant\Application\Note\DTO\CreateNoteRequest;
 
 class NoteController extends Controller
 {

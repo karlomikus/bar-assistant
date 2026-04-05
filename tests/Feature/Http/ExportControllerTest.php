@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\BarMembership;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
+use Kami\Cocktail\Jobs\StartTypedExport;
+use Kami\Cocktail\Models\Bar;
 
 class ExportControllerTest extends TestCase
 {
@@ -59,11 +62,30 @@ class ExportControllerTest extends TestCase
 
     public function test_create_export(): void
     {
+        Queue::fake();
+
         $response = $this->postJson('/api/exports', [
             'bar_id' => $this->barMembership->bar_id,
         ]);
 
-        $response->assertSuccessful();
+        Queue::assertPushed(StartTypedExport::class);
+
+        $response->assertAccepted();
+    }
+
+    public function test_create_export_for_unowned_bar(): void
+    {
+        $bar = Bar::factory()->create();
+
+        Queue::fake();
+
+        $response = $this->postJson('/api/exports', [
+            'bar_id' => $bar->id,
+        ]);
+
+        Queue::assertNotPushed(StartTypedExport::class);
+
+        $response->assertForbidden();
     }
 
     public function test_delete_price_category_response(): void

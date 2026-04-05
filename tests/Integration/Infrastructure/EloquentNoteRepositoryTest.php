@@ -6,13 +6,13 @@ namespace Tests\Integration\Infrastructure;
 
 use Tests\TestCase;
 use DateTimeImmutable;
+use Kami\Cocktail\Models\User;
 use BarAssistant\Domain\Note\Note;
 use BarAssistant\Domain\Note\NoteId;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Common\RecordTimestamps;
-use Kami\Cocktail\Infrastructure\EloquentNoteRepository;
-use Kami\Cocktail\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Infrastructure\EloquentNoteRepository;
 
 final class EloquentNoteRepositoryTest extends TestCase
 {
@@ -64,7 +64,7 @@ final class EloquentNoteRepositoryTest extends TestCase
         $note = $this->createPersistedNote();
 
         $note->updateNoteContent('Updated content');
-        
+
         $repository->save($note);
 
         $this->assertDatabaseHas('notes', [

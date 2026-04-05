@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use BarAssistant\Application\Export\DTO\CreateExportRequest;
+use BarAssistant\Application\Export\ExportService;
 use DateTimeImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -41,12 +43,10 @@ class ExportController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\ExportRequest::class),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(ExportResource::class),
-    ])]
+    #[OAT\Response(response: 202, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\RateLimitResponse]
-    public function store(Request $request): ExportResource
+    public function store(ExportService $exportService, Request $request): Response
     {
         $bar = Bar::findOrFail((int) $request->post('bar_id'));
 
@@ -57,18 +57,15 @@ class ExportController extends Controller
         $type = ExportTypeEnum::tryFrom($request->input('type', 'schema'));
         $units = ForceUnitConvertEnum::tryFrom($request->input('units', 'none'));
 
-        $export = new Export();
-        $export->bar_id = $bar->id;
-        $export->filename = Export::generateFilename($type->getFilenameContext());
-        $export->is_done = false;
-        $export->created_user_id = $request->user()->id;
-        $export->save();
+        $result = $exportService->createExport(new CreateExportRequest(
+            barId: $bar->id,
+            userId: $request->user()->id,
+            filename: Export::generateFilename($type->getFilenameContext()),
+        ));
 
-        StartTypedExport::dispatch($bar->id, $type, $export, $units);
+        StartTypedExport::dispatch($bar->id, $type, $result->id, $result->filename, $units);
 
-        $export->refresh();
-
-        return new ExportResource($export);
+        return new Response(status: 202);
     }
 
     #[OAT\Delete(path: '/exports/{id}', tags: ['Exports'], operationId: 'deleteExport', description: 'Delete a specific export', summary: 'Delete export', parameters: [
@@ -77,7 +74,7 @@ class ExportController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(Request $request, int $id): Response
+    public function delete(ExportService $exportService, Request $request, int $id): Response
     {
         $export = Export::findOrFail($id);
 
@@ -85,7 +82,7 @@ class ExportController extends Controller
             abort(403);
         }
 
-        $export->delete();
+        $exportService->deleteExport($export->id);
 
         return new Response(null, 204);
     }

@@ -10,6 +10,8 @@ use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Bar;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
+use Illuminate\Support\Facades\Validator;
+use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\CollectionRequest;
 use Kami\Cocktail\Http\Resources\CollectionResource;
@@ -19,8 +21,6 @@ use Kami\Cocktail\Models\Collection as CocktailCollection;
 use BarAssistant\Application\Cocktail\DTO\CreateCollectionRequest;
 use BarAssistant\Application\Cocktail\DTO\UpdateCollectionRequest;
 use BarAssistant\Application\Cocktail\DTO\SyncCollectionCocktailsRequest;
-use Illuminate\Support\Facades\Validator;
-use Kami\Cocktail\Rules\ResourceBelongsToBar;
 
 class CollectionController extends Controller
 {
