@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Export;
 
-use BarAssistant\Domain\Export\FileTokenService;
 use Tests\TestCase;
 use DateTimeImmutable;
+use BarAssistant\Domain\Export\FileTokenService;
 
 class FileTokenServiceTest extends TestCase
 {

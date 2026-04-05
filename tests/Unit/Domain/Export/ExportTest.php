@@ -49,7 +49,7 @@ final class ExportTest extends TestCase
     {
         $export = Export::create(new BarId(1), new UserId(1), 'test.csv');
         $export->setId(new ExportId(1));
-        
+
         $this->expectException(\BarAssistant\Domain\Exception\DomainException::class);
         $export->setId(new ExportId(2));
     }

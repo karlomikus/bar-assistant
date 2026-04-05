@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Tests\Feature\Http;
 
 use Tests\TestCase;
+use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Export;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\BarMembership;
+use Kami\Cocktail\Jobs\StartTypedExport;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Queue;
-use Kami\Cocktail\Jobs\StartTypedExport;
-use Kami\Cocktail\Models\Bar;
 
 class ExportControllerTest extends TestCase
 {
