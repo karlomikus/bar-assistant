@@ -13,7 +13,7 @@ use Kami\Cocktail\Models\Bar;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Export;
 use Kami\Cocktail\OpenAPI as BAO;
-use Kami\Cocktail\Models\FileToken;
+use BarAssistant\Domain\Export\FileTokenService;
 use Kami\Cocktail\Jobs\StartTypedExport;
 use Kami\Cocktail\External\ExportTypeEnum;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -99,12 +99,14 @@ class ExportController extends Controller
     public function download(Request $request, int $id): BinaryFileResponse
     {
         $export = Export::findOrFail($id);
-        $date = DateTimeImmutable::createFromFormat('U', $request->get('e'));
+        $date = DateTimeImmutable::createFromFormat('U', $request->query('e'));
         if ($date === false) {
             abort(404);
         }
 
-        if (!FileToken::check($request->get('t'), $id, $export->filename, $date)) {
+        $fileTokenService = new FileTokenService((string) config('app.key'));
+
+        if (!$fileTokenService->check($request->query('t'), $id, $export->filename, $date)) {
             abort(404);
         }
 
@@ -131,8 +133,10 @@ class ExportController extends Controller
             abort(400, 'Export still in progress');
         }
 
+        $fileTokenService = new FileTokenService((string) config('app.key'));
+
         $expires = new DateTimeImmutable('+1 hour');
-        $token = FileToken::generate($export->id, $export->filename, $expires);
+        $token = $fileTokenService->generate($export->id, $export->filename, $expires);
 
         return response()->json([
             'data' => [

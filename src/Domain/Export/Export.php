@@ -110,9 +110,4 @@ final class Export implements Identity
 
         return $this;
     }
-
-    public function getFullPath(string $storagePath): string
-    {
-        return $storagePath . '/' . $this->barId->value . '/' . $this->filename;
-    }
 }
