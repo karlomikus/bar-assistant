@@ -76,16 +76,6 @@ class CollectionControllerTest extends TestCase
 
         $response->assertCreated();
         $this->assertNotEmpty($response->headers->get('Location'));
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->has('data.id')
-                ->where('data.name', 'TEST')
-                ->where('data.description', 'Description')
-                ->where('data.cocktails.0.id', $cocktail->id)
-                ->etc()
-        );
     }
 
     public function test_create_collection_does_not_add_cocktail_from_another_bar_response(): void
@@ -100,19 +90,7 @@ class CollectionControllerTest extends TestCase
             'cocktails' => [$cocktail1->id, $cocktail2->id]
         ]);
 
-        $response->assertCreated();
-        $this->assertNotEmpty($response->headers->get('Location'));
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->has('data.id')
-                ->where('data.name', 'TEST')
-                ->where('data.description', 'Description')
-                ->has('data.cocktails', 1)
-                ->where('data.cocktails.0.id', $cocktail1->id)
-                ->etc()
-        );
+        $response->assertUnprocessable();
     }
 
     public function test_update_collections_response(): void
@@ -127,17 +105,7 @@ class CollectionControllerTest extends TestCase
             'description' => 'Description 2',
         ]);
 
-        $response->assertSuccessful();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->where('data.id', $model->id)
-                ->where('data.name', 'TEST 2')
-                ->where('data.description', 'Description 2')
-                ->where('data.cocktails', [])
-                ->etc()
-        );
+        $response->assertNoContent();
     }
 
     public function test_delete_collection_response(): void
@@ -197,5 +165,26 @@ class CollectionControllerTest extends TestCase
                 ->has('data.cocktails', 1)
                 ->etc()
         );
+    }
+
+    public function test_sync_cocktails_in_collection_fails_for_unknown_cocktails(): void
+    {
+        $cocktailsInCollection = Cocktail::factory()->for($this->barMembership->bar)->count(3);
+
+        $model = Collection::factory()
+            ->for($this->barMembership)
+            ->has($cocktailsInCollection)
+            ->create([
+                'name' => 'TEST',
+                'description' => 'Description',
+            ]);
+
+        $newCocktailToAdd = Cocktail::factory()->create();
+
+        $response = $this->putJson('/api/collections/' . $model->id . '/cocktails', [
+            'cocktails' => [$newCocktailToAdd->id],
+        ]);
+
+        $response->assertUnprocessable();
     }
 }

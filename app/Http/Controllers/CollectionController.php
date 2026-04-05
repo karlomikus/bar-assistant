@@ -19,6 +19,8 @@ use Kami\Cocktail\Models\Collection as CocktailCollection;
 use BarAssistant\Application\Cocktail\DTO\CreateCollectionRequest;
 use BarAssistant\Application\Cocktail\DTO\UpdateCollectionRequest;
 use BarAssistant\Application\Cocktail\DTO\SyncCollectionCocktailsRequest;
+use Illuminate\Support\Facades\Validator;
+use Kami\Cocktail\Rules\ResourceBelongsToBar;
 
 class CollectionController extends Controller
 {
@@ -106,7 +108,13 @@ class CollectionController extends Controller
             abort(403);
         }
 
+        $cocktailIds = $request->post('cocktails', []);
+
         $barMembership = $request->user()->getBarMembership(bar()->id);
+
+        Validator::make($cocktailIds, [
+            '*' => [new ResourceBelongsToBar($barMembership->bar_id, 'cocktails')],
+        ])->validate();
 
         $collectionResult = $collectionService->createCollection(new CreateCollectionRequest(
             barId: bar()->id,
@@ -114,7 +122,7 @@ class CollectionController extends Controller
             name: $request->input('name'),
             description: $request->input('description'),
             isBarShared: $request->boolean('is_bar_shared'),
-            cocktailIds: $request->post('cocktails', []),
+            cocktailIds: $cocktailIds,
         ));
 
         return new Response(status: 201, headers: ['Location' => route('collection.show', $collectionResult->id, false)]);
@@ -171,10 +179,16 @@ class CollectionController extends Controller
             abort(403);
         }
 
+        $cocktailIds = $request->post('cocktails', []);
+
+        Validator::make($cocktailIds, [
+            '*' => [new ResourceBelongsToBar($collection->barMembership->bar_id, 'cocktails')],
+        ])->validate();
+
         try {
             $collectionService->syncCocktails(new SyncCollectionCocktailsRequest(
                 collectionId: $id,
-                cocktailIds: $request->post('cocktails', []),
+                cocktailIds: $cocktailIds,
             ));
         } catch (Throwable) {
             abort(500, 'Unable to add cocktails to collection!');
