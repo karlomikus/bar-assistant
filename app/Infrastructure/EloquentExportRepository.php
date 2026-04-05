@@ -6,9 +6,7 @@ namespace Kami\Cocktail\Infrastructure;
 
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\User\UserId;
-use Illuminate\Support\Facades\File;
 use BarAssistant\Domain\Export\Export;
-use Illuminate\Support\Facades\Storage;
 use BarAssistant\Domain\Export\ExportId;
 use Kami\Cocktail\Models\Export as ModelExport;
 use BarAssistant\Domain\Export\ExportRepository;
@@ -24,25 +22,6 @@ final class EloquentExportRepository implements ExportRepository
         }
 
         return self::map($model);
-    }
-
-    public function findByUserId(UserId $userId): array
-    {
-        $models = ModelExport::where('created_user_id', $userId->value)
-            ->orderBy('created_at', 'desc')
-            ->with('bar')
-            ->get();
-
-        return array_map(self::map(...), $models->all());
-    }
-
-    public function findByBarId(BarId $barId): array
-    {
-        $models = ModelExport::where('bar_id', $barId->value)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return array_map(self::map(...), $models->all());
     }
 
     public function save(Export $export): Export
@@ -71,10 +50,6 @@ final class EloquentExportRepository implements ExportRepository
     {
         $model = ModelExport::find($id->value);
         if ($model !== null) {
-            $path = Storage::disk('exports')->path($model->bar_id . '/' . $model->filename);
-            if (File::exists($path)) {
-                File::delete($path);
-            }
             $model->delete();
         }
     }
