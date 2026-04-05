@@ -65,6 +65,8 @@
 | Term | Definition | Aliases to avoid |
 | :--- | :--- | :--- |
 | **Record Timestamps** | Timestamps for resource creation and last modification. | Audit fields |
+| **Export** | An (a)synchronous process of generating a file containing bar data. | Dump, Backup |
+| **File Token** | A temporary identifier used to access an exported file. | Download key |
 
 ## Relationships
 
