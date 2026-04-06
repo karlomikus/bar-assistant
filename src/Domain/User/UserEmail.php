@@ -26,6 +26,11 @@ final readonly class UserEmail implements Stringable, JsonSerializable
         return new self($value);
     }
 
+    public static function deletedAddress(): self
+    {
+        return new self('userdeleted' . bin2hex(random_bytes(4)) . '@deleted.localhost');
+    }
+
     public function toString(): string
     {
         return $this->value;

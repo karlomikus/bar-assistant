@@ -15,4 +15,6 @@ interface MemberRepository
     public function findById(MemberId $memberId): ?Member;
 
     public function findUserInBar(UserId $userId, BarId $barId): ?Member;
+
+    public function deleteManyByUserId(UserId $userId): void;
 }

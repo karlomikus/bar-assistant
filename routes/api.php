@@ -100,6 +100,7 @@ Route::middleware($apiMiddleware)->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show'])->middleware(['ability:*'])->name('profile.show');
     Route::post('/profile', [ProfileController::class, 'update'])->middleware(['ability:*']);
+    Route::delete('/profile', [ProfileController::class, 'delete'])->middleware(['ability:*']);
     Route::delete('/profile/sso/{provider}', [ProfileController::class, 'deleteSSOProvider'])->middleware(['ability:*']);
 
     Route::prefix('shelf')->middleware(['ability:*'])->group(function () {

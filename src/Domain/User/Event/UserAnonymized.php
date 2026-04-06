@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace BarAssistant\Domain\User\Event;
 
 use DateTimeImmutable;
-use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Event\DomainEvent;
 use BarAssistant\Domain\Event\DomainEventName;
 
@@ -13,7 +12,8 @@ use BarAssistant\Domain\Event\DomainEventName;
 final readonly class UserAnonymized implements DomainEvent
 {
     public function __construct(
-        public UserId $userId,
+        public int $userId,
+        public string $originalEmail,
         public DateTimeImmutable $anonymizedAt,
     ) {
     }

@@ -108,4 +108,12 @@ final readonly class MemberService
 
         $this->memberRepository->save($member);
     }
+
+    public function removeAllUserMemberships(int $userId): void
+    {
+        $members = $this->memberRepository->findManyByUserId(new UserId($userId));
+        foreach ($members as $member) {
+
+        }
+    }
 }

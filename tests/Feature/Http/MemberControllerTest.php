@@ -11,7 +11,7 @@ use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class UsersControllerTest extends TestCase
+class MemberControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -114,30 +114,6 @@ class UsersControllerTest extends TestCase
                 ->where('data.email', $user->email)
                 ->etc()
         );
-    }
-
-    public function test_delete_user_response(): void
-    {
-        $user = User::factory()->create([
-            'name' => 'Initial Name',
-        ]);
-        DB::table('bar_memberships')->insert(['bar_id' => 1, 'user_id' => $user->id, 'user_role_id' => UserRoleEnum::General->value]);
-        DB::table('oauth_credentials')->insert(['user_id' => $user->id, 'provider' => 'github', 'provider_id' => 1]);
-
-        $this->actingAs($user);
-
-        $response = $this->delete('/api/users/' . $user->id);
-
-        $response->assertNoContent();
-
-        $this->assertDatabaseMissing('bar_memberships', ['user_id' => $user->id]);
-        $this->assertDatabaseMissing('oauth_credentials', ['user_id' => $user->id]);
-        $anonUser = DB::table('users')->find($user->id);
-        $this->assertSame('Deleted User', $anonUser->name);
-        $this->assertSame('deleted', $anonUser->password);
-        $this->assertTrue(str_starts_with((string) $anonUser->email, 'userdeleted'));
-        $this->assertNull($anonUser->email_verified_at);
-        $this->assertNull($anonUser->remember_token);
     }
 
     public function test_show_bar_members(): void

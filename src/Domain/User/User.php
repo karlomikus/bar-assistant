@@ -163,8 +163,9 @@ final class User implements Identity
             throw new DomainException('Cannot anonymize a transient user');
         }
 
+        $email = $this->email;
         $this->name = UserName::fromString('Deleted User');
-        $this->email = UserEmail::fromString('userdeleted' . bin2hex(random_bytes(4)));
+        $this->email = UserEmail::deletedAddress();
         $this->emailVerifiedAt = null;
         $this->passwordHash = 'deleted';
         $this->timestamps = $this->timestamps->updatedNow();
@@ -177,7 +178,8 @@ final class User implements Identity
         }
 
         DomainEventDispatcher::instance()->publish(new UserAnonymized(
-            userId: $userId,
+            userId: $userId->value,
+            originalEmail: $email->toString(),
             anonymizedAt: $updatedAt ?? new DateTimeImmutable(),
         ));
 

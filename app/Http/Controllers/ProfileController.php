@@ -6,12 +6,9 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Kami\Cocktail\Mail\AccountDeleted;
 use BarAssistant\Application\User\UserService;
 use Kami\Cocktail\Services\Auth\OauthProvider;
 use BarAssistant\Application\Bar\MemberService;
@@ -21,6 +18,7 @@ use Kami\Cocktail\OpenAPI\Schemas\ProfileRequest;
 use Kami\Cocktail\Http\Requests\UpdateUserRequest;
 use BarAssistant\Application\User\DTO\UpdateUserProfile;
 use BarAssistant\Application\User\DTO\ChangeEmailRequest;
+use BarAssistant\Application\User\DTO\AnonymizeUserRequest;
 use BarAssistant\Application\User\DTO\ChangePasswordRequest;
 use BarAssistant\Application\Bar\DTO\UpdateMemberDetailsRequest;
 
@@ -74,6 +72,7 @@ class ProfileController extends Controller
             ));
         }
 
+        // TODO: Require old password
         if ($request->has('password') && $profileRequest->password !== null) {
             $userService->changePassword(new ChangePasswordRequest(
                 userId: $currentUser->id,
@@ -110,25 +109,14 @@ class ProfileController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(Request $request, int $id): Response
+    public function delete(UserService $userService, Request $request): Response
     {
-        $user = User::findOrFail($id);
-
+        $user = $request->user();
         if ($request->user()->cannot('delete', $user)) {
             abort(403);
         }
 
-        $email = $user->email;
-
-        if ($user->subscription()) {
-            $user->subscription()->cancelNow();
-        }
-
-        $user->tokens()->delete();
-        $user->makeAnonymous();
-        $user->save();
-
-        Mail::to($email)->queue(new AccountDeleted());
+        $userService->anonymizeUserAccount(new AnonymizeUserRequest($user->id));
 
         return new Response(null, 204);
     }

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
 use BarAssistant\Domain\DomainEventDispatcher;
+use Kami\Cocktail\Infrastructure\DomainEventSubscriber\CleanupUserAnonymizedSubscriber;
 use Kami\Cocktail\Infrastructure\DomainEventSubscriber\ClearPublicCocktailsCacheSubscriber;
 use Kami\Cocktail\Infrastructure\DomainEventSubscriber\GlassUpdatedSearchReindexSubscriber;
 use Kami\Cocktail\Infrastructure\DomainEventSubscriber\CocktailMethodUpdatedRecalculateAbvSubscriber;
@@ -66,6 +67,7 @@ class AppServiceProvider extends ServiceProvider
         DomainEventDispatcher::instance()->subscribe(app(GlassUpdatedSearchReindexSubscriber::class));
         DomainEventDispatcher::instance()->subscribe(app(ClearPublicCocktailsCacheSubscriber::class));
         DomainEventDispatcher::instance()->subscribe(app(CocktailMethodUpdatedRecalculateAbvSubscriber::class));
+        DomainEventDispatcher::instance()->subscribe(app(CleanupUserAnonymizedSubscriber::class));
 
         if (DB::getDriverName() === 'sqlite') {
             try {

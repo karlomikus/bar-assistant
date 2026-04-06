@@ -93,6 +93,11 @@ final class EloquentMemberRepository implements MemberRepository
         return self::map($model);
     }
 
+    public function deleteManyByUserId(UserId $userId): void
+    {
+        Model::where('user_id', $userId->value)->delete();
+    }
+
     private static function map(Model $model): Member
     {
         $shoppingListIngredients = [];
