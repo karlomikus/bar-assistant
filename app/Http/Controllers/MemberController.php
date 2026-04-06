@@ -102,7 +102,7 @@ class MemberController extends Controller
 
         $memberService->addMemberToBar(new CreateMemberRequest(userId: $user->id, barId: bar()->id, roleId: $roleId));
 
-        return new Response(status: 204, headers: ['Location' => route('users.show', $user->id, false)]);
+        return new Response(status: 201, headers: ['Location' => route('users.show', $user->id, false)]);
     }
 
     #[OAT\Put(path: '/members/{id}', tags: ['Members'], operationId: 'updateMember', description: 'Update a single member', summary: 'Update member', parameters: [
@@ -114,15 +114,13 @@ class MemberController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\UserRequest::class),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(UserResource::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(int $id, MemberService $memberService, UserRequest $request): JsonResource
+    public function update(int $id, MemberService $memberService, UserRequest $request): Response
     {
         $user = User::findOrFail($id);
-        if ($request->user()->cannot('edit', $user) || $request->user()->isBarAdmin(bar()->id)) {
+        if ($request->user()->cannot('edit', $user)) {
             abort(403);
         }
 
@@ -132,7 +130,7 @@ class MemberController extends Controller
             roleId: (int) $request->input('role_id'),
         ));
 
-        return new UserResource($user);
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/members/{id}', tags: ['Members'], operationId: 'removeMember', description: 'Removes a specific user\'s membership from a bar', summary: 'Remove member', parameters: [

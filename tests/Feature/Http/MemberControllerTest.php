@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Models\BarMembership;
 
 class MemberControllerTest extends TestCase
 {
@@ -26,7 +27,7 @@ class MemberControllerTest extends TestCase
         $this->setupBar();
     }
 
-    public function test_list_users_response(): void
+    public function test_list_member_response(): void
     {
         $users = User::factory()->count(9)->create();
         foreach ($users as $user) {
@@ -34,7 +35,7 @@ class MemberControllerTest extends TestCase
         }
 
         $this->withHeader('Bar-Assistant-Bar-Id', '1');
-        $response = $this->getJson('/api/users');
+        $response = $this->getJson('/api/members');
 
         $response->assertStatus(200);
         $response->assertJson(
@@ -45,7 +46,7 @@ class MemberControllerTest extends TestCase
         );
     }
 
-    public function test_show_user_response(): void
+    public function test_show_member_response(): void
     {
         $user = User::factory()->create([
             'name' => 'Test'
@@ -53,7 +54,7 @@ class MemberControllerTest extends TestCase
         DB::table('bar_memberships')->insert(['bar_id' => 1, 'user_id' => $user->id, 'user_role_id' => UserRoleEnum::General->value]);
 
         $this->withHeader('Bar-Assistant-Bar-Id', '1');
-        $response = $this->getJson('/api/users/' . $user->id);
+        $response = $this->getJson('/api/members/' . $user->id);
 
         $response->assertStatus(200);
         $response->assertJson(
@@ -66,11 +67,11 @@ class MemberControllerTest extends TestCase
         );
     }
 
-    public function test_create_user_response(): void
+    public function test_add_new_user_as_member_response(): void
     {
         $this->withHeader('Bar-Assistant-Bar-Id', '1');
 
-        $response = $this->postJson('/api/users', [
+        $response = $this->postJson('/api/members', [
             'name' => 'Test',
             'email' => 'test@test.com',
             'password' => 'TEST1',
@@ -79,77 +80,61 @@ class MemberControllerTest extends TestCase
 
         $response->assertCreated();
         $this->assertNotEmpty($response->headers->get('Location'));
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->has('data.id')
-                ->where('data.name', 'Test')
-                ->where('data.email', 'test@test.com')
-                ->etc()
-        );
     }
 
-    public function test_update_user_response(): void
+    public function test_add_existing_user_as_member_response(): void
     {
-        $user = User::factory()->create([
-            'name' => 'Initial Name',
-        ]);
-        DB::table('bar_memberships')->insert(['bar_id' => 1, 'user_id' => $user->id, 'user_role_id' => UserRoleEnum::General->value]);
-
+        $user = User::factory()->create();
         $this->withHeader('Bar-Assistant-Bar-Id', '1');
-        $response = $this->putJson('/api/users/' . $user->id, [
-            'name' => 'Updated Name',
-            'email' => 'test@test.com',
-            'role_id' => UserRoleEnum::General->value,
+
+        $response = $this->postJson('/api/members', [
+            'email' => $user->email,
+            'role_id' => UserRoleEnum::Admin->value,
         ]);
 
-        $response->assertSuccessful();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->where('data.id', $user->id)
-                ->where('data.name', 'Updated Name')
-                ->where('data.email', $user->email)
-                ->etc()
-        );
+        $response->assertCreated();
+        $this->assertNotEmpty($response->headers->get('Location'));
     }
 
-    public function test_show_bar_members(): void
+    public function test_update_member_response(): void
     {
-        $response = $this->getJson('/api/bars/3/memberships');
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
 
-        $response->assertJsonCount(1, 'data');
-    }
+        $guestMember = BarMembership::factory()->for($membership->bar)->create([
+            'user_role_id' => UserRoleEnum::Guest->value
+        ]);
 
-    public function test_show_bar_members_forbidden(): void
-    {
-        $response = $this->getJson('/api/bars/1/memberships');
-
-        $response->assertForbidden();
-    }
-
-    public function test_leave_bar(): void
-    {
-        $this->assertSame(1, Bar::find(3)->memberships()->count());
-        $response = $this->deleteJson('/api/bars/3/memberships');
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $response = $this->putJson('/api/members/' . $guestMember->user_id, [
+            'role_id' => UserRoleEnum::Moderator->value,
+        ]);
 
         $response->assertNoContent();
-        $this->assertSame(0, Bar::find(3)->memberships()->count());
+        $this->assertDatabaseHas('bar_memberships', [
+            'user_id' => $guestMember->user_id,
+            'bar_id' => $membership->bar_id,
+            'user_role_id' => UserRoleEnum::Moderator->value,
+        ]);
     }
 
-    public function test_remove_member_from_bar(): void
+    public function test_delete_member_response(): void
     {
-        $memberToRemove = User::factory()->create();
-        $bar = Bar::find(3);
-        $memberToRemove->joinBarAs($bar);
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
 
-        $this->assertSame(2, $bar->memberships()->count());
+        $guestMember = BarMembership::factory()->for($membership->bar)->create([
+            'user_role_id' => UserRoleEnum::Guest->value
+        ]);
 
-        $response = $this->deleteJson('/api/bars/3/memberships/' . $memberToRemove->id);
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $response = $this->delete('/api/members/' . $guestMember->user_id);
 
         $response->assertNoContent();
-        $this->assertSame(1, $bar->memberships()->count());
+        $this->assertDatabaseMissing('bar_memberships', [
+            'user_id' => $guestMember->user_id,
+            'bar_id' => $membership->bar_id,
+            'user_role_id' => UserRoleEnum::Moderator->value,
+        ]);
     }
 }

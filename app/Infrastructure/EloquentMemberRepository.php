@@ -70,7 +70,7 @@ final class EloquentMemberRepository implements MemberRepository
 
     public function delete(Member $member): void
     {
-        throw new \Exception('Not implemented');
+        Model::destroy($member->getId()?->value);
     }
 
     public function findById(MemberId $memberId): ?Member
