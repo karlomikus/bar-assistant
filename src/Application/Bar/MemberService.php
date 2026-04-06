@@ -16,6 +16,7 @@ use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
 use BarAssistant\Application\Bar\DTO\ChangeMemberRoleRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
+use BarAssistant\Application\Bar\DTO\UpdateMemberDetailsRequest;
 use BarAssistant\Application\Bar\DTO\MemberInventoryStockChangeRequest;
 
 final readonly class MemberService
@@ -93,5 +94,18 @@ final readonly class MemberService
 
         $newRole = MemberRole::fromInt($request->roleId);
         $member->changeRole($newRole);
+
+        $this->memberRepository->save($member);
+    }
+
+    public function updateMemberDetails(UpdateMemberDetailsRequest $request): void
+    {
+        $member = $this->memberRepository->findById(new MemberId($request->memberId));
+        if ($member === null || $member->isTransient()) {
+            throw new EntityNotFoundException('The member was not found');
+        }
+        $member->changeIsInventorySharedWithBar($request->isInventorySharedWithBar);
+
+        $this->memberRepository->save($member);
     }
 }

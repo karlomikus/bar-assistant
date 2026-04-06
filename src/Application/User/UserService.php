@@ -12,9 +12,11 @@ use BarAssistant\Domain\User\UserSettings;
 use BarAssistant\Domain\User\UserRepository;
 use BarAssistant\Application\User\DTO\UserResult;
 use BarAssistant\Application\User\DTO\UpdateUserProfile;
+use BarAssistant\Application\User\DTO\ChangeEmailRequest;
 use BarAssistant\Application\User\DTO\RegisterUserRequest;
 use BarAssistant\Application\Exception\ValidationException;
 use BarAssistant\Application\User\DTO\AnonymizeUserRequest;
+use BarAssistant\Application\User\DTO\ChangePasswordRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 
 final readonly class UserService
@@ -77,6 +79,28 @@ final readonly class UserService
         }
 
         $user->makeAnonymous();
+        $this->userRepository->save($user);
+    }
+
+    public function changePassword(ChangePasswordRequest $request): void
+    {
+        $user = $this->userRepository->findById(new UserId($request->userId));
+        if ($user === null || $user->isTransient()) {
+            throw new EntityNotFoundException('User not found');
+        }
+
+        $user->changePassword($request->newPasswordHash);
+        $this->userRepository->save($user);
+    }
+
+    public function changeEmail(ChangeEmailRequest $request): void
+    {
+        $user = $this->userRepository->findById(new UserId($request->userId));
+        if ($user === null || $user->isTransient()) {
+            throw new EntityNotFoundException('User not found');
+        }
+
+        $user->changeEmail(UserEmail::fromString($request->newEmail));
         $this->userRepository->save($user);
     }
 }

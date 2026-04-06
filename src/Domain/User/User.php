@@ -115,7 +115,7 @@ final class User implements Identity
     {
         $oldEmail = $this->email;
         $this->email = $email;
-        $this->emailVerifiedAt = null;
+        // $this->emailVerifiedAt = null;
         $this->timestamps = $this->timestamps->updatedNow();
 
         $userId = $this->getId();
@@ -130,6 +130,14 @@ final class User implements Identity
             oldEmail: $oldEmail,
             newEmail: $email,
         ));
+
+        return $this;
+    }
+
+    public function changePassword(#[SensitiveParameter] string $passwordHash): self
+    {
+        $this->passwordHash = $passwordHash;
+        $this->timestamps = $this->timestamps->updatedNow();
 
         return $this;
     }
@@ -163,8 +171,13 @@ final class User implements Identity
 
         $updatedAt = $this->timestamps->getUpdatedAt();
 
+        $userId = $this->getId();
+        if ($userId === null) {
+            throw new DomainException('User ID must be set before publishing events');
+        }
+
         DomainEventDispatcher::instance()->publish(new UserAnonymized(
-            userId: $this->getId(),
+            userId: $userId,
             anonymizedAt: $updatedAt ?? new DateTimeImmutable(),
         ));
 

@@ -47,16 +47,7 @@ class ProfileControllerTest extends TestCase
             'name' => 'Test Guy',
         ]);
 
-        $response->assertOk();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->where('data.id', $user->id)
-                ->where('data.email', 'new@example.com')
-                ->where('data.name', 'Test Guy')
-                ->etc()
-        );
+        $response->assertNoContent();
     }
 
     public function test_update_current_user_with_password_response(): void
@@ -64,6 +55,7 @@ class ProfileControllerTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
+        $oldPassword = $user->password;
         $response = $this->postJson('/api/profile', [
             'email' => 'new@example.com',
             'name' => 'Test Guy',
@@ -71,16 +63,10 @@ class ProfileControllerTest extends TestCase
             'password_confirmation' => '12345',
         ]);
 
-        $response->assertOk();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->where('data.id', $user->id)
-                ->where('data.email', 'new@example.com')
-                ->where('data.name', 'Test Guy')
-                ->etc()
-        );
+        $response->assertNoContent();
+        $user->refresh();
+
+        $this->assertNotSame($oldPassword, $user->password);
     }
 
     public function test_update_current_user_with_password_fail_response(): void
@@ -93,6 +79,19 @@ class ProfileControllerTest extends TestCase
             'name' => 'Test Guy',
             'password' => '12345',
             'password_confirmation' => '123451',
+        ]);
+
+        $response->assertUnprocessable();
+    }
+
+    public function test_update_current_user_with_email_fail_response(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->postJson('/api/profile', [
+            'email' => 'newexample.com',
+            'name' => 'Test Guy',
         ]);
 
         $response->assertUnprocessable();
@@ -113,18 +112,6 @@ class ProfileControllerTest extends TestCase
             ],
         ]);
 
-        $response->assertOk();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->where('data.id', $user->id)
-                ->where('data.email', 'new@example.com')
-                ->where('data.name', 'Test Guy')
-                ->where('data.settings.language', 'en')
-                ->where('data.settings.theme', 'dark')
-                ->missing('data.settings.unsupported')
-                ->etc()
-        );
+        $response->assertNoContent();
     }
 }

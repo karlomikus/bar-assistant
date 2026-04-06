@@ -27,6 +27,7 @@ final class EloquentMemberRepository implements MemberRepository
         $model = Model::findOrNew($member->getId()?->value);
         $model->bar_id = $member->getBarId()->value;
         $model->user_id = $member->getUserId()->value;
+        $model->is_shelf_public = $member->isInventorySharedWithBar();
         $model->user_role_id = match ($member->getRole()) {
             MemberRole::Admin => 1,
             MemberRole::Moderator => 2,

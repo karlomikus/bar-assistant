@@ -47,9 +47,7 @@ final class EloquentUserRepository implements UserRepository
         $model->updated_at = $user->getUpdatedAt()?->format('Y-m-d H:i:s');
         $model->save();
 
-        $user->setId(new UserId($model->id));
-
-        return $user;
+        return self::map($model);
     }
 
     public function delete(User $user): void
@@ -62,7 +60,7 @@ final class EloquentUserRepository implements UserRepository
         $user = User::create(
             name: UserName::fromString($model->name),
             email: UserEmail::fromString($model->email),
-            settings: UserSettings::fromArray($model->settings ?? []),
+            settings: UserSettings::fromArray($model->settings?->toArray() ?? []),
             passwordHash: $model->password,
         )->setId(new UserId($model->id));
 
