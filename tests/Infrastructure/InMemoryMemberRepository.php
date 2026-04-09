@@ -22,6 +22,15 @@ final class InMemoryMemberRepository implements MemberRepository
     {
     }
 
+    public function deleteManyByUserId(UserId $userId): void
+    {
+        foreach ($this->members as $memberId => $member) {
+            if ($member->getUserId()->equals($userId)) {
+                unset($this->members[$memberId]);
+            }
+        }
+    }
+
     public function delete(Member $member): void
     {
         unset($this->members[$member->getId()->value]);

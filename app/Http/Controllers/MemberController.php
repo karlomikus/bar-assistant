@@ -142,7 +142,7 @@ class MemberController extends Controller
     public function delete(MemberService $memberService, Request $request, int $id): Response
     {
         $user = User::findOrFail($id);
-        if (!$request->user()->isBarAdmin(bar()->id)) {
+        if (!$request->user()->isBarAdmin(bar()->id) && $user->id !== $request->user()->id) {
             abort(403);
         }
 

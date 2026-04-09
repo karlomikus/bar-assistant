@@ -11,6 +11,7 @@ use Kami\Cocktail\Models\Note as ModelNote;
 use BarAssistant\Domain\Note\NoteRepository;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Note\NoteableResourceType;
+use Kami\Cocktail\Models\Cocktail;
 
 final class EloquentNoteRepository implements NoteRepository
 {
@@ -59,7 +60,9 @@ final class EloquentNoteRepository implements NoteRepository
         $note = Note::create(
             userId: new UserId($model->user_id),
             noteableId: (string) $model->noteable_id,
-            noteableType: $model->noteable_type,
+            noteableType: match ($model->noteable_type) {
+                Cocktail::class => NoteableResourceType::Cocktail,
+            },
             noteContent: $model->note,
             recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
         );

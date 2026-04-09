@@ -137,4 +137,41 @@ class MemberControllerTest extends TestCase
             'user_role_id' => UserRoleEnum::Moderator->value,
         ]);
     }
+
+    public function test_delete_user_own_membership_response(): void
+    {
+        $membership = $this->setupBarMembership();
+
+        $guestMember = BarMembership::factory()->for($membership->bar)->create([
+            'user_role_id' => UserRoleEnum::Guest->value
+        ]);
+
+        $this->actingAs($guestMember->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $response = $this->delete('/api/members/' . $guestMember->user_id);
+
+        $response->assertNoContent();
+        $this->assertDatabaseMissing('bar_memberships', [
+            'user_id' => $guestMember->user_id,
+            'bar_id' => $membership->bar_id,
+            'user_role_id' => UserRoleEnum::Moderator->value,
+        ]);
+    }
+
+    public function test_delete_unowned_membership_response(): void
+    {
+        $membership = $this->setupBarMembership();
+
+        $guestMember = BarMembership::factory()->for($membership->bar)->create([
+            'user_role_id' => UserRoleEnum::Guest->value
+        ]);
+
+        $this->actingAs($guestMember->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $response = $this->delete('/api/members/' . $membership->user_id);
+
+        $response->assertForbidden();
+    }
 }

@@ -14,6 +14,8 @@ use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\UserShoppingList;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Bar\CocktailFavorite;
+use BarAssistant\Domain\Bar\IngredientInventoryItem;
+use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 use BarAssistant\Domain\Bar\MemberRepository;
 use BarAssistant\Domain\Bar\ShoppingListItem;
 use BarAssistant\Domain\Ingredient\IngredientId;
@@ -113,12 +115,21 @@ final class EloquentMemberRepository implements MemberRepository
             );
         }
 
+        $ingredientInventory = [];
+        foreach ($model->userIngredients as $modelUserIngredient) {
+            $ingredientInventory[] = new IngredientInventoryItem(
+                ingredientId: new IngredientId($modelUserIngredient->ingredient_id),
+                ingredientStatus: IngredientInventoryStatus::InStock,
+            );
+        }
+
         $domainObject = Member::create(
             userId: new UserId($model->user_id),
             barId: new BarId($model->bar_id),
             role: MemberRole::fromString($model->role->name),
             shoppingListIngredients: $shoppingListIngredients,
             cocktailFavorites: $cocktailFavorites,
+            ingredientInventory: $ingredientInventory,
         )->setId(new MemberId($model->id));
 
         return $domainObject;

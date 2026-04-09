@@ -180,30 +180,6 @@ class AuthControllerTest extends TestCase
         $response->assertSuccessful();
     }
 
-    public function test_password_check_response(): void
-    {
-        $user = User::factory()->create([
-            'email' => 'test@test.com',
-            'password' => Hash::make('my-test-password'),
-            'email_verified_at' => null,
-        ]);
-        $this->actingAs($user);
-
-        $response = $this->postJson('/api/password-check', ['password' => 'wrongPassw0rd']);
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->where('data.status', false)
-        );
-
-        $response = $this->postJson('/api/password-check', ['password' => 'my-test-password']);
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->where('data.status', true)
-        );
-    }
-
     public function test_login_requires_confirmation(): void
     {
         Config::set('bar-assistant.mail_require_confirmation', true);

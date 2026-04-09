@@ -16,6 +16,8 @@ use Kami\Cocktail\Http\Requests\IngredientsBatchRequest;
 use Kami\Cocktail\Http\Resources\UserShoppingListResource;
 use BarAssistant\Application\Bar\DTO\MemberShoppingListChangeRequest;
 use BarAssistant\Application\Bar\DTO\MemberShoppingListRemoveIngredientRequest;
+use Illuminate\Support\Facades\Validator;
+use Kami\Cocktail\Rules\ResourceBelongsToBar;
 
 class ShoppingListController extends Controller
 {
@@ -63,8 +65,14 @@ class ShoppingListController extends Controller
             abort(403);
         }
 
+        $ingredients = $request->input('ingredients', []);
+
+        Validator::make($ingredients, [
+            '*.id' => [new ResourceBelongsToBar($barMembership->bar_id, 'ingredients')],
+        ])->validate();
+
         $ingredientQuantityPairs = [];
-        foreach ($request->input('ingredients', []) as $input) {
+        foreach ($ingredients as $input) {
             $ingredientQuantityPairs[$input['id']] = $input['quantity'] ?? 1;
         }
 

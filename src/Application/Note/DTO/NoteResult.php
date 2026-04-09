@@ -24,7 +24,7 @@ final readonly class NoteResult
             id: $note->getId()->value ?? 0,
             userId: $note->getUserId()->value,
             noteableId: $note->getNoteableId(),
-            noteableType: $note->getNoteableType(),
+            noteableType: $note->getNoteableType()->name,
             note: $note->getNoteContent(),
             createdAt: $note->getRecordTimestamps()->getCreatedAt()->format('c'),
         );

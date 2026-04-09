@@ -27,7 +27,7 @@ class ShelfControllerTest extends TestCase
             ->count(5)
             ->create();
 
-        $response = $this->getJson('/api/users/'. $membership->user_id .'/ingredients', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
+        $response = $this->getJson('/api/members/'. $membership->user_id .'/ingredients', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertSuccessful();
         $response->assertJson(
@@ -50,7 +50,7 @@ class ShelfControllerTest extends TestCase
 
         $this->actingAs(User::factory()->create());
 
-        $response = $this->getJson('/api/users/'. $membership->user_id .'/ingredients', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
+        $response = $this->getJson('/api/members/'. $membership->user_id .'/ingredients', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertForbidden();
     }
@@ -65,7 +65,7 @@ class ShelfControllerTest extends TestCase
             ->count(5)
             ->create();
 
-        $response = $this->postJson('/api/users/'. $membership->user_id .'/ingredients/batch-store', [
+        $response = $this->postJson('/api/members/'. $membership->user_id .'/ingredients/batch-store', [
             'ingredients' => $newIngredients->pluck('id')->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
@@ -87,11 +87,11 @@ class ShelfControllerTest extends TestCase
             ->count(5)
             ->create();
 
-        $response = $this->postJson('/api/users/'. $membership->user_id .'/ingredients/batch-store', [
+        $response = $this->postJson('/api/members/'. $membership->user_id .'/ingredients/batch-store', [
             'ingredients' => $unOwnedIngredients->pluck('id')->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
-        $response->assertNoContent();
+        $response->assertUnprocessable();
         $this->assertDatabaseMissing('user_ingredients', ['bar_membership_id' => $membership->id]);
     }
 
@@ -106,7 +106,7 @@ class ShelfControllerTest extends TestCase
             ->create();
 
         $this->assertDatabaseCount('user_ingredients', 5);
-        $response = $this->postJson('/api/users/'. $membership->user_id .'/ingredients/batch-delete', [
+        $response = $this->postJson('/api/members/'. $membership->user_id .'/ingredients/batch-delete', [
             'ingredients' => $ingredients->splice(0, 2)->pluck('id')->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
@@ -128,11 +128,11 @@ class ShelfControllerTest extends TestCase
             ->count(5)
             ->create();
 
-        $response = $this->postJson('/api/users/'. $membership->user_id .'/ingredients/batch-delete', [
+        $response = $this->postJson('/api/members/'. $membership->user_id .'/ingredients/batch-delete', [
             'ingredients' => $unOwnedIngredients->splice(0, 2)->pluck('id')->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
-        $response->assertNoContent();
+        $response->assertUnprocessable();
         $this->assertDatabaseHas('user_ingredients', ['ingredient_id' => $ownedIngredients->pluck('id')->toArray(), 'bar_membership_id' => $membership->id]);
     }
 
@@ -204,7 +204,7 @@ class ShelfControllerTest extends TestCase
             ->count(5)
             ->create();
 
-        $response = $this->getJson('/api/users/'. $membership->user_id .'/cocktails', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
+        $response = $this->getJson('/api/members/'. $membership->user_id .'/cocktails', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertSuccessful();
         $response->assertJson(
@@ -222,7 +222,7 @@ class ShelfControllerTest extends TestCase
 
         CocktailFavorite::factory()->for($membership)->create();
 
-        $response = $this->getJson('/api/users/'. $membership->user_id .'/cocktails/favorites', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
+        $response = $this->getJson('/api/members/'. $membership->user_id .'/cocktails/favorites', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertSuccessful();
         $response->assertJson(
@@ -238,7 +238,7 @@ class ShelfControllerTest extends TestCase
         $membership = $this->setupBarMembership();
         $this->actingAs($membership->user);
 
-        $response = $this->getJson('/api/users/'. $membership->user_id .'/ingredients/recommend', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
+        $response = $this->getJson('/api/members/'. $membership->user_id .'/ingredients/recommend', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertSuccessful();
         $response->assertJson(

@@ -172,27 +172,4 @@ class BarControllerTest extends TestCase
         $this->postJson('/api/bars', [])->assertUnprocessable();
         $this->putJson('/api/bars/' . $bar->id, ['name' => ''])->assertUnprocessable();
     }
-
-    public function test_leave_bar(): void
-    {
-        $this->assertSame(1, Bar::find(3)->memberships()->count());
-        $response = $this->deleteJson('/api/bars/3/memberships');
-
-        $response->assertNoContent();
-        $this->assertSame(0, Bar::find(3)->memberships()->count());
-    }
-
-    public function test_remove_member_from_bar(): void
-    {
-        $memberToRemove = User::factory()->create();
-        $bar = Bar::find(3);
-        $memberToRemove->joinBarAs($bar);
-
-        $this->assertSame(2, $bar->memberships()->count());
-
-        $response = $this->deleteJson('/api/bars/3/memberships/' . $memberToRemove->id);
-
-        $response->assertNoContent();
-        $this->assertSame(1, $bar->memberships()->count());
-    }
 }

@@ -2816,25 +2816,8 @@ paths:
             schema:
               $ref: '#/components/schemas/ExportRequest'
       responses:
-        '200':
+        '202':
           description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Export' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -4772,25 +4755,8 @@ paths:
             schema:
               $ref: '#/components/schemas/UserRequest'
       responses:
-        '200':
+        '204':
           description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/User' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -5741,16 +5707,8 @@ paths:
             schema:
               $ref: '#/components/schemas/ProfileRequest'
       responses:
-        '201':
+        '204':
           description: 'Successful response'
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Profile' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
