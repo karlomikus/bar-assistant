@@ -90,7 +90,7 @@ Route::post('/billing/webhook', WebhookController::class);
 Route::prefix('public')->group(function () {
     Route::get('/{barId}', [Public\BarController::class, 'show']);
     Route::get('/{barId}/cocktails', [Public\CocktailController::class, 'index']);
-    Route::get('/{barId}/cocktails/{slug}', [Public\CocktailController::class, 'show']);
+    Route::get('/{barId}/cocktails/{slug}', [Public\CocktailController::class, 'show'])->name('public.cocktails.show');
     Route::get('/{barId}/menu', [Public\MenuController::class, 'show']);
 });
 

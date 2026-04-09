@@ -348,7 +348,7 @@ class CocktailController extends Controller
             ForceCocktailVisibility::Public,
         ));
 
-        return new Response(status: 204);
+        return new Response(status: 201, headers: ['Location' => route('public.cocktails.show', [$cocktail->bar_id, $cocktail->slug], false)]);
     }
 
     #[OAT\Delete(path: '/cocktails/{id}/public-link', tags: ['Cocktails'], operationId: 'deleteCocktailPublicLink', description: 'Delete a cocktail public link', summary: 'Delete public link', parameters: [

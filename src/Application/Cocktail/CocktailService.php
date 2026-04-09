@@ -184,9 +184,7 @@ final readonly class CocktailService
 
         if ($cocktail->isPublic() || $request->forceVisibility === ForceCocktailVisibility::Private) {
             $cocktail->makePrivate();
-        }
-
-        if (!$cocktail->isPublic() || $request->forceVisibility === ForceCocktailVisibility::Public) {
+        } else if (!$cocktail->isPublic() || $request->forceVisibility === ForceCocktailVisibility::Public) {
             $cocktail->makePublic();
         }
 

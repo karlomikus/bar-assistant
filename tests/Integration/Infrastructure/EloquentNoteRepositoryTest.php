@@ -11,8 +11,10 @@ use BarAssistant\Domain\Note\Note;
 use BarAssistant\Domain\Note\NoteId;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Note\NoteableResourceType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Infrastructure\EloquentNoteRepository;
+use Kami\Cocktail\Models\Cocktail;
 
 final class EloquentNoteRepositoryTest extends TestCase
 {
@@ -25,7 +27,7 @@ final class EloquentNoteRepositoryTest extends TestCase
         $note = Note::create(
             userId: new UserId($user->id),
             noteableId: '1',
-            noteableType: 'Cocktail',
+            noteableType: NoteableResourceType::Cocktail,
             noteContent: 'Test note',
             recordTimestamps: RecordTimestamps::createdAt(new DateTimeImmutable('2025-01-01 12:00:00')),
         );
@@ -41,7 +43,7 @@ final class EloquentNoteRepositoryTest extends TestCase
         $note = Note::create(
             userId: new UserId($user->id),
             noteableId: '1',
-            noteableType: 'Cocktail',
+            noteableType: NoteableResourceType::Cocktail,
             noteContent: 'Test note',
             recordTimestamps: RecordTimestamps::createdAt(new DateTimeImmutable('2025-01-01 12:00:00')),
         );
@@ -52,7 +54,7 @@ final class EloquentNoteRepositoryTest extends TestCase
             'id' => $note->getId()->value,
             'user_id' => $user->id,
             'noteable_id' => '1',
-            'noteable_type' => 'Cocktail',
+            'noteable_type' => Cocktail::class,
             'note' => 'Test note',
             'created_at' => '2025-01-01 12:00:00',
         ]);

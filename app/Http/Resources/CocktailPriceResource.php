@@ -50,15 +50,15 @@ class CocktailPriceResource extends JsonResource
             return [
                 'units' => $minIngredientPrice->getAmount()->units,
                 'ingredient' => new IngredientBasicResource($cocktailIngredient->ingredient),
-                'price_per_unit' => new PriceResource(new Price($minIngredientPrice->getPricePerUnit($cocktailIngredient->units)->to(new DefaultContext(), RoundingMode::DOWN))),
-                'price_per_use' => new PriceResource(new Price($cocktailIngredient->getConvertedPricePerUse($this->priceCategory)->to(new DefaultContext(), RoundingMode::DOWN))),
+                'price_per_unit' => new PriceResource(Price::fromMoney($minIngredientPrice->getPricePerUnit($cocktailIngredient->units)->to(new DefaultContext(), RoundingMode::DOWN))),
+                'price_per_use' => new PriceResource(Price::fromMoney($cocktailIngredient->getConvertedPricePerUse($this->priceCategory)->to(new DefaultContext(), RoundingMode::DOWN))),
             ];
         })->filter()->values();
 
         return [
             'missing_prices_count' => $this->cocktail->ingredients->count() - $prices->count(),
             'price_category' => new PriceCategoryResource($this->priceCategory),
-            'total_price' => new PriceResource(new Price($this->cocktail->calculatePrice($this->priceCategory))),
+            'total_price' => new PriceResource(Price::fromMoney($this->cocktail->calculatePrice($this->priceCategory))),
             'prices_per_ingredient' => $prices,
         ];
     }

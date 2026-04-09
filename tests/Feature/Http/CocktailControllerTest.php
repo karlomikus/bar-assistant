@@ -26,6 +26,7 @@ use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Models\MenuCategory;
 
 class CocktailControllerTest extends TestCase
 {
@@ -330,40 +331,6 @@ class CocktailControllerTest extends TestCase
 
         $response->assertStatus(201);
         $this->assertNotNull($response->headers->get('Location', null));
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data.id')
-                ->has('data.created_at')
-                ->where('data.slug', 'cocktail-name-1')
-                ->where('data.name', 'Cocktail name')
-                ->where('data.description', 'Cocktail description')
-                ->where('data.garnish', 'Lemon peel')
-                ->where('data.public_id', null)
-                ->where('data.source', 'https://karlomikus.com')
-                ->where('data.method.id', $method->id)
-                ->where('data.glass.id', $glass->id)
-
-                ->where('data.ingredients.0.ingredient.id', $gin->id)
-                ->where('data.ingredients.0.amount', 30)
-                ->where('data.ingredients.0.units', 'ml')
-                ->where('data.ingredients.0.optional', false)
-                ->where('data.ingredients.0.sort', 1)
-                ->has('data.ingredients.0.substitutes', 0)
-
-                ->where('data.ingredients.1.ingredient.id', $ing2->id)
-                ->where('data.ingredients.1.amount', 45)
-                ->where('data.ingredients.1.units', 'ml')
-                ->where('data.ingredients.1.optional', false)
-                ->where('data.ingredients.1.sort', 2)
-                ->has('data.ingredients.1.substitutes', 1)
-
-                ->has('data.images', 1)
-                ->has('data.tags', 2)
-                ->has('data.ingredients', 2)
-                ->has('data.utensils', 3)
-                ->etc()
-        );
     }
 
     public function test_cocktail_update_response(): void
@@ -400,23 +367,14 @@ class CocktailControllerTest extends TestCase
             ]
         ]);
 
-        $response->assertSuccessful();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->where('data.id', $cocktail->id)
-                ->where('data.slug', 'cocktail-name-1')
-                ->where('data.name', 'Cocktail name')
-                ->has('data.utensils', 2)
-                ->etc()
-        );
+        $response->assertNoContent();
     }
 
     public function test_cocktail_delete_response(): void
     {
         $this->setupBar();
 
-        $cocktail = Cocktail::factory()->create(['created_user_id' => auth()->user()->id, 'bar_id' => 1]);
+        $cocktail = Cocktail::factory()->create(['created_user_id' => auth('sanctum')->user()->id, 'bar_id' => 1]);
 
         $response = $this->deleteJson('/api/cocktails/' . $cocktail->id);
 
@@ -441,7 +399,8 @@ class CocktailControllerTest extends TestCase
             'created_user_id' => $barMembership->user_id
         ]);
         $menu = Menu::factory()->for($barMembership->bar)->create(['is_enabled' => true]);
-        MenuCocktail::factory()->for($menu)->for($cocktail)->create(['category_name' => 'cocktails']);
+        $menuCategory = MenuCategory::factory()->for($menu)->create();
+        MenuCocktail::factory()->for($menuCategory)->for($cocktail)->create();
 
         $this->assertTrue($storage->exists($image->file_path));
         $this->assertDatabaseHas('images', ['id' => $image->id]);
@@ -462,17 +421,12 @@ class CocktailControllerTest extends TestCase
     {
         $this->setupBar();
 
-        $cocktail = Cocktail::factory()->create(['created_user_id' => auth()->user()->id, 'bar_id' => 1]);
+        $cocktail = Cocktail::factory()->create(['created_user_id' => auth('sanctum')->user()->id, 'bar_id' => 1]);
 
         $response = $this->postJson('/api/cocktails/' . $cocktail->id . '/public-link');
 
         $response->assertSuccessful();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data.public_id')
-                ->has('data.public_at')
-        );
+        $response->assertHeader('Location');
 
         $cocktail = Cocktail::find($cocktail->id);
         $this->assertNotNull($cocktail->public_id);
@@ -482,7 +436,12 @@ class CocktailControllerTest extends TestCase
     {
         $this->setupBar();
 
-        $cocktail = Cocktail::factory()->create(['created_user_id' => auth()->user()->id, 'bar_id' => 1]);
+        $cocktail = Cocktail::factory()->create([
+            'created_user_id' => auth('sanctum')->user()->id,
+            'bar_id' => 1,
+            'public_id' => 'TEST-ID',
+            'public_at' => now(),
+        ]);
 
         $response = $this->deleteJson('/api/cocktails/' . $cocktail->id . '/public-link');
 
@@ -504,7 +463,7 @@ class CocktailControllerTest extends TestCase
                 'garnish' => '# Lemon twist',
                 'description' => 'A short description',
                 'source' => 'http://test.com',
-                'created_user_id' => auth()->user()->id,
+                'created_user_id' => auth('sanctum')->user()->id,
                 'bar_id' => 1,
             ]);
 
@@ -666,16 +625,8 @@ class CocktailControllerTest extends TestCase
         $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
         $response = $this->postJson('/api/cocktails/' . $cocktail->id . '/copy');
 
-        $response->assertSuccessful();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->whereNot('data.id', $cocktail->id)
-                ->whereNot('data.slug', $cocktail->slug)
-                ->whereNot('data.created_at', $cocktail->created_at)
-                ->where('data.name', 'Cocktail name Copy')
-                ->etc()
-        );
+        $response->assertCreated();
+        $response->assertHeader('Location');
     }
 
     public function test_toggle_favorite(): void

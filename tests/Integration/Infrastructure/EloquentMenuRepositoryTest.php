@@ -98,7 +98,6 @@ final class EloquentMenuRepositoryTest extends TestCase
             'sort' => 2,
         ]);
         $this->assertDatabaseHas('menu_cocktails', [
-            'menu_id' => $menuModel->id,
             'menu_category_id' => $cocktailCategory->id,
             'cocktail_id' => $cocktail->id,
             'price' => 1250,
@@ -107,7 +106,6 @@ final class EloquentMenuRepositoryTest extends TestCase
             'is_bar_inventory_aware' => true,
         ]);
         $this->assertDatabaseHas('menu_ingredients', [
-            'menu_id' => $menuModel->id,
             'menu_category_id' => $ingredientCategory->id,
             'ingredient_id' => $ingredient->id,
             'price' => 450,
@@ -190,11 +188,9 @@ final class EloquentMenuRepositoryTest extends TestCase
             'name' => 'Original category',
         ]);
         $this->assertDatabaseMissing('menu_cocktails', [
-            'menu_id' => $menuModel->id,
             'cocktail_id' => $originalCocktail->id,
         ]);
         $this->assertDatabaseHas('menu_ingredients', [
-            'menu_id' => $menuModel->id,
             'menu_category_id' => $replacementCategory->id,
             'ingredient_id' => $replacementIngredient->id,
             'price' => 375,
@@ -249,7 +245,6 @@ final class EloquentMenuRepositoryTest extends TestCase
 
         DB::table('menu_cocktails')->insert([
             'menu_category_id' => $earlierCategory->id,
-            'menu_id' => $menu->id,
             'cocktail_id' => $cocktail->id,
             'sort' => 2,
             'price' => 990,
@@ -258,7 +253,6 @@ final class EloquentMenuRepositoryTest extends TestCase
         ]);
         DB::table('menu_ingredients')->insert([
             'menu_category_id' => $earlierCategory->id,
-            'menu_id' => $menu->id,
             'ingredient_id' => $ingredient->id,
             'sort' => 1,
             'price' => 250,
