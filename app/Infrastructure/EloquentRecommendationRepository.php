@@ -38,14 +38,13 @@ final class EloquentRecommendationRepository implements RecommendationRepository
         return Cocktail::query()
             ->whereNotIn('cocktails.id', $excludedCocktailIds)
             ->where('cocktails.bar_id', $barMembership->bar_id)
-            ->with('tags', 'ingredients.ingredient', 'images')
-            ->limit(500)
+            ->with('tags', 'ingredients')
             ->get()
-            ->map(function ($cocktail) {
+            ->map(static function (Cocktail $cocktail): CocktailWithDetails {
                 return new CocktailWithDetails(
                     cocktailId: new CocktailId($cocktail->id),
                     tags: $cocktail->tags->pluck('name')->toArray(),
-                    ingredientIds: $cocktail->ingredients->pluck('ingredient_id')->toArray(),
+                    ingredientIds: $cocktail->ingredients->pluck('ingredient_id')->map(static fn($id): IngredientId => new IngredientId(($id)))->toArray(),
                     createdAt: $cocktail->created_at->toDateTimeImmutable(),
                 );
             })
@@ -108,7 +107,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
     public function getFavoriteIngredients(MemberId $memberId): array
     {
         $favoriteIngredients = DB::table('cocktail_favorites')
-            ->selectRaw('ingredients.id, COUNT(cocktail_favorites.cocktail_id) AS weight')
+            ->selectRaw('ingredients.id, COUNT(cocktail_favorites.cocktail_id) AS total')
             ->join('cocktail_ingredients', 'cocktail_ingredients.cocktail_id', '=', 'cocktail_favorites.cocktail_id')
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
             ->where('cocktail_favorites.bar_membership_id', $memberId->value)
@@ -119,15 +118,10 @@ final class EloquentRecommendationRepository implements RecommendationRepository
             return [];
         }
 
-        $maxWeight = (int) $favoriteIngredients->max('weight');
+        $maxIngredients = (int) $favoriteIngredients->max('total');
 
-        return $favoriteIngredients->map(static function ($res) use ($maxWeight) {
-            return new WeightedIngredient(new IngredientId($res->id), $res->weight / $maxWeight);
+        return $favoriteIngredients->map(static function ($res) use ($maxIngredients): WeightedIngredient {
+            return new WeightedIngredient(new IngredientId($res->id), $res->total / $maxIngredients);
         })->toArray();
-    }
-
-    public function getBarInventoryIngredients(BarId $barId): array
-    {
-        throw new \Exception('Not implemented');
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Recommendation;
 
-use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Bar\MemberRepository;
 use BarAssistant\Domain\Recommendation\RecommendationResult;
@@ -13,6 +12,7 @@ use BarAssistant\Domain\Recommendation\RecommendationRepository;
 use BarAssistant\Domain\Recommendation\RecommendationScoringService;
 use BarAssistant\Application\Recommendation\DTO\RecommendationResultDTO;
 use BarAssistant\Application\Recommendation\DTO\GetRecommendationsRequest;
+use BarAssistant\Domain\Bar\BarRepository;
 
 final readonly class RecommendationService
 {
@@ -20,6 +20,7 @@ final readonly class RecommendationService
         private RecommendationRepository $recommendationRepository,
         private RecommendationScoringService $scoringService,
         private MemberRepository $memberRepository,
+        private BarRepository $barRepository,
     ) {
     }
 
@@ -29,24 +30,25 @@ final readonly class RecommendationService
     public function getRecommendations(GetRecommendationsRequest $request): array
     {
         $member = $this->memberRepository->findById(new MemberId($request->memberId));
-
         if ($member === null) {
             throw new EntityNotFoundException('Member not found.');
         }
 
-        $barId = new BarId($request->barId);
-        $memberId = new MemberId($request->memberId);
+        $bar = $this->barRepository->findById($member->getBarId());
+        if ($bar === null) {
+            throw new EntityNotFoundException('Bar not found.');
+        }
 
-        $cocktails = $this->recommendationRepository->getApplicableCocktails($memberId);
+        $cocktails = $this->recommendationRepository->getApplicableCocktails($member->getId());
 
         if (empty($cocktails)) {
             return [];
         }
 
-        $favoriteTags = $this->recommendationRepository->getFavoriteTags($memberId, $barId);
-        $negativeTags = $this->recommendationRepository->getNegativeTags($memberId, $barId);
-        $favoriteIngredients = $this->recommendationRepository->getFavoriteIngredients($memberId, $barId);
-        $barShelfIngredients = $this->recommendationRepository->getBarInventoryIngredients($barId);
+        $favoriteTags = $this->recommendationRepository->getFavoriteTags($member->getId());
+        $negativeTags = $this->recommendationRepository->getNegativeTags($member->getId());
+        $favoriteIngredients = $this->recommendationRepository->getFavoriteIngredients($member->getId());
+        $barShelfIngredients = array_map(static fn ($inventoryItem) => $inventoryItem->ingredientId, $bar->getIngredientInventory());
 
         $results = $this->scoringService->score(
             favoriteTags: $favoriteTags,

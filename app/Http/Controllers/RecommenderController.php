@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use BarAssistant\Application\Recommendation\DTO\GetRecommendationsRequest;
+use BarAssistant\Application\Recommendation\RecommendationService;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CocktailBasicResource;
-use Kami\Cocktail\Services\CocktailRecommendationService;
+use Kami\Cocktail\Models\Cocktail;
 
 class RecommenderController extends Controller
 {
@@ -21,7 +23,7 @@ class RecommenderController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function cocktails(CocktailRecommendationService $cocktailRecommendationService, Request $request): JsonResource
+    public function cocktails(RecommendationService $cocktailRecommendationService, Request $request): JsonResource
     {
         $barMembership = $request->user()->getBarMembership(bar()->id);
 
@@ -29,7 +31,12 @@ class RecommenderController extends Controller
             abort(404);
         }
 
-        $cocktails = $cocktailRecommendationService->recommend($barMembership, 5);
+        $cocktails = $cocktailRecommendationService->getRecommendations(new GetRecommendationsRequest(
+            memberId: $barMembership->id,
+            limit: 5,
+        ));
+
+        $cocktails = Cocktail::whereIn('id', array_map(fn ($c) => $c->cocktailId, $cocktails))->with('images', 'ingredients.ingredient')->get();
 
         return CocktailBasicResource::collection($cocktails);
     }

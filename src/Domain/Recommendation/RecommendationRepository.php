@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Recommendation;
 
-use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Bar\MemberId;
-use BarAssistant\Domain\Ingredient\IngredientId;
 
 interface RecommendationRepository
 {
     /**
-     * Get all cocktails in a bar with their tags and ingredients, excluding specified IDs
+     * Get all cocktails that are applicable for recommendation.
+     * 
+     * For example, exclude the cocktails that user already favorited or rated.
      *
      * @return CocktailWithDetails[]
      */
@@ -37,11 +37,4 @@ interface RecommendationRepository
      * @return WeightedIngredient[]
      */
     public function getFavoriteIngredients(MemberId $memberId): array;
-
-    /**
-     * Get ingredient IDs available on the bar's shelf
-     *
-     * @return IngredientId[]
-     */
-    public function getBarInventoryIngredients(BarId $barId): array;
 }

@@ -5,13 +5,24 @@ declare(strict_types=1);
 namespace BarAssistant\Domain\Recommendation;
 
 use BarAssistant\Domain\Ingredient\IngredientId;
+use Illuminate\Support\Facades\Log;
 
 final class RecommendationScoringService
 {
-    private const float BAR_SHELF_INGREDIENT_MATCH_WEIGHT = 0.7;
-    private const float BAR_SHELF_COMPLETE_MATCH_WEIGHT = 1.0;
-    private const float RECENCY_BOOST_WEIGHT = 0.25;
-    private const float NEGATIVE_RATING_PENALTY = -0.5;
+    /** Contribution of normalized tag-preference signal to final score */
+    private const float TAG_PREFERENCE_WEIGHT = 0.25;
+
+    /** Contribution of normalized ingredient-preference signal to final score */
+    private const float INGREDIENT_PREFERENCE_WEIGHT = 0.35;
+
+    /** Contribution of shelf-coverage signal (can the user actually make this?) */
+    private const float SHELF_COVERAGE_WEIGHT = 0.30;
+
+    /** How strongly matched negative tags suppress a cocktail */
+    private const float NEGATIVE_TAG_WEIGHT = 0.40;
+
+    /** Flat bonus for recently-added cocktails; intentionally small to not override preference signals */
+    private const float RECENCY_BOOST_WEIGHT = 0.10;
 
     private const int RECENCY_MONTHS = 3;
 
@@ -56,53 +67,64 @@ final class RecommendationScoringService
         $results = [];
 
         foreach ($cocktails as $cocktail) {
-            $score = 0.0;
             $matchedTagIds = [];
             $matchedIngredientIds = [];
             $shelfMatches = 0;
 
-            $cocktailTagIds = $cocktail->tags;
-            foreach ($cocktailTagIds as $tagId) {
-                if (isset($favoriteTagMap[$tagId])) {
-                    $score += $favoriteTagMap[$tagId];
-                    $matchedTagIds[] = $tagId;
+            // --- Tag preference signal (normalized by tag count) ---
+            $totalTags = count($cocktail->tags);
+            $tagWeightSum = 0.0;
+            $negativeTagWeightSum = 0.0;
+            foreach ($cocktail->tags as $tagName) {
+                if (isset($favoriteTagMap[$tagName])) {
+                    $tagWeightSum += $favoriteTagMap[$tagName];
+                    $matchedTagIds[] = $tagName;
                 }
 
-                if (isset($negativeTagMap[$tagId])) {
-                    $score += self::NEGATIVE_RATING_PENALTY * $negativeTagMap[$tagId];
+                if (isset($negativeTagMap[$tagName])) {
+                    $negativeTagWeightSum += $negativeTagMap[$tagName];
                 }
             }
+            $tagScore = $totalTags > 0 ? $tagWeightSum / $totalTags : 0.0;
+            $negativeTagScore = $totalTags > 0 ? $negativeTagWeightSum / $totalTags : 0.0;
 
+            // --- Ingredient preference + shelf coverage signals (normalized by ingredient count) ---
             $totalIngredients = count($cocktail->ingredientIds);
+            $ingredientWeightSum = 0.0;
             foreach ($cocktail->ingredientIds as $ingredientId) {
                 $ingredientValue = $ingredientId->value;
 
                 if (isset($favoriteIngredientMap[$ingredientValue])) {
-                    $score += $favoriteIngredientMap[$ingredientValue];
+                    $ingredientWeightSum += $favoriteIngredientMap[$ingredientValue];
                     $matchedIngredientIds[] = $ingredientValue;
                 }
 
                 if (isset($barShelfIngredientSet[$ingredientValue])) {
-                    $score += self::BAR_SHELF_INGREDIENT_MATCH_WEIGHT;
                     $shelfMatches++;
                 }
             }
+            $ingredientScore = $totalIngredients > 0 ? $ingredientWeightSum / $totalIngredients : 0.0;
+            $shelfCompleteness = $totalIngredients > 0 ? $shelfMatches / $totalIngredients : 0.0;
 
-            if ($totalIngredients > 0) {
-                $shelfCompleteness = $shelfMatches / $totalIngredients;
-                $score += $shelfCompleteness * self::BAR_SHELF_COMPLETE_MATCH_WEIGHT;
-            }
+            // --- Recency signal ---
+            $recencyBoost = ($cocktail->createdAt !== null && $cocktail->createdAt > new \DateTimeImmutable('-' . self::RECENCY_MONTHS . ' months'))
+                ? self::RECENCY_BOOST_WEIGHT
+                : 0.0;
 
-            if ($cocktail->createdAt !== null && $cocktail->createdAt > new \DateTimeImmutable('-' . self::RECENCY_MONTHS . ' months')) {
-                $score += self::RECENCY_BOOST_WEIGHT;
-            }
+            // --- Blend normalized signals ---
+            // Final score is roughly in range [-NEGATIVE_TAG_WEIGHT, 1.0 + RECENCY_BOOST_WEIGHT]
+            $score = ($tagScore * self::TAG_PREFERENCE_WEIGHT)
+                + ($ingredientScore * self::INGREDIENT_PREFERENCE_WEIGHT)
+                + ($shelfCompleteness * self::SHELF_COVERAGE_WEIGHT)
+                - ($negativeTagScore * self::NEGATIVE_TAG_WEIGHT)
+                + $recencyBoost;
 
             $results[] = new RecommendationResult(
                 cocktailId: $cocktail->cocktailId,
                 score: $score,
                 matchedTagIds: $matchedTagIds,
                 matchedIngredientIds: $matchedIngredientIds,
-                shelfCompleteness: $totalIngredients > 0 ? $shelfMatches / $totalIngredients : 0.0,
+                shelfCompleteness: $shelfCompleteness,
             );
         }
 
