@@ -14,7 +14,6 @@ use Kami\Cocktail\Mail\PasswordReset;
 use Illuminate\Support\Facades\Config;
 use Kami\Cocktail\Mail\ConfirmAccount;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthControllerTest extends TestCase

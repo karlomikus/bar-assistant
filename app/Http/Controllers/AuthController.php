@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Auth\Events\Verified;

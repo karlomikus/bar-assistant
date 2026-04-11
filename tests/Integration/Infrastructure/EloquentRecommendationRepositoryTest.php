@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Infrastructure;
 
-use BarAssistant\Domain\Bar\MemberId;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Kami\Cocktail\Infrastructure\EloquentRecommendationRepository;
+use Kami\Cocktail\Models\Tag;
 use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\Models\Ingredient;
+use BarAssistant\Domain\Bar\MemberId;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
-use Kami\Cocktail\Models\Ingredient;
-use Kami\Cocktail\Models\Tag;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Infrastructure\EloquentRecommendationRepository;
 
 class EloquentRecommendationRepositoryTest extends TestCase
 {

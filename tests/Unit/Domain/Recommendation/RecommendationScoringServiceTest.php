@@ -7,10 +7,10 @@ namespace Tests\Unit\Domain\Recommendation;
 use PHPUnit\Framework\TestCase;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Domain\Recommendation\WeightedTag;
+use BarAssistant\Domain\Recommendation\WeightedIngredient;
 use BarAssistant\Domain\Recommendation\CocktailWithDetails;
 use BarAssistant\Domain\Recommendation\RecommendationScoringService;
-use BarAssistant\Domain\Recommendation\WeightedIngredient;
-use BarAssistant\Domain\Recommendation\WeightedTag;
 
 final class RecommendationScoringServiceTest extends TestCase
 {

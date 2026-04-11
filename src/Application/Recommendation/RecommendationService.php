@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BarAssistant\Application\Recommendation;
 
 use BarAssistant\Domain\Bar\MemberId;
+use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Bar\MemberRepository;
 use BarAssistant\Domain\Recommendation\RecommendationResult;
 use BarAssistant\Application\Exception\EntityNotFoundException;
@@ -12,7 +13,6 @@ use BarAssistant\Domain\Recommendation\RecommendationRepository;
 use BarAssistant\Domain\Recommendation\RecommendationScoringService;
 use BarAssistant\Application\Recommendation\DTO\RecommendationResultDTO;
 use BarAssistant\Application\Recommendation\DTO\GetRecommendationsRequest;
-use BarAssistant\Domain\Bar\BarRepository;
 
 final readonly class RecommendationService
 {
@@ -30,7 +30,7 @@ final readonly class RecommendationService
     public function getRecommendations(GetRecommendationsRequest $request): array
     {
         $member = $this->memberRepository->findById(new MemberId($request->memberId));
-        if ($member === null) {
+        if ($member === null || $member->getId() === null) {
             throw new EntityNotFoundException('Member not found.');
         }
 

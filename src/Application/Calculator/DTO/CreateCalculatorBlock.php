@@ -10,7 +10,7 @@ namespace BarAssistant\Application\Calculator\DTO;
 final readonly class CreateCalculatorBlock
 {
     /**
-     * @param array<string, mixed> $settings
+     * @param array<string, int|string> $settings
      */
     public function __construct(
         public string $label,

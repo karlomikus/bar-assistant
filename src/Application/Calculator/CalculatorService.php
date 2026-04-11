@@ -54,7 +54,7 @@ final readonly class CalculatorService
 
         $calculator = $this->calculatorRepository->save($calculator);
 
-        return new CalculatorResult(id: $calculator->getId()->value);
+        return new CalculatorResult(id: $calculator->getId()->value ?? 0);
     }
 
     public function updateCalculator(UpdateCalculator $request): Calculator

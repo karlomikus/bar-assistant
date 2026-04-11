@@ -34,13 +34,13 @@ use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentUtensilRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailRepository;
 use BarAssistant\Domain\Cocktail\CocktailCollectionRepository;
-use BarAssistant\Domain\Recommendation\RecommendationRepository;
 use Kami\Cocktail\Infrastructure\EloquentCalculatorRepository;
 use Kami\Cocktail\Infrastructure\EloquentIngredientRepository;
+use BarAssistant\Domain\Recommendation\RecommendationRepository;
 use Kami\Cocktail\Infrastructure\EloquentPriceCategoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailMethodRepository;
-use Kami\Cocktail\Infrastructure\EloquentCocktailCollectionRepository;
 use Kami\Cocktail\Infrastructure\EloquentRecommendationRepository;
+use Kami\Cocktail\Infrastructure\EloquentCocktailCollectionRepository;
 
 class InfrastructureServiceProvider extends ServiceProvider
 {

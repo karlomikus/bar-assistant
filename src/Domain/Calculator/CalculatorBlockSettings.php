@@ -14,7 +14,7 @@ final readonly class CalculatorBlockSettings
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<string, string|int> $data
      */
     public static function fromArray(array $data): self
     {

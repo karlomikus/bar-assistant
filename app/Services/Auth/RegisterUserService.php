@@ -37,6 +37,7 @@ final readonly class RegisterUserService
         $userModel = User::find($userResult->id);
 
         if ($newAccountsRequireConfirmation === true) {
+            // TODO: Move to laravel signed URLs, but confirmation is not a big deal for now
             Mail::to($userModel)->queue(new ConfirmAccount($userModel->id, sha1($userModel->email)));
             $this->log->info('Confirmation email sent', [
                 'email' => $userModel->email,

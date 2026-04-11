@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use BarAssistant\Application\Recommendation\DTO\GetRecommendationsRequest;
-use BarAssistant\Application\Recommendation\RecommendationService;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
+use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\CocktailBasicResource;
-use Kami\Cocktail\Models\Cocktail;
+use BarAssistant\Application\Recommendation\RecommendationService;
+use BarAssistant\Application\Recommendation\DTO\GetRecommendationsRequest;
 
 class RecommenderController extends Controller
 {

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace BarAssistant\Domain\Cocktail\Event;
 
 use DateTimeImmutable;
-use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Cocktail\MethodId;
 use BarAssistant\Domain\Event\DomainEvent;
 use BarAssistant\Domain\Event\DomainEventName;
 
@@ -14,8 +12,8 @@ use BarAssistant\Domain\Event\DomainEventName;
 final readonly class CocktailMethodUpdated implements DomainEvent
 {
     public function __construct(
-        public BarId $barId,
-        public MethodId $methodId,
+        public int $barId,
+        public int $methodId,
         public float $previousDilutionPercentage,
         public float $currentDilutionPercentage,
     ) {

@@ -10,7 +10,7 @@ interface RecommendationRepository
 {
     /**
      * Get all cocktails that are applicable for recommendation.
-     * 
+     *
      * For example, exclude the cocktails that user already favorited or rated.
      *
      * @return CocktailWithDetails[]

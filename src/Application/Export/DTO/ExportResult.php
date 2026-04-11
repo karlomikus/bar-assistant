@@ -22,7 +22,7 @@ final readonly class ExportResult
     public static function fromExport(Export $export): self
     {
         return new self(
-            id: $export->getId()?->value ?? 0,
+            id: $export->getId()->value ?? 0,
             barId: $export->getBarId()->value,
             filename: $export->getFilename(),
             createdUserId: $export->getCreatedUserId()->value,

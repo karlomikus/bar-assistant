@@ -14,12 +14,12 @@ use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\UserShoppingList;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Bar\CocktailFavorite;
-use BarAssistant\Domain\Bar\IngredientInventoryItem;
-use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 use BarAssistant\Domain\Bar\MemberRepository;
 use BarAssistant\Domain\Bar\ShoppingListItem;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use Kami\Cocktail\Models\BarMembership as Model;
+use BarAssistant\Domain\Bar\IngredientInventoryItem;
+use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 use Kami\Cocktail\Models\CocktailFavorite as CocktailFavoriteModel;
 
 final class EloquentMemberRepository implements MemberRepository

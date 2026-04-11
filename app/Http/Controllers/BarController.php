@@ -10,7 +10,6 @@ use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Jobs\SetupBar;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Jobs\SyncBarRecipes;
@@ -157,6 +156,11 @@ class BarController extends Controller
             name: $barRequest->name,
             description: $barRequest->description,
             userId: $request->user()->id,
+            subtitle: $barRequest->subtitle,
+            isInviteCodeEnabled: $barRequest->invitesEnabled,
+            images: $barRequest->images,
+            defaultCurrency: $barRequest->defaultCurrency,
+            defaultUnits: $barRequest->defaultUnits,
         ));
 
         return new Response(status: 204);
@@ -201,7 +205,7 @@ class BarController extends Controller
     {
         $barToJoin = Bar::where('invite_code', $request->post('invite_code'))->firstOrFail();
 
-        if ($barToJoin->status === BarStatusEnum::Deactivated->value) {
+        if ($barToJoin->getStatus() === BarStatusEnum::Deactivated) {
             abort(403);
         }
 
@@ -227,7 +231,7 @@ class BarController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function transfer(Request $request, int $id): JsonResponse
+    public function transfer(Request $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
 
@@ -244,7 +248,7 @@ class BarController extends Controller
         $barOwnership->user_role_id = UserRoleEnum::Admin->value; // Needed for existing members
         $barOwnership->save();
 
-        return response()->json(status: 204);
+        return response()->noContent();
     }
 
     #[OAT\Post(path: '/bars/{id}/status', tags: ['Bars'], operationId: 'toggleBarStatus', description: 'Update current status of a bar', summary: 'Update status', parameters: [
@@ -260,7 +264,7 @@ class BarController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function toggleBarStatus(Request $request, int $id): JsonResponse
+    public function toggleBarStatus(Request $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
 
@@ -280,14 +284,14 @@ class BarController extends Controller
             $bar->status = $newStatus;
             $bar->save();
 
-            return response()->json(status: 204);
+            return response()->noContent();
         }
 
         if ($newStatus === BarStatusEnum::Deactivated->value && $request->user()->can('deactivate', $bar)) {
             $bar->status = $newStatus;
             $bar->save();
 
-            return response()->json(status: 204);
+            return response()->noContent();
         }
 
         abort(403);
@@ -300,7 +304,7 @@ class BarController extends Controller
     #[BAO\NotAuthorizedResponse]
     #[BAO\RateLimitResponse]
     #[BAO\NotFoundResponse]
-    public function optimize(Request $request, int $id): JsonResponse
+    public function optimize(Request $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
 
@@ -310,7 +314,7 @@ class BarController extends Controller
 
         StartBarOptimization::dispatch($bar->id);
 
-        return response()->json(status: 204);
+        return response()->noContent();
     }
 
     #[OAT\Post(path: '/bars/{id}/sync-datapack', tags: ['Bars'], operationId: 'syncBarDatapack', description: 'Triggers synchronization of recipes from the default datapack. Matches data by name, does not overwrite your existing recipes or ingredients.', summary: 'Sync recipes', parameters: [
@@ -320,7 +324,7 @@ class BarController extends Controller
     #[BAO\NotAuthorizedResponse]
     #[BAO\RateLimitResponse]
     #[BAO\NotFoundResponse]
-    public function syncDatapack(Request $request, int $id): JsonResponse
+    public function syncDatapack(Request $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
 
@@ -330,6 +334,6 @@ class BarController extends Controller
 
         SyncBarRecipes::dispatch($bar, $request->user());
 
-        return response()->json(status: 204);
+        return response()->noContent();
     }
 }

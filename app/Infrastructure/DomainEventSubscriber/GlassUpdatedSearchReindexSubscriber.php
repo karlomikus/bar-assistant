@@ -22,8 +22,8 @@ final class GlassUpdatedSearchReindexSubscriber implements EventSubscriber
         }
 
         Cocktail::query()
-            ->where('bar_id', $event->barId->value)
-            ->where('glass_id', $event->glassId->value)
+            ->where('bar_id', $event->barId)
+            ->where('glass_id', $event->glassId)
             ->get()
             ->each(static fn (Cocktail $cocktail) => $cocktail->searchable());
     }

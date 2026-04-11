@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Infrastructure;
 
 use BarAssistant\Domain\Note\Note;
+use Kami\Cocktail\Models\Cocktail;
 use BarAssistant\Domain\Note\NoteId;
 use BarAssistant\Domain\User\UserId;
 use Kami\Cocktail\Models\Note as ModelNote;
 use BarAssistant\Domain\Note\NoteRepository;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Note\NoteableResourceType;
-use Kami\Cocktail\Models\Cocktail;
 
 final class EloquentNoteRepository implements NoteRepository
 {

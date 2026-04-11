@@ -8,13 +8,13 @@ use Tests\TestCase;
 use DateTimeImmutable;
 use Kami\Cocktail\Models\User;
 use BarAssistant\Domain\Note\Note;
+use Kami\Cocktail\Models\Cocktail;
 use BarAssistant\Domain\Note\NoteId;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Note\NoteableResourceType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Infrastructure\EloquentNoteRepository;
-use Kami\Cocktail\Models\Cocktail;
 
 final class EloquentNoteRepositoryTest extends TestCase
 {

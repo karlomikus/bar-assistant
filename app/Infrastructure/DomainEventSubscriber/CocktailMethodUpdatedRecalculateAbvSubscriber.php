@@ -22,8 +22,8 @@ final class CocktailMethodUpdatedRecalculateAbvSubscriber implements EventSubscr
         }
 
         Cocktail::query()
-            ->where('bar_id', $event->barId->value)
-            ->where('cocktail_method_id', $event->methodId->value)
+            ->where('bar_id', $event->barId)
+            ->where('cocktail_method_id', $event->methodId)
             ->get()
             ->each(function (Cocktail $cocktail): void {
                 $cocktail->abv = $cocktail->getABV();

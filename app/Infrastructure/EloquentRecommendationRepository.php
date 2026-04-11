@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Infrastructure;
 
-use BarAssistant\Domain\Bar\BarId;
+use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Cocktail;
 use BarAssistant\Domain\Bar\MemberId;
+use Kami\Cocktail\Models\BarMembership;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Domain\Recommendation\WeightedTag;
+use BarAssistant\Domain\Recommendation\WeightedIngredient;
 use BarAssistant\Domain\Recommendation\CocktailWithDetails;
 use BarAssistant\Domain\Recommendation\RecommendationRepository;
-use BarAssistant\Domain\Recommendation\WeightedIngredient;
-use BarAssistant\Domain\Recommendation\WeightedTag;
-use Illuminate\Support\Facades\DB;
-use Kami\Cocktail\Models\BarMembership;
-use Kami\Cocktail\Models\Cocktail;
 
 final class EloquentRecommendationRepository implements RecommendationRepository
 {
@@ -44,7 +43,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
                 return new CocktailWithDetails(
                     cocktailId: new CocktailId($cocktail->id),
                     tags: $cocktail->tags->pluck('name')->toArray(),
-                    ingredientIds: $cocktail->ingredients->pluck('ingredient_id')->map(static fn($id): IngredientId => new IngredientId(($id)))->toArray(),
+                    ingredientIds: $cocktail->ingredients->pluck('ingredient_id')->map(static fn ($id): IngredientId => new IngredientId(($id)))->toArray(),
                     createdAt: $cocktail->created_at->toDateTimeImmutable(),
                 );
             })
