@@ -76,13 +76,15 @@ class AuthController extends Controller
 
     #[OAT\Post(path: '/auth/logout', tags: ['Authentication'], operationId: 'logout', description: 'Logout currently authenticated user. This will delete and disable bearer token.', summary: 'Logout')]
     #[OAT\Response(response: 204, description: 'Successful response')]
-    public function logout(Request $request): JsonResponse
+    public function logout(Request $request): Response
     {
         /** @var \Laravel\Sanctum\PersonalAccessToken */
         $currentAccessToken = $request->user()->currentAccessToken();
-        $currentAccessToken->delete();
+        if ($currentAccessToken) {
+            $currentAccessToken->delete();
+        }
 
-        return response()->json(status: 204);
+        return response()->noContent();
     }
 
     #[OAT\Post(path: '/auth/register', tags: ['Authentication'], operationId: 'register', description: 'Register a new user account. If server has disabled registrations this will return 404 not found.', summary: 'Register', requestBody: new OAT\RequestBody(
@@ -117,8 +119,7 @@ class AuthController extends Controller
         ]
     ), security: [])]
     #[OAT\Response(response: 204, description: 'Password reset link sent')]
-    #[OAT\Response(response: 400, description: 'Unable to send password reset link')]
-    public function passwordForgot(Request $request): JsonResponse
+    public function passwordForgot(Request $request): Response
     {
         $request->validate(['email' => 'required|email']);
 
@@ -132,10 +133,10 @@ class AuthController extends Controller
         });
 
         if ($status === Password::RESET_LINK_SENT) {
-            return response()->json(status: 204);
+            return response()->noContent();
         }
 
-        abort(400);
+        return response()->noContent();
     }
 
     #[OAT\Post(path: '/auth/reset-password', tags: ['Authentication'], operationId: 'passwordReset', description: 'Reset user password with data from password reset request.', summary: 'Reset password', requestBody: new OAT\RequestBody(
@@ -149,9 +150,9 @@ class AuthController extends Controller
             ]),
         ]
     ), security: [])]
-    #[OAT\Response(response: 204, description: 'Password succssfully reset')]
+    #[OAT\Response(response: 204, description: 'Password succesfully reset')]
     #[OAT\Response(response: 400, description: 'Unable to reset password')]
-    public function passwordReset(Request $request): JsonResponse
+    public function passwordReset(Request $request): Response
     {
         $request->validate([
             'token' => 'required',
@@ -174,7 +175,7 @@ class AuthController extends Controller
                 'email' => $request->post('email'),
             ]);
 
-            return response()->json(status: 204);
+            return response()->noContent();
         }
 
         abort(400, $status);
@@ -187,7 +188,7 @@ class AuthController extends Controller
     #[OAT\Response(response: 204, description: 'Account confirmed')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function confirmAccount(int $id, string $hash): JsonResponse
+    public function confirmAccount(int $id, string $hash): Response
     {
         if (config('bar-assistant.mail_require_confirmation') === false) {
             abort(404);
@@ -209,6 +210,6 @@ class AuthController extends Controller
             event(new Verified($user));
         }
 
-        return response()->json(status: 204);
+        return response()->noContent();
     }
 }
