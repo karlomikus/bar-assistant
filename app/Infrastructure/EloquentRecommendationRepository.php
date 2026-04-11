@@ -53,11 +53,30 @@ final class EloquentRecommendationRepository implements RecommendationRepository
 
     public function getFavoriteTags(MemberId $memberId): array
     {
-        $tags = DB::table('cocktail_favorites')
+        $barMembership = BarMembership::findOrFail($memberId->value);
+
+        $favoriteCocktailIds = DB::table('cocktail_favorites')
+            ->where('bar_membership_id', $barMembership->id)
+            ->pluck('cocktail_id')
+            ->toArray();
+
+        $highRatedCocktailIds = DB::table('ratings')
+            ->where('user_id', $barMembership->user_id)
+            ->where('rateable_type', Cocktail::class)
+            ->where('rating', '>=', 4)
+            ->pluck('rateable_id')
+            ->toArray();
+
+        $preferredCocktailIds = array_unique(array_merge($favoriteCocktailIds, $highRatedCocktailIds));
+
+        if ($preferredCocktailIds === []) {
+            return [];
+        }
+
+        $tags = DB::table('cocktail_tag')
             ->select('tags.name', DB::raw('COUNT(*) as weight'))
-            ->join('cocktail_tag', 'cocktail_tag.cocktail_id', '=', 'cocktail_favorites.cocktail_id')
             ->join('tags', 'tags.id', '=', 'cocktail_tag.tag_id')
-            ->where('cocktail_favorites.bar_membership_id', $memberId->value)
+            ->whereIn('cocktail_tag.cocktail_id', $preferredCocktailIds)
             ->groupBy('tags.name')
             ->get();
 
@@ -74,9 +93,11 @@ final class EloquentRecommendationRepository implements RecommendationRepository
 
     public function getNegativeTags(MemberId $memberId): array
     {
+        $barMembership = BarMembership::findOrFail($memberId->value);
+
         $lowRatedCocktails = DB::table('ratings')
             ->select('rateable_id')
-            ->where('user_id', $memberId->value)
+            ->where('user_id', $barMembership->user_id)
             ->where('rateable_type', Cocktail::class)
             ->where('rating', '<=', 2)
             ->pluck('rateable_id');
@@ -106,11 +127,30 @@ final class EloquentRecommendationRepository implements RecommendationRepository
 
     public function getFavoriteIngredients(MemberId $memberId): array
     {
-        $favoriteIngredients = DB::table('cocktail_favorites')
-            ->selectRaw('ingredients.id, COUNT(cocktail_favorites.cocktail_id) AS total')
-            ->join('cocktail_ingredients', 'cocktail_ingredients.cocktail_id', '=', 'cocktail_favorites.cocktail_id')
+        $barMembership = BarMembership::findOrFail($memberId->value);
+
+        $favoriteCocktailIds = DB::table('cocktail_favorites')
+            ->where('bar_membership_id', $barMembership->id)
+            ->pluck('cocktail_id')
+            ->toArray();
+
+        $highRatedCocktailIds = DB::table('ratings')
+            ->where('user_id', $barMembership->user_id)
+            ->where('rateable_type', Cocktail::class)
+            ->where('rating', '>=', 4)
+            ->pluck('rateable_id')
+            ->toArray();
+
+        $preferredCocktailIds = array_unique(array_merge($favoriteCocktailIds, $highRatedCocktailIds));
+
+        if ($preferredCocktailIds === []) {
+            return [];
+        }
+
+        $favoriteIngredients = DB::table('cocktail_ingredients')
+            ->selectRaw('ingredients.id, COUNT(cocktail_ingredients.cocktail_id) AS total')
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
-            ->where('cocktail_favorites.bar_membership_id', $memberId->value)
+            ->whereIn('cocktail_ingredients.cocktail_id', $preferredCocktailIds)
             ->groupBy('ingredients.id')
             ->get();
 

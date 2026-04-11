@@ -64,9 +64,6 @@ final readonly class RecommendationService
             fn (RecommendationResult $result) => new RecommendationResultDTO(
                 cocktailId: $result->cocktailId->value,
                 score: $result->score,
-                matchedTagIds: $result->matchedTagIds,
-                matchedIngredientIds: $result->matchedIngredientIds,
-                shelfCompleteness: $result->shelfCompleteness,
             ),
             $results,
         );

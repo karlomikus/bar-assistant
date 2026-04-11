@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace BarAssistant\Domain\Recommendation;
 
 use BarAssistant\Domain\Ingredient\IngredientId;
-use Illuminate\Support\Facades\Log;
 
 final class RecommendationScoringService
 {
@@ -19,7 +18,7 @@ final class RecommendationScoringService
     private const float SHELF_COVERAGE_WEIGHT = 0.30;
 
     /** How strongly matched negative tags suppress a cocktail */
-    private const float NEGATIVE_TAG_WEIGHT = 0.40;
+    private const float NEGATIVE_TAG_WEIGHT = 0.20;
 
     /** Flat bonus for recently-added cocktails; intentionally small to not override preference signals */
     private const float RECENCY_BOOST_WEIGHT = 0.10;
@@ -67,8 +66,6 @@ final class RecommendationScoringService
         $results = [];
 
         foreach ($cocktails as $cocktail) {
-            $matchedTagIds = [];
-            $matchedIngredientIds = [];
             $shelfMatches = 0;
 
             // --- Tag preference signal (normalized by tag count) ---
@@ -78,7 +75,6 @@ final class RecommendationScoringService
             foreach ($cocktail->tags as $tagName) {
                 if (isset($favoriteTagMap[$tagName])) {
                     $tagWeightSum += $favoriteTagMap[$tagName];
-                    $matchedTagIds[] = $tagName;
                 }
 
                 if (isset($negativeTagMap[$tagName])) {
@@ -96,7 +92,6 @@ final class RecommendationScoringService
 
                 if (isset($favoriteIngredientMap[$ingredientValue])) {
                     $ingredientWeightSum += $favoriteIngredientMap[$ingredientValue];
-                    $matchedIngredientIds[] = $ingredientValue;
                 }
 
                 if (isset($barShelfIngredientSet[$ingredientValue])) {
@@ -112,7 +107,6 @@ final class RecommendationScoringService
                 : 0.0;
 
             // --- Blend normalized signals ---
-            // Final score is roughly in range [-NEGATIVE_TAG_WEIGHT, 1.0 + RECENCY_BOOST_WEIGHT]
             $score = ($tagScore * self::TAG_PREFERENCE_WEIGHT)
                 + ($ingredientScore * self::INGREDIENT_PREFERENCE_WEIGHT)
                 + ($shelfCompleteness * self::SHELF_COVERAGE_WEIGHT)
@@ -122,9 +116,6 @@ final class RecommendationScoringService
             $results[] = new RecommendationResult(
                 cocktailId: $cocktail->cocktailId,
                 score: $score,
-                matchedTagIds: $matchedTagIds,
-                matchedIngredientIds: $matchedIngredientIds,
-                shelfCompleteness: $shelfCompleteness,
             );
         }
 
