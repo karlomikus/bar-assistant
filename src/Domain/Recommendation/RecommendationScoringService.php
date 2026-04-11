@@ -13,7 +13,7 @@ final class RecommendationScoringService
     private const float RECENCY_BOOST_WEIGHT = 0.25;
     private const float NEGATIVE_RATING_PENALTY = -0.5;
 
-    private const int RECENCY_MONTHS = 4;
+    private const int RECENCY_MONTHS = 3;
 
     /**
      * Calculate recommendation scores for cocktails

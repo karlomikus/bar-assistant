@@ -39,7 +39,7 @@ final class InMemoryRecommendationRepository implements RecommendationRepository
      * @param CocktailId[] $excludeIds
      * @return CocktailWithDetails[]
      */
-    public function getCocktailsWithDetails(BarId $barId, array $excludeIds): array
+    public function getApplicableCocktails(BarId $barId, array $excludeIds): array
     {
         $excludeValues = array_map(
             fn (CocktailId $id) => $id->value,
@@ -95,7 +95,7 @@ final class InMemoryRecommendationRepository implements RecommendationRepository
     /**
      * @return IngredientId[]
      */
-    public function getBarShelfIngredientIds(BarId $barId): array
+    public function getBarInventoryIngredients(BarId $barId): array
     {
         return $this->barShelfIngredients;
     }

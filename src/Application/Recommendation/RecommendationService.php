@@ -37,12 +37,7 @@ final readonly class RecommendationService
         $barId = new BarId($request->barId);
         $memberId = new MemberId($request->memberId);
 
-        $favoriteCocktailIds = $this->recommendationRepository->getFavoriteCocktailIds($memberId);
-        $ratedCocktailIds = $this->recommendationRepository->getRatedCocktailIds($memberId);
-
-        $excludeIds = array_unique(array_merge($favoriteCocktailIds, $ratedCocktailIds));
-
-        $cocktails = $this->recommendationRepository->getCocktailsWithDetails($barId, $excludeIds);
+        $cocktails = $this->recommendationRepository->getApplicableCocktails($memberId);
 
         if (empty($cocktails)) {
             return [];
@@ -51,7 +46,7 @@ final readonly class RecommendationService
         $favoriteTags = $this->recommendationRepository->getFavoriteTags($memberId, $barId);
         $negativeTags = $this->recommendationRepository->getNegativeTags($memberId, $barId);
         $favoriteIngredients = $this->recommendationRepository->getFavoriteIngredients($memberId, $barId);
-        $barShelfIngredients = $this->recommendationRepository->getBarShelfIngredientIds($barId);
+        $barShelfIngredients = $this->recommendationRepository->getBarInventoryIngredients($barId);
 
         $results = $this->scoringService->score(
             favoriteTags: $favoriteTags,
