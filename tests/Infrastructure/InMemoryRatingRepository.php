@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Tests\Infrastructure;
 
 use BarAssistant\Domain\Rating\Rating;
-use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Rating\RatingId;
-use BarAssistant\Domain\Cocktail\CocktailId;
+use BarAssistant\Domain\Rating\RateableId;
+use BarAssistant\Domain\Rating\RateableType;
 use BarAssistant\Domain\Rating\RatingRepository;
+use BarAssistant\Domain\User\UserId;
 
 final class InMemoryRatingRepository implements RatingRepository
 {
@@ -20,42 +21,19 @@ final class InMemoryRatingRepository implements RatingRepository
     ) {
     }
 
-    public function findById(RatingId $id): ?Rating
-    {
-        return $this->ratings[$id->value] ?? null;
-    }
-
-    public function findUserRating(CocktailId $cocktailId, MemberId $userId): ?Rating
+    public function findUserRating(RateableId $rateableId, RateableType $type, UserId $userId): ?Rating
     {
         foreach ($this->ratings as $rating) {
-            if ($rating->getRateableId()->equals($cocktailId) && $rating->getMemberId()->equals($userId)) {
+            if (
+                $rating->getRateableId()->equals($rateableId)
+                && $rating->getType() === $type
+                && $rating->getUserId()->equals($userId)
+            ) {
                 return $rating;
             }
         }
 
         return null;
-    }
-
-    /**
-     * @return Rating[]
-     */
-    public function findByMember(MemberId $memberId): array
-    {
-        return array_values(array_filter(
-            $this->ratings,
-            fn (Rating $rating) => $rating->getMemberId()->equals($memberId),
-        ));
-    }
-
-    /**
-     * @return Rating[]
-     */
-    public function findByCocktail(CocktailId $cocktailId): array
-    {
-        return array_values(array_filter(
-            $this->ratings,
-            fn (Rating $rating) => $rating->getRateableId()->equals($cocktailId),
-        ));
     }
 
     public function save(Rating $rating): Rating
@@ -76,18 +54,10 @@ final class InMemoryRatingRepository implements RatingRepository
     }
 
     /**
-     * @return CocktailId[]
+     * @return Rating[]
      */
-    public function findLowRatedCocktailIds(MemberId $memberId, int $maxValue = 2): array
+    public function all(): array
     {
-        $ids = [];
-
-        foreach ($this->ratings as $rating) {
-            if ($rating->getMemberId()->equals($memberId) && $rating->getValue() <= $maxValue) {
-                $ids[] = $rating->getRateableId();
-            }
-        }
-
-        return $ids;
+        return array_values($this->ratings);
     }
 }

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\Unit\Application\Bar;
 
 use PHPUnit\Framework\TestCase;
-use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Application\Rating\RatingService;
 use Tests\Infrastructure\InMemoryRatingRepository;
 use BarAssistant\Application\Rating\DTO\RateCocktailRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
+use BarAssistant\Domain\Exception\DomainException;
 
 final class RatingServiceTest extends TestCase
 {
@@ -40,7 +40,6 @@ final class RatingServiceTest extends TestCase
 
     public function test_rate_updates_existing_rating(): void
     {
-        // First rating
         $request1 = new RateCocktailRequest(
             userId: 1,
             cocktailId: 100,
@@ -49,7 +48,6 @@ final class RatingServiceTest extends TestCase
         $result1 = $this->service->rate($request1);
         $firstId = $result1->id;
 
-        // Update rating
         $request2 = new RateCocktailRequest(
             userId: 1,
             cocktailId: 100,
@@ -63,7 +61,6 @@ final class RatingServiceTest extends TestCase
 
     public function test_delete_removes_rating(): void
     {
-        // Create a rating
         $request = new RateCocktailRequest(
             userId: 1,
             cocktailId: 100,
@@ -71,12 +68,9 @@ final class RatingServiceTest extends TestCase
         );
         $this->service->rate($request);
 
-        // Delete it
         $this->service->removeRating(1, 100);
 
-        // Verify it's gone
-        $ratings = $this->ratingRepository->findByMember(new MemberId(1));
-        $this->assertCount(0, $ratings);
+        $this->assertCount(0, $this->ratingRepository->all());
     }
 
     public function test_delete_throws_exception_when_not_found(): void
@@ -89,7 +83,7 @@ final class RatingServiceTest extends TestCase
 
     public function test_rate_throws_exception_for_invalid_value(): void
     {
-        $this->expectException(\DomainException::class);
+        $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Rating value must be between 1 and 5');
 
         $this->service->rate(new RateCocktailRequest(
@@ -101,7 +95,7 @@ final class RatingServiceTest extends TestCase
 
     public function test_rate_throws_exception_for_zero_value(): void
     {
-        $this->expectException(\DomainException::class);
+        $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Rating value must be between 1 and 5');
 
         $this->service->rate(new RateCocktailRequest(
