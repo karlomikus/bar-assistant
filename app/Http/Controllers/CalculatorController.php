@@ -142,7 +142,7 @@ class CalculatorController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(Request $request, int $id): Response
+    public function delete(CalculatorService $calculatorService, Request $request, int $id): Response
     {
         $calculator = Calculator::findOrFail($id);
 
@@ -150,7 +150,7 @@ class CalculatorController extends Controller
             abort(403);
         }
 
-        $calculator->delete();
+        $calculatorService->deleteCalculator($calculator->id);
 
         return new Response(null, 204);
     }
@@ -170,7 +170,7 @@ class CalculatorController extends Controller
     #[BAO\NotFoundResponse]
     public function solve(CalculatorService $calculatorService, Request $request, int $id): CalculatorResultResource
     {
-        $calculator = Calculator::with('blocks')->findOrFail($id);
+        $calculator = Calculator::findOrFail($id);
 
         if ($request->user()->cannot('show', $calculator)) {
             abort(403);
