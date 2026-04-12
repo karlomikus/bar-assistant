@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use BarAssistant\Application\Rating\DTO\RateCocktailRequest;
+use BarAssistant\Application\Rating\RatingService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
@@ -26,7 +28,7 @@ class RatingController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotFoundResponse]
     #[BAO\NotAuthorizedResponse]
-    public function rateCocktail(RatingRequest $request, int $id): Response
+    public function rateCocktail(RatingService $ratingService, RatingRequest $request, int $id): Response
     {
         $cocktail = Cocktail::findOrFail($id);
 
@@ -34,14 +36,11 @@ class RatingController extends Controller
             abort(403);
         }
 
-        $cocktail->rate(
-            (int) $request->post('rating'),
-            $request->user()->id
-        );
-
-        if (!empty(config('scout.driver'))) {
-            $cocktail->searchable();
-        }
+        $ratingService->rate(new RateCocktailRequest(
+            userId: $request->user()->id,
+            cocktailId: $cocktail->id,
+            value: (int) $request->post('rating'),
+        ));
 
         return new Response(null, 204);
     }
@@ -52,7 +51,7 @@ class RatingController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function deleteCocktailRating(Request $request, int $id): Response
+    public function deleteCocktailRating(RatingService $ratingService, Request $request, int $id): Response
     {
         $cocktail = Cocktail::findOrFail($id);
 
@@ -60,11 +59,7 @@ class RatingController extends Controller
             abort(403);
         }
 
-        $cocktail->deleteUserRating($request->user()->id);
-
-        if (!empty(config('scout.driver'))) {
-            $cocktail->searchable();
-        }
+        $ratingService->removeRating($request->user()->id, $cocktail->id);
 
         return new Response(null, 204);
     }

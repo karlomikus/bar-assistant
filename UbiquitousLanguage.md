@@ -20,7 +20,8 @@
 | **Ingredient Price** | A monetary value for an ingredient amount in a price category. | Cost |
 | **Cocktail Price** | A monetary value associated with a cocktail recipe. | Cost |
 | **Amount** | A specific quantity of an ingredient with numeric value and units. | Quantity, Measure |
-| **Rating** | A numerical evaluation of a resource by a user. | Score, Review |
+| **Rating** | A numerical score (1–5) a user assigns to a cocktail. Each user may have at most one rating per cocktail; submitting again updates the existing value. Ratings drive the recommendation engine and feed `average_rating` and `user_rating` aggregates. | Score, Review |
+| **Note** | A free-form private text annotation a user attaches to a cocktail. A user may create multiple notes on the same cocktail, and only the author can view or delete them. | Comment, Annotation |
 
 ## Menu & Presentation
 
@@ -75,6 +76,8 @@
 - A **Cocktail Ingredient** may have zero or more **Cocktail Ingredient Substitutes**.
 - A **Member** is a **User** assigned to one or more **Bars**.
 - **Authors** are **Users** who modified a resource.
+- A **User** may have many **Notes** on a **Cocktail** (private, multi-note).
+- A **User** has at most one **Rating** per **Cocktail** (upsert semantics).
 
 ## Flagged ambiguities
 

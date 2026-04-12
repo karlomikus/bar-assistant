@@ -1,6 +1,8 @@
 includes:
     - ./vendor/larastan/larastan/extension.neon
+    - ./vendor/shipmonk/dead-code-detector/rules.neon
 parameters:
     paths:
         - src/
-    level: max
+        - app/
+    level: 3

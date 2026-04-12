@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Infrastructure;
 
-use BarAssistant\Domain\Bar\Rating;
+use BarAssistant\Domain\Rating\Rating;
 use BarAssistant\Domain\Bar\MemberId;
-use BarAssistant\Domain\Bar\RatingId;
+use BarAssistant\Domain\Rating\RatingId;
 use BarAssistant\Domain\Cocktail\CocktailId;
-use BarAssistant\Domain\Bar\RatingRepository;
+use BarAssistant\Domain\Rating\RatingRepository;
 
 final class InMemoryRatingRepository implements RatingRepository
 {
@@ -25,10 +25,10 @@ final class InMemoryRatingRepository implements RatingRepository
         return $this->ratings[$id->value] ?? null;
     }
 
-    public function findByCocktailAndMember(CocktailId $cocktailId, MemberId $memberId): ?Rating
+    public function findUserRating(CocktailId $cocktailId, MemberId $userId): ?Rating
     {
         foreach ($this->ratings as $rating) {
-            if ($rating->getCocktailId()->equals($cocktailId) && $rating->getMemberId()->equals($memberId)) {
+            if ($rating->getRateableId()->equals($cocktailId) && $rating->getMemberId()->equals($userId)) {
                 return $rating;
             }
         }
@@ -54,7 +54,7 @@ final class InMemoryRatingRepository implements RatingRepository
     {
         return array_values(array_filter(
             $this->ratings,
-            fn (Rating $rating) => $rating->getCocktailId()->equals($cocktailId),
+            fn (Rating $rating) => $rating->getRateableId()->equals($cocktailId),
         ));
     }
 
@@ -84,7 +84,7 @@ final class InMemoryRatingRepository implements RatingRepository
 
         foreach ($this->ratings as $rating) {
             if ($rating->getMemberId()->equals($memberId) && $rating->getValue() <= $maxValue) {
-                $ids[] = $rating->getCocktailId();
+                $ids[] = $rating->getRateableId();
             }
         }
 

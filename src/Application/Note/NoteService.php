@@ -40,17 +40,6 @@ final readonly class NoteService
         return NoteResult::fromNote($note);
     }
 
-    public function getNote(int $noteId): NoteResult
-    {
-        $note = $this->noteRepository->findById(new NoteId($noteId));
-
-        if ($note === null) {
-            throw new EntityNotFoundException('Note not found');
-        }
-
-        return NoteResult::fromNote($note);
-    }
-
     public function deleteNote(int $noteId): void
     {
         $note = $this->noteRepository->findById(new NoteId($noteId));

@@ -2,64 +2,44 @@
 
 declare(strict_types=1);
 
-namespace BarAssistant\Domain\Bar;
+namespace BarAssistant\Domain\Rating;
 
 use DomainException;
 use DateTimeImmutable;
 use BarAssistant\Domain\Identity;
-use BarAssistant\Domain\Cocktail\CocktailId;
+use BarAssistant\Domain\Common\RatingValue;
+use BarAssistant\Domain\User\UserId;
 
 final class Rating implements Identity
 {
     private ?RatingId $id = null;
 
     private function __construct(
-        private CocktailId $cocktailId,
-        private MemberId $memberId,
-        private int $value,
+        private readonly RateableId $rateableId,
+        private readonly RateableType $type,
+        private UserId $userId,
+        private RatingValue $value,
         private DateTimeImmutable $createdAt,
         private DateTimeImmutable $updatedAt,
     ) {
-        if ($value < 1 || $value > 5) {
-            throw new DomainException('Rating value must be between 1 and 5');
-        }
     }
 
     public static function create(
-        CocktailId $cocktailId,
-        MemberId $memberId,
-        int $value,
+        RateableId $rateableId,
+        RateableType $type,
+        UserId $userId,
+        RatingValue $value,
     ): self {
         $now = new DateTimeImmutable();
 
         return new self(
-            cocktailId: $cocktailId,
-            memberId: $memberId,
+            rateableId: $rateableId,
+            type: $type,
+            userId: $userId,
             value: $value,
             createdAt: $now,
             updatedAt: $now,
         );
-    }
-
-    public static function createFromDatabase(
-        RatingId $id,
-        CocktailId $cocktailId,
-        MemberId $memberId,
-        int $value,
-        DateTimeImmutable $createdAt,
-        DateTimeImmutable $updatedAt,
-    ): self {
-        $rating = new self(
-            cocktailId: $cocktailId,
-            memberId: $memberId,
-            value: $value,
-            createdAt: $createdAt,
-            updatedAt: $updatedAt,
-        );
-
-        $rating->id = $id;
-
-        return $rating;
     }
 
     public function isTransient(): bool
@@ -83,19 +63,24 @@ final class Rating implements Identity
         return $this;
     }
 
-    public function getCocktailId(): CocktailId
+    public function getRateableId(): RateableId
     {
-        return $this->cocktailId;
+        return $this->rateableId;
     }
 
-    public function getMemberId(): MemberId
+    public function getUserId(): UserId
     {
-        return $this->memberId;
+        return $this->userId;
     }
 
-    public function getValue(): int
+    public function getValue(): RatingValue
     {
         return $this->value;
+    }
+
+    public function getType(): RateableType
+    {
+        return $this->type;
     }
 
     public function getCreatedAt(): DateTimeImmutable
@@ -108,12 +93,8 @@ final class Rating implements Identity
         return $this->updatedAt;
     }
 
-    public function updateValue(int $value): self
+    public function updateValue(RatingValue $value): self
     {
-        if ($value < 1 || $value > 5) {
-            throw new DomainException('Rating value must be between 1 and 5');
-        }
-
         $this->value = $value;
         $this->updatedAt = new DateTimeImmutable();
 

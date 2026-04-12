@@ -10,7 +10,7 @@ use BarAssistant\Domain\Menu\MenuRepository;
 use BarAssistant\Domain\Note\NoteRepository;
 use BarAssistant\Domain\User\UserRepository;
 use BarAssistant\Domain\Bar\MemberRepository;
-use BarAssistant\Domain\Bar\RatingRepository;
+use BarAssistant\Domain\Rating\RatingRepository;
 use BarAssistant\Domain\Image\ImageRepository;
 use BarAssistant\Domain\Export\ExportRepository;
 use BarAssistant\Domain\Export\FileTokenService;

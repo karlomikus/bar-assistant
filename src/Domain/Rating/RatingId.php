@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BarAssistant\Domain\Bar;
+namespace BarAssistant\Domain\Rating;
 
 use BarAssistant\Domain\Common\IntegerIdentifier;
 

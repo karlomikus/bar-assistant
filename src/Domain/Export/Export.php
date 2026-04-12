@@ -37,26 +37,6 @@ final class Export implements Identity
         );
     }
 
-    public static function createFromPersistence(
-        ExportId $id,
-        BarId $barId,
-        UserId $createdUserId,
-        string $filename,
-        bool $isDone,
-        RecordTimestamps $recordTimestamps,
-    ): self {
-        $export = new self(
-            barId: $barId,
-            createdUserId: $createdUserId,
-            filename: $filename,
-            isDone: $isDone,
-            recordTimestamps: $recordTimestamps,
-        );
-        $export->id = $id;
-
-        return $export;
-    }
-
     public function isTransient(): bool
     {
         return $this->id === null;

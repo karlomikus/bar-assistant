@@ -62,16 +62,6 @@ final readonly class MenuService
         return $menu;
     }
 
-    public function getMenu(int $barId): MenuResult
-    {
-        $menu = $this->menuRepository->findByBarId(new BarId($barId));
-        if ($menu === null) {
-            throw new EntityNotFoundException('Menu not found');
-        }
-
-        return MenuResult::fromMenu($menu);
-    }
-
     private function createMenuItem(CreateMenuItemRequest $request): MenuItem
     {
         $price = Price::createFromFloat($request->price, $request->priceCurrency);

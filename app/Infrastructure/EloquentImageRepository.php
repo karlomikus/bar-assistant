@@ -46,19 +46,6 @@ final class EloquentImageRepository implements ImageRepository
         return self::map($model);
     }
 
-    public function findMany(array $ids): array
-    {
-        $models = Model::whereIn('id', array_map(fn (ImageId $id) => $id->value, $ids))->get();
-
-        $ingredients = [];
-        /** @var Model $model */
-        foreach ($models as $model) {
-            $ingredients[] = self::map($model);
-        }
-
-        return $ingredients;
-    }
-
     private static function map(Model $model): Image
     {
         return Image::create(
