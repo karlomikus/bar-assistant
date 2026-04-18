@@ -100,13 +100,7 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsSchema4
     {
         $substitutes = [];
         foreach ($sourceArray['substitutes'] ?? [] as $sourceSubstitute) {
-            if (is_array($sourceSubstitute)) {
-                $substitutes[] = CocktailIngredientSubstitute::fromSchema4Array($sourceSubstitute);
-            } else {
-                $substitutes[] = CocktailIngredientSubstitute::fromSchema4Array([
-                    'name' => (string) $sourceSubstitute,
-                ]);
-            }
+            $substitutes[] = CocktailIngredientSubstitute::fromSchema4Array($sourceSubstitute);
         }
 
         return new self(

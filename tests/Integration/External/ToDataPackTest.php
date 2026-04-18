@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\External;
+namespace Tests\Integration\External;
 
 use ZipArchive;
 use Tests\TestCase;

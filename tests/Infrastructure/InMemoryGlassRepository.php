@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Infrastructure;
 
+use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Cocktail\Glass;
 use BarAssistant\Domain\Cocktail\GlassId;
 use BarAssistant\Domain\Cocktail\GlassRepository;
@@ -17,6 +18,15 @@ final class InMemoryGlassRepository implements GlassRepository
      */
     public function __construct(private array $items = [])
     {
+    }
+
+    public function findAllInBar(BarId $barId): array
+    {
+        return array_values(array_filter
+        (
+            $this->items,
+            fn(Glass $glass) => $glass->getBarId()->equals($barId)
+        ));
     }
 
     public function findById(GlassId $id): ?Glass

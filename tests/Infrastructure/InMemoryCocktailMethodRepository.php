@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Infrastructure;
 
+use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Cocktail\MethodId;
 use BarAssistant\Domain\Cocktail\CocktailMethod;
 use BarAssistant\Domain\Cocktail\CocktailMethodRepository;
@@ -17,6 +18,15 @@ final class InMemoryCocktailMethodRepository implements CocktailMethodRepository
      */
     public function __construct(private array $items = [])
     {
+    }
+
+    public function findAllInBar(BarId $barId): array
+    {
+        return array_values(array_filter
+        (
+            $this->items,
+            fn(CocktailMethod $method) => $method->getBarId()->equals($barId)
+        ));
     }
 
     public function findById(MethodId $id): ?CocktailMethod

@@ -123,6 +123,6 @@ class ImportControllerTest extends TestCase
         ]);
 
         $response->assertSuccessful();
-        $response->assertJsonPath('data.schema.recipe.name', 'Negroni');
+        $response->assertJsonPath('data.schema.name', 'Negroni');
     }
 }
