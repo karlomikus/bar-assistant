@@ -11,6 +11,7 @@ use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientMatchRepository;
+use BarAssistant\Domain\Ingredient\IngredientRepository;
 use BarAssistant\Domain\User\UserId;
 
 final class IngredientMatcher
@@ -19,7 +20,8 @@ final class IngredientMatcher
     private array $matchedIngredients = [];
 
     public function __construct(
-        private IngredientMatchRepository $ingredientRepository,
+        private readonly IngredientRepository $ingredientRepository,
+        private readonly IngredientMatchRepository $ingredientMatchRepository,
     ) {
     }
 
@@ -36,7 +38,7 @@ final class IngredientMatcher
             return $this->matchedIngredients[$matchName]->getId()->value;
         }
 
-        $barIngredients = $this->ingredientRepository->findManyByBarId(new BarId($request->barId));
+        $barIngredients = $this->ingredientMatchRepository->findManyByBarId(new BarId($request->barId));
         foreach ($barIngredients as $barIngredient) {
             $this->matchedIngredients[$barIngredient->getName()->toLowercase()] = $barIngredient;
         }
@@ -54,6 +56,8 @@ final class IngredientMatcher
             authors: Authors::createdBy(new UserId($request->userId)),
             recordTimestamps: RecordTimestamps::createdNow(),
         );
+
+        $newIngredient = $this->ingredientRepository->save($newIngredient);
 
         return $newIngredient->getId()->value;
     }

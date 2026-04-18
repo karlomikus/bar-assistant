@@ -44,7 +44,6 @@ final readonly class FromSchema
         int $userId,
         Schema $schema,
         DuplicateActionsEnum $duplicateAction = DuplicateActionsEnum::None,
-        string $imageDirectoryBasePath = '',
     ): Cocktail {
         $existingCocktail = $this->cocktailMatcher->matchByName(new CocktailMatchRequest($barId, $schema->cocktail->name));
         if ($duplicateAction === DuplicateActionsEnum::Skip && $existingCocktail !== null) {
@@ -55,7 +54,7 @@ final readonly class FromSchema
         $cocktailImages = [];
         foreach ($schema->cocktail->images as $image) {
             try {
-                if ($image->uri && $imageContents = file_get_contents($imageDirectoryBasePath . $image->getLocalFilePath())) {
+                if ($image->uri && $imageContents = file_get_contents($image->getLocalFilePath())) {
                     $uploadedImage = $this->imageUploadService->uploadImage($imageContents);
                     $storedImage = $this->imageService->createImage(new CreateImage($uploadedImage->path, $uploadedImage->extension, $userId, 1, $image->copyright, $uploadedImage->placeholderHash));
                     $cocktailImages[] = $storedImage->id;
@@ -65,13 +64,11 @@ final readonly class FromSchema
             }
         }
 
-        // Match glass
         $glassId = null;
         if ($schema->cocktail->glass) {
             $glassId = $this->glassMatcher->matchByName(new GlassMatchRequest($barId, $schema->cocktail->glass));
         }
 
-        // Match method
         $methodId = null;
         if ($schema->cocktail->method) {
             $methodId = $this->methodMatcher->matchByName(new MethodMatchRequest($barId, $schema->cocktail->method));
@@ -82,7 +79,6 @@ final readonly class FromSchema
             $dilution = CocktailMethod::find($methodId)?->dilution_percentage ?? 0.0;
         }
 
-        // Match ingredients
         $ingredients = [];
         $sort = 1;
         foreach ($schema->cocktail->ingredients as $scrapedIngredient) {

@@ -53,6 +53,18 @@ final class EloquentCocktailMethodRepository implements CocktailMethodRepository
         $model->delete();
     }
 
+    public function findAllInBar(BarId $barId): array
+    {
+        $models = Model::where('bar_id', $barId->value)->get();
+
+        $methods = [];
+        foreach ($models as $model) {
+            $methods[] = self::map($model);
+        }
+
+        return $methods;
+    }
+
     private static function map(Model $model): CocktailMethod
     {
         return CocktailMethod::create(

@@ -27,10 +27,10 @@
             "examples": ["2024-07-21T15:30:00Z"]
         },
         "source": {
-            "description": "Source of the recipe, either URL or book reference",
+            "description": "Source of the recipe, either URL, author or book reference",
             "type": ["string", "null"],
             "minLength": 1,
-            "examples": ["https://example.com/margarita-recipe"]
+            "examples": ["https://example.com/margarita-recipe", "John Doe", "Death&Co"]
         },
         "description": {
             "description": "Recipe description",
@@ -128,11 +128,6 @@
                 "title": "Cocktail ingredient",
                 "additionalProperties": false,
                 "properties": {
-                    "sort": {
-                        "description": "Sort order for the ingredient",
-                        "type": "integer",
-                        "minimum": 0
-                    },
                     "name": {
                         "description": "Name of the ingredient",
                         "type": "string",

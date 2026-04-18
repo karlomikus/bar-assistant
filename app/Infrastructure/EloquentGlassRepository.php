@@ -65,6 +65,20 @@ final class EloquentGlassRepository implements GlassRepository
         $model->delete();
     }
 
+    public function findAllInBar(BarId $barId): array
+    {
+        $models = Model::with('images')
+            ->where('bar_id', $barId->value)
+            ->get();
+
+        $glasses = [];
+        foreach ($models as $model) {
+            $glasses[] = self::map($model);
+        }
+
+        return $glasses;
+    }
+
     private static function map(Model $model): Glass
     {
         $glass = Glass::create(

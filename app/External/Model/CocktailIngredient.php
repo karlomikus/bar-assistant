@@ -113,14 +113,10 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsSchema4
             Ingredient::fromSchema4Array([
                 '_id' => $sourceArray['_id'] ?? Str::slug((string) ($sourceArray['name'] ?? '')),
                 'name' => $sourceArray['name'] ?? '',
-                'strength' => $sourceArray['strength'] ?? null,
-                'description' => $sourceArray['description'] ?? null,
-                'origin' => $sourceArray['origin'] ?? null,
-                'category' => $sourceArray['category'] ?? null,
             ]),
             new AmountValueObject(
                 $sourceArray['amount'] ?? 0.0,
-                new UnitValueObject($sourceArray['units']),
+                new UnitValueObject($sourceArray['units'] ?? null),
                 $sourceArray['amount_max'] ?? null,
             ),
             $sourceArray['optional'] ?? false,
@@ -141,7 +137,6 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsSchema4
             'amount_max' => $this->amount->amountMax,
             'note' => $this->note,
             'substitutes' => array_map(fn ($model) => $model->toSchema4Array(), $this->substitutes),
-            'sort' => $this->sort,
         ];
     }
 }
