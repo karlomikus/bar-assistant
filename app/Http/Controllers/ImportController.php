@@ -23,7 +23,7 @@ use Kami\Cocktail\Http\Requests\ScrapeRequest;
 use Kami\Cocktail\Services\Image\ImageService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Jobs\StartIngredientCSVImport;
-use Kami\Cocktail\External\Import\FromJsonSchema;
+use Kami\Cocktail\External\Import\FromSchema;
 use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
@@ -45,7 +45,7 @@ class ImportController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\RateLimitResponse]
-    public function cocktail(FromJsonSchema $importer, ImportRequest $request): JsonResource
+    public function cocktail(FromSchema $importer, ImportRequest $request): JsonResource
     {
         if ($request->user()->cannot('create', Cocktail::class)) {
             abort(403);
@@ -54,11 +54,12 @@ class ImportController extends Controller
         $source = $request->input('source');
         $duplicateAction = $request->enum('duplicate_actions', DuplicateActionsEnum::class);
 
-        if (is_array($source)) {
-            $cocktail = $importer->process(bar()->id, $request->user()->id, $source, $duplicateAction);
-        } else {
-            $cocktail = $importer->process(bar()->id, $request->user()->id, json_decode((string) $source, true), $duplicateAction);
+        if (!is_array($source)) {
+            $source = json_decode((string) $source, true, flags: JSON_THROW_ON_ERROR);
         }
+
+        $schema = Schema::fromSchema4Array($source);
+        $cocktail = $importer->process(bar()->id, $request->user()->id, $schema, $duplicateAction);
 
         return new CocktailResource($cocktail);
     }

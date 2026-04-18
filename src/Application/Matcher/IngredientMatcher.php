@@ -10,7 +10,7 @@ use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\Ingredient\IngredientRepository;
+use BarAssistant\Domain\Ingredient\IngredientMatchRepository;
 use BarAssistant\Domain\User\UserId;
 
 final class IngredientMatcher
@@ -19,7 +19,7 @@ final class IngredientMatcher
     private array $matchedIngredients = [];
 
     public function __construct(
-        private IngredientRepository $ingredientRepository,
+        private IngredientMatchRepository $ingredientRepository,
     ) {
     }
 
@@ -36,7 +36,7 @@ final class IngredientMatcher
             return $this->matchedIngredients[$matchName]->getId()->value;
         }
 
-        $barIngredients = $this->ingredientRepository->findAllInBar(new BarId($request->barId));
+        $barIngredients = $this->ingredientRepository->findManyByBarId(new BarId($request->barId));
         foreach ($barIngredients as $barIngredient) {
             $this->matchedIngredients[$barIngredient->getName()->toLowercase()] = $barIngredient;
         }

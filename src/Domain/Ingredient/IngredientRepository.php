@@ -69,11 +69,4 @@ interface IngredientRepository
      * @return Ingredient[]
      */
     public function findAncestors(IngredientId $descendantId): array;
-
-    /**
-     * Find all ingredients in a bar
-     *
-     * @return Ingredient[]
-     */
-    public function findAllInBar(BarId $barId): array;
 }

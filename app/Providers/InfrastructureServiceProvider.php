@@ -18,6 +18,7 @@ use BarAssistant\Domain\Cocktail\GlassRepository;
 use BarAssistant\Application\Export\ExportService;
 use BarAssistant\Domain\Cocktail\UtensilRepository;
 use BarAssistant\Domain\Cocktail\CocktailRepository;
+use BarAssistant\Domain\Cocktail\CocktailMatchRepository;
 use Kami\Cocktail\Infrastructure\EloquentBarRepository;
 use BarAssistant\Domain\Calculator\CalculatorRepository;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
@@ -33,7 +34,9 @@ use Kami\Cocktail\Infrastructure\EloquentRatingRepository;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentUtensilRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailRepository;
+use Kami\Cocktail\Infrastructure\EloquentCocktailMatchRepository;
 use BarAssistant\Domain\Cocktail\CocktailCollectionRepository;
+use BarAssistant\Domain\Ingredient\IngredientMatchRepository;
 use Kami\Cocktail\Infrastructure\EloquentCalculatorRepository;
 use Kami\Cocktail\Infrastructure\EloquentIngredientRepository;
 use BarAssistant\Domain\Recommendation\RecommendationRepository;
@@ -41,6 +44,7 @@ use Kami\Cocktail\Infrastructure\EloquentPriceCategoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailMethodRepository;
 use Kami\Cocktail\Infrastructure\EloquentRecommendationRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailCollectionRepository;
+use Kami\Cocktail\Infrastructure\EloquentIngredientMatchRepository;
 
 class InfrastructureServiceProvider extends ServiceProvider
 {
@@ -58,6 +62,8 @@ class InfrastructureServiceProvider extends ServiceProvider
         $this->app->bind(MenuRepository::class, EloquentMenuRepository::class);
         $this->app->bind(CocktailRepository::class, EloquentCocktailRepository::class);
         $this->app->bind(CocktailCollectionRepository::class, EloquentCocktailCollectionRepository::class);
+        $this->app->bind(CocktailMatchRepository::class, EloquentCocktailMatchRepository::class);
+        $this->app->bind(IngredientMatchRepository::class, EloquentIngredientMatchRepository::class);
         $this->app->bind(UserRepository::class, EloquentUserRepository::class);
         $this->app->bind(NoteRepository::class, EloquentNoteRepository::class);
         $this->app->bind(CalculatorRepository::class, EloquentCalculatorRepository::class);

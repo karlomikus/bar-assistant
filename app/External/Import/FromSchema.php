@@ -26,7 +26,7 @@ use Kami\Cocktail\External\Model\Schema;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\Services\Image\ImageUploadService;
 
-final readonly class FromJsonSchema
+final readonly class FromSchema
 {
     public function __construct(
         private CocktailService $cocktailService,
@@ -42,18 +42,18 @@ final readonly class FromJsonSchema
     public function process(
         int $barId,
         int $userId,
-        Schema $cocktailExternal,
+        Schema $schema,
         DuplicateActionsEnum $duplicateAction = DuplicateActionsEnum::None,
         string $imageDirectoryBasePath = '',
     ): Cocktail {
-        $existingCocktail = $this->cocktailMatcher->matchByName(new CocktailMatchRequest($barId, $cocktailExternal->cocktail->name));
+        $existingCocktail = $this->cocktailMatcher->matchByName(new CocktailMatchRequest($barId, $schema->cocktail->name));
         if ($duplicateAction === DuplicateActionsEnum::Skip && $existingCocktail !== null) {
             return Cocktail::find($existingCocktail);
         }
 
         // Add images
         $cocktailImages = [];
-        foreach ($cocktailExternal->cocktail->images as $image) {
+        foreach ($schema->cocktail->images as $image) {
             try {
                 if ($image->uri && $imageContents = file_get_contents($imageDirectoryBasePath . $image->getLocalFilePath())) {
                     $uploadedImage = $this->imageUploadService->uploadImage($imageContents);
@@ -67,14 +67,14 @@ final readonly class FromJsonSchema
 
         // Match glass
         $glassId = null;
-        if ($cocktailExternal->cocktail->glass) {
-            $glassId = $this->glassMatcher->matchByName(new GlassMatchRequest($barId, $cocktailExternal->cocktail->glass));
+        if ($schema->cocktail->glass) {
+            $glassId = $this->glassMatcher->matchByName(new GlassMatchRequest($barId, $schema->cocktail->glass));
         }
 
         // Match method
         $methodId = null;
-        if ($cocktailExternal->cocktail->method) {
-            $methodId = $this->methodMatcher->matchByName(new MethodMatchRequest($barId, $cocktailExternal->cocktail->method));
+        if ($schema->cocktail->method) {
+            $methodId = $this->methodMatcher->matchByName(new MethodMatchRequest($barId, $schema->cocktail->method));
         }
 
         $dilution = 0.0;
@@ -85,7 +85,7 @@ final readonly class FromJsonSchema
         // Match ingredients
         $ingredients = [];
         $sort = 1;
-        foreach ($cocktailExternal->cocktail->ingredients as $scrapedIngredient) {
+        foreach ($schema->cocktail->ingredients as $scrapedIngredient) {
             $ingredientId = $this->ingredientMatcher->matchOrCreateByName(
                 new IngredientMatchRequest(
                     barId: $barId,
@@ -130,16 +130,16 @@ final readonly class FromJsonSchema
             return Cocktail::findOrFail($this->cocktailService->updateCocktail(new UpdateCocktail(
                 cocktailId: $existingCocktail,
                 barId: $barId,
-                name: $cocktailExternal->cocktail->name,
-                instructions: $cocktailExternal->cocktail->instructions,
+                name: $schema->cocktail->name,
+                instructions: $schema->cocktail->instructions,
                 userId: $userId,
                 dilution: $dilution,
-                description: $cocktailExternal->cocktail->description,
-                source: $cocktailExternal->cocktail->source,
-                garnish: $cocktailExternal->cocktail->garnish,
+                description: $schema->cocktail->description,
+                source: $schema->cocktail->source,
+                garnish: $schema->cocktail->garnish,
                 glassId: $glassId,
                 methodId: $methodId,
-                tags: $cocktailExternal->cocktail->tags,
+                tags: $schema->cocktail->tags,
                 ingredients: $ingredients,
                 images: $cocktailImages,
                 utensils: [],
@@ -150,16 +150,16 @@ final readonly class FromJsonSchema
 
         return Cocktail::findOrFail($this->cocktailService->createCocktail(new CreateCocktail(
             barId: $barId,
-            name: $cocktailExternal->cocktail->name,
-            instructions: $cocktailExternal->cocktail->instructions,
+            name: $schema->cocktail->name,
+            instructions: $schema->cocktail->instructions,
             userId: $userId,
             dilution: $dilution,
-            description: $cocktailExternal->cocktail->description,
-            source: $cocktailExternal->cocktail->source,
-            garnish: $cocktailExternal->cocktail->garnish,
+            description: $schema->cocktail->description,
+            source: $schema->cocktail->source,
+            garnish: $schema->cocktail->garnish,
             glassId: $glassId,
             methodId: $methodId,
-            tags: $cocktailExternal->cocktail->tags,
+            tags: $schema->cocktail->tags,
             ingredients: $ingredients,
             images: $cocktailImages,
             utensils: [],
