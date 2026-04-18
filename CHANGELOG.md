@@ -18,6 +18,13 @@
     - Moved POST `/users/{id}/ingredients/batch-delete` to POST `/members/{id}/ingredients/batch-delete`
     - Moved GET `/users/{id}/ingredients/recommend` to GET `/members/{id}/ingredients/recommend`
 
+# v5.14.0
+## Changes
+- Updated AI prompts
+
+## Fixes
+- Fixed email header links
+
 # v5.13.2
 ## Fixes
 - Correctly check `bar_id` alongside `public_id` for public cocktails

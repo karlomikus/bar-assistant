@@ -1,7 +1,9 @@
 <x-mail::layout>
 {{-- Header --}}
 <x-slot:header>
+<x-mail::header url="https://barassistant.app">
 {{ config('app.name') }}
+</x-mail::header>
 </x-slot:header>
 
 {{-- Body --}}
