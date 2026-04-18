@@ -6,14 +6,14 @@ namespace Kami\Cocktail\External\Model;
 
 use Illuminate\Support\Str;
 use Kami\RecipeUtils\UnitConverter\Units;
-use Kami\Cocktail\External\SupportsDraft2;
+use Kami\Cocktail\External\SupportsSchema4;
 use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
 use Kami\Cocktail\Models\CocktailIngredient as CocktailIngredientModel;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute as CocktailIngredientSubstituteModel;
 
-readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
+readonly class CocktailIngredient implements SupportsDataPack, SupportsSchema4
 {
     /**
      * @param array<CocktailIngredientSubstitute> $substitutes
@@ -96,22 +96,22 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
         ];
     }
 
-    public static function fromDraft2Array(array $sourceArray): self
+    public static function fromSchema4Array(array $sourceArray): self
     {
         $substitutes = [];
         foreach ($sourceArray['substitutes'] ?? [] as $sourceSubstitute) {
             if (is_array($sourceSubstitute)) {
-                $substitutes[] = CocktailIngredientSubstitute::fromDraft2Array($sourceSubstitute);
+                $substitutes[] = CocktailIngredientSubstitute::fromSchema4Array($sourceSubstitute);
             } else {
-                $substitutes[] = CocktailIngredientSubstitute::fromDraft2Array([
+                $substitutes[] = CocktailIngredientSubstitute::fromSchema4Array([
                     'name' => (string) $sourceSubstitute,
                 ]);
             }
         }
 
         return new self(
-            Ingredient::fromDraft2Array([
-                '_id' => $sourceArray['_id'],
+            Ingredient::fromSchema4Array([
+                '_id' => $sourceArray['_id'] ?? Str::slug((string) ($sourceArray['name'] ?? '')),
                 'name' => $sourceArray['name'] ?? '',
                 'strength' => $sourceArray['strength'] ?? null,
                 'description' => $sourceArray['description'] ?? null,
@@ -131,17 +131,16 @@ readonly class CocktailIngredient implements SupportsDataPack, SupportsDraft2
         );
     }
 
-    public function toDraft2Array(): array
+    public function toSchema4Array(): array
     {
         return [
-            '_id' => $this->ingredient->id,
+            'name' => $this->ingredient->name,
             'amount' => $this->amount->amountMin,
             'units' => $this->amount->units->value,
             'optional' => $this->optional,
-            'is_specified' => $this->isSpecified,
             'amount_max' => $this->amount->amountMax,
             'note' => $this->note,
-            'substitutes' => array_map(fn ($model) => $model->toDraft2Array(), $this->substitutes),
+            'substitutes' => array_map(fn ($model) => $model->toSchema4Array(), $this->substitutes),
             'sort' => $this->sort,
         ];
     }

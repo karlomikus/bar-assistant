@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Cocktail;
 
+use BarAssistant\Domain\Bar\BarId;
+
 interface CocktailMethodRepository
 {
     /**
@@ -20,4 +22,9 @@ interface CocktailMethodRepository
      * Delete a cocktail method by its identifier
      */
     public function delete(MethodId $id): void;
+
+    /**
+     * @return CocktailMethod[]
+     */
+    public function findAllInBar(BarId $barId): array;
 }

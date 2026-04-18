@@ -139,21 +139,19 @@ abstract class AbstractSite implements Site
     {
         $ingredients = $this->ingredients();
         $ingredients = array_map(fn (RecipeIngredient $recipeIngredient, int $sort) => [
-            '_id' => Ulid::generate(),
             'name' => $this->clean(ucfirst($recipeIngredient->name)),
             'amount' => $recipeIngredient->amount->getValue(),
             'amount_max' => $recipeIngredient->amountMax?->getValue(),
             'units' => $recipeIngredient->units === '' ? null : $recipeIngredient->units,
             'note' => $recipeIngredient->comment === '' ? null : $recipeIngredient->comment,
-            'source' => $this->clean($recipeIngredient->source),
             'optional' => false,
             'sort' => $sort + 1,
         ], $ingredients, array_keys($ingredients));
 
-        $meta = array_map(fn (array $org) => [
-            '_id' => $org['_id'],
-            'source' => $org['source'],
-        ], $ingredients);
+        $meta = array_map(fn (RecipeIngredient $recipeIngredient) => [
+            '_id' => Ulid::generate(),
+            'source' => $this->clean($recipeIngredient->source),
+        ], $this->ingredients());
 
         $image = $this->convertImagesToDataUri();
         $images = [];
@@ -166,7 +164,7 @@ abstract class AbstractSite implements Site
             throw new ScraperMissingException('Unsupported site or no recipes found');
         }
 
-        $cocktail = Cocktail::fromDraft2Array([
+        $cocktail = Cocktail::fromSchema4Array([
             'name' => $name,
             'instructions' => $this->instructions(),
             'description' => $this->cleanDescription($this->description()),
@@ -181,12 +179,12 @@ abstract class AbstractSite implements Site
 
         $model = new Schema(
             $cocktail,
-            array_map(Ingredient::fromDraft2Array(...), $ingredients),
+            array_map(Ingredient::fromSchema4Array(...), $ingredients),
         );
 
         return [
             'schema_version' => $model::SCHEMA_VERSION,
-            'schema' => $model->toDraft2Array(),
+            'schema' => $model->toSchema4Array(),
             'scraper_meta' => $meta,
         ];
     }

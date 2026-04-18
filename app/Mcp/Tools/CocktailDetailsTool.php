@@ -10,7 +10,7 @@ use Laravel\Mcp\Server\Tool;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\JsonSchema\JsonSchema;
 use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
-use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
+use Kami\Cocktail\External\Model\Schema as SchemaExternal;
 
 #[IsReadOnly]
 class CocktailDetailsTool extends Tool
@@ -41,7 +41,7 @@ class CocktailDetailsTool extends Tool
 
         $cocktail->loadDefaultRelations();
 
-        $data = SchemaDraft2::fromCocktailModel($cocktail);
+        $data = SchemaExternal::fromCocktailModel($cocktail);
 
         return Response::text($data->toMarkdown());
     }

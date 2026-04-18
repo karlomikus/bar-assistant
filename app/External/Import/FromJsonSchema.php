@@ -4,45 +4,49 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\External\Import;
 
+use BarAssistant\Application\Cocktail\CocktailService;
+use BarAssistant\Application\Cocktail\DTO\CocktailIngredient;
+use BarAssistant\Application\Cocktail\DTO\CocktailIngredientSubstitute;
+use BarAssistant\Application\Cocktail\DTO\CreateCocktail;
+use BarAssistant\Application\Cocktail\DTO\UpdateCocktail;
+use BarAssistant\Application\Image\DTO\CreateImage;
+use BarAssistant\Application\Image\ImageService;
+use BarAssistant\Application\Matcher\CocktailMatcher;
+use BarAssistant\Application\Matcher\DTO\CocktailMatchRequest;
+use BarAssistant\Application\Matcher\DTO\GlassMatchRequest;
+use BarAssistant\Application\Matcher\DTO\IngredientMatchRequest;
+use BarAssistant\Application\Matcher\DTO\MethodMatchRequest;
+use BarAssistant\Application\Matcher\GlassMatcher;
+use BarAssistant\Application\Matcher\IngredientMatcher;
+use BarAssistant\Application\Matcher\MethodMatcher;
 use Throwable;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
-use Kami\Cocktail\External\Matcher;
 use Kami\Cocktail\External\Model\Schema;
-use Kami\Cocktail\Services\CocktailService;
-use Kami\Cocktail\Services\IngredientService;
-use Kami\Cocktail\Services\Image\ImageService;
-use Kami\Cocktail\OpenAPI\Schemas\ImageRequest;
-use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest as CocktailDTO;
-use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest as IngredientDTO;
-use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientRequest as CocktailIngredientDTO;
-use Kami\Cocktail\OpenAPI\Schemas\CocktailIngredientSubstituteRequest as SubstituteDTO;
+use Kami\Cocktail\Models\CocktailMethod;
+use Kami\Cocktail\Services\Image\ImageUploadService;
 
-class FromJsonSchema
+final readonly class FromJsonSchema
 {
-    private readonly Matcher $matcher;
-
     public function __construct(
-        private readonly CocktailService $cocktailService,
-        private readonly IngredientService $ingredientService,
-        private readonly ImageService $imageService,
-        private readonly int $barId,
-        private readonly int $userId,
+        private CocktailService $cocktailService,
+        private CocktailMatcher $cocktailMatcher,
+        private IngredientMatcher $ingredientMatcher,
+        private GlassMatcher $glassMatcher,
+        private MethodMatcher $methodMatcher,
+        private ImageService $imageService,
+        private ImageUploadService $imageUploadService,
     ) {
-        $this->matcher = new Matcher($this->barId, $this->ingredientService);
     }
 
-    /**
-     * @param array<mixed> $sourceData
-     */
     public function process(
-        array $sourceData,
+        int $barId,
+        int $userId,
+        Schema $cocktailExternal,
         DuplicateActionsEnum $duplicateAction = DuplicateActionsEnum::None,
         string $imageDirectoryBasePath = '',
     ): Cocktail {
-        $cocktailExternal = Schema::fromDraft2Array($sourceData);
-
-        $existingCocktail = $this->matcher->matchCocktailByName(mb_strtolower($cocktailExternal->cocktail->name, 'UTF-8'));
+        $existingCocktail = $this->cocktailMatcher->matchByName(new CocktailMatchRequest($barId, $cocktailExternal->cocktail->name));
         if ($duplicateAction === DuplicateActionsEnum::Skip && $existingCocktail !== null) {
             return Cocktail::find($existingCocktail);
         }
@@ -52,12 +56,9 @@ class FromJsonSchema
         foreach ($cocktailExternal->cocktail->images as $image) {
             try {
                 if ($image->uri && $imageContents = file_get_contents($imageDirectoryBasePath . $image->getLocalFilePath())) {
-                    $imageDTO = new ImageRequest(
-                        image: $imageContents,
-                        copyright: $image->copyright
-                    );
-
-                    $cocktailImages[] = $this->imageService->uploadAndSaveImages([$imageDTO], 1)[0]->id;
+                    $uploadedImage = $this->imageUploadService->uploadImage($imageContents);
+                    $storedImage = $this->imageService->createImage(new CreateImage($uploadedImage->path, $uploadedImage->extension, $userId, 1, $image->copyright, $uploadedImage->placeholderHash));
+                    $cocktailImages[] = $storedImage->id;
                 }
             } catch (Throwable $e) {
                 Log::error('Importing image error: ' . $e->getMessage());
@@ -67,116 +68,103 @@ class FromJsonSchema
         // Match glass
         $glassId = null;
         if ($cocktailExternal->cocktail->glass) {
-            $glassId = $this->matcher->matchGlassByName($cocktailExternal->cocktail->glass);
+            $glassId = $this->glassMatcher->matchByName(new GlassMatchRequest($barId, $cocktailExternal->cocktail->glass));
         }
 
         // Match method
         $methodId = null;
         if ($cocktailExternal->cocktail->method) {
-            $methodId = $this->matcher->matchMethodByName($cocktailExternal->cocktail->method);
+            $methodId = $this->methodMatcher->matchByName(new MethodMatchRequest($barId, $cocktailExternal->cocktail->method));
+        }
+
+        $dilution = 0.0;
+        if ($methodId) {
+            $dilution = CocktailMethod::find($methodId)?->dilution_percentage ?? 0.0;
         }
 
         // Match ingredients
-        $externalIngredients = collect($cocktailExternal->ingredients);
         $ingredients = [];
         $sort = 1;
         foreach ($cocktailExternal->cocktail->ingredients as $scrapedIngredient) {
-            $foundExternalIngredient = $externalIngredients->firstWhere('id', $scrapedIngredient->ingredient->id);
-
-            $parentId = null;
-            if ($foundExternalIngredient->category !== null) {
-                Log::debug('Trying to match parent ingredient by category name: ' . $foundExternalIngredient->category);
-                $parentId = $this->matcher->matchOrCreateIngredientByName(
-                    new IngredientDTO(
-                        $this->barId,
-                        $foundExternalIngredient->category,
-                        $this->userId,
-                    ),
-                );
-            }
-
-            $ingredientId = $this->matcher->matchOrCreateIngredientByName(
-                new IngredientDTO(
-                    barId: $this->barId,
-                    name: $foundExternalIngredient->name,
-                    userId: $this->userId,
-                    strength: $foundExternalIngredient->strength,
-                    description: $foundExternalIngredient->description,
-                    origin: $foundExternalIngredient->origin,
-                    parentIngredientId: $parentId,
+            $ingredientId = $this->ingredientMatcher->matchOrCreateByName(
+                new IngredientMatchRequest(
+                    barId: $barId,
+                    userId: $userId,
+                    ingredientName: $scrapedIngredient->ingredient->name,
                 ),
             );
 
             $substitutes = [];
             foreach ($scrapedIngredient->substitutes as $substitute) {
-                $foundExternalSubIngredient = $externalIngredients->firstWhere('id', $substitute->ingredient->id);
-
-                $parentId = null;
-                if ($foundExternalSubIngredient->category !== null) {
-                    Log::debug('Trying to match substitute parent ingredient by category name: ' . $foundExternalSubIngredient->category);
-                    $parentId = $this->matcher->matchOrCreateIngredientByName(
-                        new IngredientDTO(
-                            $this->barId,
-                            $foundExternalSubIngredient->category,
-                            $this->userId,
-                        ),
-                    );
-                }
-
-                $substitutes[] = new SubstituteDTO(
-                    $this->matcher->matchOrCreateIngredientByName(
-                        new IngredientDTO(
-                            barId: $this->barId,
-                            name: $foundExternalSubIngredient->name,
-                            userId: $this->userId,
-                            strength: $foundExternalSubIngredient->strength,
-                            description: $foundExternalSubIngredient->description,
-                            origin: $foundExternalSubIngredient->origin,
-                            parentIngredientId: $parentId,
+                $substitutes[] = new CocktailIngredientSubstitute(
+                    ingredientId: $this->ingredientMatcher->matchOrCreateByName(
+                        new IngredientMatchRequest(
+                            barId: $barId,
+                            userId: $userId,
+                            ingredientName: $substitute->ingredient->name,
                         )
                     ),
-                    $substitute->amount->amountMin,
-                    $substitute->amount->amountMax,
-                    $substitute->amount->units->value,
+                    amount: $substitute->amount->amountMin,
+                    units: $substitute->amount->units->value,
+                    amountMax: $substitute->amount->amountMax,
                 );
             }
 
-            $ingredient = new CocktailIngredientDTO(
-                $ingredientId,
-                $externalIngredients->firstWhere('id', $scrapedIngredient->ingredient->id)->name,
-                $scrapedIngredient->amount->amountMin,
-                $scrapedIngredient->amount->units->value,
-                $sort,
-                $scrapedIngredient->optional,
-                false,
-                $substitutes,
-                $scrapedIngredient->amount->amountMax,
-                $scrapedIngredient->note,
+            $ingredients[] = new CocktailIngredient(
+                ingredientId: $ingredientId,
+                strength: $ingredientStrengths[$ingredientId] ?? 0.0,
+                amount: $scrapedIngredient->amount->amountMin,
+                units: $scrapedIngredient->amount->units->value,
+                sort: $sort,
+                isOptional: $scrapedIngredient->optional,
+                isSpecified: false,
+                substitutes: $substitutes,
+                amountMax: $scrapedIngredient->amount->amountMax,
+                note: $scrapedIngredient->note,
             );
 
-            $ingredients[] = $ingredient;
             $sort++;
         }
 
-        $cocktailDTO = new CocktailDTO(
-            $cocktailExternal->cocktail->name,
-            $cocktailExternal->cocktail->instructions,
-            $this->userId,
-            $this->barId,
-            $cocktailExternal->cocktail->description,
-            $cocktailExternal->cocktail->source,
-            $cocktailExternal->cocktail->garnish,
-            $glassId,
-            $methodId,
-            $cocktailExternal->cocktail->tags,
-            $ingredients,
-            $cocktailImages,
-        );
-
         if ($duplicateAction === DuplicateActionsEnum::Overwrite && $existingCocktail !== null) {
-            return $this->cocktailService->updateCocktail($existingCocktail, $cocktailDTO);
+            return Cocktail::findOrFail($this->cocktailService->updateCocktail(new UpdateCocktail(
+                cocktailId: $existingCocktail,
+                barId: $barId,
+                name: $cocktailExternal->cocktail->name,
+                instructions: $cocktailExternal->cocktail->instructions,
+                userId: $userId,
+                dilution: $dilution,
+                description: $cocktailExternal->cocktail->description,
+                source: $cocktailExternal->cocktail->source,
+                garnish: $cocktailExternal->cocktail->garnish,
+                glassId: $glassId,
+                methodId: $methodId,
+                tags: $cocktailExternal->cocktail->tags,
+                ingredients: $ingredients,
+                images: $cocktailImages,
+                utensils: [],
+                parentCocktailId: null,
+                year: null,
+            )));
         }
 
-        return $this->cocktailService->createCocktail($cocktailDTO);
+        return Cocktail::findOrFail($this->cocktailService->createCocktail(new CreateCocktail(
+            barId: $barId,
+            name: $cocktailExternal->cocktail->name,
+            instructions: $cocktailExternal->cocktail->instructions,
+            userId: $userId,
+            dilution: $dilution,
+            description: $cocktailExternal->cocktail->description,
+            source: $cocktailExternal->cocktail->source,
+            garnish: $cocktailExternal->cocktail->garnish,
+            glassId: $glassId,
+            methodId: $methodId,
+            tags: $cocktailExternal->cocktail->tags,
+            ingredients: $ingredients,
+            images: $cocktailImages,
+            utensils: [],
+            parentCocktailId: null,
+            year: null,
+        ))->id);
     }
 }

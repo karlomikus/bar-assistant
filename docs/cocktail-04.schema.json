@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "https://barassistant.app/cocktail-03.schema.json",
-    "title": "Cocktail recipe - Draft 03",
+    "$id": "https://barassistant.app/cocktail-04.schema.json",
+    "title": "Cocktail recipe - Draft 04",
     "description": "Schema for a cocktail recipe.",
     "type": "object",
     "additionalProperties": false,

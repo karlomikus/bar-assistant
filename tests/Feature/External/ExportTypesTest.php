@@ -49,14 +49,14 @@ class ExportTypesTest extends TestCase
         $this->assertSame($result, $external->toYAML());
     }
 
-    public function test_export_recipe_as_draft2_schema(): void
+    public function test_export_recipe_as_schema4(): void
     {
         $cocktail = $this->setupCocktail();
         $external = SchemaExternal::fromCocktailModel($cocktail);
 
         $result = file_get_contents(base_path('tests/fixtures/external/recipe.json'));
 
-        $this->assertSame($result, json_encode($external->toDraft2Array(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $this->assertSame($result, json_encode($external->toSchema4Array(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
 
     public function test_export_recipe_as_xml(): void

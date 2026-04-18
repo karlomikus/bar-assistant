@@ -1,5 +1,5 @@
 {
-    "schema_version": "draft2",
+    "schema_version": "schema4",
     "schema": {
         "recipe": {
             "_id": "classic-negroni-recipe",

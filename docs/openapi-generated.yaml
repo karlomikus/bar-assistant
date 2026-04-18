@@ -3733,7 +3733,7 @@ paths:
       tags:
         - Import
       summary: 'Import recipe'
-      description: 'Import a recipe from a JSON structure that follows Bar Assistant recipe JSON schema. Supported schemas include [Draft 2](https://barassistant.app/cocktail-02.schema.json) and [Draft 1](https://barassistant.app/cocktail-01.schema.json).'
+      description: 'Import a recipe from a JSON structure that follows Bar Assistant recipe JSON schema v4: https://barassistant.app/cocktail-04.schema.json'
       operationId: importCocktail
       parameters:
         -
@@ -3852,7 +3852,7 @@ paths:
                 required:
                   - data
                 properties:
-                  data: { required: [schema_version, schema, scraper_meta], properties: { schema_version: { type: string, example: draft2 }, schema: { $ref: 'https://barassistant.app/cocktail-02.schema.json' }, scraper_meta: { type: array, items: { required: [_id, source], properties: { _id: { type: string }, source: { type: string }, html_content: { description: 'The HTML content of the scraped page, if available.', type: [string, 'null'] } }, type: object } } }, type: object }
+                  data: { required: [schema_version, schema, scraper_meta], properties: { schema_version: { type: string, example: schema4 }, schema: { $ref: 'https://barassistant.app/cocktail-04.schema.json' }, scraper_meta: { type: array, items: { required: [_id, source], properties: { _id: { type: string }, source: { type: string }, html_content: { description: 'The HTML content of the scraped page, if available.', type: [string, 'null'] } }, type: object } } }, type: object }
                 type: object
         '403':
           description: 'You are not authorized for this action.'

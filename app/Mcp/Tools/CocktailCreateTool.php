@@ -11,7 +11,7 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\JsonSchema\JsonSchema;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest;
-use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
+use Kami\Cocktail\External\Model\Schema as SchemaExternal;
 
 class CocktailCreateTool extends Tool
 {
@@ -46,7 +46,7 @@ class CocktailCreateTool extends Tool
 
         $cocktail->loadDefaultRelations();
 
-        $data = SchemaDraft2::fromCocktailModel($cocktail);
+        $data = SchemaExternal::fromCocktailModel($cocktail);
 
         return Response::text($data->toMarkdown());
     }

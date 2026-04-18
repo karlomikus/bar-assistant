@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft2>
+<schema4>
   <recipe>
     <_id>gin-and-tonic_1</_id>
     <name>Gin and Tonic</name>
@@ -40,4 +40,4 @@
     <origin>London</origin>
     <category></category>
   </ingredients>
-</draft2>
+</schema4>

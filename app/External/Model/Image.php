@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\External\Model;
 
-use Kami\Cocktail\External\SupportsDraft2;
+use Kami\Cocktail\External\SupportsSchema4;
 use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Image as ImageModel;
 
-readonly class Image implements SupportsDraft2, SupportsDataPack
+readonly class Image implements SupportsSchema4, SupportsDataPack
 {
     private function __construct(
         public string $uri,
@@ -48,7 +48,7 @@ readonly class Image implements SupportsDraft2, SupportsDataPack
         ];
     }
 
-    public static function fromDraft2Array(array $sourceArray): self
+    public static function fromSchema4Array(array $sourceArray): self
     {
         return new self(
             $sourceArray['uri'] ?? $sourceArray['url'] ?? $sourceArray['source'] ?? '',
@@ -58,7 +58,7 @@ readonly class Image implements SupportsDraft2, SupportsDataPack
         );
     }
 
-    public function toDraft2Array(): array
+    public function toSchema4Array(): array
     {
         return $this->toDataPackArray();
     }

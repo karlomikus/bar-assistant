@@ -36,6 +36,11 @@ final readonly class Name implements Stringable, JsonSerializable
         return $this->value;
     }
 
+    public function toLowercase(): string
+    {
+        return mb_strtolower($this->value);
+    }
+
     public function __toString(): string
     {
         return $this->toString();

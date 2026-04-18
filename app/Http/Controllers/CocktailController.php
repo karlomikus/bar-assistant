@@ -29,7 +29,7 @@ use BarAssistant\Application\Bar\DTO\FavoriteRequest;
 use BarAssistant\Application\Cocktail\CocktailService;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\CocktailPriceResource;
-use Kami\Cocktail\External\Model\Schema as SchemaDraft2;
+use Kami\Cocktail\External\Model\Schema as SchemaExternal;
 use BarAssistant\Application\Cocktail\DTO\CreateCocktail;
 use BarAssistant\Application\Cocktail\DTO\UpdateCocktail;
 use BarAssistant\Application\Cocktail\DTO\CocktailIngredient;
@@ -405,12 +405,12 @@ class CocktailController extends Controller
         $type = $request->input('type', 'json');
         $units = Units::tryFrom($request->input('units', ''));
 
-        $data = SchemaDraft2::fromCocktailModel($cocktail, $units);
+        $data = SchemaExternal::fromCocktailModel($cocktail, $units);
 
         $shareContent = null;
 
         if ($type === 'json') {
-            $shareContent = json_encode($data->toDraft2Array(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            $shareContent = json_encode($data->toSchema4Array(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
         if ($type === 'json-ld') {

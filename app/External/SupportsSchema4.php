@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\External;
 
-interface SupportsDraft2
+interface SupportsSchema4
 {
     /**
      * @param array<mixed> $sourceArray
      */
-    public static function fromDraft2Array(array $sourceArray): self;
+    public static function fromSchema4Array(array $sourceArray): self;
 
     /**
      * @return array<mixed>
      */
-    public function toDraft2Array(): array;
+    public function toSchema4Array(): array;
 }

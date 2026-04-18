@@ -29,7 +29,7 @@ use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
 class ImportController extends Controller
 {
-    #[OAT\Post(path: '/import/cocktail', tags: ['Import'], operationId: 'importCocktail', summary: 'Import recipe', description: 'Import a recipe from a JSON structure that follows Bar Assistant recipe JSON schema. Supported schemas include [Draft 2](https://barassistant.app/cocktail-02.schema.json) and [Draft 1](https://barassistant.app/cocktail-01.schema.json).', parameters: [
+    #[OAT\Post(path: '/import/cocktail', tags: ['Import'], operationId: 'importCocktail', summary: 'Import recipe', description: 'Import a recipe from a JSON structure that follows Bar Assistant recipe JSON schema v4: https://barassistant.app/cocktail-04.schema.json', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -45,7 +45,7 @@ class ImportController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\RateLimitResponse]
-    public function cocktail(ImportRequest $request): JsonResource
+    public function cocktail(FromJsonSchema $importer, ImportRequest $request): JsonResource
     {
         if ($request->user()->cannot('create', Cocktail::class)) {
             abort(403);
@@ -54,18 +54,10 @@ class ImportController extends Controller
         $source = $request->input('source');
         $duplicateAction = $request->enum('duplicate_actions', DuplicateActionsEnum::class);
 
-        $importer = new FromJsonSchema(
-            resolve(CocktailService::class),
-            resolve(IngredientService::class),
-            resolve(ImageService::class),
-            bar()->id,
-            $request->user()->id,
-        );
-
         if (is_array($source)) {
-            $cocktail = $importer->process($source, $duplicateAction);
+            $cocktail = $importer->process(bar()->id, $request->user()->id, $source, $duplicateAction);
         } else {
-            $cocktail = $importer->process(json_decode((string) $source, true), $duplicateAction);
+            $cocktail = $importer->process(bar()->id, $request->user()->id, json_decode((string) $source, true), $duplicateAction);
         }
 
         return new CocktailResource($cocktail);
@@ -85,7 +77,7 @@ class ImportController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new OAT\JsonContent(type: 'object', properties: [
             new OAT\Property(property: 'data', type: 'object', properties: [
-                new OAT\Property(property: 'schema_version', type: 'string', example: 'draft2'),
+                new OAT\Property(property: 'schema_version', type: 'string', example: 'schema4'),
                 new OAT\Property(property: 'schema', ref: Schema::SCHEMA_URL),
                 new OAT\Property(property: 'scraper_meta', type: 'array', items: new OAT\Items(type: 'object', properties: [
                     new OAT\Property(property: '_id', type: 'string'),
