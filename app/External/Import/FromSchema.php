@@ -22,9 +22,11 @@ use BarAssistant\Application\Matcher\MethodMatcher;
 use Throwable;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Kami\Cocktail\External\Model\Schema;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\Services\Image\ImageUploadService;
+use Kami\Cocktail\Services\Image\ImageValidatorService;
 
 final readonly class FromSchema
 {
@@ -36,6 +38,7 @@ final readonly class FromSchema
         private MethodMatcher $methodMatcher,
         private ImageService $imageService,
         private ImageUploadService $imageUploadService,
+        private ImageValidatorService $imageValidatorService,
     ) {
     }
 
@@ -54,7 +57,14 @@ final readonly class FromSchema
         $cocktailImages = [];
         foreach ($schema->cocktail->images as $image) {
             try {
-                if ($image->uri && $imageContents = file_get_contents($image->getLocalFilePath())) {
+                if ($image->uri) {
+                    Validator::make(['image_url' => $image->uri], [
+                        'image_url' => 'url:http,https'
+                    ])->validate();
+                    $imageContents = $this->imageValidatorService->getValidImageSource($image->uri);
+                    if ($imageContents === null) {
+                        continue;
+                    }
                     $uploadedImage = $this->imageUploadService->uploadImage($imageContents);
                     $storedImage = $this->imageService->createImage(new CreateImage($uploadedImage->path, $uploadedImage->extension, $userId, 1, $image->copyright, $uploadedImage->placeholderHash));
                     $cocktailImages[] = $storedImage->id;
