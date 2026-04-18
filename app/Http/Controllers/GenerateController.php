@@ -156,9 +156,9 @@ class GenerateController extends Controller
                 ->withClientOptions($providerConfiguration->getClientOptions())
                 ->asStructured();
         } catch (PrismStructuredDecodingException $e) {
-            Log::error("[LLM] cocktailRecipeFromText: Structured response error", $e->getMessage());
-        } finally {
-            Log::info("[LLM] cocktailRecipeFromText: Finish reason: {$response->finishReason->name}");
+            Log::error("[LLM] cocktailRecipeFromText: Structured response error", [$e->getMessage()]);
+
+            abort(400, 'Failed to parse the cocktail recipe. Please ensure the input is clear and try again.');
         }
 
         return new GeneratedCocktailFromTextResource($response->structured);

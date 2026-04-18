@@ -15,7 +15,7 @@ final readonly class GenAIProviderConfig
     ) {
     }
 
-    public static function fromConfig()
+    public static function fromConfig(): self
     {
         $provider = Provider::tryFrom(config('bar-assistant.ai.provider'));
         if (empty($provider)) {
@@ -34,6 +34,9 @@ final readonly class GenAIProviderConfig
         );
     }
 
+    /**
+     * @return array{timeout: int}
+     */
     public function getClientOptions(): array
     {
         return ['timeout' => $this->timeout];

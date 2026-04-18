@@ -144,7 +144,7 @@ class DefaultScraper extends AbstractSite
             $ingredient = e(trim($ingredient, " \n\r\t\v\x00\"\'"));
             $recipeIngredient = $this->ingredientParser->parseLine($ingredient);
 
-            if (empty($recipeIngredient->amount) || empty($recipeIngredient->name) || empty($recipeIngredient->units)) {
+            if (empty($recipeIngredient->name) || empty($recipeIngredient->units)) {
                 continue;
             }
 
