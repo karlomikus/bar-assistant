@@ -1,3 +1,10 @@
+# v5.14.0
+## Changes
+- Updated AI prompts
+
+## Fixes
+- Fixed email header links
+
 # v5.13.2
 ## Fixes
 - Correctly check `bar_id` alongside `public_id` for public cocktails

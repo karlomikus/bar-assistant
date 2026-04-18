@@ -7,21 +7,25 @@ namespace Kami\Cocktail\Http\Controllers;
 use Kami\Cocktail\Models\Tag;
 use OpenApi\Attributes as OAT;
 use Prism\Prism\Facades\Prism;
-use Prism\Prism\Enums\Provider;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
-use Prism\Prism\Schema\ArraySchema;
-use Prism\Prism\Schema\NumberSchema;
-use Prism\Prism\Schema\ObjectSchema;
-use Prism\Prism\Schema\StringSchema;
 use Kami\Cocktail\External\Model\Schema;
+use Kami\Cocktail\Models\CocktailMethod;
+use Kami\Cocktail\GenAI\CocktailTagsHandler;
+use Kami\Cocktail\GenAI\GenAIProviderConfig;
+use Kami\Cocktail\GenAI\DTO\CocktailTagsRequest;
+use Kami\Cocktail\GenAI\CompleteIngredientHandler;
+use Kami\Cocktail\GenAI\CocktailRecipeTextImportHandler;
 use Kami\Cocktail\Http\Requests\CompleteIngredientRequest;
+use Kami\Cocktail\GenAI\DTO\CocktailRecipeTextImportRequest;
 use Kami\Cocktail\Http\Requests\CompleteCocktailTagsRequest;
+use Prism\Prism\Exceptions\PrismStructuredDecodingException;
 use Kami\Cocktail\Http\Requests\CocktailRecipeFromTextRequest;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedIngredientResource;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedCocktailTagsResource;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedCocktailFromTextResource;
+use Kami\Cocktail\GenAI\DTO\CompleteIngredientRequest as CompleteIngredientRequestDTO;
 
 class GenerateController extends Controller
 {
@@ -44,45 +48,19 @@ class GenerateController extends Controller
     ])]
     public function completeIngredient(CompleteIngredientRequest $request): GeneratedIngredientResource
     {
-        $provider = Provider::tryFrom(config('bar-assistant.ai.provider'));
-        $model = config('bar-assistant.ai.model');
-        $timeout = config('bar-assistant.ai.timeout');
         $ingredientName = $request->input('name');
-
-        $schema = new ObjectSchema(
-            name: 'cocktail_ingredient',
-            description: 'Basic information about cocktail ingredient',
-            properties: [
-                new StringSchema('name', 'The name of the ingredient'),
-                new StringSchema('description', 'Helpful description of ingredient (1-2 short paragraphs)'),
-                new NumberSchema('strength', 'Alcohol by volume percentage', true),
-                new StringSchema('color', 'The predominant color of the ingredient as hex value', true),
-                new StringSchema('distillery', 'Name of the distillery producing the ingredient', true),
-                new StringSchema('origin', 'The geographical origin of the ingredient', true),
-            ],
-            requiredFields: ['name', 'description', 'color', 'distillery', 'origin', 'strength']
-        );
-
-        $prompt = <<<PROMPT
-            You are a cocktail and spirits expert. Provide detailed information about the following ingredient used in cocktails.
-
-            Ingredient: {$ingredientName}
-
-            Instructions:
-            - Keep the description informative and concise (1-2 short paragraphs)
-            - For strength (ABV), provide the typical alcohol by volume percentage as a number (e.g., 40 for 40% ABV). Use null if non-alcoholic.
-            - For color, provide a hex color code (e.g., #FF5733) representing the ingredient's predominant color
-            - For distillery, provide the name of a well-known producer if applicable, otherwise use null
-            - For origin, specify the country or region where this ingredient typically originates
-        PROMPT;
+        $providerConfiguration = GenAIProviderConfig::fromConfig();
+        $promptConfiguration = new CompleteIngredientHandler(new CompleteIngredientRequestDTO(
+            $ingredientName,
+        ))();
 
         Log::info("[LLM] Generating ingredient information for: {$ingredientName}");
 
         $response = Prism::structured()
-            ->using($provider, $model)
-            ->withSchema($schema)
-            ->withPrompt(trim($prompt))
-            ->withClientOptions(['timeout' => $timeout])
+            ->using($providerConfiguration->provider, $providerConfiguration->model)
+            ->withSchema($promptConfiguration->schema)
+            ->withPrompt($promptConfiguration->prompt)
+            ->withClientOptions($providerConfiguration->getClientOptions())
             ->asStructured();
 
         return new GeneratedIngredientResource($response->structured);
@@ -112,57 +90,29 @@ class GenerateController extends Controller
             ->orWhere('id', $cocktailId)
             ->firstOrFail();
 
-        $provider = Provider::tryFrom(config('bar-assistant.ai.provider'));
-        $model = config('bar-assistant.ai.model');
-        $timeout = config('bar-assistant.ai.timeout');
-
         // Limit to top 50 most used tags to reduce token usage
         $existingTags = Tag::where('bar_id', $cocktail->bar_id)
             ->withCount('cocktails')
             ->orderByDesc('cocktails_count')
             ->limit(50)
             ->pluck('name')
-            ->implode(', ');
-
-        $schema = new ObjectSchema(
-            name: 'cocktail_tags',
-            description: 'Cocktail tags',
-            properties: [
-                new ArraySchema('tags', 'List of recommended cocktail tags', new StringSchema('tag', 'A single cocktail tag')),
-            ],
-            requiredFields: ['tags']
-        );
+            ->toArray();
 
         $cocktailMarkdown = Schema::fromCocktailModel($cocktail)->toMarkdown();
 
-        $existingTagsContext = !empty($existingTags)
-            ? "Here are the most commonly used tags in this bar: {$existingTags}"
-            : "This bar has no existing tags yet.";
-
-        $prompt = <<<PROMPT
-            You are a cocktail expert assistant. Analyze the following cocktail recipe and suggest relevant tags.
-
-            {$existingTagsContext}
-
-            Instructions:
-            - Generate 5-6 relevant tags (no more than 6)
-            - Strongly prefer existing tags when they match the cocktail's characteristics
-            - Only create new tags if existing ones don't adequately describe the cocktail
-            - Tags should describe: flavor profile, occasion, difficulty, alcohol content, season, or ingredients
-            - Keep tags concise (1-3 words each)
-            - Use lowercase for consistency
-
-            Cocktail recipe:
-            {$cocktailMarkdown}
-        PROMPT;
+        $providerConfiguration = GenAIProviderConfig::fromConfig();
+        $promptConfiguration = new CocktailTagsHandler(new CocktailTagsRequest(
+            $cocktailMarkdown,
+            $existingTags,
+        ))();
 
         Log::info("[LLM] Generating cocktail tags for cocktail ID: {$cocktailId}");
 
         $response = Prism::structured()
-            ->using($provider, $model)
-            ->withSchema($schema)
-            ->withPrompt(trim($prompt))
-            ->withClientOptions(['timeout' => $timeout])
+            ->using($providerConfiguration->provider, $providerConfiguration->model)
+            ->withSchema($promptConfiguration->schema)
+            ->withPrompt($promptConfiguration->prompt)
+            ->withClientOptions($providerConfiguration->getClientOptions())
             ->asStructured();
 
         return new GeneratedCocktailTagsResource($response->structured);
@@ -187,64 +137,29 @@ class GenerateController extends Controller
     ])]
     public function cocktailRecipeFromText(CocktailRecipeFromTextRequest $request): GeneratedCocktailFromTextResource
     {
-        $provider = Provider::tryFrom(config('bar-assistant.ai.provider'));
-        $model = config('bar-assistant.ai.model');
-        $timeout = config('bar-assistant.ai.timeout');
-
         $textRecipe = trim((string) $request->input('recipe'));
+        $allowedMethods = CocktailMethod::where('bar_id', bar()->id)->pluck('name')->toArray();
 
-        $schema = new ObjectSchema(
-            name: 'cocktail_recipe',
-            description: 'Cocktail recipe parsed by LLM',
-            properties: [
-                new StringSchema('name', 'Title of the recipe'),
-                new StringSchema('instructions', 'Step by step instructions to prepare the cocktail'),
-                new StringSchema('garnish', 'Recommended garnish for the cocktail', true),
-                new StringSchema('method', 'Cocktail preperation method.', true),
-                new StringSchema('description', 'Helpful description of the cocktail (1-2 short paragraphs)', true),
-                new ArraySchema('ingredients', 'List of ingredients', new ObjectSchema(
-                    name: 'cocktail_recipe_ingredient',
-                    description: 'Cocktail ingredient',
-                    properties: [
-                        new StringSchema('name', 'Name of the ingredient'),
-                        new NumberSchema('amount', 'The min amount of the ingredient'),
-                        new NumberSchema('amount_max', 'The max amount of the ingredient', true),
-                        new StringSchema('units', 'Units of the ingredient amount'),
-                        new StringSchema('note', 'Additional note about the ingredient', true),
-                    ],
-                    requiredFields: ['name', 'amount', 'units']
-                )),
-            ],
-            requiredFields: ['name', 'instructions', 'ingredients', 'description', 'garnish']
-        );
+        $providerConfiguration = GenAIProviderConfig::fromConfig();
+        $promptConfiguration = new CocktailRecipeTextImportHandler(new CocktailRecipeTextImportRequest(
+            $textRecipe,
+            $allowedMethods,
+        ))();
 
-        $prompt = <<<PROMPT
-            You are a cocktail recipe parser. Extract structured information from the following cocktail recipe text.
+        Log::info("[LLM] cocktailRecipeFromText: Generating cocktail recipe from text.");
 
-            Instructions:
-            - Extract the recipe name, ingredients, and preparation instructions
-            - Format instructions as a numbered markdown list (e.g., "1. Step one\n2. Step two"). Do NOT include markdown headings. Do NOT include ingredient amounts in instructions.
-            - For method, choose ONLY one of: "Shake", "Stir", "Build", "Blend", "Muddle", "Layer"
-            - Standardize ingredient units to: "ml", "cl", "oz", "dash", "tsp", "tbsp", "cup", "part", "slice", "wedge", "piece", "whole"
-            - For ingredient amounts:
-              * If a range is given (e.g., "2-3 oz"), use amount for minimum and amount_max for maximum
-              * If a fraction is given (e.g., "1/2 oz"), convert to decimal (0.5)
-              * If no amount is specified, use a sensible default or estimation
-            - If the recipe text is incomplete or ambiguous, extract what you can and make reasonable assumptions
-            - Provide a brief, engaging description (1-2 paragraphs) if one isn't included in the text
+        try {
+            $response = Prism::structured()
+                ->using($providerConfiguration->provider, $providerConfiguration->model)
+                ->withSchema($promptConfiguration->schema)
+                ->withPrompt($promptConfiguration->prompt)
+                ->withClientOptions($providerConfiguration->getClientOptions())
+                ->asStructured();
+        } catch (PrismStructuredDecodingException $e) {
+            Log::error("[LLM] cocktailRecipeFromText: Structured response error", [$e->getMessage()]);
 
-            COCKTAIL RECIPE:
-            {$textRecipe}
-        PROMPT;
-
-        Log::info("[LLM] Generating cocktail recipe from text.");
-
-        $response = Prism::structured()
-            ->using($provider, $model)
-            ->withSchema($schema)
-            ->withPrompt(trim($prompt))
-            ->withClientOptions(['timeout' => $timeout])
-            ->asStructured();
+            abort(400, 'Failed to parse the cocktail recipe. Please ensure the input is clear and try again.');
+        }
 
         return new GeneratedCocktailFromTextResource($response->structured);
     }
