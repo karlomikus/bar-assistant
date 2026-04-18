@@ -8,7 +8,6 @@ final readonly class CompleteIngredientRequest
 {
     public function __construct(
         public string $ingredientName,
-    )
-    {
+    ) {
     }
 }

@@ -11,21 +11,21 @@ use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\External\Model\Schema;
-use Kami\Cocktail\GenAI\CocktailRecipeTextImportHandler;
+use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\GenAI\CocktailTagsHandler;
-use Kami\Cocktail\GenAI\CompleteIngredientHandler;
-use Kami\Cocktail\GenAI\DTO\CocktailRecipeTextImportRequest;
-use Kami\Cocktail\GenAI\DTO\CocktailTagsRequest;
-use Kami\Cocktail\GenAI\DTO\CompleteIngredientRequest as CompleteIngredientRequestDTO;
 use Kami\Cocktail\GenAI\GenAIProviderConfig;
+use Kami\Cocktail\GenAI\DTO\CocktailTagsRequest;
+use Kami\Cocktail\GenAI\CompleteIngredientHandler;
+use Kami\Cocktail\GenAI\CocktailRecipeTextImportHandler;
 use Kami\Cocktail\Http\Requests\CompleteIngredientRequest;
+use Kami\Cocktail\GenAI\DTO\CocktailRecipeTextImportRequest;
 use Kami\Cocktail\Http\Requests\CompleteCocktailTagsRequest;
+use Prism\Prism\Exceptions\PrismStructuredDecodingException;
 use Kami\Cocktail\Http\Requests\CocktailRecipeFromTextRequest;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedIngredientResource;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedCocktailTagsResource;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedCocktailFromTextResource;
-use Kami\Cocktail\Models\CocktailMethod;
-use Prism\Prism\Exceptions\PrismStructuredDecodingException;
+use Kami\Cocktail\GenAI\DTO\CompleteIngredientRequest as CompleteIngredientRequestDTO;
 
 class GenerateController extends Controller
 {

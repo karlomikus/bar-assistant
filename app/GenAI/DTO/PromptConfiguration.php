@@ -11,7 +11,6 @@ final readonly class PromptConfiguration
     public function __construct(
         public string $prompt,
         public Schema $schema,
-    )
-    {
+    ) {
     }
 }
