@@ -117,7 +117,7 @@ class AuthControllerTest extends TestCase
 
         Mail::assertNotQueued(PasswordReset::class);
 
-        $response->assertBadRequest();
+        $response->assertNoContent();
     }
 
     public function test_reset_password_response(): void

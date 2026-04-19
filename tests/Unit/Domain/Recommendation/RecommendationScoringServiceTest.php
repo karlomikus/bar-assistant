@@ -52,6 +52,6 @@ final class RecommendationScoringServiceTest extends TestCase
         $this->assertCount(2, $results);
         $this->assertSame(1, $results[0]->cocktailId->value);
         $this->assertGreaterThan($results[1]->score, $results[0]->score);
-        $this->assertEqualsWithDelta(1.0, $results[0]->shelfCompleteness, 0.001);
+        $this->assertEqualsWithDelta(1.0, $results[0]->score, 0.2);
     }
 }

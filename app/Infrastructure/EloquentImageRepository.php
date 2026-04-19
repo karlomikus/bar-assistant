@@ -54,7 +54,6 @@ final class EloquentImageRepository implements ImageRepository
             recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
             copyright: $model->copyright,
             sort: $model->sort,
-            temporary: $model->imageable_id === null,
         )->setId(new ImageId($model->id));
     }
 }

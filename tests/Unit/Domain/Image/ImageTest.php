@@ -42,7 +42,6 @@ final class ImageTest extends TestCase
         $timestamps = RecordTimestamps::createdNow();
         $copyright = 'Copyright © 2024';
         $sort = 3;
-        $temporary = false;
 
         $image = Image::create(
             file: $file,
@@ -50,27 +49,10 @@ final class ImageTest extends TestCase
             recordTimestamps: $timestamps,
             copyright: $copyright,
             sort: $sort,
-            temporary: $temporary
         );
 
         $this->assertEquals($copyright, $image->getCopyright());
         $this->assertEquals($sort, $image->getSort());
-        $this->assertFalse($image->isTemporary());
-    }
-
-    public function test_creates_temporary_image_by_default(): void
-    {
-        $file = File::from('/uploads/image.jpg', 'jpg');
-        $authors = Authors::createdBy(new UserId(1));
-        $timestamps = RecordTimestamps::createdNow();
-
-        $image = Image::create(
-            file: $file,
-            authors: $authors,
-            recordTimestamps: $timestamps
-        );
-
-        $this->assertTrue($image->isTemporary());
     }
 
     public function test_sets_image_id(): void
@@ -102,20 +84,6 @@ final class ImageTest extends TestCase
         $image->setId(new ImageId(43));
     }
 
-    public function test_changes_file_on_temporary_image(): void
-    {
-        $originalFile = File::from('/uploads/original.jpg', 'jpg');
-        $authors = Authors::createdBy(new UserId(1));
-        $timestamps = RecordTimestamps::createdNow();
-        $image = Image::create($originalFile, $authors, $timestamps, temporary: true);
-
-        $newFile = File::from('/uploads/new.jpg', 'jpg');
-        $result = $image->changeFile($newFile);
-
-        $this->assertSame($image, $result);
-        $this->assertEquals($newFile, $image->getFile());
-    }
-
     public function test_updates_image_details(): void
     {
         $file = File::from('/uploads/image.jpg', 'jpg');
@@ -141,25 +109,5 @@ final class ImageTest extends TestCase
         $this->assertTrue($image->getAuthors()->isUpdated());
         $this->assertEquals($newUserId, $image->getAuthors()->getUpdatedBy());
         $this->assertEquals($updatedAt, $image->getRecordTimestamps()->getUpdatedAt());
-    }
-
-    public function test_multiple_file_changes_on_temporary_image(): void
-    {
-        $file = File::from('/uploads/image.jpg', 'jpg');
-        $authors = Authors::createdBy(new UserId(1));
-        $timestamps = RecordTimestamps::createdNow();
-        $image = Image::create($file, $authors, $timestamps, temporary: true);
-
-        $file1 = File::from('/uploads/first.jpg', 'jpg');
-        $image->changeFile($file1);
-        $this->assertEquals($file1, $image->getFile());
-
-        $file2 = File::from('/uploads/second.png', 'png');
-        $image->changeFile($file2);
-        $this->assertEquals($file2, $image->getFile());
-
-        $file3 = File::from('/uploads/third.webp', 'webp');
-        $image->changeFile($file3);
-        $this->assertEquals($file3, $image->getFile());
     }
 }

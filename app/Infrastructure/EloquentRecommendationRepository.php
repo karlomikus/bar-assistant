@@ -32,6 +32,10 @@ final class EloquentRecommendationRepository implements RecommendationRepository
             ->pluck('rateable_id')
             ->toArray();
 
+        if (count($favorites) === 0 && count($rated) === 0) {
+            return [];
+        }
+
         $excludedCocktailIds = array_unique(array_merge($favorites, $rated));
 
         return Cocktail::query()
