@@ -6,21 +6,18 @@
     "source": "https://barassistant.app",
     "garnish": "Straw and lemon wheel",
     "abv": 32.3,
-    "tags": ["Modern", "Sour"],
+    "tags": [],
     "glass": "Highball",
     "method": "Shake",
-    "utensils": [],
     "images": [
         {
             "uri": "http://localhost/uploads/tests/non_existing_image.jpg",
-            "sort": 1,
             "placeholder_hash": null,
             "copyright": "Exported copyright"
         }
     ],
     "ingredients": [
         {
-            "sort": 1,
             "name": "Gin",
             "amount": 45,
             "units": "ml",

@@ -1,43 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema4>
-  <recipe>
-    <_id>gin-and-tonic_1</_id>
-    <name>Gin and Tonic</name>
-    <instructions>Cocktail instructions go here</instructions>
-    <created_at>2020-01-01T12:00:00+00:00</created_at>
-    <updated_at>2021-01-01T12:00:00+00:00</updated_at>
-    <description>Cocktail description goes here</description>
-    <source>https://barassistant.app</source>
-    <garnish>Straw and lemon wheel</garnish>
-    <abv>32.3</abv>
-    <tags/>
-    <glass>Highball</glass>
-    <method>Shake</method>
-    <utensils/>
-    <images>
-      <uri>http://localhost/uploads/tests/non_existing_image.jpg</uri>
-      <sort>1</sort>
-      <placeholder_hash></placeholder_hash>
-      <copyright>Exported copyright</copyright>
-    </images>
-    <ingredients>
-      <_id>gin_1</_id>
-      <amount>45</amount>
-      <units>ml</units>
-      <optional></optional>
-      <is_specified></is_specified>
-      <amount_max>60</amount_max>
-      <note>Ingredient note</note>
-      <substitutes/>
-      <sort>1</sort>
-    </ingredients>
-  </recipe>
+  <name>Gin and Tonic</name>
+  <instructions>Cocktail instructions go here</instructions>
+  <created_at>2020-01-01T12:00:00+00:00</created_at>
+  <description>Cocktail description goes here</description>
+  <source>https://barassistant.app</source>
+  <garnish>Straw and lemon wheel</garnish>
+  <abv>32.3</abv>
+  <tags/>
+  <glass>Highball</glass>
+  <method>Shake</method>
+  <images>
+    <uri>http://localhost/uploads/tests/non_existing_image.jpg</uri>
+    <placeholder_hash></placeholder_hash>
+    <copyright>Exported copyright</copyright>
+  </images>
   <ingredients>
-    <_id>gin_1</_id>
     <name>Gin</name>
-    <strength>40</strength>
-    <description>Test description</description>
-    <origin>London</origin>
-    <category></category>
+    <amount>45</amount>
+    <units>ml</units>
+    <optional></optional>
+    <amount_max>60</amount_max>
+    <note>Ingredient note</note>
+    <substitutes/>
   </ingredients>
 </schema4>
