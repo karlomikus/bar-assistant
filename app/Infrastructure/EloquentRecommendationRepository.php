@@ -27,7 +27,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
             ->toArray();
 
         $rated = DB::table('ratings')
-            ->where('user_id', $barMembership->user_id)
+            ->where('bar_membership_id', $barMembership->id)
             ->where('rateable_type', Cocktail::class)
             ->pluck('rateable_id')
             ->toArray();
@@ -100,7 +100,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
 
         $lowRatedCocktails = DB::table('ratings')
             ->select('rateable_id')
-            ->where('user_id', $barMembership->user_id)
+            ->where('bar_membership_id', $barMembership->id)
             ->where('rateable_type', Cocktail::class)
             ->where('rating', '<=', 2)
             ->pluck('rateable_id');
@@ -138,7 +138,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
             ->toArray();
 
         $highRatedCocktailIds = DB::table('ratings')
-            ->where('user_id', $barMembership->user_id)
+            ->where('bar_membership_id', $barMembership->id)
             ->where('rateable_type', Cocktail::class)
             ->where('rating', '>=', 4)
             ->pluck('rateable_id')

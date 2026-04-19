@@ -9,7 +9,7 @@ final readonly class RatingResult
     public function __construct(
         public int $id,
         public int $cocktailId,
-        public int $userId,
+        public int $barMembershipId,
         public int $value,
         public string $createdAt,
         public string $updatedAt,

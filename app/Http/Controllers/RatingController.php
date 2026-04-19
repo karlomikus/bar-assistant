@@ -36,8 +36,13 @@ class RatingController extends Controller
             abort(403);
         }
 
+        $barMembership = $request->user()->getBarMembership($cocktail->bar_id);
+        if ($barMembership === null) {
+            abort(403);
+        }
+
         $ratingService->rate(new RateCocktailRequest(
-            userId: $request->user()->id,
+            barMembershipId: $barMembership->id,
             cocktailId: $cocktail->id,
             value: (int) $request->post('rating'),
         ));
@@ -59,7 +64,12 @@ class RatingController extends Controller
             abort(403);
         }
 
-        $ratingService->removeRating($request->user()->id, $cocktail->id);
+        $barMembership = $request->user()->getBarMembership($cocktail->bar_id);
+        if ($barMembership === null) {
+            abort(403);
+        }
+
+        $ratingService->removeRating($barMembership->id, $cocktail->id);
 
         return new Response(null, 204);
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Infrastructure;
 
 use BarAssistant\Application\Exception\ApplicationServiceException;
+use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Common\RatingValue;
 use BarAssistant\Domain\Rating\Rating;
 use BarAssistant\Domain\Rating\RatingId;
@@ -12,16 +13,15 @@ use Kami\Cocktail\Models\Rating as Model;
 use BarAssistant\Domain\Rating\RateableId;
 use BarAssistant\Domain\Rating\RateableType;
 use BarAssistant\Domain\Rating\RatingRepository;
-use BarAssistant\Domain\User\UserId;
 use Kami\Cocktail\Models\Cocktail;
 
 final class EloquentRatingRepository implements RatingRepository
 {
-    public function findUserRating(RateableId $cocktailId, RateableType $type, UserId $userId): ?Rating
+    public function findMemberRating(RateableId $cocktailId, RateableType $type, MemberId $memberId): ?Rating
     {
         $model = Model::where('rateable_id', $cocktailId->value)
             ->where('rateable_type', \Kami\Cocktail\Models\Cocktail::class)
-            ->where('user_id', $userId->value)
+            ->where('bar_membership_id', $memberId->value)
             ->first();
 
         if ($model === null) {
@@ -38,7 +38,7 @@ final class EloquentRatingRepository implements RatingRepository
         }
 
         $modelToRate = Cocktail::findOrFail($rating->getRateableId());
-        $ratingModel = $modelToRate->rate($rating->getValue()->value, $rating->getUserId()->value);
+        $ratingModel = $modelToRate->rate($rating->getValue()->value, $rating->getMemberId()->value);
 
         return self::map($ratingModel);
     }
@@ -53,7 +53,7 @@ final class EloquentRatingRepository implements RatingRepository
         $rating = Rating::create(
             rateableId: new RateableId((int) $model->rateable_id),
             type: RateableType::Cocktail,
-            userId: new UserId((int) $model->user_id),
+            memberId: new MemberId((int) $model->bar_membership_id),
             value: RatingValue::create((int) $model->rating),
         )->setId(new RatingId((int) $model->id));
     

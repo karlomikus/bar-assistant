@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Infrastructure;
 
+use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Rating\Rating;
 use BarAssistant\Domain\Rating\RatingId;
 use BarAssistant\Domain\Rating\RateableId;
 use BarAssistant\Domain\Rating\RateableType;
 use BarAssistant\Domain\Rating\RatingRepository;
-use BarAssistant\Domain\User\UserId;
 
 final class InMemoryRatingRepository implements RatingRepository
 {
@@ -21,13 +21,13 @@ final class InMemoryRatingRepository implements RatingRepository
     ) {
     }
 
-    public function findUserRating(RateableId $rateableId, RateableType $type, UserId $userId): ?Rating
+    public function findMemberRating(RateableId $rateableId, RateableType $type, MemberId $memberId): ?Rating
     {
         foreach ($this->ratings as $rating) {
             if (
                 $rating->getRateableId()->equals($rateableId)
                 && $rating->getType() === $type
-                && $rating->getUserId()->equals($userId)
+                && $rating->getMemberId()->equals($memberId)
             ) {
                 return $rating;
             }

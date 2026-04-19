@@ -290,7 +290,8 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
             'user_rating' => Rating::select('rating')
                 ->whereColumn('rateable_id', 'cocktails.id')
                 ->whereColumn('rateable_type', Cocktail::class)
-                ->where('user_id', $userId),
+                ->where('bar_memberships.user_id', $userId)
+                ->join('bar_memberships', 'bar_memberships.id', '=', 'ratings.bar_membership_id'),
         ]);
     }
 

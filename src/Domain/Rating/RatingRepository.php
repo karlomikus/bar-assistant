@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Rating;
 
-use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Bar\MemberId;
 
 interface RatingRepository
 {
-    public function findUserRating(RateableId $rateableId, RateableType $type, UserId $userId): ?Rating;
+    public function findMemberRating(RateableId $rateableId, RateableType $type, MemberId $memberId): ?Rating;
 
     public function save(Rating $rating): Rating;
 

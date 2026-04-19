@@ -25,7 +25,7 @@ final class RatingServiceTest extends TestCase
     public function test_rate_creates_new_rating(): void
     {
         $request = new RateCocktailRequest(
-            userId: 1,
+            barMembershipId: 1,
             cocktailId: 100,
             value: 5,
         );
@@ -33,7 +33,7 @@ final class RatingServiceTest extends TestCase
         $result = $this->service->rate($request);
 
         $this->assertSame(100, $result->cocktailId);
-        $this->assertSame(1, $result->userId);
+        $this->assertSame(1, $result->barMembershipId);
         $this->assertSame(5, $result->value);
         $this->assertNotNull($result->id);
     }
@@ -41,7 +41,7 @@ final class RatingServiceTest extends TestCase
     public function test_rate_updates_existing_rating(): void
     {
         $request1 = new RateCocktailRequest(
-            userId: 1,
+            barMembershipId: 1,
             cocktailId: 100,
             value: 3,
         );
@@ -49,7 +49,7 @@ final class RatingServiceTest extends TestCase
         $firstId = $result1->id;
 
         $request2 = new RateCocktailRequest(
-            userId: 1,
+            barMembershipId: 1,
             cocktailId: 100,
             value: 5,
         );
@@ -62,7 +62,7 @@ final class RatingServiceTest extends TestCase
     public function test_delete_removes_rating(): void
     {
         $request = new RateCocktailRequest(
-            userId: 1,
+            barMembershipId: 1,
             cocktailId: 100,
             value: 4,
         );
@@ -87,7 +87,7 @@ final class RatingServiceTest extends TestCase
         $this->expectExceptionMessage('Rating value must be between 1 and 5');
 
         $this->service->rate(new RateCocktailRequest(
-            userId: 1,
+            barMembershipId: 1,
             cocktailId: 100,
             value: 6,
         ));
@@ -99,7 +99,7 @@ final class RatingServiceTest extends TestCase
         $this->expectExceptionMessage('Rating value must be between 1 and 5');
 
         $this->service->rate(new RateCocktailRequest(
-            userId: 1,
+            barMembershipId: 1,
             cocktailId: 100,
             value: 0,
         ));

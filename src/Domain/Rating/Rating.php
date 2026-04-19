@@ -7,8 +7,8 @@ namespace BarAssistant\Domain\Rating;
 use DomainException;
 use DateTimeImmutable;
 use BarAssistant\Domain\Identity;
+use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Common\RatingValue;
-use BarAssistant\Domain\User\UserId;
 
 final class Rating implements Identity
 {
@@ -17,7 +17,7 @@ final class Rating implements Identity
     private function __construct(
         private readonly RateableId $rateableId,
         private readonly RateableType $type,
-        private UserId $userId,
+        private readonly MemberId $memberId,
         private RatingValue $value,
         private DateTimeImmutable $createdAt,
         private DateTimeImmutable $updatedAt,
@@ -27,7 +27,7 @@ final class Rating implements Identity
     public static function create(
         RateableId $rateableId,
         RateableType $type,
-        UserId $userId,
+        MemberId $memberId,
         RatingValue $value,
     ): self {
         $now = new DateTimeImmutable();
@@ -35,7 +35,7 @@ final class Rating implements Identity
         return new self(
             rateableId: $rateableId,
             type: $type,
-            userId: $userId,
+            memberId: $memberId,
             value: $value,
             createdAt: $now,
             updatedAt: $now,
@@ -68,9 +68,9 @@ final class Rating implements Identity
         return $this->rateableId;
     }
 
-    public function getUserId(): UserId
+    public function getMemberId(): MemberId
     {
-        return $this->userId;
+        return $this->memberId;
     }
 
     public function getValue(): RatingValue

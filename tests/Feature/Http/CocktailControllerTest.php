@@ -27,6 +27,7 @@ use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Models\BarMembership;
 
 class CocktailControllerTest extends TestCase
 {
@@ -201,11 +202,11 @@ class CocktailControllerTest extends TestCase
             ])->count(1), 'ingredients')
             ->hasRatings(1, [
                 'rating' => 4,
-                'user_id' => $membership->user_id
+                'bar_membership_id' => $membership->id
             ])
             ->hasRatings(1, [
                 'rating' => 1,
-                'user_id' => User::factory()->create()->id,
+                'bar_membership_id' => BarMembership::factory()->create()->id,
             ])
             ->for($glass)
             ->for($method, 'method')
@@ -387,7 +388,7 @@ class CocktailControllerTest extends TestCase
         $this->actingAs($barMembership->user);
 
         $cocktail = Cocktail::factory()->create(['created_user_id' => $barMembership->user_id, 'bar_id' => $barMembership->bar_id]);
-        $cocktail->rate(2, $barMembership->user_id);
+        $cocktail->rate(2, $barMembership->id);
         $cocktail->addNote('Test note', $barMembership->user_id);
         $storage = Storage::fake('uploads');
         $imageFile = UploadedFile::fake()->createWithContent('image1.jpg', $this->getFakeImageContent('jpg'));

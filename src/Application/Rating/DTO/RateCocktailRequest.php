@@ -7,7 +7,7 @@ namespace BarAssistant\Application\Rating\DTO;
 final readonly class RateCocktailRequest
 {
     public function __construct(
-        public int $userId,
+        public int $barMembershipId,
         public int $cocktailId,
         public int $value,
     ) {
