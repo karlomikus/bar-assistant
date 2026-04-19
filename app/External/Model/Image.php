@@ -60,7 +60,11 @@ readonly class Image implements SupportsSchema4, SupportsDataPack
 
     public function toSchema4Array(): array
     {
-        return $this->toDataPackArray();
+        return [
+            'uri' => $this->uri,
+            'placeholder_hash' => $this->placeholderHash,
+            'copyright' => $this->copyright,
+        ];
     }
 
     public function getLocalFilePath(): string

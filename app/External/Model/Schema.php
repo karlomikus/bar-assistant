@@ -18,50 +18,22 @@ readonly class Schema implements SupportsSchema4, SupportsXML, SupportsMarkdown,
     public const SCHEMA_VERSION = 'schema4';
     public const SCHEMA_URL = 'https://barassistant.app/cocktail-04.schema.json';
 
-    /**
-     * @param array<Ingredient> $ingredients
-     */
     public function __construct(
         public Cocktail $cocktail,
-        public array $ingredients,
     ) {
     }
 
     public static function fromCocktailModel(CocktailModel $model, ?Units $toUnits = null): self
     {
-        $ingredients = [];
-        foreach ($model->ingredients as $cocktailIngredient) {
-            $ingredients[] = Ingredient::fromModel($cocktailIngredient->ingredient);
-            foreach ($cocktailIngredient->substitutes as $substitute) {
-                $ingredients[] = Ingredient::fromModel($substitute->ingredient);
-            }
-        }
-
         return new self(
             Cocktail::fromModel($model, toUnits: $toUnits),
-            $ingredients,
         );
     }
 
     public static function fromSchema4Array(array $source): self
     {
-        $cocktail = Cocktail::fromSchema4Array($source);
-
-        /** @var array<string, Ingredient> $ingredientsByName */
-        $ingredientsByName = [];
-        foreach ($cocktail->ingredients as $cocktailIngredient) {
-            $ingredientName = mb_strtolower($cocktailIngredient->ingredient->name, 'UTF-8');
-            $ingredientsByName[$ingredientName] = $cocktailIngredient->ingredient;
-
-            foreach ($cocktailIngredient->substitutes as $substitute) {
-                $substituteName = mb_strtolower($substitute->ingredient->name, 'UTF-8');
-                $ingredientsByName[$substituteName] = $substitute->ingredient;
-            }
-        }
-
         return new self(
-            $cocktail,
-            array_values($ingredientsByName),
+            Cocktail::fromSchema4Array($source),
         );
     }
 

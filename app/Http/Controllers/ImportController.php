@@ -18,10 +18,9 @@ use Kami\Cocktail\External\Model\Schema;
 use Illuminate\Support\Facades\Validator;
 use Kami\Cocktail\Http\Requests\ImportRequest;
 use Kami\Cocktail\Http\Requests\ScrapeRequest;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Response;
 use Kami\Cocktail\Jobs\StartIngredientCSVImport;
 use Kami\Cocktail\External\Import\FromSchema;
-use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
 class ImportController extends Controller
@@ -37,12 +36,12 @@ class ImportController extends Controller
             ]),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(CocktailResource::class),
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\RateLimitResponse]
-    public function cocktail(FromSchema $importer, ImportRequest $request): JsonResource
+    public function cocktail(FromSchema $importer, ImportRequest $request): Response
     {
         if ($request->user()->cannot('create', Cocktail::class)) {
             abort(403);
@@ -58,7 +57,7 @@ class ImportController extends Controller
         $schema = Schema::fromSchema4Array($source);
         $cocktail = $importer->process(bar()->id, $request->user()->id, $schema, $duplicateAction);
 
-        return new CocktailResource($cocktail);
+        return new Response(status: 201, headers: ['Location' => route('cocktails.show', $cocktail->id, false)]);
     }
 
     #[OAT\Post(path: '/import/scrape', tags: ['Import'], operationId: 'scrapeRecipe', summary: 'Scrape recipe', description: 'Try to scrape a recipe from a website. Most of the well known recipe websites should work. Data returned is a valid JSON schema that you can import using import cocktail endpoint.', parameters: [

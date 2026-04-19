@@ -101,11 +101,6 @@
                             "/path/to/image.png"
                         ]
                     },
-                    "sort": {
-                        "description": "Control the representation of the image",
-                        "type": "integer",
-                        "minimum": 0
-                    },
                     "placeholder_hash": {
                         "description": "Computed placeholder hash, like thumbhash, blurhash and similar",
                         "type": ["string", "null"]

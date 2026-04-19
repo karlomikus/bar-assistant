@@ -133,10 +133,15 @@ abstract class AbstractSite implements Site
     /**
      * Cocktail information as array
      *
-     * @return array<mixed>
+     * @return array{schema_version: string, scraper_meta: array<mixed>, schema: array<mixed> }
      */
     public function toArray(): array
     {
+        $name = $this->clean($this->name());
+        if (!$name) {
+            throw new ScraperMissingException('Unsupported site or no recipes found');
+        }
+
         $ingredients = $this->ingredients();
         $ingredients = array_map(fn (RecipeIngredient $recipeIngredient, int $sort) => [
             'name' => $this->clean(ucfirst($recipeIngredient->name)),
@@ -149,7 +154,7 @@ abstract class AbstractSite implements Site
         ], $ingredients, array_keys($ingredients));
 
         $meta = array_map(fn (RecipeIngredient $recipeIngredient) => [
-            '_id' => Ulid::generate(),
+            'ingredient_name' => $this->clean(ucfirst($recipeIngredient->name)),
             'source' => $this->clean($recipeIngredient->source),
         ], $this->ingredients());
 
@@ -157,11 +162,6 @@ abstract class AbstractSite implements Site
         $images = [];
         if ($image['uri']) {
             $images[] = $image;
-        }
-
-        $name = $this->clean($this->name());
-        if (!$name) {
-            throw new ScraperMissingException('Unsupported site or no recipes found');
         }
 
         $cocktail = Cocktail::fromSchema4Array([
@@ -177,15 +177,12 @@ abstract class AbstractSite implements Site
             'ingredients' => $ingredients,
         ]);
 
-        $model = new Schema(
-            $cocktail,
-            array_map(Ingredient::fromSchema4Array(...), $ingredients),
-        );
+        $model = new Schema($cocktail);
 
         return [
             'schema_version' => $model::SCHEMA_VERSION,
-            'schema' => $model->toSchema4Array(),
             'scraper_meta' => $meta,
+            'schema' => $model->toSchema4Array(),
         ];
     }
 

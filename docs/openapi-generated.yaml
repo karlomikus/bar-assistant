@@ -131,8 +131,6 @@ paths:
       responses:
         '204':
           description: 'Password reset link sent'
-        '400':
-          description: 'Unable to send password reset link'
       security: []
   /auth/reset-password:
     post:
@@ -164,7 +162,7 @@ paths:
               type: object
       responses:
         '204':
-          description: 'Password succssfully reset'
+          description: 'Password succesfully reset'
         '400':
           description: 'Unable to reset password'
       security: []
@@ -3757,25 +3755,13 @@ paths:
                   description: 'How to handle duplicates. Cocktails are matched by lowercase name.'
               type: object
       responses:
-        '200':
+        '201':
           description: 'Successful response'
           headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
+            Location:
+              description: 'URL of the new resource'
               schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Cocktail' }
-                type: object
+                type: string
         '403':
           description: 'You are not authorized for this action.'
           headers:
