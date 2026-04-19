@@ -1,96 +1,59 @@
 {
     "schema_version": "schema4",
-    "schema": {
-        "recipe": {
-            "_id": "negroni",
-            "name": "Negroni",
-            "instructions": "1. Strain into rocks glass over large cube.",
-            "created_at": null,
-            "updated_at": null,
-            "description": null,
-            "source": "https:\/\/alpenz.com\/recipe-pHi4g8Upgz.html",
-            "garnish": "Garnish with orange peel.",
-            "abv": null,
-            "tags": [],
-            "glass": null,
-            "method": null,
-            "utensils": [],
-            "images": [],
-            "ingredients": [
-                {
-                    "_id": "TEST",
-                    "amount": 1,
-                    "units": "oz",
-                    "optional": false,
-                    "is_specified": false,
-                    "amount_max": null,
-                    "note": null,
-                    "substitutes": [],
-                    "sort": 1
-                },
-                {
-                    "_id": "TEST",
-                    "amount": 1,
-                    "units": "oz",
-                    "optional": false,
-                    "is_specified": false,
-                    "amount_max": null,
-                    "note": null,
-                    "substitutes": [],
-                    "sort": 2
-                },
-                {
-                    "_id": "TEST",
-                    "amount": 1,
-                    "units": "oz",
-                    "optional": false,
-                    "is_specified": false,
-                    "amount_max": null,
-                    "note": null,
-                    "substitutes": [],
-                    "sort": 3
-                }
-            ]
-        },
-        "ingredients": [
-            {
-                "_id": "TEST",
-                "name": "Hayman's London Dry Gin",
-                "strength": 0,
-                "description": null,
-                "origin": null,
-                "category": null
-            },
-            {
-                "_id": "TEST",
-                "name": "Aperitivo Mazzura",
-                "strength": 0,
-                "description": null,
-                "origin": null,
-                "category": null
-            },
-            {
-                "_id": "TEST",
-                "name": "Timbal Vermut de Reus Sweet Red",
-                "strength": 0,
-                "description": null,
-                "origin": null,
-                "category": null
-            }
-        ]
-    },
     "scraper_meta": [
         {
-            "_id": "TEST",
+            "ingredient_name": "Hayman's London Dry Gin",
             "source": "1 oz Hayman's London Dry Gin"
         },
         {
-            "_id": "TEST",
+            "ingredient_name": "Aperitivo Mazzura",
             "source": "1 oz Aperitivo Mazzura"
         },
         {
-            "_id": "TEST",
+            "ingredient_name": "Timbal Vermut de Reus Sweet Red",
             "source": "1 oz Timbal Vermut de Reus Sweet Red"
         }
-    ]
+    ],
+    "schema": {
+        "name": "Negroni",
+        "instructions": "1. Strain into rocks glass over large cube.",
+        "created_at": null,
+        "description": null,
+        "source": "https:\/\/alpenz.com\/recipe-pHi4g8Upgz.html",
+        "garnish": "Garnish with orange peel.",
+        "abv": null,
+        "tags": [],
+        "glass": null,
+        "method": null,
+        "images": [],
+        "ingredients": [
+            {
+                "name": "Hayman's London Dry Gin",
+                "amount": 1,
+                "units": "oz",
+                "optional": false,
+                "amount_max": null,
+                "note": null,
+                "substitutes": []
+            },
+            {
+                "name": "Aperitivo Mazzura",
+                "amount": 1,
+                "units": "oz",
+                "optional": false,
+                "amount_max": null,
+                "note": null,
+                "substitutes": []
+            },
+            {
+                "name": "Timbal Vermut de Reus Sweet Red",
+                "amount": 1,
+                "units": "oz",
+                "optional": false,
+                "amount_max": null,
+                "note": null,
+                "substitutes": []
+            }
+        ]
+    }
 }
