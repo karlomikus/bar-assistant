@@ -124,7 +124,7 @@ final class CocktailMethod implements Identity
         $this->recordTimestamps = $this->recordTimestamps->updatedNow();
 
         DomainEventDispatcher::instance()->publish(new CocktailMethodUpdated(
-            barId: $this->barId->value ?? 0,
+            barId: $this->barId->value,
             methodId: $this->getId()->value ?? 0,
             previousDilutionPercentage: $previousDilutionPercentage,
             currentDilutionPercentage: $this->dilution->toFloat(),

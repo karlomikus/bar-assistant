@@ -23,17 +23,20 @@ final class GlassMatcher
     {
         $matchName = mb_strtolower($request->glassName);
 
-        if (isset($this->matchedGlasses[$matchName])) {
+        if (isset($this->matchedGlasses[$matchName]) && !$this->matchedGlasses[$matchName]->isTransient()) {
             return $this->matchedGlasses[$matchName]->getId()->value;
         }
 
-        $this->matchedGlasses = $this->glassRepository->findAllInBar(new BarId($request->barId));
+        $glasses = $this->glassRepository->findAllInBar(new BarId($request->barId));
+        foreach ($glasses as $glass) {
+            $this->matchedGlasses[$glass->getName()->toLowercase()] = $glass;
+        }
 
         $existingGlass = $this->matchedGlasses[$matchName] ?? null;
         if ($existingGlass) {
             $this->matchedGlasses[$matchName] = $existingGlass;
 
-            return $existingGlass->getId()->value;
+            return $existingGlass->getId()?->value;
         }
 
         return null;

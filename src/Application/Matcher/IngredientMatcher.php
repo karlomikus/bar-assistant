@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BarAssistant\Application\Matcher;
 
 use BarAssistant\Domain\Ingredient\Ingredient;
+use BarAssistant\Domain\Ingredient\IngredientMatch;
 use BarAssistant\Application\Matcher\DTO\IngredientMatchRequest;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\Authors;
@@ -16,7 +17,7 @@ use BarAssistant\Domain\User\UserId;
 
 final class IngredientMatcher
 {
-    /** @var array<string, Ingredient> */
+    /** @var array<string, IngredientMatch> */
     private array $matchedIngredients = [];
 
     public function __construct(
@@ -58,6 +59,9 @@ final class IngredientMatcher
         );
 
         $newIngredient = $this->ingredientRepository->save($newIngredient);
+        if ($newIngredient->isTransient()) {
+            throw new \RuntimeException('Failed to create new ingredient');
+        }
 
         return $newIngredient->getId()->value;
     }

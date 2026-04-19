@@ -23,5 +23,5 @@ composer.phar
 litestream.yml
 .todo
 .opencode/
-
+phpstan.neon
 skills-lock.json
