@@ -234,7 +234,6 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::post('/{id}/status', [BarController::class, 'toggleBarStatus'])->middleware(['ability:*']);
         Route::post('/{id}/transfer', [BarController::class, 'transfer'])->middleware(['ability:*']);
         Route::get('/{id}/collections', [CollectionController::class, 'shared'])->middleware(['ability:bars.read']);
-        Route::get('/{id}/stats', [StatsController::class, 'index'])->middleware(['ability:bars.read']);
         Route::get('/{id}/ingredients', [ShelfController::class, 'barIngredients'])->middleware(['ability:*']);
         Route::get('/{id}/ingredients/recommend', [ShelfController::class, 'recommendBarIngredients'])->middleware(['ability:bars.read']);
         Route::post('/{id}/ingredients/batch-store', [ShelfController::class, 'batchStoreBarIngredients'])->middleware(['ability:*']);
@@ -242,6 +241,13 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/{id}/cocktails', [ShelfController::class, 'barCocktails'])->middleware(['ability:bars.read']);
         Route::post('/{id}/optimize', [BarController::class, 'optimize'])->name('bars.optimize')->middleware(['throttle:bar-optimization', 'ability:bars.read']);
         Route::post('/{id}/sync-datapack', [BarController::class, 'syncDatapack'])->name('bars.sync-datapack')->middleware(['throttle:bar-optimization', 'ability:bars.write']);
+
+        Route::prefix('/{id}/stats')->middleware(['ability:*'])->group(function () {
+            Route::get('/totals', [StatsController::class, 'totals'])->middleware(['ability:bars.read']);
+            Route::get('/taste', [StatsController::class, 'taste'])->middleware(['ability:bars.read']);
+            Route::get('/ingredient-distribution', [StatsController::class, 'ingredientDistribution'])->middleware(['ability:bars.read']);
+            Route::get('/top', [StatsController::class, 'top'])->middleware(['ability:bars.read']);
+        });
     });
 
     Route::prefix('billing')->middleware(['ability:*'])->group(function () {

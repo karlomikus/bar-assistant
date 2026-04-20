@@ -11,6 +11,8 @@ use Kami\Cocktail\Models\BarMembership;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Recommendation\WeightedTag;
+use BarAssistant\Domain\Recommendation\AbvBucketStat;
+use BarAssistant\Domain\Recommendation\UserAbvPreference;
 use BarAssistant\Domain\Recommendation\WeightedIngredient;
 use BarAssistant\Domain\Recommendation\CocktailWithDetails;
 use BarAssistant\Domain\Recommendation\RecommendationRepository;
@@ -54,7 +56,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
             ->toArray();
     }
 
-    public function getFavoriteTags(MemberId $memberId): array
+    public function getFavoriteTags(MemberId $memberId, int $limit = 2000): array
     {
         $barMembership = BarMembership::findOrFail($memberId->value);
 
@@ -81,6 +83,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
             ->join('tags', 'tags.id', '=', 'cocktail_tag.tag_id')
             ->whereIn('cocktail_tag.cocktail_id', $preferredCocktailIds)
             ->groupBy('tags.name')
+            ->limit($limit)
             ->get();
 
         if ($tags->isEmpty()) {
@@ -91,10 +94,10 @@ final class EloquentRecommendationRepository implements RecommendationRepository
 
         return $tags->map(static function ($res) use ($maxWeight) {
             return new WeightedTag($res->name, $res->weight / $maxWeight);
-        })->toArray();
+        })->sortByDesc('weight')->values()->toArray();
     }
 
-    public function getNegativeTags(MemberId $memberId): array
+    public function getNegativeTags(MemberId $memberId, int $limit = 2000): array
     {
         $barMembership = BarMembership::findOrFail($memberId->value);
 
@@ -115,6 +118,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
             ->whereIn('cocktail_id', $lowRatedCocktails)
             ->groupBy('tags.name')
             ->having('weight', '>=', 2)
+            ->limit($limit)
             ->get();
 
         if ($tags->isEmpty()) {
@@ -125,10 +129,10 @@ final class EloquentRecommendationRepository implements RecommendationRepository
 
         return $tags->map(static function ($res) use ($maxWeight) {
             return new WeightedTag($res->name, $res->weight / $maxWeight);
-        })->toArray();
+        })->sortByDesc('weight')->values()->toArray();
     }
 
-    public function getFavoriteIngredients(MemberId $memberId): array
+    public function getFavoriteIngredients(MemberId $memberId, int $limit = 2000): array
     {
         $barMembership = BarMembership::findOrFail($memberId->value);
 
@@ -155,6 +159,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
             ->whereIn('cocktail_ingredients.cocktail_id', $preferredCocktailIds)
             ->groupBy('ingredients.id')
+            ->limit($limit)
             ->get();
 
         if ($favoriteIngredients->isEmpty()) {
@@ -165,6 +170,62 @@ final class EloquentRecommendationRepository implements RecommendationRepository
 
         return $favoriteIngredients->map(static function ($res) use ($maxIngredients): WeightedIngredient {
             return new WeightedIngredient(new IngredientId($res->id), $res->total / $maxIngredients);
-        })->toArray();
+        })->sortByDesc('weight')->values()->toArray();
+    }
+
+    public function getAbvPreference(MemberId $memberId): UserAbvPreference
+    {
+        $barMembership = BarMembership::findOrFail($memberId->value);
+
+        $favoriteCocktailIds = DB::table('cocktail_favorites')
+            ->where('bar_membership_id', $barMembership->id)
+            ->pluck('cocktail_id')
+            ->toArray();
+
+        $highRatedCocktailIds = DB::table('ratings')
+            ->where('bar_membership_id', $barMembership->id)
+            ->where('rateable_type', Cocktail::class)
+            ->where('rating', '>=', 4)
+            ->pluck('rateable_id')
+            ->toArray();
+
+        $preferredCocktailIds = array_unique(array_merge($favoriteCocktailIds, $highRatedCocktailIds));
+
+        if ($preferredCocktailIds === []) {
+            return new UserAbvPreference(null, []);
+        }
+
+        $abvValues = Cocktail::whereIn('id', $preferredCocktailIds)
+            ->with('method', 'ingredients.ingredient')
+            ->get()
+            ->map(fn (Cocktail $cocktail) => $cocktail->getABV())
+            ->filter(fn (?float $abv) => $abv !== null)
+            ->values();
+
+        if ($abvValues->isEmpty()) {
+            return new UserAbvPreference(null, []);
+        }
+
+        $averageAbv = (float) round((float) $abvValues->avg(), 2);
+        $total = $abvValues->count();
+
+        $bucketCounts = ['low' => 0, 'medium' => 0, 'high' => 0];
+        foreach ($abvValues as $abv) {
+            if ($abv <= 13) {
+                $bucketCounts['low']++;
+            } elseif ($abv <= 20) {
+                $bucketCounts['medium']++;
+            } else {
+                $bucketCounts['high']++;
+            }
+        }
+
+        $distribution = array_map(
+            fn (string $bucket, int $count) => new AbvBucketStat($bucket, $count, round($count / $total, 4)),
+            array_keys($bucketCounts),
+            $bucketCounts,
+        );
+
+        return new UserAbvPreference($averageAbv, $distribution);
     }
 }

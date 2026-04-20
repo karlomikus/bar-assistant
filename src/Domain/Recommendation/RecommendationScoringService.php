@@ -17,9 +17,6 @@ final class RecommendationScoringService
     /** Contribution of shelf-coverage signal (can the user actually make this?) */
     private const float SHELF_COVERAGE_WEIGHT = 0.30;
 
-    /** How strongly matched negative tags suppress a cocktail */
-    private const float NEGATIVE_TAG_WEIGHT = 0.20;
-
     /** Flat bonus for recently-added cocktails; intentionally small to not override preference signals */
     private const float RECENCY_BOOST_WEIGHT = 0.10;
 
@@ -81,8 +78,10 @@ final class RecommendationScoringService
                     $negativeTagWeightSum += $negativeTagMap[$tagName];
                 }
             }
-            $tagScore = $totalTags > 0 ? $tagWeightSum / $totalTags : 0.0;
+
+            // Negative tag score is used as a dampener
             $negativeTagScore = $totalTags > 0 ? $negativeTagWeightSum / $totalTags : 0.0;
+            $tagScore = max(0.0, ($totalTags > 0 ? $tagWeightSum / $totalTags : 0.0) - $negativeTagScore);
 
             // --- Ingredient preference + shelf coverage signals (normalized by ingredient count) ---
             $totalIngredients = count($cocktail->ingredientIds);
@@ -110,7 +109,6 @@ final class RecommendationScoringService
             $score = ($tagScore * self::TAG_PREFERENCE_WEIGHT)
                 + ($ingredientScore * self::INGREDIENT_PREFERENCE_WEIGHT)
                 + ($shelfCompleteness * self::SHELF_COVERAGE_WEIGHT)
-                - ($negativeTagScore * self::NEGATIVE_TAG_WEIGHT)
                 + $recencyBoost;
 
             $results[] = new RecommendationResult(

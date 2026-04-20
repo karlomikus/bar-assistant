@@ -13,6 +13,8 @@ use BarAssistant\Domain\Recommendation\RecommendationRepository;
 use BarAssistant\Domain\Recommendation\RecommendationScoringService;
 use BarAssistant\Application\Recommendation\DTO\RecommendationResultDTO;
 use BarAssistant\Application\Recommendation\DTO\GetRecommendationsRequest;
+use BarAssistant\Application\Recommendation\DTO\UserTasteProfileDTO;
+use BarAssistant\Application\Recommendation\DTO\GetUserTasteProfileRequest;
 
 final readonly class RecommendationService
 {
@@ -66,6 +68,30 @@ final readonly class RecommendationService
                 score: $result->score,
             ),
             $results,
+        );
+    }
+
+    public function getUserTasteProfile(GetUserTasteProfileRequest $request): UserTasteProfileDTO
+    {
+        $member = $this->memberRepository->findById(new MemberId($request->memberId));
+        if ($member === null || $member->getId() === null) {
+            throw new EntityNotFoundException('Member not found.');
+        }
+
+        $favoriteTags = $this->recommendationRepository->getFavoriteTags($member->getId(), 12);
+        $negativeTags = $this->recommendationRepository->getNegativeTags($member->getId(), 12);
+        $favoriteIngredients = $this->recommendationRepository->getFavoriteIngredients($member->getId(), 12);
+        $abvPreference = $this->recommendationRepository->getAbvPreference($member->getId());
+
+        return new UserTasteProfileDTO(
+            favoriteTags: $favoriteTags,
+            negativeTags: $negativeTags,
+            favoriteIngredients: array_map(
+                static fn ($wi) => ['ingredientId' => $wi->ingredientId->value, 'weight' => $wi->weight],
+                $favoriteIngredients,
+            ),
+            averageAbv: $abvPreference->averageAbv,
+            abvDistribution: $abvPreference->distribution,
         );
     }
 }

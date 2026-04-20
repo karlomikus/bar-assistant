@@ -7354,13 +7354,13 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  '/bars/{id}/stats':
+  '/bars/{id}/stats/taste':
     get:
       tags:
-        - Bars
-      summary: 'Show bar stats'
-      description: 'Show detailed stats about a single bar'
-      operationId: showBarStats
+        - Stats
+      summary: 'Taste profile'
+      description: 'Returns taste profile derived from bar member favorites and ratings.'
+      operationId: getMemberTaste
       parameters:
         -
           name: id
@@ -7387,7 +7387,214 @@ paths:
                 required:
                   - data
                 properties:
-                  data: { $ref: '#/components/schemas/BarStats' }
+                  data: { $ref: '#/components/schemas/UserTasteProfile' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/bars/{id}/stats/totals':
+    get:
+      tags:
+        - Stats
+      summary: 'Bar totals'
+      description: 'Get total stats for a bar'
+      operationId: getBarTotals
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/BarTotals' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/bars/{id}/stats/ingredient-distribution':
+    get:
+      tags:
+        - Stats
+      summary: 'Ingredient distribution'
+      description: 'Get ingredient distribution for a bar'
+      operationId: getBarIngredientDistribution
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/BarIngredientDistribution' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/bars/{id}/stats/top':
+    get:
+      tags:
+        - Stats
+      summary: 'Top stats'
+      description: 'Get top rated cocktails and user favorite ingredients for a bar'
+      operationId: getBarTopRated
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/BarTopStats' }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -10340,6 +10547,77 @@ components:
             -
               type: 'null'
       type: object
+    UserTasteProfile:
+      description: 'Represents a user taste profile with favorite and negative tags, and favorite ingredients'
+      required:
+        - favorite_tags
+        - negative_tags
+        - favorite_ingredients
+        - average_abv
+        - abv_distribution
+      properties:
+        favorite_tags:
+          type: array
+          items:
+            required:
+              - tag_name
+              - weight
+            properties:
+              name:
+                type: string
+                example: Tropical
+              weight:
+                type: number
+                format: float
+                example: 1
+            type: object
+        favorite_ingredients:
+          type: array
+          items:
+            required:
+              - ingredientId
+              - weight
+            properties:
+              ingredient_id:
+                type: integer
+                example: 3
+              weight:
+                type: number
+                format: float
+                example: 0.75
+            type: object
+        abv_distribution:
+          type: array
+          items:
+            required:
+              - bucket
+              - count
+              - ratio
+            properties:
+              bucket:
+                description: 'low: 0–10%, medium: >10–20%, high: >20%'
+                type: string
+                enum:
+                  - low
+                  - medium
+                  - high
+                example: medium
+              count:
+                type: integer
+                example: 4
+              ratio:
+                type: number
+                format: float
+                example: 0.5714
+            type: object
+        average_abv:
+          description: 'Average ABV of preferred cocktails; null when no preference data exists'
+          type:
+            - number
+            - 'null'
+          format: float
+          example: 18.5
+      type: object
     Utensil:
       description: 'Represents a utensil with basic information'
       required:
@@ -10399,6 +10677,33 @@ components:
         message:
           type: string
           example: 'Resource record not found.'
+      type: object
+    BarIngredientDistribution:
+      required:
+        - main_category_ingredient_distribution
+      properties:
+        main_category_ingredient_distribution:
+          type: array
+          items:
+            required:
+              - id
+              - slug
+              - name
+              - ingredients_count
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: spirits
+              name:
+                type: string
+                example: Spirits
+              ingredients_count:
+                type: integer
+                example: 12
+            type: object
       type: object
     BarRequest:
       required:
@@ -10467,90 +10772,12 @@ components:
             - string
             - 'null'
       type: object
-    BarStats:
+    BarTopStats:
       required:
-        - total_cocktails
-        - total_ingredients
-        - total_favorited_cocktails
-        - total_shelf_cocktails
-        - total_bar_shelf_ingredients
-        - total_bar_shelf_cocktails
-        - total_shelf_ingredients
-        - total_bar_members
-        - total_collections
-        - favorite_tags
         - your_top_ingredients
-        - most_popular_ingredients
         - top_rated_cocktails
       properties:
-        total_cocktails:
-          type: integer
-          example: 1
-        total_ingredients:
-          type: integer
-          example: 1
-        total_favorited_cocktails:
-          type: integer
-          example: 1
-        total_shelf_cocktails:
-          type: integer
-          example: 1
-        total_shelf_ingredients:
-          type: integer
-          example: 1
-        total_bar_shelf_ingredients:
-          type: integer
-          example: 1
-        total_bar_shelf_cocktails:
-          type: integer
-          example: 1
-        total_bar_members:
-          type: integer
-          example: 1
-        total_collections:
-          type: integer
-          example: 1
-        favorite_tags:
-          type: array
-          items:
-            required:
-              - id
-              - name
-              - cocktails_count
-            properties:
-              id:
-                type: integer
-                example: 31
-              name:
-                type: string
-                example: 'Tag name'
-              cocktails_count:
-                type: integer
-                example: 12
-            type: object
         your_top_ingredients:
-          type: array
-          items:
-            required:
-              - id
-              - slug
-              - name
-              - cocktails_count
-            properties:
-              id:
-                type: integer
-                example: 1
-              slug:
-                type: string
-                example: gin
-              name:
-                type: string
-                example: Gin
-              cocktails_count:
-                type: integer
-                example: 1
-            type: object
-        most_popular_ingredients:
           type: array
           items:
             required:
@@ -10598,6 +10825,46 @@ components:
                 type: integer
                 example: 42
             type: object
+      type: object
+    BarTotals:
+      required:
+        - total_cocktails
+        - total_ingredients
+        - total_favorited_cocktails
+        - total_shelf_cocktails
+        - total_bar_shelf_ingredients
+        - total_bar_shelf_cocktails
+        - total_shelf_ingredients
+        - total_bar_members
+        - total_collections
+      properties:
+        total_cocktails:
+          type: integer
+          example: 1
+        total_ingredients:
+          type: integer
+          example: 1
+        total_favorited_cocktails:
+          type: integer
+          example: 1
+        total_shelf_cocktails:
+          type: integer
+          example: 1
+        total_shelf_ingredients:
+          type: integer
+          example: 1
+        total_bar_shelf_ingredients:
+          type: integer
+          example: 1
+        total_bar_shelf_cocktails:
+          type: integer
+          example: 1
+        total_bar_members:
+          type: integer
+          example: 1
+        total_collections:
+          type: integer
+          example: 1
       type: object
     CalculatorBlockRequest:
       required:
@@ -11451,6 +11718,9 @@ tags:
   -
     name: 'Users: Shopping list'
     description: 'Users: Shopping list'
+  -
+    name: Stats
+    description: Stats
   -
     name: Billing
     description: Billing
