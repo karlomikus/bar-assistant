@@ -43,4 +43,18 @@ interface RecommendationRepository
      * @return WeightedIngredient[]
      */
     public function getFavoriteIngredients(MemberId $memberId, int $limit = 2000): array;
+
+    /**
+     * Get tags with cocktail counts from member's favorite cocktails, sorted by count descending
+     *
+     * @return CocktailTagCount[]
+     */
+    public function getPositiveTagCocktailCounts(MemberId $memberId, int $limit = 12): array;
+
+    /**
+     * Get tags with cocktail counts from member's disliked cocktails, sorted by count descending
+     *
+     * @return CocktailTagCount[]
+     */
+    public function getNegativeTagCocktailCounts(MemberId $memberId, int $limit = 12): array;
 }

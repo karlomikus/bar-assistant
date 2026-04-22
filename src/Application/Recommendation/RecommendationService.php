@@ -78,18 +78,13 @@ final readonly class RecommendationService
             throw new EntityNotFoundException('Member not found.');
         }
 
-        $favoriteTags = $this->recommendationRepository->getFavoriteTags($member->getId(), 12);
-        $negativeTags = $this->recommendationRepository->getNegativeTags($member->getId(), 12);
-        $favoriteIngredients = $this->recommendationRepository->getFavoriteIngredients($member->getId(), 12);
+        $tagCocktailCounts = $this->recommendationRepository->getPositiveTagCocktailCounts($member->getId(), 6);
+        $negativeTags = $this->recommendationRepository->getNegativeTagCocktailCounts($member->getId(), 6);
         $abvPreference = $this->recommendationRepository->getAbvPreference($member->getId());
 
         return new UserTasteProfileDTO(
-            favoriteTags: $favoriteTags,
-            negativeTags: $negativeTags,
-            favoriteIngredients: array_map(
-                static fn ($wi) => ['ingredientId' => $wi->ingredientId->value, 'weight' => $wi->weight],
-                $favoriteIngredients,
-            ),
+            favoriteCocktailTags: array_map(static fn($item) => ['name' => $item->name->toString(), 'count' => $item->count], $tagCocktailCounts),
+            dislikedCocktailTags: array_map(static fn($item) => ['name' => $item->name->toString(), 'count' => $item->count], $negativeTags),
             averageAbv: $abvPreference->averageAbv,
             abvDistribution: $abvPreference->distribution,
         );

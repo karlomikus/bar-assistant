@@ -152,7 +152,7 @@ class StatsController extends Controller
 
         $barMembership->load('userIngredients');
 
-        $limit = 5;
+        $limit = 8;
         $stats = [];
 
         $topRatedCocktails = $cocktailRepo->getTopRatedCocktails($bar->id, $limit);
@@ -169,7 +169,7 @@ class StatsController extends Controller
             ->get();
 
         $stats['top_rated_cocktails'] = $topRatedCocktails;
-        $stats['your_top_ingredients'] = $userFavoriteIngredients;
+        $stats['top_member_ingredients'] = $userFavoriteIngredients;
 
         return response()->json(['data' => $stats]);
     }

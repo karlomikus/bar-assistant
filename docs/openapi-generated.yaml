@@ -10560,7 +10560,7 @@ components:
           type: array
           items:
             required:
-              - tag_name
+              - name
               - weight
             properties:
               name:
@@ -10571,20 +10571,20 @@ components:
                 format: float
                 example: 1
             type: object
-        favorite_ingredients:
+        disliked_tags:
           type: array
           items:
             required:
-              - ingredientId
+              - name
               - weight
             properties:
-              ingredient_id:
-                type: integer
-                example: 3
+              name:
+                type: string
+                example: Tropical
               weight:
                 type: number
                 format: float
-                example: 0.75
+                example: 1
             type: object
         abv_distribution:
           type: array

@@ -9,9 +9,11 @@ use Kami\Cocktail\Models\Cocktail;
 use BarAssistant\Domain\Bar\MemberId;
 use Kami\Cocktail\Models\BarMembership;
 use BarAssistant\Domain\Cocktail\CocktailId;
+use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Recommendation\WeightedTag;
 use BarAssistant\Domain\Recommendation\AbvBucketStat;
+use BarAssistant\Domain\Recommendation\CocktailTagCount;
 use BarAssistant\Domain\Recommendation\UserAbvPreference;
 use BarAssistant\Domain\Recommendation\WeightedIngredient;
 use BarAssistant\Domain\Recommendation\CocktailWithDetails;
@@ -155,7 +157,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
         }
 
         $favoriteIngredients = DB::table('cocktail_ingredients')
-            ->selectRaw('ingredients.id, COUNT(cocktail_ingredients.cocktail_id) AS total')
+            ->selectRaw('ingredients.id, ingredients.name, COUNT(cocktail_ingredients.cocktail_id) AS total')
             ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
             ->whereIn('cocktail_ingredients.cocktail_id', $preferredCocktailIds)
             ->groupBy('ingredients.id')
@@ -169,7 +171,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
         $maxIngredients = (int) $favoriteIngredients->max('total');
 
         return $favoriteIngredients->map(static function ($res) use ($maxIngredients): WeightedIngredient {
-            return new WeightedIngredient(new IngredientId($res->id), $res->total / $maxIngredients);
+            return new WeightedIngredient(new IngredientId($res->id), Name::fromString($res->name), $res->total / $maxIngredients);
         })->sortByDesc('weight')->values()->toArray();
     }
 
@@ -227,5 +229,72 @@ final class EloquentRecommendationRepository implements RecommendationRepository
         );
 
         return new UserAbvPreference($averageAbv, $distribution);
+    }
+
+    public function getPositiveTagCocktailCounts(MemberId $memberId, int $limit = 12): array
+    {
+        $barMembership = BarMembership::findOrFail($memberId->value);
+
+        $favoriteCocktailIds = DB::table('cocktail_favorites')
+            ->where('bar_membership_id', $barMembership->id)
+            ->pluck('cocktail_id')
+            ->toArray();
+
+        $highRatedCocktailIds = DB::table('ratings')
+            ->where('bar_membership_id', $barMembership->id)
+            ->where('rateable_type', Cocktail::class)
+            ->where('rating', '>=', 4)
+            ->pluck('rateable_id')
+            ->toArray();
+
+        $preferredCocktailIds = array_unique(array_merge($favoriteCocktailIds, $highRatedCocktailIds));
+
+        if ($preferredCocktailIds === []) {
+            return [];
+        }
+
+        $tags = DB::table('cocktail_tag')
+            ->select('tags.name', DB::raw('COUNT(*) as cocktail_count'))
+            ->join('tags', 'tags.id', '=', 'cocktail_tag.tag_id')
+            ->whereIn('cocktail_tag.cocktail_id', $preferredCocktailIds)
+            ->groupBy('tags.name')
+            ->orderBy('cocktail_count', 'desc')
+            ->limit($limit)
+            ->get();
+
+        return $tags->map(fn ($tag) => new CocktailTagCount(
+            name: Name::fromString($tag->name),
+            count: (int) $tag->cocktail_count,
+        ))->toArray();
+    }
+
+    public function getNegativeTagCocktailCounts(MemberId $memberId, int $limit = 12): array
+    {
+        $barMembership = BarMembership::findOrFail($memberId->value);
+
+        $lowRatedCocktails = DB::table('ratings')
+            ->select('rateable_id')
+            ->where('bar_membership_id', $barMembership->id)
+            ->where('rateable_type', Cocktail::class)
+            ->where('rating', '<=', 2)
+            ->pluck('rateable_id');
+
+        if ($lowRatedCocktails->isEmpty()) {
+            return [];
+        }
+
+        $tags = DB::table('cocktail_tag')
+            ->select('tags.name', DB::raw('COUNT(*) as cocktail_count'))
+            ->join('tags', 'tags.id', '=', 'cocktail_tag.tag_id')
+            ->whereIn('cocktail_id', $lowRatedCocktails)
+            ->groupBy('tags.name')
+            ->orderBy('cocktail_count', 'desc')
+            ->limit($limit)
+            ->get();
+
+        return $tags->map(fn ($tag) => new CocktailTagCount(
+            name: Name::fromString($tag->name),
+            count: (int) $tag->cocktail_count,
+        ))->toArray();
     }
 }

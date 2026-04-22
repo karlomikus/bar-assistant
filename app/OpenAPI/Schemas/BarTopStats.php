@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema(required: ['your_top_ingredients', 'top_rated_cocktails'])]
+#[OAT\Schema(required: ['your_top_ingredients', 'top_member_ingredients'])]
 class BarTopStats
 {
     /** @var array<mixed> */
@@ -25,5 +25,5 @@ class BarTopStats
         new OAT\Property(property: 'avg_rating', type: 'integer', example: 3),
         new OAT\Property(property: 'votes', type: 'integer', example: 42),
     ]))]
-    public array $top_rated_cocktails;
+    public array $top_member_ingredients;
 }

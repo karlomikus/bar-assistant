@@ -33,7 +33,7 @@ class RecommenderController extends Controller
 
         $cocktails = $cocktailRecommendationService->getRecommendations(new GetRecommendationsRequest(
             memberId: $barMembership->id,
-            limit: 5,
+            limit: 8,
         ));
 
         $cocktails = Cocktail::whereIn('id', array_map(fn ($c) => $c->cocktailId, $cocktails))->with('images', 'ingredients.ingredient')->get();
