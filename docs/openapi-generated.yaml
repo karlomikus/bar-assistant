@@ -7456,7 +7456,7 @@ paths:
                 required:
                   - data
                 properties:
-                  data: { $ref: '#/components/schemas/BarTotals' }
+                  data: { $ref: '#/components/schemas/BarTotalStatsResource' }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -7525,7 +7525,7 @@ paths:
                 required:
                   - data
                 properties:
-                  data: { $ref: '#/components/schemas/BarIngredientDistribution' }
+                  data: { $ref: '#/components/schemas/BarIngredientDistributionResource' }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -7566,7 +7566,7 @@ paths:
       tags:
         - Stats
       summary: 'Top stats'
-      description: 'Get top rated cocktails and user favorite ingredients for a bar'
+      description: 'Get top rated resources for a bar'
       operationId: getBarTopRated
       parameters:
         -
@@ -7594,7 +7594,7 @@ paths:
                 required:
                   - data
                 properties:
-                  data: { $ref: '#/components/schemas/BarTopStats' }
+                  data: { $ref: '#/components/schemas/BarTopStatsResource' }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -8405,6 +8405,34 @@ components:
             - 'null'
           example: 'Bar subtitle'
       type: object
+    BarIngredientDistributionResource:
+      description: 'Resource representing total stats for a bar'
+      required:
+        - main_category_ingredient_distribution
+      properties:
+        main_category_ingredient_distribution:
+          type: array
+          items:
+            required:
+              - id
+              - slug
+              - name
+              - ingredients_count
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: spirits
+              name:
+                type: string
+                example: Spirits
+              ingredients_count:
+                type: integer
+                example: 12
+            type: object
+      type: object
     BarMembership:
       description: 'Represents a bar membership'
       required:
@@ -8551,6 +8579,109 @@ components:
           type: boolean
           default: false
           example: true
+      type: object
+    BarTopStatsResource:
+      description: 'Resource representing total stats for a bar'
+      required:
+        - total_cocktails
+        - total_ingredients
+        - total_favorited_cocktails
+        - total_shelf_cocktails
+        - total_bar_shelf_ingredients
+        - total_bar_shelf_cocktails
+        - total_shelf_ingredients
+        - total_bar_members
+        - total_collections
+      properties:
+        top_bar_cocktails:
+          type: array
+          items:
+            required:
+              - id
+              - slug
+              - name
+              - avg_rating
+              - votes
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: gin
+              name:
+                type: string
+                example: Gin
+              avg_rating:
+                type: integer
+                example: 1
+              votes:
+                type: integer
+                example: 1
+            type: object
+        top_member_ingredients:
+          type: array
+          items:
+            required:
+              - id
+              - slug
+              - name
+              - count
+            properties:
+              id:
+                type: integer
+                example: 1
+              slug:
+                type: string
+                example: old-fashioned
+              name:
+                type: string
+                example: 'Old Fashioned'
+              count:
+                type: integer
+                example: 3
+            type: object
+      type: object
+    BarTotalStatsResource:
+      description: 'Resource representing total stats for a bar'
+      required:
+        - total_cocktails
+        - total_ingredients
+        - total_favorited_cocktails
+        - total_shelf_cocktails
+        - total_bar_shelf_ingredients
+        - total_bar_shelf_cocktails
+        - total_shelf_ingredients
+        - total_bar_members
+        - total_collections
+      properties:
+        total_cocktails:
+          type: integer
+          example: 1
+        total_ingredients:
+          type: integer
+          example: 1
+        total_favorited_cocktails:
+          type: integer
+          example: 1
+        total_shelf_cocktails:
+          type: integer
+          example: 1
+        total_bar_shelf_ingredients:
+          type: integer
+          example: 1
+        total_bar_shelf_cocktails:
+          type: integer
+          example: 1
+        total_shelf_ingredients:
+          type: integer
+          example: 1
+        total_collections:
+          type: integer
+          example: 1
+        total_bar_members:
+          type: integer
+          example: 1
       type: object
     CalculatorBlock:
       description: 'Represents a calculator block with basic information'
@@ -10678,33 +10809,6 @@ components:
           type: string
           example: 'Resource record not found.'
       type: object
-    BarIngredientDistribution:
-      required:
-        - main_category_ingredient_distribution
-      properties:
-        main_category_ingredient_distribution:
-          type: array
-          items:
-            required:
-              - id
-              - slug
-              - name
-              - ingredients_count
-            properties:
-              id:
-                type: integer
-                example: 1
-              slug:
-                type: string
-                example: spirits
-              name:
-                type: string
-                example: Spirits
-              ingredients_count:
-                type: integer
-                example: 12
-            type: object
-      type: object
     BarRequest:
       required:
         - name
@@ -10771,100 +10875,6 @@ components:
           type:
             - string
             - 'null'
-      type: object
-    BarTopStats:
-      required:
-        - your_top_ingredients
-        - top_rated_cocktails
-      properties:
-        your_top_ingredients:
-          type: array
-          items:
-            required:
-              - id
-              - slug
-              - name
-              - cocktails_count
-            properties:
-              id:
-                type: integer
-                example: 1
-              slug:
-                type: string
-                example: gin
-              name:
-                type: string
-                example: Gin
-              cocktails_count:
-                type: integer
-                example: 1
-            type: object
-        top_rated_cocktails:
-          type: array
-          items:
-            required:
-              - id
-              - slug
-              - name
-              - avg_rating
-              - votes
-            properties:
-              id:
-                type: integer
-                example: 1
-              slug:
-                type: string
-                example: old-fashioned
-              name:
-                type: string
-                example: 'Old Fashioned'
-              avg_rating:
-                type: integer
-                example: 3
-              votes:
-                type: integer
-                example: 42
-            type: object
-      type: object
-    BarTotals:
-      required:
-        - total_cocktails
-        - total_ingredients
-        - total_favorited_cocktails
-        - total_shelf_cocktails
-        - total_bar_shelf_ingredients
-        - total_bar_shelf_cocktails
-        - total_shelf_ingredients
-        - total_bar_members
-        - total_collections
-      properties:
-        total_cocktails:
-          type: integer
-          example: 1
-        total_ingredients:
-          type: integer
-          example: 1
-        total_favorited_cocktails:
-          type: integer
-          example: 1
-        total_shelf_cocktails:
-          type: integer
-          example: 1
-        total_shelf_ingredients:
-          type: integer
-          example: 1
-        total_bar_shelf_ingredients:
-          type: integer
-          example: 1
-        total_bar_shelf_cocktails:
-          type: integer
-          example: 1
-        total_bar_members:
-          type: integer
-          example: 1
-        total_collections:
-          type: integer
-          example: 1
       type: object
     CalculatorBlockRequest:
       required:

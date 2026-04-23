@@ -19,6 +19,9 @@ use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 use BarAssistant\Application\Recommendation\DTO\GetUserTasteProfileRequest;
 use BarAssistant\Application\Recommendation\RecommendationService;
+use Kami\Cocktail\Http\Resources\BarIngredientDistributionResource;
+use Kami\Cocktail\Http\Resources\BarTopStatsResource;
+use Kami\Cocktail\Http\Resources\BarTotalStatsResource;
 use Kami\Cocktail\Http\Resources\UserTasteProfileResource;
 
 class StatsController extends Controller
@@ -50,11 +53,11 @@ class StatsController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\BarTotals::class),
+        new BAO\WrapObjectWithData(BarTotalStatsResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function totals(CocktailService $cocktailRepo, Request $request, int $id): JsonResponse
+    public function totals(CocktailService $cocktailRepo, Request $request, int $id): BarTotalStatsResource
     {
         $bar = Bar::findOrFail($id);
         $barMembership = $request->user()->getBarMembership($bar->id);
@@ -81,18 +84,18 @@ class StatsController extends Controller
         $stats['total_collections'] = CocktailCollection::where('bar_membership_id', $barMembership->id)->count();
         $stats['total_bar_members'] = $bar->memberships()->count();
 
-        return response()->json(['data' => $stats]);
+        return new BarTotalStatsResource($stats);
     }
 
     #[OAT\Get(path: '/bars/{id}/stats/ingredient-distribution', tags: ['Stats'], operationId: 'getBarIngredientDistribution', description: 'Get ingredient distribution for a bar', summary: 'Ingredient distribution', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\BarIngredientDistribution::class),
+        new BAO\WrapObjectWithData(BarIngredientDistributionResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function ingredientDistribution(Request $request, int $id): JsonResponse
+    public function ingredientDistribution(Request $request, int $id): BarIngredientDistributionResource
     {
         $bar = Bar::findOrFail($id);
         $barMembership = $request->user()->getBarMembership($bar->id);
@@ -128,20 +131,20 @@ class StatsController extends Controller
             })
             ->values();
 
-        return response()->json(['data' => [
+        return new BarIngredientDistributionResource([
             'main_category_ingredient_distribution' => $mainCategoryIngredientDistribution,
-        ]]);
+        ]);
     }
 
-    #[OAT\Get(path: '/bars/{id}/stats/top', tags: ['Stats'], operationId: 'getBarTopRated', description: 'Get top rated cocktails and user favorite ingredients for a bar', summary: 'Top stats', parameters: [
+    #[OAT\Get(path: '/bars/{id}/stats/top', tags: ['Stats'], operationId: 'getBarTopRated', description: 'Get top rated resources for a bar', summary: 'Top stats', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BAO\Schemas\BarTopStats::class),
+        new BAO\WrapObjectWithData(BarTopStatsResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function top(CocktailService $cocktailRepo, Request $request, int $id): JsonResponse
+    public function top(CocktailService $cocktailRepo, Request $request, int $id): BarTopStatsResource
     {
         $bar = Bar::findOrFail($id);
         $barMembership = $request->user()->getBarMembership($bar->id);
@@ -157,7 +160,7 @@ class StatsController extends Controller
 
         $topRatedCocktails = $cocktailRepo->getTopRatedCocktails($bar->id, $limit);
 
-        $userFavoriteIngredients = DB::table('cocktail_ingredients')
+        $topMemberIngredients = DB::table('cocktail_ingredients')
             ->selectRaw('ingredients.id, ingredients.slug, ingredients.name, COUNT(cocktail_id) AS cocktails_count')
             ->whereIn('cocktail_id', function ($query) use ($barMembership) {
                 $query->from('cocktail_favorites')->select('cocktail_id')->where('bar_membership_id', $barMembership->id);
@@ -168,9 +171,9 @@ class StatsController extends Controller
             ->limit($limit)
             ->get();
 
-        $stats['top_rated_cocktails'] = $topRatedCocktails;
-        $stats['top_member_ingredients'] = $userFavoriteIngredients;
+        $stats['top_bar_cocktails'] = $topRatedCocktails;
+        $stats['top_member_ingredients'] = $topMemberIngredients;
 
-        return response()->json(['data' => $stats]);
+        return new BarTopStatsResource($stats);
     }
 }
