@@ -14,11 +14,9 @@ use BarAssistant\Domain\Menu\MenuCategory;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Menu\MenuRepository;
 use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Application\Menu\DTO\MenuResult;
 use BarAssistant\Application\Menu\DTO\CreateMenuRequest;
 use BarAssistant\Application\Exception\ValidationException;
 use BarAssistant\Application\Menu\DTO\CreateMenuItemRequest;
-use BarAssistant\Application\Exception\EntityNotFoundException;
 
 final readonly class MenuService
 {

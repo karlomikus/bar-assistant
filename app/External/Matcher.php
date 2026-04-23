@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\External;
 
-use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
-use BarAssistant\Application\Ingredient\IngredientService;
 use Illuminate\Support\Facades\DB;
-use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest as IngredientDTO;
+use BarAssistant\Application\Ingredient\IngredientService;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 
 class Matcher
 {

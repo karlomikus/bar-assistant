@@ -7,7 +7,6 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Bar;
 use OpenApi\Attributes as OAT;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
@@ -16,13 +15,13 @@ use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Services\CocktailService;
-use Kami\Cocktail\Models\Collection as CocktailCollection;
-use BarAssistant\Application\Recommendation\DTO\GetUserTasteProfileRequest;
-use BarAssistant\Application\Recommendation\RecommendationService;
-use Kami\Cocktail\Http\Resources\BarIngredientDistributionResource;
 use Kami\Cocktail\Http\Resources\BarTopStatsResource;
 use Kami\Cocktail\Http\Resources\BarTotalStatsResource;
 use Kami\Cocktail\Http\Resources\UserTasteProfileResource;
+use Kami\Cocktail\Models\Collection as CocktailCollection;
+use BarAssistant\Application\Recommendation\RecommendationService;
+use Kami\Cocktail\Http\Resources\BarIngredientDistributionResource;
+use BarAssistant\Application\Recommendation\DTO\GetUserTasteProfileRequest;
 
 class StatsController extends Controller
 {

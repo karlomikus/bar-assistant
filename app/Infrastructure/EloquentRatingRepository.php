@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Infrastructure;
 
-use BarAssistant\Application\Exception\ApplicationServiceException;
+use Kami\Cocktail\Models\Cocktail;
 use BarAssistant\Domain\Bar\MemberId;
-use BarAssistant\Domain\Common\RatingValue;
 use BarAssistant\Domain\Rating\Rating;
 use BarAssistant\Domain\Rating\RatingId;
 use Kami\Cocktail\Models\Rating as Model;
 use BarAssistant\Domain\Rating\RateableId;
+use BarAssistant\Domain\Common\RatingValue;
 use BarAssistant\Domain\Rating\RateableType;
 use BarAssistant\Domain\Rating\RatingRepository;
-use Kami\Cocktail\Models\Cocktail;
+use BarAssistant\Application\Exception\ApplicationServiceException;
 
 final class EloquentRatingRepository implements RatingRepository
 {
@@ -56,7 +56,7 @@ final class EloquentRatingRepository implements RatingRepository
             memberId: new MemberId((int) $model->bar_membership_id),
             value: RatingValue::create((int) $model->rating),
         )->setId(new RatingId((int) $model->id));
-    
+
         return $rating;
     }
 }

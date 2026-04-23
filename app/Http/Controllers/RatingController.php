@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use BarAssistant\Application\Rating\DTO\RateCocktailRequest;
-use BarAssistant\Application\Rating\RatingService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Http\Requests\RatingRequest;
+use BarAssistant\Application\Rating\RatingService;
+use BarAssistant\Application\Rating\DTO\RateCocktailRequest;
 
 class RatingController extends Controller
 {

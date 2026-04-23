@@ -6,10 +6,10 @@ namespace Tests\Unit\Application\Bar;
 
 use PHPUnit\Framework\TestCase;
 use BarAssistant\Application\Rating\RatingService;
+use BarAssistant\Domain\Exception\DomainException;
 use Tests\Infrastructure\InMemoryRatingRepository;
 use BarAssistant\Application\Rating\DTO\RateCocktailRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
-use BarAssistant\Domain\Exception\DomainException;
 
 final class RatingServiceTest extends TestCase
 {

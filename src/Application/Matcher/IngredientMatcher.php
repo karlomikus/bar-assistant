@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Matcher;
 
-use BarAssistant\Domain\Ingredient\Ingredient;
-use BarAssistant\Domain\Ingredient\IngredientMatch;
-use BarAssistant\Application\Matcher\DTO\IngredientMatchRequest;
 use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\Ingredient\IngredientMatchRepository;
-use BarAssistant\Domain\Ingredient\IngredientRepository;
 use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Common\Authors;
+use BarAssistant\Domain\Ingredient\Ingredient;
+use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Ingredient\IngredientMatch;
+use BarAssistant\Domain\Ingredient\IngredientRepository;
+use BarAssistant\Domain\Ingredient\IngredientMatchRepository;
+use BarAssistant\Application\Matcher\DTO\IngredientMatchRequest;
 
 final class IngredientMatcher
 {

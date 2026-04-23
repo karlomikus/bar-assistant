@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Rating;
 
-use BarAssistant\Domain\Bar\MemberId;
-use DomainException;
 use PHPUnit\Framework\TestCase;
+use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Rating\Rating;
-use BarAssistant\Domain\Rating\RatingId;
 use BarAssistant\Domain\Rating\RateableId;
-use BarAssistant\Domain\Rating\RateableType;
 use BarAssistant\Domain\Common\RatingValue;
+use BarAssistant\Domain\Rating\RateableType;
 
 final class RatingTest extends TestCase
 {

@@ -22,10 +22,9 @@ final class InMemoryCocktailMethodRepository implements CocktailMethodRepository
 
     public function findAllInBar(BarId $barId): array
     {
-        return array_values(array_filter
-        (
+        return array_values(array_filter(
             $this->items,
-            fn(CocktailMethod $method) => $method->getBarId()->equals($barId)
+            fn (CocktailMethod $method) => $method->getBarId()->equals($barId)
         ));
     }
 

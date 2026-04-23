@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Matcher;
 
-use BarAssistant\Application\Matcher\DTO\MethodMatchRequest;
-use BarAssistant\Domain\Cocktail\CocktailMethod;
 use BarAssistant\Domain\Bar\BarId;
+use BarAssistant\Domain\Cocktail\CocktailMethod;
 use BarAssistant\Domain\Cocktail\CocktailMethodRepository;
+use BarAssistant\Application\Matcher\DTO\MethodMatchRequest;
 
 final class MethodMatcher
 {

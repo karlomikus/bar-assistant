@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
-use Symfony\Component\Uid\Ulid;
 use Kami\RecipeUtils\Parser\Parser;
 use Kami\RecipeUtils\ParserFactory;
 use Kami\RecipeUtils\RecipeIngredient;
@@ -12,7 +11,6 @@ use Kami\Cocktail\External\Model\Schema;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\DomCrawler\Crawler;
 use Kami\Cocktail\External\Model\Cocktail;
-use Kami\Cocktail\External\Model\Ingredient;
 use Kami\Cocktail\Exceptions\ScraperMissingException;
 
 abstract class AbstractSite implements Site

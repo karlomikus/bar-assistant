@@ -6,9 +6,9 @@ namespace Kami\Cocktail\Infrastructure;
 
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\Name;
+use Kami\Cocktail\Models\Cocktail as Model;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Cocktail\CocktailMatch;
-use Kami\Cocktail\Models\Cocktail as Model;
 use BarAssistant\Domain\Cocktail\CocktailMatchRepository;
 
 final class EloquentCocktailMatchRepository implements CocktailMatchRepository

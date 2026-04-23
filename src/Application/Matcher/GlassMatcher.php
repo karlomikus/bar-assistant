@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Matcher;
 
-use BarAssistant\Application\Matcher\DTO\GlassMatchRequest;
-use BarAssistant\Domain\Cocktail\Glass;
 use BarAssistant\Domain\Bar\BarId;
+use BarAssistant\Domain\Cocktail\Glass;
 use BarAssistant\Domain\Cocktail\GlassRepository;
+use BarAssistant\Application\Matcher\DTO\GlassMatchRequest;
 
 final class GlassMatcher
 {

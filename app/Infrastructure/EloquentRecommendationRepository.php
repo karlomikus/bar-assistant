@@ -6,10 +6,10 @@ namespace Kami\Cocktail\Infrastructure;
 
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
+use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Bar\MemberId;
 use Kami\Cocktail\Models\BarMembership;
 use BarAssistant\Domain\Cocktail\CocktailId;
-use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Recommendation\WeightedTag;
 use BarAssistant\Domain\Recommendation\AbvBucketStat;

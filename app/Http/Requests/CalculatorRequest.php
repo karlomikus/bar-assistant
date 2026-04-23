@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Foundation\Http\FormRequest;
 use Kami\Cocktail\Models\Enums\CalculatorBlockTypeEnum;
 
 class CalculatorRequest extends FormRequest

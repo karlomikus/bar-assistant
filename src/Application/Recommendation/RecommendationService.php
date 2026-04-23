@@ -10,10 +10,10 @@ use BarAssistant\Domain\Bar\MemberRepository;
 use BarAssistant\Domain\Recommendation\RecommendationResult;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Domain\Recommendation\RecommendationRepository;
+use BarAssistant\Application\Recommendation\DTO\UserTasteProfileDTO;
 use BarAssistant\Domain\Recommendation\RecommendationScoringService;
 use BarAssistant\Application\Recommendation\DTO\RecommendationResultDTO;
 use BarAssistant\Application\Recommendation\DTO\GetRecommendationsRequest;
-use BarAssistant\Application\Recommendation\DTO\UserTasteProfileDTO;
 use BarAssistant\Application\Recommendation\DTO\GetUserTasteProfileRequest;
 
 final readonly class RecommendationService
@@ -83,8 +83,8 @@ final readonly class RecommendationService
         $abvPreference = $this->recommendationRepository->getAbvPreference($member->getId());
 
         return new UserTasteProfileDTO(
-            favoriteCocktailTags: array_map(static fn($item) => ['name' => $item->name->toString(), 'count' => $item->count], $tagCocktailCounts),
-            dislikedCocktailTags: array_map(static fn($item) => ['name' => $item->name->toString(), 'count' => $item->count], $negativeTags),
+            favoriteCocktailTags: array_map(static fn ($item) => ['name' => $item->name->toString(), 'count' => $item->count], $tagCocktailCounts),
+            dislikedCocktailTags: array_map(static fn ($item) => ['name' => $item->name->toString(), 'count' => $item->count], $negativeTags),
             averageAbv: $abvPreference->averageAbv,
             abvDistribution: $abvPreference->distribution,
         );

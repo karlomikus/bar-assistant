@@ -6,8 +6,8 @@ namespace Kami\Cocktail\External\Model;
 
 use Illuminate\Support\Str;
 use Kami\RecipeUtils\UnitConverter\Units;
-use Kami\Cocktail\External\SupportsSchema4;
 use Kami\Cocktail\External\SupportsJSONLD;
+use Kami\Cocktail\External\SupportsSchema4;
 use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Image as ImageModel;
 use Kami\Cocktail\Models\Cocktail as CocktailModel;
