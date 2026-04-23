@@ -75,6 +75,8 @@ return [
 
     'enable_password_login' => (bool) env('ENABLE_PASSWORD_LOGIN', true),
 
+    'enable_user_shelf' => (bool) env('ENABLE_USER_SHELF', true),
+
     'scraping_client' => [
         'proxy' => env('SCRAPING_HTTP_PROXY', null),
         'cert' => env('SCRAPING_CLIENT_CERT', null),

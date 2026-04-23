@@ -16,6 +16,7 @@ class ServerControllerTest extends TestCase
         $this->assertNotNull($response['data']['version']);
         $this->assertNotNull($response['data']['search_host']);
         $this->assertNotNull($response['data']['search_version']);
+        $this->assertNotNull($response['data']['is_user_shelf_enabled']);
     }
 
     public function test_openapi_response(): void
