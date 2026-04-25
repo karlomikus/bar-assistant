@@ -1,3 +1,19 @@
+# v5.15.0
+## New
+- Added `/generate/cocktail-image`, used to generate cocktail images with AI
+    - Returns generated image as an unassigned image resource
+    - Supports optional `style` prompt hints
+    - Added `GEN_AI_IMAGE_PROVIDER` and `GEN_AI_IMAGE_MODEL` env variables
+    - Example using OpenAI:
+        ```
+        GEN_AI_IMAGE_PROVIDER=openai
+        GEN_AI_IMAGE_MODEL=gpt-image-1
+        OPENAI_API_KEY=sk-your-key
+        ```
+
+## Fixes
+- Fixed adding ingredients to shelf removing matching shopping list items outside the current bar
+
 # v5.14.0
 ## Changes
 - Updated AI prompts
