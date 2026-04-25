@@ -93,6 +93,13 @@ final class Ingredient implements Identity
         ?IngredientId $parentIngredientId = null,
         ?MaterializedPath $materializedPath = null,
     ): self {
+        $materializedPath = $materializedPath ?? MaterializedPath::root();
+
+        self::guardHierarchyState(
+            parentIngredientId: $parentIngredientId,
+            materializedPath: $materializedPath,
+        );
+
         $ingredient = new self(
             barId: $barId,
             name: $name,
@@ -108,40 +115,30 @@ final class Ingredient implements Identity
             distillery: $distillery,
             units: $units,
             parentIngredientId: $parentIngredientId,
-            materializedPath: $materializedPath ?? MaterializedPath::root(),
+            materializedPath: $materializedPath,
         );
 
         return $ingredient;
     }
 
-    /**
-     * Updates materialized path and parent ingredient reference
-     *
-     * @param null|Ingredient $parentIngredient If null will set as a root ingredient
-     * @throws DomainException
-     */
-    public function setParentIngredientId(?self $parentIngredient): self
+    private static function guardHierarchyState(?IngredientId $parentIngredientId, MaterializedPath $materializedPath): void
     {
-        if ($parentIngredient !== null && !$parentIngredient->getBarId()->equals($this->getBarId())) {
-            throw new DomainException('Parent ingredient must belong to the same bar');
+        if ($parentIngredientId === null) {
+            if (!$materializedPath->isRoot()) {
+                throw new DomainException('Root ingredient cannot have a materialized path');
+            }
+
+            return;
         }
 
-        $this->parentIngredientId = $parentIngredient?->getId();
-        $this->materializedPath = $parentIngredient?->getId()
-            ? $parentIngredient->getMaterializedPath()->append($parentIngredient->getId())
-            : MaterializedPath::root();
+        if ($materializedPath->isRoot()) {
+            throw new DomainException('Child ingredient must have a materialized path');
+        }
 
-        return $this;
-    }
-
-    /**
-     * @internal
-     */
-    public function setMaterializedPath(MaterializedPath $path): self
-    {
-        $this->materializedPath = $path;
-
-        return $this;
+        $pathParentId = $materializedPath->getParentId();
+        if ($pathParentId === null || !$pathParentId->equals($parentIngredientId)) {
+            throw new DomainException('Parent ingredient ID must match materialized path');
+        }
     }
 
     /**

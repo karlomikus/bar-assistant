@@ -21,6 +21,7 @@ use BarAssistant\Domain\Cocktail\CocktailRepository;
 use Kami\Cocktail\Infrastructure\EloquentBarRepository;
 use BarAssistant\Domain\Calculator\CalculatorRepository;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
+use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyRepository;
 use Kami\Cocktail\Infrastructure\EloquentMenuRepository;
 use Kami\Cocktail\Infrastructure\EloquentNoteRepository;
 use Kami\Cocktail\Infrastructure\EloquentUserRepository;
@@ -38,6 +39,7 @@ use BarAssistant\Domain\Ingredient\IngredientMatchRepository;
 use BarAssistant\Domain\Cocktail\CocktailCollectionRepository;
 use Kami\Cocktail\Infrastructure\EloquentCalculatorRepository;
 use Kami\Cocktail\Infrastructure\EloquentIngredientRepository;
+use Kami\Cocktail\Infrastructure\EloquentIngredientHierarchyRepository;
 use BarAssistant\Domain\Recommendation\RecommendationRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailMatchRepository;
 use Kami\Cocktail\Infrastructure\EloquentPriceCategoryRepository;
@@ -51,6 +53,7 @@ class InfrastructureServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(IngredientRepository::class, EloquentIngredientRepository::class);
+        $this->app->bind(IngredientHierarchyRepository::class, EloquentIngredientHierarchyRepository::class);
         $this->app->bind(PriceCategoryRepository::class, EloquentPriceCategoryRepository::class);
         $this->app->bind(BarRepository::class, EloquentBarRepository::class);
         $this->app->bind(ImageRepository::class, EloquentImageRepository::class);

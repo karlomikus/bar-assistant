@@ -132,34 +132,6 @@ final class EloquentIngredientRepository implements IngredientRepository
         return $ingredient;
     }
 
-    public function saveHierarchyChanges(Ingredient $ingredient, array $descendants): void
-    {
-        DB::transaction(function () use ($ingredient, $descendants): void {
-            $this->save($ingredient);
-
-            foreach ($descendants as $descendant) {
-                $this->save($descendant);
-            }
-        });
-    }
-
-    public function findDescendants(Ingredient $ingredient): array
-    {
-        if ($ingredient->getMaterializedPath()->isRoot()) {
-            return [];
-        }
-
-        $models = ModelIngredient::with('ingredientParts', 'prices.priceCategory')->where('materialized_path', 'like', $ingredient->getMaterializedPath()->append($ingredient->getId())->toString() . '%')->get();
-
-        $ingredients = [];
-        /** @var ModelIngredient $model */
-        foreach ($models as $model) {
-            $ingredients[] = self::map($model);
-        }
-
-        return $ingredients;
-    }
-
     public function delete(IngredientId $id): void
     {
         ModelIngredient::destroy($id->value);
@@ -168,32 +140,6 @@ final class EloquentIngredientRepository implements IngredientRepository
     public function findChildren(IngredientId $parentId): array
     {
         $models = ModelIngredient::with('ingredientParts', 'prices.priceCategory')->where('parent_ingredient_id', $parentId->value)->get();
-
-        $ingredients = [];
-        /** @var ModelIngredient $model */
-        foreach ($models as $model) {
-            $ingredients[] = self::map($model);
-        }
-
-        return $ingredients;
-    }
-
-    public function findAncestors(IngredientId $descendantId): array
-    {
-        $model = ModelIngredient::with('ingredientParts', 'prices.priceCategory')->find($descendantId->value);
-
-        if ($model === null) {
-            return [];
-        }
-
-        $materializedPath = MaterializedPath::fromString($model->materialized_path);
-        $ancestorIds = $materializedPath->getAncestorIds();
-
-        if (count($ancestorIds) === 0) {
-            return [];
-        }
-
-        $models = ModelIngredient::with('ingredientParts', 'prices.priceCategory')->whereIn('id', array_map(fn (IngredientId $id): int => $id->value, $ancestorIds))->get();
 
         $ingredients = [];
         /** @var ModelIngredient $model */

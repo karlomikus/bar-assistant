@@ -13,13 +13,17 @@ use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Domain\Ingredient\MaterializedPath;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use Tests\Infrastructure\InMemoryIngredientRepository;
+use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyNode;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
+use Tests\Infrastructure\InMemoryIngredientHierarchyRepository;
 use Tests\Infrastructure\InMemoryPriceCategoryRepository;
 use BarAssistant\Application\Ingredient\IngredientService;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
+use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyRepository;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use BarAssistant\Application\Ingredient\DTO\IngredientResult;
 use BarAssistant\Application\Exception\EntityNotFoundException;
@@ -29,6 +33,7 @@ use BarAssistant\Application\Ingredient\DTO\UpdateIngredientRequest;
 final class IngredientServiceTest extends TestCase
 {
     private IngredientRepository $ingredientRepository;
+    private IngredientHierarchyRepository $ingredientHierarchyRepository;
     private PriceCategoryRepository $priceCategoryRepository;
 
     protected function setUp(): void
@@ -40,6 +45,33 @@ final class IngredientServiceTest extends TestCase
             545 => (Ingredient::create(barId: new BarId(55), name: Name::fromString('Existing ingredient 55-2'), recordTimestamps: RecordTimestamps::createdNow(), authors: Authors::createdBy(new UserId(33))))->setId(new IngredientId(545)),
         ]);
 
+        $this->ingredientHierarchyRepository = new InMemoryIngredientHierarchyRepository([
+            542 => IngredientHierarchyNode::fromPersistence(
+                barId: new BarId(65),
+                id: new IngredientId(542),
+                parentId: null,
+                materializedPath: MaterializedPath::root(),
+            ),
+            543 => IngredientHierarchyNode::fromPersistence(
+                barId: new BarId(65),
+                id: new IngredientId(543),
+                parentId: null,
+                materializedPath: MaterializedPath::root(),
+            ),
+            544 => IngredientHierarchyNode::fromPersistence(
+                barId: new BarId(55),
+                id: new IngredientId(544),
+                parentId: null,
+                materializedPath: MaterializedPath::root(),
+            ),
+            545 => IngredientHierarchyNode::fromPersistence(
+                barId: new BarId(55),
+                id: new IngredientId(545),
+                parentId: null,
+                materializedPath: MaterializedPath::root(),
+            ),
+        ]);
+
         $this->priceCategoryRepository = new InMemoryPriceCategoryRepository([
             301 => (new PriceCategory(barId: new BarId(65), name: Name::fromString('Amazon EU'), currency: Currency::of('EUR')))->setId(new PriceCategoryId(301)),
         ]);
@@ -47,7 +79,7 @@ final class IngredientServiceTest extends TestCase
 
     public function test_creates_ingredient(): void
     {
-        $service = new IngredientService($this->ingredientRepository, $this->priceCategoryRepository);
+        $service = new IngredientService($this->ingredientRepository, $this->ingredientHierarchyRepository, $this->priceCategoryRepository);
         $createPriceRequest = new CreateIngredientPrice(
             priceCategoryId: 301,
             price: 312300,
@@ -77,7 +109,7 @@ final class IngredientServiceTest extends TestCase
 
     public function test_creates_variant_ingredient(): void
     {
-        $service = new IngredientService($this->ingredientRepository, $this->priceCategoryRepository);
+        $service = new IngredientService($this->ingredientRepository, $this->ingredientHierarchyRepository, $this->priceCategoryRepository);
         $createRequest = new CreateIngredient(
             barId: 65,
             name: 'Gin',
@@ -88,11 +120,17 @@ final class IngredientServiceTest extends TestCase
         $result = $service->createIngredient($createRequest);
 
         $this->assertNotNull($result->id);
+
+        $createdIngredient = $this->ingredientRepository->findById(new IngredientId($result->id));
+
+        $this->assertNotNull($createdIngredient);
+        $this->assertSame(543, $createdIngredient->getParentIngredientId()?->value);
+        $this->assertSame('543/', $createdIngredient->getMaterializedPath()->toString());
     }
 
     public function test_cannot_find_parent_ingredient_on_create(): void
     {
-        $service = new IngredientService($this->ingredientRepository, $this->priceCategoryRepository);
+        $service = new IngredientService($this->ingredientRepository, $this->ingredientHierarchyRepository, $this->priceCategoryRepository);
         $createRequest = new CreateIngredient(
             barId: 65,
             name: 'Gin',
@@ -106,7 +144,7 @@ final class IngredientServiceTest extends TestCase
 
     public function test_updates_ingredient(): void
     {
-        $service = new IngredientService($this->ingredientRepository, $this->priceCategoryRepository);
+        $service = new IngredientService($this->ingredientRepository, $this->ingredientHierarchyRepository, $this->priceCategoryRepository);
         $createPriceRequest = new CreateIngredientPrice(
             priceCategoryId: 301,
             price: 312300,
@@ -130,9 +168,30 @@ final class IngredientServiceTest extends TestCase
         $this->assertSame(542, $result->id);
     }
 
+    public function test_updates_ingredient_parent_through_hierarchy_repository(): void
+    {
+        $service = new IngredientService($this->ingredientRepository, $this->ingredientHierarchyRepository, $this->priceCategoryRepository);
+        $updateRequest = new UpdateIngredientRequest(
+            ingredientId: 542,
+            name: 'Gin',
+            userId: 22,
+            parentIngredientId: 543,
+        );
+
+        $result = $service->updateIngredient($updateRequest);
+
+        $this->assertSame(542, $result->id);
+
+        $updatedNode = $this->ingredientHierarchyRepository->findById(new IngredientId(542));
+
+        $this->assertNotNull($updatedNode);
+        $this->assertSame(543, $updatedNode->getParentId()?->value);
+        $this->assertSame('543/', $updatedNode->getMaterializedPath()->toString());
+    }
+
     public function test_cannot_update_non_existing_ingredient(): void
     {
-        $service = new IngredientService($this->ingredientRepository, $this->priceCategoryRepository);
+        $service = new IngredientService($this->ingredientRepository, $this->ingredientHierarchyRepository, $this->priceCategoryRepository);
         $updateRequest = new UpdateIngredientRequest(
             ingredientId: 999,
             name: 'Gin',

@@ -58,75 +58,62 @@ final class IngredientTest extends TestCase
         $this->assertEquals(1, $ingredient->getId()->value);
     }
 
-    public function test_parent_ingredient_must_belong_to_same_bar(): void
+    public function test_root_ingredient_rejects_non_root_materialized_path_on_create(): void
     {
-        $parent = Ingredient::create(
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Root ingredient cannot have a materialized path');
+
+        Ingredient::create(
             barId: new BarId(1),
-            name: Name::fromString('Gin'),
+            name: Name::fromString('Vodka'),
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
+            materializedPath: MaterializedPath::fromString('5/'),
         );
-        $parent->setId(new IngredientId(1));
+    }
 
-        $child = Ingredient::create(
-            barId: new BarId(2), // Different bar
+    public function test_variant_ingredient_requires_non_root_materialized_path_on_create(): void
+    {
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Child ingredient must have a materialized path');
+
+        Ingredient::create(
+            barId: new BarId(1),
             name: Name::fromString('Plymouth Gin'),
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
+            parentIngredientId: new IngredientId(5),
         );
-
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('Parent ingredient must belong to the same bar');
-
-        $child->setParentIngredientId($parent);
     }
 
-    public function test_can_set_parent_from_same_bar(): void
+    public function test_variant_ingredient_requires_parent_path_match_on_create(): void
     {
-        $parent = Ingredient::create(
-            barId: new BarId(1),
-            name: Name::fromString('Gin'),
-            authors: Authors::createdBy(new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-        );
-        $parent->setId(new IngredientId(5));
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Parent ingredient ID must match materialized path');
 
-        $child = Ingredient::create(
+        Ingredient::create(
             barId: new BarId(1), // Same bar
             name: Name::fromString('Plymouth Gin'),
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
+            parentIngredientId: new IngredientId(6),
+            materializedPath: MaterializedPath::fromString('5/'),
         );
-
-        $child = $child->setParentIngredientId($parent);
-
-        $this->assertEquals(5, $child->getParentIngredientId()->value);
-        $this->assertEquals('5/', $child->getMaterializedPath()->toString());
     }
 
-    public function test_can_clear_parent_by_passing_null(): void
+    public function test_can_create_variant_with_hierarchy_state(): void
     {
-        $parent = Ingredient::create(
-            barId: new BarId(1),
-            name: Name::fromString('Gin'),
-            authors: Authors::createdBy(new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-        );
-        $parent->setId(new IngredientId(5));
-
         $child = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Plymouth Gin'),
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
+            parentIngredientId: new IngredientId(5),
+            materializedPath: MaterializedPath::fromString('5/'),
         );
 
-        $child = $child->setParentIngredientId($parent);
-        $this->assertNotNull($child->getParentIngredientId());
-
-        $child = $child->setParentIngredientId(null);
-        $this->assertNull($child->getParentIngredientId());
-        $this->assertTrue($child->getMaterializedPath()->isRoot());
+        $this->assertSame(5, $child->getParentIngredientId()?->value);
+        $this->assertSame('5/', $child->getMaterializedPath()->toString());
     }
 
     public function test_ingredient_part_must_belong_to_same_bar(): void
@@ -505,6 +492,7 @@ final class IngredientTest extends TestCase
             name: Name::fromString('Gin'),
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
+            parentIngredientId: new IngredientId(1),
             materializedPath: MaterializedPath::fromString('1/'),
         );
 
@@ -513,6 +501,7 @@ final class IngredientTest extends TestCase
             name: Name::fromString('London Dry Gin'),
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
+            parentIngredientId: new IngredientId(2),
             materializedPath: MaterializedPath::fromString('1/2/'),
         );
 
@@ -527,6 +516,7 @@ final class IngredientTest extends TestCase
             name: Name::fromString('Gin'),
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
+            parentIngredientId: new IngredientId(1),
             materializedPath: MaterializedPath::fromString('1/'),
         );
 
@@ -535,6 +525,7 @@ final class IngredientTest extends TestCase
             name: Name::fromString('Vodka'),
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
+            parentIngredientId: new IngredientId(2),
             materializedPath: MaterializedPath::fromString('2/'),
         );
 

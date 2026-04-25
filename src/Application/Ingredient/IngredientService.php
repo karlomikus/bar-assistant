@@ -22,20 +22,20 @@ use BarAssistant\Domain\Ingredient\IngredientRepository;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use BarAssistant\Application\Ingredient\DTO\IngredientResult;
-use BarAssistant\Domain\Ingredient\IngredientHierarchyManager;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
 use BarAssistant\Application\Ingredient\DTO\UpdateIngredientRequest;
+use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyNode;
+use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyManager;
+use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyRepository;
 
 final readonly class IngredientService
 {
-    private IngredientHierarchyManager $ingredientHierarchy;
-
     public function __construct(
         private IngredientRepository $ingredientRepository,
+        private IngredientHierarchyRepository $ingredientHierarchyRepository,
         private PriceCategoryRepository $priceCategoryRepository,
     ) {
-        $this->ingredientHierarchy = new IngredientHierarchyManager($ingredientRepository);
     }
 
     /**
@@ -44,6 +44,20 @@ final readonly class IngredientService
     public function createIngredient(CreateIngredient $ingredientRequest): IngredientResult
     {
         $barId = new BarId($ingredientRequest->barId);
+        $hierarchyNode = IngredientHierarchyNode::createRoot($barId);
+
+        if ($ingredientRequest->parentIngredientId !== null) {
+            $parentIngredient = $this->ingredientRepository->findById(new IngredientId($ingredientRequest->parentIngredientId));
+            if ($parentIngredient === null) {
+                throw new EntityNotFoundException('Parent ingredient not found');
+            }
+
+            $hierarchyNode = IngredientHierarchyNode::createChild(
+                barId: $barId,
+                parent: $this->mapHierarchyNode($parentIngredient),
+            );
+        }
+
         $ingredient = Ingredient::create(
             barId: $barId,
             name: Name::fromString($ingredientRequest->name),
@@ -57,7 +71,9 @@ final readonly class IngredientService
             sugarContent: $ingredientRequest->sugarContent,
             acidity: $ingredientRequest->acidity,
             distillery: $ingredientRequest->distillery,
-            units: $ingredientRequest->units ? Unit::from($ingredientRequest->units) : null
+            units: $ingredientRequest->units ? Unit::from($ingredientRequest->units) : null,
+            parentIngredientId: $hierarchyNode->getParentId(),
+            materializedPath: $hierarchyNode->getMaterializedPath(),
         );
 
         if (count($ingredientRequest->complexIngredientParts) > 0) {
@@ -70,15 +86,6 @@ final readonly class IngredientService
 
         if (count($ingredientRequest->images) > 0) {
             $ingredient = $this->assignImages($ingredient, $ingredientRequest->images);
-        }
-
-        if ($ingredientRequest->parentIngredientId !== null) {
-            $parentIngredient = $this->ingredientRepository->findById(new IngredientId($ingredientRequest->parentIngredientId));
-            if ($parentIngredient === null) {
-                throw new EntityNotFoundException('Parent ingredient not found');
-            }
-
-            $ingredient->setParentIngredientId($parentIngredient);
         }
 
         $ingredient = $this->ingredientRepository->save($ingredient);
@@ -130,9 +137,12 @@ final readonly class IngredientService
                 throw new EntityNotFoundException('The specified parent ingredient was not found');
             }
 
-            $ingredient = $this->ingredientHierarchy->changeParent($ingredient, $parentIngredient);
+            $this->hierarchyManager()->changeParent(
+                node: $this->mapHierarchyNode($ingredient),
+                newParent: $this->mapHierarchyNode($parentIngredient),
+            );
         } else {
-            $ingredient = $this->ingredientHierarchy->makeRoot($ingredient);
+            $this->hierarchyManager()->makeRoot($this->mapHierarchyNode($ingredient));
         }
 
         return IngredientResult::fromIngredient($ingredient);
@@ -151,7 +161,7 @@ final readonly class IngredientService
         $children = $this->ingredientRepository->findChildren($id);
         if (!empty($children)) {
             foreach ($children as $child) {
-                $this->ingredientHierarchy->makeRoot($child);
+                $this->hierarchyManager()->makeRoot($this->mapHierarchyNode($child));
             }
         }
 
@@ -241,5 +251,23 @@ final readonly class IngredientService
         }
 
         return $ingredient;
+    }
+
+    private function hierarchyManager(): IngredientHierarchyManager
+    {
+        return new IngredientHierarchyManager($this->ingredientHierarchyRepository);
+    }
+
+    private function mapHierarchyNode(Ingredient $ingredient): IngredientHierarchyNode
+    {
+        $ingredientId = $ingredient->getId();
+        assert($ingredientId !== null);
+
+        return IngredientHierarchyNode::fromPersistence(
+            barId: $ingredient->getBarId(),
+            id: $ingredientId,
+            parentId: $ingredient->getParentIngredientId(),
+            materializedPath: $ingredient->getMaterializedPath(),
+        );
     }
 }
