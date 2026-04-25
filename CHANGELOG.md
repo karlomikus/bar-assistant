@@ -1,5 +1,11 @@
 # v6.0.0
 ## Breaking changes
+- `users` route prefix has been changed to `members`
+- User profile deletion now uses `DELETE /profile` instead of relying on the members endpoint
+- Removed GET `/{id}/memberships` and DELETE `/{id}/memberships` from `bars` endpoint (now handled via `members` endpoint)
+- Removed DELETE `/{id}/memberships/{userId}` from `bars` endpoint
+- GET `/{id}/stats` from `bars` endpoint has been replaced by a `stats` prefix with specific endpoints (`totals`, `taste`, `ingredient-distribution`, `top`)
+- PUT `/{id}/cocktails` for collections has been renamed to `sync`
 - Reworked how menu categories are stored
     - Menu request payload is now updated
     TODO: Menu price can be null
