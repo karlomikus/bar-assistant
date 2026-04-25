@@ -6,17 +6,17 @@ namespace Kami\Cocktail\Services\Image;
 
 use Throwable;
 use Psr\Log\LoggerInterface;
+use Prism\Prism\Facades\Prism;
 use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Cocktail;
-use Prism\Prism\Facades\Prism;
 use Illuminate\Support\Facades\Http;
 use Kami\Cocktail\External\Model\Schema;
 use Kami\Cocktail\GenAI\GenAIProviderConfig;
 use Kami\Cocktail\GenAI\CocktailImageHandler;
 use Illuminate\Http\Client\Response as HttpResponse;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Kami\Cocktail\OpenAPI\Schemas\ImageRequest as ImageRequestDTO;
 use Kami\Cocktail\GenAI\DTO\CocktailImageRequest as CocktailImagePromptRequest;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 final readonly class CocktailImageGenerationService
 {

@@ -30,13 +30,13 @@ use Kami\Cocktail\Http\Controllers\CalculatorController;
 use Kami\Cocktail\Http\Controllers\CollectionController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\RecommenderController;
-use Kami\Cocktail\Http\Middleware\AiImageProviderIsConfigured;
 use Kami\Cocktail\Http\Middleware\AiProviderIsConfigured;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
 use Kami\Cocktail\Http\Controllers\SubscriptionController;
 use Kami\Cocktail\Http\Controllers\PriceCategoryController;
 use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
+use Kami\Cocktail\Http\Middleware\AiImageProviderIsConfigured;
 
 /*
 |--------------------------------------------------------------------------
