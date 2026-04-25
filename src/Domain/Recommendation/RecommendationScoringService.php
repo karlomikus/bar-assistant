@@ -18,7 +18,7 @@ final class RecommendationScoringService
     private const float SHELF_COVERAGE_WEIGHT = 0.30;
 
     /** Flat bonus for recently-added cocktails; intentionally small to not override preference signals */
-    private const float RECENCY_BOOST_WEIGHT = 0.10;
+    private const float RECENCY_BOOST_WEIGHT = 0.15;
 
     private const int RECENCY_MONTHS = 3;
 
