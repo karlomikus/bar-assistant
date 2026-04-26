@@ -236,7 +236,7 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::post('/{id}/transfer', [BarController::class, 'transfer'])->middleware(['ability:*']);
         Route::get('/{id}/collections', [CollectionController::class, 'shared'])->middleware(['ability:bars.read']);
         Route::get('/{id}/ingredients', [ShelfController::class, 'barIngredients'])->middleware(['ability:*']);
-        Route::get('/{id}/ingredients/recommend', [ShelfController::class, 'recommendBarIngredients'])->middleware(['ability:bars.read']);
+        Route::get('/{id}/ingredients/recommend', [RecommenderController::class, 'recommendBarIngredients'])->middleware(['ability:bars.read']);
         Route::post('/{id}/ingredients/batch-store', [ShelfController::class, 'batchStoreBarIngredients'])->middleware(['ability:*']);
         Route::post('/{id}/ingredients/batch-delete', [ShelfController::class, 'batchDeleteBarIngredients'])->middleware(['ability:*']);
         Route::get('/{id}/cocktails', [ShelfController::class, 'barCocktails'])->middleware(['ability:bars.read']);

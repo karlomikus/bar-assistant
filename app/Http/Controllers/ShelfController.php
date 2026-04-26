@@ -315,23 +315,4 @@ class ShelfController extends Controller
         return CocktailBasicResource::collection($cocktails->withQueryString());
     }
 
-    #[OAT\Get(path: '/bars/{id}/ingredients/recommend', tags: ['Bars: Shelf'], operationId: 'recommendBarIngredients', description: 'Shows a list of ingredients that will increase total bar shelf cocktails when added to bar shef', summary: 'Recommend bar ingredients', parameters: [
-        new BAO\Parameters\DatabaseIdParameter(),
-    ])]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(BAO\Schemas\IngredientRecommend::class),
-    ])]
-    #[BAO\NotAuthorizedResponse]
-    #[BAO\NotFoundResponse]
-    public function recommendBarIngredients(Request $request, IngredientService $ingredientRepo, int $id): \Illuminate\Http\JsonResponse
-    {
-        $bar = Bar::findOrFail($id);
-        if ($request->user()->cannot('show', $bar)) {
-            abort(403);
-        }
-
-        $possibleIngredients = $ingredientRepo->getIngredientsForPossibleCocktails($bar->id, $bar->shelfIngredients->pluck('ingredient_id')->toArray());
-
-        return response()->json(['data' => $possibleIngredients]);
-    }
 }
