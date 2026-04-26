@@ -204,7 +204,7 @@ final readonly class CocktailService
 
         $newCocktail = $originalCocktail->copyTo(
             barId: new BarId($request->barId),
-            userId: new UserId($request->barId),
+            userId: new UserId($request->userId),
             images: array_map(static fn (int $imageId) => new ImageId($imageId), $request->images),
         );
 

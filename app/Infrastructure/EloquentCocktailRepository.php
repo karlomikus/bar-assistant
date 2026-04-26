@@ -183,6 +183,10 @@ final class EloquentCocktailRepository implements CocktailRepository
             ));
         }
 
+        foreach ($model->tags as $tag) {
+            $cocktail->addTag($tag->name);
+        }
+
         foreach ($model->utensils as $utensil) {
             $cocktail->addUtensil(new UtensilId($utensil->id));
         }
