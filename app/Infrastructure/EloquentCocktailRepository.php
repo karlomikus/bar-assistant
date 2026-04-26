@@ -18,6 +18,7 @@ use BarAssistant\Domain\Cocktail\GlassId;
 use BarAssistant\Domain\Cocktail\Cocktail;
 use BarAssistant\Domain\Cocktail\MethodId;
 use BarAssistant\Domain\Cocktail\PublicId;
+use BarAssistant\Domain\Cocktail\UtensilId;
 use Kami\Cocktail\Models\Cocktail as Model;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use Kami\Cocktail\Models\Image as ModelImage;
@@ -105,7 +106,11 @@ final class EloquentCocktailRepository implements CocktailRepository
             $tagModels[] = $tag->id;
         }
 
-        $model->tags()->attach(array_unique($tagModels));
+        $model->tags()->sync(array_unique($tagModels));
+        $model->utensils()->sync(array_map(
+            static fn (UtensilId $utensilId): int => $utensilId->value,
+            $cocktail->getUtensils(),
+        ));
 
         if (count($cocktail->getImages()) > 0) {
             $imageModels = ModelImage::findOrFail(array_map(fn (ImageId $img): int => $img->value, $cocktail->getImages()));
@@ -176,6 +181,10 @@ final class EloquentCocktailRepository implements CocktailRepository
                 note: $cocktailIngredient->note,
                 substitutes: $substitutes,
             ));
+        }
+
+        foreach ($model->utensils as $utensil) {
+            $cocktail->addUtensil(new UtensilId($utensil->id));
         }
 
         return $cocktail;

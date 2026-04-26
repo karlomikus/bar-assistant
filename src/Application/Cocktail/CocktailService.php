@@ -97,6 +97,10 @@ final readonly class CocktailService
             $cocktail->addImage(new ImageId($imageId));
         }
 
+        foreach ($request->utensils as $utensilId) {
+            $cocktail->addUtensil(new UtensilId($utensilId));
+        }
+
         $cocktail = $this->cocktailRepository->save($cocktail);
 
         return new CocktailResult(
