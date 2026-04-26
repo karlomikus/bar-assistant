@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Cocktail\DTO;
 
-final readonly class CopyCocktailRequest
+final readonly class CopyCocktail
 {
     /**
      * @param int[] $images

@@ -14,9 +14,9 @@ use BarAssistant\Domain\Cocktail\CocktailCollection;
 use BarAssistant\Application\Cocktail\DTO\CollectionResult;
 use BarAssistant\Domain\Cocktail\CocktailCollectionRepository;
 use BarAssistant\Application\Exception\EntityNotFoundException;
-use BarAssistant\Application\Cocktail\DTO\CreateCollectionRequest;
-use BarAssistant\Application\Cocktail\DTO\UpdateCollectionRequest;
-use BarAssistant\Application\Cocktail\DTO\SyncCollectionCocktailsRequest;
+use BarAssistant\Application\Cocktail\DTO\CreateCollection;
+use BarAssistant\Application\Cocktail\DTO\UpdateCollection;
+use BarAssistant\Application\Cocktail\DTO\SyncCollectionCocktails;
 
 final readonly class CollectionService
 {
@@ -25,7 +25,7 @@ final readonly class CollectionService
     ) {
     }
 
-    public function createCollection(CreateCollectionRequest $request): CollectionResult
+    public function createCollection(CreateCollection $request): CollectionResult
     {
         $collection = CocktailCollection::create(
             barId: new BarId($request->barId),
@@ -43,7 +43,7 @@ final readonly class CollectionService
         return CollectionResult::fromCollection($collection);
     }
 
-    public function updateCollection(UpdateCollectionRequest $request): CollectionResult
+    public function updateCollection(UpdateCollection $request): CollectionResult
     {
         $collection = $this->collectionRepository->findById(new CollectionId($request->collectionId));
         if ($collection === null) {
@@ -61,7 +61,7 @@ final readonly class CollectionService
         return CollectionResult::fromCollection($collection);
     }
 
-    public function syncCocktails(SyncCollectionCocktailsRequest $request): CollectionResult
+    public function syncCocktails(SyncCollectionCocktails $request): CollectionResult
     {
         $collection = $this->collectionRepository->findById(new CollectionId($request->collectionId));
         if ($collection === null) {

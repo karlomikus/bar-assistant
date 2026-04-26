@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Cocktail\DTO;
 
-final readonly class CreateCollectionRequest
+final readonly class CreateCollection
 {
     /**
      * @param int[] $cocktailIds

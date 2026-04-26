@@ -16,9 +16,9 @@ use BarAssistant\Application\Cocktail\CollectionService;
 use BarAssistant\Application\Cocktail\DTO\CollectionResult;
 use Tests\Infrastructure\InMemoryCocktailCollectionRepository;
 use BarAssistant\Application\Exception\EntityNotFoundException;
-use BarAssistant\Application\Cocktail\DTO\CreateCollectionRequest;
-use BarAssistant\Application\Cocktail\DTO\UpdateCollectionRequest;
-use BarAssistant\Application\Cocktail\DTO\SyncCollectionCocktailsRequest;
+use BarAssistant\Application\Cocktail\DTO\CreateCollection;
+use BarAssistant\Application\Cocktail\DTO\UpdateCollection;
+use BarAssistant\Application\Cocktail\DTO\SyncCollectionCocktails;
 
 final class CollectionServiceTest extends TestCase
 {
@@ -46,7 +46,7 @@ final class CollectionServiceTest extends TestCase
 
     public function test_creates_collection(): void
     {
-        $result = $this->service->createCollection(new CreateCollectionRequest(
+        $result = $this->service->createCollection(new CreateCollection(
             barId: 10,
             memberId: 50,
             name: 'Summer drinks',
@@ -67,7 +67,7 @@ final class CollectionServiceTest extends TestCase
 
     public function test_updates_collection(): void
     {
-        $result = $this->service->updateCollection(new UpdateCollectionRequest(
+        $result = $this->service->updateCollection(new UpdateCollection(
             collectionId: 1,
             name: 'Updated classics',
             description: 'Updated description',
@@ -82,7 +82,7 @@ final class CollectionServiceTest extends TestCase
 
     public function test_syncs_cocktails_in_collection(): void
     {
-        $result = $this->service->syncCocktails(new SyncCollectionCocktailsRequest(
+        $result = $this->service->syncCocktails(new SyncCollectionCocktails(
             collectionId: 1,
             cocktailIds: [501, 502, 502],
         ));
@@ -92,7 +92,7 @@ final class CollectionServiceTest extends TestCase
 
     public function test_syncs_empty_cocktail_list(): void
     {
-        $result = $this->service->syncCocktails(new SyncCollectionCocktailsRequest(
+        $result = $this->service->syncCocktails(new SyncCollectionCocktails(
             collectionId: 1,
             cocktailIds: [],
         ));
@@ -111,7 +111,7 @@ final class CollectionServiceTest extends TestCase
     {
         $this->expectException(EntityNotFoundException::class);
 
-        $this->service->updateCollection(new UpdateCollectionRequest(
+        $this->service->updateCollection(new UpdateCollection(
             collectionId: 999,
             name: 'Unknown',
         ));
@@ -121,7 +121,7 @@ final class CollectionServiceTest extends TestCase
     {
         $this->expectException(EntityNotFoundException::class);
 
-        $this->service->syncCocktails(new SyncCollectionCocktailsRequest(
+        $this->service->syncCocktails(new SyncCollectionCocktails(
             collectionId: 999,
             cocktailIds: [1],
         ));

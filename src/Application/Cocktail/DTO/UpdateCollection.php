@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Cocktail\DTO;
 
-final readonly class SyncCollectionCocktailsRequest
+final readonly class UpdateCollection
 {
-    /**
-     * @param int[] $cocktailIds
-     */
     public function __construct(
         public int $collectionId,
-        public array $cocktailIds = [],
+        public string $name,
+        public ?string $description = null,
+        public bool $isBarShared = false,
     ) {
     }
 }

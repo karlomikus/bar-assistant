@@ -18,9 +18,9 @@ use Kami\Cocktail\Http\Resources\CollectionResource;
 use Kami\Cocktail\Http\Filters\CollectionQueryFilter;
 use BarAssistant\Application\Cocktail\CollectionService;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
-use BarAssistant\Application\Cocktail\DTO\CreateCollectionRequest;
-use BarAssistant\Application\Cocktail\DTO\UpdateCollectionRequest;
-use BarAssistant\Application\Cocktail\DTO\SyncCollectionCocktailsRequest;
+use BarAssistant\Application\Cocktail\DTO\CreateCollection;
+use BarAssistant\Application\Cocktail\DTO\UpdateCollection;
+use BarAssistant\Application\Cocktail\DTO\SyncCollectionCocktails;
 
 class CollectionController extends Controller
 {
@@ -116,7 +116,7 @@ class CollectionController extends Controller
             '*' => [new ResourceBelongsToBar($barMembership->bar_id, 'cocktails')],
         ])->validate();
 
-        $collectionResult = $collectionService->createCollection(new CreateCollectionRequest(
+        $collectionResult = $collectionService->createCollection(new CreateCollection(
             barId: bar()->id,
             memberId: $barMembership->id,
             name: $request->input('name'),
@@ -147,7 +147,7 @@ class CollectionController extends Controller
             abort(403);
         }
 
-        $collectionService->updateCollection(new UpdateCollectionRequest(
+        $collectionService->updateCollection(new UpdateCollection(
             collectionId: $id,
             name: $request->input('name'),
             description: $request->input('description'),
@@ -184,7 +184,7 @@ class CollectionController extends Controller
         ])->validate();
 
         try {
-            $collectionService->syncCocktails(new SyncCollectionCocktailsRequest(
+            $collectionService->syncCocktails(new SyncCollectionCocktails(
                 collectionId: $id,
                 cocktailIds: $cocktailIds,
             ));

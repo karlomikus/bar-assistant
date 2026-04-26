@@ -33,7 +33,7 @@ use BarAssistant\Application\Cocktail\DTO\CreateCocktail;
 use BarAssistant\Application\Cocktail\DTO\UpdateCocktail;
 use Kami\Cocktail\External\Model\Schema as SchemaExternal;
 use BarAssistant\Application\Cocktail\DTO\CocktailIngredient;
-use BarAssistant\Application\Cocktail\DTO\CopyCocktailRequest;
+use BarAssistant\Application\Cocktail\DTO\CopyCocktail;
 use Kami\Cocktail\OpenAPI\Schemas\CocktailRequest as CocktailDTO;
 use BarAssistant\Application\Cocktail\DTO\ForceCocktailVisibility;
 use BarAssistant\Application\Cocktail\DTO\ToggleCocktailVisibility;
@@ -504,7 +504,7 @@ class CocktailController extends Controller
             }
         }
 
-        $newCocktailResult = $cocktailService->copyCocktail(new CopyCocktailRequest(
+        $newCocktailResult = $cocktailService->copyCocktail(new CopyCocktail(
             barId: bar()->id,
             cocktailId: $cocktail->id,
             userId: $request->user()->id,

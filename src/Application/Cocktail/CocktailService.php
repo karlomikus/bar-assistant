@@ -25,7 +25,7 @@ use BarAssistant\Domain\Cocktail\CocktailRepository;
 use BarAssistant\Application\Cocktail\DTO\CocktailResult;
 use BarAssistant\Application\Cocktail\DTO\CreateCocktail;
 use BarAssistant\Application\Cocktail\DTO\UpdateCocktail;
-use BarAssistant\Application\Cocktail\DTO\CopyCocktailRequest;
+use BarAssistant\Application\Cocktail\DTO\CopyCocktail;
 use BarAssistant\Domain\Cocktail\CocktailIngredientSubstitute;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Cocktail\DTO\ForceCocktailVisibility;
@@ -191,7 +191,7 @@ final readonly class CocktailService
         $this->cocktailRepository->save($cocktail);
     }
 
-    public function copyCocktail(CopyCocktailRequest $request): CocktailResult
+    public function copyCocktail(CopyCocktail $request): CocktailResult
     {
         $originalCocktail = $this->cocktailRepository->findById(new CocktailId($request->cocktailId));
         if ($originalCocktail === null) {
