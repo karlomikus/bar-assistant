@@ -12,12 +12,12 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Http;
 use Kami\Cocktail\External\Model\Schema;
 use Kami\Cocktail\GenAI\GenAIProviderConfig;
+use Prism\Prism\ValueObjects\GeneratedImage;
 use Kami\Cocktail\GenAI\CocktailImageHandler;
 use Illuminate\Http\Client\Response as HttpResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Kami\Cocktail\OpenAPI\Schemas\ImageRequest as ImageRequestDTO;
 use Kami\Cocktail\GenAI\DTO\CocktailImageRequest as CocktailImagePromptRequest;
-use Prism\Prism\ValueObjects\GeneratedImage;
 
 final readonly class CocktailImageGenerationService
 {
