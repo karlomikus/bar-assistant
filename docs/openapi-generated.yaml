@@ -11707,6 +11707,10 @@ components:
           description: 'Whether AI features are enabled'
           type: boolean
           example: true
+        is_ai_image_enabled:
+          description: 'Whether image AI features are enabled'
+          type: boolean
+          example: true
       type: object
     ShoppingListRequest:
       required:
