@@ -44,7 +44,7 @@ final readonly class CocktailImageGenerationService
                 ->using($providerConfiguration->provider, $providerConfiguration->model)
                 ->withPrompt($promptConfiguration->prompt)
                 ->withClientOptions($providerConfiguration->getClientOptions())
-                ->withProviderOptions($providerConfiguration->getProviderOptions())
+                ->withProviderOptions([...$providerConfiguration->getProviderOptions(), 'size' => '1024x1024'])
                 ->generate();
         } catch (Throwable $e) {
             $this->log->error('[LLM] generateCocktailImage: Image generation error', [$e->getMessage()]);

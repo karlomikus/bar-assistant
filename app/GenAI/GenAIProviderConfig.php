@@ -25,7 +25,7 @@ final readonly class GenAIProviderConfig
     {
         return self::fromPath(
             'bar-assistant.ai.image',
-            timeout: 180,
+            timeout: 60 * 5,
         );
     }
 
