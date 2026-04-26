@@ -6,6 +6,7 @@ namespace Tests\Unit\Domain\Recommendation;
 
 use PHPUnit\Framework\TestCase;
 use BarAssistant\Domain\Cocktail\CocktailId;
+use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Recommendation\WeightedTag;
 use BarAssistant\Domain\Recommendation\WeightedIngredient;
@@ -42,8 +43,8 @@ final class RecommendationScoringServiceTest extends TestCase
             favoriteTags: [new WeightedTag('Sour', 1.0), new WeightedTag('Citrus', 0.5)],
             negativeTags: [],
             favoriteIngredients: [
-                new WeightedIngredient($gin, 1.0),
-                new WeightedIngredient($lemon, 0.8),
+                new WeightedIngredient($gin, Name::fromString('Gin'), 1.0),
+                new WeightedIngredient($lemon, Name::fromString('Lemon'), 0.8),
             ],
             barShelfIngredientIds: [$gin, $lemon],
             cocktails: [$cocktailA, $cocktailB],
