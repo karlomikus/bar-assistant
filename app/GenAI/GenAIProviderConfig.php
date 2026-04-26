@@ -8,21 +8,41 @@ use Prism\Prism\Enums\Provider;
 
 final readonly class GenAIProviderConfig
 {
+    /**
+     * @param array<string, mixed> $providerOptions
+     */
     public function __construct(
         public Provider $provider,
         public string $model,
         public int $timeout,
+        private array $providerOptions = [],
     ) {
     }
 
     public static function fromConfig(): self
     {
-        $provider = Provider::tryFrom(config('bar-assistant.ai.provider'));
+        return self::fromPath('bar-assistant.ai');
+    }
+
+    public static function fromImageConfig(): self
+    {
+        return self::fromPath(
+            'bar-assistant.ai.image',
+            timeout: 60 * 5,
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $providerOptions
+     */
+    private static function fromPath(string $configPath, array $providerOptions = [], ?int $timeout = null): self
+    {
+        $provider = Provider::tryFrom(config($configPath . '.provider'));
         if (empty($provider)) {
             throw new \Exception('AI provider not configured');
         }
 
-        $model = config('bar-assistant.ai.model');
+        $model = config($configPath . '.model');
         if (empty($model)) {
             throw new \Exception('AI model not configured');
         }
@@ -30,7 +50,8 @@ final readonly class GenAIProviderConfig
         return new self(
             provider: $provider,
             model: $model,
-            timeout: (int) config('bar-assistant.ai.timeout'),
+            timeout: $timeout ?? (int) config($configPath . '.timeout'),
+            providerOptions: $providerOptions,
         );
     }
 
@@ -40,5 +61,13 @@ final readonly class GenAIProviderConfig
     public function getClientOptions(): array
     {
         return ['timeout' => $this->timeout];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getProviderOptions(): array
+    {
+        return $this->providerOptions;
     }
 }
