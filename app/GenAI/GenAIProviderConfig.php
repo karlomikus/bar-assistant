@@ -8,8 +8,6 @@ use Prism\Prism\Enums\Provider;
 
 final readonly class GenAIProviderConfig
 {
-    private const DEFAULT_IMAGE_TIMEOUT = 60;
-
     public function __construct(
         public Provider $provider,
         public string $model,
@@ -27,7 +25,7 @@ final readonly class GenAIProviderConfig
     {
         return self::fromPath(
             'bar-assistant.ai.image',
-            timeout: self::DEFAULT_IMAGE_TIMEOUT,
+            timeout: 180,
         );
     }
 
