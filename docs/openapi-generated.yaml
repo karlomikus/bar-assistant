@@ -3471,6 +3471,58 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/GeneratedCocktailFromTextResource' }
                 type: object
+  /generate/cocktail-image:
+    post:
+      tags:
+        - Generation
+      summary: 'Cocktail image'
+      description: 'Generate a cocktail image using an image model and return it as an unassigned image.'
+      operationId: generateCocktailImage
+      parameters:
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - cocktail_id
+              properties:
+                cocktail_id:
+                  description: 'Id or slug of the cocktail to generate an image for'
+                  type: string
+                  example: negroni
+                style:
+                  description: 'Optional visual style hint for the generated image'
+                  type: [string, 'null']
+                  example: 'editorial studio photo'
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/Image' }
+                type: object
   /glasses:
     get:
       tags:
@@ -11653,6 +11705,10 @@ components:
           example: true
         is_ai_enabled:
           description: 'Whether AI features are enabled'
+          type: boolean
+          example: true
+        is_ai_image_enabled:
+          description: 'Whether image AI features are enabled'
           type: boolean
           example: true
       type: object

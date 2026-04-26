@@ -42,6 +42,7 @@ class ServerController extends Controller
                 'search_version' => $searchVersion,
                 'is_password_login_enabled' => config('bar-assistant.enable_password_login') === true,
                 'is_ai_enabled' => config('bar-assistant.ai.provider') !== null,
+                'is_ai_image_enabled' => config('bar-assistant.ai.image.provider') !== null,
             ]
         ]);
     }

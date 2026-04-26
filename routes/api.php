@@ -36,6 +36,7 @@ use Kami\Cocktail\Http\Controllers\SubscriptionController;
 use Kami\Cocktail\Http\Controllers\PriceCategoryController;
 use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
+use Kami\Cocktail\Http\Middleware\AiImageProviderIsConfigured;
 
 /*
 |--------------------------------------------------------------------------
@@ -293,10 +294,14 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/cocktails', [RecommenderController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);
     });
 
-    Route::prefix('generate')->middleware(['ability:*', EnsureRequestHasBarQuery::class, AiProviderIsConfigured::class])->group(function () {
-        Route::post('/ingredient', [GenerateController::class, 'completeIngredient']);
-        Route::post('/cocktail-tags', [GenerateController::class, 'completeCocktailTags']);
-        Route::post('/cocktail-recipe-from-text', [GenerateController::class, 'cocktailRecipeFromText']);
+    Route::prefix('generate')->middleware(EnsureRequestHasBarQuery::class)->group(function () {
+        Route::middleware(['ability:*', AiProviderIsConfigured::class])->group(function () {
+            Route::post('/ingredient', [GenerateController::class, 'completeIngredient']);
+            Route::post('/cocktail-tags', [GenerateController::class, 'completeCocktailTags']);
+            Route::post('/cocktail-recipe-from-text', [GenerateController::class, 'cocktailRecipeFromText']);
+            Route::post('/cocktail-image', [GenerateController::class, 'generateCocktailImage'])
+                ->middleware(AiImageProviderIsConfigured::class);
+        });
     });
 });
 

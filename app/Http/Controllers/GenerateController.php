@@ -14,6 +14,7 @@ use Kami\Cocktail\External\Model\Schema;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\GenAI\CocktailTagsHandler;
 use Kami\Cocktail\GenAI\GenAIProviderConfig;
+use Kami\Cocktail\Http\Resources\ImageResource;
 use Kami\Cocktail\GenAI\DTO\CocktailTagsRequest;
 use Kami\Cocktail\GenAI\CompleteIngredientHandler;
 use Kami\Cocktail\GenAI\CocktailRecipeTextImportHandler;
@@ -21,7 +22,9 @@ use Kami\Cocktail\Http\Requests\CompleteIngredientRequest;
 use Kami\Cocktail\GenAI\DTO\CocktailRecipeTextImportRequest;
 use Kami\Cocktail\Http\Requests\CompleteCocktailTagsRequest;
 use Prism\Prism\Exceptions\PrismStructuredDecodingException;
+use Kami\Cocktail\Http\Requests\GenerateCocktailImageRequest;
 use Kami\Cocktail\Http\Requests\CocktailRecipeFromTextRequest;
+use Kami\Cocktail\Services\Image\CocktailImageGenerationService;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedIngredientResource;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedCocktailTagsResource;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedCocktailFromTextResource;
@@ -162,5 +165,51 @@ class GenerateController extends Controller
         }
 
         return new GeneratedCocktailFromTextResource($response->structured);
+    }
+
+    #[OAT\Post(path: '/generate/cocktail-image', tags: ['Generation'], operationId: 'generateCocktailImage', description: 'Generate a cocktail image using an image model and return it as an unassigned image.', summary: 'Cocktail image', parameters: [
+        new BAO\Parameters\BarIdHeaderParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(
+                type: 'object',
+                properties: [
+                    new OAT\Property(property: 'cocktail_id', type: 'string', example: 'negroni', description: 'Id or slug of the cocktail to generate an image for'),
+                    new OAT\Property(property: 'style', type: 'string', nullable: true, example: 'editorial studio photo', description: 'Optional visual style hint for the generated image'),
+                ],
+                required: ['cocktail_id'],
+            ),
+        ]
+    ))]
+    #[BAO\SuccessfulResponse(content: [
+        new BAO\WrapObjectWithData(ImageResource::class),
+    ])]
+    public function generateCocktailImage(GenerateCocktailImageRequest $request, CocktailImageGenerationService $cocktailImageGenerationService): ImageResource
+    {
+        $cocktailId = $request->string('cocktail_id')->toString();
+
+        $cocktail = Cocktail::query()
+            ->where('bar_id', bar()->id)
+            ->where(function ($query) use ($cocktailId) {
+                $query->where('slug', $cocktailId)
+                    ->orWhere('id', $cocktailId);
+            })
+            ->with('glass')
+            ->firstOrFail();
+
+        if ($request->user()->cannot('show', $cocktail)) {
+            abort(403);
+        }
+
+        $image = $cocktailImageGenerationService->generateImage(
+            cocktail: $cocktail,
+            userId: $request->user()->id,
+            style: $request->input('style'),
+        );
+
+        $cocktail->attachImages(collect([$image]));
+
+        return new ImageResource($image);
     }
 }

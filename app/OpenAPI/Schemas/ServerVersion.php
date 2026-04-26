@@ -6,7 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use OpenApi\Attributes as OAT;
 
-#[OAT\Schema(required: ['version', 'type', 'search_host', 'search_version', 'latest_version', 'is_latest', 'is_password_login_enabled', 'is_ai_enabled'])]
+#[OAT\Schema(required: ['version', 'type', 'search_host', 'search_version', 'latest_version', 'is_latest', 'is_password_login_enabled', 'is_ai_enabled', 'is_ai_image_enabled'])]
 class ServerVersion
 {
     #[OAT\Property(example: '1.0.0', description: 'Version of the server')]
@@ -25,4 +25,6 @@ class ServerVersion
     public bool $isPasswordLoginEnabled;
     #[OAT\Property(property: 'is_ai_enabled', example: true, description: 'Whether AI features are enabled')]
     public bool $isAiEnabled;
+    #[OAT\Property(property: 'is_ai_image_enabled', example: true, description: 'Whether image AI features are enabled')]
+    public bool $isAiImageEnabled;
 }

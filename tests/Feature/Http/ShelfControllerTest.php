@@ -10,6 +10,7 @@ use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
+use Kami\Cocktail\Models\UserShoppingList;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -93,6 +94,47 @@ class ShelfControllerTest extends TestCase
 
         $response->assertNoContent();
         $this->assertDatabaseMissing('user_ingredients', ['bar_membership_id' => $membership->id]);
+    }
+
+    public function test_add_multiple_ingredients_to_shelf_does_not_delete_other_user_shopping_list_items(): void
+    {
+        $actorMembership = $this->setupBarMembership();
+        $peerMembership = $this->setupBarMembership();
+
+        $peerMembership->bar_id = $actorMembership->bar_id;
+        $peerMembership->save();
+
+        $this->actingAs($actorMembership->user);
+
+        $ingredient = Ingredient::factory()
+            ->recycle($actorMembership->bar)
+            ->create();
+
+        UserShoppingList::factory()->create([
+            'bar_membership_id' => $actorMembership->id,
+            'ingredient_id' => $ingredient->id,
+        ]);
+
+        UserShoppingList::factory()->create([
+            'bar_membership_id' => $peerMembership->id,
+            'ingredient_id' => $ingredient->id,
+        ]);
+
+        $response = $this->postJson('/api/users/'. $actorMembership->user_id .'/ingredients/batch-store', [
+            'ingredients' => [$ingredient->id],
+        ], ['Bar-Assistant-Bar-Id' => $actorMembership->bar_id]);
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('user_shopping_lists', [
+            'bar_membership_id' => $actorMembership->id,
+            'ingredient_id' => $ingredient->id,
+        ]);
+
+        $this->assertDatabaseHas('user_shopping_lists', [
+            'bar_membership_id' => $peerMembership->id,
+            'ingredient_id' => $ingredient->id,
+        ]);
     }
 
     public function test_delete_multiple_ingredients_from_shelf_response(): void

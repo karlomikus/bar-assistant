@@ -17,7 +17,6 @@ use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
-use Kami\Cocktail\Models\UserShoppingList;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -138,8 +137,9 @@ class ShelfController extends Controller
             ->whereIn('id', $request->post('ingredients'))
             ->pluck('id');
 
-        // Let's remove ingredients from shopping list since they are on our shelf now
-        UserShoppingList::whereIn('ingredient_id', $ingredients)->delete();
+        $barMembership->shoppingListIngredients()
+            ->whereIn('ingredient_id', $ingredients)
+            ->delete();
 
         $models = [];
         foreach ($ingredients as $dbIngredientId) {

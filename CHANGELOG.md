@@ -1,3 +1,25 @@
+# v5.15.0
+## New
+- Added `/generate/cocktail-image`, used to generate cocktail images with AI
+    - Currently only supports OpenAI and Gemini providers
+    - Added `GEN_AI_IMAGE_PROVIDER` and `GEN_AI_IMAGE_MODEL` env variables
+    - Examples:
+        ```
+        # OpenAI Example
+        GEN_AI_IMAGE_PROVIDER=openai
+        GEN_AI_IMAGE_MODEL=gpt-image-1
+        OPENAI_API_KEY=sk-your-key
+
+        # Gemini Example
+        GEN_AI_IMAGE_PROVIDER=gemini
+        GEN_AI_IMAGE_MODEL=gemini-3.1-flash-image-preview
+        GEMINI_API_KEY=your-key
+        ```
+- Added `is_ai_image_enabled` to server status endpoint
+
+## Fixes
+- Fixed adding ingredients to shelf removing matching shopping list items outside the current bar
+
 # v5.14.0
 ## Changes
 - Updated AI prompts
