@@ -3,6 +3,7 @@
 - Added `/generate/cocktail-image`, used to generate cocktail images with AI
     - Returns generated image as an unassigned image resource
     - Supports optional `style` prompt hints
+    - Currently only supports OpenAI and Gemini providers
     - Added `GEN_AI_IMAGE_PROVIDER` and `GEN_AI_IMAGE_MODEL` env variables
     - Example using OpenAI:
         ```

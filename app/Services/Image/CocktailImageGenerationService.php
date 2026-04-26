@@ -26,7 +26,7 @@ final readonly class CocktailImageGenerationService
     ) {
     }
 
-    public function generateUnassignedImage(Cocktail $cocktail, int $userId, ?string $style = null): Image
+    public function generateImage(Cocktail $cocktail, int $userId, ?string $style = null): Image
     {
         $providerConfiguration = GenAIProviderConfig::fromImageConfig();
         $promptConfiguration = new CocktailImageHandler(new CocktailImagePromptRequest(
@@ -62,7 +62,7 @@ final readonly class CocktailImageGenerationService
             new ImageRequestDTO(
                 image: $imageContents,
                 sort: 1,
-                copyright: 'AI-generated',
+                copyright: 'AI (' . $providerConfiguration->provider->name . ')',
             ),
         ], $userId);
 

@@ -202,11 +202,13 @@ class GenerateController extends Controller
             abort(403);
         }
 
-        $image = $cocktailImageGenerationService->generateUnassignedImage(
+        $image = $cocktailImageGenerationService->generateImage(
             cocktail: $cocktail,
             userId: $request->user()->id,
             style: $request->input('style'),
         );
+
+        $cocktail->attachImages(collect([$image]));
 
         return new ImageResource($image);
     }
