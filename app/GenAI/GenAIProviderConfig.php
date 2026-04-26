@@ -8,6 +8,9 @@ use Prism\Prism\Enums\Provider;
 
 final readonly class GenAIProviderConfig
 {
+    /**
+     * @param array<string, mixed> $providerOptions
+     */
     public function __construct(
         public Provider $provider,
         public string $model,
@@ -29,6 +32,9 @@ final readonly class GenAIProviderConfig
         );
     }
 
+    /**
+     * @param array<string, mixed> $providerOptions
+     */
     private static function fromPath(string $configPath, array $providerOptions = [], ?int $timeout = null): self
     {
         $provider = Provider::tryFrom(config($configPath . '.provider'));

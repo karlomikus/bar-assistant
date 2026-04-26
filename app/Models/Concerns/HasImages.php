@@ -6,8 +6,8 @@ namespace Kami\Cocktail\Models\Concerns;
 
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Image;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasImages

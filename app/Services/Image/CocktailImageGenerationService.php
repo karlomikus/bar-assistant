@@ -17,6 +17,7 @@ use Illuminate\Http\Client\Response as HttpResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Kami\Cocktail\OpenAPI\Schemas\ImageRequest as ImageRequestDTO;
 use Kami\Cocktail\GenAI\DTO\CocktailImageRequest as CocktailImagePromptRequest;
+use Prism\Prism\ValueObjects\GeneratedImage;
 
 final readonly class CocktailImageGenerationService
 {
@@ -76,7 +77,7 @@ final readonly class CocktailImageGenerationService
         return $image;
     }
 
-    private function getGeneratedImageContents(object $generatedImage, int $timeout): string
+    private function getGeneratedImageContents(GeneratedImage $generatedImage, int $timeout): string
     {
         if ($generatedImage->hasBase64()) {
             $decoded = base64_decode((string) $generatedImage->base64, true);
@@ -95,7 +96,7 @@ final readonly class CocktailImageGenerationService
                 throw new HttpException(502, 'Failed to download generated image from provider.');
             }
 
-            $contentType = (string) $response->header('Content-Type', '');
+            $contentType = (string) $response->header('Content-Type');
             if (!str_starts_with(strtolower($contentType), 'image/')) {
                 throw new HttpException(502, 'Provider returned non-image content for generated image.');
             }
