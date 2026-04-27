@@ -23,6 +23,8 @@ use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Bar\IngredientInventoryItem;
 use BarAssistant\Domain\Bar\IngredientInventoryStatus;
+use BarAssistant\Domain\Image\ImageId;
+use Kami\Cocktail\Models\Image as ModelImage;
 
 final class EloquentBarRepository implements BarRepository
 {
@@ -93,6 +95,11 @@ final class EloquentBarRepository implements BarRepository
 
         if (count($newBarIngredients) > 0) {
             $model->shelfIngredients()->saveMany($newBarIngredients);
+        }
+
+        if (count($bar->getImages()) > 0) {
+            $imageModels = ModelImage::findOrFail(array_map(fn (ImageId $img): int => $img->value, $bar->getImages()));
+            $model->attachImages($imageModels);
         }
 
         return self::map($model);

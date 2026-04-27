@@ -154,14 +154,12 @@ final class IngredientHierarchyManagerTest extends TestCase
 
     private function node(BarId $barId, int $id, ?IngredientHierarchyNode $parent, string $path): IngredientHierarchyNode
     {
-        $node = IngredientHierarchyNode::fromPersistence(
+        return IngredientHierarchyNode::fromPersistence(
             barId: $barId,
             id: new IngredientId($id),
             parentId: $parent?->getId(),
             materializedPath: MaterializedPath::fromString($path),
         );
-
-        return $node;
     }
 
     private function createRepositoryWithTree(): InMemoryIngredientHierarchyRepository

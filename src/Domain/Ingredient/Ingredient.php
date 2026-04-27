@@ -121,26 +121,6 @@ final class Ingredient implements Identity
         return $ingredient;
     }
 
-    private static function guardHierarchyState(?IngredientId $parentIngredientId, MaterializedPath $materializedPath): void
-    {
-        if ($parentIngredientId === null) {
-            if (!$materializedPath->isRoot()) {
-                throw new DomainException('Root ingredient cannot have a materialized path');
-            }
-
-            return;
-        }
-
-        if ($materializedPath->isRoot()) {
-            throw new DomainException('Child ingredient must have a materialized path');
-        }
-
-        $pathParentId = $materializedPath->getParentId();
-        if ($pathParentId === null || !$pathParentId->equals($parentIngredientId)) {
-            throw new DomainException('Parent ingredient ID must match materialized path');
-        }
-    }
-
     /**
      * Bar identifier
      */
@@ -398,5 +378,25 @@ final class Ingredient implements Identity
     public function getUnits(): ?Unit
     {
         return $this->units;
+    }
+
+    private static function guardHierarchyState(?IngredientId $parentIngredientId, MaterializedPath $materializedPath): void
+    {
+        if ($parentIngredientId === null) {
+            if (!$materializedPath->isRoot()) {
+                throw new DomainException('Root ingredient cannot have a materialized path');
+            }
+
+            return;
+        }
+
+        if ($materializedPath->isRoot()) {
+            throw new DomainException('Child ingredient must have a materialized path');
+        }
+
+        $pathParentId = $materializedPath->getParentId();
+        if ($pathParentId === null || !$pathParentId->equals($parentIngredientId)) {
+            throw new DomainException('Parent ingredient ID must match materialized path');
+        }
     }
 }
