@@ -35,7 +35,7 @@ class ImageController extends Controller
     #[BAO\NotFoundResponse]
     public function index(Request $request): JsonResource
     {
-        $images = Image::where('created_user_id', $request->user()->id)->orderBy('created_at', 'desc')->paginate($request->get('per_page', 100));
+        $images = Image::where('created_user_id', $request->user()->id)->orderBy('created_at', 'desc')->paginate($request->input('per_page', 100));
 
         return ImageResource::collection($images->withQueryString());
     }

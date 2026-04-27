@@ -1,0 +1,197 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit\Application\Bar;
+
+use PHPUnit\Framework\TestCase;
+use BarAssistant\Domain\Bar\BarId;
+use BarAssistant\Domain\Bar\Member;
+use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Bar\MemberId;
+use BarAssistant\Domain\Bar\MemberRole;
+use Tests\Infrastructure\InMemoryMemberRepository;
+use BarAssistant\Application\Bar\MemberService;
+use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
+use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
+use BarAssistant\Application\Bar\DTO\ChangeMemberRoleRequest;
+use BarAssistant\Application\Exception\EntityNotFoundException;
+use BarAssistant\Application\Bar\DTO\UpdateMemberDetailsRequest;
+use BarAssistant\Application\Bar\DTO\MemberInventoryStockChangeRequest;
+
+final class MemberServiceTest extends TestCase
+{
+    private InMemoryMemberRepository $memberRepository;
+    private MemberService $service;
+
+    protected function setUp(): void
+    {
+        $this->memberRepository = new InMemoryMemberRepository([
+            1 => Member::create(
+                userId: new UserId(10),
+                barId: new BarId(1),
+                role: MemberRole::Admin,
+            )->setId(new MemberId(1)),
+            2 => Member::create(
+                userId: new UserId(11),
+                barId: new BarId(1),
+                role: MemberRole::General,
+            )->setId(new MemberId(2)),
+        ]);
+
+        $this->service = new MemberService($this->memberRepository);
+    }
+
+    public function test_add_member_to_bar_creates_and_persists_member(): void
+    {
+        $member = $this->service->addMemberToBar(new CreateMemberRequest(
+            userId: 20,
+            barId: 1,
+            roleId: 2,
+        ));
+
+        $this->assertNotNull($member->getId());
+        $this->assertSame(20, $member->getUserId()->value);
+        $this->assertSame(1, $member->getBarId()->value);
+        $this->assertSame(MemberRole::Moderator, $member->getRole());
+
+        $persistedMember = $this->memberRepository->findUserInBar(new UserId(20), new BarId(1));
+        $this->assertNotNull($persistedMember);
+        $this->assertSame($member, $persistedMember);
+    }
+
+    public function test_add_member_to_bar_rejects_existing_membership(): void
+    {
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('User is already a member of this bar');
+
+        $this->service->addMemberToBar(new CreateMemberRequest(
+            userId: 10,
+            barId: 1,
+            roleId: 1,
+        ));
+    }
+
+    public function test_remove_user_membership_from_bar_deletes_member(): void
+    {
+        $this->service->removeUserMembershipFromBar(new RemoveMemberRequest(
+            userId: 10,
+            barId: 1,
+        ));
+
+        $member = $this->memberRepository->findUserInBar(new UserId(10), new BarId(1));
+        $this->assertNull($member);
+    }
+
+    public function test_remove_user_membership_from_bar_throws_when_missing(): void
+    {
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('Member not found');
+
+        $this->service->removeUserMembershipFromBar(new RemoveMemberRequest(
+            userId: 999,
+            barId: 1,
+        ));
+    }
+
+    public function test_put_multiple_ingredients_in_stock_updates_inventory(): void
+    {
+        $member = $this->memberRepository->findById(new MemberId(1));
+        $this->assertNotNull($member);
+        $member->addIngredientToShoppingList(new IngredientId(100), 750);
+
+        $this->service->putMultipleIngredientsInStock(new MemberInventoryStockChangeRequest(
+            memberId: 1,
+            ingredientIds: [100, 101],
+        ));
+
+        $updatedMember = $this->memberRepository->findById(new MemberId(1));
+        $this->assertNotNull($updatedMember);
+        $this->assertCount(2, $updatedMember->getIngredientInventory());
+        $this->assertFalse($updatedMember->isIngredientOnShoppingList(new IngredientId(100)));
+        $this->assertSame(
+            [100, 101],
+            array_values(array_map(
+                static fn ($item): int => $item->ingredientId->value,
+                $updatedMember->getIngredientInventory(),
+            )),
+        );
+    }
+
+    public function test_put_multiple_ingredients_in_stock_throws_when_member_missing(): void
+    {
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('The member was not found');
+
+        $this->service->putMultipleIngredientsInStock(new MemberInventoryStockChangeRequest(
+            memberId: 999,
+            ingredientIds: [100],
+        ));
+    }
+
+    public function test_remove_multiple_ingredients_from_stock_removes_only_requested_items(): void
+    {
+        $member = $this->memberRepository->findById(new MemberId(1));
+        $this->assertNotNull($member);
+        $member->putIngredientInInventory(new IngredientId(100), \BarAssistant\Domain\Bar\IngredientInventoryStatus::InStock);
+        $member->putIngredientInInventory(new IngredientId(101), \BarAssistant\Domain\Bar\IngredientInventoryStatus::InStock);
+        $member->putIngredientInInventory(new IngredientId(102), \BarAssistant\Domain\Bar\IngredientInventoryStatus::InStock);
+
+        $this->service->removeMultipleIngredientsFromStock(new MemberInventoryStockChangeRequest(
+            memberId: 1,
+            ingredientIds: [100, 102],
+        ));
+
+        $updatedMember = $this->memberRepository->findById(new MemberId(1));
+        $this->assertNotNull($updatedMember);
+        $this->assertCount(1, $updatedMember->getIngredientInventory());
+        $this->assertSame(101, $updatedMember->getIngredientInventory()[0]->ingredientId->value);
+    }
+
+    public function test_change_member_role_updates_existing_member(): void
+    {
+        $this->service->changeMemberRole(new ChangeMemberRoleRequest(
+            memberId: 2,
+            roleId: 1,
+        ));
+
+        $member = $this->memberRepository->findById(new MemberId(2));
+        $this->assertNotNull($member);
+        $this->assertSame(MemberRole::Admin, $member->getRole());
+    }
+
+    public function test_change_member_role_throws_when_member_missing(): void
+    {
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('The member was not found');
+
+        $this->service->changeMemberRole(new ChangeMemberRoleRequest(
+            memberId: 999,
+            roleId: 1,
+        ));
+    }
+
+    public function test_update_member_details_updates_inventory_sharing_flag(): void
+    {
+        $this->service->updateMemberDetails(new UpdateMemberDetailsRequest(
+            memberId: 2,
+            isInventorySharedWithBar: true,
+        ));
+
+        $member = $this->memberRepository->findById(new MemberId(2));
+        $this->assertNotNull($member);
+        $this->assertTrue($member->isInventorySharedWithBar());
+    }
+
+    public function test_update_member_details_throws_when_member_missing(): void
+    {
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('The member was not found');
+
+        $this->service->updateMemberDetails(new UpdateMemberDetailsRequest(
+            memberId: 999,
+            isInventorySharedWithBar: true,
+        ));
+    }
+}
