@@ -13,8 +13,6 @@ use Kami\Cocktail\Http\Requests\UserRequest;
 use Kami\Cocktail\Http\Resources\UserResource;
 use BarAssistant\Application\Bar\MemberService;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\OpenAPI\Schemas\RegisterRequest;
-use Kami\Cocktail\Services\Auth\RegisterUserService;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
 use BarAssistant\Application\Bar\DTO\ChangeMemberRoleRequest;
@@ -86,7 +84,7 @@ class MemberController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(RegisterUserService $registerService, MemberService $memberService, UserRequest $request): Response
+    public function store(MemberService $memberService, UserRequest $request): Response
     {
         if ($request->user()->cannot('create', User::class)) {
             abort(403);
@@ -97,7 +95,7 @@ class MemberController extends Controller
 
         $user = User::where('email', $email)->first();
         if ($user === null) {
-            $user = $registerService->register(RegisterRequest::fromIlluminateRequest($request));
+            abort(404);
         }
 
         $memberService->addMemberToBar(new CreateMemberRequest(userId: $user->id, barId: bar()->id, roleId: $roleId));
