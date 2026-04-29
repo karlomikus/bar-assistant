@@ -77,10 +77,9 @@ class ImportController extends Controller
                 new OAT\Property(property: 'schema_version', type: 'string', example: 'schema4'),
                 new OAT\Property(property: 'schema', ref: Schema::SCHEMA_URL),
                 new OAT\Property(property: 'scraper_meta', type: 'array', items: new OAT\Items(type: 'object', properties: [
-                    new OAT\Property(property: '_id', type: 'string'),
+                    new OAT\Property(property: 'ingredient_name', type: 'string'),
                     new OAT\Property(property: 'source', type: 'string'),
-                    new OAT\Property(property: 'html_content', type: 'string', nullable: true, description: 'The HTML content of the scraped page, if available.'),
-                ], required: ['_id', 'source'])),
+                ], required: ['ingredient_name', 'source'])),
             ], required: ['schema_version', 'schema', 'scraper_meta']),
         ], required: ['data']),
     ])]
