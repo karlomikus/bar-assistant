@@ -8,21 +8,16 @@ use Brick\Money\Currency;
 use Symfony\Component\Uid\Ulid;
 use BarAssistant\Domain\Bar\Bar;
 use BarAssistant\Domain\Bar\BarId;
-use Illuminate\Support\Facades\DB;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\Slug;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Bar\BarStatus;
 use BarAssistant\Domain\Common\Authors;
-use Kami\Cocktail\Models\BarIngredient;
 use BarAssistant\Domain\Bar\BarSettings;
 use Kami\Cocktail\Models\Bar as ModelBar;
 use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\Bar\IngredientInventoryItem;
-use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 use BarAssistant\Domain\Image\ImageId;
 use Kami\Cocktail\Models\Image as ModelImage;
 
@@ -41,12 +36,12 @@ final class EloquentBarRepository implements BarRepository
             BarStatus::Provisioning => 'provisioning',
             BarStatus::Deactivated => 'deactivated',
         };
-        $model->created_at = $bar->getRecordTimestamps()->getCreatedAt();
+        $model->created_at = $bar->getRecordTimestamps()->getCreatedAt()->format('Y-m-d H:i:s');
         $model->created_user_id = $bar->getAuthors()->getCreatedBy()->value;
         if ($bar->getRecordTimestamps()->wasUpdated()) {
-            $model->updated_at = $bar->getRecordTimestamps()->getUpdatedAt();
+            $model->updated_at = $bar->getRecordTimestamps()->getUpdatedAt()?->format('Y-m-d H:i:s');
         }
-        if ($bar->getAuthors()->isUpdated()) {
+        if ($bar->getAuthors()->isUpdated() && $bar->getAuthors()->getUpdatedBy() !== null) {
             $model->updated_user_id = $bar->getAuthors()->getUpdatedBy()->value;
         }
 
@@ -66,36 +61,6 @@ final class EloquentBarRepository implements BarRepository
         }
 
         $model->save();
-
-        // Get current ingredient IDs from the domain model
-        $inStockIngredientIds = array_map(
-            fn (IngredientInventoryItem $item) => $item->ingredientId->value,
-            $bar->getInStockIngredients()
-        );
-
-        // Remove ingredients that are no longer in stock
-        $model->shelfIngredients()
-            ->whereNotIn('ingredient_id', $inStockIngredientIds)
-            ->delete();
-
-        // Get existing ingredient IDs to avoid duplicates
-        $existingIngredientIds = $model->shelfIngredients()
-            ->pluck('ingredient_id')
-            ->toArray();
-
-        // Add new ingredients
-        $newBarIngredients = [];
-        foreach ($bar->getInStockIngredients() as $inStockIngredient) {
-            if (!in_array($inStockIngredient->ingredientId->value, $existingIngredientIds, true)) {
-                $barIngredientModel = new BarIngredient();
-                $barIngredientModel->ingredient_id = $inStockIngredient->ingredientId->value;
-                $newBarIngredients[] = $barIngredientModel;
-            }
-        }
-
-        if (count($newBarIngredients) > 0) {
-            $model->shelfIngredients()->saveMany($newBarIngredients);
-        }
 
         if (count($bar->getImages()) > 0) {
             $imageModels = ModelImage::findOrFail(array_map(fn (ImageId $img): int => $img->value, $bar->getImages()));
@@ -128,42 +93,32 @@ final class EloquentBarRepository implements BarRepository
 
     private static function map(ModelBar $model): Bar
     {
-        $model->load('shelfIngredients.ingredient');
-
-        $barShelfIngredientIds = $model->shelfIngredients->pluck('ingredient_id')->toArray();
-
-        $placeholders = implode(',', array_fill(0, count($barShelfIngredientIds), '?'));
-        $complexIngredients = DB::table('complex_ingredients')
-            ->select('main_ingredient_id as ingredient_id')
-            ->join('ingredients', 'ingredients.id', 'complex_ingredients.main_ingredient_id')
-            ->where('ingredients.bar_id', $model->id)
-            ->groupBy('main_ingredient_id')
-            ->havingRaw('MIN(ingredient_id IN ('.$placeholders.')) = 1', [$barShelfIngredientIds])
-            ->get();
-
-        $modelBarSettings = $model->settings ?? [];
+        $modelBarSettings = is_array($model->settings) ? $model->settings : [];
+        $defaultUnits = $modelBarSettings['default_units'] ?? null;
+        $defaultCurrency = $modelBarSettings['default_currency'] ?? null;
 
         $barSettings = BarSettings::create(
             isInviteCodeEnabled: $model->invite_code !== null,
-            defaultUnits: isset($modelBarSettings['default_units']) ? Unit::from($modelBarSettings['default_units']) : null,
-            defaultCurrency: isset($modelBarSettings['default_currency']) ? Currency::of($modelBarSettings['default_currency']) : null,
+            defaultUnits: is_string($defaultUnits) ? Unit::from($defaultUnits) : null,
+            defaultCurrency: is_string($defaultCurrency) || is_int($defaultCurrency) ? Currency::of($defaultCurrency) : null,
         );
+
+        $createdAt = $model->created_at?->toDateTimeImmutable();
+        if ($createdAt === null) {
+            throw new \RuntimeException('Cannot map bar without a creation timestamp.');
+        }
 
         $bar = Bar::create(
             name: Name::fromString($model->name),
             authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
-            recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
+            recordTimestamps: RecordTimestamps::createdAt($createdAt)->updatedAt($model->updated_at?->toDateTimeImmutable()),
             settings: $barSettings,
-        )
-        ->setId(new BarId($model->id))
-        ->setSlug(Slug::fromString($model->slug));
+            subtitle: $model->subtitle,
+            description: $model->description,
+        )->setId(new BarId($model->id));
 
-        foreach ($model->shelfIngredients as $barShelfIngredient) {
-            $bar->putIngredientInInventory(new IngredientId($barShelfIngredient->ingredient_id), IngredientInventoryStatus::InStock);
-        }
-
-        foreach ($complexIngredients as $complexIngredient) {
-            $bar->putIngredientInInventory(new IngredientId($complexIngredient->ingredient_id), IngredientInventoryStatus::Makeable);
+        if (is_string($model->slug)) {
+            $bar->setSlug(Slug::fromString($model->slug));
         }
 
         return $bar;

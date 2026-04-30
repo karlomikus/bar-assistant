@@ -13,7 +13,6 @@ use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Common\Traits\HasImages;
-use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Exception\DomainException;
 
 final class Bar implements Identity
@@ -23,9 +22,6 @@ final class Bar implements Identity
     private ?BarId $id = null;
     private ?Slug $slug = null;
 
-    /**
-     * @param IngredientInventoryItem[] $ingredientInventory
-     */
     private function __construct(
         private Name $name,
         private Authors $authors,
@@ -34,7 +30,6 @@ final class Bar implements Identity
         private bool $isPublic = false,
         private ?string $subtitle = null,
         private ?string $description = null,
-        private array $ingredientInventory = [],
         private BarStatus $status = BarStatus::Active,
     ) {
         if ($settings === null) {
@@ -75,14 +70,10 @@ final class Bar implements Identity
         return $this;
     }
 
-    /**
-     * @param IngredientInventoryItem[] $ingredientInventory
-     */
     public static function create(
         Name $name,
         Authors $authors,
         RecordTimestamps $recordTimestamps,
-        array $ingredientInventory = [],
         ?BarSettings $settings = null,
         ?string $subtitle = null,
         ?string $description = null,
@@ -91,7 +82,6 @@ final class Bar implements Identity
             name: $name,
             authors: $authors,
             recordTimestamps: $recordTimestamps,
-            ingredientInventory: $ingredientInventory,
             settings: $settings,
             subtitle: $subtitle,
             description: $description,
@@ -167,58 +157,6 @@ final class Bar implements Identity
     public function isInviteCodeEnabled(): bool
     {
         return $this->settings->isInviteCodeEnabled ?? false;
-    }
-
-    /**
-     * Returns a list of all ingredients that bar has in inventory
-     *
-     * @return IngredientInventoryItem[]
-     */
-    public function getIngredientInventory(): array
-    {
-        return $this->ingredientInventory;
-    }
-
-    public function putIngredientInInventory(IngredientId $ingredientId, IngredientInventoryStatus $status): self
-    {
-        // Remove existing ingredient so we can update it's status
-        $this->removeIngredientFromInventory($ingredientId);
-
-        $this->ingredientInventory[] = new IngredientInventoryItem($ingredientId, $status);
-
-        return $this;
-    }
-
-    public function removeIngredientFromInventory(IngredientId $ingredientId): self
-    {
-        $this->ingredientInventory = array_values(array_filter(
-            $this->ingredientInventory,
-            static fn (IngredientInventoryItem $inventoryIngredient) => !$inventoryIngredient->ingredientId->equals($ingredientId)
-        ));
-
-        return $this;
-    }
-
-    /**
-     * @return IngredientInventoryItem[]
-     */
-    public function getVariantIngredients(): array
-    {
-        return array_filter(
-            $this->ingredientInventory,
-            static fn (IngredientInventoryItem $item) => $item->isInStockAsVariant()
-        );
-    }
-
-    /**
-     * @return IngredientInventoryItem[]
-     */
-    public function getInStockIngredients(): array
-    {
-        return array_filter(
-            $this->ingredientInventory,
-            static fn (IngredientInventoryItem $item) => $item->isInStock()
-        );
     }
 
     public function makePublic(): self

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use BarAssistant\Domain\Bar\BarInventoryRepository;
 use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Menu\MenuRepository;
 use BarAssistant\Domain\Note\NoteRepository;
@@ -18,6 +19,7 @@ use BarAssistant\Domain\Cocktail\GlassRepository;
 use BarAssistant\Application\Export\ExportService;
 use BarAssistant\Domain\Cocktail\UtensilRepository;
 use BarAssistant\Domain\Cocktail\CocktailRepository;
+use Kami\Cocktail\Infrastructure\EloquentBarInventoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentBarRepository;
 use BarAssistant\Domain\Calculator\CalculatorRepository;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
@@ -55,6 +57,7 @@ class InfrastructureServiceProvider extends ServiceProvider
         $this->app->bind(IngredientRepository::class, EloquentIngredientRepository::class);
         $this->app->bind(IngredientHierarchyRepository::class, EloquentIngredientHierarchyRepository::class);
         $this->app->bind(PriceCategoryRepository::class, EloquentPriceCategoryRepository::class);
+        $this->app->bind(BarInventoryRepository::class, EloquentBarInventoryRepository::class);
         $this->app->bind(BarRepository::class, EloquentBarRepository::class);
         $this->app->bind(ImageRepository::class, EloquentImageRepository::class);
         $this->app->bind(GlassRepository::class, EloquentGlassRepository::class);

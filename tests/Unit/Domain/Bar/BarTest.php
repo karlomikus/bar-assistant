@@ -16,9 +16,7 @@ use BarAssistant\Domain\Bar\BarStatus;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Bar\BarSettings;
 use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Exception\DomainException;
-use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 
 final class BarTest extends TestCase
 {
@@ -44,49 +42,6 @@ final class BarTest extends TestCase
         $this->assertNull($bar->getDefaultCurrency());
         $this->assertSame(BarStatus::Active, $bar->getStatus());
         $this->assertFalse($bar->isPublic());
-    }
-
-    public function test_put_ingredient_in_inventory_replaces_existing_status(): void
-    {
-        $bar = $this->createBar();
-        $ingredientId = new IngredientId(10);
-
-        $bar->putIngredientInInventory($ingredientId, IngredientInventoryStatus::Variant);
-        $bar->putIngredientInInventory($ingredientId, IngredientInventoryStatus::InStock);
-
-        $inventory = $bar->getIngredientInventory();
-
-        $this->assertCount(1, $inventory);
-        $this->assertTrue($inventory[0]->ingredientId->equals($ingredientId));
-        $this->assertTrue($inventory[0]->isInStock());
-    }
-
-    public function test_inventory_filters_return_only_matching_statuses(): void
-    {
-        $bar = $this->createBar();
-
-        $bar->putIngredientInInventory(new IngredientId(10), IngredientInventoryStatus::InStock);
-        $bar->putIngredientInInventory(new IngredientId(20), IngredientInventoryStatus::Variant);
-        $bar->putIngredientInInventory(new IngredientId(30), IngredientInventoryStatus::Makeable);
-
-        $inStock = $bar->getInStockIngredients();
-        $variants = $bar->getVariantIngredients();
-
-        $this->assertCount(1, $inStock);
-        $this->assertCount(1, $variants);
-        $this->assertSame(10, array_values($inStock)[0]->ingredientId->value);
-        $this->assertSame(20, array_values($variants)[0]->ingredientId->value);
-    }
-
-    public function test_remove_ingredient_from_inventory_is_noop_when_missing(): void
-    {
-        $bar = $this->createBar();
-
-        $bar->putIngredientInInventory(new IngredientId(10), IngredientInventoryStatus::InStock);
-        $bar->removeIngredientFromInventory(new IngredientId(999));
-
-        $this->assertCount(1, $bar->getIngredientInventory());
-        $this->assertSame(10, $bar->getIngredientInventory()[0]->ingredientId->value);
     }
 
     public function test_update_settings_rejects_transient_bar(): void

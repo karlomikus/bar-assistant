@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace BarAssistant\Application\Recommendation;
 
 use BarAssistant\Domain\Bar\MemberId;
-use BarAssistant\Domain\Bar\BarRepository;
+use BarAssistant\Domain\Bar\BarInventoryRepository;
 use BarAssistant\Domain\Bar\MemberRepository;
 use BarAssistant\Domain\Recommendation\RecommendationResult;
 use BarAssistant\Application\Exception\EntityNotFoundException;
@@ -22,7 +22,7 @@ final readonly class RecommendationService
         private RecommendationRepository $recommendationRepository,
         private RecommendationScoringService $scoringService,
         private MemberRepository $memberRepository,
-        private BarRepository $barRepository,
+        private BarInventoryRepository $barInventoryRepository,
     ) {
     }
 
@@ -36,8 +36,8 @@ final readonly class RecommendationService
             throw new EntityNotFoundException('Member not found.');
         }
 
-        $bar = $this->barRepository->findById($member->getBarId());
-        if ($bar === null) {
+        $barInventory = $this->barInventoryRepository->findByBarId($member->getBarId());
+        if ($barInventory === null) {
             throw new EntityNotFoundException('Bar not found.');
         }
 
@@ -50,7 +50,7 @@ final readonly class RecommendationService
         $favoriteTags = $this->recommendationRepository->getFavoriteTags($member->getId());
         $negativeTags = $this->recommendationRepository->getNegativeTags($member->getId());
         $favoriteIngredients = $this->recommendationRepository->getFavoriteIngredients($member->getId());
-        $barShelfIngredients = array_map(static fn ($inventoryItem) => $inventoryItem->ingredientId, $bar->getIngredientInventory());
+        $barShelfIngredients = array_map(static fn ($inventoryItem) => $inventoryItem->ingredientId, $barInventory->getIngredients());
 
         $results = $this->scoringService->score(
             favoriteTags: $favoriteTags,
