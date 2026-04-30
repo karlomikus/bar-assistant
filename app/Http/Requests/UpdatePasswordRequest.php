@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Requests;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateUserRequest extends FormRequest
+class UpdatePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,9 +26,8 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'email', Rule::unique('users')->ignore($this->user()->id)],
-            'name' => 'required',
-            'is_shelf_public' => 'boolean',
+            'current_password' => 'required',
+            'password' => 'confirmed|nullable|min:5',
         ];
     }
 }

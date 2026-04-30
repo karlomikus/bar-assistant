@@ -5827,6 +5827,39 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  /profile/change-password:
+    post:
+      tags:
+        - Profile
+      summary: 'Change password'
+      description: 'Change user password'
+      operationId: changePassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   '/profile/sso/{provider}':
     delete:
       tags:
@@ -11005,6 +11038,24 @@ components:
           additionalProperties:
             type: string
       type: object
+    ChangePasswordRequest:
+      required:
+        - current_password
+        - password
+      properties:
+        password:
+          type:
+            - string
+            - 'null'
+          format: password
+          example: newpassword
+        current_password:
+          type:
+            - string
+            - 'null'
+          format: password
+          example: current
+      type: object
     CocktailIngredientRequest:
       required:
         - ingredient_id
@@ -11541,12 +11592,6 @@ components:
           type:
             - integer
             - 'null'
-        password:
-          type:
-            - string
-            - 'null'
-          format: password
-          example: newpassword
         is_shelf_public:
           type: boolean
       type: object

@@ -21,6 +21,7 @@ use BarAssistant\Application\User\DTO\ChangeEmailRequest;
 use BarAssistant\Application\User\DTO\AnonymizeUserRequest;
 use BarAssistant\Application\User\DTO\ChangePasswordRequest;
 use BarAssistant\Application\Bar\DTO\UpdateMemberDetailsRequest;
+use Kami\Cocktail\Http\Requests\UpdatePasswordRequest;
 
 class ProfileController extends Controller
 {
@@ -72,15 +73,32 @@ class ProfileController extends Controller
             ));
         }
 
-        // TODO: Require old password
-        if ($request->has('password') && $profileRequest->password !== null) {
-            $userService->changePassword(new ChangePasswordRequest(
-                userId: $currentUser->id,
-                newPasswordHash: Hash::make($profileRequest->password),
-            ));
+        return new Response(status: 204);
+    }
 
-            $currentUser->tokens()->delete();
+    #[OAT\Post(path: '/profile/change-password', tags: ['Profile'], operationId: 'changePassword', description: 'Change user password', summary: 'Change password', requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\ChangePasswordRequest::class),
+        ]
+    ))]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    public function changePassword(UserService $userService, UpdatePasswordRequest $request): Response
+    {
+        $changePasswordRequest = BAO\Schemas\ChangePasswordRequest::fromIlluminateRequest($request);
+        $currentUser = $request->user();
+
+        if (!Hash::check($changePasswordRequest->currentPassword, $currentUser->password)) {
+            abort(403);
         }
+
+        $userService->changePassword(new ChangePasswordRequest(
+            userId: $currentUser->id,
+            newPasswordHash: Hash::make($changePasswordRequest->password),
+        ));
+
+        $currentUser->tokens()->delete();
 
         return new Response(status: 204);
     }
