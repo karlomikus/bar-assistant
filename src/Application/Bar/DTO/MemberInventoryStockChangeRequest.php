@@ -10,8 +10,9 @@ readonly class MemberInventoryStockChangeRequest
      * @param int[] $ingredientIds
      */
     public function __construct(
-        public int $memberId,
         public array $ingredientIds,
+        public ?int $memberId = null,
+        public ?int $inventoryId = null,
     ) {
     }
 }

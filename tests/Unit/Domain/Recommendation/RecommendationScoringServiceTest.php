@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Unit\Domain\Recommendation;
 
 use PHPUnit\Framework\TestCase;
-use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Common\Name;
+use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Recommendation\WeightedTag;
 use BarAssistant\Domain\Recommendation\WeightedIngredient;

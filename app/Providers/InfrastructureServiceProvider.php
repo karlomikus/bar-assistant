@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use BarAssistant\Domain\Bar\BarInventoryRepository;
 use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Domain\Menu\MenuRepository;
 use BarAssistant\Domain\Note\NoteRepository;
@@ -17,13 +16,13 @@ use BarAssistant\Domain\Export\FileTokenService;
 use BarAssistant\Domain\Rating\RatingRepository;
 use BarAssistant\Domain\Cocktail\GlassRepository;
 use BarAssistant\Application\Export\ExportService;
+use BarAssistant\Domain\Bar\BarInventoryRepository;
 use BarAssistant\Domain\Cocktail\UtensilRepository;
 use BarAssistant\Domain\Cocktail\CocktailRepository;
-use Kami\Cocktail\Infrastructure\EloquentBarInventoryRepository;
+use BarAssistant\Domain\Bar\MemberInventoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentBarRepository;
 use BarAssistant\Domain\Calculator\CalculatorRepository;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
-use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyRepository;
 use Kami\Cocktail\Infrastructure\EloquentMenuRepository;
 use Kami\Cocktail\Infrastructure\EloquentNoteRepository;
 use Kami\Cocktail\Infrastructure\EloquentUserRepository;
@@ -41,14 +40,17 @@ use BarAssistant\Domain\Ingredient\IngredientMatchRepository;
 use BarAssistant\Domain\Cocktail\CocktailCollectionRepository;
 use Kami\Cocktail\Infrastructure\EloquentCalculatorRepository;
 use Kami\Cocktail\Infrastructure\EloquentIngredientRepository;
-use Kami\Cocktail\Infrastructure\EloquentIngredientHierarchyRepository;
 use BarAssistant\Domain\Recommendation\RecommendationRepository;
+use Kami\Cocktail\Infrastructure\EloquentBarInventoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailMatchRepository;
 use Kami\Cocktail\Infrastructure\EloquentPriceCategoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailMethodRepository;
 use Kami\Cocktail\Infrastructure\EloquentRecommendationRepository;
 use Kami\Cocktail\Infrastructure\EloquentIngredientMatchRepository;
+use Kami\Cocktail\Infrastructure\EloquentMemberInventoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailCollectionRepository;
+use Kami\Cocktail\Infrastructure\EloquentIngredientHierarchyRepository;
+use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyRepository;
 
 class InfrastructureServiceProvider extends ServiceProvider
 {
@@ -64,6 +66,7 @@ class InfrastructureServiceProvider extends ServiceProvider
         $this->app->bind(UtensilRepository::class, EloquentUtensilRepository::class);
         $this->app->bind(CocktailMethodRepository::class, EloquentCocktailMethodRepository::class);
         $this->app->bind(MemberRepository::class, EloquentMemberRepository::class);
+        $this->app->bind(MemberInventoryRepository::class, EloquentMemberInventoryRepository::class);
         $this->app->bind(RatingRepository::class, EloquentRatingRepository::class);
         $this->app->bind(MenuRepository::class, EloquentMenuRepository::class);
         $this->app->bind(CocktailRepository::class, EloquentCocktailRepository::class);

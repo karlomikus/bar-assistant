@@ -6,9 +6,9 @@ namespace Tests\Integration\Infrastructure;
 
 use Tests\TestCase;
 use BarAssistant\Domain\Bar\BarId;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use BarAssistant\Domain\Ingredient\IngredientId;
 use Kami\Cocktail\Models\BarMembership;
+use BarAssistant\Domain\Ingredient\IngredientId;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Models\Ingredient as ModelIngredient;
 use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyNode;
 use Kami\Cocktail\Infrastructure\EloquentIngredientHierarchyRepository;

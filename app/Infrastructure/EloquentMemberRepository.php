@@ -10,7 +10,6 @@ use BarAssistant\Domain\Bar\Member;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Bar\MemberRole;
-use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\UserShoppingList;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Bar\CocktailFavorite;
@@ -18,8 +17,6 @@ use BarAssistant\Domain\Bar\MemberRepository;
 use BarAssistant\Domain\Bar\ShoppingListItem;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use Kami\Cocktail\Models\BarMembership as Model;
-use BarAssistant\Domain\Bar\IngredientInventoryItem;
-use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 use Kami\Cocktail\Models\CocktailFavorite as CocktailFavoriteModel;
 
 final class EloquentMemberRepository implements MemberRepository
@@ -55,15 +52,6 @@ final class EloquentMemberRepository implements MemberRepository
             $cocktailFavoriteModel->created_at = $cocktailFavorite->favoritedAt->format('Y-m-d H:i:s');
 
             $model->cocktailFavorites()->save($cocktailFavoriteModel);
-        }
-
-        $model->userIngredients()->delete();
-        foreach ($member->getIngredientInventory() as $inventoryIngredient) {
-            $userIngredient = new UserIngredient();
-            $userIngredient->ingredient_id = $inventoryIngredient->ingredientId->value;
-            $userIngredient->bar_membership_id = $model->id;
-
-            $model->userIngredients()->save($userIngredient);
         }
 
         return self::map($model);
@@ -114,21 +102,12 @@ final class EloquentMemberRepository implements MemberRepository
             );
         }
 
-        $ingredientInventory = [];
-        foreach ($model->userIngredients as $modelUserIngredient) {
-            $ingredientInventory[] = new IngredientInventoryItem(
-                ingredientId: new IngredientId($modelUserIngredient->ingredient_id),
-                ingredientStatus: IngredientInventoryStatus::InStock,
-            );
-        }
-
         $domainObject = Member::create(
             userId: new UserId($model->user_id),
             barId: new BarId($model->bar_id),
             role: MemberRole::fromString($model->role->name),
             shoppingListIngredients: $shoppingListIngredients,
             cocktailFavorites: $cocktailFavorites,
-            ingredientInventory: $ingredientInventory,
         )->setId(new MemberId($model->id));
 
         return $domainObject;

@@ -11,9 +11,9 @@ use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Cocktail\CollectionId;
-use BarAssistant\Domain\Cocktail\CocktailCollection;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Exception\DomainException;
+use BarAssistant\Domain\Cocktail\CocktailCollection;
 
 final class CocktailCollectionTest extends TestCase
 {

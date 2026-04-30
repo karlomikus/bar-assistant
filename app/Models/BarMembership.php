@@ -52,6 +52,14 @@ class BarMembership extends Model
     }
 
     /**
+     * @return HasMany<MemberInventory, $this>
+     */
+    public function memberInventories(): HasMany
+    {
+        return $this->hasMany(MemberInventory::class);
+    }
+
+    /**
      * @return HasMany<UserShoppingList, $this>
      */
     public function shoppingListIngredients(): HasMany

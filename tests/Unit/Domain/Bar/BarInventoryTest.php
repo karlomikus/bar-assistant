@@ -6,8 +6,8 @@ namespace Tests\Unit\Domain\Bar;
 
 use PHPUnit\Framework\TestCase;
 use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Bar\BarInventory;
+use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 
 final class BarInventoryTest extends TestCase

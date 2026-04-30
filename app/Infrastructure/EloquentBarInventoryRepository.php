@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Infrastructure;
 
 use RuntimeException;
-use Kami\Cocktail\Models\BarIngredient;
-use Kami\Cocktail\Models\Bar as ModelBar;
-use Illuminate\Support\Facades\DB;
 use BarAssistant\Domain\Bar\BarId;
+use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\BarIngredient;
 use BarAssistant\Domain\Bar\BarInventory;
+use Kami\Cocktail\Models\Bar as ModelBar;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Bar\BarInventoryRepository;
 use BarAssistant\Domain\Bar\IngredientInventoryItem;

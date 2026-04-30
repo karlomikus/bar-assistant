@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace BarAssistant\Application\Recommendation;
 
 use BarAssistant\Domain\Bar\MemberId;
-use BarAssistant\Domain\Bar\BarInventoryRepository;
 use BarAssistant\Domain\Bar\MemberRepository;
+use BarAssistant\Domain\Bar\BarInventoryRepository;
 use BarAssistant\Domain\Recommendation\RecommendationResult;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Domain\Recommendation\RecommendationRepository;

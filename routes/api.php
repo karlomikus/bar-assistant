@@ -180,6 +180,16 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::put('/{id}', [MemberController::class, 'update'])->middleware(EnsureRequestHasBarQuery::class);
         Route::delete('/{id}', [MemberController::class, 'delete'])->middleware(EnsureRequestHasBarQuery::class);
 
+        Route::get('/{id}/inventories', [ShelfController::class, 'inventories'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/{id}/inventories', [ShelfController::class, 'storeInventory'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::patch('/{id}/inventories/{inventoryId}', [ShelfController::class, 'updateInventoryName'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::delete('/{id}/inventories/{inventoryId}', [ShelfController::class, 'deleteInventory'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/{id}/inventories/{inventoryId}/ingredients', [ShelfController::class, 'inventoryIngredients'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/{id}/inventories/{inventoryId}/ingredients/batch-store', [ShelfController::class, 'batchStoreInventoryIngredients'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::post('/{id}/inventories/{inventoryId}/ingredients/batch-delete', [ShelfController::class, 'batchDeleteInventoryIngredients'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/{id}/inventories/{inventoryId}/cocktails', [ShelfController::class, 'inventoryCocktails'])->middleware(EnsureRequestHasBarQuery::class);
+        Route::get('/{id}/inventories/{inventoryId}/recommend', [ShelfController::class, 'inventoryRecommend'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.read']);
+
         Route::get('/{id}/ingredients', [ShelfController::class, 'ingredients'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}/cocktails', [ShelfController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);
         Route::get('/{id}/cocktails/favorites', [ShelfController::class, 'favorites'])->middleware(EnsureRequestHasBarQuery::class);

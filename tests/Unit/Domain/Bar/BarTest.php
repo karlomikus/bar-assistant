@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Bar;
 
-use Brick\Money\Currency;
 use DateTimeImmutable;
+use Brick\Money\Currency;
 use PHPUnit\Framework\TestCase;
 use BarAssistant\Domain\Bar\Bar;
 use BarAssistant\Domain\Bar\BarId;

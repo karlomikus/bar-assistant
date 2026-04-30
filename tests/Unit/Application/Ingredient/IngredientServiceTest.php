@@ -13,22 +13,22 @@ use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
-use BarAssistant\Domain\Ingredient\MaterializedPath;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
+use BarAssistant\Domain\Ingredient\MaterializedPath;
 use Tests\Infrastructure\InMemoryIngredientRepository;
-use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyNode;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
-use Tests\Infrastructure\InMemoryIngredientHierarchyRepository;
 use Tests\Infrastructure\InMemoryPriceCategoryRepository;
 use BarAssistant\Application\Ingredient\IngredientService;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
-use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyRepository;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use BarAssistant\Application\Ingredient\DTO\IngredientResult;
 use BarAssistant\Application\Exception\EntityNotFoundException;
+use Tests\Infrastructure\InMemoryIngredientHierarchyRepository;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
 use BarAssistant\Application\Ingredient\DTO\UpdateIngredientRequest;
+use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyNode;
+use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyRepository;
 
 final class IngredientServiceTest extends TestCase
 {

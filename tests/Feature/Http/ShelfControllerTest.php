@@ -10,9 +10,10 @@ use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
-use Kami\Cocktail\Models\UserShoppingList;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Models\MemberInventoryIngredient;
+use Kami\Cocktail\Models\MemberInventory as MemberInventoryModel;
 
 class ShelfControllerTest extends TestCase
 {
@@ -23,10 +24,12 @@ class ShelfControllerTest extends TestCase
         $membership = $this->setupBarMembership();
         $this->actingAs($membership->user);
 
-        UserIngredient::factory()
-            ->recycle($membership, $membership->bar, $membership->user)
+        $ingredients = Ingredient::factory()
+            ->recycle($membership->bar)
             ->count(5)
             ->create();
+
+        $this->createLegacyMemberInventory($membership, $ingredients->pluck('id')->all());
 
         $response = $this->getJson('/api/members/'. $membership->user_id .'/ingredients', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
@@ -71,7 +74,20 @@ class ShelfControllerTest extends TestCase
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertNoContent();
-        $this->assertDatabaseHas('user_ingredients', ['ingredient_id' => $newIngredients->pluck('id')->toArray(), 'bar_membership_id' => $membership->id]);
+
+        $inventory = MemberInventoryModel::query()
+            ->where('bar_membership_id', $membership->id)
+            ->where('name', 'My Shelf')
+            ->first();
+
+        $this->assertNotNull($inventory);
+
+        foreach ($newIngredients->pluck('id')->all() as $ingredientId) {
+            $this->assertDatabaseHas('member_inventory_ingredients', [
+                'member_inventory_id' => $inventory->id,
+                'ingredient_id' => $ingredientId,
+            ]);
+        }
     }
 
     public function test_add_multiple_ingredients_from_another_bar_to_shelf_response(): void
@@ -93,7 +109,7 @@ class ShelfControllerTest extends TestCase
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertUnprocessable();
-        $this->assertDatabaseMissing('user_ingredients', ['bar_membership_id' => $membership->id]);
+        $this->assertDatabaseMissing('member_inventories', ['bar_membership_id' => $membership->id]);
     }
 
     public function test_delete_multiple_ingredients_from_shelf_response(): void
@@ -101,18 +117,21 @@ class ShelfControllerTest extends TestCase
         $membership = $this->setupBarMembership();
         $this->actingAs($membership->user);
 
-        $ingredients = UserIngredient::factory()
-            ->recycle($membership, $membership->bar, $membership->user)
+        $ingredients = Ingredient::factory()
+            ->recycle($membership->bar)
             ->count(5)
             ->create();
 
-        $this->assertDatabaseCount('user_ingredients', 5);
+        $inventory = $this->createLegacyMemberInventory($membership, $ingredients->pluck('id')->all());
+
+        $this->assertDatabaseCount('member_inventory_ingredients', 5);
         $response = $this->postJson('/api/members/'. $membership->user_id .'/ingredients/batch-delete', [
             'ingredients' => $ingredients->splice(0, 2)->pluck('id')->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertNoContent();
-        $this->assertDatabaseCount('user_ingredients', 3);
+        $this->assertDatabaseCount('member_inventory_ingredients', 3);
+        $this->assertDatabaseHas('member_inventories', ['id' => $inventory->id]);
     }
 
     public function test_delete_multiple_ingredients_from_another_bar_response(): void
@@ -120,12 +139,14 @@ class ShelfControllerTest extends TestCase
         $membership = $this->setupBarMembership();
         $this->actingAs($membership->user);
 
-        $ownedIngredients = UserIngredient::factory()
-            ->recycle($membership, $membership->bar, $membership->user)
+        $ownedIngredients = Ingredient::factory()
+            ->recycle($membership->bar)
             ->count(5)
             ->create();
 
-        $unOwnedIngredients = UserIngredient::factory()
+        $inventory = $this->createLegacyMemberInventory($membership, $ownedIngredients->pluck('id')->all());
+
+        $unOwnedIngredients = Ingredient::factory()
             ->count(5)
             ->create();
 
@@ -134,7 +155,13 @@ class ShelfControllerTest extends TestCase
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertUnprocessable();
-        $this->assertDatabaseHas('user_ingredients', ['ingredient_id' => $ownedIngredients->pluck('id')->toArray(), 'bar_membership_id' => $membership->id]);
+
+        foreach ($ownedIngredients->pluck('id')->all() as $ingredientId) {
+            $this->assertDatabaseHas('member_inventory_ingredients', [
+                'member_inventory_id' => $inventory->id,
+                'ingredient_id' => $ingredientId,
+            ]);
+        }
     }
 
     public function test_list_ingredients_on_bar_shelf_response(): void
@@ -200,10 +227,12 @@ class ShelfControllerTest extends TestCase
         $membership = $this->setupBarMembership();
         $this->actingAs($membership->user);
 
-        UserIngredient::factory()
-            ->recycle($membership, $membership->bar, $membership->user)
+        $ingredients = Ingredient::factory()
+            ->recycle($membership->bar)
             ->count(5)
             ->create();
+
+        $this->createLegacyMemberInventory($membership, $ingredients->pluck('id')->all());
 
         $response = $this->getJson('/api/members/'. $membership->user_id .'/cocktails', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
@@ -248,5 +277,27 @@ class ShelfControllerTest extends TestCase
                 ->has('data', 0)
                 ->etc()
         );
+    }
+
+    /**
+     * @param int[] $ingredientIds
+     */
+    private function createLegacyMemberInventory(object $membership, array $ingredientIds): MemberInventoryModel
+    {
+        $inventory = new MemberInventoryModel();
+        $inventory->bar_membership_id = $membership->id;
+        $inventory->name = 'My Shelf';
+        $inventory->created_user_id = $membership->user_id;
+        $inventory->created_at = now();
+        $inventory->save();
+
+        foreach ($ingredientIds as $ingredientId) {
+            $inventoryIngredient = new MemberInventoryIngredient();
+            $inventoryIngredient->member_inventory_id = $inventory->id;
+            $inventoryIngredient->ingredient_id = $ingredientId;
+            $inventoryIngredient->save();
+        }
+
+        return $inventory;
     }
 }

@@ -15,11 +15,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\ProfileResource;
 use Kami\Cocktail\OpenAPI\Schemas\ProfileRequest;
 use Kami\Cocktail\Http\Requests\UpdateUserRequest;
+use Kami\Cocktail\Http\Requests\UpdatePasswordRequest;
 use BarAssistant\Application\User\DTO\UpdateUserProfile;
 use BarAssistant\Application\User\DTO\ChangeEmailRequest;
 use BarAssistant\Application\User\DTO\AnonymizeUserRequest;
 use BarAssistant\Application\User\DTO\ChangePasswordRequest;
-use Kami\Cocktail\Http\Requests\UpdatePasswordRequest;
 
 class ProfileController extends Controller
 {

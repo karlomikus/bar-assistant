@@ -13,13 +13,13 @@ use BarAssistant\Domain\Common\Slug;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Bar\BarStatus;
+use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Bar\BarSettings;
 use Kami\Cocktail\Models\Bar as ModelBar;
 use BarAssistant\Domain\Bar\BarRepository;
-use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\Image\ImageId;
 use Kami\Cocktail\Models\Image as ModelImage;
+use BarAssistant\Domain\Common\RecordTimestamps;
 
 final class EloquentBarRepository implements BarRepository
 {

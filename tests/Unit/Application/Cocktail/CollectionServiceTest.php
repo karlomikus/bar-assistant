@@ -14,10 +14,10 @@ use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Cocktail\CocktailCollection;
 use BarAssistant\Application\Cocktail\CollectionService;
 use BarAssistant\Application\Cocktail\DTO\CollectionResult;
-use Tests\Infrastructure\InMemoryCocktailCollectionRepository;
-use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Cocktail\DTO\CreateCollection;
 use BarAssistant\Application\Cocktail\DTO\UpdateCollection;
+use Tests\Infrastructure\InMemoryCocktailCollectionRepository;
+use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Cocktail\DTO\SyncCollectionCocktails;
 
 final class CollectionServiceTest extends TestCase

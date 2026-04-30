@@ -10,15 +10,12 @@ use BarAssistant\Domain\Bar\Member;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Bar\MemberRole;
-use Tests\Infrastructure\InMemoryMemberRepository;
 use BarAssistant\Application\Bar\MemberService;
-use BarAssistant\Domain\Ingredient\IngredientId;
+use Tests\Infrastructure\InMemoryMemberRepository;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
 use BarAssistant\Application\Bar\DTO\ChangeMemberRoleRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
-use BarAssistant\Application\Bar\DTO\UpdateMemberDetailsRequest;
-use BarAssistant\Application\Bar\DTO\MemberInventoryStockChangeRequest;
 
 final class MemberServiceTest extends TestCase
 {
@@ -93,60 +90,6 @@ final class MemberServiceTest extends TestCase
             userId: 999,
             barId: 1,
         ));
-    }
-
-    public function test_put_multiple_ingredients_in_stock_updates_inventory(): void
-    {
-        $member = $this->memberRepository->findById(new MemberId(1));
-        $this->assertNotNull($member);
-        $member->addIngredientToShoppingList(new IngredientId(100), 750);
-
-        $this->service->putMultipleIngredientsInStock(new MemberInventoryStockChangeRequest(
-            memberId: 1,
-            ingredientIds: [100, 101],
-        ));
-
-        $updatedMember = $this->memberRepository->findById(new MemberId(1));
-        $this->assertNotNull($updatedMember);
-        $this->assertCount(2, $updatedMember->getIngredientInventory());
-        $this->assertFalse($updatedMember->isIngredientOnShoppingList(new IngredientId(100)));
-        $this->assertSame(
-            [100, 101],
-            array_values(array_map(
-                static fn ($item): int => $item->ingredientId->value,
-                $updatedMember->getIngredientInventory(),
-            )),
-        );
-    }
-
-    public function test_put_multiple_ingredients_in_stock_throws_when_member_missing(): void
-    {
-        $this->expectException(EntityNotFoundException::class);
-        $this->expectExceptionMessage('The member was not found');
-
-        $this->service->putMultipleIngredientsInStock(new MemberInventoryStockChangeRequest(
-            memberId: 999,
-            ingredientIds: [100],
-        ));
-    }
-
-    public function test_remove_multiple_ingredients_from_stock_removes_only_requested_items(): void
-    {
-        $member = $this->memberRepository->findById(new MemberId(1));
-        $this->assertNotNull($member);
-        $member->putIngredientInInventory(new IngredientId(100), \BarAssistant\Domain\Bar\IngredientInventoryStatus::InStock);
-        $member->putIngredientInInventory(new IngredientId(101), \BarAssistant\Domain\Bar\IngredientInventoryStatus::InStock);
-        $member->putIngredientInInventory(new IngredientId(102), \BarAssistant\Domain\Bar\IngredientInventoryStatus::InStock);
-
-        $this->service->removeMultipleIngredientsFromStock(new MemberInventoryStockChangeRequest(
-            memberId: 1,
-            ingredientIds: [100, 102],
-        ));
-
-        $updatedMember = $this->memberRepository->findById(new MemberId(1));
-        $this->assertNotNull($updatedMember);
-        $this->assertCount(1, $updatedMember->getIngredientInventory());
-        $this->assertSame(101, $updatedMember->getIngredientInventory()[0]->ingredientId->value);
     }
 
     public function test_change_member_role_updates_existing_member(): void

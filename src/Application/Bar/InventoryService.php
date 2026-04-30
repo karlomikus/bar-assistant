@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace BarAssistant\Application\Bar;
 
 use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Bar\BarInventoryRepository;
 use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Domain\Bar\BarInventoryRepository;
 use BarAssistant\Domain\Bar\IngredientInventoryStatus;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use BarAssistant\Application\Bar\DTO\BarInventoryStockChangeRequest;

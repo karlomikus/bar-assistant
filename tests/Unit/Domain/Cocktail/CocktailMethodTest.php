@@ -9,12 +9,12 @@ use PHPUnit\Framework\TestCase;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\Dilution;
-use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Cocktail\MethodId;
+use BarAssistant\Domain\Event\DomainEvent;
+use BarAssistant\Domain\DomainEventDispatcher;
+use BarAssistant\Domain\Event\EventSubscriber;
 use BarAssistant\Domain\Cocktail\CocktailMethod;
 use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\Event\DomainEvent;
-use BarAssistant\Domain\Event\EventSubscriber;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Cocktail\Event\CocktailMethodUpdated;
 
@@ -93,7 +93,7 @@ final class CocktailMethodTest extends TestCase
     public function test_updates_details_and_publishes_event(): void
     {
         $method = $this->createMethod()->setId(new MethodId(15));
-        $subscriber = new class implements EventSubscriber {
+        $subscriber = new class () implements EventSubscriber {
             public ?DomainEvent $capturedEvent = null;
 
             public function handle(DomainEvent $event): void

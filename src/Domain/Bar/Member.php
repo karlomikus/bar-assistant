@@ -17,7 +17,6 @@ final class Member implements Identity
     /**
      * @param ShoppingListItem[] $shoppingListIngredients
      * @param CocktailFavorite[] $cocktailFavorites
-     * @param IngredientInventoryItem[] $ingredientInventory
      */
     private function __construct(
         private UserId $userId,
@@ -25,14 +24,12 @@ final class Member implements Identity
         private MemberRole $role,
         private array $shoppingListIngredients = [],
         private array $cocktailFavorites = [],
-        private array $ingredientInventory = [],
     ) {
     }
 
     /**
      * @param ShoppingListItem[] $shoppingListIngredients
      * @param CocktailFavorite[] $cocktailFavorites
-     * @param IngredientInventoryItem[] $ingredientInventory
      */
     public static function create(
         UserId $userId,
@@ -40,7 +37,6 @@ final class Member implements Identity
         MemberRole $role,
         array $shoppingListIngredients = [],
         array $cocktailFavorites = [],
-        array $ingredientInventory = [],
     ): self {
         return new self(
             userId: $userId,
@@ -48,7 +44,6 @@ final class Member implements Identity
             role: $role,
             shoppingListIngredients: $shoppingListIngredients,
             cocktailFavorites: $cocktailFavorites,
-            ingredientInventory: $ingredientInventory,
         );
     }
 
@@ -170,44 +165,6 @@ final class Member implements Identity
         $this->cocktailFavorites = array_values(array_filter(
             $this->cocktailFavorites,
             static fn (CocktailFavorite $favorite): bool => !$favorite->cocktailId->equals($cocktailId)
-        ));
-
-        return $this;
-    }
-
-    /**
-     * @return IngredientInventoryItem[]
-     */
-    public function getIngredientInventory(): array
-    {
-        return $this->ingredientInventory;
-    }
-
-    public function clearIngredientInventory(): self
-    {
-        $this->ingredientInventory = [];
-
-        return $this;
-    }
-
-    public function putIngredientInInventory(IngredientId $ingredientId, IngredientInventoryStatus $status): self
-    {
-        // Remove existing ingredient so we can update it's status
-        $this->removeIngredientFromInventory($ingredientId);
-
-        $this->ingredientInventory[] = new IngredientInventoryItem($ingredientId, $status);
-
-        // We now have this ingredient, remove it from shopping list
-        $this->removeIngredientFromShoppingList($ingredientId);
-
-        return $this;
-    }
-
-    public function removeIngredientFromInventory(IngredientId $ingredientId): self
-    {
-        $this->ingredientInventory = array_values(array_filter(
-            $this->ingredientInventory,
-            static fn (IngredientInventoryItem $inventoryIngredient) => !$inventoryIngredient->ingredientId->equals($ingredientId)
         ));
 
         return $this;
