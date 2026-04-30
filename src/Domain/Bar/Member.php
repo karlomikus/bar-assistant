@@ -23,7 +23,6 @@ final class Member implements Identity
         private UserId $userId,
         private BarId $barId,
         private MemberRole $role,
-        private bool $isInventorySharedWithBar = false,
         private array $shoppingListIngredients = [],
         private array $cocktailFavorites = [],
         private array $ingredientInventory = [],
@@ -39,7 +38,6 @@ final class Member implements Identity
         UserId $userId,
         BarId $barId,
         MemberRole $role,
-        bool $isInventorySharedWithBar = false,
         array $shoppingListIngredients = [],
         array $cocktailFavorites = [],
         array $ingredientInventory = [],
@@ -48,7 +46,6 @@ final class Member implements Identity
             userId: $userId,
             barId: $barId,
             role: $role,
-            isInventorySharedWithBar: $isInventorySharedWithBar,
             shoppingListIngredients: $shoppingListIngredients,
             cocktailFavorites: $cocktailFavorites,
             ingredientInventory: $ingredientInventory,
@@ -84,18 +81,6 @@ final class Member implements Identity
     public function getBarId(): BarId
     {
         return $this->barId;
-    }
-
-    public function isInventorySharedWithBar(): bool
-    {
-        return $this->isInventorySharedWithBar;
-    }
-
-    public function changeIsInventorySharedWithBar(bool $isShared): self
-    {
-        $this->isInventorySharedWithBar = $isShared;
-
-        return $this;
     }
 
     public function getRole(): MemberRole

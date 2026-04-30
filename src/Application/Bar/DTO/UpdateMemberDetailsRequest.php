@@ -8,7 +8,6 @@ final readonly class UpdateMemberDetailsRequest
 {
     public function __construct(
         public int $memberId,
-        public bool $isInventorySharedWithBar,
     ) {
     }
 }

@@ -11,7 +11,6 @@ use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Hash;
 use BarAssistant\Application\User\UserService;
 use Kami\Cocktail\Services\Auth\OauthProvider;
-use BarAssistant\Application\Bar\MemberService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\ProfileResource;
 use Kami\Cocktail\OpenAPI\Schemas\ProfileRequest;
@@ -20,7 +19,6 @@ use BarAssistant\Application\User\DTO\UpdateUserProfile;
 use BarAssistant\Application\User\DTO\ChangeEmailRequest;
 use BarAssistant\Application\User\DTO\AnonymizeUserRequest;
 use BarAssistant\Application\User\DTO\ChangePasswordRequest;
-use BarAssistant\Application\Bar\DTO\UpdateMemberDetailsRequest;
 use Kami\Cocktail\Http\Requests\UpdatePasswordRequest;
 
 class ProfileController extends Controller
@@ -49,7 +47,7 @@ class ProfileController extends Controller
     ))]
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
-    public function update(UserService $userService, MemberService $memberService, UpdateUserRequest $request): Response
+    public function update(UserService $userService, UpdateUserRequest $request): Response
     {
         $profileRequest = ProfileRequest::fromIlluminateRequest($request);
 
@@ -63,15 +61,6 @@ class ProfileController extends Controller
         ));
 
         $userService->changeEmail(new ChangeEmailRequest($currentUser->id, $profileRequest->email));
-
-        // If there is a bar context
-        if ($profileRequest->barId !== null) {
-            $barMembership = $currentUser->getBarMembership($profileRequest->barId);
-            $memberService->updateMemberDetails(new UpdateMemberDetailsRequest(
-                memberId: $barMembership->id,
-                isInventorySharedWithBar: $profileRequest->isShelfPublic,
-            ));
-        }
 
         return new Response(status: 204);
     }

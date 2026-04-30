@@ -19,8 +19,6 @@ class ProfileRequest
         public ?ProfileSettings $settings = null,
         #[OAT\Property(property: 'bar_id')]
         public ?int $barId = null,
-        #[OAT\Property(property: 'is_shelf_public')]
-        public bool $isShelfPublic = false,
     ) {
     }
 
@@ -39,7 +37,6 @@ class ProfileRequest
             email: $request->input('email'),
             settings: $settings,
             barId: $request->filled('bar_id') ? $request->integer('bar_id') : null,
-            isShelfPublic: $request->boolean('is_shelf_public'),
         );
     }
 }

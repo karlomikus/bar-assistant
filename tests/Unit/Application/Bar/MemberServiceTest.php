@@ -171,27 +171,4 @@ final class MemberServiceTest extends TestCase
             roleId: 1,
         ));
     }
-
-    public function test_update_member_details_updates_inventory_sharing_flag(): void
-    {
-        $this->service->updateMemberDetails(new UpdateMemberDetailsRequest(
-            memberId: 2,
-            isInventorySharedWithBar: true,
-        ));
-
-        $member = $this->memberRepository->findById(new MemberId(2));
-        $this->assertNotNull($member);
-        $this->assertTrue($member->isInventorySharedWithBar());
-    }
-
-    public function test_update_member_details_throws_when_member_missing(): void
-    {
-        $this->expectException(EntityNotFoundException::class);
-        $this->expectExceptionMessage('The member was not found');
-
-        $this->service->updateMemberDetails(new UpdateMemberDetailsRequest(
-            memberId: 999,
-            isInventorySharedWithBar: true,
-        ));
-    }
 }
