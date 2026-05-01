@@ -29,7 +29,7 @@ use Kami\Cocktail\Models\MemberInventory as ModelMemberInventory;
 use BarAssistant\Application\Bar\DTO\CreateMemberInventoryRequest;
 use BarAssistant\Application\Bar\DTO\MemberInventoryStockChangeRequest;
 
-class ShelfController extends Controller
+class MemberInventoryController extends Controller
 {
     #[OAT\Get(path: '/members/{id}/inventories', tags: ['Member inventory'], operationId: 'listMemberInventories', summary: 'List member inventories', description: 'List all inventories owned by the current member', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
