@@ -7,12 +7,9 @@ namespace Kami\Cocktail\Infrastructure;
 use RuntimeException;
 use Illuminate\Support\Facades\DB;
 use BarAssistant\Domain\Common\Name;
-use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Bar\MemberId;
-use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Bar\MemberInventory;
 use BarAssistant\Domain\Bar\MemberInventoryId;
-use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use Kami\Cocktail\Models\MemberInventoryIngredient;
 use BarAssistant\Domain\Bar\IngredientInventoryItem;
@@ -29,16 +26,6 @@ final class EloquentMemberInventoryRepository implements MemberInventoryReposito
 
             $model->bar_membership_id = $memberInventory->getMemberId()->value;
             $model->name = (string) $memberInventory->getName();
-            $model->created_at = $memberInventory->getRecordTimestamps()->getCreatedAt()->format('Y-m-d H:i:s');
-            $model->created_user_id = $memberInventory->getAuthors()->getCreatedBy()->value;
-
-            if ($memberInventory->getRecordTimestamps()->wasUpdated()) {
-                $model->updated_at = $memberInventory->getRecordTimestamps()->getUpdatedAt()?->format('Y-m-d H:i:s');
-            }
-
-            if ($memberInventory->getAuthors()->isUpdated() && $memberInventory->getAuthors()->getUpdatedBy() !== null) {
-                $model->updated_user_id = $memberInventory->getAuthors()->getUpdatedBy()->value;
-            }
 
             $model->save();
 
@@ -134,10 +121,6 @@ final class EloquentMemberInventoryRepository implements MemberInventoryReposito
         return MemberInventory::create(
             memberId: new MemberId($model->bar_membership_id),
             name: Name::fromString($model->name),
-            authors: Authors::createdBy(new UserId($model->created_user_id))
-                ->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
-            recordTimestamps: RecordTimestamps::createdAt($createdAt)
-                ->updatedAt($model->updated_at?->toDateTimeImmutable()),
             ingredients: $ingredients,
         )->setId(new MemberInventoryId($model->id));
     }

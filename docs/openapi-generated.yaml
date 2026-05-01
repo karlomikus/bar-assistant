@@ -835,6 +835,293 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/bars/{id}/inventory/ingredients':
+    get:
+      tags:
+        - 'Bar inventory'
+      summary: 'List bar inventory ingredients'
+      description: "Ingredients that bar has in it's inventory"
+      operationId: listBarInventoryIngredients
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
+                type: object
+  '/bars/{id}/inventory/ingredients/batch-store':
+    post:
+      tags:
+        - 'Bar inventory'
+      summary: 'Save bar ingredients'
+      description: 'Save multiple ingredients to bar inventory'
+      operationId: batchStoreBarInventoryIngredients
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ingredients:
+                  type: array
+                  items: { type: integer }
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/bars/{id}/inventory/ingredients/batch-delete':
+    post:
+      tags:
+        - 'Bar inventory'
+      summary: 'Delete bar ingredients'
+      description: 'Delete multiple ingredients from bar inventory'
+      operationId: batchDeleteBarInventoryIngredients
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ingredients:
+                  type: array
+                  items: { type: integer }
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/bars/{id}/inventory/cocktails':
+    get:
+      tags:
+        - 'Bar inventory'
+      summary: 'List bar inventory cocktails'
+      description: 'Cocktails that the bar can make with ingredients in stock'
+      operationId: listBarInventoryCocktails
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
+                type: object
+  '/bars/{id}/inventory/ingredients/recommend':
+    get:
+      tags:
+        - 'Bar inventory'
+      summary: 'Recommend bar ingredients'
+      description: 'Shows a list of ingredients that will increase total bar shelf cocktails when added to bar shef'
+      operationId: recommendBarIngredients
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/IngredientRecommend' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /calculators:
     get:
       tags:
@@ -6360,75 +6647,6 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  '/bars/{id}/ingredients/recommend':
-    get:
-      tags:
-        - 'Bars: Shelf'
-      summary: 'Recommend bar ingredients'
-      description: 'Shows a list of ingredients that will increase total bar shelf cocktails when added to bar shef'
-      operationId: recommendBarIngredients
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/IngredientRecommend' } }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
   '/auth/sso/{provider}/redirect':
     get:
       tags:
@@ -6602,7 +6820,7 @@ paths:
   '/members/{id}/inventories':
     get:
       tags:
-        - 'Users: Shelf'
+        - 'Member inventory'
       summary: 'List member inventories'
       description: 'List all inventories owned by the current member'
       operationId: listMemberInventories
@@ -6677,7 +6895,7 @@ paths:
                 type: object
     post:
       tags:
-        - 'Users: Shelf'
+        - 'Member inventory'
       summary: 'Create member inventory'
       description: 'Create a new inventory for the current member'
       operationId: createMemberInventory
@@ -6753,7 +6971,7 @@ paths:
   '/members/{id}/inventories/{inventoryId}':
     delete:
       tags:
-        - 'Users: Shelf'
+        - 'Member inventory'
       summary: 'Delete member inventory'
       description: 'Delete a member inventory'
       operationId: deleteMemberInventory
@@ -6817,7 +7035,7 @@ paths:
                 type: object
     patch:
       tags:
-        - 'Users: Shelf'
+        - 'Member inventory'
       summary: 'Update member inventory'
       description: 'Rename a member inventory'
       operationId: updateMemberInventory
@@ -6894,7 +7112,7 @@ paths:
   '/members/{id}/inventories/{inventoryId}/ingredients':
     get:
       tags:
-        - 'Users: Shelf'
+        - 'Member inventory'
       summary: 'List member inventory ingredients'
       description: 'List ingredients stored in a member inventory'
       operationId: listMemberInventoryIngredients
@@ -6988,7 +7206,7 @@ paths:
   '/members/{id}/inventories/{inventoryId}/ingredients/batch-store':
     post:
       tags:
-        - 'Users: Shelf'
+        - 'Member inventory'
       summary: 'Save member inventory ingredients'
       description: 'Save multiple ingredients to a member inventory'
       operationId: batchStoreMemberInventoryIngredients
@@ -7063,7 +7281,7 @@ paths:
   '/members/{id}/inventories/{inventoryId}/ingredients/batch-delete':
     post:
       tags:
-        - 'Users: Shelf'
+        - 'Member inventory'
       summary: 'Delete member inventory ingredients'
       description: 'Delete multiple ingredients from a member inventory'
       operationId: batchDeleteMemberInventoryIngredients
@@ -7138,7 +7356,7 @@ paths:
   '/members/{id}/inventories/{inventoryId}/cocktails':
     get:
       tags:
-        - 'Users: Shelf'
+        - 'Member inventory'
       summary: 'List member inventory cocktails'
       description: 'List cocktails makeable from a member inventory'
       operationId: listMemberInventoryCocktails
@@ -7232,7 +7450,7 @@ paths:
   '/members/{id}/inventories/{inventoryId}/recommend':
     get:
       tags:
-        - 'Users: Shelf'
+        - 'Member inventory'
       summary: 'Recommend member inventory ingredients'
       description: 'Recommend ingredients for a member inventory'
       operationId: recommendMemberInventoryIngredients
@@ -7311,118 +7529,10 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  '/members/{id}/ingredients':
+  '/members/{id}/cocktail-favorites':
     get:
       tags:
-        - 'Users: Shelf'
-      summary: 'List user ingredients'
-      description: 'Ingredients that user saved to their shelf'
-      operationId: listUserIngredients
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-        -
-          name: page
-          in: query
-          description: 'Set current page number'
-          schema:
-            type: integer
-        -
-          name: per_page
-          in: query
-          description: 'Set number of results per page'
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
-                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
-                type: object
-  '/members/{id}/cocktails':
-    get:
-      tags:
-        - 'Users: Shelf'
-      summary: 'List shelf cocktails'
-      description: 'Cocktails that the user can make with ingredients on their shelf'
-      operationId: listUserShelfCocktails
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-        -
-          name: page
-          in: query
-          description: 'Set current page number'
-          schema:
-            type: integer
-        -
-          name: per_page
-          in: query
-          description: 'Set number of results per page'
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
-                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
-                type: object
-  '/members/{id}/cocktails/favorites':
-    get:
-      tags:
-        - 'Users: Shelf'
+        - 'Member inventory'
       summary: 'List favorites'
       description: 'Show a list of cocktails user has favorited'
       operationId: listUserFavoriteCocktails
@@ -7439,438 +7549,6 @@ paths:
           in: header
           description: 'Database id of a bar.'
           required: false
-          schema:
-            type: integer
-        -
-          name: page
-          in: query
-          description: 'Set current page number'
-          schema:
-            type: integer
-        -
-          name: per_page
-          in: query
-          description: 'Set number of results per page'
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
-                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
-                type: object
-  '/members/{id}/ingredients/batch-store':
-    post:
-      tags:
-        - 'Users: Shelf'
-      summary: 'Save user ingredients'
-      description: 'Save multiple ingredients to user shelf'
-      operationId: batchStoreUserIngredients
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                ingredients:
-                  type: array
-                  items: { type: integer }
-              type: object
-      responses:
-        '204':
-          description: 'Successful response'
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/members/{id}/ingredients/batch-delete':
-    post:
-      tags:
-        - 'Users: Shelf'
-      summary: 'Delete user ingredients'
-      description: 'Delete multiple ingredients from user shelf'
-      operationId: batchDeleteUserIngredients
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                ingredients:
-                  type: array
-                  items: { type: integer }
-              type: object
-      responses:
-        '204':
-          description: 'Successful response'
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/members/{id}/ingredients/recommend':
-    get:
-      tags:
-        - 'Users: Shelf'
-      summary: 'Recommend user ingredients'
-      description: 'Shows a list of ingredients that will increase total shelf cocktails when added to user shef'
-      operationId: recommendIngredients
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/IngredientRecommend' } }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/bars/{id}/ingredients':
-    get:
-      tags:
-        - 'Bars: Shelf'
-      summary: 'List bar shelf ingredients'
-      description: "Ingredients that bar has in it's shelf"
-      operationId: listBarShelfIngredients
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: page
-          in: query
-          description: 'Set current page number'
-          schema:
-            type: integer
-        -
-          name: per_page
-          in: query
-          description: 'Set number of results per page'
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
-                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
-                type: object
-  '/bars/{id}/ingredients/batch-store':
-    post:
-      tags:
-        - 'Bars: Shelf'
-      summary: 'Save bar ingredients'
-      description: 'Save multiple ingredients to bar shelf'
-      operationId: batchStoreBarShelfIngredients
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                ingredients:
-                  type: array
-                  items: { type: integer }
-              type: object
-      responses:
-        '204':
-          description: 'Successful response'
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/bars/{id}/ingredients/batch-delete':
-    post:
-      tags:
-        - 'Bars: Shelf'
-      summary: 'Delete bar ingredients'
-      description: 'Delete multiple ingredients from bar shelf'
-      operationId: batchDeleteBarShelfIngredients
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                ingredients:
-                  type: array
-                  items: { type: integer }
-              type: object
-      responses:
-        '204':
-          description: 'Successful response'
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/bars/{id}/cocktails':
-    get:
-      tags:
-        - 'Bars: Shelf'
-      summary: 'List bar shelf cocktails'
-      description: 'Cocktails that the bar can make with ingredients on their shelf'
-      operationId: listBarShelfCocktails
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
           schema:
             type: integer
         -
@@ -12498,6 +12176,9 @@ tags:
     name: Bars
     description: Bars
   -
+    name: 'Bar inventory'
+    description: 'Bar inventory'
+  -
     name: Calculator
     description: Calculator
   -
@@ -12558,14 +12239,11 @@ tags:
     name: Recommender
     description: Recommender
   -
-    name: 'Bars: Shelf'
-    description: 'Bars: Shelf'
-  -
     name: Server
     description: Server
   -
-    name: 'Users: Shelf'
-    description: 'Users: Shelf'
+    name: 'Member inventory'
+    description: 'Member inventory'
   -
     name: 'Users: Shopping list'
     description: 'Users: Shopping list'

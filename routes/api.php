@@ -31,6 +31,7 @@ use Kami\Cocktail\Http\Controllers\CollectionController;
 use Kami\Cocktail\Http\Controllers\IngredientController;
 use Kami\Cocktail\Http\Controllers\RecommenderController;
 use Kami\Cocktail\Http\Middleware\AiProviderIsConfigured;
+use Kami\Cocktail\Http\Controllers\BarInventoryController;
 use Kami\Cocktail\Http\Controllers\ShoppingListController;
 use Kami\Cocktail\Http\Controllers\SubscriptionController;
 use Kami\Cocktail\Http\Controllers\PriceCategoryController;
@@ -105,11 +106,6 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::delete('/profile', [ProfileController::class, 'delete'])->middleware(['ability:*']);
     Route::delete('/profile/sso/{provider}', [ProfileController::class, 'deleteSSOProvider'])->middleware(['ability:*']);
 
-    Route::prefix('shelf')->middleware(['ability:*'])->group(function () {
-        Route::post('/ingredients/batch-store', [ShelfController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/ingredients/batch-delete', [ShelfController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
-    });
-
     Route::prefix('ingredients')->group(function () {
         Route::get('/', [IngredientController::class, 'index'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.read']);
         Route::post('/', [IngredientController::class, 'store'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.write']);
@@ -180,22 +176,19 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::put('/{id}', [MemberController::class, 'update'])->middleware(EnsureRequestHasBarQuery::class);
         Route::delete('/{id}', [MemberController::class, 'delete'])->middleware(EnsureRequestHasBarQuery::class);
 
-        Route::get('/{id}/inventories', [ShelfController::class, 'inventories'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/{id}/inventories', [ShelfController::class, 'storeInventory'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::patch('/{id}/inventories/{inventoryId}', [ShelfController::class, 'updateInventoryName'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::delete('/{id}/inventories/{inventoryId}', [ShelfController::class, 'deleteInventory'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/{id}/inventories/{inventoryId}/ingredients', [ShelfController::class, 'inventoryIngredients'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/{id}/inventories/{inventoryId}/ingredients/batch-store', [ShelfController::class, 'batchStoreInventoryIngredients'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/{id}/inventories/{inventoryId}/ingredients/batch-delete', [ShelfController::class, 'batchDeleteInventoryIngredients'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/{id}/inventories/{inventoryId}/cocktails', [ShelfController::class, 'inventoryCocktails'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/{id}/inventories/{inventoryId}/recommend', [ShelfController::class, 'inventoryRecommend'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.read']);
+        Route::prefix('/{id}/inventories')->middleware(['ability:*', EnsureRequestHasBarQuery::class])->group(function () {
+            Route::get('/', [ShelfController::class, 'inventories']);
+            Route::post('/', [ShelfController::class, 'storeInventory']);
+            Route::patch('/{inventoryId}', [ShelfController::class, 'updateInventoryName']);
+            Route::delete('/{inventoryId}', [ShelfController::class, 'deleteInventory']);
+            Route::get('/{inventoryId}/ingredients', [ShelfController::class, 'inventoryIngredients']);
+            Route::post('/{inventoryId}/ingredients/batch-store', [ShelfController::class, 'batchStoreInventoryIngredients']);
+            Route::post('/{inventoryId}/ingredients/batch-delete', [ShelfController::class, 'batchDeleteInventoryIngredients']);
+            Route::get('/{inventoryId}/cocktails', [ShelfController::class, 'inventoryCocktails']);
+            Route::get('/{inventoryId}/recommend', [ShelfController::class, 'inventoryRecommend'])->middleware(['ability:ingredients.read']);
+        });
 
-        Route::get('/{id}/ingredients', [ShelfController::class, 'ingredients'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/{id}/cocktails', [ShelfController::class, 'cocktails'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/{id}/cocktails/favorites', [ShelfController::class, 'favorites'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/{id}/ingredients/batch-store', [ShelfController::class, 'batchStore'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/{id}/ingredients/batch-delete', [ShelfController::class, 'batchDelete'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/{id}/ingredients/recommend', [ShelfController::class, 'recommend'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.read']);
+        Route::get('/{id}/cocktail-favorites', [ShelfController::class, 'favorites'])->middleware(EnsureRequestHasBarQuery::class);
 
         Route::prefix('{id}/shopping-list')->middleware(['ability:*'])->group(function () {
             Route::get('/', [ShoppingListController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
@@ -246,13 +239,16 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::post('/{id}/status', [BarController::class, 'toggleBarStatus'])->middleware(['ability:*']);
         Route::post('/{id}/transfer', [BarController::class, 'transfer'])->middleware(['ability:*']);
         Route::get('/{id}/collections', [CollectionController::class, 'shared'])->middleware(['ability:bars.read']);
-        Route::get('/{id}/ingredients', [ShelfController::class, 'barIngredients'])->middleware(['ability:*']);
-        Route::get('/{id}/ingredients/recommend', [RecommenderController::class, 'recommendBarIngredients'])->middleware(['ability:bars.read']);
-        Route::post('/{id}/ingredients/batch-store', [ShelfController::class, 'batchStoreBarIngredients'])->middleware(['ability:*']);
-        Route::post('/{id}/ingredients/batch-delete', [ShelfController::class, 'batchDeleteBarIngredients'])->middleware(['ability:*']);
-        Route::get('/{id}/cocktails', [ShelfController::class, 'barCocktails'])->middleware(['ability:bars.read']);
         Route::post('/{id}/optimize', [BarController::class, 'optimize'])->name('bars.optimize')->middleware(['throttle:bar-optimization', 'ability:bars.read']);
         Route::post('/{id}/sync-datapack', [BarController::class, 'syncDatapack'])->name('bars.sync-datapack')->middleware(['throttle:bar-optimization', 'ability:bars.write']);
+
+        Route::prefix('/{id}/inventory')->middleware(['ability:*'])->group(function () {
+            Route::get('/ingredients', [BarInventoryController::class, 'inventoryIngredients'])->middleware(['ability:*']);
+            Route::get('/ingredients/recommend', [BarInventoryController::class, 'recommendBarIngredients'])->middleware(['ability:bars.read']);
+            Route::post('/ingredients/batch-store', [BarInventoryController::class, 'batchStoreBarIngredients'])->middleware(['ability:*']);
+            Route::post('/ingredients/batch-delete', [BarInventoryController::class, 'batchDeleteBarIngredients'])->middleware(['ability:*']);
+            Route::get('/cocktails', [BarInventoryController::class, 'barCocktails'])->middleware(['ability:bars.read']);
+        });
 
         Route::prefix('/{id}/stats')->middleware(['ability:*'])->group(function () {
             Route::get('/totals', [StatsController::class, 'totals'])->middleware(['ability:bars.read']);
