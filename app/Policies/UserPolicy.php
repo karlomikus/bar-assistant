@@ -23,7 +23,7 @@ class UserPolicy
             && ($user->isBarAdmin(bar()->id) || $user->isBarModerator(bar()->id));
     }
 
-    public function show(User $user, User $model): bool
+    public function show(User $user): bool
     {
         return $user->isBarAdmin(bar()->id)
             || $user->isBarModerator(bar()->id);

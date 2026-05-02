@@ -10,12 +10,13 @@ use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Http\Requests\UserRequest;
-use Kami\Cocktail\Http\Resources\UserResource;
+use Kami\Cocktail\Http\Resources\MemberResource;
 use BarAssistant\Application\Bar\MemberService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
 use BarAssistant\Application\Bar\DTO\ChangeMemberRoleRequest;
+use Kami\Cocktail\Models\BarMembership;
 
 class MemberController extends Controller
 {
@@ -30,7 +31,7 @@ class MemberController extends Controller
         ]
     )]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(UserResource::class),
+        new BAO\WrapItemsWithData(MemberResource::class),
     ])]
     public function index(Request $request): JsonResource
     {
@@ -38,14 +39,14 @@ class MemberController extends Controller
             abort(403);
         }
 
-        $users = User::orderBy('name')
-            ->select('users.*')
-            ->join('bar_memberships', 'bar_memberships.user_id', '=', 'users.id')
-            ->where('bar_memberships.bar_id', bar()->id)
+        $members = bar()
+            ->memberships()
+            ->join('users', 'users.id', '=', 'bar_memberships.user_id')
+            ->orderBy('users.name')
             ->get()
-            ->load('memberships.role');
+            ->load('role');
 
-        return UserResource::collection($users);
+        return MemberResource::collection($members);
     }
 
     #[OAT\Get(path: '/members/{id}', tags: ['Members'], operationId: 'showMember', description: 'Show member information', summary: 'Show member', parameters: [
@@ -53,23 +54,22 @@ class MemberController extends Controller
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(UserResource::class),
+        new BAO\WrapObjectWithData(MemberResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     public function show(Request $request, int $id): JsonResource
     {
-        $user = User::select('users.*')
-            ->join('bar_memberships', 'bar_memberships.user_id', '=', 'users.id')
-            ->where('bar_memberships.bar_id', bar()->id)
-            ->where('bar_memberships.user_id', $id)
-            ->firstOrFail();
-
-        if ($request->user()->cannot('show', $user)) {
+        if ($request->user()->cannot('show', User::class)) {
             abort(403);
         }
 
-        return new UserResource($user);
+        $membership = bar()
+            ->memberships()
+            ->where('bar_memberships.user_id', $id)
+            ->firstOrFail();
+
+        return new MemberResource($membership);
     }
 
     #[OAT\Post(path: '/members', tags: ['Members'], operationId: 'saveMember', description: 'Create a new member', summary: 'Create member', parameters: [
