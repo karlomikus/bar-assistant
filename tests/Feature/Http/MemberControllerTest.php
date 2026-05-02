@@ -46,6 +46,17 @@ class MemberControllerTest extends TestCase
         );
     }
 
+    public function test_list_member_forbidden_for_guest_member(): void
+    {
+        $membership = $this->setupBarMembership(UserRoleEnum::Guest);
+        $this->actingAs($membership->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $response = $this->getJson('/api/members');
+
+        $response->assertForbidden();
+    }
+
     public function test_show_member_response(): void
     {
         $user = User::factory()->create([
@@ -67,19 +78,18 @@ class MemberControllerTest extends TestCase
         );
     }
 
-    public function test_add_new_user_as_member_response(): void
+    public function test_show_member_forbidden_for_guest_member(): void
     {
-        $this->withHeader('Bar-Assistant-Bar-Id', '1');
-
-        $response = $this->postJson('/api/members', [
-            'name' => 'Test',
-            'email' => 'test@test.com',
-            'password' => 'TEST1',
-            'role_id' => UserRoleEnum::Admin->value,
+        $membership = $this->setupBarMembership(UserRoleEnum::Guest);
+        $member = BarMembership::factory()->for($membership->bar)->create([
+            'user_role_id' => UserRoleEnum::General->value,
         ]);
+        $this->actingAs($membership->user);
 
-        $response->assertCreated();
-        $this->assertNotEmpty($response->headers->get('Location'));
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $response = $this->getJson('/api/members/' . $member->user_id);
+
+        $response->assertForbidden();
     }
 
     public function test_add_existing_user_as_member_response(): void
@@ -94,6 +104,38 @@ class MemberControllerTest extends TestCase
 
         $response->assertCreated();
         $this->assertNotEmpty($response->headers->get('Location'));
+    }
+
+    public function test_add_member_forbidden_for_guest_member(): void
+    {
+        $membership = $this->setupBarMembership(UserRoleEnum::Guest);
+        $user = User::factory()->create();
+        $this->actingAs($membership->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $response = $this->postJson('/api/members', [
+            'email' => $user->email,
+            'role_id' => UserRoleEnum::Admin->value,
+        ]);
+
+        $response->assertForbidden();
+    }
+
+    public function test_add_member_forbidden_without_active_subscription(): void
+    {
+        config(['bar-assistant.enable_billing' => true]);
+
+        $membership = $this->setupBarMembership();
+        $user = User::factory()->create();
+        $this->actingAs($membership->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $response = $this->postJson('/api/members', [
+            'email' => $user->email,
+            'role_id' => UserRoleEnum::Admin->value,
+        ]);
+
+        $response->assertForbidden();
     }
 
     public function test_update_member_response(): void
@@ -116,6 +158,27 @@ class MemberControllerTest extends TestCase
             'bar_id' => $membership->bar_id,
             'user_role_id' => UserRoleEnum::Moderator->value,
         ]);
+    }
+
+    public function test_update_member_forbidden_for_guest_member(): void
+    {
+        $membership = $this->setupBarMembership();
+
+        $guestMember = BarMembership::factory()->for($membership->bar)->create([
+            'user_role_id' => UserRoleEnum::Guest->value,
+        ]);
+        $targetMember = BarMembership::factory()->for($membership->bar)->create([
+            'user_role_id' => UserRoleEnum::General->value,
+        ]);
+
+        $this->actingAs($guestMember->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $response = $this->putJson('/api/members/' . $targetMember->user_id, [
+            'role_id' => UserRoleEnum::Moderator->value,
+        ]);
+
+        $response->assertForbidden();
     }
 
     public function test_delete_member_response(): void

@@ -16,7 +16,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
 use BarAssistant\Application\Bar\DTO\ChangeMemberRoleRequest;
-use Kami\Cocktail\Models\BarMembership;
 
 class MemberController extends Controller
 {
@@ -140,7 +139,7 @@ class MemberController extends Controller
     public function delete(MemberService $memberService, Request $request, int $id): Response
     {
         $user = User::findOrFail($id);
-        if (!$request->user()->isBarAdmin(bar()->id) && $user->id !== $request->user()->id) {
+        if ($request->user()->cannot('delete', $user)) {
             abort(403);
         }
 
