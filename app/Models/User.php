@@ -48,17 +48,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return Collection<int, UserIngredient>
-     */
-    public function getShelfIngredients(int $barId): Collection
-    {
-        /** @var Collection<int, UserIngredient> */
-        $emptyCollection = new Collection();
-
-        return $this->getBarMembership($barId)->userIngredients ?? $emptyCollection;
-    }
-
-    /**
      * @return Collection<int, UserShoppingList>
      */
     public function getShoppingListIngredients(int $barId): Collection
@@ -164,22 +153,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function activateBars(): void
     {
         $this->ownedBars()->update(['status' => BarStatusEnum::Active->value]);
-    }
-
-    /**
-     * @return array<int>
-     */
-    public function getShelfCocktailsOnce(int $barId): array
-    {
-        return once(function () use ($barId) {
-            $cocktailRepo = resolve(CocktailService::class);
-            $userShelfIngredients = $this->getShelfIngredients($barId)->pluck('ingredient_id')->toArray();
-
-            return $cocktailRepo->getCocktailsByIngredients(
-                ingredientIds: $userShelfIngredients,
-                barId: $barId,
-            )->values()->toArray();
-        });
     }
 
     private function hasBarRole(int $barId, UserRoleEnum $role): bool

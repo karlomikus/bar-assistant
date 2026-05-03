@@ -339,15 +339,6 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
         return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first();
     }
 
-    public function getUserShelfMatchPercentage(User $user): float
-    {
-        $currentShelf = $user->getShelfIngredients($this->bar_id);
-        $totalIngredients = $this->ingredients->count();
-        $matchIngredients = $this->ingredients->filter(fn (CocktailIngredient $ci) => $currentShelf->contains('ingredient_id', $ci->ingredient_id))->count();
-
-        return ($matchIngredients / $totalIngredients) * 100;
-    }
-
     public function getBarShelfMatchPercentage(): float
     {
         $currentShelf = $this->bar->shelfIngredients;
@@ -355,18 +346,6 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
         $matchIngredients = $this->ingredients->filter(fn (CocktailIngredient $ci) => $currentShelf->contains('ingredient_id', $ci->ingredient_id))->count();
 
         return ($matchIngredients / $totalIngredients) * 100;
-    }
-
-    public function inUserShelf(User $user): bool
-    {
-        $currentShelf = $user->getShelfIngredients($this->bar_id);
-        foreach ($this->ingredients as $ci) {
-            if (!$currentShelf->contains('ingredient_id', $ci->ingredient_id) && !$ci->optional) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public function inBarShelf(): bool

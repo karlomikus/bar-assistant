@@ -50,19 +50,6 @@ class CocktailIngredient extends Model
         return $this->hasMany(CocktailIngredientSubstitute::class);
     }
 
-    public function userHasInShelfAsSubstitute(User $user): bool
-    {
-        $currentShelf = $user->getShelfIngredients($this->ingredient->bar_id);
-
-        foreach ($this->substitutes as $sub) {
-            if ($currentShelf->contains('ingredient_id', $sub->ingredient_id)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public function barHasInShelfAsSubstitute(): bool
     {
         $currentShelf = $this->ingredient->bar->shelfIngredients;

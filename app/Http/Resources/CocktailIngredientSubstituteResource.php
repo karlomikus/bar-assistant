@@ -18,7 +18,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
         new OAT\Property(property: 'amount', type: 'number', example: 30, nullable: true),
         new OAT\Property(property: 'amount_max', type: 'number', example: 60, nullable: true),
         new OAT\Property(property: 'units', type: 'string', example: 'ml', nullable: true),
-        new OAT\Property(property: 'in_shelf', type: 'boolean', example: true),
         new OAT\Property(property: 'in_bar_shelf', type: 'boolean', example: true),
     ],
     required: ['ingredient', 'amount', 'amount_max', 'units', 'in_shelf', 'in_bar_shelf']
@@ -39,7 +38,6 @@ class CocktailIngredientSubstituteResource extends JsonResource
             'amount' => $this->amount,
             'amount_max' => $this->amount_max,
             'units' => $this->units,
-            'in_shelf' => $this->userHasInShelf($request->user()),
             'in_bar_shelf' => $this->barHasInShelf(),
         ];
     }

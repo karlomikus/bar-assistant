@@ -175,25 +175,6 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
         return $this->cocktailIngredientSubstitutes->pluck('cocktailIngredient.cocktail');
     }
 
-    public function userHasInShelf(User $user): bool
-    {
-        $items = $user->getShelfIngredients($this->bar_id);
-
-        return $items->contains('ingredient_id', $this->id);
-    }
-
-    public function userHasInShelfAsComplexIngredient(User $user): bool
-    {
-        $requiredIngredientIds = $this->ingredientParts->pluck('ingredient_id');
-        if ($requiredIngredientIds->isEmpty()) {
-            return false;
-        }
-
-        $shelfIngredients = $user->getShelfIngredients($this->bar_id)->pluck('ingredient_id');
-
-        return $requiredIngredientIds->every(fn ($id) => $shelfIngredients->contains($id));
-    }
-
     public function barHasInShelf(): bool
     {
         if (isset($this->in_bar_shelf)) {
@@ -399,17 +380,6 @@ class Ingredient extends Model implements UploadableInterface, IsExternalized
     {
         $descendantIds = $this->descendants->pluck('id');
         $shelfIngredientIds = $this->bar->shelfIngredients->pluck('ingredient_id');
-
-        return $this->descendants->whereIn('id', $descendantIds->intersect($shelfIngredientIds))->sortBy('name');
-    }
-
-    /**
-     * @return Collection<array-key, self>
-     */
-    public function userShelfVariants(User $user): Collection
-    {
-        $descendantIds = $this->descendants->pluck('id');
-        $shelfIngredientIds = $user->getShelfIngredients($this->bar_id)->pluck('ingredient_id');
 
         return $this->descendants->whereIn('id', $descendantIds->intersect($shelfIngredientIds))->sortBy('name');
     }

@@ -47,13 +47,6 @@ class CocktailIngredientSubstitute extends Model
         );
     }
 
-    public function userHasInShelf(User $user): bool
-    {
-        $currentShelf = $user->getShelfIngredients($this->ingredient->bar_id);
-
-        return $currentShelf->contains('ingredient_id', $this->ingredient_id);
-    }
-
     public function barHasInShelf(): bool
     {
         return $this->ingredient->bar->shelfIngredients->contains('ingredient_id', $this->ingredient_id);
