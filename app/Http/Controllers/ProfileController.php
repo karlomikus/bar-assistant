@@ -119,9 +119,6 @@ class ProfileController extends Controller
     public function delete(UserService $userService, Request $request): Response
     {
         $user = $request->user();
-        if ($request->user()->cannot('delete', $user)) {
-            abort(403);
-        }
 
         $userService->anonymizeUserAccount(new AnonymizeUserRequest($user->id));
 

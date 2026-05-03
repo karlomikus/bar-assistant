@@ -16,6 +16,7 @@ use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileControllerTest extends TestCase
 {
@@ -55,13 +56,14 @@ class ProfileControllerTest extends TestCase
 
     public function test_update_current_user_with_password_response(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'password' => Hash::make('my-test-password'),
+        ]);
         $this->actingAs($user);
 
         $oldPassword = $user->password;
-        $response = $this->postJson('/api/profile', [
-            'email' => 'new@example.com',
-            'name' => 'Test Guy',
+        $response = $this->postJson('/api/profile/change-password', [
+            'current_password' => 'my-test-password',
             'password' => '12345',
             'password_confirmation' => '12345',
         ]);
@@ -74,12 +76,13 @@ class ProfileControllerTest extends TestCase
 
     public function test_update_current_user_with_password_fail_response(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'password' => Hash::make('my-test-password'),
+        ]);
         $this->actingAs($user);
 
-        $response = $this->postJson('/api/profile', [
-            'email' => 'new@example.com',
-            'name' => 'Test Guy',
+        $response = $this->postJson('/api/profile/change-password', [
+            'current_password' => 'my-test-password',
             'password' => '12345',
             'password_confirmation' => '123451',
         ]);
