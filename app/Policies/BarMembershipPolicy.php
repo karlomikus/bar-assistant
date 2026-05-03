@@ -6,8 +6,9 @@ namespace Kami\Cocktail\Policies;
 
 use Kami\Cocktail\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Kami\Cocktail\Models\BarMembership;
 
-class UserPolicy
+class BarMembershipPolicy
 {
     use HandlesAuthorization;
 
@@ -29,15 +30,15 @@ class UserPolicy
             || $user->isBarModerator(bar()->id);
     }
 
-    public function edit(User $user, User $model): bool
+    public function edit(User $user): bool
     {
         return $user->isBarAdmin(bar()->id)
             || $user->isBarModerator(bar()->id);
     }
 
-    public function delete(User $user, User $model): bool
+    public function delete(User $user, BarMembership $model): bool
     {
-        return $user->id === $model->id
+        return $user->id === $model->user_id
             || $user->isBarAdmin(bar()->id)
             || $user->isBarModerator(bar()->id);
     }

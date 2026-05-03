@@ -16,6 +16,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
 use BarAssistant\Application\Bar\DTO\ChangeMemberRoleRequest;
+use Kami\Cocktail\Models\BarMembership;
 
 class MemberController extends Controller
 {
@@ -34,7 +35,7 @@ class MemberController extends Controller
     ])]
     public function index(Request $request): JsonResource
     {
-        if ($request->user()->cannot('list', User::class)) {
+        if ($request->user()->cannot('list', BarMembership::class)) {
             abort(403);
         }
 
@@ -59,7 +60,7 @@ class MemberController extends Controller
     #[BAO\NotFoundResponse]
     public function show(Request $request, int $id): JsonResource
     {
-        if ($request->user()->cannot('show', User::class)) {
+        if ($request->user()->cannot('show', BarMembership::class)) {
             abort(403);
         }
 
@@ -85,7 +86,7 @@ class MemberController extends Controller
     #[BAO\NotAuthorizedResponse]
     public function store(MemberService $memberService, UserRequest $request): Response
     {
-        if ($request->user()->cannot('create', User::class)) {
+        if ($request->user()->cannot('create', BarMembership::class)) {
             abort(403);
         }
 
@@ -117,11 +118,12 @@ class MemberController extends Controller
     public function update(int $id, MemberService $memberService, UserRequest $request): Response
     {
         $user = User::findOrFail($id);
-        if ($request->user()->cannot('edit', $user)) {
+        $barMembership = $user->getBarMembership(bar()->id);
+
+        if ($request->user()->cannot('edit', $barMembership)) {
             abort(403);
         }
 
-        $barMembership = $user->getBarMembership(bar()->id);
         $memberService->changeMemberRole(new ChangeMemberRoleRequest(
             memberId: $barMembership->id,
             roleId: (int) $request->input('role_id'),
@@ -139,7 +141,9 @@ class MemberController extends Controller
     public function delete(MemberService $memberService, Request $request, int $id): Response
     {
         $user = User::findOrFail($id);
-        if ($request->user()->cannot('delete', $user)) {
+        $barMembership = $user->getBarMembership(bar()->id);
+
+        if ($request->user()->cannot('delete', $barMembership)) {
             abort(403);
         }
 
