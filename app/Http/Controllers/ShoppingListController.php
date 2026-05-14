@@ -21,7 +21,7 @@ use BarAssistant\Application\Bar\DTO\MemberShoppingListRemoveIngredientRequest;
 
 class ShoppingListController extends Controller
 {
-    #[OAT\Get(path: '/members/{id}/shopping-list', tags: ['Users: Shopping list'], operationId: 'listShoppingListIngredients', description: 'List all ingredients on a shopping list', summary: 'Show shopping list', parameters: [
+    #[OAT\Get(path: '/members/{id}/shopping-list', tags: ['Member shopping list'], operationId: 'listShoppingListIngredients', description: 'List all ingredients on a shopping list', summary: 'Show shopping list', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
@@ -41,7 +41,7 @@ class ShoppingListController extends Controller
         );
     }
 
-    #[OAT\Post(path: '/members/{id}/shopping-list/batch-store', tags: ['Users: Shopping list'], operationId: 'batchStoreShoppingListIngredients', description: 'Add multiple ingredients to a shopping list', summary: 'Add ingredients', parameters: [
+    #[OAT\Post(path: '/members/{id}/shopping-list/batch-store', tags: ['Member shopping list'], operationId: 'batchStoreShoppingListIngredients', description: 'Add multiple ingredients to a shopping list', summary: 'Add ingredients', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -84,7 +84,7 @@ class ShoppingListController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Post(path: '/members/{id}/shopping-list/batch-delete', tags: ['Users: Shopping list'], operationId: 'batchDeleteShoppingListIngredients', description: 'Remove multiple ingredients from shopping list', summary: 'Delete ingredients', parameters: [
+    #[OAT\Post(path: '/members/{id}/shopping-list/batch-delete', tags: ['Member shopping list'], operationId: 'batchDeleteShoppingListIngredients', description: 'Remove multiple ingredients from shopping list', summary: 'Delete ingredients', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -120,7 +120,7 @@ class ShoppingListController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/members/{id}/shopping-list/share', tags: ['Users: Shopping list'], operationId: 'shareShoppingList', description: 'Get a shopping list in a specific format', summary: 'Share shopping list', parameters: [
+    #[OAT\Get(path: '/members/{id}/shopping-list/share', tags: ['Member shopping list'], operationId: 'shareShoppingList', description: 'Get a shopping list in a specific format', summary: 'Share shopping list', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
         new OAT\Parameter(name: 'type', in: 'query', description: 'Type of share. Available types: `markdown`.', schema: new OAT\Schema(type: 'string')),

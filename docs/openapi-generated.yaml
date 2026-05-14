@@ -5179,6 +5179,772 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/members/{id}/inventories':
+    get:
+      tags:
+        - 'Member inventory'
+      summary: 'List member inventories'
+      description: 'List all inventories owned by the current member'
+      operationId: listMemberInventories
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/MemberInventory' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    post:
+      tags:
+        - 'Member inventory'
+      summary: 'Create member inventory'
+      description: 'Create a new inventory for the current member'
+      operationId: createMemberInventory
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: 'Back Bar'
+              type: object
+      responses:
+        '201':
+          description: 'Successful response'
+          headers:
+            Location:
+              description: 'URL of the inventories collection'
+              schema:
+                type: string
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/members/{id}/inventories/{inventoryId}':
+    delete:
+      tags:
+        - 'Member inventory'
+      summary: 'Delete member inventory'
+      description: 'Delete a member inventory'
+      operationId: deleteMemberInventory
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: inventoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    patch:
+      tags:
+        - 'Member inventory'
+      summary: 'Update member inventory'
+      description: 'Rename a member inventory'
+      operationId: updateMemberInventory
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: inventoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: 'Back Bar'
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/members/{id}/inventories/{inventoryId}/ingredients':
+    get:
+      tags:
+        - 'Member inventory'
+      summary: 'List member inventory ingredients'
+      description: 'List ingredients stored in a member inventory'
+      operationId: listMemberInventoryIngredients
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: inventoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/members/{id}/inventories/{inventoryId}/ingredients/batch-store':
+    post:
+      tags:
+        - 'Member inventory'
+      summary: 'Save member inventory ingredients'
+      description: 'Save multiple ingredients to a member inventory'
+      operationId: batchStoreMemberInventoryIngredients
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: inventoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ingredients:
+                  type: array
+                  items: { type: integer }
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/members/{id}/inventories/{inventoryId}/ingredients/batch-delete':
+    post:
+      tags:
+        - 'Member inventory'
+      summary: 'Delete member inventory ingredients'
+      description: 'Delete multiple ingredients from a member inventory'
+      operationId: batchDeleteMemberInventoryIngredients
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: inventoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ingredients:
+                  type: array
+                  items: { type: integer }
+              type: object
+      responses:
+        '204':
+          description: 'Successful response'
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/members/{id}/inventories/{inventoryId}/cocktails':
+    get:
+      tags:
+        - 'Member inventory'
+      summary: 'List member inventory cocktails'
+      description: 'List cocktails makeable from a member inventory'
+      operationId: listMemberInventoryCocktails
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: inventoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/members/{id}/inventories/{inventoryId}/recommend':
+    get:
+      tags:
+        - 'Member inventory'
+      summary: 'Recommend member inventory ingredients'
+      description: 'Recommend ingredients for a member inventory'
+      operationId: recommendMemberInventoryIngredients
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: inventoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/IngredientRecommend' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/members/{id}/cocktail-favorites':
+    get:
+      tags:
+        - 'Member inventory'
+      summary: 'List favorites'
+      description: 'Show a list of cocktails user has favorited'
+      operationId: listUserFavoriteCocktails
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
+                type: object
   /menu:
     get:
       tags:
@@ -6817,776 +7583,10 @@ paths:
                 type: object
       security:
         - {  }
-  '/members/{id}/inventories':
-    get:
-      tags:
-        - 'Member inventory'
-      summary: 'List member inventories'
-      description: 'List all inventories owned by the current member'
-      operationId: listMemberInventories
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/MemberInventory' } }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-    post:
-      tags:
-        - 'Member inventory'
-      summary: 'Create member inventory'
-      description: 'Create a new inventory for the current member'
-      operationId: createMemberInventory
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              required:
-                - name
-              properties:
-                name:
-                  type: string
-                  example: 'Back Bar'
-              type: object
-      responses:
-        '201':
-          description: 'Successful response'
-          headers:
-            Location:
-              description: 'URL of the inventories collection'
-              schema:
-                type: string
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/members/{id}/inventories/{inventoryId}':
-    delete:
-      tags:
-        - 'Member inventory'
-      summary: 'Delete member inventory'
-      description: 'Delete a member inventory'
-      operationId: deleteMemberInventory
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-        -
-          name: inventoryId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '204':
-          description: 'Successful response'
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-    patch:
-      tags:
-        - 'Member inventory'
-      summary: 'Update member inventory'
-      description: 'Rename a member inventory'
-      operationId: updateMemberInventory
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-        -
-          name: inventoryId
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              required:
-                - name
-              properties:
-                name:
-                  type: string
-                  example: 'Back Bar'
-              type: object
-      responses:
-        '204':
-          description: 'Successful response'
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/members/{id}/inventories/{inventoryId}/ingredients':
-    get:
-      tags:
-        - 'Member inventory'
-      summary: 'List member inventory ingredients'
-      description: 'List ingredients stored in a member inventory'
-      operationId: listMemberInventoryIngredients
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-        -
-          name: inventoryId
-          in: path
-          required: true
-          schema:
-            type: integer
-        -
-          name: page
-          in: query
-          description: 'Set current page number'
-          schema:
-            type: integer
-        -
-          name: per_page
-          in: query
-          description: 'Set number of results per page'
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/IngredientBasic' } }
-                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/members/{id}/inventories/{inventoryId}/ingredients/batch-store':
-    post:
-      tags:
-        - 'Member inventory'
-      summary: 'Save member inventory ingredients'
-      description: 'Save multiple ingredients to a member inventory'
-      operationId: batchStoreMemberInventoryIngredients
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-        -
-          name: inventoryId
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                ingredients:
-                  type: array
-                  items: { type: integer }
-              type: object
-      responses:
-        '204':
-          description: 'Successful response'
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/members/{id}/inventories/{inventoryId}/ingredients/batch-delete':
-    post:
-      tags:
-        - 'Member inventory'
-      summary: 'Delete member inventory ingredients'
-      description: 'Delete multiple ingredients from a member inventory'
-      operationId: batchDeleteMemberInventoryIngredients
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-        -
-          name: inventoryId
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                ingredients:
-                  type: array
-                  items: { type: integer }
-              type: object
-      responses:
-        '204':
-          description: 'Successful response'
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/members/{id}/inventories/{inventoryId}/cocktails':
-    get:
-      tags:
-        - 'Member inventory'
-      summary: 'List member inventory cocktails'
-      description: 'List cocktails makeable from a member inventory'
-      operationId: listMemberInventoryCocktails
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-        -
-          name: inventoryId
-          in: path
-          required: true
-          schema:
-            type: integer
-        -
-          name: page
-          in: query
-          description: 'Set current page number'
-          schema:
-            type: integer
-        -
-          name: per_page
-          in: query
-          description: 'Set number of results per page'
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
-                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/members/{id}/inventories/{inventoryId}/recommend':
-    get:
-      tags:
-        - 'Member inventory'
-      summary: 'Recommend member inventory ingredients'
-      description: 'Recommend ingredients for a member inventory'
-      operationId: recommendMemberInventoryIngredients
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-        -
-          name: inventoryId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/IngredientRecommend' } }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/members/{id}/cocktail-favorites':
-    get:
-      tags:
-        - 'Member inventory'
-      summary: 'List favorites'
-      description: 'Show a list of cocktails user has favorited'
-      operationId: listUserFavoriteCocktails
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-        -
-          name: Bar-Assistant-Bar-Id
-          in: header
-          description: 'Database id of a bar.'
-          required: false
-          schema:
-            type: integer
-        -
-          name: page
-          in: query
-          description: 'Set current page number'
-          schema:
-            type: integer
-        -
-          name: per_page
-          in: query
-          description: 'Set number of results per page'
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
-                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
-                type: object
   '/members/{id}/shopping-list':
     get:
       tags:
-        - 'Users: Shopping list'
+        - 'Member shopping list'
       summary: 'Show shopping list'
       description: 'List all ingredients on a shopping list'
       operationId: listShoppingListIngredients
@@ -7645,7 +7645,7 @@ paths:
   '/members/{id}/shopping-list/batch-store':
     post:
       tags:
-        - 'Users: Shopping list'
+        - 'Member shopping list'
       summary: 'Add ingredients'
       description: 'Add multiple ingredients to a shopping list'
       operationId: batchStoreShoppingListIngredients
@@ -7710,7 +7710,7 @@ paths:
   '/members/{id}/shopping-list/batch-delete':
     post:
       tags:
-        - 'Users: Shopping list'
+        - 'Member shopping list'
       summary: 'Delete ingredients'
       description: 'Remove multiple ingredients from shopping list'
       operationId: batchDeleteShoppingListIngredients
@@ -7779,7 +7779,7 @@ paths:
   '/members/{id}/shopping-list/share':
     get:
       tags:
-        - 'Users: Shopping list'
+        - 'Member shopping list'
       summary: 'Share shopping list'
       description: 'Get a shopping list in a specific format'
       operationId: shareShoppingList
@@ -9342,22 +9342,6 @@ components:
           example: false
         formatted:
           $ref: '#/components/schemas/AmountFormats'
-        in_shelf:
-          description: "Is the ingredient in the user's shelf"
-          type: boolean
-          example: true
-        in_shelf_as_variant:
-          description: "Is the ingredient in the user's shelf as a variant"
-          type: boolean
-          example: true
-        in_shelf_as_substitute:
-          description: "Is the ingredient in the user's shelf as a substitute"
-          type: boolean
-          example: true
-        in_shelf_as_complex_ingredient:
-          description: "Is the ingredient in the user's shelf as a complex ingredient"
-          type: boolean
-          example: true
         in_bar_shelf:
           description: 'Is the ingredient in the bar shelf'
           type: boolean
@@ -9402,9 +9386,6 @@ components:
             - string
             - 'null'
           example: ml
-        in_shelf:
-          type: boolean
-          example: true
         in_bar_shelf:
           type: boolean
           example: true
@@ -9649,10 +9630,6 @@ components:
             -
               type: 'null'
           description: 'User who last updated the cocktail'
-        in_shelf:
-          description: "Is the cocktail in the user's shelf"
-          type: boolean
-          example: true
         in_bar_shelf:
           description: "Is the cocktail in the bar's shelf"
           type: boolean
@@ -10253,20 +10230,16 @@ components:
               type: boolean
               example: false
           type: object
-        in_shelf:
-          description: 'Whether the user has this ingredient in their shelf'
-          type: boolean
-          example: true
-        in_shelf_as_variant:
-          description: 'Whether the user has this ingredient in their shelf as a variant'
-          type: boolean
-          example: true
         in_bar_shelf:
           description: 'Whether the bar has this ingredient in their shelf'
           type: boolean
           example: true
         in_bar_shelf_as_variant:
           description: 'Whether the bar has this ingredient in their shelf as a variant'
+          type: boolean
+          example: true
+        in_bar_shelf_as_complex:
+          description: 'Whether the bar has this ingredient in stock as a makeable ingredient'
           type: boolean
           example: true
         in_shopping_list:
@@ -10365,6 +10338,50 @@ components:
             - string
             - 'null'
           format: date-time
+      type: object
+    User:
+      description: 'Represents a user in current bar'
+      required:
+        - id
+        - name
+        - email
+        - is_subscribed
+        - role
+      properties:
+        id:
+          description: 'User ID'
+          type: integer
+          example: 1
+        name:
+          description: 'User name'
+          type: string
+          example: Bartender
+        email:
+          description: 'User email'
+          type: string
+          example: test@email.com
+        is_subscribed:
+          description: 'Subscription status'
+          type: boolean
+          example: true
+        role:
+          required:
+            - id
+            - name
+          properties:
+            id:
+              description: 'Role ID'
+              type:
+                - integer
+                - 'null'
+              example: 1
+            name:
+              description: 'Role name'
+              type:
+                - string
+                - 'null'
+              example: Admin
+          type: object
       type: object
     MenuCategory:
       description: 'Menu Category resource'
@@ -11090,55 +11107,6 @@ components:
           description: 'The name of the user'
           type: string
           example: Bartender
-      type: object
-    User:
-      description: 'Represents a user in current bar'
-      required:
-        - id
-        - name
-        - email
-        - is_subscribed
-        - role
-      properties:
-        id:
-          description: 'User ID'
-          type: integer
-          example: 1
-        name:
-          description: 'User name'
-          type: string
-          example: Bartender
-        email:
-          description: 'User email'
-          type: string
-          example: test@email.com
-        is_subscribed:
-          description: 'Subscription status'
-          type: boolean
-          example: true
-        role:
-          required:
-            - bar_id
-            - role_id
-            - role_name
-          properties:
-            bar_id:
-              description: 'Bar ID'
-              type: integer
-              example: 1
-            role_id:
-              description: 'Role ID'
-              type:
-                - integer
-                - 'null'
-              example: 1
-            role_name:
-              description: 'Role name'
-              type:
-                - string
-                - 'null'
-              example: Admin
-          type: object
       type: object
     ShoppingList:
       description: 'Shopping list resource'
@@ -12215,6 +12183,9 @@ tags:
     name: Members
     description: Members
   -
+    name: 'Member inventory'
+    description: 'Member inventory'
+  -
     name: Menu
     description: Menu
   -
@@ -12242,11 +12213,8 @@ tags:
     name: Server
     description: Server
   -
-    name: 'Member inventory'
-    description: 'Member inventory'
-  -
-    name: 'Users: Shopping list'
-    description: 'Users: Shopping list'
+    name: 'Member shopping list'
+    description: 'Member shopping list'
   -
     name: Stats
     description: Stats

@@ -182,4 +182,13 @@ class ProfileControllerTest extends TestCase
         $this->assertTrue(str_starts_with((string) $anonUser->email, 'userdeleted'));
         $this->assertNull($anonUser->email_verified_at);
     }
+
+    public function test_unauthenticated_access_policy(): void
+    {
+        $this->getJson('/api/profile')->assertUnauthorized();
+        $this->postJson('/api/profile')->assertUnauthorized();
+        $this->postJson('/api/profile/change-password')->assertUnauthorized();
+        $this->deleteJson('/api/profile')->assertUnauthorized();
+        $this->deleteJson('/api/profile/sso/github')->assertUnauthorized();
+    }
 }
