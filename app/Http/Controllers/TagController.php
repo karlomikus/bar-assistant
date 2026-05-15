@@ -58,13 +58,11 @@ class TagController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\TagRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(TagResource::class),
-    ], headers: [
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(TagRequest $request): JsonResponse
+    public function store(TagRequest $request): Response
     {
         if ($request->user()->cannot('create', Tag::class)) {
             abort(403);
@@ -75,10 +73,7 @@ class TagController extends Controller
         $tag->bar_id = bar()->id;
         $tag->save();
 
-        return (new TagResource($tag))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('tags.show', $tag->id));
+        return new Response(status: 201, headers: ['Location' => route('tags.show', $tag->id, false)]);
     }
 
     #[OAT\Put(path: '/tags/{id}', tags: ['Tag'], operationId: 'updateTag', description: 'Update a single tag', summary: 'Update tag', parameters: [
@@ -89,12 +84,10 @@ class TagController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\TagRequest::class),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(TagResource::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(TagRequest $request, int $id): JsonResource
+    public function update(TagRequest $request, int $id): Response
     {
         $tag = Tag::findOrFail($id);
 
@@ -110,7 +103,7 @@ class TagController extends Controller
             Cocktail::find($cocktailIds)->each(fn ($cocktail) => $cocktail->searchable());
         }
 
-        return new TagResource($tag);
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/tags/{id}', tags: ['Tag'], operationId: 'deleteTag', description: 'Delete a single tag', summary: 'Delete tag', parameters: [

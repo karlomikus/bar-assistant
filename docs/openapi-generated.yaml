@@ -8278,14 +8278,6 @@ paths:
               description: 'URL of the new resource'
               schema:
                 type: string
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Tag' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -8393,25 +8385,8 @@ paths:
             schema:
               $ref: '#/components/schemas/TagRequest'
       responses:
-        '200':
+        '204':
           description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Tag' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
