@@ -151,4 +151,44 @@ class BarInventoryController extends Controller
 
         return response()->json(['data' => $possibleIngredients]);
     }
+
+    #[OAT\Get(path: '/bars/{id}/inventory/ingredients/{idOrSlug}/extra', tags: ['Bar inventory'], operationId: 'extraIngredients', description: 'Show a list of extra cocktails you can make if you add given ingredient to bar inventory', summary: 'Extra cocktails', parameters: [
+        new OAT\Parameter(name: 'id', in: 'path', required: true, description: 'Database id of a bar', schema: new OAT\Schema(type: 'integer')),
+        new OAT\Parameter(name: 'idOrSlug', in: 'path', required: true, description: 'Database id or slug of an ingredient', schema: new OAT\Schema(type: 'integer')),
+    ])]
+    #[BAO\SuccessfulResponse(content: [
+        new BAO\WrapItemsWithData(CocktailBasicResource::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function extra(Request $request, CocktailService $cocktailRepo, int $id, string $idOrSlug): JsonResponse
+    {
+        $bar = Bar::findOrFail($id);
+        if ($request->user()->cannot('show', $bar)) {
+            abort(403);
+        }
+
+        $ingredient = Ingredient::where('id', $idOrSlug)
+            ->orWhere('slug', $idOrSlug)
+            ->where('bar_id', $id)
+            ->firstOrFail();
+
+        $barShelfIngredients = $bar->shelfIngredients->pluck('ingredient_id');
+        $currentShelfCocktails = $cocktailRepo->getCocktailsByIngredients($barShelfIngredients->toArray(), $ingredient->bar_id)->values();
+        $extraShelfCocktails = $cocktailRepo->getCocktailsByIngredients($barShelfIngredients->push($ingredient->id)->toArray(), $ingredient->bar_id)->values();
+
+        if ($currentShelfCocktails->count() === $extraShelfCocktails->count()) {
+            return response()->json(['data' => []]);
+        }
+
+        $extraCocktails = Cocktail::whereIn('id', $extraShelfCocktails->diff($currentShelfCocktails)->values())->where('bar_id', '=', $ingredient->bar_id)->get();
+
+        return response()->json([
+            'data' => $extraCocktails->map(fn (Cocktail $cocktail) => [
+                'id' => $cocktail->id,
+                'slug' => $cocktail->slug,
+                'name' => $cocktail->name,
+            ])
+        ]);
+    }
 }

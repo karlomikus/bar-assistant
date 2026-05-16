@@ -1122,6 +1122,82 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/bars/{id}/inventory/ingredients/{idOrSlug}/extra':
+    get:
+      tags:
+        - 'Bar inventory'
+      summary: 'Extra cocktails'
+      description: 'Show a list of extra cocktails you can make if you add given ingredient to bar inventory'
+      operationId: extraIngredients
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a bar'
+          required: true
+          schema:
+            type: integer
+        -
+          name: idOrSlug
+          in: path
+          description: 'Database id or slug of an ingredient'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /calculators:
     get:
       tags:
@@ -3795,118 +3871,6 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  /images:
-    get:
-      tags:
-        - Images
-      summary: 'List images'
-      description: 'List all images uploaded by the authenticated user'
-      operationId: listImages
-      parameters:
-        -
-          name: page
-          in: query
-          description: 'Set current page number'
-          schema:
-            type: integer
-        -
-          name: per_page
-          in: query
-          description: 'Set number of results per page'
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/Image' } }
-                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
-                type: object
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-    post:
-      tags:
-        - Images
-      summary: 'Upload image'
-      description: 'Used to upload multiple images at once. Uploaded images via this endpoint will not be attached to any resource. Images are converted to WebP format with 85% quality of the original image.'
-      operationId: uploadImage
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              required:
-                - images
-              properties:
-                images:
-                  type: array
-                  items: { $ref: '#/components/schemas/ImageRequest' }
-              type: object
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/Image' } }
-                type: object
   '/images/{id}':
     get:
       tags:
@@ -4026,6 +3990,45 @@ paths:
               schema:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  /images:
+    post:
+      tags:
+        - Images
+      summary: 'Upload image'
+      description: 'Used to upload multiple images at once. Uploaded images via this endpoint will not be attached to any resource. Images are converted to WebP format with 85% quality of the original image.'
+      operationId: uploadImage
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - images
+              properties:
+                images:
+                  type: array
+                  items: { $ref: '#/components/schemas/ImageRequest' }
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Image' } }
                 type: object
   '/images/{id}/thumb':
     get:
@@ -4574,75 +4577,6 @@ paths:
       responses:
         '204':
           description: 'Successful response'
-        '403':
-          description: 'You are not authorized for this action.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-  '/ingredients/{id}/extra':
-    get:
-      tags:
-        - Ingredients
-      summary: 'Extra cocktails'
-      description: 'Show a list of extra cocktails you can make if you add given ingredient to your shelf'
-      operationId: extraIngredients
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:

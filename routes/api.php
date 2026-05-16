@@ -139,7 +139,6 @@ Route::middleware($apiMiddleware)->group(function () {
     });
 
     Route::prefix('images')->middleware(['ability:*'])->group(function () {
-        Route::get('/', [ImageController::class, 'index']);
         Route::get('/{id}', [ImageController::class, 'show']);
         Route::post('/', [ImageController::class, 'store']);
         Route::delete('/{id}', [ImageController::class, 'delete']);
@@ -248,6 +247,7 @@ Route::middleware($apiMiddleware)->group(function () {
             Route::post('/ingredients/batch-store', [BarInventoryController::class, 'batchStoreBarIngredients'])->middleware(['ability:*']);
             Route::post('/ingredients/batch-delete', [BarInventoryController::class, 'batchDeleteBarIngredients'])->middleware(['ability:*']);
             Route::get('/cocktails', [BarInventoryController::class, 'barCocktails'])->middleware(['ability:bars.read']);
+            Route::get('/ingredients/{idOrSlug}/extra', [BarInventoryController::class, 'extra'])->middleware(['ability:*']);
         });
 
         Route::prefix('/{id}/stats')->middleware(['ability:*'])->group(function () {

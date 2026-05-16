@@ -109,8 +109,6 @@ class CocktailControllerTest extends TestCase
         $response->assertJsonCount(1, 'data');
         $response = $this->getJson('/api/cocktails?filter[created_user_id]=' . $user->id);
         $response->assertJsonCount(1, 'data');
-        $response = $this->getJson('/api/cocktails?filter[on_shelf]=true');
-        $response->assertJsonCount(0, 'data');
         $response = $this->getJson('/api/cocktails?filter[favorites]=true');
         $response->assertJsonCount(1, 'data');
         $response = $this->getJson('/api/cocktails?filter[is_public]=true');
@@ -248,7 +246,6 @@ class CocktailControllerTest extends TestCase
                 ->where('data.rating.total_votes', 2)
                 ->where('data.glass.id', $glass->id)
                 ->where('data.method.id', $method->id)
-                ->where('data.in_shelf', false)
                 ->has('data.abv')
                 ->has('data.ingredients', 1, function (AssertableJson $jsonIng) {
                     $jsonIng

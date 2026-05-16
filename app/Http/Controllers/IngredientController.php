@@ -245,43 +245,6 @@ class IngredientController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/ingredients/{id}/extra', tags: ['Ingredients'], operationId: 'extraIngredients', description: 'Show a list of extra cocktails you can make if you add given ingredient to your shelf', summary: 'Extra cocktails', parameters: [
-        new BAO\Parameters\DatabaseIdParameter(),
-    ])]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(CocktailBasicResource::class),
-    ])]
-    #[BAO\NotAuthorizedResponse]
-    #[BAO\NotFoundResponse]
-    public function extra(Request $request, CocktailService $cocktailRepo, string $idOrSlug): JsonResponse
-    {
-        $ingredient = Ingredient::where('id', $idOrSlug)
-            ->orWhere('slug', $idOrSlug)
-            ->firstOrFail();
-
-        if ($request->user()->cannot('show', $ingredient)) {
-            abort(403);
-        }
-
-        $currentShelfIngredients = $request->user()->getShelfIngredients($ingredient->bar_id)->pluck('ingredient_id');
-        $currentShelfCocktails = $cocktailRepo->getCocktailsByIngredients($currentShelfIngredients->toArray(), $ingredient->bar_id)->values();
-        $extraShelfCocktails = $cocktailRepo->getCocktailsByIngredients($currentShelfIngredients->push($ingredient->id)->toArray(), $ingredient->bar_id)->values();
-
-        if ($currentShelfCocktails->count() === $extraShelfCocktails->count()) {
-            return response()->json(['data' => []]);
-        }
-
-        $extraCocktails = Cocktail::whereIn('id', $extraShelfCocktails->diff($currentShelfCocktails)->values())->where('bar_id', '=', $ingredient->bar_id)->get();
-
-        return response()->json([
-            'data' => $extraCocktails->map(fn (Cocktail $cocktail) => [
-                'id' => $cocktail->id,
-                'slug' => $cocktail->slug,
-                'name' => $cocktail->name,
-            ])
-        ]);
-    }
-
     #[OAT\Get(path: '/ingredients/{id}/cocktails', tags: ['Ingredients'], operationId: 'ingredientCocktails', description: 'List all cocktails that use this ingredient', summary: 'List cocktails', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\PageParameter(),

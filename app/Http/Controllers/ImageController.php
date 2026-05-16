@@ -24,22 +24,6 @@ use BarAssistant\Application\Image\DTO\UpdateImageRequest;
 
 class ImageController extends Controller
 {
-    #[OAT\Get(path: '/images', tags: ['Images'], operationId: 'listImages', summary: 'List images', description: 'List all images uploaded by the authenticated user', parameters: [
-        new BAO\Parameters\PageParameter(),
-        new BAO\Parameters\PerPageParameter(),
-    ])]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(ImageResource::class),
-    ])]
-    #[BAO\NotAuthorizedResponse]
-    #[BAO\NotFoundResponse]
-    public function index(Request $request): JsonResource
-    {
-        $images = Image::where('created_user_id', $request->user()->id)->orderBy('created_at', 'desc')->paginate($request->input('per_page', 100));
-
-        return ImageResource::collection($images->withQueryString());
-    }
-
     #[OAT\Get(path: '/images/{id}', tags: ['Images'], operationId: 'showImage', description: 'Show a single image', summary: 'Show image', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]

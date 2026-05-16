@@ -328,44 +328,6 @@ class IngredientControllerTest extends TestCase
         $this->assertDatabaseMissing('ingredients', ['id' => $ing->id]);
     }
 
-    public function test_ingredients_extra_response(): void
-    {
-        $membership = $this->setupBarMembership();
-        $this->actingAs($membership->user);
-
-        $ingredient1 = Ingredient::factory()->for($membership->bar)->create();
-        $ingredient2 = Ingredient::factory()->for($membership->bar)->create();
-        UserIngredient::factory()->for($membership)->for($ingredient1)->create();
-
-        $cocktail = Cocktail::factory()
-            ->for($membership->bar)
-            ->has(CocktailIngredient::factory()->state(['optional' => false])->for(
-                $ingredient1
-            ), 'ingredients')
-            ->has(CocktailIngredient::factory()->state(['optional' => false])->for(
-                $ingredient2
-            ), 'ingredients')
-            ->create();
-
-        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
-
-        $response = $this->getJson('/api/ingredients/' . $ingredient1->id . '/extra');
-        $response->assertJsonCount(0, 'data');
-
-        $response = $this->getJson('/api/ingredients/' . $ingredient2->id . '/extra');
-
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data', 1, function (AssertableJson $jsonIng) use ($cocktail) {
-                    $jsonIng
-                        ->where('id', $cocktail->id)
-                        ->where('slug', $cocktail->slug)
-                        ->where('name', $cocktail->name);
-                })
-        );
-    }
-
     public function test_token_read_abilities(): void
     {
         $user = User::factory()->create();
