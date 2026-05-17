@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Infrastructure;
 
-use RuntimeException;
 use Illuminate\Support\Facades\DB;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Bar\MemberId;
@@ -105,11 +104,6 @@ final class EloquentMemberInventoryRepository implements MemberInventoryReposito
 
     private static function map(ModelMemberInventory $model): MemberInventory
     {
-        $createdAt = $model->created_at?->toDateTimeImmutable();
-        if ($createdAt === null) {
-            throw new RuntimeException('Cannot map member inventory without a creation timestamp.');
-        }
-
         $ingredients = [];
         foreach ($model->inventoryIngredients as $modelInventoryIngredient) {
             $ingredients[] = new IngredientInventoryItem(
