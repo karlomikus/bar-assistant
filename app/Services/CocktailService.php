@@ -136,24 +136,4 @@ final readonly class CocktailService
             ->limit($limit)
             ->get();
     }
-
-    /**
-     * @return Collection<array-key, mixed>
-     */
-    public function getMemberFavoriteCocktailTags(int $barMembershipId, ?int $limit = 15): Collection
-    {
-        $query = $this->db->table('tags')
-            ->selectRaw('tags.id, tags.name, COUNT(cocktail_favorites.cocktail_id) AS cocktails_count')
-            ->join('cocktail_tag', 'cocktail_tag.tag_id', '=', 'tags.id')
-            ->join('cocktail_favorites', 'cocktail_favorites.cocktail_id', '=', 'cocktail_tag.cocktail_id')
-            ->where('cocktail_favorites.bar_membership_id', $barMembershipId)
-            ->groupBy('tags.id')
-            ->orderBy('cocktails_count', 'DESC');
-
-        if ($limit) {
-            $query->limit($limit);
-        }
-
-        return $query->get();
-    }
 }
