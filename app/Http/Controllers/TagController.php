@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Tag;
 use OpenApi\Attributes as OAT;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;

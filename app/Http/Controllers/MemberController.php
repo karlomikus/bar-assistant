@@ -9,14 +9,14 @@ use Illuminate\Http\Response;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
+use Kami\Cocktail\Models\BarMembership;
 use Kami\Cocktail\Http\Requests\UserRequest;
-use Kami\Cocktail\Http\Resources\MemberResource;
 use BarAssistant\Application\Bar\MemberService;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Http\Resources\MemberResource;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
 use BarAssistant\Application\Bar\DTO\ChangeMemberRoleRequest;
-use Kami\Cocktail\Models\BarMembership;
 
 class MemberController extends Controller
 {

@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
-use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Http\Resources\BarTopStatsResource;

@@ -8,11 +8,11 @@ use Tests\TestCase;
 use BarAssistant\Domain\Bar\BarId;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
+use BarAssistant\Domain\Bar\BarInventory;
 use Kami\Cocktail\Models\ComplexIngredient;
+use BarAssistant\Domain\Ingredient\IngredientId;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Infrastructure\EloquentBarInventoryRepository;
-use BarAssistant\Domain\Bar\BarInventory;
-use BarAssistant\Domain\Ingredient\IngredientId;
 
 final class EloquentBarInventoryRepositoryTest extends TestCase
 {

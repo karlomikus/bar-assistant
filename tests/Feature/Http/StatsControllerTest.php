@@ -10,7 +10,6 @@ use Kami\Cocktail\Models\Collection;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\BarMembership;
-use Kami\Cocktail\Models\UserIngredient;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
 use Illuminate\Testing\Fluent\AssertableJson;

@@ -12,8 +12,8 @@ use BarAssistant\Domain\Common\Dilution;
 use BarAssistant\Domain\Cocktail\MethodId;
 use BarAssistant\Domain\Cocktail\CocktailMethod;
 use BarAssistant\Domain\Common\RecordTimestamps;
-use Kami\Cocktail\Models\CocktailMethod as ModelCocktailMethod;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Models\CocktailMethod as ModelCocktailMethod;
 use Kami\Cocktail\Infrastructure\EloquentCocktailMethodRepository;
 
 final class EloquentCocktailMethodRepositoryTest extends TestCase

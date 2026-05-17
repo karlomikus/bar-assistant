@@ -7,15 +7,15 @@ namespace Tests\Integration\Infrastructure;
 use Tests\TestCase;
 use DateTimeImmutable;
 use BarAssistant\Domain\Bar\BarId;
-use BarAssistant\Domain\Common\Name;
 use Kami\Cocktail\Models\Cocktail;
+use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Cocktail\CollectionId;
 use BarAssistant\Domain\Common\RecordTimestamps;
-use Kami\Cocktail\Models\Collection as ModelCollection;
-use BarAssistant\Domain\Cocktail\CocktailCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use BarAssistant\Domain\Cocktail\CocktailCollection;
+use Kami\Cocktail\Models\Collection as ModelCollection;
 use Kami\Cocktail\Infrastructure\EloquentCocktailCollectionRepository;
 
 final class EloquentCocktailCollectionRepositoryTest extends TestCase

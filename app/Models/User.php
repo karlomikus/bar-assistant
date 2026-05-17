@@ -7,7 +7,6 @@ namespace Kami\Cocktail\Models;
 use Laravel\Paddle\Billable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
-use Kami\Cocktail\Services\CocktailService;
 use Illuminate\Database\Eloquent\Collection;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;

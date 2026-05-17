@@ -12,7 +12,6 @@ use Kami\Cocktail\Http\Controllers\MenuController;
 use Kami\Cocktail\Http\Controllers\NoteController;
 use Kami\Cocktail\Http\Controllers\GlassController;
 use Kami\Cocktail\Http\Controllers\ImageController;
-use Kami\Cocktail\Http\Controllers\MemberInventoryController;
 use Kami\Cocktail\Http\Controllers\StatsController;
 use Kami\Cocktail\Http\Controllers\ExportController;
 use Kami\Cocktail\Http\Controllers\ImportController;
@@ -37,6 +36,7 @@ use Kami\Cocktail\Http\Controllers\SubscriptionController;
 use Kami\Cocktail\Http\Controllers\PriceCategoryController;
 use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
+use Kami\Cocktail\Http\Controllers\MemberInventoryController;
 use Kami\Cocktail\Http\Middleware\AiImageProviderIsConfigured;
 
 /*

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Policies;
 
 use Kami\Cocktail\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Kami\Cocktail\Models\BarMembership;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BarMembershipPolicy
 {

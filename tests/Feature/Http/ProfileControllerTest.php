@@ -10,13 +10,13 @@ use Laravel\Paddle\Cashier;
 use Kami\Cocktail\Models\User;
 use Laravel\Paddle\Subscription;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Kami\Cocktail\Mail\AccountDeleted;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 
 class ProfileControllerTest extends TestCase
 {

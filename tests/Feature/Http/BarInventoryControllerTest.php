@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\Feature\Http;
 
 use Tests\TestCase;
+use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
+use Kami\Cocktail\Models\CocktailIngredient;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Kami\Cocktail\Models\Cocktail;
-use Kami\Cocktail\Models\CocktailIngredient;
 
 class BarInventoryControllerTest extends TestCase
 {
