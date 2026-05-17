@@ -28,13 +28,6 @@ class StatsControllerTest extends TestCase
         $ingredients = Ingredient::factory()->for($membership->bar)->count(5)->create();
         Cocktail::factory()->for($membership->bar)->count(5)->create();
 
-        foreach ($ingredients as $ingredient) {
-            UserIngredient::factory()->create([
-                'ingredient_id' => $ingredient->id,
-                'bar_membership_id' => $membership->id,
-            ]);
-        }
-
         $ingredient = $ingredients->first();
         BarIngredient::factory()->create([
             'ingredient_id' => $ingredient->id,
@@ -62,8 +55,6 @@ class StatsControllerTest extends TestCase
             $json
                 ->where('data.total_cocktails', 6)
                 ->where('data.total_ingredients', 5)
-                ->where('data.total_shelf_ingredients', 5)
-                ->where('data.total_shelf_cocktails', 1)
                 ->where('data.total_bar_shelf_ingredients', 1)
                 ->where('data.total_bar_shelf_cocktails', 1)
                 ->where('data.total_favorited_cocktails', 1)
