@@ -53,7 +53,7 @@ class MenuCategoryResource extends JsonResource
                 'description' => $menuItem->description,
                 'is_bar_inventory_aware' => $menuItem->isBarInventoryAware,
                 'in_shelf' => $menuItem->inShelf,
-            ]),
+            ])->values()->toArray(),
         ];
     }
 }

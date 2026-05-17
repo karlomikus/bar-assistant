@@ -78,7 +78,6 @@ class StatsController extends Controller
             $bar->id,
             null,
         )->count();
-        $stats['total_shelf_ingredients'] = UserIngredient::where('bar_membership_id', $barMembership->id)->count();
         $stats['total_bar_shelf_ingredients'] = BarIngredient::where('bar_id', $bar->id)->count();
         $stats['total_collections'] = CocktailCollection::where('bar_membership_id', $barMembership->id)->count();
         $stats['total_bar_members'] = $bar->memberships()->count();

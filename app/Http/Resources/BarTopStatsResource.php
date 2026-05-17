@@ -25,10 +25,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
             new OAT\Property(property: 'id', type: 'integer', example: 1),
             new OAT\Property(property: 'slug', type: 'string', example: 'old-fashioned'),
             new OAT\Property(property: 'name', type: 'string', example: 'Old Fashioned'),
-            new OAT\Property(property: 'count', type: 'integer', example: 3),
+            new OAT\Property(property: 'cocktails_count', type: 'integer', example: 3),
         ]))
     ],
-    required: ['total_cocktails', 'total_ingredients', 'total_favorited_cocktails', 'total_shelf_cocktails', 'total_bar_shelf_ingredients', 'total_bar_shelf_cocktails', 'total_shelf_ingredients', 'total_bar_members', 'total_collections']
+    required: ['total_cocktails', 'total_ingredients', 'total_favorited_cocktails', 'total_shelf_cocktails', 'total_bar_shelf_ingredients', 'total_bar_shelf_cocktails', 'total_bar_members', 'total_collections']
 )]
 class BarTopStatsResource extends JsonResource
 {
