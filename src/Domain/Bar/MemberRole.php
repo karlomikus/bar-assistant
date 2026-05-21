@@ -7,7 +7,6 @@ namespace BarAssistant\Domain\Bar;
 enum MemberRole
 {
     case Admin;
-    case Moderator;
     case General;
     case Guest;
 
@@ -17,7 +16,6 @@ enum MemberRole
             'admin' => self::Admin,
             'general' => self::General,
             'guest' => self::Guest,
-            'moderator' => self::Moderator,
             default => self::Guest
         };
     }
@@ -26,7 +24,6 @@ enum MemberRole
     {
         return match ($input) {
             1 => self::Admin,
-            2 => self::Moderator,
             3 => self::General,
             4 => self::Guest,
             default => self::Guest

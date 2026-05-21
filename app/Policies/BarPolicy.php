@@ -77,6 +77,6 @@ class BarPolicy
 
     public function manageShelf(User $user, Bar $bar): bool
     {
-        return $user->id === $bar->owner()->id || $user->isBarAdmin($bar->id) || $user->isBarModerator($bar->id);
+        return $user->id === $bar->owner()->id || $user->isBarAdmin($bar->id);
     }
 }

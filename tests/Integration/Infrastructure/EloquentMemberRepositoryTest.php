@@ -32,7 +32,7 @@ final class EloquentMemberRepositoryTest extends TestCase
         $member = Member::create(
             userId: new UserId($user->id),
             barId: new BarId($membership->bar_id),
-            role: MemberRole::Moderator,
+            role: MemberRole::General,
         );
         $member->addIngredientToShoppingList(new IngredientId($ingredient->id), 2);
         $member->addCocktailToFavorites(new CocktailId($cocktail->id));
@@ -45,7 +45,7 @@ final class EloquentMemberRepositoryTest extends TestCase
             'id' => $savedMember->getId()?->value,
             'bar_id' => $membership->bar_id,
             'user_id' => $user->id,
-            'user_role_id' => 2,
+            'user_role_id' => 3,
         ]);
         $this->assertDatabaseHas('user_shopping_lists', [
             'bar_membership_id' => $savedMember->getId()?->value,
@@ -60,7 +60,7 @@ final class EloquentMemberRepositoryTest extends TestCase
         $foundMember = $repository->findUserInBar(new UserId($user->id), new BarId($membership->bar_id));
 
         $this->assertNotNull($foundMember);
-        $this->assertSame(MemberRole::Moderator, $foundMember->getRole());
+        $this->assertSame(MemberRole::General, $foundMember->getRole());
         $this->assertCount(1, $foundMember->getShoppingListIngredients());
         $this->assertCount(1, $foundMember->getFavoriteCocktails());
 

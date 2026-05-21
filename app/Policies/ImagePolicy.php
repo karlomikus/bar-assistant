@@ -21,8 +21,7 @@ class ImagePolicy
         }
 
         return ($user->id === $image->created_user_id && $user->hasBarMembership($barId))
-            || $user->isBarAdmin($barId)
-            || $user->isBarModerator($barId);
+            || $user->isBarAdmin($barId);
     }
 
     public function edit(User $user, Image $image): bool
@@ -34,8 +33,7 @@ class ImagePolicy
         }
 
         return ($user->id === $image->created_user_id && $user->hasBarMembership($barId))
-            || $user->isBarAdmin($barId)
-            || $user->isBarModerator($barId);
+            || $user->isBarAdmin($barId);
     }
 
     public function delete(User $user, Image $image): bool
@@ -47,7 +45,6 @@ class ImagePolicy
         }
 
         return ($user->id === $image->created_user_id && $user->hasBarMembership($barId))
-            || $user->isBarAdmin($barId)
-            || $user->isBarModerator($barId);
+            || $user->isBarAdmin($barId);
     }
 }

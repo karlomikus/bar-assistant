@@ -28,7 +28,6 @@ final class EloquentMemberRepository implements MemberRepository
         $model->user_id = $member->getUserId()->value;
         $model->user_role_id = match ($member->getRole()) {
             MemberRole::Admin => 1,
-            MemberRole::Moderator => 2,
             MemberRole::General => 3,
             MemberRole::Guest => 4,
         };

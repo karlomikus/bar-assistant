@@ -120,11 +120,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasBarRole($barId, UserRoleEnum::Admin);
     }
 
-    public function isBarModerator(int $barId): bool
-    {
-        return $this->hasBarRole($barId, UserRoleEnum::Moderator);
-    }
-
     public function isBarGeneral(int $barId): bool
     {
         return $this->hasBarRole($barId, UserRoleEnum::General);

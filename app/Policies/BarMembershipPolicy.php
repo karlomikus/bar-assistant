@@ -14,32 +14,28 @@ class BarMembershipPolicy
 
     public function list(User $user): bool
     {
-        return $user->isBarAdmin(bar()->id)
-            || $user->isBarModerator(bar()->id);
+        return $user->isBarAdmin(bar()->id);
     }
 
     public function create(User $user): bool
     {
         return $user->hasActiveSubscription()
-            && ($user->isBarAdmin(bar()->id) || $user->isBarModerator(bar()->id));
+            && $user->isBarAdmin(bar()->id);
     }
 
     public function show(User $user): bool
     {
-        return $user->isBarAdmin(bar()->id)
-            || $user->isBarModerator(bar()->id);
+        return $user->isBarAdmin(bar()->id);
     }
 
     public function edit(User $user): bool
     {
-        return $user->isBarAdmin(bar()->id)
-            || $user->isBarModerator(bar()->id);
+        return $user->isBarAdmin(bar()->id);
     }
 
     public function delete(User $user, BarMembership $model): bool
     {
         return $user->id === $model->user_id
-            || $user->isBarAdmin(bar()->id)
-            || $user->isBarModerator(bar()->id);
+            || $user->isBarAdmin(bar()->id);
     }
 }

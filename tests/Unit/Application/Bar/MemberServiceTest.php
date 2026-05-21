@@ -45,13 +45,13 @@ final class MemberServiceTest extends TestCase
         $member = $this->service->addMemberToBar(new CreateMemberRequest(
             userId: 20,
             barId: 1,
-            roleId: 2,
+            roleId: 3,
         ));
 
         $this->assertNotNull($member->getId());
         $this->assertSame(20, $member->getUserId()->value);
         $this->assertSame(1, $member->getBarId()->value);
-        $this->assertSame(MemberRole::Moderator, $member->getRole());
+        $this->assertSame(MemberRole::General, $member->getRole());
 
         $persistedMember = $this->memberRepository->findUserInBar(new UserId(20), new BarId(1));
         $this->assertNotNull($persistedMember);

@@ -149,14 +149,14 @@ class MemberControllerTest extends TestCase
 
         $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
         $response = $this->putJson('/api/members/' . $guestMember->user_id, [
-            'role_id' => UserRoleEnum::Moderator->value,
+            'role_id' => UserRoleEnum::Admin->value,
         ]);
 
         $response->assertNoContent();
         $this->assertDatabaseHas('bar_memberships', [
             'user_id' => $guestMember->user_id,
             'bar_id' => $membership->bar_id,
-            'user_role_id' => UserRoleEnum::Moderator->value,
+            'user_role_id' => UserRoleEnum::Admin->value,
         ]);
     }
 
@@ -175,7 +175,7 @@ class MemberControllerTest extends TestCase
 
         $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
         $response = $this->putJson('/api/members/' . $targetMember->user_id, [
-            'role_id' => UserRoleEnum::Moderator->value,
+            'role_id' => UserRoleEnum::Admin->value,
         ]);
 
         $response->assertForbidden();
@@ -197,12 +197,13 @@ class MemberControllerTest extends TestCase
         $this->assertDatabaseMissing('bar_memberships', [
             'user_id' => $guestMember->user_id,
             'bar_id' => $membership->bar_id,
-            'user_role_id' => UserRoleEnum::Moderator->value,
+            'user_role_id' => UserRoleEnum::Guest->value,
         ]);
     }
 
     public function test_delete_user_own_membership_response(): void
     {
+
         $membership = $this->setupBarMembership();
 
         $guestMember = BarMembership::factory()->for($membership->bar)->create([
@@ -218,7 +219,7 @@ class MemberControllerTest extends TestCase
         $this->assertDatabaseMissing('bar_memberships', [
             'user_id' => $guestMember->user_id,
             'bar_id' => $membership->bar_id,
-            'user_role_id' => UserRoleEnum::Moderator->value,
+            'user_role_id' => UserRoleEnum::Guest->value,
         ]);
     }
 

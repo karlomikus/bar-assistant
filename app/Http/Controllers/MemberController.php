@@ -24,7 +24,7 @@ class MemberController extends Controller
         path: '/members',
         tags: ['Members'],
         operationId: 'listMembers',
-        description: 'Show a list of all members in the bar. This endpoint is only accessible for bar admins and moderators.',
+        description: 'Show a list of all members in the bar. This endpoint is only accessible for bar admins.',
         summary: 'List members',
         parameters: [
             new BAO\Parameters\BarIdHeaderParameter(),
