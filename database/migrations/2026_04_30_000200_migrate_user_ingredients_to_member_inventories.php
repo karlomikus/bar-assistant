@@ -24,8 +24,6 @@ return new class () extends Migration {
         }
 
         DB::transaction(function () use ($legacyInventoryRows): void {
-            $createdAt = now();
-
             foreach ($legacyInventoryRows as $barMembershipId => $membershipRows) {
                 $inventoryId = DB::table('member_inventories')
                     ->where('bar_membership_id', $barMembershipId)
@@ -36,10 +34,6 @@ return new class () extends Migration {
                     $inventoryId = DB::table('member_inventories')->insertGetId([
                         'bar_membership_id' => $barMembershipId,
                         'name' => 'My Shelf',
-                        'created_user_id' => $membershipRows->first()->user_id,
-                        'updated_user_id' => null,
-                        'created_at' => $createdAt,
-                        'updated_at' => null,
                     ]);
                 }
 
