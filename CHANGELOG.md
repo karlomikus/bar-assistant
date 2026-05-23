@@ -1,5 +1,10 @@
 # v6.0.0
 ## Breaking changes
+- Removed `Moderator` role
+    - Existing moderators will be migrated to Admin role
+- Removed user based shelf
+    - Data is not lost, and is migrated to `member_inventory` table
+    - This is still a WIP feature and I'm still testing the best way to implement it and show on UI
 - `users` route prefix has been changed to `members`
 - User profile deletion now uses `DELETE /profile` instead of relying on the members endpoint
 - Removed GET `/{id}/memberships` and DELETE `/{id}/memberships` from `bars` endpoint (now handled via `members` endpoint)
@@ -23,6 +28,11 @@
     - Moved POST `/users/{id}/ingredients/batch-store` to POST `/members/{id}/ingredients/batch-store`
     - Moved POST `/users/{id}/ingredients/batch-delete` to POST `/members/{id}/ingredients/batch-delete`
     - Moved GET `/users/{id}/ingredients/recommend` to GET `/members/{id}/ingredients/recommend`
+
+## New
+- Added `is_bar_inventory_aware` to menu items
+    - This will show if the menu item is aware of bar inventory, meaning it will show if the item is available or not based on bar shelf ingredients
+- You can now add amounts and units to ingredient parts
 
 # v5.15.0
 ## New
