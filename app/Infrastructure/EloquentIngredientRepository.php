@@ -17,6 +17,7 @@ use BarAssistant\Domain\Common\Authors;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\Models\Image as ModelImage;
 use BarAssistant\Domain\Ingredient\Ingredient;
+use BarAssistant\Domain\Common\AmountWithUnits;
 use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
@@ -24,6 +25,7 @@ use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\MaterializedPath;
 use Kami\Cocktail\Models\Ingredient as ModelIngredient;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
+use BarAssistant\Domain\Ingredient\ComplexIngredientPart;
 use Kami\Cocktail\Models\IngredientPrice as ModelIngredientPrice;
 
 final class EloquentIngredientRepository implements IngredientRepository
@@ -100,10 +102,14 @@ final class EloquentIngredientRepository implements IngredientRepository
             }
 
             $ingredientModel->ingredientParts()->delete();
-            foreach ($ingredient->getIngredientParts() as $ingredientPartId) {
+            foreach ($ingredient->getIngredientParts() as $part) {
                 $partModel = new ComplexIngredient();
-                $partModel->ingredient_id = $ingredientPartId->value;
+                $partModel->ingredient_id = $part->getIngredientId()->value;
                 $partModel->main_ingredient_id = $ingredientModel->id;
+                $partModel->amount = $part->getAmountWithUnits()->amountMin;
+                $partModel->amount_max = $part->getAmountWithUnits()->amountMax;
+                $partModel->units = $part->getAmountWithUnits()->units->value;
+                $partModel->note = $part->getNote();
                 $partModel->save();
             }
 
@@ -174,7 +180,11 @@ final class EloquentIngredientRepository implements IngredientRepository
 
         /** @var ComplexIngredient $part */
         foreach ($model->ingredientParts as $part) {
-            $ingredient->addIngredientPart(self::map($part->ingredient));
+            $ingredient->addIngredientPart(ComplexIngredientPart::create(
+                ingredientId: new IngredientId($part->ingredient_id),
+                amountWithUnits: AmountWithUnits::from($part->amount, Unit::from($part->units), $part->amount_max),
+                note: $part->note,
+            ));
         }
 
         /** @var ModelIngredientPrice $price */

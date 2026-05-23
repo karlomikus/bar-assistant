@@ -8,7 +8,7 @@ final readonly class UpdateIngredientRequest
 {
     /**
      * @param int[] $images
-     * @param int[] $complexIngredientParts
+     * @param ComplexIngredientPart[] $complexIngredientParts
      * @param CreateIngredientPrice[] $prices
      */
     public function __construct(

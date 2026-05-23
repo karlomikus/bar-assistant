@@ -30,7 +30,7 @@ final class Ingredient implements Identity
 
     private ?IngredientId $id = null;
 
-    /** @var IngredientId[] */
+    /** @var ComplexIngredientPart[] */
     private array $ingredientParts = [];
 
     /** @var IngredientPrice[] */
@@ -188,7 +188,7 @@ final class Ingredient implements Identity
     /**
      * Return the ingredient parts (for complex ingredients)
      *
-     * @return IngredientId[]
+     * @return ComplexIngredientPart[]
      */
     public function getIngredientParts(): array
     {
@@ -203,29 +203,19 @@ final class Ingredient implements Identity
     /**
      * Add an ingredient part (for complex ingredients)
      *
-     * @param Ingredient $partIngredient Part ingredient to add
+     * @param ComplexIngredientPart $part Part ingredient with amount to add
      */
-    public function addIngredientPart(Ingredient $partIngredient): self
+    public function addIngredientPart(ComplexIngredientPart $part): self
     {
-        if ($partIngredient->isTransient()) {
-            throw new DomainException('Ingredient part must have an ID assigned');
-        }
-
-        if (!$this->getBarId()->equals($partIngredient->getBarId())) {
-            throw new DomainException('All ingredient parts must belong to the same bar');
-        }
-
-        if (!$this->isTransient() && $this->getId()->equals($partIngredient->getId())) {
-            throw new DomainException('Ingredient cannot contain itself as a part');
-        }
+        $ingredientId = $part->getIngredientId();
 
         foreach ($this->ingredientParts as $existingPart) {
-            if ($existingPart->equals($partIngredient->getId())) {
+            if ($existingPart->getIngredientId()->equals($ingredientId)) {
                 return $this;
             }
         }
 
-        $this->ingredientParts[] = $partIngredient->getId();
+        $this->ingredientParts[] = $part;
 
         return $this;
     }
@@ -234,7 +224,7 @@ final class Ingredient implements Identity
     {
         $this->ingredientParts = array_values(array_filter(
             $this->ingredientParts,
-            static fn (IngredientId $part) => !$part->equals($ingredientId)
+            static fn (ComplexIngredientPart $part) => !$part->getIngredientId()->equals($ingredientId)
         ));
 
         return $this;

@@ -116,7 +116,7 @@ class IngredientController extends Controller
     public function store(IngredientService $ingredientService, IngredientRequest $request): Response
     {
         Validator::make($request->all(), [
-            'complex_ingredient_part_ids' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
+            'complex_ingredient_parts.*.ingredient_id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
             'prices.*.price_category_id' => [new ResourceBelongsToBar(bar()->id, 'price_categories')],
         ])->validate();
 
@@ -137,6 +137,17 @@ class IngredientController extends Controller
             );
         }
 
+        $parts = [];
+        foreach ($dto->complexIngredientParts as $part) {
+            $parts[] = new \BarAssistant\Application\Ingredient\DTO\ComplexIngredientPart(
+                ingredientId: $part->ingredientId,
+                amount: $part->amount,
+                amountMax: $part->amountMax,
+                units: $part->units,
+                note: $part->note,
+            );
+        }
+
         $ingredientResult = $ingredientService->createIngredient(
             new CreateIngredient(
                 bar()->id,
@@ -148,7 +159,7 @@ class IngredientController extends Controller
                 $dto->color,
                 $dto->parentIngredientId,
                 $dto->images,
-                $dto->complexIngredientParts,
+                $parts,
                 $prices,
                 $dto->calculatorId,
                 $dto->sugarContent,
@@ -179,7 +190,7 @@ class IngredientController extends Controller
         $ingredient = Ingredient::findOrFail($id);
 
         Validator::make($request->all(), [
-            'complex_ingredient_part_ids' => [new ResourceBelongsToBar($ingredient->bar_id, 'ingredients')],
+            'complex_ingredient_parts.*.ingredient_id' => [new ResourceBelongsToBar($ingredient->bar_id, 'ingredients')],
             'prices.*.price_category_id' => [new ResourceBelongsToBar($ingredient->bar_id, 'price_categories')],
         ])->validate();
 
@@ -200,6 +211,17 @@ class IngredientController extends Controller
             );
         }
 
+        $parts = [];
+        foreach ($dto->complexIngredientParts as $part) {
+            $parts[] = new \BarAssistant\Application\Ingredient\DTO\ComplexIngredientPart(
+                ingredientId: $part->ingredientId,
+                amount: $part->amount,
+                amountMax: $part->amountMax,
+                units: $part->units,
+                note: $part->note,
+            );
+        }
+
         $ingredientService->updateIngredient(
             new UpdateIngredientRequest(
                 $id,
@@ -211,7 +233,7 @@ class IngredientController extends Controller
                 $dto->color,
                 $dto->parentIngredientId,
                 $dto->images,
-                $dto->complexIngredientParts,
+                $parts,
                 $prices,
                 $dto->calculatorId,
                 $dto->sugarContent,

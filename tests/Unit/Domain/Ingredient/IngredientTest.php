@@ -15,12 +15,14 @@ use BarAssistant\Domain\Common\Color;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Ingredient\Ingredient;
+use BarAssistant\Domain\Common\AmountWithUnits;
 use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\MaterializedPath;
+use BarAssistant\Domain\Ingredient\ComplexIngredientPart;
 
 final class IngredientTest extends TestCase
 {
@@ -116,92 +118,25 @@ final class IngredientTest extends TestCase
         $this->assertSame('5/', $child->getMaterializedPath()->toString());
     }
 
-    public function test_ingredient_part_must_belong_to_same_bar(): void
+    public function test_can_add_ingredient_parts(): void
     {
         $mainIngredient = Ingredient::create(
             barId: new BarId(1),
             name: Name::fromString('Complex Mix'),
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
+        )->setId(new IngredientId(1));
+
+        $part1 = ComplexIngredientPart::create(
+            ingredientId: new IngredientId(2),
+            amountWithUnits: AmountWithUnits::from(200.0, Unit::from('ml')),
         );
 
-        $part = Ingredient::create(
-            barId: new BarId(2), // Different bar
-            name: Name::fromString('Part A'),
-            authors: Authors::createdBy(new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
+        $part2 = ComplexIngredientPart::create(
+            ingredientId: new IngredientId(3),
+            amountWithUnits: AmountWithUnits::from(100.0, Unit::from('g')),
+            note: 'freshly squeezed',
         );
-        $part->setId(new IngredientId(1));
-
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('All ingredient parts must belong to the same bar');
-
-        $mainIngredient->addIngredientPart($part);
-    }
-
-    public function test_ingredient_part_must_have_id(): void
-    {
-        $mainIngredient = Ingredient::create(
-            barId: new BarId(1),
-            name: Name::fromString('Complex Mix'),
-            authors: Authors::createdBy(new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-        );
-
-        $part = Ingredient::create(
-            barId: new BarId(1),
-            name: Name::fromString('Part A'),
-            authors: Authors::createdBy(new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-        );
-        // Part doesn't have an ID set
-
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('Ingredient part must have an ID assigned');
-
-        $mainIngredient->addIngredientPart($part);
-    }
-
-    public function test_ingredient_cannot_contain_itself_as_part(): void
-    {
-        $ingredient = Ingredient::create(
-            barId: new BarId(1),
-            name: Name::fromString('Self-Referencing Mix'),
-            authors: Authors::createdBy(new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-        );
-        $ingredient->setId(new IngredientId(1));
-
-        $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('Ingredient cannot contain itself as a part');
-
-        $ingredient->addIngredientPart($ingredient);
-    }
-
-    public function test_can_add_ingredient_parts_from_same_bar(): void
-    {
-        $mainIngredient = Ingredient::create(
-            barId: new BarId(1),
-            name: Name::fromString('Complex Mix'),
-            authors: Authors::createdBy(new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-        );
-
-        $part1 = Ingredient::create(
-            barId: new BarId(1),
-            name: Name::fromString('Part A'),
-            authors: Authors::createdBy(new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-        );
-        $part1->setId(new IngredientId(2));
-
-        $part2 = Ingredient::create(
-            barId: new BarId(1),
-            name: Name::fromString('Part B'),
-            authors: Authors::createdBy(new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-        );
-        $part2->setId(new IngredientId(3));
 
         $mainIngredient->addIngredientPart($part1);
         $mainIngredient->addIngredientPart($part2);
@@ -209,6 +144,12 @@ final class IngredientTest extends TestCase
         $parts = $mainIngredient->getIngredientParts();
         $this->assertCount(2, $parts);
         $this->assertTrue($mainIngredient->isComplexIngredient());
+
+        $this->assertSame(200.0, $parts[0]->getAmountWithUnits()->amountMin);
+        $this->assertSame('ml', $parts[0]->getAmountWithUnits()->units->value);
+        $this->assertSame(100.0, $parts[1]->getAmountWithUnits()->amountMin);
+        $this->assertSame('g', $parts[1]->getAmountWithUnits()->units->value);
+        $this->assertSame('freshly squeezed', $parts[1]->getNote());
     }
 
     public function test_adding_duplicate_ingredient_part_is_idempotent(): void
@@ -218,15 +159,12 @@ final class IngredientTest extends TestCase
             name: Name::fromString('Complex Mix'),
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
-        );
+        )->setId(new IngredientId(1));
 
-        $part = Ingredient::create(
-            barId: new BarId(1),
-            name: Name::fromString('Part A'),
-            authors: Authors::createdBy(new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
+        $part = ComplexIngredientPart::create(
+            ingredientId: new IngredientId(2),
+            amountWithUnits: AmountWithUnits::from(200.0, Unit::from('ml')),
         );
-        $part->setId(new IngredientId(2));
 
         $mainIngredient->addIngredientPart($part);
         $mainIngredient->addIngredientPart($part); // Add same part again
@@ -242,23 +180,17 @@ final class IngredientTest extends TestCase
             name: Name::fromString('Complex Mix'),
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
+        )->setId(new IngredientId(1));
+
+        $part1 = ComplexIngredientPart::create(
+            ingredientId: new IngredientId(2),
+            amountWithUnits: AmountWithUnits::from(200.0, Unit::from('ml')),
         );
 
-        $part1 = Ingredient::create(
-            barId: new BarId(1),
-            name: Name::fromString('Part A'),
-            authors: Authors::createdBy(new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
+        $part2 = ComplexIngredientPart::create(
+            ingredientId: new IngredientId(3),
+            amountWithUnits: AmountWithUnits::from(100.0, Unit::from('g')),
         );
-        $part1->setId(new IngredientId(2));
-
-        $part2 = Ingredient::create(
-            barId: new BarId(1),
-            name: Name::fromString('Part B'),
-            authors: Authors::createdBy(new UserId(1)),
-            recordTimestamps: RecordTimestamps::createdNow(),
-        );
-        $part2->setId(new IngredientId(3));
 
         $mainIngredient->addIngredientPart($part1);
         $mainIngredient->addIngredientPart($part2);
@@ -275,12 +207,17 @@ final class IngredientTest extends TestCase
             name: Name::fromString('Complex Mix'),
             authors: Authors::createdBy(new UserId(1)),
             recordTimestamps: RecordTimestamps::createdNow(),
+        )->setId(new IngredientId(1));
+
+        $part1 = ComplexIngredientPart::create(
+            ingredientId: new IngredientId(2),
+            amountWithUnits: AmountWithUnits::from(200.0, Unit::from('ml')),
         );
 
-        $part1 = Ingredient::create(barId: new BarId(1), name: Name::fromString('Part A'), authors: Authors::createdBy(new UserId(1)), recordTimestamps: RecordTimestamps::createdNow());
-        $part1->setId(new IngredientId(2));
-        $part2 = Ingredient::create(barId: new BarId(1), name: Name::fromString('Part B'), authors: Authors::createdBy(new UserId(1)), recordTimestamps: RecordTimestamps::createdNow());
-        $part2->setId(new IngredientId(3));
+        $part2 = ComplexIngredientPart::create(
+            ingredientId: new IngredientId(3),
+            amountWithUnits: AmountWithUnits::from(100.0, Unit::from('g')),
+        );
 
         $mainIngredient->addIngredientPart($part1);
         $mainIngredient->addIngredientPart($part2);

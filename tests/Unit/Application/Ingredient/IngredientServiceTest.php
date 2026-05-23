@@ -25,6 +25,7 @@ use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use BarAssistant\Application\Ingredient\DTO\IngredientResult;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 use Tests\Infrastructure\InMemoryIngredientHierarchyRepository;
+use BarAssistant\Application\Ingredient\DTO\ComplexIngredientPart;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
 use BarAssistant\Application\Ingredient\DTO\UpdateIngredientRequest;
 use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyNode;
@@ -95,7 +96,10 @@ final class IngredientServiceTest extends TestCase
             description: 'Lorem ipsum',
             origin: 'United Kingdom',
             color: '#333222',
-            complexIngredientParts: [542, 543],
+            complexIngredientParts: [
+                new ComplexIngredientPart(ingredientId: 542, amount: 200.0, units: 'ml'),
+                new ComplexIngredientPart(ingredientId: 543, amount: 100.0, units: 'g'),
+            ],
             prices: [$createPriceRequest]
         );
 

@@ -12,7 +12,7 @@ class IngredientRequest
 {
     /**
      * @param int[] $images
-     * @param int[] $complexIngredientParts
+     * @param ComplexIngredientPartRequest[] $complexIngredientParts
      * @param IngredientPriceRequest[] $prices
      */
     public function __construct(
@@ -32,7 +32,7 @@ class IngredientRequest
         public ?int $parentIngredientId = null,
         #[OAT\Property(items: new OAT\Items(type: 'integer'), description: 'Existing image ids')]
         public array $images = [],
-        #[OAT\Property(property: 'complex_ingredient_part_ids', items: new OAT\Items(type: 'integer'), description: 'Existing ingredient ids')]
+        #[OAT\Property(property: 'complex_ingredient_parts', items: new OAT\Items(type: ComplexIngredientPartRequest::class), description: 'Parts that make up this complex ingredient')]
         public array $complexIngredientParts = [],
         #[OAT\Property(items: new OAT\Items(type: IngredientPriceRequest::class))]
         public array $prices = [],
@@ -60,6 +60,13 @@ class IngredientRequest
             }
         }
 
+        $formParts = $request->input('complex_ingredient_parts', []);
+
+        $complexIngredientParts = [];
+        foreach ($formParts as $part) {
+            $complexIngredientParts[] = ComplexIngredientPartRequest::fromArray($part);
+        }
+
         return new self(
             $barId,
             $request->input('name'),
@@ -70,7 +77,7 @@ class IngredientRequest
             $request->input('color'),
             $request->filled('parent_ingredient_id') ? $request->integer('parent_ingredient_id') : null,
             $request->input('images', []),
-            $request->input('complex_ingredient_part_ids', []),
+            $complexIngredientParts,
             $prices,
             $request->filled('calculator_id') ? $request->integer('calculator_id') : null,
             $request->filled('sugar_g_per_ml') ? $request->float('sugar_g_per_ml') : null,

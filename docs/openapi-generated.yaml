@@ -8985,7 +8985,6 @@ components:
         - total_shelf_cocktails
         - total_bar_shelf_ingredients
         - total_bar_shelf_cocktails
-        - total_shelf_ingredients
         - total_bar_members
         - total_collections
       properties:
@@ -9033,7 +9032,7 @@ components:
               name:
                 type: string
                 example: 'Old Fashioned'
-              count:
+              cocktails_count:
                 type: integer
                 example: 3
             type: object
@@ -9047,7 +9046,6 @@ components:
         - total_shelf_cocktails
         - total_bar_shelf_ingredients
         - total_bar_shelf_cocktails
-        - total_shelf_ingredients
         - total_bar_members
         - total_collections
       properties:
@@ -9067,9 +9065,6 @@ components:
           type: integer
           example: 1
         total_bar_shelf_cocktails:
-          type: integer
-          example: 1
-        total_shelf_ingredients:
           type: integer
           example: 1
         total_collections:
@@ -9997,6 +9992,40 @@ components:
           $ref: '#/components/schemas/Image'
           description: 'Main resource image'
       type: object
+    IngredientPart:
+      description: 'Represents a part of a complex ingredient with amount'
+      required:
+        - amount
+        - units
+        - note
+        - ingredient
+      properties:
+        amount:
+          description: 'The amount of this part'
+          type: number
+          format: float
+          example: 200
+        amount_max:
+          description: 'The maximum amount range'
+          type:
+            - number
+            - 'null'
+          format: float
+          example: null
+        units:
+          description: 'The units of measurement'
+          type: string
+          example: ml
+        note:
+          description: 'Optional note for this part'
+          type:
+            - string
+            - 'null'
+          example: 'freshly squeezed'
+        ingredient:
+          $ref: '#/components/schemas/IngredientBasic'
+          description: 'The ingredient used in this part'
+      type: object
     IngredientPrice:
       description: 'Ingredient price'
       required:
@@ -10169,7 +10198,7 @@ components:
           description: 'Parts of this ingredient'
           type: array
           items:
-            $ref: '#/components/schemas/IngredientBasic'
+            $ref: '#/components/schemas/IngredientPart'
         prices:
           description: 'Prices of the ingredient'
           type: array
@@ -11525,6 +11554,34 @@ components:
             - 2
             - 3
       type: object
+    ComplexIngredientPartRequest:
+      required:
+        - ingredient_id
+        - amount
+        - units
+      properties:
+        ingredient_id:
+          type: integer
+          example: 1
+        amount:
+          type: number
+          format: float
+          example: 200
+        amount_max:
+          type:
+            - number
+            - 'null'
+          format: float
+          example: null
+        units:
+          type: string
+          example: ml
+        note:
+          type:
+            - string
+            - 'null'
+          example: 'freshly squeezed'
+      type: object
     ExportRequest:
       properties:
         type:
@@ -11698,11 +11755,11 @@ components:
           type: array
           items:
             type: integer
-        complex_ingredient_part_ids:
-          description: 'Existing ingredient ids'
+        complex_ingredient_parts:
+          description: 'Parts that make up this complex ingredient'
           type: array
           items:
-            type: integer
+            $ref: '#/components/schemas/ComplexIngredientPartRequest'
         prices:
           type: array
           items:

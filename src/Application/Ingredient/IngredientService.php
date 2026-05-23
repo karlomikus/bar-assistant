@@ -13,12 +13,14 @@ use BarAssistant\Domain\Common\Color;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Ingredient\Ingredient;
+use BarAssistant\Domain\Common\AmountWithUnits;
 use BarAssistant\Domain\Calculator\CalculatorId;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\PriceCategory;
 use BarAssistant\Domain\Ingredient\PriceCategoryId;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
+use BarAssistant\Domain\Ingredient\ComplexIngredientPart;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
 use BarAssistant\Application\Ingredient\DTO\IngredientResult;
@@ -77,7 +79,7 @@ final readonly class IngredientService
         );
 
         if (count($ingredientRequest->complexIngredientParts) > 0) {
-            $ingredient = $this->assignIngredientParts($ingredient, $ingredientRequest->complexIngredientParts);
+            $ingredient = $this->assignIngredientParts($ingredient, $ingredientRequest->complexIngredientParts, $barId);
         }
 
         if (count($ingredientRequest->prices) > 0) {
@@ -116,7 +118,7 @@ final readonly class IngredientService
 
         $ingredient->removeAllIngredientParts();
         if (count($ingredientRequest->complexIngredientParts) > 0) {
-            $ingredient = $this->assignIngredientParts($ingredient, $ingredientRequest->complexIngredientParts);
+            $ingredient = $this->assignIngredientParts($ingredient, $ingredientRequest->complexIngredientParts, $ingredient->getBarId());
         }
 
         $ingredient->removeAllPrices();
@@ -171,28 +173,53 @@ final readonly class IngredientService
     /**
      * Find and assign ingredient parts to a complex ingredient.
      *
-     * @param non-empty-array<int> $ingredientPartIds
+     * @param non-empty-array<DTO\ComplexIngredientPart> $ingredientPartRequests
      * @throws EntityNotFoundException if any ingredient part is not found
      */
-    private function assignIngredientParts(Ingredient $ingredient, array $ingredientPartIds): Ingredient
+    private function assignIngredientParts(Ingredient $ingredient, array $ingredientPartRequests, BarId $barId): Ingredient
     {
         $ingredientIdVOs = array_map(
-            static fn (int $id) => new IngredientId($id),
-            $ingredientPartIds
+            static fn (DTO\ComplexIngredientPart $part) => new IngredientId($part->ingredientId),
+            $ingredientPartRequests
         );
 
         $ingredientPartCandidates = $this->ingredientRepository->findMany(
-            $ingredient->getBarId(),
+            $barId,
             $ingredientIdVOs
         );
 
         // Validate all requested parts were found
-        if (count($ingredientPartCandidates) !== count($ingredientPartIds)) {
+        if (count($ingredientPartCandidates) !== count($ingredientPartRequests)) {
             throw new EntityNotFoundException('One or more ingredient parts not found');
         }
 
-        foreach ($ingredientPartCandidates as $part) {
-            $ingredient->addIngredientPart($part);
+        // Index by ID for quick lookup
+        $candidateById = [];
+        foreach ($ingredientPartCandidates as $candidate) {
+            $candidateById[$candidate->getId()->value] = $candidate;
+        }
+
+        // Validate all parts belong to the same bar
+        foreach ($ingredientPartCandidates as $candidate) {
+            if (!$candidate->getBarId()->equals($barId)) {
+                throw new EntityNotFoundException('Ingredient parts must belong to the same bar');
+            }
+        }
+
+        foreach ($ingredientPartRequests as $request) {
+            $ingredientId = new IngredientId($request->ingredientId);
+
+            if (!$ingredient->isTransient() && $ingredient->getId()->equals($ingredientId)) {
+                continue; // Skip self-reference
+            }
+
+            $amountWithUnits = AmountWithUnits::from($request->amount, Unit::from($request->units), $request->amountMax);
+
+            $ingredient->addIngredientPart(ComplexIngredientPart::create(
+                ingredientId: $ingredientId,
+                amountWithUnits: $amountWithUnits,
+                note: $request->note,
+            ));
         }
 
         return $ingredient;
