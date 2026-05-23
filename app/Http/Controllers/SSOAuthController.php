@@ -19,7 +19,7 @@ use Kami\Cocktail\Http\Resources\SSOProviderResource;
 
 class SSOAuthController extends Controller
 {
-    #[OAT\Get(path: '/auth/sso/{provider}/redirect', tags: ['Authentication'], operationId: 'ssoRedirect', description: 'Redirect to SSO authentication', summary: 'SSO redirect', parameters: [
+    #[OAT\Get(path: '/auth/sso/{provider}/redirect', tags: ['Authentication'], operationId: 'ssoRedirect', description: 'Redirect to SSO authentication.', summary: 'SSO redirect', parameters: [
         new OAT\Parameter(name: 'provider', in: 'path', required: true, description: 'Provider ID', schema: new OAT\Schema(ref: OauthProvider::class)),
     ], security: [])]
     #[OAT\Response(response: 302, description: 'Redirect response')]
@@ -42,7 +42,7 @@ class SSOAuthController extends Controller
         return $driver->stateless()->redirect();
     }
 
-    #[OAT\Get(path: '/auth/sso/{provider}/callback', tags: ['Authentication'], operationId: 'ssoCallback', description: 'Callback for SSO login', summary: 'SSO callback', parameters: [
+    #[OAT\Get(path: '/auth/sso/{provider}/callback', tags: ['Authentication'], operationId: 'ssoCallback', description: 'Callback for SSO login.', summary: 'SSO callback', parameters: [
         new OAT\Parameter(name: 'provider', in: 'path', required: true, description: 'Provider ID', schema: new OAT\Schema(ref: OauthProvider::class)),
         new OAT\Parameter(name: 'code', in: 'query', required: true, description: 'Oauth token', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
@@ -81,7 +81,7 @@ class SSOAuthController extends Controller
         return new TokenResource($token);
     }
 
-    #[OAT\Get(path: '/auth/sso/providers', tags: ['Authentication'], operationId: 'ssoProviders', description: 'Configured SSO providers', summary: 'SSO providers', security: [])]
+    #[OAT\Get(path: '/auth/sso/providers', tags: ['Authentication'], operationId: 'ssoProviders', description: 'List of server supported and configured SSO providers.', summary: 'SSO providers', security: [])]
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(SSOProviderResource::class),
     ])]

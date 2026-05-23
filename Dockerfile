@@ -29,8 +29,8 @@ FROM php-base AS dist
 ENV PHP_OPCACHE_ENABLE=1
 ENV PHP_OPCACHE_MAX_ACCELERATED_FILES=20000
 ENV PHP_OPCACHE_MEMORY_CONSUMPTION=256
-ARG BAR_ASSISTANT_VERSION
-ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION:-develop}
+ARG BAR_ASSISTANT_VERSION=develop
+ENV BAR_ASSISTANT_VERSION=${BAR_ASSISTANT_VERSION}
 ENV LOG_OUTPUT_LEVEL=error
 ENV NGINX_FASTCGI_BUFFERS="16 16k"
 ENV NGINX_FASTCGI_BUFFER_SIZE="32k"
@@ -39,21 +39,28 @@ COPY --chmod=755 ./resources/docker/dist/init.sh /etc/entrypoint.d/99-bass.sh
 
 COPY --chmod=755 --chown=www-data:www-data ./resources/docker/dist/nginx.conf /etc/nginx/server-opts.d/99-bass.conf
 
+COPY ./resources/docker/dist/php.ini /usr/local/etc/php/conf.d/zzz-bass-php.ini
+
+COPY --chown=www-data:www-data composer.json composer.lock ./
+
+RUN composer install --optimize-autoloader --no-dev --no-scripts
+
+COPY --chown=www-data:www-data . .
+
+ADD --chown=www-data:www-data "https://github.com/bar-assistant/data.git" ./resources/data
+
+RUN composer dump-autoload --optimize \
+    && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/openapi-generated.yaml \
+    && cp .env.dist .env
+
 USER root
 
 RUN docker-php-serversideup-s6-init
 
 USER www-data
 
-COPY ./resources/docker/dist/php.ini /usr/local/etc/php/conf.d/zzz-bass-php.ini
-
-COPY --chown=www-data:www-data . .
-
-ADD --chown=www-data:www-data "https://github.com/bar-assistant/data.git" ./resources/data
-
-RUN composer install --optimize-autoloader --no-dev \
-    && sed -i "s/{{VERSION}}/$BAR_ASSISTANT_VERSION/g" ./docs/openapi-generated.yaml \
-    && cp .env.dist .env
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD php-fpm-healthcheck || exit 1
 
 VOLUME ["$APP_BASE_DIR/storage/bar-assistant"]
 

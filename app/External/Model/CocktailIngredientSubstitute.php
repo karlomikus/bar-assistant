@@ -6,13 +6,13 @@ namespace Kami\Cocktail\External\Model;
 
 use Illuminate\Support\Str;
 use Kami\RecipeUtils\UnitConverter\Units;
-use Kami\Cocktail\External\SupportsDraft2;
+use Kami\Cocktail\External\SupportsSchema4;
 use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
 use Kami\Cocktail\Models\CocktailIngredientSubstitute as CocktailIngredientSubstituteModel;
 
-readonly class CocktailIngredientSubstitute implements SupportsDataPack, SupportsDraft2
+readonly class CocktailIngredientSubstitute implements SupportsDataPack, SupportsSchema4
 {
     private function __construct(
         public Ingredient $ingredient,
@@ -60,11 +60,11 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
         ];
     }
 
-    public static function fromDraft2Array(array $sourceArray): self
+    public static function fromSchema4Array(array $sourceArray): self
     {
         return new self(
-            Ingredient::fromDraft2Array([
-                '_id' => $sourceArray['_id'],
+            Ingredient::fromSchema4Array([
+                '_id' => $sourceArray['_id'] ?? Str::slug((string) ($sourceArray['name'] ?? '')),
                 'name' => $sourceArray['name'] ?? '',
             ]),
             new AmountValueObject(
@@ -75,10 +75,10 @@ readonly class CocktailIngredientSubstitute implements SupportsDataPack, Support
         );
     }
 
-    public function toDraft2Array(): array
+    public function toSchema4Array(): array
     {
         return [
-            '_id' => $this->ingredient->id,
+            'name' => $this->ingredient->name,
             'amount' => $this->amount->amountMin <= 0.0 ? null : $this->amount->amountMin,
             'units' => $this->amount->units->value === '' ? null : $this->amount->units->value,
             'amount_max' => $this->amount->amountMax,

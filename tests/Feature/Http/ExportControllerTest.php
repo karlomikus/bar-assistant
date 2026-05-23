@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Tests\Feature\Http;
 
 use Tests\TestCase;
+use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Export;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\BarMembership;
+use Kami\Cocktail\Jobs\StartTypedExport;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -32,7 +35,7 @@ class ExportControllerTest extends TestCase
 
         $response = $this->getJson('/api/exports', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertJson(
             fn (AssertableJson $json) =>
             $json
@@ -54,16 +57,35 @@ class ExportControllerTest extends TestCase
         $response = $this->postJson('/api/exports/' . $export->id . '/download');
         $response = $this->getJson($response->json('data.url'));
 
-        $response->assertStatus(200);
+        $response->assertOk();
     }
 
     public function test_create_export(): void
     {
+        Queue::fake();
+
         $response = $this->postJson('/api/exports', [
             'bar_id' => $this->barMembership->bar_id,
         ]);
 
-        $response->assertSuccessful();
+        Queue::assertPushed(StartTypedExport::class);
+
+        $response->assertAccepted();
+    }
+
+    public function test_create_export_for_unowned_bar(): void
+    {
+        $bar = Bar::factory()->create();
+
+        Queue::fake();
+
+        $response = $this->postJson('/api/exports', [
+            'bar_id' => $bar->id,
+        ]);
+
+        Queue::assertNotPushed(StartTypedExport::class);
+
+        $response->assertForbidden();
     }
 
     public function test_delete_price_category_response(): void
@@ -75,5 +97,20 @@ class ExportControllerTest extends TestCase
         $response->assertNoContent();
 
         $this->assertDatabaseMissing('exports', ['id' => $export->id]);
+    }
+
+    public function test_download_export_fails_response(): void
+    {
+        $s = Storage::fake('exports');
+        $s->putFileAs($this->barMembership->bar_id, UploadedFile::fake()->create('test.zip'), 'test.zip');
+
+        $export = Export::factory()->recycle($this->barMembership->bar)->recycle($this->barMembership->user)->create([
+            'filename' => 'test.zip',
+            'is_done' => false,
+        ]);
+
+        $response = $this->postJson('/api/exports/' . $export->id . '/download');
+
+        $response->assertBadRequest();
     }
 }

@@ -34,10 +34,7 @@ class GenericScraperTest extends TestCase
         $result = $scraper->toArray();
 
         // Ensure that the result contains the expected structure for dynamic fields
-        data_set($result, 'schema.recipe.images.*.uri', 'TEST');
-        data_set($result, 'schema.ingredients.*._id', 'TEST');
-        data_set($result, 'schema.recipe.ingredients.*._id', 'TEST');
-        data_set($result, 'scraper_meta.*._id', 'TEST');
+        data_set($result, 'schema.images.*.uri', 'TEST');
 
         $expected = json_decode(file_get_contents(__DIR__ . '/../fixtures/sites/' . $fixtureName . '.json'), true);
         $this->assertNotFalse($fixtureContent, 'Expected content not found for ' . $fixtureName);

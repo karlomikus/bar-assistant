@@ -7,15 +7,12 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Validator;
-use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
-use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\IngredientRequest;
 use Kami\Cocktail\Http\Resources\IngredientResource;
@@ -24,6 +21,10 @@ use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Kami\Cocktail\Http\Resources\CocktailBasicResource;
 use Kami\Cocktail\Http\Resources\IngredientTreeResource;
 use Kami\Cocktail\Http\Resources\IngredientBasicResource;
+use BarAssistant\Application\Ingredient\IngredientService;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredient;
+use BarAssistant\Application\Ingredient\DTO\CreateIngredientPrice;
+use BarAssistant\Application\Ingredient\DTO\UpdateIngredientRequest;
 use Kami\Cocktail\OpenAPI\Schemas\IngredientRequest as IngredientDTO;
 
 class IngredientController extends Controller
@@ -55,10 +56,10 @@ class IngredientController extends Controller
         new BAO\PaginateData(IngredientResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function index(IngredientService $ingredientQuery, Request $request): JsonResource
+    public function index(\Kami\Cocktail\Services\IngredientService $ingredientQuery, Request $request): JsonResource
     {
         try {
-            $ingredients = (new IngredientQueryFilter($ingredientQuery))->paginate($request->get('per_page', 50));
+            $ingredients = (new IngredientQueryFilter($ingredientQuery))->paginate($request->input('per_page', 50));
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }
@@ -108,16 +109,14 @@ class IngredientController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\IngredientRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(IngredientResource::class),
-    ], headers: [
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(IngredientService $ingredientService, IngredientRequest $request): JsonResponse
+    public function store(IngredientService $ingredientService, IngredientRequest $request): Response
     {
         Validator::make($request->all(), [
-            'complex_ingredient_part_ids' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
+            'complex_ingredient_parts.*.ingredient_id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
             'prices.*.price_category_id' => [new ResourceBelongsToBar(bar()->id, 'price_categories')],
         ])->validate();
 
@@ -125,14 +124,54 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $ingredient = $ingredientService->createIngredient(
-            IngredientDTO::fromIlluminateRequest($request, bar()->id)
+        $dto = IngredientDTO::fromIlluminateRequest($request, bar()->id);
+
+        $prices = [];
+        foreach ($dto->prices as $price) {
+            $prices[] = new CreateIngredientPrice(
+                priceCategoryId: $price->priceCategoryId,
+                price: $price->price,
+                amount: $price->amount,
+                units: $price->units,
+                description: $price->description,
+            );
+        }
+
+        $parts = [];
+        foreach ($dto->complexIngredientParts as $part) {
+            $parts[] = new \BarAssistant\Application\Ingredient\DTO\ComplexIngredientPart(
+                ingredientId: $part->ingredientId,
+                amount: $part->amount,
+                amountMax: $part->amountMax,
+                units: $part->units,
+                note: $part->note,
+            );
+        }
+
+        $ingredientResult = $ingredientService->createIngredient(
+            new CreateIngredient(
+                bar()->id,
+                $dto->name,
+                $request->user()->id,
+                $dto->strength,
+                $dto->description,
+                $dto->origin,
+                $dto->color,
+                $dto->parentIngredientId,
+                $dto->images,
+                $parts,
+                $prices,
+                $dto->calculatorId,
+                $dto->sugarContent,
+                $dto->acidity,
+                $dto->distillery,
+                $dto->units,
+            )
         );
 
-        return (new IngredientResource($ingredient))
-            ->response()
+        return new Response()
             ->setStatusCode(201)
-            ->header('Location', route('ingredients.show', $ingredient->id));
+            ->header('Location', route('ingredients.show', $ingredientResult->id, false));
     }
 
     #[OAT\Put(path: '/ingredients/{id}', tags: ['Ingredients'], operationId: 'updateIngredient', description: 'Update a specific ingredient', summary: 'Update ingredient', parameters: [
@@ -143,17 +182,15 @@ class IngredientController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\IngredientRequest::class),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(IngredientResource::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(IngredientService $ingredientService, IngredientRequest $request, int $id): JsonResource
+    public function update(IngredientService $ingredientService, IngredientRequest $request, int $id): Response
     {
         $ingredient = Ingredient::findOrFail($id);
 
         Validator::make($request->all(), [
-            'complex_ingredient_part_ids' => [new ResourceBelongsToBar($ingredient->bar_id, 'ingredients')],
+            'complex_ingredient_parts.*.ingredient_id' => [new ResourceBelongsToBar($ingredient->bar_id, 'ingredients')],
             'prices.*.price_category_id' => [new ResourceBelongsToBar($ingredient->bar_id, 'price_categories')],
         ])->validate();
 
@@ -161,12 +198,52 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $ingredient = $ingredientService->updateIngredient(
-            $id,
-            IngredientDTO::fromIlluminateRequest($request, $ingredient->bar_id)
+        $dto = IngredientDTO::fromIlluminateRequest($request, $ingredient->bar_id);
+
+        $prices = [];
+        foreach ($dto->prices as $price) {
+            $prices[] = new CreateIngredientPrice(
+                priceCategoryId: $price->priceCategoryId,
+                price: $price->price,
+                amount: $price->amount,
+                units: $price->units,
+                description: $price->description,
+            );
+        }
+
+        $parts = [];
+        foreach ($dto->complexIngredientParts as $part) {
+            $parts[] = new \BarAssistant\Application\Ingredient\DTO\ComplexIngredientPart(
+                ingredientId: $part->ingredientId,
+                amount: $part->amount,
+                amountMax: $part->amountMax,
+                units: $part->units,
+                note: $part->note,
+            );
+        }
+
+        $ingredientService->updateIngredient(
+            new UpdateIngredientRequest(
+                $id,
+                $dto->name,
+                $request->user()->id,
+                $dto->strength,
+                $dto->description,
+                $dto->origin,
+                $dto->color,
+                $dto->parentIngredientId,
+                $dto->images,
+                $parts,
+                $prices,
+                $dto->calculatorId,
+                $dto->sugarContent,
+                $dto->acidity,
+                $dto->distillery,
+                $dto->units,
+            )
         );
 
-        return new IngredientResource($ingredient);
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/ingredients/{id}', tags: ['Ingredients'], operationId: 'deleteIngredient', description: 'Delete a specific ingredient', summary: 'Delete ingredient', parameters: [
@@ -175,7 +252,7 @@ class IngredientController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(Request $request, int $id): Response
+    public function delete(IngredientService $ingredientService, Request $request, int $id): Response
     {
         $ingredient = Ingredient::findOrFail($id);
 
@@ -183,46 +260,9 @@ class IngredientController extends Controller
             abort(403);
         }
 
-        $ingredient->delete();
+        $ingredientService->deleteIngredient($id);
 
         return new Response(null, 204);
-    }
-
-    #[OAT\Get(path: '/ingredients/{id}/extra', tags: ['Ingredients'], operationId: 'extraIngredients', description: 'Show a list of extra cocktails you can make if you add given ingredient to your shelf', summary: 'Extra cocktails', parameters: [
-        new BAO\Parameters\DatabaseIdParameter(),
-    ])]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapItemsWithData(CocktailBasicResource::class),
-    ])]
-    #[BAO\NotAuthorizedResponse]
-    #[BAO\NotFoundResponse]
-    public function extra(Request $request, CocktailService $cocktailRepo, string $idOrSlug): JsonResponse
-    {
-        $ingredient = Ingredient::where('id', $idOrSlug)
-            ->orWhere('slug', $idOrSlug)
-            ->firstOrFail();
-
-        if ($request->user()->cannot('show', $ingredient)) {
-            abort(403);
-        }
-
-        $currentShelfIngredients = $request->user()->getShelfIngredients($ingredient->bar_id)->pluck('ingredient_id');
-        $currentShelfCocktails = $cocktailRepo->getCocktailsByIngredients($currentShelfIngredients->toArray(), $ingredient->bar_id)->values();
-        $extraShelfCocktails = $cocktailRepo->getCocktailsByIngredients($currentShelfIngredients->push($ingredient->id)->toArray(), $ingredient->bar_id)->values();
-
-        if ($currentShelfCocktails->count() === $extraShelfCocktails->count()) {
-            return response()->json(['data' => []]);
-        }
-
-        $extraCocktails = Cocktail::whereIn('id', $extraShelfCocktails->diff($currentShelfCocktails)->values())->where('bar_id', '=', $ingredient->bar_id)->get();
-
-        return response()->json([
-            'data' => $extraCocktails->map(fn (Cocktail $cocktail) => [
-                'id' => $cocktail->id,
-                'slug' => $cocktail->slug,
-                'name' => $cocktail->name,
-            ])
-        ]);
     }
 
     #[OAT\Get(path: '/ingredients/{id}/cocktails', tags: ['Ingredients'], operationId: 'ingredientCocktails', description: 'List all cocktails that use this ingredient', summary: 'List cocktails', parameters: [

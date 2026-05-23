@@ -20,11 +20,19 @@ class MenuCocktail extends Model
 
     protected $fillable = [
         'cocktail_id',
-        'category_name',
         'sort',
         'price',
         'currency',
+        'is_bar_inventory_aware',
+        'menu_category_id',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_bar_inventory_aware' => 'boolean',
+        ];
+    }
 
     /**
      * @return BelongsTo<Cocktail, $this>
@@ -35,11 +43,11 @@ class MenuCocktail extends Model
     }
 
     /**
-     * @return BelongsTo<Menu, $this>
+     * @return BelongsTo<MenuCategory, $this>
      */
-    public function menu(): BelongsTo
+    public function menuCategory(): BelongsTo
     {
-        return $this->belongsTo(Menu::class);
+        return $this->belongsTo(MenuCategory::class);
     }
 
     public function getMoney(): Money

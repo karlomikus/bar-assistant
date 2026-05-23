@@ -13,10 +13,14 @@ use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Validator;
 use Kami\Cocktail\Http\Requests\MenuRequest;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
+use BarAssistant\Application\Menu\MenuService;
 use Kami\Cocktail\Http\Resources\MenuResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\OpenAPI\Schemas\MenuItemRequest;
+use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 use Kami\Cocktail\Http\Resources\MenuPublicResource;
+use BarAssistant\Application\Menu\DTO\CreateMenuRequest;
+use BarAssistant\Application\Menu\DTO\CreateMenuItemRequest;
+use BarAssistant\Application\Menu\DTO\CreateMenuCategoryRequest;
 use Kami\Cocktail\OpenAPI\Schemas\MenuRequest as SchemasMenuRequest;
 
 class MenuController extends Controller
@@ -40,14 +44,7 @@ class MenuController extends Controller
             $bar->save();
         }
 
-        $menu = Menu::with(
-            'menuCocktails.cocktail.ingredients.ingredient',
-            'menuCocktails.cocktail.images',
-            'menuCocktails.cocktail.bar.shelfIngredients',
-            'menuIngredients.ingredient.ancestors',
-            'menuIngredients.ingredient.images',
-            'menuIngredients.ingredient.bar.shelfIngredients',
-        )->firstOrCreate(['bar_id' => $bar->id]);
+        $menu = Menu::firstOrCreate(['bar_id' => $bar->id]);
 
         return new MenuResource($menu);
     }
@@ -65,15 +62,6 @@ class MenuController extends Controller
             ->where(['slug' => $barSlug])
             ->where('menus.is_enabled', true)
             ->join('bars', 'bars.id', '=', 'menus.bar_id')
-            ->with(
-                'bar.images',
-                'menuCocktails.cocktail.ingredients.ingredient',
-                'menuCocktails.cocktail.images',
-                'menuCocktails.cocktail.bar.shelfIngredients',
-                'menuIngredients.ingredient.ancestors',
-                'menuIngredients.ingredient.images',
-                'menuIngredients.ingredient.bar.shelfIngredients',
-            )
             ->firstOrFail();
 
         return new MenuPublicResource($menu);
@@ -91,35 +79,54 @@ class MenuController extends Controller
         new BAO\WrapObjectWithData(MenuResource::class),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function update(MenuRequest $request): MenuResource
+    public function update(MenuService $service, MenuRequest $request): Response
     {
         if ($request->user()->cannot('update', Menu::class)) {
             abort(403);
         }
+        $bar = bar();
 
-        $schemaRequest = SchemasMenuRequest::fromIlluminateRequest($request);
+        $bodyRequest = SchemasMenuRequest::fromIlluminateRequest($request);
 
-        $ingredients = $schemaRequest->getIngredients();
-        $cocktails = $schemaRequest->getCocktails();
-
-        Validator::make(collect($ingredients)->map(fn (MenuItemRequest $mi) => ['id' => $mi->id])->toArray(), [
-            '*.id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
-        ])->validate();
-
-        Validator::make(collect($cocktails)->map(fn (MenuItemRequest $mi) => ['id' => $mi->id])->toArray(), [
-            '*.id' => [new ResourceBelongsToBar(bar()->id, 'cocktails')],
-        ])->validate();
-
-        $menu = Menu::firstOrCreate(['bar_id' => bar()->id]);
-        $menu->is_enabled = $schemaRequest->isEnabled;
-        if (!$menu->created_at) {
-            $menu->created_at = now();
+        $validateCocktailIds = [];
+        $validateIngredientIds = [];
+        $categories = [];
+        foreach ($bodyRequest->categories as $bodyCategory) {
+            $items = [];
+            foreach ($bodyCategory->items as $bodyMenuItem) {
+                if ($bodyMenuItem->type === MenuItemTypeEnum::Cocktail) {
+                    $validateCocktailIds[] = $bodyMenuItem->id;
+                } else {
+                    $validateIngredientIds[] = $bodyMenuItem->id;
+                }
+                $items[] = new CreateMenuItemRequest(
+                    cocktailId: $bodyMenuItem->type === MenuItemTypeEnum::Cocktail ? $bodyMenuItem->id : null,
+                    ingredientId: $bodyMenuItem->type === MenuItemTypeEnum::Ingredient ? $bodyMenuItem->id : null,
+                    price: $bodyMenuItem->price,
+                    priceCurrency: $bodyMenuItem->currency,
+                    sortIndex: $bodyMenuItem->sort,
+                    isBarInventoryAware: $bodyMenuItem->isBarInventoryAware,
+                );
+            }
+            $categories[] = new CreateMenuCategoryRequest(name: $bodyCategory->name, sortIndex: $bodyCategory->sort, items: $items);
         }
-        $menu->updated_at = now();
-        $menu->syncItems($schemaRequest->items);
-        $menu->save();
 
-        return new MenuResource($menu);
+        Validator::make($validateCocktailIds, [
+            '*' => [new ResourceBelongsToBar($bar->id, 'cocktails')],
+        ])->validate();
+
+        Validator::make($validateIngredientIds, [
+            '*' => [new ResourceBelongsToBar($bar->id, 'ingredients')],
+        ])->validate();
+
+        $service->updateOrCreateMenu(new CreateMenuRequest(
+            barId: $bar->id,
+            menuId: $bar->slug,
+            categories: $categories,
+            isEnabled: $bodyRequest->isEnabled,
+        ));
+
+        return new Response(status: 204);
     }
 
     #[OAT\Get(path: '/menu/export', tags: ['Menu'], operationId: 'exportMenu', summary: 'Export menu', description: 'Export menu as CSV', parameters: [
@@ -135,15 +142,7 @@ class MenuController extends Controller
             abort(403);
         }
 
-        $menu = Menu::where('bar_id', bar()->id)
-            ->with(
-                'menuCocktails.cocktail.ingredients.ingredient',
-                'menuCocktails.cocktail.images',
-                'menuIngredients.ingredient',
-                'menuIngredients.ingredient.ancestors',
-                'menuIngredients.ingredient.images',
-            )
-            ->firstOrFail();
+        $menu = Menu::where('bar_id', bar()->id)->firstOrFail();
 
         $records = [
             [
@@ -157,22 +156,23 @@ class MenuController extends Controller
             ]
         ];
 
-        /** @var \Kami\Cocktail\Models\ValueObjects\MenuItem $menuItem */
-        foreach ($menu->getMenuItems() as $menuItem) {
-            $record = [
-                $menuItem->type->value,
-                e(preg_replace("/\s+/u", " ", $menuItem->name)),
-                e($menuItem->description),
-                e($menuItem->categoryName),
-                $menuItem->price->getMoney()->getAmount()->toFloat(),
-                $menuItem->price->getMoney()->getCurrency()->getCurrencyCode(),
-                (string) $menuItem->price->getMoney(),
-            ];
-
-            $records[] = $record;
+        foreach ($menu->categories as $menuCategory) {
+            /** @var \Kami\Cocktail\Models\ValueObjects\MenuItem $menuItem */
+            foreach ($menuCategory->getMenuItems() as $menuItem) {
+                $record = [
+                    $menuItem->type->value,
+                    e(preg_replace("/\s+/u", " ", $menuItem->name)),
+                    e($menuItem->description),
+                    e($menuCategory->name),
+                    $menuItem->price->getMoney()->getAmount()->toFloat(),
+                    $menuItem->price->getMoney()->getCurrency()->getCurrencyCode(),
+                    (string) $menuItem->price->getMoney(),
+                ];
+                $records[] = $record;
+            }
         }
 
-        $writer = Writer::createFromString();
+        $writer = Writer::fromString();
         $writer->insertAll($records);
 
         return new Response($writer->toString(), 200, ['Content-Type' => 'text/csv']);

@@ -35,14 +35,13 @@ use Kami\Cocktail\OpenAPI\Schemas\IngredientHierarchy;
             new OAT\Property(property: 'can_edit', type: 'boolean', example: true, description: 'Whether the user can edit the ingredient'),
             new OAT\Property(property: 'can_delete', type: 'boolean', example: false, description: 'Whether the user can delete the ingredient'),
         ], description: 'Access rights for the ingredient'),
-        new OAT\Property(property: 'in_shelf', type: 'boolean', example: true, description: 'Whether the user has this ingredient in their shelf'),
-        new OAT\Property(property: 'in_shelf_as_variant', type: 'boolean', example: true, description: 'Whether the user has this ingredient in their shelf as a variant'),
         new OAT\Property(property: 'in_bar_shelf', type: 'boolean', example: true, description: 'Whether the bar has this ingredient in their shelf'),
         new OAT\Property(property: 'in_bar_shelf_as_variant', type: 'boolean', example: true, description: 'Whether the bar has this ingredient in their shelf as a variant'),
+        new OAT\Property(property: 'in_bar_shelf_as_complex', type: 'boolean', example: true, description: 'Whether the bar has this ingredient in stock as a makeable ingredient'),
         new OAT\Property(property: 'in_shopping_list', type: 'boolean', example: true, description: 'Whether the user has this ingredient in their shopping list'),
         new OAT\Property(property: 'used_as_substitute_for', type: 'array', items: new OAT\Items(type: IngredientBasicResource::class), description: 'Ingredients that this ingredient is used as a substitute for'),
         new OAT\Property(property: 'can_be_substituted_with', type: 'array', items: new OAT\Items(type: IngredientBasicResource::class), description: 'Ingredients that can be substituted with this ingredient'),
-        new OAT\Property(property: 'ingredient_parts', type: 'array', items: new OAT\Items(type: IngredientBasicResource::class), description: 'Parts of this ingredient'),
+        new OAT\Property(property: 'ingredient_parts', type: 'array', items: new OAT\Items(type: IngredientPartResource::class), description: 'Parts of this ingredient'),
         new OAT\Property(property: 'prices', type: 'array', items: new OAT\Items(type: IngredientPriceResource::class), description: 'Prices of the ingredient'),
         new OAT\Property(property: 'calculator_id', type: 'integer', example: 1, description: 'The calculator ID of the ingredient', nullable: true),
         new OAT\Property(property: 'sugar_g_per_ml', type: 'number', format: 'float', example: 0.0, description: 'The sugar content of the ingredient in grams per milliliter', nullable: true),
@@ -96,10 +95,9 @@ class IngredientResource extends JsonResource
                 'can_edit' => $request->user()->can('edit', $this->resource),
                 'can_delete' => $request->user()->can('delete', $this->resource),
             ]),
-            'in_shelf' => $this->userHasInShelf($request->user()),
-            'in_shelf_as_variant' => $this->when($this->relationLoaded('descendants'), fn () => $this->userShelfVariants($request->user())->count() > 0),
             'in_bar_shelf' => $this->barHasInShelf(),
             'in_bar_shelf_as_variant' => $this->when($this->relationLoaded('descendants'), fn () => $this->barShelfVariants()->count() > 0),
+            'in_bar_shelf_as_complex' => $this->when($this->relationLoaded('ingredientParts'), fn () => $this->barHasInShelfAsComplexIngredient()),
             'in_shopping_list' => $this->userHasInShoppingList($request->user()),
             'used_as_substitute_for' => $this->when(
                 $this->relationLoaded('cocktailIngredientSubstitutes'),
@@ -111,7 +109,7 @@ class IngredientResource extends JsonResource
             ),
             'ingredient_parts' => $this->when(
                 $this->relationLoaded('ingredientParts'),
-                fn () => $this->ingredientParts->map(fn ($cip) => new IngredientBasicResource($cip->ingredient))
+                fn () => IngredientPartResource::collection($this->ingredientParts)
             ),
             'prices' => $this->when($this->relationLoaded('prices'), fn () => IngredientPriceResource::collection($this->prices)),
             'calculator_id' => $this->calculator_id,

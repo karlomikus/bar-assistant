@@ -1,126 +1,78 @@
 {
-    "schema_version": "draft2",
-    "schema": {
-        "recipe": {
-            "_id": "strawberry-negroni",
-            "name": "Strawberry Negroni",
-            "instructions": "1. Add all ingredients to a mixing glass\n2. Add ice and stir for 10 seconds\n3. Strain into a rocks glass over a large format ice cube",
-            "created_at": null,
-            "updated_at": null,
-            "description": "Strawberry is the perfect complement to the classic Negroni profile. Bitter orange and citrus, along with the spice of sweet vermouth add layers of complexity. This cocktail is a stunner and is a must-try-- you will not be disappointed!",
-            "source": "https:\/\/www.liberandcompany.com\/products\/strawberry-negroni",
-            "garnish": "strawberry",
-            "abv": null,
-            "tags": [],
-            "glass": "rocks",
-            "method": null,
-            "utensils": [],
-            "images": [
-                {
-                    "uri": "TEST",
-                    "sort": 0,
-                    "placeholder_hash": null,
-                    "copyright": "LiberAndCo"
-                }
-            ],
-            "ingredients": [
-                {
-                    "_id": "TEST",
-                    "amount": 0.5,
-                    "units": "oz",
-                    "optional": false,
-                    "is_specified": false,
-                    "amount_max": null,
-                    "note": null,
-                    "substitutes": [],
-                    "sort": 1
-                },
-                {
-                    "_id": "TEST",
-                    "amount": 1,
-                    "units": "oz",
-                    "optional": false,
-                    "is_specified": false,
-                    "amount_max": null,
-                    "note": null,
-                    "substitutes": [],
-                    "sort": 2
-                },
-                {
-                    "_id": "TEST",
-                    "amount": 0.75,
-                    "units": "oz",
-                    "optional": false,
-                    "is_specified": false,
-                    "amount_max": null,
-                    "note": null,
-                    "substitutes": [],
-                    "sort": 3
-                },
-                {
-                    "_id": "TEST",
-                    "amount": 0.5,
-                    "units": "oz",
-                    "optional": false,
-                    "is_specified": false,
-                    "amount_max": null,
-                    "note": null,
-                    "substitutes": [],
-                    "sort": 4
-                }
-            ]
-        },
-        "ingredients": [
-            {
-                "_id": "TEST",
-                "name": "Pacific Strawberry Syrup",
-                "strength": 0,
-                "description": null,
-                "origin": null,
-                "category": null
-            },
-            {
-                "_id": "TEST",
-                "name": "Gin",
-                "strength": 0,
-                "description": null,
-                "origin": null,
-                "category": null
-            },
-            {
-                "_id": "TEST",
-                "name": "Campari",
-                "strength": 0,
-                "description": null,
-                "origin": null,
-                "category": null
-            },
-            {
-                "_id": "TEST",
-                "name": "Vermouth",
-                "strength": 0,
-                "description": null,
-                "origin": null,
-                "category": null
-            }
-        ]
-    },
+    "schema_version": "schema4",
     "scraper_meta": [
         {
-            "_id": "TEST",
-            "source": "½ oz Pacific Strawberry Syrup"
+            "ingredient_name": "Pacific Strawberry Syrup",
+            "source": "\u00bd oz Pacific Strawberry Syrup"
         },
         {
-            "_id": "TEST",
+            "ingredient_name": "Gin",
             "source": "1 oz gin"
         },
         {
-            "_id": "TEST",
-            "source": "¾ oz Campari"
+            "ingredient_name": "Campari",
+            "source": "\u00be oz Campari"
         },
         {
-            "_id": "TEST",
-            "source": "½ oz vermouth"
+            "ingredient_name": "Vermouth",
+            "source": "\u00bd oz vermouth"
         }
-    ]
+    ],
+    "schema": {
+        "name": "Strawberry Negroni",
+        "instructions": "1. Add all ingredients to a mixing glass\n2. Add ice and stir for 10 seconds\n3. Strain into a rocks glass over a large format ice cube",
+        "created_at": null,
+        "description": "Strawberry is the perfect complement to the classic Negroni profile. Bitter orange and citrus, along with the spice of sweet vermouth add layers of complexity. This cocktail is a stunner and is a must-try-- you will not be disappointed!",
+        "source": "https:\/\/www.liberandcompany.com\/products\/strawberry-negroni",
+        "garnish": "strawberry",
+        "abv": null,
+        "tags": [],
+        "glass": "rocks",
+        "method": null,
+        "images": [
+            {
+                "uri": "TEST",
+                "placeholder_hash": null,
+                "copyright": "LiberAndCo"
+            }
+        ],
+        "ingredients": [
+            {
+                "name": "Pacific Strawberry Syrup",
+                "amount": 0.5,
+                "units": "oz",
+                "optional": false,
+                "amount_max": null,
+                "note": null,
+                "substitutes": []
+            },
+            {
+                "name": "Gin",
+                "amount": 1,
+                "units": "oz",
+                "optional": false,
+                "amount_max": null,
+                "note": null,
+                "substitutes": []
+            },
+            {
+                "name": "Campari",
+                "amount": 0.75,
+                "units": "oz",
+                "optional": false,
+                "amount_max": null,
+                "note": null,
+                "substitutes": []
+            },
+            {
+                "name": "Vermouth",
+                "amount": 0.5,
+                "units": "oz",
+                "optional": false,
+                "amount_max": null,
+                "note": null,
+                "substitutes": []
+            }
+        ]
+    }
 }

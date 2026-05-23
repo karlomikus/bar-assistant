@@ -1,7 +1,7 @@
 {
     "license": "MIT",
     "require": {
-        "php": "^8.3.0",
+        "php": "^8.4.0",
         "brick/money": "^0.9.0",
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
@@ -50,7 +50,8 @@
         "nunomaduro/collision": "^8.6",
         "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^12.0",
-        "rector/rector": "^2.2"
+        "rector/rector": "^2.2",
+        "shipmonk/dead-code-detector": "^1.0"
     },
     "autoload": {
         "files": [
@@ -58,6 +59,7 @@
         ],
         "psr-4": {
             "Kami\\Cocktail\\": "app/",
+            "BarAssistant\\": "src/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }

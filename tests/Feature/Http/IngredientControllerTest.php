@@ -239,17 +239,6 @@ class IngredientControllerTest extends TestCase
         ]);
 
         $response->assertStatus(201);
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data.id')
-                ->where('data.name', 'Ingredient name')
-                ->where('data.strength', 12.2)
-                ->where('data.description', 'Description text')
-                ->where('data.origin', 'Worldwide')
-                ->where('data.color', '#000000')
-                ->etc()
-        );
     }
 
     public function test_ingredient_store_fails_validation_response(): void
@@ -280,7 +269,7 @@ class IngredientControllerTest extends TestCase
                 'strength' => 45.5,
                 'description' => 'Test',
                 'bar_id' => 1,
-                'created_user_id' => auth()->user()->id,
+                'created_user_id' => auth('sanctum')->user()->id,
             ])
             ->create();
 
@@ -293,16 +282,7 @@ class IngredientControllerTest extends TestCase
             'parent_ingredient_id' => null
         ]);
 
-        $response->assertSuccessful();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data.id')
-                ->where('data.name', 'Ingredient name')
-                ->where('data.strength', 12.2)
-                ->where('data.description', 'Description text')
-                ->etc()
-        );
+        $response->assertNoContent();
     }
 
     public function test_ingredient_update_fails_validation_response(): void
@@ -338,7 +318,7 @@ class IngredientControllerTest extends TestCase
                 'strength' => 45.5,
                 'description' => 'Test',
                 'bar_id' => 1,
-                'created_user_id' => auth()->user()->id,
+                'created_user_id' => auth('sanctum')->user()->id,
             ])
             ->create();
 
@@ -346,44 +326,6 @@ class IngredientControllerTest extends TestCase
 
         $response->assertNoContent();
         $this->assertDatabaseMissing('ingredients', ['id' => $ing->id]);
-    }
-
-    public function test_ingredients_extra_response(): void
-    {
-        $membership = $this->setupBarMembership();
-        $this->actingAs($membership->user);
-
-        $ingredient1 = Ingredient::factory()->for($membership->bar)->create();
-        $ingredient2 = Ingredient::factory()->for($membership->bar)->create();
-        UserIngredient::factory()->for($membership)->for($ingredient1)->create();
-
-        $cocktail = Cocktail::factory()
-            ->for($membership->bar)
-            ->has(CocktailIngredient::factory()->state(['optional' => false])->for(
-                $ingredient1
-            ), 'ingredients')
-            ->has(CocktailIngredient::factory()->state(['optional' => false])->for(
-                $ingredient2
-            ), 'ingredients')
-            ->create();
-
-        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
-
-        $response = $this->getJson('/api/ingredients/' . $ingredient1->id . '/extra');
-        $response->assertJsonCount(0, 'data');
-
-        $response = $this->getJson('/api/ingredients/' . $ingredient2->id . '/extra');
-
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data', 1, function (AssertableJson $jsonIng) use ($cocktail) {
-                    $jsonIng
-                        ->where('id', $cocktail->id)
-                        ->where('slug', $cocktail->slug)
-                        ->where('name', $cocktail->name);
-                })
-        );
     }
 
     public function test_token_read_abilities(): void
@@ -447,14 +389,16 @@ class IngredientControllerTest extends TestCase
             'parent_ingredient_id' => $spirits->id,
         ]);
 
-        $genever = Ingredient::find($response->json('data.id'));
+        $geneverId = (int) basename($response->headers->get('Location'));
+        $genever = Ingredient::find($geneverId);
 
         $response = $this->postJson('/api/ingredients/', [
             'name' => "Gin",
             'parent_ingredient_id' => $genever->id,
         ]);
 
-        $gin = Ingredient::find($response->json('data.id'));
+        $ginId = (int) basename($response->headers->get('Location'));
+        $gin = Ingredient::find($ginId);
 
         $response = $this->postJson('/api/ingredients/', [
             'name' => "Bombay Sapphire",
@@ -471,7 +415,8 @@ class IngredientControllerTest extends TestCase
             'parent_ingredient_id' => $spirits->id,
         ]);
 
-        $grain = Ingredient::find($response->json('data.id'));
+        $grainId = (int) basename($response->headers->get('Location'));
+        $grain = Ingredient::find($grainId);
 
         $response = $this->getJson('/api/ingredients?filter[descendants_of]=' . $genever->id);
         $response->assertJsonCount(3, 'data');

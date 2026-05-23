@@ -18,6 +18,17 @@ class ComplexIngredient extends Model
     public $timestamps = false;
 
     /**
+     * @return array{amount: 'float', amount_max: 'float'}
+     */
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'float',
+            'amount_max' => 'float',
+        ];
+    }
+
+    /**
      * @return BelongsTo<Ingredient, $this>
      */
     public function mainIngredient(): BelongsTo

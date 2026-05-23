@@ -11,35 +11,19 @@ use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Http\UploadedFile;
 use Kami\Cocktail\OpenAPI as BAO;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\Http\Resources\ImageResource;
-use Kami\Cocktail\OpenAPI\Schemas\ImageRequest;
 use Symfony\Component\HttpFoundation\File\File;
+use BarAssistant\Application\Image\ImageService;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\Http\Requests\ImageUpdateRequest;
+use BarAssistant\Application\Image\DTO\CreateImage;
+use Kami\Cocktail\Services\Image\ImageUploadService;
 use Kami\Cocktail\Services\Image\ImageThumbnailService;
+use BarAssistant\Application\Image\DTO\UpdateImageRequest;
 
 class ImageController extends Controller
 {
-    #[OAT\Get(path: '/images', tags: ['Images'], operationId: 'listImages', summary: 'List images', description: 'List all images uploaded by the authenticated user', parameters: [
-        new BAO\Parameters\PageParameter(),
-        new BAO\Parameters\PerPageParameter(),
-    ])]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(ImageResource::class),
-    ])]
-    #[BAO\NotAuthorizedResponse]
-    #[BAO\NotFoundResponse]
-    public function index(Request $request): JsonResource
-    {
-        $images = Image::where('created_user_id', $request->user()->id)->orderBy('created_at', 'desc')->paginate($request->get('per_page', 100));
-
-        return ImageResource::collection($images->withQueryString());
-    }
-
     #[OAT\Get(path: '/images/{id}', tags: ['Images'], operationId: 'showImage', description: 'Show a single image', summary: 'Show image', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
@@ -70,65 +54,49 @@ class ImageController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(ImageResource::class),
     ])]
-    public function store(ImageService $imageservice, Request $request): JsonResource
+    public function store(ImageUploadService $imageUploadService, ImageService $imageService, Request $request): JsonResource
     {
-        $images = [];
-        foreach ($request->images ?? [] as $formImage) {
-            $imageSource = $this->getValidImageSource($formImage);
-
-            try {
-                $image = new ImageRequest(
-                    $imageSource,
-                    isset($formImage['id']) ? (int) $formImage['id'] : null,
-                    (int) ($formImage['sort'] ?? 0),
-                    $formImage['copyright'] ?? null,
-                );
-                $images[] = $image;
-            } catch (Throwable $e) {
-                Log::error($e->getMessage());
+        $imageIds = [];
+        foreach ($request->images ?? [] as $requestImage) {
+            $imageSource = $this->getValidImageSource($requestImage);
+            $uploadedImage = null;
+            if ($imageSource !== null) {
+                $uploadedImage = $imageUploadService->uploadImage($imageSource);
             }
+
+            if (isset($requestImage['id'])) {
+                if ($uploadedImage) {
+                    $uploadedImage = $imageUploadService->changeImage((int) $requestImage['id'], $uploadedImage);
+                }
+
+                $imageResult = $imageService->updateImage(new UpdateImageRequest(
+                    id: (int) $requestImage['id'],
+                    imageFilePath: $uploadedImage?->path,
+                    imageFileExtension: $uploadedImage?->extension,
+                    userId: $request->user()->id,
+                    sort: (int) ($requestImage['sort'] ?? 0),
+                    copyright: $requestImage['copyright'] ?? null,
+                    placeholderHash: $uploadedImage?->placeholderHash,
+                ));
+            } else {
+                if ($uploadedImage === null) {
+                    continue;
+                }
+
+                $imageResult = $imageService->createImage(new CreateImage(
+                    imageFilePath: $uploadedImage->path,
+                    imageFileExtension: $uploadedImage->extension,
+                    userId: $request->user()->id,
+                    sort: (int) ($requestImage['sort'] ?? 0),
+                    copyright: $requestImage['copyright'] ?? null,
+                    placeholderHash: $uploadedImage->placeholderHash,
+                ));
+            }
+
+            $imageIds[] = $imageResult->id;
         }
 
-        $images = $imageservice->uploadAndSaveImages($images, $request->user()->id);
-
-        return ImageResource::collection($images);
-    }
-
-    #[OAT\Post(path: '/images/{id}', tags: ['Images'], operationId: 'updateImage', description: 'Update a specific image', summary: 'Update image', parameters: [
-        new BAO\Parameters\DatabaseIdParameter(),
-    ], requestBody: new OAT\RequestBody(
-        required: true,
-        content: [
-            new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(ref: BAO\Schemas\ImageRequest::class)),
-        ]
-    ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(ImageResource::class),
-    ])]
-    #[BAO\NotAuthorizedResponse]
-    public function update(int $id, ImageService $imageservice, ImageUpdateRequest $request): JsonResource
-    {
-        $image = Image::findOrFail($id);
-
-        if ($request->user()->cannot('edit', $image)) {
-            abort(403);
-        }
-
-        $imageFile = $request->hasFile('image') ? $request->file('image') : $request->input('image');
-
-        $imageSource = $this->getValidImageSource(['image' => $imageFile]);
-
-        $imageDTO = new ImageRequest(
-            image: $imageSource,
-            copyright: $request->input('copyright') ?? null,
-            sort: $request->filled('sort') ? $request->integer('sort') : $image->sort,
-        );
-
-        $image = $imageservice->updateImage($id, $imageDTO, $request->user()->id);
-
-        Cache::forget('image_thumb_' . $id);
-
-        return new ImageResource($image);
+        return ImageResource::collection(Image::find($imageIds));
     }
 
     #[OAT\Delete(path: '/images/{id}', tags: ['Images'], operationId: 'deleteImage', description: 'Delete a specific image', summary: 'Delete image', parameters: [

@@ -17,9 +17,8 @@ class MenuIngredientFactory extends Factory
     public function definition()
     {
         return [
-            'category_name' => fake()->name(),
+            'menu_category_id' => \Kami\Cocktail\Models\MenuCategory::factory(),
             'sort' => 1,
-            'menu_id' => \Kami\Cocktail\Models\Menu::factory(),
             'ingredient_id' => \Kami\Cocktail\Models\Ingredient::factory(),
             'price' => fake()->randomNumber(2),
             'currency' => fake()->currencyCode(),

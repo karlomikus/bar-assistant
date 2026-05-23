@@ -4,22 +4,24 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
-use Illuminate\Support\Facades\DB;
-use Kami\Cocktail\Models\UserShoppingList;
+use Illuminate\Support\Facades\Validator;
+use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Illuminate\Http\Resources\Json\JsonResource;
+use BarAssistant\Application\Bar\ShoppingListService;
 use Kami\Cocktail\Http\Requests\IngredientsBatchRequest;
 use Kami\Cocktail\Http\Resources\UserShoppingListResource;
+use BarAssistant\Application\Bar\DTO\MemberShoppingListChangeRequest;
+use BarAssistant\Application\Bar\DTO\MemberShoppingListRemoveIngredientRequest;
 
 class ShoppingListController extends Controller
 {
-    #[OAT\Get(path: '/users/{id}/shopping-list', tags: ['Users: Shopping list'], operationId: 'listShoppingListIngredients', description: 'List all ingredients on a shopping list', summary: 'Show shopping list', parameters: [
+    #[OAT\Get(path: '/members/{id}/shopping-list', tags: ['Member shopping list'], operationId: 'listShoppingListIngredients', description: 'List all ingredients on a shopping list', summary: 'Show shopping list', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ])]
@@ -39,7 +41,7 @@ class ShoppingListController extends Controller
         );
     }
 
-    #[OAT\Post(path: '/users/{id}/shopping-list/batch-store', tags: ['Users: Shopping list'], operationId: 'batchStoreShoppingListIngredients', description: 'Add multiple ingredients to a shopping list', summary: 'Add ingredients', parameters: [
+    #[OAT\Post(path: '/members/{id}/shopping-list/batch-store', tags: ['Member shopping list'], operationId: 'batchStoreShoppingListIngredients', description: 'Add multiple ingredients to a shopping list', summary: 'Add ingredients', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -51,7 +53,7 @@ class ShoppingListController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchStore(IngredientsBatchRequest $request, int $id): Response
+    public function batchStore(IngredientsBatchRequest $request, ShoppingListService $shoppingListService, int $id): Response
     {
         $user = User::findOrFail($id);
         if ($request->user()->id !== $user->id) {
@@ -59,40 +61,30 @@ class ShoppingListController extends Controller
         }
 
         $barMembership = $user->getBarMembership(bar()->id);
-
-        $requestIngredients = $request->collect('ingredients');
-        $ingredients = DB::table('ingredients')
-            ->select('id')
-            ->where('bar_id', $barMembership->bar_id)
-            ->whereIn('id', $requestIngredients->pluck('id'))
-            ->pluck('id');
-
-        $existingShoppingListIngredients = UserShoppingList::where('bar_membership_id', $barMembership->id)
-            ->whereIn('ingredient_id', $ingredients)
-            ->get()
-            ->keyBy('ingredient_id');
-
-        $models = [];
-        foreach ($ingredients as $ingId) {
-            if ($usl = $existingShoppingListIngredients[$ingId] ?? null) {
-                $usl->quantity = $requestIngredients->where('id', $ingId)->first()['quantity'] ?? 1;
-                $usl->save();
-            } else {
-                $usl = new UserShoppingList();
-                $usl->ingredient_id = $ingId;
-                $usl->bar_membership_id = $barMembership->id;
-                $usl->quantity = $requestIngredients->where('id', $ingId)->first()['quantity'] ?? 1;
-                try {
-                    $models[] = $barMembership->shoppingListIngredients()->save($usl);
-                } catch (Throwable) {
-                }
-            }
+        if ($barMembership === null) {
+            abort(403);
         }
+
+        $ingredients = $request->input('ingredients', []);
+
+        Validator::make($ingredients, [
+            '*.id' => [new ResourceBelongsToBar($barMembership->bar_id, 'ingredients')],
+        ])->validate();
+
+        $ingredientQuantityPairs = [];
+        foreach ($ingredients as $input) {
+            $ingredientQuantityPairs[$input['id']] = $input['quantity'] ?? 1;
+        }
+
+        $shoppingListService->addIngredientsToMemberShoppingList(new MemberShoppingListChangeRequest(
+            memberId: $barMembership->id,
+            ingredientQuantities: $ingredientQuantityPairs,
+        ));
 
         return new Response(null, 204);
     }
 
-    #[OAT\Post(path: '/users/{id}/shopping-list/batch-delete', tags: ['Users: Shopping list'], operationId: 'batchDeleteShoppingListIngredients', description: 'Remove multiple ingredients from shopping list', summary: 'Delete ingredients', parameters: [
+    #[OAT\Post(path: '/members/{id}/shopping-list/batch-delete', tags: ['Member shopping list'], operationId: 'batchDeleteShoppingListIngredients', description: 'Remove multiple ingredients from shopping list', summary: 'Delete ingredients', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
@@ -108,7 +100,7 @@ class ShoppingListController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function batchDelete(IngredientsBatchRequest $request, int $id): Response
+    public function batchDelete(IngredientsBatchRequest $request, ShoppingListService $shoppingListService, int $id): Response
     {
         $user = User::findOrFail($id);
         if ($request->user()->id !== $user->id) {
@@ -116,24 +108,19 @@ class ShoppingListController extends Controller
         }
 
         $barMembership = $user->getBarMembership(bar()->id);
-
-        $requestIngredients = $request->collect('ingredients');
-        $ingredients = DB::table('ingredients')
-            ->select('id')
-            ->where('bar_id', $barMembership->bar_id)
-            ->whereIn('id', $requestIngredients->pluck('id'))
-            ->pluck('id');
-
-        try {
-            $barMembership->shoppingListIngredients()->whereIn('ingredient_id', $ingredients)->delete();
-        } catch (Throwable $e) {
-            abort(500, $e->getMessage());
+        if ($barMembership === null) {
+            abort(403);
         }
+
+        $shoppingListService->removeIngredientsFromMemberShoppingList(new MemberShoppingListRemoveIngredientRequest(
+            memberId: $barMembership->id,
+            ingredientIds: $request->collect('ingredients')->pluck('id')->toArray()
+        ));
 
         return new Response(null, 204);
     }
 
-    #[OAT\Get(path: '/users/{id}/shopping-list/share', tags: ['Users: Shopping list'], operationId: 'shareShoppingList', description: 'Get a shopping list in a specific format', summary: 'Share shopping list', parameters: [
+    #[OAT\Get(path: '/members/{id}/shopping-list/share', tags: ['Member shopping list'], operationId: 'shareShoppingList', description: 'Get a shopping list in a specific format', summary: 'Share shopping list', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
         new BAO\Parameters\BarIdHeaderParameter(),
         new OAT\Parameter(name: 'type', in: 'query', description: 'Type of share. Available types: `markdown`.', schema: new OAT\Schema(type: 'string')),

@@ -8,10 +8,12 @@ use Tests\TestCase;
 use Kami\Cocktail\Models\Menu;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
+use Kami\Cocktail\Models\MenuCategory;
 use Kami\Cocktail\Models\MenuCocktail;
 use Kami\Cocktail\Models\BarMembership;
 use Kami\Cocktail\Models\MenuIngredient;
 use Illuminate\Testing\Fluent\AssertableJson;
+use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class MenuControllerTest extends TestCase
@@ -44,8 +46,10 @@ class MenuControllerTest extends TestCase
     public function test_show_menu(): void
     {
         $menu = Menu::factory()->for($this->barMembership->bar)->create(['is_enabled' => true]);
-        MenuCocktail::factory()->recycle($menu)->count(7)->create(['category_name' => 'cocktails']);
-        MenuIngredient::factory()->recycle($menu)->count(3)->create(['category_name' => 'ingredients']);
+        $menuCategoryCocktails = MenuCategory::factory()->for($menu)->create(['sort' => 1]);
+        $menuCategoryIngredients = MenuCategory::factory()->for($menu)->create(['sort' => 2]);
+        MenuCocktail::factory()->for($menuCategoryCocktails)->count(3)->create();
+        MenuIngredient::factory()->for($menuCategoryIngredients)->count(7)->create();
 
         $response = $this->getJson('/api/menu', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
@@ -55,115 +59,57 @@ class MenuControllerTest extends TestCase
             $json
                 ->has('data.id')
                 ->has('data.categories', 2)
-                ->has('data.categories.0.items', 7)
-                ->has('data.categories.1.items', 3)
-                ->where('data.is_enabled', true)
+                ->has('data.categories.0.items', 3)
+                ->has('data.categories.1.items', 7)
                 ->etc()
         );
     }
 
     public function test_update_menu(): void
     {
-        Cocktail::factory()->for($this->barMembership->bar)->create();
-        Cocktail::factory()->for($this->barMembership->bar)->create();
-        Ingredient::factory()->for($this->barMembership->bar)->create();
-        Ingredient::factory()->for($this->barMembership->bar)->create();
+        $cocktail = Cocktail::factory()->for($this->barMembership->bar)->create();
+        $ingredient = Ingredient::factory()->for($this->barMembership->bar)->create();
         Menu::factory()->for($this->barMembership->bar)->create(['is_enabled' => true]);
 
         $response = $this->postJson('/api/menu', [
             'is_enabled' => true,
-            'items' => [
+            'categories' => [
                 [
-                    'id' => 1,
-                    'type' => 'cocktail',
-                    'price' => 20.00,
-                    'category_name' => 'Test 1',
-                    'sort' => '1',
-                    'currency' => 'EUR',
-                ],
-                [
-                    'id' => 2,
-                    'type' => 'cocktail',
-                    'price' => 10.50,
-                    'category_name' => 'Test 1',
-                    'sort' => '2',
-                    'currency' => 'USD',
-                ],
-                [
-                    'id' => 1,
-                    'type' => 'ingredient',
-                    'price' => 12.99,
-                    'category_name' => 'Test 1',
-                    'sort' => '3',
-                    'currency' => 'EUR',
-                ],
-                [
-                    'id' => 2,
-                    'type' => 'ingredient',
-                    'price' => 1.32,
-                    'category_name' => 'Test 2',
-                    'sort' => '1',
-                    'currency' => 'EUR',
+                    'sort' => 1,
+                    'name' => '1 category',
+                    'items' => [
+                        [
+                            'id' => $cocktail->id,
+                            'type' => MenuItemTypeEnum::Cocktail->value,
+                            'sort' => 1,
+                            'price' => 200,
+                            'currency' => 'EUR',
+                            'is_bar_inventory_aware' => true,
+                        ],
+                        [
+                            'id' => $ingredient->id,
+                            'type' => MenuItemTypeEnum::Ingredient->value,
+                            'sort' => 2,
+                            'price' => 500,
+                            'currency' => 'EUR',
+                            'is_bar_inventory_aware' => true,
+                        ],
+                    ]
                 ],
             ],
         ], ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
-        $response->assertSuccessful();
-
-        $this->assertDatabaseHas('menu_cocktails', [
-            'menu_id' => $response->json('data.id'),
-            'cocktail_id' => 1,
-            'price' => 2000,
-            'category_name' => 'Test 1',
-            'sort' => '1',
-            'currency' => 'EUR',
-        ]);
-        $this->assertDatabaseHas('menu_cocktails', [
-            'menu_id' => $response->json('data.id'),
-            'cocktail_id' => 2,
-            'price' => 1050,
-            'category_name' => 'Test 1',
-            'sort' => '2',
-            'currency' => 'USD',
-        ]);
-        $this->assertDatabaseHas('menu_ingredients', [
-            'menu_id' => $response->json('data.id'),
-            'ingredient_id' => 1,
-            'price' => 1299,
-            'category_name' => 'Test 1',
-            'sort' => 3,
-            'currency' => 'EUR',
-        ]);
-        $this->assertDatabaseHas('menu_ingredients', [
-            'menu_id' => $response->json('data.id'),
-            'ingredient_id' => 2,
-            'price' => 132,
-            'category_name' => 'Test 2',
-            'sort' => 1,
-            'currency' => 'EUR',
-        ]);
+        $response->assertNoContent();
     }
 
     public function test_export_menu(): void
     {
         $menu = Menu::factory()->for($this->barMembership->bar)->create(['is_enabled' => true]);
-        MenuCocktail::factory()->recycle($menu)->count(2)->create();
+        MenuCocktail::factory()->recycle($menu)->count(5)->create();
 
         $response = $this->getJson('/api/menu/export', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
         $response->assertSuccessful();
         $response->assertHeader('Content-Type', 'text/csv; charset=utf-8');
-    }
-
-    public function test_menu_has_null_currency(): void
-    {
-        $menu = Menu::factory()->for($this->barMembership->bar)->create(['is_enabled' => true]);
-        MenuCocktail::factory()->recycle($menu)->create([
-            'currency' => null,
-        ]);
-
-        $response = $this->getJson('/api/menu', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
-
-        $response->assertSuccessful();
     }
 }

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\External\Model;
 
+use Illuminate\Support\Str;
 use Kami\Cocktail\External\SupportsCSV;
 use Kami\RecipeUtils\UnitConverter\Units;
-use Kami\Cocktail\External\SupportsDraft2;
+use Kami\Cocktail\External\SupportsSchema4;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Image as ImageModel;
@@ -14,7 +15,7 @@ use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Kami\Cocktail\Models\Ingredient as IngredientModel;
 use Kami\Cocktail\Models\IngredientPrice as IngredientPriceModel;
 
-readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsCSV
+readonly class Ingredient implements SupportsDataPack, SupportsSchema4, SupportsCSV
 {
     /**
      * @param array<Image> $images
@@ -178,10 +179,10 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
         );
     }
 
-    public static function fromDraft2Array(array $sourceArray): self
+    public static function fromSchema4Array(array $sourceArray): self
     {
         return new self(
-            id: $sourceArray['_id'],
+            id: $sourceArray['_id'] ?? Str::slug((string) ($sourceArray['name'] ?? '')),
             name: $sourceArray['name'] ?? '',
             strength: $sourceArray['strength'] ?? 0.0,
             description: $sourceArray['description'] ?? null,
@@ -190,7 +191,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsDraft2, SupportsC
         );
     }
 
-    public function toDraft2Array(): array
+    public function toSchema4Array(): array
     {
         return [
             '_id' => $this->id,

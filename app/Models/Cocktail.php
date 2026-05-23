@@ -46,6 +46,7 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
 
     protected $casts = [
         'public_at' => 'datetime',
+        'public_expires_at' => 'datetime',
     ];
 
     public function getUploadPath(): string
@@ -289,7 +290,8 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
             'user_rating' => Rating::select('rating')
                 ->whereColumn('rateable_id', 'cocktails.id')
                 ->whereColumn('rateable_type', Cocktail::class)
-                ->where('user_id', $userId),
+                ->where('bar_memberships.user_id', $userId)
+                ->join('bar_memberships', 'bar_memberships.id', '=', 'ratings.bar_membership_id'),
         ]);
     }
 
@@ -337,15 +339,6 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
         return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first();
     }
 
-    public function getUserShelfMatchPercentage(User $user): float
-    {
-        $currentShelf = $user->getShelfIngredients($this->bar_id);
-        $totalIngredients = $this->ingredients->count();
-        $matchIngredients = $this->ingredients->filter(fn (CocktailIngredient $ci) => $currentShelf->contains('ingredient_id', $ci->ingredient_id))->count();
-
-        return ($matchIngredients / $totalIngredients) * 100;
-    }
-
     public function getBarShelfMatchPercentage(): float
     {
         $currentShelf = $this->bar->shelfIngredients;
@@ -353,18 +346,6 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
         $matchIngredients = $this->ingredients->filter(fn (CocktailIngredient $ci) => $currentShelf->contains('ingredient_id', $ci->ingredient_id))->count();
 
         return ($matchIngredients / $totalIngredients) * 100;
-    }
-
-    public function inUserShelf(User $user): bool
-    {
-        $currentShelf = $user->getShelfIngredients($this->bar_id);
-        foreach ($this->ingredients as $ci) {
-            if (!$currentShelf->contains('ingredient_id', $ci->ingredient_id) && !$ci->optional) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public function inBarShelf(): bool

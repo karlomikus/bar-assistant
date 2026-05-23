@@ -11,13 +11,15 @@ use Kami\Cocktail\Models\Bar;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Export;
 use Kami\Cocktail\OpenAPI as BAO;
-use Kami\Cocktail\Models\FileToken;
 use Kami\Cocktail\Jobs\StartTypedExport;
 use Kami\Cocktail\External\ExportTypeEnum;
+use BarAssistant\Domain\Export\FileTokenService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
 use Kami\Cocktail\Http\Resources\ExportResource;
+use BarAssistant\Application\Export\ExportService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use BarAssistant\Application\Export\DTO\CreateExportRequest;
 
 class ExportController extends Controller
 {
@@ -41,12 +43,10 @@ class ExportController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\ExportRequest::class),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(ExportResource::class),
-    ])]
+    #[OAT\Response(response: 202, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\RateLimitResponse]
-    public function store(Request $request): ExportResource
+    public function store(ExportService $exportService, Request $request): Response
     {
         $bar = Bar::findOrFail((int) $request->post('bar_id'));
 
@@ -57,18 +57,15 @@ class ExportController extends Controller
         $type = ExportTypeEnum::tryFrom($request->input('type', 'schema'));
         $units = ForceUnitConvertEnum::tryFrom($request->input('units', 'none'));
 
-        $export = new Export();
-        $export->bar_id = $bar->id;
-        $export->filename = Export::generateFilename($type->getFilenameContext());
-        $export->is_done = false;
-        $export->created_user_id = $request->user()->id;
-        $export->save();
+        $result = $exportService->createExport(new CreateExportRequest(
+            barId: $bar->id,
+            userId: $request->user()->id,
+            filename: Export::generateFilename($type->getFilenameContext()),
+        ));
 
-        StartTypedExport::dispatch($bar->id, $type, $export, $units);
+        StartTypedExport::dispatch($bar->id, $type, $result->id, $result->filename, $units);
 
-        $export->refresh();
-
-        return new ExportResource($export);
+        return new Response(status: 202);
     }
 
     #[OAT\Delete(path: '/exports/{id}', tags: ['Exports'], operationId: 'deleteExport', description: 'Delete a specific export', summary: 'Delete export', parameters: [
@@ -77,7 +74,7 @@ class ExportController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(Request $request, int $id): Response
+    public function delete(ExportService $exportService, Request $request, int $id): Response
     {
         $export = Export::findOrFail($id);
 
@@ -85,7 +82,7 @@ class ExportController extends Controller
             abort(403);
         }
 
-        $export->delete();
+        $exportService->deleteExport($export->id);
 
         return new Response(null, 204);
     }
@@ -102,12 +99,14 @@ class ExportController extends Controller
     public function download(Request $request, int $id): BinaryFileResponse
     {
         $export = Export::findOrFail($id);
-        $date = DateTimeImmutable::createFromFormat('U', $request->get('e'));
+        $date = DateTimeImmutable::createFromFormat('U', $request->query('e'));
         if ($date === false) {
             abort(404);
         }
 
-        if (!FileToken::check($request->get('t'), $id, $export->filename, $date)) {
+        $fileTokenService = new FileTokenService((string) config('app.key'));
+
+        if (!$fileTokenService->check($request->query('t'), $id, $export->filename, $date)) {
             abort(404);
         }
 
@@ -134,8 +133,10 @@ class ExportController extends Controller
             abort(400, 'Export still in progress');
         }
 
+        $fileTokenService = new FileTokenService((string) config('app.key'));
+
         $expires = new DateTimeImmutable('+1 hour');
-        $token = FileToken::generate($export->id, $export->filename, $expires);
+        $token = $fileTokenService->generate($export->id, $export->filename, $expires);
 
         return response()->json([
             'data' => [

@@ -4,30 +4,31 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Jobs\SetupBar;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Jobs\SyncBarRecipes;
 use Kami\Cocktail\Http\Requests\BarRequest;
+use BarAssistant\Application\Bar\BarService;
 use Kami\Cocktail\Jobs\StartBarOptimization;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Kami\Cocktail\Http\Resources\BarResource;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
+use BarAssistant\Application\Bar\MemberService;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Kami\Cocktail\Http\Resources\BarMembershipResource;
+use BarAssistant\Application\Bar\DTO\CreateBarRequest;
+use BarAssistant\Application\Bar\DTO\UpdateBarRequest;
+use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 use Kami\Cocktail\OpenAPI\Schemas\BarRequest as SchemasBarRequest;
 
 class BarController extends Controller
 {
-    #[OAT\Get(path: '/bars', tags: ['Bars'], summary: 'List bars', operationId: 'listBars', description: 'Show a list of bars user has access to. Includes bars that user has made and bars he is a member of.')]
+    #[OAT\Get(path: '/bars', tags: ['Bars'], summary: 'List bars', operationId: 'listBars', description: 'Show a list of bars current authenticated user has access to. Includes bars he is a member of.')]
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(BarResource::class),
     ])]
@@ -42,7 +43,7 @@ class BarController extends Controller
         return BarResource::collection($bars);
     }
 
-    #[OAT\Get(path: '/bars/{id}', tags: ['Bars'], operationId: 'showBar', description: 'Show information about a specific bar', summary: 'Show bar', parameters: [
+    #[OAT\Get(path: '/bars/{id}', tags: ['Bars'], operationId: 'showBar', description: 'Show information about a specific bar.', summary: 'Show bar', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[BAO\SuccessfulResponse(content: [
@@ -72,20 +73,18 @@ class BarController extends Controller
         return new BarResource($bar);
     }
 
-    #[OAT\Post(path: '/bars', tags: ['Bars'], operationId: 'saveBar', description: 'Create a new bar', summary: 'Create bar', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/bars', tags: ['Bars'], operationId: 'saveBar', description: 'Create a new bar with optional default data included. Assigns current authenticated user as a member with admin role.', summary: 'Create bar', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(ref: BAO\Schemas\BarRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(BarResource::class),
-    ], headers: [
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\ValidationFailedResponse]
-    public function store(BarRequest $request): JsonResponse
+    public function store(BarService $barService, MemberService $memberService, BarRequest $request): Response
     {
         if ($request->user()->cannot('create', Bar::class)) {
             abort(403, 'You can not create any more bars.');
@@ -99,32 +98,30 @@ class BarController extends Controller
 
         $barRequest = SchemasBarRequest::fromLaravelRequest($request);
 
-        $bar = $barRequest->toLaravelModel();
-        $bar->created_user_id = $request->user()->id;
-        $bar->save();
+        $barCreateResult = $barService->createBar(new CreateBarRequest(
+            name: $barRequest->name,
+            createdUserId: $request->user()->id,
+            subtitle: $barRequest->subtitle,
+            description: $barRequest->description,
+            isPublic: $barRequest->isPublic,
+            isInviteCodeEnabled: $barRequest->invitesEnabled,
+            images: $barRequest->images,
+            defaultCurrency: $barRequest->defaultCurrency,
+            defaultUnits: $barRequest->defaultUnits,
+        ));
 
-        if (count($barRequest->images) > 0) {
-            try {
-                $imageModels = Image::findOrFail($barRequest->images);
-                $bar->attachImages($imageModels);
-            } catch (Throwable $e) {
-                abort(500, $e->getMessage());
-            }
-        }
+        $memberService->addMemberToBar(new CreateMemberRequest(
+            userId: $request->user()->id,
+            barId: $barCreateResult->id,
+            roleId: 1,
+        ));
 
-        $bar->load('createdUser', 'updatedUser', 'images');
+        SetupBar::dispatch($barCreateResult->id, $request->user()->id, $barRequest->options);
 
-        $request->user()->joinBarAs($bar, UserRoleEnum::Admin);
-
-        SetupBar::dispatch($bar, $request->user(), $barRequest->options);
-
-        return (new BarResource($bar))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('bars.show', $bar->id));
+        return new Response(status: 201)->header('Location', route('bars.show', $barCreateResult->id, false));
     }
 
-    #[OAT\Put(path: '/bars/{id}', tags: ['Bars'], operationId: 'updateBar', description: 'Update a specific bar', summary: 'Update bar', parameters: [
+    #[OAT\Put(path: '/bars/{id}', tags: ['Bars'], operationId: 'updateBar', description: 'Update a specific bar.', summary: 'Update bar', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -138,7 +135,7 @@ class BarController extends Controller
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     #[BAO\ValidationFailedResponse]
-    public function update(int $id, BarRequest $request): JsonResource
+    public function update(int $id, BarService $barService, BarRequest $request): Response
     {
         $bar = Bar::findOrFail($id);
 
@@ -153,38 +150,29 @@ class BarController extends Controller
         Cache::forget('ba:bar:' . $bar->id);
 
         $barRequest = SchemasBarRequest::fromLaravelRequest($request);
-        $bar = $barRequest->toLaravelModel($bar);
 
-        if ($request->filled('slug')) {
-            $bar->slug = $barRequest->slug;
-        }
+        $barService->updateBar(new UpdateBarRequest(
+            barId: $bar->id,
+            name: $barRequest->name,
+            description: $barRequest->description,
+            userId: $request->user()->id,
+            subtitle: $barRequest->subtitle,
+            isInviteCodeEnabled: $barRequest->invitesEnabled,
+            images: $barRequest->images,
+            defaultCurrency: $barRequest->defaultCurrency,
+            defaultUnits: $barRequest->defaultUnits,
+        ));
 
-        $bar->status = BarStatusEnum::Active->value;
-        $bar->updated_user_id = $request->user()->id;
-        $bar->updated_at = now();
-        $bar->save();
-
-        if (count($barRequest->images) > 0) {
-            try {
-                $imageModels = Image::findOrFail($barRequest->images);
-                $bar->attachImages($imageModels);
-            } catch (Throwable $e) {
-                abort(500, $e->getMessage());
-            }
-        }
-
-        $bar->load('createdUser', 'updatedUser', 'images');
-
-        return new BarResource($bar);
+        return new Response(status: 204);
     }
 
-    #[OAT\Delete(path: '/bars/{id}', tags: ['Bars'], operationId: 'deleteBar', description: 'Delete a specific bar', summary: 'Delete bar', parameters: [
+    #[OAT\Delete(path: '/bars/{id}', tags: ['Bars'], operationId: 'deleteBar', description: 'Delete a specific bar.', summary: 'Delete bar', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(Request $request, int $id): Response
+    public function delete(Request $request, BarService $barService, int $id): Response
     {
         $bar = Bar::findOrFail($id);
 
@@ -195,12 +183,12 @@ class BarController extends Controller
         Cache::forget('metrics_bass_total_bars');
         Cache::forget('ba:bar:' . $bar->id);
 
-        $bar->delete();
+        $barService->deleteBar($bar->id);
 
         return new Response(null, 204);
     }
 
-    #[OAT\Post(path: '/bars/join', tags: ['Bars'], operationId: 'joinBar', description: 'Join a bar via invite code', summary: 'Join a bar', requestBody: new OAT\RequestBody(
+    #[OAT\Post(path: '/bars/join', tags: ['Bars'], operationId: 'joinBar', description: 'Join a bar as a guest role via invite code. Target bar must be active and have invite code enabled.', summary: 'Join a bar', requestBody: new OAT\RequestBody(
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
@@ -213,79 +201,24 @@ class BarController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function join(Request $request): JsonResource
+    public function join(MemberService $memberService, Request $request): Response
     {
         $barToJoin = Bar::where('invite_code', $request->post('invite_code'))->firstOrFail();
 
-        if ($barToJoin->status === BarStatusEnum::Deactivated->value) {
+        if ($barToJoin->getStatus() === BarStatusEnum::Deactivated) {
             abort(403);
         }
 
-        $request->user()->joinBarAs($barToJoin, UserRoleEnum::Guest);
+        $memberService->addMemberToBar(new CreateMemberRequest(
+            userId: $request->user()->id,
+            barId: $barToJoin->id,
+            roleId: 4,
+        ));
 
-        return new BarResource($barToJoin);
+        return new Response(status: 204);
     }
 
-    #[OAT\Delete(path: '/bars/{id}/memberships', tags: ['Bars'], operationId: 'leaveBar', description: 'Deletes a user\'s membership to a bar', summary: 'Leave a bar', parameters: [
-        new BAO\Parameters\DatabaseIdParameter(),
-    ])]
-    #[OAT\Response(response: 204, description: 'Successful response')]
-    #[BAO\NotFoundResponse]
-    public function leave(Request $request, int $id): Response
-    {
-        $bar = Bar::findOrFail($id);
-
-        $request->user()->leaveBar($bar);
-
-        return new Response(null, 204);
-    }
-
-    #[OAT\Delete(path: '/bars/{id}/memberships/{userId}', tags: ['Bars'], operationId: 'removeBarMembership', description: 'Removes a specific user\'s membership from a bar', summary: 'Remove member', parameters: [
-        new BAO\Parameters\DatabaseIdParameter(),
-        new OAT\Parameter(name: 'userId', in: 'path', required: true, description: 'Database id of a user', schema: new OAT\Schema(type: 'integer')),
-    ])]
-    #[OAT\Response(response: 204, description: 'Successful response')]
-    #[BAO\NotFoundResponse]
-    #[BAO\NotAuthorizedResponse]
-    public function removeMembership(Request $request, int $id, int $userId): Response
-    {
-        $bar = Bar::findOrFail($id);
-
-        if ($request->user()->cannot('deleteMembership', $bar)) {
-            abort(403);
-        }
-
-        if ((int) $request->user()->id === (int) $userId) {
-            abort(400, 'You cannot remove your own bar membership.');
-        }
-
-        $bar->memberships()->where('user_id', $userId)->delete();
-
-        return new Response(null, 204);
-    }
-
-    #[OAT\Get(path: '/bars/{id}/memberships', tags: ['Bars'], operationId: 'listBarMembership', description: 'List all bar members', summary: 'List members', parameters: [
-        new BAO\Parameters\DatabaseIdParameter(),
-    ])]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BarMembershipResource::class),
-    ])]
-    #[BAO\NotAuthorizedResponse]
-    #[BAO\NotFoundResponse]
-    public function memberships(Request $request, int $id): JsonResource
-    {
-        $bar = Bar::findOrFail($id);
-
-        if ($request->user()->cannot('show', $bar)) {
-            abort(403);
-        }
-
-        $bar->load('memberships');
-
-        return BarMembershipResource::collection($bar->memberships);
-    }
-
-    #[OAT\Post(path: '/bars/{id}/transfer', tags: ['Bars'], operationId: 'transferBarOwnership', description: 'Transfer a bar to another user.', summary: 'Transfer ownership', parameters: [
+    #[OAT\Post(path: '/bars/{id}/transfer', tags: ['Bars'], operationId: 'transferBarOwnership', description: 'Transfer a bar to another user. Gives another use complete access of a bar. Only bar owners can start bar transfer.', summary: 'Transfer ownership', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -298,7 +231,7 @@ class BarController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function transfer(Request $request, int $id): JsonResponse
+    public function transfer(Request $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
 
@@ -315,7 +248,7 @@ class BarController extends Controller
         $barOwnership->user_role_id = UserRoleEnum::Admin->value; // Needed for existing members
         $barOwnership->save();
 
-        return response()->json(status: 204);
+        return response()->noContent();
     }
 
     #[OAT\Post(path: '/bars/{id}/status', tags: ['Bars'], operationId: 'toggleBarStatus', description: 'Update current status of a bar', summary: 'Update status', parameters: [
@@ -331,7 +264,7 @@ class BarController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function toggleBarStatus(Request $request, int $id): JsonResponse
+    public function toggleBarStatus(Request $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
 
@@ -351,14 +284,14 @@ class BarController extends Controller
             $bar->status = $newStatus;
             $bar->save();
 
-            return response()->json(status: 204);
+            return response()->noContent();
         }
 
         if ($newStatus === BarStatusEnum::Deactivated->value && $request->user()->can('deactivate', $bar)) {
             $bar->status = $newStatus;
             $bar->save();
 
-            return response()->json(status: 204);
+            return response()->noContent();
         }
 
         abort(403);
@@ -371,7 +304,7 @@ class BarController extends Controller
     #[BAO\NotAuthorizedResponse]
     #[BAO\RateLimitResponse]
     #[BAO\NotFoundResponse]
-    public function optimize(Request $request, int $id): JsonResponse
+    public function optimize(Request $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
 
@@ -381,7 +314,7 @@ class BarController extends Controller
 
         StartBarOptimization::dispatch($bar->id);
 
-        return response()->json(status: 204);
+        return response()->noContent();
     }
 
     #[OAT\Post(path: '/bars/{id}/sync-datapack', tags: ['Bars'], operationId: 'syncBarDatapack', description: 'Triggers synchronization of recipes from the default datapack. Matches data by name, does not overwrite your existing recipes or ingredients.', summary: 'Sync recipes', parameters: [
@@ -391,7 +324,7 @@ class BarController extends Controller
     #[BAO\NotAuthorizedResponse]
     #[BAO\RateLimitResponse]
     #[BAO\NotFoundResponse]
-    public function syncDatapack(Request $request, int $id): JsonResponse
+    public function syncDatapack(Request $request, int $id): Response
     {
         $bar = Bar::findOrFail($id);
 
@@ -401,6 +334,6 @@ class BarController extends Controller
 
         SyncBarRecipes::dispatch($bar, $request->user());
 
-        return response()->json(status: 204);
+        return response()->noContent();
     }
 }

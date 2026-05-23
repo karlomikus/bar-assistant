@@ -14,8 +14,7 @@ class CalculatorPolicy
 
     public function create(User $user): bool
     {
-        return $user->isBarAdmin(bar()->id)
-            || $user->isBarModerator(bar()->id);
+        return $user->isBarAdmin(bar()->id);
     }
 
     public function show(User $user, Calculator $calculator): bool
@@ -25,13 +24,11 @@ class CalculatorPolicy
 
     public function edit(User $user, Calculator $calculator): bool
     {
-        return $user->isBarAdmin($calculator->bar_id)
-            || $user->isBarModerator($calculator->bar_id);
+        return $user->isBarAdmin($calculator->bar_id);
     }
 
     public function delete(User $user, Calculator $calculator): bool
     {
-        return $user->isBarAdmin($calculator->bar_id)
-            || $user->isBarModerator($calculator->bar_id);
+        return $user->isBarAdmin($calculator->bar_id);
     }
 }

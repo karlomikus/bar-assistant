@@ -8,16 +8,22 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Kami\Cocktail\Models\Note;
 use OpenApi\Attributes as OAT;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Http\Requests\NoteRequest;
+use BarAssistant\Application\Note\NoteService;
 use Kami\Cocktail\Http\Resources\NoteResource;
 use Kami\Cocktail\Http\Filters\NoteQueryFilter;
 use Illuminate\Http\Resources\Json\JsonResource;
+use BarAssistant\Application\Note\DTO\CreateNoteRequest;
 
 class NoteController extends Controller
 {
+    public function __construct(
+        private readonly NoteService $noteService,
+    ) {
+    }
+
     #[OAT\Get(path: '/notes', tags: ['Notes'], operationId: 'listNotes', description: 'Show list of all user notes', summary: 'List notes', parameters: [
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
@@ -27,7 +33,7 @@ class NoteController extends Controller
     ])]
     public function index(Request $request): JsonResource
     {
-        $notes = (new NoteQueryFilter())->paginate($request->get('per_page', 100));
+        $notes = (new NoteQueryFilter())->paginate($request->query('per_page', 100));
 
         return NoteResource::collection($notes->withQueryString());
     }
@@ -64,26 +70,31 @@ class NoteController extends Controller
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function store(NoteRequest $request): JsonResponse
+    public function store(NoteRequest $request): Response
     {
         $resourceId = $request->input('resource_id');
         $resourceType = $request->input('resource');
 
+        if ($resourceType === null) {
+            abort(404);
+        }
+
         $resourceModel = match ($resourceType) {
             'cocktail' => Cocktail::findOrFail((int) $resourceId),
-            default => abort(404)
         };
 
         if ($request->user()->cannot('addNote', $resourceModel)) {
             abort(403);
         }
 
-        $note = $resourceModel->addNote($request->input('note'), $request->user()->id);
+        $noteResult = $this->noteService->createNote(new CreateNoteRequest(
+            userId: $request->user()->id,
+            resourceId: (int) $resourceId,
+            resource: $resourceType,
+            note: $request->input('note'),
+        ));
 
-        return (new NoteResource($note))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('notes.show', $note->id));
+        return new Response(status: 201, headers: ['Location' => route('notes.show', $noteResult->id, false)]);
     }
 
     #[OAT\Delete(path: '/notes/{id}', tags: ['Notes'], operationId: 'deleteNote', description: 'Delete a single note', summary: 'Delete note', parameters: [
@@ -100,7 +111,7 @@ class NoteController extends Controller
             abort(403);
         }
 
-        $note->delete();
+        $this->noteService->deleteNote($id);
 
         return new Response(null, 204);
     }

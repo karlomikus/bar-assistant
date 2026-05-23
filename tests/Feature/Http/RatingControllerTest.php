@@ -26,7 +26,7 @@ class RatingControllerTest extends TestCase
         $response->assertNoContent();
         $this->assertDatabaseHas('ratings', [
             'rateable_id' => $cocktail->id,
-            'user_id' => $membership->user_id,
+            'bar_membership_id' => $membership->id,
             'rating' => 3
         ]);
     }
@@ -46,7 +46,7 @@ class RatingControllerTest extends TestCase
         $response->assertNoContent();
         $this->assertDatabaseHas('ratings', [
             'rateable_id' => $cocktail->id,
-            'user_id' => $membership->user_id,
+            'bar_membership_id' => $membership->id,
             'rating' => 4
         ]);
     }

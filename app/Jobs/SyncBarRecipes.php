@@ -38,6 +38,6 @@ class SyncBarRecipes implements ShouldQueue
     {
         $dataDisk = Storage::disk('data-files');
 
-        $import->process($dataDisk, $this->bar, $this->user, BarOptionsEnum::Cocktails);
+        $import->process($dataDisk, $this->bar->id, $this->user->id, BarOptionsEnum::Cocktails);
     }
 }

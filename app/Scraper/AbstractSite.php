@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
-use Symfony\Component\Uid\Ulid;
 use Kami\RecipeUtils\Parser\Parser;
 use Kami\RecipeUtils\ParserFactory;
 use Kami\RecipeUtils\RecipeIngredient;
@@ -12,7 +11,6 @@ use Kami\Cocktail\External\Model\Schema;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\DomCrawler\Crawler;
 use Kami\Cocktail\External\Model\Cocktail;
-use Kami\Cocktail\External\Model\Ingredient;
 use Kami\Cocktail\Exceptions\ScraperMissingException;
 
 abstract class AbstractSite implements Site
@@ -133,27 +131,30 @@ abstract class AbstractSite implements Site
     /**
      * Cocktail information as array
      *
-     * @return array<mixed>
+     * @return array{schema_version: string, scraper_meta: array<mixed>, schema: array<mixed> }
      */
     public function toArray(): array
     {
+        $name = $this->clean($this->name());
+        if (!$name) {
+            throw new ScraperMissingException('Unsupported site or no recipes found');
+        }
+
         $ingredients = $this->ingredients();
         $ingredients = array_map(fn (RecipeIngredient $recipeIngredient, int $sort) => [
-            '_id' => Ulid::generate(),
             'name' => $this->clean(ucfirst($recipeIngredient->name)),
             'amount' => $recipeIngredient->amount->getValue(),
             'amount_max' => $recipeIngredient->amountMax?->getValue(),
             'units' => $recipeIngredient->units === '' ? null : $recipeIngredient->units,
             'note' => $recipeIngredient->comment === '' ? null : $recipeIngredient->comment,
-            'source' => $this->clean($recipeIngredient->source),
             'optional' => false,
             'sort' => $sort + 1,
         ], $ingredients, array_keys($ingredients));
 
-        $meta = array_map(fn (array $org) => [
-            '_id' => $org['_id'],
-            'source' => $org['source'],
-        ], $ingredients);
+        $meta = array_map(fn (RecipeIngredient $recipeIngredient) => [
+            'ingredient_name' => $this->clean(ucfirst($recipeIngredient->name)),
+            'source' => $this->clean($recipeIngredient->source),
+        ], $this->ingredients());
 
         $image = $this->convertImagesToDataUri();
         $images = [];
@@ -161,12 +162,7 @@ abstract class AbstractSite implements Site
             $images[] = $image;
         }
 
-        $name = $this->clean($this->name());
-        if (!$name) {
-            throw new ScraperMissingException('Unsupported site or no recipes found');
-        }
-
-        $cocktail = Cocktail::fromDraft2Array([
+        $cocktail = Cocktail::fromSchema4Array([
             'name' => $name,
             'instructions' => $this->instructions(),
             'description' => $this->cleanDescription($this->description()),
@@ -179,15 +175,12 @@ abstract class AbstractSite implements Site
             'ingredients' => $ingredients,
         ]);
 
-        $model = new Schema(
-            $cocktail,
-            array_map(Ingredient::fromDraft2Array(...), $ingredients),
-        );
+        $model = new Schema($cocktail);
 
         return [
             'schema_version' => $model::SCHEMA_VERSION,
-            'schema' => $model->toDraft2Array(),
             'scraper_meta' => $meta,
+            'schema' => $model->toSchema4Array(),
         ];
     }
 

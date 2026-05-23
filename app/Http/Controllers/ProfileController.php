@@ -9,11 +9,17 @@ use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Hash;
+use BarAssistant\Application\User\UserService;
 use Kami\Cocktail\Services\Auth\OauthProvider;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\ProfileResource;
 use Kami\Cocktail\OpenAPI\Schemas\ProfileRequest;
 use Kami\Cocktail\Http\Requests\UpdateUserRequest;
+use Kami\Cocktail\Http\Requests\UpdatePasswordRequest;
+use BarAssistant\Application\User\DTO\UpdateUserProfile;
+use BarAssistant\Application\User\DTO\ChangeEmailRequest;
+use BarAssistant\Application\User\DTO\AnonymizeUserRequest;
+use BarAssistant\Application\User\DTO\ChangePasswordRequest;
 
 class ProfileController extends Controller
 {
@@ -39,38 +45,51 @@ class ProfileController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\ProfileRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(ProfileResource::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
-    public function update(UpdateUserRequest $request): JsonResource
+    public function update(UserService $userService, UpdateUserRequest $request): Response
     {
         $profileRequest = ProfileRequest::fromIlluminateRequest($request);
 
         $currentUser = $request->user();
-        $currentUser->name = $profileRequest->name;
-        $currentUser->email = $profileRequest->email;
 
-        if ($request->has('password') && $profileRequest->password !== null) {
-            $currentUser->password = Hash::make($profileRequest->password);
+        $userService->updateUserProfile(new UpdateUserProfile(
+            userId: $currentUser->id,
+            name: $profileRequest->name,
+            language: $profileRequest->settings?->language,
+            theme: $profileRequest->settings?->theme,
+        ));
 
-            $currentUser->tokens()->delete();
+        $userService->changeEmail(new ChangeEmailRequest($currentUser->id, $profileRequest->email));
+
+        return new Response(status: 204);
+    }
+
+    #[OAT\Post(path: '/profile/change-password', tags: ['Profile'], operationId: 'changePassword', description: 'Change user password', summary: 'Change password', requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(ref: BAO\Schemas\ChangePasswordRequest::class),
+        ]
+    ))]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    public function changePassword(UserService $userService, UpdatePasswordRequest $request): Response
+    {
+        $changePasswordRequest = BAO\Schemas\ChangePasswordRequest::fromIlluminateRequest($request);
+        $currentUser = $request->user();
+
+        if (!Hash::check($changePasswordRequest->currentPassword, $currentUser->password)) {
+            abort(403);
         }
 
-        // If there is a bar context
-        if ($profileRequest->barId !== null) {
-            $barMembership = $currentUser->getBarMembership($profileRequest->barId);
-            if ($barMembership) {
-                $barMembership->is_shelf_public = $profileRequest->isShelfPublic;
-                $barMembership->save();
-            }
-        }
+        $userService->changePassword(new ChangePasswordRequest(
+            userId: $currentUser->id,
+            newPasswordHash: Hash::make($changePasswordRequest->password),
+        ));
 
-        $currentUser->settings = $profileRequest->settings->toArray();
+        $currentUser->tokens()->delete();
 
-        $currentUser->save();
-
-        return new ProfileResource($request->user());
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/profile/sso/{provider}', tags: ['Profile'], operationId: 'deleteSSO', description: 'Delete user\'s SSO provider', summary: 'Delete SSO provider', parameters: [
@@ -87,6 +106,21 @@ class ProfileController extends Controller
         }
 
         $request->user()->oauthCredentials()->where('provider', $validProvider->value)->delete();
+
+        return new Response(null, 204);
+    }
+
+    #[OAT\Delete(path: '/profile', tags: ['Profile'], operationId: 'deleteProfile', description: 'Delete your profile and account', summary: 'Delete profile', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function delete(UserService $userService, Request $request): Response
+    {
+        $user = $request->user();
+
+        $userService->anonymizeUserAccount(new AnonymizeUserRequest($user->id));
 
         return new Response(null, 204);
     }

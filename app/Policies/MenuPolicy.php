@@ -13,11 +13,11 @@ class MenuPolicy
 
     public function view(User $user): bool
     {
-        return $user->isBarAdmin(bar()->id) || $user->isBarModerator(bar()->id);
+        return $user->isBarAdmin(bar()->id);
     }
 
     public function update(User $user): bool
     {
-        return $user->isBarAdmin(bar()->id) || $user->isBarModerator(bar()->id);
+        return $user->isBarAdmin(bar()->id);
     }
 }

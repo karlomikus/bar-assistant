@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Glass;
-use Kami\Cocktail\Models\Image;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Http\Requests\GlassRequest;
 use Kami\Cocktail\Http\Resources\GlassResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Filters\GlassQueryFilter;
+use BarAssistant\Application\Cocktail\GlassService;
+use BarAssistant\Application\Cocktail\DTO\CreateGlass;
+use BarAssistant\Application\Cocktail\DTO\UpdateGlass;
 
 class GlassController extends Controller
 {
@@ -63,13 +63,11 @@ class GlassController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\GlassRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', content: [
-        new BAO\WrapObjectWithData(GlassResource::class),
-    ], headers: [
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(GlassRequest $request): JsonResponse
+    public function store(GlassService $glassService, GlassRequest $request): Response
     {
         if ($request->user()->cannot('create', Glass::class)) {
             abort(403);
@@ -77,23 +75,16 @@ class GlassController extends Controller
 
         $glassRequest = BAO\Schemas\GlassRequest::fromLaravelRequest($request);
 
-        $glass = $glassRequest->toLaravelModel();
-        $glass->bar_id = bar()->id;
-        $glass->save();
+        $glassResult = $glassService->createGlass(new CreateGlass(
+            barId: bar()->id,
+            name: $glassRequest->name,
+            description: $glassRequest->description,
+            volume: $glassRequest->volume,
+            units: $glassRequest->volumeUnits,
+            images: $glassRequest->images,
+        ));
 
-        if (count($glassRequest->images) > 0) {
-            try {
-                $imageModels = Image::findOrFail($glassRequest->images);
-                $glass->attachImages($imageModels);
-            } catch (Throwable $e) {
-                abort(500, $e->getMessage());
-            }
-        }
-
-        return (new GlassResource($glass))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('glasses.show', $glass->id));
+        return new Response(status: 201, headers: ['Location' => route('glasses.show', $glassResult->id, false)]);
     }
 
     #[OAT\Put(path: '/glasses/{id}', tags: ['Glasses'], operationId: 'updateGlassware', description: 'Update a specific glassware', summary: 'Update glassware', parameters: [
@@ -104,12 +95,10 @@ class GlassController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\GlassRequest::class),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(GlassResource::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(int $id, GlassRequest $request): JsonResource
+    public function update(GlassService $glassService, int $id, GlassRequest $request): Response
     {
         $glass = Glass::findOrFail($id);
 
@@ -119,24 +108,16 @@ class GlassController extends Controller
 
         $glassRequest = BAO\Schemas\GlassRequest::fromLaravelRequest($request);
 
-        $glass = $glassRequest->toLaravelModel($glass);
-        $glass->updated_at = now();
-        $glass->save();
+        $glassService->updateGlass(new UpdateGlass(
+            glassId: $id,
+            name: $glassRequest->name,
+            description: $glassRequest->description,
+            volume: $glassRequest->volume,
+            units: $glassRequest->volumeUnits,
+            images: $glassRequest->images,
+        ));
 
-        if (count($glassRequest->images) > 0) {
-            try {
-                $imageModels = Image::findOrFail($glassRequest->images);
-                $glass->attachImages($imageModels);
-            } catch (Throwable $e) {
-                abort(500, $e->getMessage());
-            }
-        }
-
-        if (!empty(config('scout.driver'))) {
-            $glass->cocktails->each(fn ($cocktail) => $cocktail->searchable());
-        }
-
-        return new GlassResource($glass);
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/glasses/{id}', tags: ['Glasses'], operationId: 'deleteGlassware', description: 'Delete a specific glassware', summary: 'Delete glassware', parameters: [
@@ -145,7 +126,7 @@ class GlassController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(Request $request, int $id): Response
+    public function delete(GlassService $glassService, Request $request, int $id): Response
     {
         $glass = Glass::findOrFail($id);
 
@@ -153,7 +134,7 @@ class GlassController extends Controller
             abort(403);
         }
 
-        $glass->delete();
+        $glassService->deleteGlass($id);
 
         return new Response(null, 204);
     }

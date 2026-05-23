@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
+use BarAssistant\Domain\DomainEventDispatcher;
+use Kami\Cocktail\Infrastructure\DomainEventSubscriber\CleanupUserAnonymizedSubscriber;
+use Kami\Cocktail\Infrastructure\DomainEventSubscriber\ClearPublicCocktailsCacheSubscriber;
+use Kami\Cocktail\Infrastructure\DomainEventSubscriber\GlassUpdatedSearchReindexSubscriber;
+use Kami\Cocktail\Infrastructure\DomainEventSubscriber\CocktailMethodUpdatedRecalculateAbvSubscriber;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,10 +39,12 @@ class AppServiceProvider extends ServiceProvider
         Cache::macro('forgetWildcardRedis', function (string $key) {
             try {
                 $prefix = config('database.redis.options.prefix');
+                $prefix = is_string($prefix) ? $prefix : '';
                 $redisCache = Redis::connection('cache');
                 $foundKeys = $redisCache->keys('*' . $key);
                 foreach ($foundKeys as $foundKey) {
-                    $keyToDelete = $prefix ? Str::after($foundKey, $prefix) : $foundKey;
+                    $foundKey = (string) $foundKey;
+                    $keyToDelete = $prefix !== '' ? Str::after($foundKey, $prefix) : $foundKey;
                     Log::debug('Clearing cache key via wildcard', ['key' => $foundKey]);
                     $redisCache->unlink($keyToDelete);
                 }
@@ -56,6 +63,11 @@ class AppServiceProvider extends ServiceProvider
             $event->extendSocialite('pocketid', \Kami\Cocktail\Services\Auth\PocketIdProvider::class);
             $event->extendSocialite('zitadel', \SocialiteProviders\Zitadel\Provider::class);
         });
+
+        DomainEventDispatcher::instance()->subscribe(app(GlassUpdatedSearchReindexSubscriber::class));
+        DomainEventDispatcher::instance()->subscribe(app(ClearPublicCocktailsCacheSubscriber::class));
+        DomainEventDispatcher::instance()->subscribe(app(CocktailMethodUpdatedRecalculateAbvSubscriber::class));
+        DomainEventDispatcher::instance()->subscribe(app(CleanupUserAnonymizedSubscriber::class));
 
         if (DB::getDriverName() === 'sqlite') {
             try {

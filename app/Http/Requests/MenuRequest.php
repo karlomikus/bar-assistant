@@ -30,11 +30,13 @@ class MenuRequest extends FormRequest
     {
         return [
             'is_enabled' => 'required|boolean',
-            'items' => 'array',
-            'items.*.id' => 'required|integer',
-            'items.*.type' => ['required', Rule::enum(MenuItemTypeEnum::class)],
-            'items.*.sort' => 'required|integer',
-            'items.*.currency' => ['required_with:items.*.price', 'size:3', new ValidCurrency()],
+            'categories' => 'array',
+            'categories.*.name' => 'required',
+            'categories.*.items' => 'array',
+            'categories.*.items.*.id' => 'required|integer',
+            'categories.*.items.*.type' => ['required', Rule::enum(MenuItemTypeEnum::class)],
+            'categories.*.items.*.sort' => 'required|integer',
+            'categories.*.items.*.currency' => ['required_with:items.*.price', 'size:3', new ValidCurrency()],
         ];
     }
 }

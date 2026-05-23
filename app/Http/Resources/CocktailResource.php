@@ -45,7 +45,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
         new OAT\Property(property: 'calories', type: 'number', format: 'float', example: 150, description: 'Calories in the cocktail'),
         new OAT\Property(property: 'created_user', type: UserBasicResource::class, description: 'User who created the cocktail'),
         new OAT\Property(property: 'updated_user', type: UserBasicResource::class, description: 'User who last updated the cocktail', nullable: true),
-        new OAT\Property(property: 'in_shelf', type: 'boolean', example: true, description: 'Is the cocktail in the user\'s shelf'),
         new OAT\Property(property: 'in_bar_shelf', type: 'boolean', example: true, description: 'Is the cocktail in the bar\'s shelf'),
         new OAT\Property(property: 'is_favorited', type: 'boolean', example: true, description: 'Is the cocktail favorited by the user'),
         new OAT\Property(property: 'access', type: 'object', description: 'User access to the cocktail', properties: [
@@ -130,7 +129,6 @@ class CocktailResource extends JsonResource
             'calories' => $this->when($this->relationLoaded('method'), fn () => $this->getCalories()),
             'created_user' => new UserBasicResource($this->whenLoaded('createdUser')),
             'updated_user' => new UserBasicResource($this->whenLoaded('updatedUser')),
-            'in_shelf' => in_array($this->id, $request->user()->getShelfCocktailsOnce($this->bar_id)),
             'in_bar_shelf' => in_array($this->id, $this->bar->getShelfCocktailsOnce()),
             'is_favorited' => $request->user()->getBarMembership($this->bar_id)->cocktailFavorites->where('cocktail_id', $this->id)->isNotEmpty(),
             'access' => $this->when(true, fn () => [

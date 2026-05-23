@@ -14,7 +14,7 @@ class CalculatorBlockSettings
     #[OAT\Property()]
     public ?string $prefix = null;
     #[OAT\Property(property: 'decimal_places')]
-    public ?string $decimalPlaces = null;
+    public ?int $decimalPlaces = null;
 
     /**
      * @return array<string, string>
