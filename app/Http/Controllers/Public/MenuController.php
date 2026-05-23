@@ -27,12 +27,6 @@ class MenuController extends Controller
             ->join('bars', 'bars.id', '=', 'menus.bar_id')
             ->with(
                 'bar.images',
-                'menuCocktails.cocktail.ingredients.ingredient',
-                'menuCocktails.cocktail.images',
-                'menuCocktails.cocktail.bar.shelfIngredients',
-                'menuIngredients.ingredient.ancestors',
-                'menuIngredients.ingredient.images',
-                'menuIngredients.ingredient.bar.shelfIngredients',
             )
             ->firstOrFail();
 

@@ -18,7 +18,6 @@ use Kami\Cocktail\Http\Controllers\ImportController;
 use Kami\Cocktail\Http\Controllers\MemberController;
 use Kami\Cocktail\Http\Controllers\RatingController;
 use Kami\Cocktail\Http\Controllers\ServerController;
-use Kami\Cocktail\Http\Controllers\ExploreController;
 use Kami\Cocktail\Http\Controllers\ProfileController;
 use Kami\Cocktail\Http\Controllers\SSOAuthController;
 use Kami\Cocktail\Http\Controllers\CocktailController;
@@ -75,12 +74,6 @@ Route::prefix('server')->group(function () {
 
 Route::prefix('images')->group(function () {
     Route::get('/{id}/thumb', [ImageController::class, 'thumb'])->name('images.thumb');
-});
-
-// Deprecated routes
-Route::prefix('explore')->group(function () {
-    Route::get('/cocktails/{ulid}', [ExploreController::class, 'cocktail']);
-    Route::get('/menus/{barSlug}', [MenuController::class, 'show']);
 });
 
 Route::prefix('exports')->group(function () {

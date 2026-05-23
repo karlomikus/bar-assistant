@@ -17,7 +17,6 @@ use BarAssistant\Application\Menu\MenuService;
 use Kami\Cocktail\Http\Resources\MenuResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
-use Kami\Cocktail\Http\Resources\MenuPublicResource;
 use BarAssistant\Application\Menu\DTO\CreateMenuRequest;
 use BarAssistant\Application\Menu\DTO\CreateMenuItemRequest;
 use BarAssistant\Application\Menu\DTO\CreateMenuCategoryRequest;
@@ -47,24 +46,6 @@ class MenuController extends Controller
         $menu = Menu::firstOrCreate(['bar_id' => $bar->id]);
 
         return new MenuResource($menu);
-    }
-
-    #[OAT\Get(path: '/explore/menus/{slug}', tags: ['Explore'], operationId: 'publicMenu', description: 'Show a public bar menu details', summary: 'Show public menu', parameters: [
-        new OAT\Parameter(name: 'slug', in: 'path', required: true, description: 'Bar database slug', schema: new OAT\Schema(type: 'string')),
-    ], security: [])]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(MenuPublicResource::class),
-    ])]
-    #[BAO\NotFoundResponse]
-    public function show(string $barSlug): MenuPublicResource
-    {
-        $menu = Menu::select('menus.*')
-            ->where(['slug' => $barSlug])
-            ->where('menus.is_enabled', true)
-            ->join('bars', 'bars.id', '=', 'menus.bar_id')
-            ->firstOrFail();
-
-        return new MenuPublicResource($menu);
     }
 
     #[OAT\Post(path: '/menu', tags: ['Menu'], operationId: 'updateMenu', description: 'Update bar menu', summary: 'Update menu', parameters: [
