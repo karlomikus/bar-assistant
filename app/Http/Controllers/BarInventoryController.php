@@ -147,9 +147,9 @@ class BarInventoryController extends Controller
             abort(403);
         }
 
-        $possibleIngredients = $ingredientRepo->getIngredientsForPossibleCocktails($bar->id, $bar->shelfIngredients->pluck('ingredient_id')->toArray());
+        $possibleIngredients = $ingredientRepo->getIngredientsOrderedByUnlockedCocktails($bar->id, $bar->shelfIngredients->pluck('ingredient_id')->toArray());
 
-        return response()->json(['data' => $possibleIngredients]);
+        return response()->json(['data' => array_slice($possibleIngredients, 0, 15)]);
     }
 
     #[OAT\Get(path: '/bars/{id}/inventory/ingredients/{idOrSlug}/extra', tags: ['Bar inventory'], operationId: 'extraIngredients', description: 'Show a list of extra cocktails you can make if you add given ingredient to bar inventory', summary: 'Extra cocktails', parameters: [

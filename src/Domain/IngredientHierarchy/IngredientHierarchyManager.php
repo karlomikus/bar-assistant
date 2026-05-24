@@ -65,7 +65,6 @@ final readonly class IngredientHierarchyManager
         }
 
         $nodeId = $node->getId();
-        \assert($nodeId !== null);
 
         $descendants = $this->repository->findDescendants($nodeId, $node->getBarId());
 
@@ -94,7 +93,6 @@ final readonly class IngredientHierarchyManager
         }
 
         $nodeId = $node->getId();
-        assert($nodeId !== null);
 
         if ($newParent->isTransient()) {
             throw new IngredientHierarchyException("Cannot set transient node as parent");

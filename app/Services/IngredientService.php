@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
+use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Log\LogManager;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -36,62 +37,82 @@ final readonly class IngredientService
      * @param array<int> $existingIngredients
      * @return array<int, object>
      */
-    public function getIngredientsForPossibleCocktails(int $barId, array $existingIngredients): array
+    public function getIngredientsOrderedByUnlockedCocktails(int $barId, array $existingIngredients): array
     {
-        $placeholders = implode(',', array_map(fn ($id) => (int) $id, $existingIngredients));
+        $ingredientIds = array_merge($existingIngredients, $this->resolveComplexIngredients($existingIngredients));
+        $ingredientIds = array_unique($ingredientIds);
+        $availableIngredientIds = array_fill_keys($ingredientIds, true);
+        $availableIngredientAncestorIds = [];
 
-        $rawQuery = "SELECT
-            pi.ingredient_id as id,
-            pi.ingredient_slug as slug,
-            pi.ingredient_name as name,
-            pi.potential_cocktails
-        FROM
-            (
-                SELECT
-                    mi.ingredient_id,
-                    mi.ingredient_slug,
-                    mi.ingredient_name,
-                    COUNT(DISTINCT c.id) AS potential_cocktails
-                FROM
-                    (
-                        -- Step 1: Ingredients the user doesn't have
-                        SELECT
-                            i.id AS ingredient_id,
-                            i.slug AS ingredient_slug,
-                            i.name AS ingredient_name
-                        FROM
-                            ingredients i
-                        WHERE
-                            i.id NOT IN (" . $placeholders . ")
-                            and bar_id = :barId
+        $availableIngredients = DB::table('ingredients')
+            ->where('bar_id', $barId)
+            ->whereIn('id', $ingredientIds)
+            ->select('materialized_path')
+            ->get();
 
-                        EXCEPT
+        foreach ($availableIngredients as $availableIngredient) {
+            if (!is_string($availableIngredient->materialized_path) || $availableIngredient->materialized_path === '') {
+                continue;
+            }
 
-                        -- Step 2: Complex ingredients, user has ingredients in their shelf to make them
-                        SELECT
-                            ci.main_ingredient_id AS ingredient_id,
-                            i.slug AS ingredient_slug,
-                            i.name AS ingredient_name
-                        FROM
-                            complex_ingredients ci
-                            JOIN ingredients i ON ci.main_ingredient_id = i.id
-                        WHERE
-                            ci.main_ingredient_id NOT IN (" . $placeholders . ")
-                            AND ci.ingredient_id IN (" . $placeholders . ")
-                            AND i.bar_id = :barId
-                    ) mi
-                    JOIN cocktail_ingredients ci ON mi.ingredient_id = ci.ingredient_id
-                    JOIN cocktails c ON ci.cocktail_id = c.id
-                GROUP BY
-                    mi.ingredient_id,
-                    mi.ingredient_slug,
-                    mi.ingredient_name
-            ) pi
-        ORDER BY
-            pi.potential_cocktails DESC
-        LIMIT 10";
+            foreach (explode('/', trim($availableIngredient->materialized_path, '/')) as $ancestorId) {
+                if ($ancestorId === '') {
+                    continue;
+                }
 
-        return DB::select($rawQuery, ['barId' => $barId]);
+                $availableIngredientAncestorIds[(int) $ancestorId] = true;
+            }
+        }
+
+        $barCocktails = Cocktail::where('bar_id', $barId)->with('ingredients')->get();
+
+        $unlocks = [];
+        foreach ($barCocktails as $barCocktail) {
+            $missingCocktailIngredient = null;
+
+            foreach ($barCocktail->ingredients as $cocktailIngredient) {
+                if ($cocktailIngredient->optional
+                    || isset($availableIngredientIds[$cocktailIngredient->ingredient_id])
+                    || ($cocktailIngredient->is_specified === false && isset($availableIngredientAncestorIds[$cocktailIngredient->ingredient_id]))) {
+                    continue;
+                }
+
+                if ($missingCocktailIngredient !== null) {
+                    $missingCocktailIngredient = null;
+                    break;
+                }
+
+                $missingCocktailIngredient = $cocktailIngredient;
+            }
+
+            if ($missingCocktailIngredient === null) {
+                continue;
+            }
+
+            $unlocks[$missingCocktailIngredient->ingredient_id] = ($unlocks[$missingCocktailIngredient->ingredient_id] ?? 0) + 1;
+        }
+
+        $ingredients = DB::table('ingredients')
+            ->where('bar_id', $barId)
+            ->whereIn('id', array_keys($unlocks))
+            ->get();
+
+        return $ingredients
+            ->map(fn (object $ingredient): object => (object) [
+                'id' => $ingredient->id,
+                'slug' => $ingredient->slug,
+                'name' => $ingredient->name,
+                'potential_cocktails' => $unlocks[$ingredient->id] ?? 0,
+            ])
+            ->sort(function (object $left, object $right): int {
+                if ($left->potential_cocktails === $right->potential_cocktails) {
+                    return strcmp($left->name, $right->name);
+                }
+
+                return $right->potential_cocktails <=> $left->potential_cocktails;
+            })
+            ->values()
+            ->all();
     }
 
     public function rebuildMaterializedPath(int $barId): void

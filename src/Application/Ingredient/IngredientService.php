@@ -196,6 +196,9 @@ final readonly class IngredientService
         // Index by ID for quick lookup
         $candidateById = [];
         foreach ($ingredientPartCandidates as $candidate) {
+            if ($candidate->isTransient()) {
+                continue;
+            }
             $candidateById[$candidate->getId()->value] = $candidate;
         }
 

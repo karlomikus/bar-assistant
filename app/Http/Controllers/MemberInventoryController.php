@@ -264,7 +264,7 @@ class MemberInventoryController extends Controller
     {
         $memberInventory = $this->ownedMemberInventory($request, $id, $inventoryId);
 
-        $possibleIngredients = $ingredientRepo->getIngredientsForPossibleCocktails(
+        $possibleIngredients = $ingredientRepo->getIngredientsOrderedByUnlockedCocktails(
             bar()->id,
             $this->memberInventoryIngredientIds($memberInventory),
         );
