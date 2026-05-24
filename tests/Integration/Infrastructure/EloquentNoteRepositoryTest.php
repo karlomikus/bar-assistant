@@ -26,7 +26,7 @@ final class EloquentNoteRepositoryTest extends TestCase
 
         $note = Note::create(
             userId: new UserId($user->id),
-            noteableId: '1',
+            noteableId: 1,
             noteableType: NoteableResourceType::Cocktail,
             noteContent: 'Test note',
             recordTimestamps: RecordTimestamps::createdAt(new DateTimeImmutable('2025-01-01 12:00:00')),
@@ -42,7 +42,7 @@ final class EloquentNoteRepositoryTest extends TestCase
 
         $note = Note::create(
             userId: new UserId($user->id),
-            noteableId: '1',
+            noteableId: 1,
             noteableType: NoteableResourceType::Cocktail,
             noteContent: 'Test note',
             recordTimestamps: RecordTimestamps::createdAt(new DateTimeImmutable('2025-01-01 12:00:00')),
@@ -53,7 +53,7 @@ final class EloquentNoteRepositoryTest extends TestCase
         $this->assertDatabaseHas('notes', [
             'id' => $note->getId()->value,
             'user_id' => $user->id,
-            'noteable_id' => '1',
+            'noteable_id' => 1,
             'noteable_type' => Cocktail::class,
             'note' => 'Test note',
             'created_at' => '2025-01-01 12:00:00',

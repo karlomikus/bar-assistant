@@ -8,6 +8,7 @@ use Tests\TestCase;
 use DateTimeImmutable;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\ABV;
+use BarAssistant\Domain\Common\AmountWithUnits;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
@@ -17,6 +18,7 @@ use BarAssistant\Domain\Common\Authors;
 use Kami\Cocktail\Models\Image as ModelImage;
 use BarAssistant\Domain\Ingredient\Ingredient;
 use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Ingredient\ComplexIngredientPart;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Models\Ingredient as ModelIngredient;
@@ -54,12 +56,11 @@ final class EloquentIngredientRepositoryTest extends TestCase
             units: Unit::from('ml'),
         );
         $ingredient->addIngredientPart(
-            $this->makePersistedIngredientReference(
-                barId: $membership->bar_id,
-                userId: $membership->user_id,
-                id: $partModel->id,
-                name: 'Neutral spirit',
-            ),
+            ComplexIngredientPart::create(
+                new IngredientId($partModel->id),
+                AmountWithUnits::from(1.0, Unit::from('ml')),
+                'test-note',
+            )
         );
         $ingredient->addPrice(
             priceCategoryId: new \BarAssistant\Domain\Ingredient\PriceCategoryId($priceCategory->id),
@@ -112,7 +113,7 @@ final class EloquentIngredientRepositoryTest extends TestCase
         $this->assertNotNull($foundIngredient);
         $this->assertSame('Coffee liqueur', $foundIngredient->getName()->toString());
         $this->assertCount(1, $foundIngredient->getIngredientParts());
-        $this->assertSame($partModel->id, $foundIngredient->getIngredientParts()[0]->value);
+        $this->assertSame($partModel->id, $foundIngredient->getIngredientParts()[0]->getIngredientId()->value);
         $this->assertCount(1, $foundIngredient->getPrices());
         $this->assertCount(1, $foundIngredient->getImages());
     }
