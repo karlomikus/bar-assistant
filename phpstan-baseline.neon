@@ -1,0 +1,4837 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Cannot access property \$value on Kami\\Cocktail\\External\\ExportTypeEnum\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Console/Commands/BarExportRecipes.php
+
+		-
+			message: '#^Cannot call method getFilenameContext\(\) on Kami\\Cocktail\\External\\ExportTypeEnum\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Console/Commands/BarExportRecipes.php
+
+		-
+			message: '#^Parameter \#2 \$options of function Laravel\\Prompts\\search expects Closure\(string\)\: array\<int\|string, string\>, Closure\(string\)\: array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/BarExportRecipes.php
+
+		-
+			message: '#^Parameter \#3 \$type of method Kami\\Cocktail\\External\\Export\\ToRecipeType\:\:process\(\) expects Kami\\Cocktail\\External\\ExportTypeEnum, Kami\\Cocktail\\External\\ExportTypeEnum\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/BarExportRecipes.php
+
+		-
+			message: '#^Parameter \#3 \$units of method Kami\\Cocktail\\External\\Export\\ToDataPack\:\:process\(\) expects Kami\\Cocktail\\External\\ForceUnitConvertEnum, Kami\\Cocktail\\External\\ForceUnitConvertEnum\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/BarExportRecipes.php
+
+		-
+			message: '#^Parameter \#4 \$units of method Kami\\Cocktail\\External\\Export\\ToRecipeType\:\:process\(\) expects Kami\\Cocktail\\External\\ForceUnitConvertEnum, Kami\\Cocktail\\External\\ForceUnitConvertEnum\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/BarExportRecipes.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Console/Commands/BarImportRecipes.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: app/Console/Commands/BarImportRecipes.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Bar\:\:\$created_user_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Console/Commands/BarImportRecipes.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Bar\:\:\$name \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Console/Commands/BarImportRecipes.php
+
+		-
+			message: '#^Parameter \#2 \$options of function Laravel\\Prompts\\multisearch expects Closure\(string\)\: array\<int\|string, string\>, Closure\(string\)\: array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/BarMergeIngredient.php
+
+		-
+			message: '#^Parameter \#2 \$options of function Laravel\\Prompts\\search expects Closure\(string\)\: array\<int\|string, string\>, Closure\(string\)\: array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/BarMergeIngredient.php
+
+		-
+			message: '#^Parameter \#1 \$apiKeyUid of method Kami\\Cocktail\\Models\\Bar\:\:updateSearchToken\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/SetupMeilisearch.php
+
+		-
+			message: '#^Parameter \#2 \$apiKey of method Kami\\Cocktail\\Models\\Bar\:\:updateSearchToken\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/SetupMeilisearch.php
+
+		-
+			message: '#^Cannot call method getExternalId\(\) on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/External/Export/ToDataPack.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Binary operation "\." between mixed and string results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 2
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot access offset ''blocks'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot access offset ''description'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot access offset ''label'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot access offset ''name'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot access offset ''settings'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot access offset ''sort'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot access offset ''type'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot access offset ''value'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot access offset ''variable_name'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot access property \$amountMax on Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot access property \$amountMin on Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot access property \$id on stdClass\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot access property \$units on Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 4
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Cannot use array destructuring on mixed\.$#'
+			identifier: offsetAccess.nonArray
+			count: 2
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_filter expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(array\)\: non\-empty\-array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(string\)\: non\-falsy\-string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Parameter \#1 \$sourceArray of static method Kami\\Cocktail\\External\\Model\\Calculator\:\:fromDataPackArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Parameter \#1 \$sourceArray of static method Kami\\Cocktail\\External\\Model\\Cocktail\:\:fromDataPackArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Parameter \#1 \$sourceArray of static method Kami\\Cocktail\\External\\Model\\Ingredient\:\:fromDataPackArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Parameter \#1 \$title of static method Illuminate\\Support\\Str\:\:slug\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 15
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<\(int\|string\),mixed\>\:\:map\(\) expects callable\(mixed, int\|string\)\: lowercase\-string, Closure\(string\)\: lowercase\-string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Import/FromIngredientCSV.php
+
+		-
+			message: '#^Parameter \#1 \$string of function mb_strtolower expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Import/FromIngredientCSV.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Ingredient\:\:\$bar_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/External/Import/FromIngredientCSV.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Ingredient\:\:\$created_user_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/External/Import/FromIngredientCSV.php
+
+		-
+			message: '#^Cannot access property \$amountMax on Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/External/Import/FromSchema.php
+
+		-
+			message: '#^Cannot access property \$amountMin on Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/External/Import/FromSchema.php
+
+		-
+			message: '#^Cannot access property \$extension on Kami\\Cocktail\\Services\\Image\\DTO\\ImageUploadResult\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/External/Import/FromSchema.php
+
+		-
+			message: '#^Cannot access property \$path on Kami\\Cocktail\\Services\\Image\\DTO\\ImageUploadResult\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/External/Import/FromSchema.php
+
+		-
+			message: '#^Cannot access property \$placeholderHash on Kami\\Cocktail\\Services\\Image\\DTO\\ImageUploadResult\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/External/Import/FromSchema.php
+
+		-
+			message: '#^Cannot access property \$units on Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/External/Import/FromSchema.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\External\\Import\\FromSchema\:\:process\(\) should return Kami\\Cocktail\\Models\\Cocktail but returns Kami\\Cocktail\\Models\\Cocktail\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/External/Import/FromSchema.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 4
+			path: app/External/Matcher.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\External\\Matcher\:\:matchCocktailByName\(\) should return int\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/External/Matcher.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\External\\Matcher\:\:matchGlassByName\(\) should return int\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/External/Matcher.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\External\\Matcher\:\:matchMethodByName\(\) should return int\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/External/Matcher.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\External\\Matcher\:\:matchOrCreateIngredientByName\(\) should return int but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/External/Matcher.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\External\\Matcher\:\:\$matchedCocktails \(array\<string, int\>\) does not accept array\<mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/External/Matcher.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\External\\Matcher\:\:\$matchedCocktails \(array\<string, int\>\) does not accept array\<string, mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/External/Matcher.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\External\\Matcher\:\:\$matchedGlasses \(array\<string, int\>\) does not accept array\<mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/External/Matcher.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\External\\Matcher\:\:\$matchedGlasses \(array\<string, int\>\) does not accept array\<string, mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/External/Matcher.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\External\\Matcher\:\:\$matchedIngredients \(array\<string, int\>\) does not accept array\<mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/External/Matcher.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\External\\Matcher\:\:\$matchedIngredients \(array\<string, int\>\) does not accept array\<string, mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/External/Matcher.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\External\\Matcher\:\:\$matchedMethods \(array\<string, int\>\) does not accept array\<mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/External/Matcher.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\External\\Matcher\:\:\$matchedMethods \(array\<string, int\>\) does not accept array\<string, mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/External/Matcher.php
+
+		-
+			message: '#^Parameter \#1 \$id of class Kami\\Cocktail\\External\\Model\\Calculator constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Calculator.php
+
+		-
+			message: '#^Parameter \#2 \$name of class Kami\\Cocktail\\External\\Model\\Calculator constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Calculator.php
+
+		-
+			message: '#^Parameter \#3 \$description of class Kami\\Cocktail\\External\\Model\\Calculator constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Calculator.php
+
+		-
+			message: '#^Parameter \#4 \$blocks of class Kami\\Cocktail\\External\\Model\\Calculator constructor expects array\<string, mixed\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Calculator.php
+
+		-
+			message: '#^Parameter \#4 \$blocks of class Kami\\Cocktail\\External\\Model\\Calculator constructor expects array\<string, mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Calculator.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 4
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Cannot call method toAtomString\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#1 \$id of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#1 \$sourceArray of static method Kami\\Cocktail\\External\\Model\\CocktailIngredient\:\:fromDataPackArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#1 \$sourceArray of static method Kami\\Cocktail\\External\\Model\\CocktailIngredient\:\:fromSchema4Array\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#1 \$sourceArray of static method Kami\\Cocktail\\External\\Model\\Image\:\:fromDataPackArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#1 \$sourceArray of static method Kami\\Cocktail\\External\\Model\\Image\:\:fromSchema4Array\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#1 \$title of static method Illuminate\\Support\\Str\:\:slug\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#10 \$tags of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects array\<string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#10 \$tags of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects array\<string\>, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#11 \$glass of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#12 \$method of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#13 \$utensils of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects array\<string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#13 \$utensils of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects array\<string\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#14 \$images of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects array\<Kami\\Cocktail\\External\\Model\\Image\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#15 \$ingredients of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects array\<Kami\\Cocktail\\External\\Model\\CocktailIngredient\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#16 \$parentCocktailId of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#17 \$year of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#2 \$name of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#3 \$instructions of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#4 \$createdAt of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#5 \$updatedAt of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#6 \$description of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#7 \$source of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#8 \$garnish of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \#9 \$abv of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects float\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 2
+			path: app/External/Model/CocktailIngredient.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/External/Model/CocktailIngredient.php
+
+		-
+			message: '#^Parameter \#1 \$amountMin of class Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject constructor expects float, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/CocktailIngredient.php
+
+		-
+			message: '#^Parameter \#1 \$model of static method Kami\\Cocktail\\External\\Model\\Ingredient\:\:fromModelBasic\(\) expects Kami\\Cocktail\\Models\\Ingredient, Kami\\Cocktail\\Models\\Ingredient\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/CocktailIngredient.php
+
+		-
+			message: '#^Parameter \#1 \$sourceArray of static method Kami\\Cocktail\\External\\Model\\CocktailIngredientSubstitute\:\:fromSchema4Array\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/CocktailIngredient.php
+
+		-
+			message: '#^Parameter \#1 \$title of static method Illuminate\\Support\\Str\:\:slug\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/CocktailIngredient.php
+
+		-
+			message: '#^Parameter \#1 \$value of class Kami\\Cocktail\\Models\\ValueObjects\\UnitValueObject constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/CocktailIngredient.php
+
+		-
+			message: '#^Parameter \#3 \$amountMax of class Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject constructor expects float\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/CocktailIngredient.php
+
+		-
+			message: '#^Parameter \#3 \$optional of class Kami\\Cocktail\\External\\Model\\CocktailIngredient constructor expects bool, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/CocktailIngredient.php
+
+		-
+			message: '#^Parameter \#4 \$isSpecified of class Kami\\Cocktail\\External\\Model\\CocktailIngredient constructor expects bool, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/CocktailIngredient.php
+
+		-
+			message: '#^Parameter \#5 \$note of class Kami\\Cocktail\\External\\Model\\CocktailIngredient constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/CocktailIngredient.php
+
+		-
+			message: '#^Parameter \#6 \$substitutes of class Kami\\Cocktail\\External\\Model\\CocktailIngredient constructor expects array\<Kami\\Cocktail\\External\\Model\\CocktailIngredientSubstitute\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/CocktailIngredient.php
+
+		-
+			message: '#^Parameter \#7 \$sort of class Kami\\Cocktail\\External\\Model\\CocktailIngredient constructor expects int, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/CocktailIngredient.php
+
+		-
+			message: '#^Cannot access property \$amountMax on Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/External/Model/CocktailIngredientSubstitute.php
+
+		-
+			message: '#^Cannot access property \$amountMin on Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject\|null\.$#'
+			identifier: property.nonObject
+			count: 4
+			path: app/External/Model/CocktailIngredientSubstitute.php
+
+		-
+			message: '#^Cannot access property \$units on Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject\|null\.$#'
+			identifier: property.nonObject
+			count: 4
+			path: app/External/Model/CocktailIngredientSubstitute.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/External/Model/CocktailIngredientSubstitute.php
+
+		-
+			message: '#^Parameter \#1 \$amountMin of class Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject constructor expects float, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/CocktailIngredientSubstitute.php
+
+		-
+			message: '#^Parameter \#1 \$model of static method Kami\\Cocktail\\External\\Model\\Ingredient\:\:fromModelBasic\(\) expects Kami\\Cocktail\\Models\\Ingredient, Kami\\Cocktail\\Models\\Ingredient\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/CocktailIngredientSubstitute.php
+
+		-
+			message: '#^Parameter \#1 \$title of static method Illuminate\\Support\\Str\:\:slug\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/CocktailIngredientSubstitute.php
+
+		-
+			message: '#^Parameter \#1 \$value of class Kami\\Cocktail\\Models\\ValueObjects\\UnitValueObject constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/CocktailIngredientSubstitute.php
+
+		-
+			message: '#^Parameter \#3 \$amountMax of class Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject constructor expects float\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/CocktailIngredientSubstitute.php
+
+		-
+			message: '#^Parameter \#1 \$uri of class Kami\\Cocktail\\External\\Model\\Image constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Image.php
+
+		-
+			message: '#^Parameter \#1 \$uri of class Kami\\Cocktail\\External\\Model\\Image constructor expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Image.php
+
+		-
+			message: '#^Parameter \#2 \$copyright of class Kami\\Cocktail\\External\\Model\\Image constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Image.php
+
+		-
+			message: '#^Parameter \#3 \$sort of class Kami\\Cocktail\\External\\Model\\Image constructor expects int, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Image.php
+
+		-
+			message: '#^Parameter \#4 \$placeholderHash of class Kami\\Cocktail\\External\\Model\\Image constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Image.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 3
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Cannot call method getExternalId\(\) on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Cannot call method toAtomString\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \#1 \$model of static method Kami\\Cocktail\\External\\Model\\Ingredient\:\:fromModelBasic\(\) expects Kami\\Cocktail\\Models\\Ingredient, Kami\\Cocktail\\Models\\Ingredient\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \#1 \$sourceArray of static method Kami\\Cocktail\\External\\Model\\Image\:\:fromDataPackArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \#1 \$sourceArray of static method Kami\\Cocktail\\External\\Model\\Ingredient\:\:fromDataPackArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \#1 \$sourceArray of static method Kami\\Cocktail\\External\\Model\\IngredientPrice\:\:fromDataPackArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \#1 \$value of class Kami\\Cocktail\\Models\\ValueObjects\\UnitValueObject constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \#1 \$value of function floatval expects array\|bool\|float\|GMP\|int\|resource\|SimpleXMLElement\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$acidity of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects float\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$calculatorId of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$category of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$color of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$createdAt of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$description of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$distillery of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$id of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$images of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects array\<Kami\\Cocktail\\External\\Model\\Image\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$ingredientParts of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects array\<Kami\\Cocktail\\External\\Model\\Ingredient\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$name of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$origin of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$parentId of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$prices of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects array\<Kami\\Cocktail\\External\\Model\\IngredientPrice\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$strength of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects float, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$sugarContent of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects float\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Parameter \$updatedAt of class Kami\\Cocktail\\External\\Model\\Ingredient constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Ingredient.php
+
+		-
+			message: '#^Cannot access property \$currency on Kami\\Cocktail\\Models\\PriceCategory\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/External/Model/IngredientPrice.php
+
+		-
+			message: '#^Cannot access property \$name on Kami\\Cocktail\\Models\\PriceCategory\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/External/Model/IngredientPrice.php
+
+		-
+			message: '#^Parameter \#1 \$priceCategoryName of class Kami\\Cocktail\\External\\Model\\IngredientPrice constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/IngredientPrice.php
+
+		-
+			message: '#^Parameter \#2 \$price of class Kami\\Cocktail\\External\\Model\\IngredientPrice constructor expects int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/IngredientPrice.php
+
+		-
+			message: '#^Parameter \#3 \$currency of class Kami\\Cocktail\\External\\Model\\IngredientPrice constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/IngredientPrice.php
+
+		-
+			message: '#^Parameter \#4 \$amount of class Kami\\Cocktail\\External\\Model\\IngredientPrice constructor expects float, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/IngredientPrice.php
+
+		-
+			message: '#^Parameter \#5 \$units of class Kami\\Cocktail\\External\\Model\\IngredientPrice constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/IngredientPrice.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/GenAI/GenAIProviderConfig.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Prism\\Prism\\Enums\\Provider\:\:tryFrom\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/GenAI/GenAIProviderConfig.php
+
+		-
+			message: '#^Parameter \$model of class Kami\\Cocktail\\GenAI\\GenAIProviderConfig constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/GenAI/GenAIProviderConfig.php
+
+		-
+			message: '#^Cannot call method currentAccessToken\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Parameter \#1 \$name of method Kami\\Cocktail\\Models\\User\:\:createToken\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Illuminate\\Support\\Facades\\Hash\:\:check\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Parameter \#2 \$message of function abort expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 6
+			path: app/Http/Controllers/BarController.php
+
+		-
+			message: '#^Cannot call method can\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Controllers/BarController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 8
+			path: app/Http/Controllers/BarController.php
+
+		-
+			message: '#^Cannot call method hasActiveSubscription\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/BarController.php
+
+		-
+			message: '#^Cannot call method ownedBars\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/BarController.php
+
+		-
+			message: '#^Parameter \#2 \$user of job class Kami\\Cocktail\\Jobs\\SyncBarRecipes constructor expects Kami\\Cocktail\\Models\\User in Kami\\Cocktail\\Jobs\\SyncBarRecipes\:\:dispatch\(\), Kami\\Cocktail\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/BarController.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Bar\:\:\$created_user_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Http/Controllers/BarController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 6
+			path: app/Http/Controllers/BarInventoryController.php
+
+		-
+			message: '#^Parameter \#1 \$ingredientIds of method Kami\\Cocktail\\Services\\CocktailService\:\:getCocktailsByIngredients\(\) expects array\<int\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 3
+			path: app/Http/Controllers/BarInventoryController.php
+
+		-
+			message: '#^Parameter \#1 \$perPage of method Illuminate\\Database\\Eloquent\\Builder\<Kami\\Cocktail\\Models\\Cocktail\>\:\:paginate\(\) expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/BarInventoryController.php
+
+		-
+			message: '#^Parameter \#1 \$perPage of method Illuminate\\Database\\Eloquent\\Builder\<Kami\\Cocktail\\Models\\Ingredient\>\:\:paginate\(\) expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/BarInventoryController.php
+
+		-
+			message: '#^Parameter \#2 \$existingIngredients of method Kami\\Cocktail\\Services\\IngredientService\:\:getIngredientsOrderedByUnlockedCocktails\(\) expects array\<int\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/BarInventoryController.php
+
+		-
+			message: '#^Parameter \#2 \$ingredientIds of class BarAssistant\\Application\\Bar\\DTO\\BarInventoryStockChangeRequest constructor expects array\<int\>, \(array\|string\) given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/BarInventoryController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: app/Http/Controllers/CalculatorController.php
+
+		-
+			message: '#^Parameter \#2 \$inputs of class BarAssistant\\Application\\Calculator\\DTO\\SolveCalculator constructor expects array\<string, string\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/CalculatorController.php
+
+		-
+			message: '#^Parameter \$settings of class BarAssistant\\Application\\Calculator\\DTO\\CreateCalculatorBlock constructor expects array\<string, int\|string\>, array\<string, mixed\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/CalculatorController.php
+
+		-
+			message: '#^Binary operation "\." between ''Requested type "'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: app/Http/Controllers/CocktailController.php
+
+		-
+			message: '#^Cannot access property \$extension on Kami\\Cocktail\\Services\\Image\\DTO\\ImageUploadResult\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/CocktailController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/CocktailController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: app/Http/Controllers/CocktailController.php
+
+		-
+			message: '#^Cannot access property \$path on Kami\\Cocktail\\Services\\Image\\DTO\\ImageUploadResult\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/CocktailController.php
+
+		-
+			message: '#^Cannot access property \$placeholderHash on Kami\\Cocktail\\Services\\Image\\DTO\\ImageUploadResult\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/CocktailController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 12
+			path: app/Http/Controllers/CocktailController.php
+
+		-
+			message: '#^Cannot call method getBarMembership\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/CocktailController.php
+
+		-
+			message: '#^Parameter \#1 \$data of static method Illuminate\\Support\\Facades\\Validator\:\:make\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/CocktailController.php
+
+		-
+			message: '#^Parameter \#1 \$perPage of method Illuminate\\Database\\Eloquent\\Builder\<Kami\\Cocktail\\Models\\Cocktail\>\:\:paginate\(\) expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/CocktailController.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Kami\\RecipeUtils\\UnitConverter\\Units\:\:tryFrom\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/CocktailController.php
+
+		-
+			message: '#^Parameter \#2 \$limitTotal of method Kami\\Cocktail\\Services\\CocktailService\:\:getSimilarCocktails\(\) expects int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/CocktailController.php
+
+		-
+			message: '#^Parameter \$strength of class BarAssistant\\Application\\Cocktail\\DTO\\CocktailIngredient constructor expects float, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/CocktailController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: app/Http/Controllers/CocktailMethodController.php
+
+		-
+			message: '#^Cannot access property \$bar_id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Controllers/CollectionController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/CollectionController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 6
+			path: app/Http/Controllers/CollectionController.php
+
+		-
+			message: '#^Cannot call method getBarMembership\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/CollectionController.php
+
+		-
+			message: '#^Parameter \$cocktailIds of class BarAssistant\\Application\\Cocktail\\DTO\\CreateCollection constructor expects array\<int\>, \(array\|string\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/CollectionController.php
+
+		-
+			message: '#^Parameter \$cocktailIds of class BarAssistant\\Application\\Cocktail\\DTO\\SyncCollectionCocktails constructor expects array\<int\>, \(array\|string\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/CollectionController.php
+
+		-
+			message: '#^Parameter \$description of class BarAssistant\\Application\\Cocktail\\DTO\\CreateCollection constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/CollectionController.php
+
+		-
+			message: '#^Parameter \$description of class BarAssistant\\Application\\Cocktail\\DTO\\UpdateCollection constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/CollectionController.php
+
+		-
+			message: '#^Parameter \$name of class BarAssistant\\Application\\Cocktail\\DTO\\CreateCollection constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/CollectionController.php
+
+		-
+			message: '#^Parameter \$name of class BarAssistant\\Application\\Cocktail\\DTO\\UpdateCollection constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/CollectionController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Controllers/ExportController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Http/Controllers/ExportController.php
+
+		-
+			message: '#^Cannot call method getFilenameContext\(\) on Kami\\Cocktail\\External\\ExportTypeEnum\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ExportController.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Http/Controllers/ExportController.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Kami\\Cocktail\\External\\ExportTypeEnum\:\:tryFrom\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ExportController.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Kami\\Cocktail\\External\\ForceUnitConvertEnum\:\:tryFrom\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ExportController.php
+
+		-
+			message: '#^Parameter \#2 \$type of job class Kami\\Cocktail\\Jobs\\StartTypedExport constructor expects Kami\\Cocktail\\External\\ExportTypeEnum in Kami\\Cocktail\\Jobs\\StartTypedExport\:\:dispatch\(\), Kami\\Cocktail\\External\\ExportTypeEnum\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ExportController.php
+
+		-
+			message: '#^Parameter \#5 \$units of job class Kami\\Cocktail\\Jobs\\StartTypedExport constructor expects Kami\\Cocktail\\External\\ForceUnitConvertEnum in Kami\\Cocktail\\Jobs\\StartTypedExport\:\:dispatch\(\), Kami\\Cocktail\\External\\ForceUnitConvertEnum\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ExportController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/GenerateController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/GenerateController.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Controllers/GenerateController.php
+
+		-
+			message: '#^Parameter \#1 \$ingredientName of class Kami\\Cocktail\\GenAI\\DTO\\CompleteIngredientRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/GenerateController.php
+
+		-
+			message: '#^Parameter \#2 \$allowedMethods of class Kami\\Cocktail\\GenAI\\DTO\\CocktailRecipeTextImportRequest constructor expects array\<string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/GenerateController.php
+
+		-
+			message: '#^Parameter \#2 \$existingTags of class Kami\\Cocktail\\GenAI\\DTO\\CocktailTagsRequest constructor expects array\<string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/GenerateController.php
+
+		-
+			message: '#^Parameter \$style of method Kami\\Cocktail\\Services\\Image\\CocktailImageGenerationService\:\:generateImage\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/GenerateController.php
+
+		-
+			message: '#^Part \$cocktailId \(mixed\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
+			count: 1
+			path: app/Http/Controllers/GenerateController.php
+
+		-
+			message: '#^Part \$ingredientName \(mixed\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
+			count: 1
+			path: app/Http/Controllers/GenerateController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: app/Http/Controllers/GlassController.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: app/Http/Controllers/ImageController.php
+
+		-
+			message: '#^Cannot access offset ''copyright'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Http/Controllers/ImageController.php
+
+		-
+			message: '#^Cannot access offset ''id'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Http/Controllers/ImageController.php
+
+		-
+			message: '#^Cannot access offset ''sort'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Http/Controllers/ImageController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Controllers/ImageController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Controllers/ImageController.php
+
+		-
+			message: '#^Cannot call method format\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ImageController.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 4
+			path: app/Http/Controllers/ImageController.php
+
+		-
+			message: '#^Parameter \#1 \$formImage of method Kami\\Cocktail\\Http\\Controllers\\ImageController\:\:getValidImageSource\(\) expects array\{image\?\: Illuminate\\Http\\UploadedFile\|string\}, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ImageController.php
+
+		-
+			message: '#^Parameter \$copyright of class BarAssistant\\Application\\Image\\DTO\\CreateImage constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ImageController.php
+
+		-
+			message: '#^Parameter \$copyright of class BarAssistant\\Application\\Image\\DTO\\UpdateImageRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ImageController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Controllers/ImportController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Http/Controllers/ImportController.php
+
+		-
+			message: '#^Cannot call method store\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ImportController.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Controllers/ImportController.php
+
+		-
+			message: '#^Parameter \#1 \$source of static method Kami\\Cocktail\\External\\Model\\Schema\:\:fromSchema4Array\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ImportController.php
+
+		-
+			message: '#^Parameter \#1 \$url of static method Kami\\Cocktail\\Scraper\\Manager\:\:scrape\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ImportController.php
+
+		-
+			message: '#^Parameter \#2 \$content of static method Kami\\Cocktail\\Scraper\\Manager\:\:scrape\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ImportController.php
+
+		-
+			message: '#^Parameter \#3 \$filepath of job class Kami\\Cocktail\\Jobs\\StartIngredientCSVImport constructor expects string in Kami\\Cocktail\\Jobs\\StartIngredientCSVImport\:\:dispatch\(\), mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ImportController.php
+
+		-
+			message: '#^Parameter \#4 \$duplicateAction of method Kami\\Cocktail\\External\\Import\\FromSchema\:\:process\(\) expects Kami\\Cocktail\\External\\Import\\DuplicateActionsEnum, Kami\\Cocktail\\External\\Import\\DuplicateActionsEnum\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ImportController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Controllers/IngredientController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 7
+			path: app/Http/Controllers/IngredientController.php
+
+		-
+			message: '#^Parameter \#1 \$perPage of method Illuminate\\Database\\Eloquent\\Builder\<Kami\\Cocktail\\Models\\Cocktail\>\:\:paginate\(\) expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/IngredientController.php
+
+		-
+			message: '#^Parameter \#1 \$perPage of method Illuminate\\Database\\Eloquent\\Builder\<Kami\\Cocktail\\Models\\Ingredient\>\:\:paginate\(\) expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/IngredientController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/MemberController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: app/Http/Controllers/MemberController.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Http/Controllers/MemberController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/MemberInventoryController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 4
+			path: app/Http/Controllers/MemberInventoryController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/MemberInventoryController.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Http\\Controllers\\MemberInventoryController\:\:memberInventoryIngredientIds\(\) should return array\<int\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Controllers/MemberInventoryController.php
+
+		-
+			message: '#^Parameter \#1 \$perPage of method Illuminate\\Database\\Eloquent\\Builder\<Kami\\Cocktail\\Models\\Cocktail\>\:\:paginate\(\) expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/MemberInventoryController.php
+
+		-
+			message: '#^Parameter \#1 \$perPage of method Illuminate\\Database\\Eloquent\\Builder\<Kami\\Cocktail\\Models\\Ingredient\>\:\:paginate\(\) expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/MemberInventoryController.php
+
+		-
+			message: '#^Parameter \$ingredientIds of class BarAssistant\\Application\\Bar\\DTO\\MemberInventoryStockChangeRequest constructor expects array\<int\>, \(array\|string\|null\) given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/MemberInventoryController.php
+
+		-
+			message: '#^Parameter \$name of class BarAssistant\\Application\\Bar\\DTO\\CreateMemberInventoryRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/MemberInventoryController.php
+
+		-
+			message: '#^Parameter \$name of class BarAssistant\\Application\\Bar\\DTO\\UpdateInventoryNameRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/MemberInventoryController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Http/Controllers/MenuController.php
+
+		-
+			message: '#^Parameter \$menuId of class BarAssistant\\Application\\Menu\\DTO\\CreateMenuRequest constructor expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/MenuController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/NoteController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Http/Controllers/NoteController.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: app/Http/Controllers/NoteController.php
+
+		-
+			message: '#^Parameter \$note of class BarAssistant\\Application\\Note\\DTO\\CreateNoteRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/NoteController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Controllers/PATController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Controllers/PATController.php
+
+		-
+			message: '#^Cannot call method createToken\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/PATController.php
+
+		-
+			message: '#^Cannot call method tokens\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/PATController.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_filter expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PATController.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Kami\\Cocktail\\Models\\Enums\\AbilityEnum\:\:tryFrom\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PATController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 4
+			path: app/Http/Controllers/ProfileController.php
+
+		-
+			message: '#^Cannot access property \$password on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/ProfileController.php
+
+		-
+			message: '#^Cannot call method chaperone\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ProfileController.php
+
+		-
+			message: '#^Cannot call method load\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ProfileController.php
+
+		-
+			message: '#^Cannot call method oauthCredentials\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ProfileController.php
+
+		-
+			message: '#^Cannot call method tokens\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ProfileController.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Illuminate\\Support\\Facades\\Hash\:\:check\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ProfileController.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Illuminate\\Support\\Facades\\Hash\:\:make\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ProfileController.php
+
+		-
+			message: '#^Cannot access property \$is_enabled on Kami\\Cocktail\\Models\\Menu\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/Public/BarController.php
+
+		-
+			message: '#^Cannot call method withQueryString\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Public/CocktailController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Controllers/RatingController.php
+
+		-
+			message: '#^Cannot call method getBarMembership\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Controllers/RatingController.php
+
+		-
+			message: '#^Cannot call method getBarMembership\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/RecommenderController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/SSOAuthController.php
+
+		-
+			message: '#^Cannot call method createToken\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/SSOAuthController.php
+
+		-
+			message: '#^Parameter \#2 \$current of method Kami\\Cocktail\\Services\\VersionCheckService\:\:isLatest\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ServerController.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: app/Http/Controllers/ShoppingListController.php
+
+		-
+			message: '#^Binary operation "\." between ''Requested type "'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: app/Http/Controllers/ShoppingListController.php
+
+		-
+			message: '#^Cannot access offset ''id'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Http/Controllers/ShoppingListController.php
+
+		-
+			message: '#^Cannot access offset ''quantity'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Http/Controllers/ShoppingListController.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 4
+			path: app/Http/Controllers/ShoppingListController.php
+
+		-
+			message: '#^Cannot access property \$shoppingListIngredients on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Controllers/ShoppingListController.php
+
+		-
+			message: '#^Parameter \#1 \$data of static method Illuminate\\Support\\Facades\\Validator\:\:make\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ShoppingListController.php
+
+		-
+			message: '#^Parameter \$ingredientIds of class BarAssistant\\Application\\Bar\\DTO\\MemberShoppingListRemoveIngredientRequest constructor expects array\<int\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ShoppingListController.php
+
+		-
+			message: '#^Parameter \$ingredientQuantities of class BarAssistant\\Application\\Bar\\DTO\\MemberShoppingListChangeRequest constructor expects array\<int, int\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ShoppingListController.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: app/Http/Controllers/ShoppingListController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Kami\\Cocktail\\Models\\Ingredient\>\:\:onlyRootIngredients\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/StatsController.php
+
+		-
+			message: '#^Cannot call method from\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Controllers/StatsController.php
+
+		-
+			message: '#^Cannot call method get\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/StatsController.php
+
+		-
+			message: '#^Cannot call method getBarMembership\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: app/Http/Controllers/StatsController.php
+
+		-
+			message: '#^Cannot call method map\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/StatsController.php
+
+		-
+			message: '#^Cannot call method orWhere\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/StatsController.php
+
+		-
+			message: '#^Cannot call method select\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Http/Controllers/StatsController.php
+
+		-
+			message: '#^Cannot call method values\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/StatsController.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: app/Http/Controllers/StatsController.php
+
+		-
+			message: '#^Parameter \#1 \$ingredientIds of method Kami\\Cocktail\\Services\\CocktailService\:\:getCocktailsByIngredients\(\) expects array\<int\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/StatsController.php
+
+		-
+			message: '#^Cannot access property \$customer on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/SubscriptionController.php
+
+		-
+			message: '#^Cannot call method createAsCustomer\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/SubscriptionController.php
+
+		-
+			message: '#^Cannot call method pause\(\) on Laravel\\Paddle\\Subscription\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/SubscriptionController.php
+
+		-
+			message: '#^Cannot call method resume\(\) on Laravel\\Paddle\\Subscription\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/SubscriptionController.php
+
+		-
+			message: '#^Cannot call method subscription\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Controllers/SubscriptionController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: app/Http/Controllers/TagController.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Tag\:\:\$name \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Http/Controllers/TagController.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: app/Http/Controllers/UtensilsController.php
+
+		-
+			message: '#^Cannot access property \$bar_id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 4
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 4
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method from\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method getBarMembership\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method groupBy\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method having\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method havingRaw\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method inRandomOrder\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method join\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method leftJoin\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method on\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method orWhere\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method orWhereIn\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method orderBy\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method select\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method userFavorites\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 14
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method whereHas\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method whereIn\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 9
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method whereNotIn\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method whereNotNull\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 11
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Parameter \#1 \$ingredientIds of method Kami\\Cocktail\\Services\\CocktailService\:\:getCocktailsByIngredients\(\) expects array\<int\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Parameter \#1 \$ingredientIds of method Kami\\Cocktail\\Services\\CocktailService\:\:getCocktailsByIngredients\(\) expects array\<int\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Filters/CollectionQueryFilter.php
+
+		-
+			message: '#^Cannot call method getBarMembership\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/CollectionQueryFilter.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Filters/FilterNameSearch.php
+
+		-
+			message: '#^Cannot access property \$bar_id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method descendantsOf\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method getBarMembership\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method groupBy\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method inUserShelf\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method join\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method leftJoin\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method on\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method onShoppingList\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method onlyRootIngredients\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method orderBy\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method selectRaw\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method whereHas\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method whereIn\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot call method whereNotIn\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Parameter \#1 \$ingredientIds of method Kami\\Cocktail\\Services\\IngredientService\:\:resolveComplexIngredients\(\) expects array\<int\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Filters/IngredientQueryFilter.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Filters/NoteQueryFilter.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Filters/NoteQueryFilter.php
+
+		-
+			message: '#^Cannot call method inRandomOrder\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/PublicCocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method join\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/PublicCocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Filters/PublicCocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method whereHas\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Filters/PublicCocktailQueryFilter.php
+
+		-
+			message: '#^Cannot call method whereIn\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Filters/PublicCocktailQueryFilter.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Prism\\Prism\\Enums\\Provider\:\:tryFrom\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Middleware/AiImageProviderIsConfigured.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Prism\\Prism\\Enums\\Provider\:\:tryFrom\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Middleware/AiProviderIsConfigured.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_filter expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Middleware/CheckMetricsAccess.php
+
+		-
+			message: '#^Parameter \#1 \$requestIp of static method Symfony\\Component\\HttpFoundation\\IpUtils\:\:checkIp\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Middleware/CheckMetricsAccess.php
+
+		-
+			message: '#^Parameter \#1 \$requestIp of static method Symfony\\Component\\HttpFoundation\\IpUtils\:\:isPrivateIp\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Middleware/CheckMetricsAccess.php
+
+		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Middleware/EnsureRequestHasBarQuery.php
+
+		-
+			message: '#^Cannot call method uri\(\) on Illuminate\\Routing\\Route\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Middleware/TracksRequestMetric.php
+
+		-
+			message: '#^Parameter \#2 \$authenticatedUser of class Kami\\Cocktail\\Rules\\SubscriberImagesCount constructor expects Kami\\Cocktail\\Models\\User, Kami\\Cocktail\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Requests/CocktailRequest.php
+
+		-
+			message: '#^Parameter \#2 \$authenticatedUser of class Kami\\Cocktail\\Rules\\SubscriberImagesCount constructor expects Kami\\Cocktail\\Models\\User, Kami\\Cocktail\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Requests/IngredientRequest.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Requests/UpdateUserRequest.php
+
+		-
+			message: '#^Cannot access property \$name on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/AmountFormats.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Http\\Resources\\BarIngredientDistributionResource\:\:toArray\(\) should return array\<string, mixed\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Resources/BarIngredientDistributionResource.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/BarMembershipResource.php
+
+		-
+			message: '#^Cannot access property \$name on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/BarMembershipResource.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/BarResource.php
+
+		-
+			message: '#^Cannot access property \$user_role_id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/BarResource.php
+
+		-
+			message: '#^Cannot call method can\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: app/Http/Resources/BarResource.php
+
+		-
+			message: '#^Cannot call method toAtomString\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/BarResource.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Http\\Resources\\BarTopStatsResource\:\:toArray\(\) should return array\<string, mixed\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Resources/BarTopStatsResource.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Http\\Resources\\BarTotalStatsResource\:\:toArray\(\) should return array\<string, mixed\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Resources/BarTotalStatsResource.php
+
+		-
+			message: '#^Cannot call method barHasInShelf\(\) on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/CocktailIngredientResource.php
+
+		-
+			message: '#^Cannot call method barHasInShelfAsComplexIngredient\(\) on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/CocktailIngredientResource.php
+
+		-
+			message: '#^Cannot call method barShelfVariants\(\) on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Resources/CocktailIngredientResource.php
+
+		-
+			message: '#^Cannot call method relationLoaded\(\) on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Http/Resources/CocktailIngredientResource.php
+
+		-
+			message: '#^Parameter \#1 \$cocktailIngredient of class Kami\\Cocktail\\Http\\Resources\\AmountFormats constructor expects Kami\\Cocktail\\Models\\CocktailIngredient, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Resources/CocktailIngredientResource.php
+
+		-
+			message: '#^Cannot call method to\(\) on Brick\\Money\\RationalMoney\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/CocktailPriceResource.php
+
+		-
+			message: '#^Cannot access property \$cocktailFavorites on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/CocktailResource.php
+
+		-
+			message: '#^Cannot call method can\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: app/Http/Resources/CocktailResource.php
+
+		-
+			message: '#^Cannot call method getBarMembership\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/CocktailResource.php
+
+		-
+			message: '#^Cannot call method getShelfCocktailsOnce\(\) on Kami\\Cocktail\\Models\\Bar\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/CocktailResource.php
+
+		-
+			message: '#^Cannot call method toAtomString\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/CocktailResource.php
+
+		-
+			message: '#^Parameter \#1 \$num of function round expects float\|int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Resources/CocktailResource.php
+
+		-
+			message: '#^Cannot access property \$user on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/CollectionResource.php
+
+		-
+			message: '#^Cannot call method toAtomString\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/CollectionResource.php
+
+		-
+			message: '#^Cannot access property \$name on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Resources/ExploreCocktailResource.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Http\\Resources\\Generated\\GeneratedCocktailFromTextResource\:\:toArray\(\) should return array\<string, mixed\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Resources/Generated/GeneratedCocktailFromTextResource.php
+
+		-
+			message: '#^Only iterables can be unpacked, mixed given\.$#'
+			identifier: arrayUnpacking.nonIterable
+			count: 1
+			path: app/Http/Resources/Generated/GeneratedCocktailFromTextResource.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Http\\Resources\\Generated\\GeneratedCocktailTagsResource\:\:toArray\(\) should return array\<string, mixed\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Resources/Generated/GeneratedCocktailTagsResource.php
+
+		-
+			message: '#^Only iterables can be unpacked, mixed given\.$#'
+			identifier: arrayUnpacking.nonIterable
+			count: 1
+			path: app/Http/Resources/Generated/GeneratedCocktailTagsResource.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Http\\Resources\\Generated\\GeneratedIngredientResource\:\:toArray\(\) should return array\<string, mixed\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Resources/Generated/GeneratedIngredientResource.php
+
+		-
+			message: '#^Only iterables can be unpacked, mixed given\.$#'
+			identifier: arrayUnpacking.nonIterable
+			count: 1
+			path: app/Http/Resources/Generated/GeneratedIngredientResource.php
+
+		-
+			message: '#^Cannot call method toAtomString\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/IngredientPriceResource.php
+
+		-
+			message: '#^Cannot call method can\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Resources/IngredientResource.php
+
+		-
+			message: '#^Cannot call method toAtomString\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/IngredientResource.php
+
+		-
+			message: '#^Parameter \#1 \$user of method Kami\\Cocktail\\Models\\Ingredient\:\:userHasInShoppingList\(\) expects Kami\\Cocktail\\Models\\User, Kami\\Cocktail\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Resources/IngredientResource.php
+
+		-
+			message: '#^Cannot access property \$email on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/MemberResource.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\UserRole\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/MemberResource.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/MemberResource.php
+
+		-
+			message: '#^Cannot access property \$name on Kami\\Cocktail\\Models\\UserRole\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/MemberResource.php
+
+		-
+			message: '#^Cannot access property \$name on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/MemberResource.php
+
+		-
+			message: '#^Cannot call method hasActiveSubscription\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/MemberResource.php
+
+		-
+			message: '#^Cannot access property \$description on Kami\\Cocktail\\Models\\Bar\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/MenuPublicResource.php
+
+		-
+			message: '#^Cannot access property \$images on Kami\\Cocktail\\Models\\Bar\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/MenuPublicResource.php
+
+		-
+			message: '#^Cannot access property \$name on Kami\\Cocktail\\Models\\Bar\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/MenuPublicResource.php
+
+		-
+			message: '#^Cannot access property \$subtitle on Kami\\Cocktail\\Models\\Bar\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/MenuPublicResource.php
+
+		-
+			message: '#^Cannot call method relationLoaded\(\) on Kami\\Cocktail\\Models\\Bar\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/MenuPublicResource.php
+
+		-
+			message: '#^Cannot call method toAtomString\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/MenuResource.php
+
+		-
+			message: '#^Cannot call method toAtomString\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/NoteResource.php
+
+		-
+			message: '#^Cannot call method toAtomString\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/OauthCredentialResource.php
+
+		-
+			message: '#^Cannot access property \$name on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Resources/Public/CocktailResource.php
+
+		-
+			message: '#^Cannot call method toAtomString\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Resources/Public/CocktailResource.php
+
+		-
+			message: '#^Cannot call method cancelNow\(\) on Laravel\\Paddle\\Subscription\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Infrastructure/DomainEventSubscriber/CleanupUserAnonymizedSubscriber.php
+
+		-
+			message: '#^Parameter \$inStockIngredientIds of static method Kami\\Cocktail\\Infrastructure\\EloquentBarInventoryRepository\:\:map\(\) expects array\<int\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Infrastructure/EloquentBarInventoryRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\BarIngredient\:\:\$ingredient_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentBarInventoryRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Bar\:\:\$created_user_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentBarRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Bar\:\:\$updated_user_id \(int\<0, max\>\|null\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentBarRepository.php
+
+		-
+			message: '#^Cannot call method toDateTimeImmutable\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Infrastructure/EloquentCalculatorRepository.php
+
+		-
+			message: '#^Parameter \#1 \$data of static method BarAssistant\\Domain\\Calculator\\CalculatorBlockSettings\:\:fromArray\(\) expects array\<string, int\|string\>, array\<string, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Infrastructure/EloquentCalculatorRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Calculator\:\:\$bar_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentCalculatorRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Calculator\:\:\$created_at \(Carbon\\Carbon\|string\|null\) does not accept DateTimeImmutable\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentCalculatorRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Calculator\:\:\$updated_at \(Carbon\\Carbon\|string\|null\) does not accept DateTimeImmutable\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentCalculatorRepository.php
+
+		-
+			message: '#^Cannot access property \$bar_id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Infrastructure/EloquentCocktailCollectionRepository.php
+
+		-
+			message: '#^Cannot call method toDateTimeImmutable\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Infrastructure/EloquentCocktailCollectionRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Collection\:\:\$bar_membership_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentCocktailCollectionRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\CocktailMethod\:\:\$bar_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentCocktailMethodRepository.php
+
+		-
+			message: '#^Cannot call method toDateTimeImmutable\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Infrastructure/EloquentCocktailRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Cocktail\:\:\$bar_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentCocktailRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Cocktail\:\:\$cocktail_method_id \(int\<0, max\>\|null\) does not accept int\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentCocktailRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Cocktail\:\:\$created_user_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentCocktailRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Cocktail\:\:\$glass_id \(int\<0, max\>\|null\) does not accept int\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentCocktailRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Cocktail\:\:\$parent_cocktail_id \(int\<0, max\>\|null\) does not accept int\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentCocktailRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Cocktail\:\:\$public_at \(Carbon\\Carbon\|null\) does not accept DateTimeImmutable\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentCocktailRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Cocktail\:\:\$public_expires_at \(Carbon\\Carbon\|null\) does not accept DateTimeImmutable\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentCocktailRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Cocktail\:\:\$updated_user_id \(int\<0, max\>\|null\) does not accept int\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentCocktailRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Tag\:\:\$bar_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentCocktailRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Export\:\:\$bar_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentExportRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Export\:\:\$created_user_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentExportRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Glass\:\:\$bar_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentGlassRepository.php
+
+		-
+			message: '#^Cannot call method toDateTimeImmutable\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Infrastructure/EloquentImageRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Image\:\:\$created_user_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentImageRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Image\:\:\$updated_user_id \(int\<0, max\>\|null\) does not accept int\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentImageRepository.php
+
+		-
+			message: '#^Cannot access property \$currency on Kami\\Cocktail\\Models\\PriceCategory\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Infrastructure/EloquentIngredientRepository.php
+
+		-
+			message: '#^Cannot call method toDateTimeImmutable\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Infrastructure/EloquentIngredientRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\ComplexIngredient\:\:\$ingredient_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentIngredientRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Ingredient\:\:\$bar_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentIngredientRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Ingredient\:\:\$calculator_id \(int\<0, max\>\|null\) does not accept int\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentIngredientRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Ingredient\:\:\$created_user_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentIngredientRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Ingredient\:\:\$parent_ingredient_id \(int\<0, max\>\|null\) does not accept int\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentIngredientRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Ingredient\:\:\$updated_user_id \(int\<0, max\>\|null\) does not accept int\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentIngredientRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\IngredientPrice\:\:\$price_category_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentIngredientRepository.php
+
+		-
+			message: '#^Parameter \#1 \$ids of static method Illuminate\\Database\\Eloquent\\Model\:\:destroy\(\) expects array\|Illuminate\\Support\\Collection\|int\|string, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Infrastructure/EloquentMemberInventoryRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\MemberInventory\:\:\$bar_membership_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentMemberInventoryRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\MemberInventoryIngredient\:\:\$ingredient_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentMemberInventoryRepository.php
+
+		-
+			message: '#^Cannot access property \$name on Kami\\Cocktail\\Models\\UserRole\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Infrastructure/EloquentMemberRepository.php
+
+		-
+			message: '#^Parameter \#1 \$ids of static method Illuminate\\Database\\Eloquent\\Model\:\:destroy\(\) expects array\|Illuminate\\Support\\Collection\|int\|string, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Infrastructure/EloquentMemberRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\BarMembership\:\:\$bar_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentMemberRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\BarMembership\:\:\$user_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentMemberRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\CocktailFavorite\:\:\$cocktail_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentMemberRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\UserShoppingList\:\:\$ingredient_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentMemberRepository.php
+
+		-
+			message: '#^Cannot call method toDateTimeImmutable\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Infrastructure/EloquentNoteRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Note\:\:\$user_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentNoteRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\PriceCategory\:\:\$bar_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentPriceCategoryRepository.php
+
+		-
+			message: '#^Binary operation "/" between mixed and int results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 3
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Cannot call method toDateTimeImmutable\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 5
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Infrastructure\\EloquentRecommendationRepository\:\:getApplicableCocktails\(\) should return array\<BarAssistant\\Domain\\Recommendation\\CocktailWithDetails\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Infrastructure\\EloquentRecommendationRepository\:\:getFavoriteIngredients\(\) should return array\<BarAssistant\\Domain\\Recommendation\\WeightedIngredient\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Infrastructure\\EloquentRecommendationRepository\:\:getFavoriteTags\(\) should return array\<BarAssistant\\Domain\\Recommendation\\WeightedTag\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Infrastructure\\EloquentRecommendationRepository\:\:getNegativeTagCocktailCounts\(\) should return array\<BarAssistant\\Domain\\Recommendation\\CocktailTagCount\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Infrastructure\\EloquentRecommendationRepository\:\:getNegativeTags\(\) should return array\<BarAssistant\\Domain\\Recommendation\\WeightedTag\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Infrastructure\\EloquentRecommendationRepository\:\:getPositiveTagCocktailCounts\(\) should return array\<BarAssistant\\Domain\\Recommendation\\CocktailTagCount\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_unique expects an array of values castable to string, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 5
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Parameter \#1 \$tagName of class BarAssistant\\Domain\\Recommendation\\WeightedTag constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Parameter \#1 \$value of class BarAssistant\\Domain\\Ingredient\\IngredientId constructor expects int, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method BarAssistant\\Domain\\Common\\Name\:\:fromString\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Parameter \$ingredientIds of class BarAssistant\\Domain\\Recommendation\\CocktailWithDetails constructor expects array\<BarAssistant\\Domain\\Ingredient\\IngredientId\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Parameter \$tags of class BarAssistant\\Domain\\Recommendation\\CocktailWithDetails constructor expects array\<string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Cannot access property \$value on BarAssistant\\Domain\\User\\UserId\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Infrastructure/EloquentUserRepository.php
+
+		-
+			message: '#^Parameter \#1 \$settings of static method BarAssistant\\Domain\\User\\UserSettings\:\:fromArray\(\) expects array\{language\?\: string\|null, theme\?\: string\|null\}, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Infrastructure/EloquentUserRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\User\:\:\$email_verified_at \(Carbon\\Carbon\|null\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentUserRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Utensil\:\:\$bar_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentUtensilRepository.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Mail/ConfirmAccount.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Mail/PasswordReset.php
+
+		-
+			message: '#^Parameter \#1 \$redis of static method Prometheus\\Storage\\Redis\:\:fromExistingConnection\(\) expects Redis, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Metrics/MetricsServiceProvider.php
+
+		-
+			message: '#^Parameter \#1 \$value of method Prometheus\\Gauge\:\:set\(\) expects float, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Metrics/TotalBars.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Models/Bar.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Models\\Bar\:\:getShelfCocktailsOnce\(\) should return array\<int\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Bar.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Models\\Bar\:\:getStatus\(\) should return Kami\\Cocktail\\Models\\Enums\\BarStatusEnum but returns Kami\\Cocktail\\Models\\Enums\\BarStatusEnum\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Bar.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Models\\Bar\:\:owner\(\) should return Kami\\Cocktail\\Models\\User but returns Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Bar.php
+
+		-
+			message: '#^Parameter \#1 \$apiKeyUid of method Kami\\Cocktail\\Models\\Bar\:\:updateSearchToken\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/Bar.php
+
+		-
+			message: '#^Parameter \#2 \$apiKey of method Kami\\Cocktail\\Models\\Bar\:\:updateSearchToken\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/Bar.php
+
+		-
+			message: '#^Parameter \$ingredientIds of method Kami\\Cocktail\\Services\\CocktailService\:\:getCocktailsByIngredients\(\) expects array\<int\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/Bar.php
+
+		-
+			message: '#^Parameter \#2 \$decimals of function number_format expects int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/Calculator.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/Calculator.php
+
+		-
+			message: '#^Parameter \#4 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/Calculator.php
+
+		-
+			message: '#^Cannot access property \$dilution_percentage on Kami\\Cocktail\\Models\\CocktailMethod\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/Cocktail.php
+
+		-
+			message: '#^Cannot access property \$name on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/Cocktail.php
+
+		-
+			message: '#^Cannot access property \$shelfIngredients on Kami\\Cocktail\\Models\\Bar\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Models/Cocktail.php
+
+		-
+			message: '#^Cannot call method format\(\) on Carbon\\Carbon\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Cocktail.php
+
+		-
+			message: '#^Cannot call method from\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Cocktail.php
+
+		-
+			message: '#^Cannot call method select\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Cocktail.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Cocktail.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Models/Cocktail.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Models\\Cocktail\:\:getIngredientNames\(\) should return Illuminate\\Support\\Collection\<int, string\> but returns Illuminate\\Support\\Collection\<\(int\|string\), mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Cocktail.php
+
+		-
+			message: '#^Parameter \#1 \$ingredients of static method Kami\\Cocktail\\Utils\:\:calculateVolume\(\) expects array\<Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject\|null\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/Cocktail.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Note\:\:\$user_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Models/Cocktail.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\Rating\:\:\$bar_membership_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Models/Cocktail.php
+
+		-
+			message: '#^Cannot access property \$bar on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/CocktailIngredient.php
+
+		-
+			message: '#^Cannot access property \$shelfIngredients on Kami\\Cocktail\\Models\\Bar\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/CocktailIngredient.php
+
+		-
+			message: '#^Cannot call method getPricesWithConvertedUnits\(\) on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/CocktailIngredient.php
+
+		-
+			message: '#^Cannot access property \$bar on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/CocktailIngredientSubstitute.php
+
+		-
+			message: '#^Cannot access property \$shelfIngredients on Kami\\Cocktail\\Models\\Bar\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/CocktailIngredientSubstitute.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Models\\Export\:\:delete\(\) should return bool but returns bool\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Export.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Models/Glass.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Models\\Glass\:\:delete\(\) should return bool but returns bool\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Glass.php
+
+		-
+			message: '#^Parameter \$get of static method Illuminate\\Database\\Eloquent\\Casts\\Attribute\<mixed,mixed\>\:\:make\(\) expects \(callable\(mixed, array\<string, mixed\>\)\: \(float\|null\)\)\|null, Closure\(float\|null\)\: \(float\|null\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/Glass.php
+
+		-
+			message: '#^Cannot access property \$bar_id on Kami\\Cocktail\\Models\\Cocktail\|Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Models/Image.php
+
+		-
+			message: '#^Cannot access property \$shelfIngredients on Kami\\Cocktail\\Models\\Bar\|null\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: app/Models/Ingredient.php
+
+		-
+			message: '#^Cannot call method from\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Models/Ingredient.php
+
+		-
+			message: '#^Cannot call method on\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Models/Ingredient.php
+
+		-
+			message: '#^Cannot call method select\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Ingredient.php
+
+		-
+			message: '#^Cannot call method selectRaw\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Ingredient.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Models/Ingredient.php
+
+		-
+			message: '#^Cannot call method whereColumn\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Ingredient.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Models/Ingredient.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Models\\Ingredient\:\:cocktailsAsSubstituteIngredient\(\) should return Illuminate\\Support\\Collection\<int, Kami\\Cocktail\\Models\\Cocktail\> but returns Illuminate\\Support\\Collection\<\(int\|string\), mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Ingredient.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Models\\Ingredient\:\:getIngredientsUsedAsSubstituteFor\(\) should return Illuminate\\Support\\Collection\<int, Kami\\Cocktail\\Models\\Ingredient\> but returns Illuminate\\Support\\Collection\<\(int\|string\), mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Ingredient.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/Ingredient.php
+
+		-
+			message: '#^Cannot access property \$currency on Kami\\Cocktail\\Models\\PriceCategory\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/IngredientPrice.php
+
+		-
+			message: '#^Cannot call method on\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Relations/HasManyAncestors.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Relations/HasManyAncestors.php
+
+		-
+			message: '#^Cannot call method on\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Relations/HasManyDescendants.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Relations/HasManyDescendants.php
+
+		-
+			message: '#^Cannot call method delete\(\) on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Cannot access property \$name on Kami\\Cocktail\\Models\\Cocktail\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/ValueObjects/MenuItem.php
+
+		-
+			message: '#^Cannot access property \$name on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/ValueObjects/MenuItem.php
+
+		-
+			message: '#^Cannot access property \$public_id on Kami\\Cocktail\\Models\\Cocktail\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/ValueObjects/MenuItem.php
+
+		-
+			message: '#^Cannot call method barHasInShelf\(\) on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/ValueObjects/MenuItem.php
+
+		-
+			message: '#^Cannot call method getIngredientNames\(\) on Kami\\Cocktail\\Models\\Cocktail\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/ValueObjects/MenuItem.php
+
+		-
+			message: '#^Cannot call method getMainImageThumbUrl\(\) on Kami\\Cocktail\\Models\\Cocktail\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/ValueObjects/MenuItem.php
+
+		-
+			message: '#^Cannot call method getMainImageThumbUrl\(\) on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/ValueObjects/MenuItem.php
+
+		-
+			message: '#^Cannot call method getMaterializedPathAsString\(\) on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/ValueObjects/MenuItem.php
+
+		-
+			message: '#^Cannot call method inBarShelf\(\) on Kami\\Cocktail\\Models\\Cocktail\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/ValueObjects/MenuItem.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(array\|bool\|float\|GMP\|int\|resource\|SimpleXMLElement\|string\|null, int\=\)\: int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/BarRequest.php
+
+		-
+			message: '#^Parameter \#1 \$title of static method Illuminate\\Support\\Str\:\:slug\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/BarRequest.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Kami\\Cocktail\\External\\BarOptionsEnum\:\:tryFrom\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/BarRequest.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Kami\\RecipeUtils\\UnitConverter\\Units\:\:tryFrom\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/BarRequest.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/BarRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\BarRequest\:\:\$defaultCurrency \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/BarRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\BarRequest\:\:\$description \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/BarRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\BarRequest\:\:\$name \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/BarRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\BarRequest\:\:\$subtitle \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/BarRequest.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\OpenAPI\\Schemas\\BarSettings\:\:toArray\(\) should return array\<string, string\> but returns array\<string, string\|null\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/OpenAPI/Schemas/BarSettings.php
+
+		-
+			message: '#^Cannot access offset ''decimal_places'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorBlockRequest.php
+
+		-
+			message: '#^Cannot access offset ''prefix'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorBlockRequest.php
+
+		-
+			message: '#^Cannot access offset ''suffix'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorBlockRequest.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: app/OpenAPI/Schemas/CalculatorBlockRequest.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_intersect_key expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorBlockRequest.php
+
+		-
+			message: '#^Parameter \#1 \$label of class Kami\\Cocktail\\OpenAPI\\Schemas\\CalculatorBlockRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorBlockRequest.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Kami\\Cocktail\\Models\\Enums\\CalculatorBlockTypeEnum\:\:from\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorBlockRequest.php
+
+		-
+			message: '#^Parameter \#2 \$variableName of class Kami\\Cocktail\\OpenAPI\\Schemas\\CalculatorBlockRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorBlockRequest.php
+
+		-
+			message: '#^Parameter \#3 \$value of class Kami\\Cocktail\\OpenAPI\\Schemas\\CalculatorBlockRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorBlockRequest.php
+
+		-
+			message: '#^Parameter \#6 \$description of class Kami\\Cocktail\\OpenAPI\\Schemas\\CalculatorBlockRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorBlockRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\CalculatorBlockSettings\:\:\$prefix \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorBlockRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\CalculatorBlockSettings\:\:\$suffix \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorBlockRequest.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorRequest.php
+
+		-
+			message: '#^Parameter \#1 \$name of class Kami\\Cocktail\\OpenAPI\\Schemas\\CalculatorRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorRequest.php
+
+		-
+			message: '#^Parameter \#1 \$source of static method Kami\\Cocktail\\OpenAPI\\Schemas\\CalculatorBlockRequest\:\:fromArray\(\) expects array\<string, mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorRequest.php
+
+		-
+			message: '#^Parameter \#3 \$description of class Kami\\Cocktail\\OpenAPI\\Schemas\\CalculatorRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorRequest.php
+
+		-
+			message: '#^Parameter \#1 \$inputs of class Kami\\Cocktail\\OpenAPI\\Schemas\\CalculatorSolveRequest constructor expects array\<string, string\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CalculatorSolveRequest.php
+
+		-
+			message: '#^Parameter \$currentPassword of class Kami\\Cocktail\\OpenAPI\\Schemas\\ChangePasswordRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/ChangePasswordRequest.php
+
+		-
+			message: '#^Parameter \$password of class Kami\\Cocktail\\OpenAPI\\Schemas\\ChangePasswordRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/ChangePasswordRequest.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailIngredientRequest.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/OpenAPI/Schemas/CocktailIngredientRequest.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: app/OpenAPI/Schemas/CocktailIngredientRequest.php
+
+		-
+			message: '#^Parameter \#1 \$source of static method Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailIngredientSubstituteRequest\:\:fromArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailIngredientRequest.php
+
+		-
+			message: '#^Parameter \#10 \$note of class Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailIngredientRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailIngredientRequest.php
+
+		-
+			message: '#^Parameter \#4 \$units of class Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailIngredientRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailIngredientRequest.php
+
+		-
+			message: '#^Parameter \#6 \$optional of class Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailIngredientRequest constructor expects bool, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailIngredientRequest.php
+
+		-
+			message: '#^Parameter \#7 \$isSpecified of class Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailIngredientRequest constructor expects bool, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailIngredientRequest.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/OpenAPI/Schemas/CocktailIngredientSubstituteRequest.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailIngredientSubstituteRequest.php
+
+		-
+			message: '#^Parameter \#4 \$units of class Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailIngredientSubstituteRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailIngredientSubstituteRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailMethodRequest\:\:\$description \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailMethodRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailMethodRequest\:\:\$name \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailMethodRequest.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailRequest.php
+
+		-
+			message: '#^Parameter \#1 \$name of class Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailRequest.php
+
+		-
+			message: '#^Parameter \#1 \$source of static method Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailIngredientRequest\:\:fromArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailRequest.php
+
+		-
+			message: '#^Parameter \#10 \$tags of class Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailRequest constructor expects array\<string\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailRequest.php
+
+		-
+			message: '#^Parameter \#12 \$images of class Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailRequest constructor expects array\<int\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailRequest.php
+
+		-
+			message: '#^Parameter \#13 \$utensils of class Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailRequest constructor expects array\<int\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailRequest.php
+
+		-
+			message: '#^Parameter \#2 \$instructions of class Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailRequest.php
+
+		-
+			message: '#^Parameter \#5 \$description of class Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailRequest.php
+
+		-
+			message: '#^Parameter \#6 \$source of class Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailRequest.php
+
+		-
+			message: '#^Parameter \#7 \$garnish of class Kami\\Cocktail\\OpenAPI\\Schemas\\CocktailRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/CocktailRequest.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(array\|bool\|float\|GMP\|int\|resource\|SimpleXMLElement\|string\|null, int\=\)\: int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/GlassRequest.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/GlassRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\GlassRequest\:\:\$description \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/GlassRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\GlassRequest\:\:\$name \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/GlassRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\GlassRequest\:\:\$volumeUnits \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/GlassRequest.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/OpenAPI/Schemas/IngredientPriceRequest.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/OpenAPI/Schemas/IngredientPriceRequest.php
+
+		-
+			message: '#^Parameter \#4 \$units of class Kami\\Cocktail\\OpenAPI\\Schemas\\IngredientPriceRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/IngredientPriceRequest.php
+
+		-
+			message: '#^Parameter \#5 \$description of class Kami\\Cocktail\\OpenAPI\\Schemas\\IngredientPriceRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/IngredientPriceRequest.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: app/OpenAPI/Schemas/IngredientRequest.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/OpenAPI/Schemas/IngredientRequest.php
+
+		-
+			message: '#^Parameter \#1 \$source of static method Kami\\Cocktail\\OpenAPI\\Schemas\\ComplexIngredientPartRequest\:\:fromArray\(\) expects array\<string, mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/IngredientRequest.php
+
+		-
+			message: '#^Parameter \#1 \$source of static method Kami\\Cocktail\\OpenAPI\\Schemas\\IngredientPriceRequest\:\:fromArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/IngredientRequest.php
+
+		-
+			message: '#^Parameter \#15 \$distillery of class Kami\\Cocktail\\OpenAPI\\Schemas\\IngredientRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/IngredientRequest.php
+
+		-
+			message: '#^Parameter \#16 \$units of class Kami\\Cocktail\\OpenAPI\\Schemas\\IngredientRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/IngredientRequest.php
+
+		-
+			message: '#^Parameter \#2 \$name of class Kami\\Cocktail\\OpenAPI\\Schemas\\IngredientRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/IngredientRequest.php
+
+		-
+			message: '#^Parameter \#5 \$description of class Kami\\Cocktail\\OpenAPI\\Schemas\\IngredientRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/IngredientRequest.php
+
+		-
+			message: '#^Parameter \#6 \$origin of class Kami\\Cocktail\\OpenAPI\\Schemas\\IngredientRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/IngredientRequest.php
+
+		-
+			message: '#^Parameter \#7 \$color of class Kami\\Cocktail\\OpenAPI\\Schemas\\IngredientRequest constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/IngredientRequest.php
+
+		-
+			message: '#^Parameter \#9 \$images of class Kami\\Cocktail\\OpenAPI\\Schemas\\IngredientRequest constructor expects array\<int\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/IngredientRequest.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: app/OpenAPI/Schemas/MenuCategoryRequest.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/OpenAPI/Schemas/MenuCategoryRequest.php
+
+		-
+			message: '#^Parameter \#1 \$input of static method Kami\\Cocktail\\OpenAPI\\Schemas\\MenuItemRequest\:\:fromArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/MenuCategoryRequest.php
+
+		-
+			message: '#^Parameter \$name of class Kami\\Cocktail\\OpenAPI\\Schemas\\MenuCategoryRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/MenuCategoryRequest.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 1
+			path: app/OpenAPI/Schemas/MenuItemRequest.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: app/OpenAPI/Schemas/MenuItemRequest.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Kami\\Cocktail\\Models\\Enums\\MenuItemTypeEnum\:\:from\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/MenuItemRequest.php
+
+		-
+			message: '#^Parameter \$currency of class Kami\\Cocktail\\OpenAPI\\Schemas\\MenuItemRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/MenuItemRequest.php
+
+		-
+			message: '#^Parameter \$isBarInventoryAware of class Kami\\Cocktail\\OpenAPI\\Schemas\\MenuItemRequest constructor expects bool, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/MenuItemRequest.php
+
+		-
+			message: '#^Parameter \#1 \$input of static method Kami\\Cocktail\\OpenAPI\\Schemas\\MenuCategoryRequest\:\:fromArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/MenuRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\PriceCategoryRequest\:\:\$currency \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/PriceCategoryRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\PriceCategoryRequest\:\:\$description \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/PriceCategoryRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\PriceCategoryRequest\:\:\$name \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/PriceCategoryRequest.php
+
+		-
+			message: '#^Cannot access offset ''language'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/OpenAPI/Schemas/ProfileRequest.php
+
+		-
+			message: '#^Cannot access offset ''theme'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/OpenAPI/Schemas/ProfileRequest.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_intersect_key expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/ProfileRequest.php
+
+		-
+			message: '#^Parameter \$email of class Kami\\Cocktail\\OpenAPI\\Schemas\\ProfileRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/ProfileRequest.php
+
+		-
+			message: '#^Parameter \$name of class Kami\\Cocktail\\OpenAPI\\Schemas\\ProfileRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/ProfileRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\ProfileSettings\:\:\$language \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/ProfileRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\ProfileSettings\:\:\$theme \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/ProfileRequest.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\OpenAPI\\Schemas\\ProfileSettings\:\:toArray\(\) should return array\<string, string\> but returns array\<string, string\|null\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/OpenAPI/Schemas/ProfileSettings.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Illuminate\\Support\\Facades\\Hash\:\:make\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/RegisterRequest.php
+
+		-
+			message: '#^Parameter \$email of class Kami\\Cocktail\\OpenAPI\\Schemas\\RegisterRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/RegisterRequest.php
+
+		-
+			message: '#^Parameter \$email of class Kami\\Cocktail\\OpenAPI\\Schemas\\RegisterRequest constructor expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/RegisterRequest.php
+
+		-
+			message: '#^Parameter \$name of class Kami\\Cocktail\\OpenAPI\\Schemas\\RegisterRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/RegisterRequest.php
+
+		-
+			message: '#^Parameter \$name of class Kami\\Cocktail\\OpenAPI\\Schemas\\RegisterRequest constructor expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/RegisterRequest.php
+
+		-
+			message: '#^Parameter \$password of class Kami\\Cocktail\\OpenAPI\\Schemas\\RegisterRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/Schemas/RegisterRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\UtensilRequest\:\:\$description \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/UtensilRequest.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\OpenAPI\\Schemas\\UtensilRequest\:\:\$name \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/OpenAPI/Schemas/UtensilRequest.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$arrays of function array_merge expects array, array\<OpenApi\\Attributes\\Header\>\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/SuccessfulResponse.php
+
+		-
+			message: '#^Parameter \$headers of method OpenApi\\Attributes\\Response\:\:__construct\(\) expects array\<OpenApi\\Attributes\\Header\>\|null, array\<mixed, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/OpenAPI/SuccessfulResponse.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: app/Policies/BarPolicy.php
+
+		-
+			message: '#^Cannot access property \$cocktailCollections on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Policies/CollectionPolicy.php
+
+		-
+			message: '#^Cannot access property \$email on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Providers/HorizonServiceProvider.php
+
+		-
+			message: '#^Parameter \#1 \$appKey of class BarAssistant\\Domain\\Export\\FileTokenService constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Providers/InfrastructureServiceProvider.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Providers/RouteServiceProvider.php
+
+		-
+			message: '#^Cannot call method hasActiveSubscription\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Providers/RouteServiceProvider.php
+
+		-
+			message: '#^Parameter \#1 \$currencyCode of static method Brick\\Money\\Currency\:\:of\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Rules/ValidCurrency.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\AbstractSite\:\:convertImagesToDataUri\(\) should return array\<string, string\|null\> but returns array\<string, string\|null\>\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/AbstractSite.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\AbstractSite\:\:toArray\(\) should return array\{schema_version\: string, scraper_meta\: array\<mixed\>, schema\: array\<mixed\>\} but returns array\{schema_version\: mixed, scraper_meta\: array\<array\{ingredient_name\: string\|null, source\: string\|null\}\>, schema\: array\<mixed\>\}\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/AbstractSite.php
+
+		-
+			message: '#^Offset ''uri'' might not exist on array\{uri\: string\|null, copyright\: string\|null\}\|null\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: app/Scraper/AbstractSite.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Manager\:\:matchFirst\(\) should return Kami\\Cocktail\\Scraper\\AbstractSite but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Manager.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Kami\\RecipeUtils\\AmountValue\:\:fromString\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/CocktailExplorer.php
+
+		-
+			message: '#^Parameter \$units of class Kami\\RecipeUtils\\RecipeIngredient constructor expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/CocktailExplorer.php
+
+		-
+			message: '#^Anonymous function should return string but returns string\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/CocktailParty.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\CocktailParty\:\:findDescriptionContainer\(\) should return Symfony\\Component\\DomCrawler\\Crawler but returns Symfony\\Component\\DomCrawler\\Crawler\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/CocktailParty.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\CocktailParty\:\:findRecipeContainer\(\) should return Symfony\\Component\\DomCrawler\\Crawler but returns Symfony\\Component\\DomCrawler\\Crawler\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/CocktailParty.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Binary operation "\." between ''Crafted Pour '' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Cannot access offset ''ingredient'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Cannot access offset ''link'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Cannot access offset ''pageProps'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Cannot access offset ''props'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Cannot access offset ''quantity'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Cannot access offset ''recipe'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Cannot access offset ''unit'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\CraftedPour\:\:description\(\) should return string\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\CraftedPour\:\:garnish\(\) should return string\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\CraftedPour\:\:glass\(\) should return string\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\CraftedPour\:\:instructions\(\) should return string\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\CraftedPour\:\:method\(\) should return string\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\CraftedPour\:\:name\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\CraftedPour\:\:tags\(\) should return array\<string\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Parameter \#1 \$name of class Kami\\RecipeUtils\\RecipeIngredient constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Kami\\RecipeUtils\\AmountValue\:\:fromString\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Parameter \#3 \$units of class Kami\\RecipeUtils\\RecipeIngredient constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Parameter \#5 \$comment of class Kami\\RecipeUtils\\RecipeIngredient constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Scraper\\Sites\\CraftedPour\:\:\$dataRecipeProp \(array\<string, mixed\>\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Scraper/Sites/CraftedPour.php
+
+		-
+			message: '#^Cannot access offset ''@graph'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Cannot access offset ''@type'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Cannot access offset ''author'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Cannot access offset ''description'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Cannot access offset ''image'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Cannot access offset ''ingredients'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Cannot access offset ''keywords'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Cannot access offset ''name'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Cannot access offset ''recipeCategory'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Cannot access offset ''recipeIngredient'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Cannot access offset ''recipeInstructions'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 3
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_is_list expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Parameter \#1 \$value of function count expects array\|Countable, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Scraper\\SchemaModel\:\:\$author \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Scraper\\SchemaModel\:\:\$description \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Scraper\\SchemaModel\:\:\$image \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Scraper\\SchemaModel\:\:\$ingredients \(array\<string\>\) does not accept array\<mixed, mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Scraper\\SchemaModel\:\:\$instructions \(array\<array\<mixed\>\|string\|null\>\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Scraper\\SchemaModel\:\:\$name \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Scraper\\SchemaModel\:\:\$tags \(array\<string\>\) does not accept array\<mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Scraper/Sites/DefaultScraper.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Scraper/Sites/DiffordsGuide.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\DiffordsGuide\:\:garnish\(\) should return string\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/DiffordsGuide.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 2
+			path: app/Scraper/Sites/ImbibeMagazine.php
+
+		-
+			message: '#^Cannot access offset ''ingredient'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/ImbibeMagazine.php
+
+		-
+			message: '#^Cannot access offset ''text'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/ImbibeMagazine.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Scraper/Sites/ImbibeMagazine.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\ImbibeMagazine\:\:getRecipeSchema\(\) should return array\<string, mixed\> but returns array\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/ImbibeMagazine.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\ImbibeMagazine\:\:image\(\) should return array\{uri\: string\|null, copyright\: string\|null\}\|null but returns array\{uri\: mixed, copyright\: non\-falsy\-string\}\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/ImbibeMagazine.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\ImbibeMagazine\:\:name\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/ImbibeMagazine.php
+
+		-
+			message: '#^Parameter \#1 \$sourceString of method Kami\\RecipeUtils\\Parser\\Parser\:\:parseLine\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/ImbibeMagazine.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_key_exists expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/ImbibeMagazine.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 2
+			path: app/Scraper/Sites/LiquorCom.php
+
+		-
+			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: app/Scraper/Sites/LiquorCom.php
+
+		-
+			message: '#^Cannot access offset ''name'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/LiquorCom.php
+
+		-
+			message: '#^Cannot access offset ''text'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/LiquorCom.php
+
+		-
+			message: '#^Cannot access offset ''url'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/LiquorCom.php
+
+		-
+			message: '#^Cannot access offset 0 on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/LiquorCom.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\LiquorCom\:\:description\(\) should return string\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/LiquorCom.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\LiquorCom\:\:getRecipeSchema\(\) should return array\<string, mixed\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/LiquorCom.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\LiquorCom\:\:image\(\) should return array\{uri\: string\|null, copyright\: string\|null\}\|null but returns array\{uri\: mixed, copyright\: mixed\}\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/LiquorCom.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\LiquorCom\:\:name\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/LiquorCom.php
+
+		-
+			message: '#^Parameter \#1 \$sourceString of method Kami\\RecipeUtils\\Parser\\Parser\:\:parseLine\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/LiquorCom.php
+
+		-
+			message: '#^Offset ''uri'' might not exist on array\{uri\: string\|null, copyright\: string\|null\}\|null\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: app/Scraper/Sites/PunchDrink.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/PunchDrink.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 3
+			path: app/Scraper/Sites/SteveTheBartender.php
+
+		-
+			message: '#^Cannot access offset ''@graph'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/SteveTheBartender.php
+
+		-
+			message: '#^Cannot access offset ''text'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/SteveTheBartender.php
+
+		-
+			message: '#^Cannot access offset 0 on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/SteveTheBartender.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Scraper/Sites/SteveTheBartender.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\SteveTheBartender\:\:getRecipeSchema\(\) should return array\<string, mixed\> but returns array\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/SteveTheBartender.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\SteveTheBartender\:\:image\(\) should return array\{uri\: string\|null, copyright\: string\|null\}\|null but returns array\{uri\: mixed, copyright\: ''Steve the Bartender''\}\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/SteveTheBartender.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\SteveTheBartender\:\:name\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/SteveTheBartender.php
+
+		-
+			message: '#^Parameter \#1 \$sourceString of method Kami\\RecipeUtils\\Parser\\Parser\:\:parseLine\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/SteveTheBartender.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_key_exists expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/SteveTheBartender.php
+
+		-
+			message: '#^Cannot access offset ''drinks'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/TheCocktailDB.php
+
+		-
+			message: '#^Cannot access offset 0 on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Scraper/Sites/TheCocktailDB.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\TheCocktailDB\:\:glass\(\) should return string\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/TheCocktailDB.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\TheCocktailDB\:\:image\(\) should return array\{uri\: string\|null, copyright\: string\|null\}\|null but returns array\{uri\: mixed, copyright\: mixed\}\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/TheCocktailDB.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\TheCocktailDB\:\:instructions\(\) should return string\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/TheCocktailDB.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\TheCocktailDB\:\:name\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Scraper/Sites/TheCocktailDB.php
+
+		-
+			message: '#^Parameter \#1 \$name of class Kami\\RecipeUtils\\RecipeIngredient constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/TheCocktailDB.php
+
+		-
+			message: '#^Parameter \#1 \$sourceString of method Kami\\RecipeUtils\\Parser\\Parser\:\:parseLine\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/TheCocktailDB.php
+
+		-
+			message: '#^Parameter \#2 \$string of function explode expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Scraper/Sites/TheCocktailDB.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Scraper\\Sites\\TheCocktailDB\:\:\$apiDrinkData \(array\<string, mixed\>\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Scraper/Sites/TheCocktailDB.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Scraper/Sites/TuxedoNo2.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Services/Auth/PocketIdProvider.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Services\\Auth\\PocketIdProvider\:\:getUserByToken\(\) should return array\<mixed\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/Auth/PocketIdProvider.php
+
+		-
+			message: '#^Cannot access property \$email on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: app/Services/Auth/RegisterUserService.php
+
+		-
+			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Services/Auth/RegisterUserService.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Services\\Auth\\RegisterUserService\:\:register\(\) should return Kami\\Cocktail\\Models\\User but returns Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/Auth/RegisterUserService.php
+
+		-
+			message: '#^Parameter \$passwordHash of class BarAssistant\\Application\\User\\DTO\\RegisterUserRequest constructor expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Auth/RegisterUserService.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\OauthCredential\:\:\$user_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: app/Services/Auth/SSOService.php
+
+		-
+			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 2
+			path: app/Services/BarOptimizerService.php
+
+		-
+			message: '#^Parameter \#1 \$value of class Kami\\Cocktail\\Models\\ValueObjects\\UnitValueObject constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Services/BarOptimizerService.php
+
+		-
+			message: '#^Cannot call method from\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/CocktailService.php
+
+		-
+			message: '#^Cannot call method groupBy\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/CocktailService.php
+
+		-
+			message: '#^Cannot call method havingRaw\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/CocktailService.php
+
+		-
+			message: '#^Cannot call method select\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/CocktailService.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/CocktailService.php
+
+		-
+			message: '#^Cannot call method whereIn\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/CocktailService.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Services\\CocktailService\:\:getSimilarCocktails\(\) should return Illuminate\\Support\\Collection\<int, Kami\\Cocktail\\Models\\Cocktail\> but returns Illuminate\\Support\\Collection\<\(int\|string\), mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/CocktailService.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Services\\CocktailService\:\:getTopRatedCocktails\(\) should return Illuminate\\Support\\Collection\<\(int\|string\), mixed\> but returns Illuminate\\Support\\Collection\<int, stdClass\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/CocktailService.php
+
+		-
+			message: '#^Cannot access property \$extension on Kami\\Cocktail\\Services\\Image\\DTO\\ImageUploadResult\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Services/Image/CocktailImageGenerationService.php
+
+		-
+			message: '#^Cannot access property \$path on Kami\\Cocktail\\Services\\Image\\DTO\\ImageUploadResult\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Services/Image/CocktailImageGenerationService.php
+
+		-
+			message: '#^Cannot access property \$placeholderHash on Kami\\Cocktail\\Services\\Image\\DTO\\ImageUploadResult\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Services/Image/CocktailImageGenerationService.php
+
+		-
+			message: '#^Parameter \#1 \$hash of static method Thumbhash\\Thumbhash\:\:convertHashToString\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Image/ImageHashingService.php
+
+		-
+			message: '#^Cannot call method generateImagePath\(\) on Kami\\Cocktail\\Models\\Cocktail\|Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/Image/ImageUploadService.php
+
+		-
+			message: '#^Binary operation "\." between mixed and ''/'' results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: app/Services/IngredientService.php
+
+		-
+			message: '#^Cannot call method from\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Services/IngredientService.php
+
+		-
+			message: '#^Cannot call method join\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/IngredientService.php
+
+		-
+			message: '#^Cannot call method select\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Services/IngredientService.php
+
+		-
+			message: '#^Cannot call method whereColumn\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/IngredientService.php
+
+		-
+			message: '#^Cannot call method whereNotExists\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/IngredientService.php
+
+		-
+			message: '#^Cannot call method whereNotIn\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/IngredientService.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Services\\IngredientService\:\:getMainIngredientsOfCocktails\(\) should return Illuminate\\Support\\Collection\<int, mixed\> but returns Illuminate\\Support\\Collection\<int, stdClass\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/IngredientService.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Services\\IngredientService\:\:resolveComplexIngredients\(\) should return array\<int\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/IngredientService.php
+
+		-
+			message: '#^Parameter \#1 \$key of method Illuminate\\Support\\Collection\<\(int\|string\),stdClass\>\:\:get\(\) expects int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/IngredientService.php
+
+		-
+			message: '#^Parameter \#1 \$string1 of function strcmp expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/IngredientService.php
+
+		-
+			message: '#^Parameter \#2 \$string2 of function strcmp expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/IngredientService.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 3
+			path: app/Services/IngredientService.php
+
+		-
+			message: '#^Method Kami\\Cocktail\\Services\\VersionCheckService\:\:getLatestVersion\(\) should return string\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/VersionCheckService.php
+
+		-
+			message: '#^Cannot access property \$units on Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject\|null\.$#'
+			identifier: property.nonObject
+			count: 6
+			path: app/Utils.php
+
+		-
+			message: '#^Cannot call method convertTo\(\) on Kami\\Cocktail\\Models\\ValueObjects\\AmountValueObject\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Utils.php
+
+		-
+			message: '#^Cannot call method equals\(\) on BarAssistant\\Domain\\Ingredient\\IngredientId\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Domain/IngredientHierarchy/IngredientHierarchyNode.php
