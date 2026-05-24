@@ -26,7 +26,7 @@ final readonly class NoteService
     {
         $note = Note::create(
             userId: new UserId($request->userId),
-            noteableId: (string) $request->resourceId,
+            noteableId: $request->resourceId,
             noteableType: match ($request->resource) {
                 'cocktail' => NoteableResourceType::Cocktail,
                 default => throw new ApplicationServiceException('Unknown resource type'),

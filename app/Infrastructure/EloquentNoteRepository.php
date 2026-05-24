@@ -59,9 +59,10 @@ final class EloquentNoteRepository implements NoteRepository
     {
         $note = Note::create(
             userId: new UserId($model->user_id),
-            noteableId: (string) $model->noteable_id,
+            noteableId: $model->noteable_id,
             noteableType: match ($model->noteable_type) {
                 Cocktail::class => NoteableResourceType::Cocktail,
+                default => NoteableResourceType::Cocktail,
             },
             noteContent: $model->note,
             recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),

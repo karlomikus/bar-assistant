@@ -43,7 +43,7 @@ class MenuCategoryResource extends JsonResource
     {
         return [
             'name' => $this->name,
-            'sort' => $this->sortIndex,
+            'sort' => $this->sort,
             'items' => $this->getMenuItems()->map(static fn (MenuItem $menuItem): array => [
                 'id' => $menuItem->id,
                 'type' => $menuItem->type->value,

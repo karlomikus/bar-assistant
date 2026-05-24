@@ -176,7 +176,7 @@ class CocktailController extends Controller
 
         $dilution = 0.0;
         if ($cocktailRequest->methodId) {
-            $dilution = CocktailMethod::find($cocktailRequest->methodId)?->dilution_percentage ?? 0.0;
+            $dilution = CocktailMethod::find($cocktailRequest->methodId)->dilution_percentage ?? 0.0;
         }
 
         $cocktailResult = $cocktailService->createCocktail(new CreateCocktail(
@@ -258,7 +258,7 @@ class CocktailController extends Controller
 
         $dilution = 0.0;
         if ($cocktailRequest->methodId) {
-            $dilution = CocktailMethod::find($cocktailRequest->methodId)?->dilution_percentage ?? 0.0;
+            $dilution = CocktailMethod::find($cocktailRequest->methodId)->dilution_percentage ?? 0.0;
         }
 
         $cocktailService->updateCocktail(new UpdateCocktail(

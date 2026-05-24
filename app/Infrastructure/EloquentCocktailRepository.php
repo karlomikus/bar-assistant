@@ -123,8 +123,7 @@ final class EloquentCocktailRepository implements CocktailRepository
     public function findById(CocktailId $id): ?Cocktail
     {
         $model = Model::find($id->value)->loadDefaultRelations();
-
-        if ($model === null) {
+        if (!$model) {
             return null;
         }
 

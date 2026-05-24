@@ -36,7 +36,7 @@ final class EloquentMemberRepository implements MemberRepository
         $model->shoppingListIngredients()->delete();
         foreach ($member->getShoppingListIngredients() as $shoppingListIngredient) {
             $shoppingListItemModel = new UserShoppingList();
-            $shoppingListItemModel->ingredient_id = $shoppingListIngredient->ingredientId;
+            $shoppingListItemModel->ingredient_id = $shoppingListIngredient->ingredientId->value;
             $shoppingListItemModel->bar_membership_id = $model->id;
             $shoppingListItemModel->quantity = $shoppingListIngredient->quantity;
 

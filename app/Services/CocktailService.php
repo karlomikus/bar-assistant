@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
-use Illuminate\Log\LogManager;
 use Illuminate\Support\Collection;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
@@ -13,7 +12,6 @@ final readonly class CocktailService
 {
     public function __construct(
         private DatabaseManager $db,
-        private LogManager $log,
         private IngredientService $ingredientService,
     ) {
     }

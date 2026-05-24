@@ -17,7 +17,7 @@ final readonly class ImageValidatorService
         $imageFileRules = ['image' => 'image|max:51200'];
 
         if ($formImage instanceof UploadedFile) {
-            Validator::make($formImage, $imageFileRules)->validate();
+            Validator::make(['image' => $formImage], $imageFileRules)->validate();
 
             if ($sourceData = $formImage->get()) {
                 $imageSource = $sourceData;
@@ -46,7 +46,7 @@ final readonly class ImageValidatorService
         try {
             Validator::make(['image' => $tempFileObject], $imageFileRules)->validate();
         } finally {
-            if ($tempFileName !== null && file_exists($tempFileName)) {
+            if ($tempFileName !== null && $tempFileName !== false && file_exists($tempFileName)) {
                 unlink($tempFileName);
             }
         }

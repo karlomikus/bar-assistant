@@ -17,8 +17,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
         new OAT\Property(property: 'id', type: 'integer', example: 1),
         new OAT\Property(property: 'name', type: 'string', example: 'My Shelf'),
         new OAT\Property(property: 'ingredient_count', type: 'integer', example: 24),
-        new OAT\Property(property: 'created_at', type: 'string', format: 'date-time'),
-        new OAT\Property(property: 'updated_at', type: 'string', format: 'date-time', nullable: true),
     ],
     required: ['id', 'name', 'ingredient_count', 'created_at']
 )]
@@ -34,8 +32,6 @@ class MemberInventoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'ingredient_count' => $this->inventory_ingredients_count ?? $this->inventoryIngredients()->count(),
-            'created_at' => $this->created_at?->toJSON(),
-            'updated_at' => $this->updated_at?->toJSON(),
         ];
     }
 }

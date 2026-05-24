@@ -77,7 +77,7 @@ class AuthController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     public function logout(Request $request): Response
     {
-        /** @var \Laravel\Sanctum\PersonalAccessToken */
+        /** @var \Laravel\Sanctum\PersonalAccessToken|null */
         $currentAccessToken = $request->user()->currentAccessToken();
         if ($currentAccessToken) {
             $currentAccessToken->delete();

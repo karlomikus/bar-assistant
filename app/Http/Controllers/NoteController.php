@@ -81,6 +81,7 @@ class NoteController extends Controller
 
         $resourceModel = match ($resourceType) {
             'cocktail' => Cocktail::findOrFail((int) $resourceId),
+            default => throw new \InvalidArgumentException('Invalid resource type'),
         };
 
         if ($request->user()->cannot('addNote', $resourceModel)) {

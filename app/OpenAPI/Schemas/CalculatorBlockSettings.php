@@ -17,7 +17,7 @@ class CalculatorBlockSettings
     public ?int $decimalPlaces = null;
 
     /**
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {

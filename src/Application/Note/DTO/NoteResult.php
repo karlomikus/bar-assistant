@@ -11,7 +11,7 @@ final readonly class NoteResult
     public function __construct(
         public int $id,
         public int $userId,
-        public string $noteableId,
+        public int $noteableId,
         public string $noteableType,
         public string $note,
         public string $createdAt,

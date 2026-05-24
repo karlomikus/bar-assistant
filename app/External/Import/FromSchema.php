@@ -27,6 +27,7 @@ use BarAssistant\Application\Cocktail\DTO\CocktailIngredient;
 use BarAssistant\Application\Matcher\DTO\CocktailMatchRequest;
 use BarAssistant\Application\Matcher\DTO\IngredientMatchRequest;
 use BarAssistant\Application\Cocktail\DTO\CocktailIngredientSubstitute;
+use Kami\Cocktail\Models\Ingredient;
 
 final readonly class FromSchema
 {
@@ -86,7 +87,7 @@ final readonly class FromSchema
 
         $dilution = 0.0;
         if ($methodId) {
-            $dilution = CocktailMethod::find($methodId)?->dilution_percentage ?? 0.0;
+            $dilution = CocktailMethod::find($methodId)->dilution_percentage ?? 0.0;
         }
 
         $ingredients = [];
@@ -118,7 +119,7 @@ final readonly class FromSchema
 
             $ingredients[] = new CocktailIngredient(
                 ingredientId: $ingredientId,
-                strength: $ingredientStrengths[$ingredientId] ?? 0.0,
+                strength: 0.0, // TODO: Implement strength mapping
                 amount: $scrapedIngredient->amount->amountMin,
                 units: $scrapedIngredient->amount->units->value,
                 sort: $sort,
@@ -133,7 +134,7 @@ final readonly class FromSchema
         }
 
         if ($duplicateAction === DuplicateActionsEnum::Overwrite && $existingCocktail !== null) {
-            return Cocktail::findOrFail($this->cocktailService->updateCocktail(new UpdateCocktail(
+            $this->cocktailService->updateCocktail(new UpdateCocktail(
                 cocktailId: $existingCocktail,
                 barId: $barId,
                 name: $schema->cocktail->name,
@@ -151,7 +152,9 @@ final readonly class FromSchema
                 utensils: [],
                 parentCocktailId: null,
                 year: null,
-            )));
+            ));
+
+            return Cocktail::findOrFail($existingCocktail);
         }
 
         return Cocktail::findOrFail($this->cocktailService->createCocktail(new CreateCocktail(

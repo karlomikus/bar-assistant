@@ -75,7 +75,7 @@ final class EloquentIngredientRepository implements IngredientRepository
         try {
             $materializedPath = $ingredient->getMaterializedPath()->toString();
             $ingredientModel->bar_id = $ingredient->getBarId()->value;
-            $ingredientModel->name = $ingredient->getName();
+            $ingredientModel->name = $ingredient->getName()->toString();
             $ingredientModel->strength = $ingredient->getStrength()->toFloat();
             $ingredientModel->description = $ingredient->getDescription();
             $ingredientModel->origin = $ingredient->getOrigin();
@@ -120,7 +120,7 @@ final class EloquentIngredientRepository implements IngredientRepository
                 $ingredientPriceModel->price_category_id = $price->getPriceCategoryId()->value;
                 $ingredientPriceModel->price = $price->getPrice()->getAsMinor();
                 $ingredientPriceModel->amount = $price->getAmountWithUnits()->amountMin;
-                $ingredientPriceModel->units = $price->getAmountWithUnits()->units;
+                $ingredientPriceModel->units = $price->getAmountWithUnits()->units->value;
                 $ingredientPriceModel->description = $price->getDescription();
                 $ingredientPriceModel->save();
             }

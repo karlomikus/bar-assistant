@@ -7,9 +7,6 @@ namespace Kami\Cocktail\Http\Resources;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @mixin array
- */
 #[OAT\Schema(
     schema: 'BarTopStatsResource',
     description: 'Resource representing total stats for a bar',

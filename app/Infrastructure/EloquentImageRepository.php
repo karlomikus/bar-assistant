@@ -23,7 +23,12 @@ final class EloquentImageRepository implements ImageRepository
 
     public function findById(ImageId $id): ?Image
     {
-        return self::map(Model::findOrFail($id->value));
+        $model = Model::find($id->value);
+        if (!$model) {
+            return null;
+        }
+
+        return self::map($model);
     }
 
     public function save(Image $image): Image

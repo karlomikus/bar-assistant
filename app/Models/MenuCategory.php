@@ -33,7 +33,7 @@ class MenuCategory extends Model
     }
 
     /**
-     * @return Collection<MenuItem>
+     * @return Collection<int, MenuItem>
      */
     public function getMenuItems(): Collection
     {
