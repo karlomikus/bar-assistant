@@ -33,10 +33,6 @@ final class EloquentRatingRepository implements RatingRepository
 
     public function save(Rating $rating): Rating
     {
-        if ($rating->getType() !== RateableType::Cocktail) {
-            throw new ApplicationServiceException('Unsupported rateable type');
-        }
-
         $modelToRate = Cocktail::findOrFail($rating->getRateableId());
         $ratingModel = $modelToRate->rate($rating->getValue()->value, $rating->getMemberId()->value);
 

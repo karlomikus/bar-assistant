@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Exceptions\ImageFileNotFoundException;
 
-class Image extends Model implements IsExternalized
+class Image extends BaseModel implements IsExternalized
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\ImageFactory> */
     use HasFactory;

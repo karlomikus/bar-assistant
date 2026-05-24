@@ -7,7 +7,7 @@ namespace Kami\Cocktail\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class MemberInventoryIngredient extends Model
+class MemberInventoryIngredient extends BaseModel
 {
     public $timestamps = false;
 

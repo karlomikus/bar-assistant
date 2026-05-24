@@ -20,7 +20,7 @@ use Kami\Cocktail\Services\Image\ImageUploadService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Bar extends Model implements UploadableInterface
+class Bar extends BaseModel implements UploadableInterface
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\BarFactory> */
     use HasFactory;

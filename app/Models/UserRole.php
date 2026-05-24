@@ -6,6 +6,6 @@ namespace Kami\Cocktail\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserRole extends Model
+class UserRole extends BaseModel
 {
 }

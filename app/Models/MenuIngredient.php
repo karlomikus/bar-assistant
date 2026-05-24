@@ -11,7 +11,7 @@ use Brick\Money\Exception\UnknownCurrencyException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class MenuIngredient extends Model
+class MenuIngredient extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\MenuIngredientFactory> */
     use HasFactory;

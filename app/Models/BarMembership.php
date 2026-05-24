@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
-class BarMembership extends Model
+class BarMembership extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\BarMembershipFactory> */
     use HasFactory;

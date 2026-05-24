@@ -6,6 +6,9 @@ namespace Kami\Cocktail\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BarType extends BaseModel
+/**
+ * @property non-negative-int $id
+ */
+class BaseModel extends Model
 {
 }

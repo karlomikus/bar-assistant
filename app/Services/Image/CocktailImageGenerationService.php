@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services\Image;
 
+use BarAssistant\Application\Image\DTO\CreateImage;
+use BarAssistant\Application\Image\ImageService;
 use Throwable;
 use Psr\Log\LoggerInterface;
 use Prism\Prism\Facades\Prism;
@@ -16,13 +18,13 @@ use Prism\Prism\ValueObjects\GeneratedImage;
 use Kami\Cocktail\GenAI\CocktailImageHandler;
 use Illuminate\Http\Client\Response as HttpResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Kami\Cocktail\OpenAPI\Schemas\ImageRequest as ImageRequestDTO;
 use Kami\Cocktail\GenAI\DTO\CocktailImageRequest as CocktailImagePromptRequest;
 
 final readonly class CocktailImageGenerationService
 {
     public function __construct(
         private ImageService $imageService,
+        private ImageUploadService $imageUploadService,
         private LoggerInterface $log,
     ) {
     }
@@ -59,22 +61,10 @@ final readonly class CocktailImageGenerationService
         }
 
         $imageContents = $this->getGeneratedImageContents($generatedImage, $providerConfiguration->timeout);
-        $savedImages = $this->imageService->uploadAndSaveImages([
-            new ImageRequestDTO(
-                image: $imageContents,
-                sort: 1,
-                copyright: 'AI (' . $providerConfiguration->provider->name . ')',
-            ),
-        ], $userId);
+        $uploadedImage = $this->imageUploadService->uploadImage($imageContents);
+        $storedImage = $this->imageService->createImage(new CreateImage($uploadedImage->path, $uploadedImage->extension, $userId, 1, 'AI (' . $providerConfiguration->provider->name . ')', $uploadedImage->placeholderHash));
 
-        if ($savedImages === []) {
-            throw new HttpException(500, 'Generated image could not be saved.');
-        }
-
-        $image = $savedImages[0];
-        $image->refresh();
-
-        return $image;
+        return Image::findOrFail($storedImage->id);
     }
 
     private function getGeneratedImageContents(GeneratedImage $generatedImage, int $timeout): string

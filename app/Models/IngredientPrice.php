@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
 
-class IngredientPrice extends Model
+class IngredientPrice extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\IngredientPriceFactory> */
     use HasFactory;

@@ -28,7 +28,7 @@ use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Kami\Cocktail\Models\ValueObjects\MaterializedPath;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Ingredient extends Model implements UploadableInterface, IsExternalized
+class Ingredient extends BaseModel implements UploadableInterface, IsExternalized
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\IngredientFactory> */
     use HasFactory;

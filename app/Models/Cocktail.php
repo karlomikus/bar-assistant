@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
-class Cocktail extends Model implements UploadableInterface, IsExternalized
+class Cocktail extends BaseModel implements UploadableInterface, IsExternalized
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\CocktailFactory> */
     use HasFactory;

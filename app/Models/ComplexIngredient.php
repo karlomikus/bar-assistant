@@ -9,7 +9,7 @@ use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class ComplexIngredient extends Model
+class ComplexIngredient extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\ComplexIngredientFactory> */
     use HasFactory;
