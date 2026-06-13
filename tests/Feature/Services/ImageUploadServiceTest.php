@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Services\Image;
+namespace Tests\Feature\Services;
 
 use Tests\TestCase;
 use Psr\Log\NullLogger;
