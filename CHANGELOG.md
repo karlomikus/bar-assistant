@@ -1,3 +1,11 @@
+# v5.15.2
+## Fixes
+- Increased auth endpoint rate limits :)
+
+# v5.15.1
+## Fixes
+- Added rate limiting to auth endpoints
+
 # v5.15.0
 ## New
 - Added `/generate/cocktail-image`, used to generate cocktail images with AI
