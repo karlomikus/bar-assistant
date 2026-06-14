@@ -196,4 +196,60 @@ class AuthControllerTest extends TestCase
 
         $response->assertStatus(400);
     }
+
+    public function test_register_rate_limiting(): void
+    {
+        // Send 5 requests - all should succeed (within limit)
+        for ($i = 0; $i < 5; $i++) {
+            $response = $this->postJson('/api/auth/register', [
+                'email' => 'test' . $i . '@test.com',
+                'password' => 'test-password',
+                'name' => 'Test Guy ' . $i,
+            ]);
+            $response->assertSuccessful();
+        }
+
+        // 6th request should be rate limited
+        $response = $this->postJson('/api/auth/register', [
+            'email' => 'overflow@test.com',
+            'password' => 'test-password',
+            'name' => 'Overflow Guy',
+        ]);
+
+        $response->assertTooManyRequests();
+    }
+
+    public function test_login_rate_limiting(): void
+    {
+        $payload = [
+            'email' => 'test@test.com',
+            'password' => 'wrong-password',
+        ];
+
+        // Send 10 requests - all should respond (within limit)
+        for ($i = 0; $i < 5; $i++) {
+            $response = $this->postJson('/api/auth/login', $payload);
+            $response->assertStatus(400); // Bad credentials
+        }
+
+        // 11th request should be rate limited
+        $response = $this->postJson('/api/auth/login', $payload);
+        $response->assertTooManyRequests();
+    }
+
+    public function test_forgot_password_rate_limiting(): void
+    {
+        $payload = ['email' => 'test@test.com'];
+
+        // Send 3 requests - all should respond (within limit)
+        for ($i = 0; $i < 10; $i++) {
+            $response = $this->postJson('/api/auth/forgot-password', $payload);
+            // Unknown email returns 400 but it's valid response (not rate limited yet)
+            $this->assertLessThan(429, $response->status());
+        }
+
+        // 4th request should be rate limited
+        $response = $this->postJson('/api/auth/forgot-password', $payload);
+        $response->assertTooManyRequests();
+    }
 }

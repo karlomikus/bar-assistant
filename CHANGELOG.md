@@ -34,6 +34,14 @@
     - This will show if the menu item is aware of bar inventory, meaning it will show if the item is available or not based on bar shelf ingredients
 - You can now add amounts and units to ingredient parts
 
+# v5.15.2
+## Fixes
+- Increased auth endpoint rate limits :)
+
+# v5.15.1
+## Fixes
+- Added rate limiting to auth endpoints
+
 # v5.15.0
 ## New
 - Added `/generate/cocktail-image`, used to generate cocktail images with AI
