@@ -57,9 +57,9 @@ if (config('bar-assistant.mail_require_confirmation') === true) {
 }
 
 Route::prefix('auth')->group(function () {
-    Route::post('login', [AuthController::class, 'authenticate'])->name('auth.login');
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('forgot-password', [AuthController::class, 'passwordForgot']);
+    Route::post('login', [AuthController::class, 'authenticate'])->name('auth.login')->middleware('throttle:login');
+    Route::post('register', [AuthController::class, 'register'])->middleware('throttle:register');
+    Route::post('forgot-password', [AuthController::class, 'passwordForgot'])->middleware('throttle:forgot-password');
     Route::post('reset-password', [AuthController::class, 'passwordReset']);
     Route::get('verify/{id}/{hash}', [AuthController::class, 'confirmAccount']);
     Route::get('sso/{provider}/redirect', [SSOAuthController::class, 'redirect']);
