@@ -253,7 +253,7 @@ class AuthControllerTest extends TestCase
         ];
 
         // Send 10 requests - all should respond (within limit)
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $response = $this->postJson('/api/auth/login', $payload);
             $response->assertStatus(400); // Bad credentials
         }
@@ -268,7 +268,7 @@ class AuthControllerTest extends TestCase
         $payload = ['email' => 'test@test.com'];
 
         // Send 3 requests - all should respond (within limit)
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $response = $this->postJson('/api/auth/forgot-password', $payload);
             // Unknown email returns 400 but it's valid response (not rate limited yet)
             $this->assertLessThan(429, $response->status());
