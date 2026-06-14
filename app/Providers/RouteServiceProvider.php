@@ -59,10 +59,10 @@ class RouteServiceProvider extends ServiceProvider
 
         RateLimiter::for('bar-optimization', fn (Request $request) => App::environment('production') ? Limit::perMinute(1, 10)->by($request->user()?->id ?: $request->ip()) : Limit::none());
 
-        RateLimiter::for('register', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
+        RateLimiter::for('register', fn (Request $request) => Limit::perHour(5)->by($request->ip()));
 
-        RateLimiter::for('login', fn (Request $request) => Limit::perMinute(10)->by($request->ip()));
+        RateLimiter::for('login', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
 
-        RateLimiter::for('forgot-password', fn (Request $request) => Limit::perMinute(3)->by($request->ip()));
+        RateLimiter::for('forgot-password', fn (Request $request) => Limit::perHour(10)->by($request->ip()));
     }
 }
