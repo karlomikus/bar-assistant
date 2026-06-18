@@ -46,6 +46,7 @@ final readonly class RegisterUserService
 
         $this->log->info('User registered', [
             'email' => $userModel->email,
+            'ip' => $registerRequest->ip,
         ]);
 
         return $userModel;

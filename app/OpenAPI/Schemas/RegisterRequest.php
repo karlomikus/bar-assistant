@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use OpenApi\Attributes as OAT;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Contracts\User;
+use SensitiveParameter;
 
 #[OAT\Schema(required: ['email', 'password', 'name'])]
 class RegisterRequest
@@ -18,9 +19,11 @@ class RegisterRequest
         public string $email,
         #[OAT\Property(example: 'Bar Tender')]
         public string $name,
+        #[SensitiveParameter]
         #[OAT\Property(example: 'password', minLength: 5, format: 'password')]
         public string $password,
         public ?string $hashedPassword = null,
+        public ?string $ip = null,
     ) {
     }
 
@@ -33,6 +36,7 @@ class RegisterRequest
             name: $request->name,
             password: $request->password,
             hashedPassword: $hashedPassword,
+            ip: $request->ip(),
         );
     }
 
@@ -46,6 +50,7 @@ class RegisterRequest
             name: blank($user->getNickname()) ? $user->getName() : $user->getNickname(),
             password: $randomPassword,
             hashedPassword: Hash::make($randomPassword),
+            ip: null,
         );
     }
 }
