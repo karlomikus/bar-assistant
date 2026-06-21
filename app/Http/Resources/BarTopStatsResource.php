@@ -18,14 +18,14 @@ use Illuminate\Http\Resources\Json\JsonResource;
             new OAT\Property(property: 'avg_rating', type: 'integer', example: 1),
             new OAT\Property(property: 'votes', type: 'integer', example: 1),
         ])),
-        new OAT\Property(property: 'top_member_ingredients', type: 'array', items: new OAT\Items(type: 'object', required: ['id', 'slug', 'name', 'count'], properties: [
+        new OAT\Property(property: 'top_member_ingredients', type: 'array', items: new OAT\Items(type: 'object', required: ['id', 'slug', 'name', 'cocktails_count'], properties: [
             new OAT\Property(property: 'id', type: 'integer', example: 1),
             new OAT\Property(property: 'slug', type: 'string', example: 'old-fashioned'),
             new OAT\Property(property: 'name', type: 'string', example: 'Old Fashioned'),
             new OAT\Property(property: 'cocktails_count', type: 'integer', example: 3),
         ]))
     ],
-    required: ['total_cocktails', 'total_ingredients', 'total_favorited_cocktails', 'total_shelf_cocktails', 'total_bar_shelf_ingredients', 'total_bar_shelf_cocktails', 'total_bar_members', 'total_collections']
+    required: ['top_bar_cocktails', 'top_member_ingredients']
 )]
 class BarTopStatsResource extends JsonResource
 {

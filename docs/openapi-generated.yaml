@@ -3095,60 +3095,6 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  '/explore/cocktails/{public_id}':
-    get:
-      tags:
-        - Explore
-      summary: 'Show cocktail'
-      description: 'Show details from a cocktail using a public id'
-      operationId: showPublicCocktail
-      parameters:
-        -
-          name: public_id
-          in: path
-          description: 'Public cocktail id'
-          required: true
-          schema:
-            type: string
-            format: ulid
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/CocktailExplore' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-      security: []
   /exports:
     get:
       tags:
@@ -5988,59 +5934,6 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  '/explore/menus/{slug}':
-    get:
-      tags:
-        - Explore
-      summary: 'Show public menu'
-      description: 'Show a public bar menu details'
-      operationId: publicMenu
-      parameters:
-        -
-          name: slug
-          in: path
-          description: 'Bar database slug'
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/MenuPublic' }
-                type: object
-        '404':
-          description: 'Resource record not found.'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                properties:
-                  data: { $ref: '#/components/schemas/APIError' }
-                type: object
-      security: []
   /menu/export:
     get:
       tags:
@@ -8979,14 +8872,8 @@ components:
     BarTopStatsResource:
       description: 'Resource representing total stats for a bar'
       required:
-        - total_cocktails
-        - total_ingredients
-        - total_favorited_cocktails
-        - total_shelf_cocktails
-        - total_bar_shelf_ingredients
-        - total_bar_shelf_cocktails
-        - total_bar_members
-        - total_collections
+        - top_bar_cocktails
+        - top_member_ingredients
       properties:
         top_bar_cocktails:
           type: array
@@ -9021,7 +8908,7 @@ components:
               - id
               - slug
               - name
-              - count
+              - cocktails_count
             properties:
               id:
                 type: integer
@@ -10268,14 +10155,6 @@ components:
         ingredient_count:
           type: integer
           example: 24
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type:
-            - string
-            - 'null'
-          format: date-time
       type: object
     User:
       description: 'Represents a user in current bar'
@@ -12124,9 +12003,6 @@ tags:
   -
     name: Collections
     description: Collections
-  -
-    name: Explore
-    description: Explore
   -
     name: Exports
     description: Exports
