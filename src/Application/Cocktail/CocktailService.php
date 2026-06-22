@@ -85,6 +85,7 @@ final readonly class CocktailService
                 isOptional: $requestIngredient->isOptional,
                 isSpecific: $requestIngredient->isSpecified,
                 note: $requestIngredient->note,
+                sortIndex: $requestIngredient->sort,
                 substitutes: $substitutes,
             ));
         }
@@ -160,6 +161,7 @@ final readonly class CocktailService
                 isOptional: $requestIngredient->isOptional,
                 isSpecific: $requestIngredient->isSpecified,
                 note: $requestIngredient->note,
+                sortIndex: $requestIngredient->sort,
                 substitutes: $substitutes,
             ));
         }

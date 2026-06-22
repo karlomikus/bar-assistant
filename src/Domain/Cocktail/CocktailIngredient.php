@@ -34,6 +34,7 @@ final readonly class CocktailIngredient
         ABV $abv,
         bool $isOptional = false,
         bool $isSpecific = false,
+        int $sortIndex = 0,
         ?string $note = null,
         array $substitutes = [],
     ): self {
@@ -43,6 +44,7 @@ final readonly class CocktailIngredient
             abv: $abv,
             isOptional: $isOptional,
             isSpecific: $isSpecific,
+            sortIndex: $sortIndex,
             note: $note,
             substitutes: $substitutes,
         );
