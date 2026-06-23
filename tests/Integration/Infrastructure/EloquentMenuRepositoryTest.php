@@ -306,4 +306,105 @@ final class EloquentMenuRepositoryTest extends TestCase
 
         return $membership->bar;
     }
+
+    public function test_is_enabled_defaults_to_true_when_not_explicitly_set(): void
+    {
+        $membership = $this->setupBarMembership();
+        $bar = $this->barFromMembership($membership);
+        $bar->slug = 'default-category-menu';
+        $bar->save();
+
+        $repository = new EloquentMenuRepository();
+        $repository->save(Menu::createWithCategories(
+            id: new MenuId('default-category-menu'),
+            barId: new BarId($membership->bar_id),
+            categories: [
+                MenuCategory::create(
+                    name: Name::fromString('Classics'),
+                    sortIndex: 0,
+                ),
+            ],
+        ));
+
+        $this->assertDatabaseHas('menu_categories', [
+            'name' => 'Classics',
+            'is_enabled' => true,
+        ]);
+    }
+
+    public function test_it_persists_and_reads_back_disabled_category(): void
+    {
+        $membership = $this->setupBarMembership();
+        $bar = $this->barFromMembership($membership);
+        $bar->slug = 'draft-menu';
+        $bar->save();
+
+        $repository = new EloquentMenuRepository();
+        $repository->save(Menu::createWithCategories(
+            id: new MenuId('draft-menu'),
+            barId: new BarId($membership->bar_id),
+            categories: [
+                MenuCategory::createWithItems(
+                    name: Name::fromString('Hidden Category'),
+                    sortIndex: 0,
+                    items: [],
+                    isEnabled: false,
+                ),
+            ],
+        ));
+
+        $this->assertDatabaseHas('menu_categories', [
+            'name' => 'Hidden Category',
+            'is_enabled' => false,
+        ]);
+
+        $foundMenu = $repository->findByBarId(new BarId($membership->bar_id));
+        $this->assertNotNull($foundMenu);
+        $this->assertCount(1, $foundMenu->getCategories());
+        $this->assertFalse($foundMenu->getCategories()[0]->isEnabled());
+    }
+
+    public function test_it_preserves_is_enabled_when_replacing_categories(): void
+    {
+        $membership = $this->setupBarMembership();
+        $bar = $this->barFromMembership($membership);
+        $bar->slug = 'seasonal-menu';
+        $bar->save();
+
+        $repository = new EloquentMenuRepository();
+
+        // First save: all enabled
+        $repository->save(Menu::createWithCategories(
+            id: new MenuId('seasonal-menu'),
+            barId: new BarId($membership->bar_id),
+            categories: [
+                MenuCategory::create(Name::fromString('Summer'), sortIndex: 0, isEnabled: true),
+                MenuCategory::create(Name::fromString('Fall'), sortIndex: 1, isEnabled: true),
+            ],
+        ));
+
+        // Replace: one disabled, one still enabled
+        $repository->save(Menu::createWithCategories(
+            id: new MenuId('seasonal-menu'),
+            barId: new BarId($membership->bar_id),
+            categories: [
+                MenuCategory::create(Name::fromString('Summer'), sortIndex: 0, isEnabled: false),
+                MenuCategory::create(Name::fromString('Winter'), sortIndex: 1, isEnabled: true),
+            ],
+        ));
+
+        $this->assertDatabaseCount('menu_categories', 2);
+        $this->assertDatabaseMissing('menu_categories', ['name' => 'Fall']);
+        $this->assertDatabaseHas('menu_categories', ['name' => 'Summer', 'is_enabled' => false]);
+        $this->assertDatabaseHas('menu_categories', ['name' => 'Winter', 'is_enabled' => true]);
+
+        $foundMenu = $repository->findByBarId(new BarId($membership->bar_id));
+        $this->assertNotNull($foundMenu);
+        $categories = $foundMenu->getCategories();
+        $this->assertCount(2, $categories);
+        $this->assertFalse($categories[0]->isEnabled());
+        $this->assertSame('Summer', $categories[0]->getName()->toString());
+        $this->assertTrue($categories[1]->isEnabled());
+        $this->assertSame('Winter', $categories[1]->getName()->toString());
+    }
 }

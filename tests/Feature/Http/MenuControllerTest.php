@@ -112,4 +112,116 @@ class MenuControllerTest extends TestCase
         $response->assertSuccessful();
         $response->assertHeader('Content-Type', 'text/csv; charset=utf-8');
     }
+
+    public function test_update_menu_with_disabled_category(): void
+    {
+        $cocktail = Cocktail::factory()->for($this->barMembership->bar)->create();
+        Menu::factory()->for($this->barMembership->bar)->create(['is_enabled' => true]);
+
+        $response = $this->postJson('/api/menu', [
+            'is_enabled' => true,
+            'categories' => [
+                [
+                    'sort' => 1,
+                    'name' => 'Visible Category',
+                    'is_enabled' => true,
+                    'items' => [
+                        [
+                            'id' => $cocktail->id,
+                            'type' => MenuItemTypeEnum::Cocktail->value,
+                            'sort' => 1,
+                            'price' => 200,
+                            'currency' => 'EUR',
+                            'is_bar_inventory_aware' => true,
+                        ],
+                    ],
+                ],
+                [
+                    'sort' => 2,
+                    'name' => 'Hidden Category',
+                    'is_enabled' => false,
+                    'items' => [],
+                ],
+            ],
+        ], ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseHas('menu_categories', [
+            'name' => 'Visible Category',
+            'is_enabled' => true,
+        ]);
+        $this->assertDatabaseHas('menu_categories', [
+            'name' => 'Hidden Category',
+            'is_enabled' => false,
+        ]);
+    }
+
+    public function test_show_menu_includes_is_enabled_in_category_response(): void
+    {
+        $menu = Menu::factory()->for($this->barMembership->bar)->create(['is_enabled' => true]);
+        MenuCategory::factory()->for($menu)->create([
+            'sort' => 1,
+            'name' => 'Visible',
+            'is_enabled' => true,
+        ]);
+        MenuCategory::factory()->for($menu)->create([
+            'sort' => 2,
+            'name' => 'Hidden',
+            'is_enabled' => false,
+        ]);
+
+        $response = $this->getJson('/api/menu', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+
+        $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data.categories', 2)
+                ->has('data.categories.0', fn (AssertableJson $json) =>
+                    $json->where('name', 'Visible')
+                        ->where('is_enabled', true)
+                        ->etc()
+                )
+                ->has('data.categories.1', fn (AssertableJson $json) =>
+                    $json->where('name', 'Hidden')
+                        ->where('is_enabled', false)
+                        ->etc()
+                )
+                ->etc()
+        );
+    }
+
+    public function test_public_menu_excludes_hidden_categories(): void
+    {
+        $bar = $this->barMembership->bar;
+        $bar->slug = 'test-public-bar';
+        $bar->save();
+
+        $menu = Menu::factory()->for($bar)->create(['is_enabled' => true]);
+        MenuCategory::factory()->for($menu)->create([
+            'sort' => 1,
+            'name' => 'Visible',
+            'is_enabled' => true,
+        ]);
+        MenuCategory::factory()->for($menu)->create([
+            'sort' => 2,
+            'name' => 'Hidden',
+            'is_enabled' => false,
+        ]);
+
+        $response = $this->getJson('/api/public/test-public-bar/menu');
+
+        $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data.categories', 1)
+                ->has('data.categories.0', fn (AssertableJson $json) =>
+                    $json->where('name', 'Visible')
+                        ->etc()
+                )
+                ->etc()
+        );
+    }
 }

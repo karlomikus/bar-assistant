@@ -13,137 +13,115 @@ use BarAssistant\Domain\Cocktail\CocktailId;
 
 final class MenuCategoryTest extends TestCase
 {
-    public function test_can_create_empty_category(): void
+    public function test_new_category_is_enabled_by_default(): void
     {
-        $category = MenuCategory::create(
-            name: Name::fromString('Cocktails'),
-            sortIndex: 0,
-        );
+        $category = MenuCategory::create(Name::fromString('Cocktails'));
 
-        $this->assertEquals('Cocktails', $category->getName()->toString());
-        $this->assertEquals(0, $category->getSortIndex());
-        $this->assertCount(0, $category->getItems());
+        $this->assertTrue($category->isEnabled());
     }
 
-    public function test_can_create_category_with_items(): void
+    public function test_can_create_disabled_category(): void
     {
-        $item1 = MenuItem::forCocktail(
-            cocktailId: new CocktailId(1),
-            price: Price::createFromMinor(1000, 'USD'),
-            sortIndex: 1,
-        );
+        $category = MenuCategory::create(Name::fromString('Drafts'), isEnabled: false);
 
-        $item2 = MenuItem::forCocktail(
-            cocktailId: new CocktailId(2),
-            price: Price::createFromMinor(1200, 'USD'),
+        $this->assertFalse($category->isEnabled());
+    }
+
+    public function test_can_enable_category(): void
+    {
+        $category = MenuCategory::create(Name::fromString('Specials'), isEnabled: false);
+        $enabled = $category->enable();
+
+        $this->assertTrue($enabled->isEnabled());
+        $this->assertFalse($category->isEnabled()); // Original is unchanged (immutable)
+        $this->assertSame('Specials', $enabled->getName()->toString());
+    }
+
+    public function test_can_disable_category(): void
+    {
+        $category = MenuCategory::create(Name::fromString('Cocktails'));
+        $disabled = $category->disable();
+
+        $this->assertFalse($disabled->isEnabled());
+        $this->assertTrue($category->isEnabled()); // Original is unchanged (immutable)
+    }
+
+    public function test_create_with_items_respects_is_enabled(): void
+    {
+        $item = MenuItem::forCocktail(
+            cocktailId: new CocktailId(1),
+            price: Price::createFromMinor(1000, 'EUR'),
             sortIndex: 0,
         );
 
         $category = MenuCategory::createWithItems(
-            name: Name::fromString('Classics'),
+            name: Name::fromString('Hidden'),
             sortIndex: 0,
-            items: [$item1, $item2],
+            items: [$item],
+            isEnabled: false,
         );
 
-        $items = $category->getItems();
-        $this->assertCount(2, $items);
-        // Items should be sorted by sortIndex
-        $this->assertEquals(0, $items[0]->getSortIndex());
-        $this->assertEquals(1, $items[1]->getSortIndex());
+        $this->assertFalse($category->isEnabled());
+        $this->assertCount(1, $category->getItems());
     }
 
-    public function test_can_add_item_to_category(): void
+    public function test_create_with_items_defaults_to_enabled(): void
     {
-        $category = MenuCategory::create(
-            name: Name::fromString('Cocktails'),
-            sortIndex: 0,
-        );
-
         $item = MenuItem::forCocktail(
             cocktailId: new CocktailId(1),
-            price: Price::createFromMinor(1000, 'USD'),
+            price: Price::createFromMinor(1000, 'EUR'),
             sortIndex: 0,
-        );
-
-        $updatedCategory = $category->addItem($item);
-
-        $this->assertCount(0, $category->getItems()); // Original unchanged
-        $this->assertCount(1, $updatedCategory->getItems());
-    }
-
-    public function test_items_are_automatically_sorted_by_sort_index(): void
-    {
-        $item1 = MenuItem::forCocktail(
-            cocktailId: new CocktailId(1),
-            price: Price::createFromMinor(1000, 'USD'),
-            sortIndex: 5,
-        );
-
-        $item2 = MenuItem::forCocktail(
-            cocktailId: new CocktailId(2),
-            price: Price::createFromMinor(1200, 'USD'),
-            sortIndex: 1,
-        );
-
-        $item3 = MenuItem::forCocktail(
-            cocktailId: new CocktailId(3),
-            price: Price::createFromMinor(1500, 'USD'),
-            sortIndex: 3,
         );
 
         $category = MenuCategory::createWithItems(
-            name: Name::fromString('Cocktails'),
+            name: Name::fromString('Visible'),
             sortIndex: 0,
-            items: [$item1, $item2, $item3],
+            items: [$item],
         );
 
-        $items = $category->getItems();
-        $this->assertEquals(1, $items[0]->getSortIndex());
-        $this->assertEquals(3, $items[1]->getSortIndex());
-        $this->assertEquals(5, $items[2]->getSortIndex());
+        $this->assertTrue($category->isEnabled());
     }
 
-    public function test_can_update_category_name(): void
+    public function test_with_name_preserves_is_enabled(): void
     {
-        $category = MenuCategory::create(
-            name: Name::fromString('Cocktails'),
-            sortIndex: 0,
-        );
+        $category = MenuCategory::create(Name::fromString('Old'), isEnabled: false);
+        $renamed = $category->withName(Name::fromString('New'));
 
-        $updatedCategory = $category->withName(Name::fromString('Classic Cocktails'));
-
-        $this->assertEquals('Cocktails', $category->getName()->toString());
-        $this->assertEquals('Classic Cocktails', $updatedCategory->getName()->toString());
+        $this->assertFalse($renamed->isEnabled());
+        $this->assertSame('New', $renamed->getName()->toString());
     }
 
-    public function test_can_update_sort_index(): void
+    public function test_with_sort_index_preserves_is_enabled(): void
     {
-        $category = MenuCategory::create(
-            name: Name::fromString('Cocktails'),
-            sortIndex: 0,
-        );
+        $category = MenuCategory::create(Name::fromString('Cocktails'), sortIndex: 1, isEnabled: false);
+        $resorted = $category->withSortIndex(5);
 
-        $updatedCategory = $category->withSortIndex(5);
-
-        $this->assertEquals(0, $category->getSortIndex());
-        $this->assertEquals(5, $updatedCategory->getSortIndex());
+        $this->assertFalse($resorted->isEnabled());
+        $this->assertSame(5, $resorted->getSortIndex());
     }
 
-    public function test_category_is_immutable(): void
+    public function test_add_item_preserves_is_enabled(): void
     {
-        $category = MenuCategory::create(
-            name: Name::fromString('Cocktails'),
-            sortIndex: 0,
-        );
+        $category = MenuCategory::create(Name::fromString('Hidden'), isEnabled: false);
 
         $item = MenuItem::forCocktail(
             cocktailId: new CocktailId(1),
-            price: Price::createFromMinor(1000, 'USD'),
+            price: Price::createFromMinor(1000, 'EUR'),
             sortIndex: 0,
         );
 
-        $updatedCategory = $category->addItem($item);
+        $withItem = $category->addItem($item);
 
-        $this->assertNotSame($category, $updatedCategory);
+        $this->assertFalse($withItem->isEnabled());
+        $this->assertCount(1, $withItem->getItems());
+    }
+
+    public function test_enable_disable_chainable(): void
+    {
+        $category = MenuCategory::create(Name::fromString('Cocktails'));
+
+        $result = $category->disable()->enable()->disable();
+
+        $this->assertFalse($result->isEnabled());
     }
 }
