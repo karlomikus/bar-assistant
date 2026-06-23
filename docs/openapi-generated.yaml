@@ -10219,6 +10219,9 @@ components:
         sort:
           type: integer
           example: 1
+        is_enabled:
+          type: boolean
+          example: true
         items:
           type: array
           items:
@@ -11723,6 +11726,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MenuItemRequest'
+        isEnabled:
+          type: boolean
       type: object
     MenuItemRequest:
       required:
