@@ -63,6 +63,7 @@ final readonly class CocktailService
             glassId: $request->glassId ? new GlassId($request->glassId) : null,
             methodId: $request->methodId ? new MethodId($request->methodId) : null,
             variantOf: $variantOf?->getId(),
+            author: $request->author,
         );
 
         foreach ($request->ingredients as $requestIngredient) {
@@ -138,6 +139,7 @@ final readonly class CocktailService
             dilution: Dilution::fromFloat($request->dilution),
             variantOf: $variantOf?->getId(),
             year: $request->year,
+            author: $request->author,
         );
 
         $cocktail->removeAllIngredients();

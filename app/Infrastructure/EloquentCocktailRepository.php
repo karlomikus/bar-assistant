@@ -43,6 +43,7 @@ final class EloquentCocktailRepository implements CocktailRepository
         $model->description = $cocktail->getDescription();
         $model->source = $cocktail->getSource();
         $model->year = $cocktail->getYear();
+        $model->author = $cocktail->getAuthor();
         $model->glass_id = $cocktail->getGlassId()?->value;
         $model->cocktail_method_id = $cocktail->getMethodId()?->value;
         $model->abv = $cocktail->getABV()->toFloat();
@@ -153,6 +154,7 @@ final class EloquentCocktailRepository implements CocktailRepository
             glassId: $model->glass_id ? new GlassId($model->glass_id) : null,
             methodId: $model->cocktail_method_id ? new MethodId($model->cocktail_method_id) : null,
             variantOf: $model->parent_cocktail_id ? new CocktailId($model->parent_cocktail_id) : null,
+            author: $model->author,
         )
         ->setId(new CocktailId($model->id))
         ->setSlug(Slug::fromString($model->slug));

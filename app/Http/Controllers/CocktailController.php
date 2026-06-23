@@ -196,6 +196,7 @@ class CocktailController extends Controller
             utensils: $cocktailRequest->utensils,
             parentCocktailId: $cocktailRequest->parentCocktailId,
             year: $cocktailRequest->year,
+            author: $cocktailRequest->author,
         ));
 
         return new Response(status: 201, headers: ['Location' => route('cocktails.show', $cocktailResult->slug, false)]);
@@ -279,6 +280,7 @@ class CocktailController extends Controller
             utensils: $cocktailRequest->utensils,
             parentCocktailId: $cocktailRequest->parentCocktailId,
             year: $cocktailRequest->year,
+            author: $cocktailRequest->author,
         ));
 
         return new Response(status: 204);

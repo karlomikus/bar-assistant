@@ -40,6 +40,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsSchema4, SupportsJS
         public array $ingredients = [],
         public ?string $parentCocktailId = null,
         public ?int $year = null,
+        public ?string $author = null,
     ) {
     }
 
@@ -67,6 +68,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsSchema4, SupportsJS
             $ingredients,
             $model->parentCocktail?->getExternalId(),
             $model->year,
+            $model->author,
         );
     }
 
@@ -100,6 +102,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsSchema4, SupportsJS
             $ingredients,
             $sourceArray['parent_cocktail_id'] ?? null,
             $sourceArray['year'] ?? null,
+            isset($sourceArray['author']) && is_string($sourceArray['author']) ? $sourceArray['author'] : null,
         );
     }
 
@@ -121,6 +124,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsSchema4, SupportsJS
             'utensils' => $this->utensils,
             'parent_cocktail_id' => $this->parentCocktailId,
             'year' => $this->year,
+            'author' => $this->author,
             'images' => array_map(fn ($model) => $model->toDataPackArray(), $this->images),
             'ingredients' => array_map(fn ($model) => $model->toDataPackArray(), $this->ingredients),
         ];
@@ -154,6 +158,9 @@ readonly class Cocktail implements SupportsDataPack, SupportsSchema4, SupportsJS
             [],
             $images,
             $ingredients,
+            null,
+            null,
+            isset($sourceArray['author']) && is_string($sourceArray['author']) ? $sourceArray['author'] : null,
         );
     }
 
@@ -172,6 +179,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsSchema4, SupportsJS
             'method' => $this->method,
             'images' => array_map(fn ($model) => $model->toSchema4Array(), $this->images),
             'ingredients' => array_map(fn ($model) => $model->toSchema4Array(), $this->ingredients),
+            'author' => $this->author,
         ];
     }
 

@@ -29,6 +29,7 @@ final readonly class CreateCocktail
         public array $utensils,
         public ?int $parentCocktailId,
         public ?int $year,
+        public ?string $author = null,
     ) {
     }
 }

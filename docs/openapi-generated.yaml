@@ -9473,6 +9473,12 @@ components:
             - number
             - 'null'
           example: 2023
+        author:
+          description: 'Historical author of the cocktail recipe'
+          type:
+            - string
+            - 'null'
+          example: 'Jerry Thomas'
       type: object
     Collection:
       description: 'Collection resource'
@@ -10678,6 +10684,12 @@ components:
             - integer
             - 'null'
           example: 2023
+        author:
+          description: 'Historical author of the cocktail recipe'
+          type:
+            - string
+            - 'null'
+          example: 'Jerry Thomas'
         ingredients:
           description: 'List of ingredients required to make the cocktail'
           type: array
@@ -11404,6 +11416,11 @@ components:
             - integer
             - 'null'
           example: 2023
+        author:
+          type:
+            - string
+            - 'null'
+          example: 'Jerry Thomas'
       type: object
     CollectionRequest:
       required:

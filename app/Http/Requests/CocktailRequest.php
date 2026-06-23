@@ -45,6 +45,7 @@ class CocktailRequest extends FormRequest
             'ingredients.*.ingredient.substitutes.*.ingredient_id' => 'integer',
             'ingredients.*.ingredient.substitutes.*.amount' => 'numeric',
             'ingredients.*.ingredient.substitutes.*.amount_max' => 'nullable|numeric',
+            'author' => 'nullable|string',
         ];
     }
 }

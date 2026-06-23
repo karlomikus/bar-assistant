@@ -50,6 +50,7 @@ final class Cocktail implements Identity
         private array $utensils = [],
         private ?CocktailId $variantOf = null,
         private ?int $year = null,
+        private ?string $author = null,
     ) {
     }
 
@@ -68,6 +69,7 @@ final class Cocktail implements Identity
         ?GlassId $glassId = null,
         ?MethodId $methodId = null,
         ?CocktailId $variantOf = null,
+        ?string $author = null,
     ): self {
         return new self(
             barId: $barId,
@@ -84,6 +86,7 @@ final class Cocktail implements Identity
             methodId: $methodId,
             publicStatus: $publicStatus,
             variantOf: $variantOf,
+            author: $author,
         );
     }
 
@@ -282,6 +285,11 @@ final class Cocktail implements Identity
         return $this->year;
     }
 
+    public function getAuthor(): ?string
+    {
+        return $this->author;
+    }
+
     public function getMethodId(): ?MethodId
     {
         return $this->methodId;
@@ -342,6 +350,7 @@ final class Cocktail implements Identity
         ?Dilution $dilution = null,
         ?CocktailId $variantOf = null,
         ?int $year = null,
+        ?string $author = null,
     ): self {
         if ($this->isTransient()) {
             throw new DomainException('Cannot update details of a transient cocktail');
@@ -358,6 +367,7 @@ final class Cocktail implements Identity
         $this->methodId = $methodId;
         $this->publicStatus = $publicStatus;
         $this->variantOf = $variantOf;
+        $this->author = $author;
         $this->authors = $this->authors->updatedBy($updatedBy);
         $this->recordTimestamps = $this->recordTimestamps->updatedNow();
 
@@ -390,6 +400,7 @@ final class Cocktail implements Identity
             source: $this->getSource(),
             dilution: $this->getDilution(),
             year: $this->getYear(),
+            author: $this->getAuthor(),
             glassId: $this->getGlassId(),
             methodId: $this->getMethodId(),
             variantOf: $this->getId(),
