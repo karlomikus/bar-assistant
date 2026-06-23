@@ -40,6 +40,7 @@ This is a mostly introduces a massive rewrite to backend architecture. But there
     - Added `ingredients/{idOrSlug}/extra` endpoint showing unlockable cocktails
 - Added `is_bar_inventory_aware` to menu items
     - Shows if menu item availability depends on bar inventory
+- Added `is_enabled` to menu category
 - You can now add amounts and units to ingredient parts
 - Added `author` field to cocktail recipes
 - OpenAPI docs now use Scalar UI (replaces Elements)

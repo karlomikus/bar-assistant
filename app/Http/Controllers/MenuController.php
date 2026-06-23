@@ -89,7 +89,7 @@ class MenuController extends Controller
                     isBarInventoryAware: $bodyMenuItem->isBarInventoryAware,
                 );
             }
-            $categories[] = new CreateMenuCategoryRequest(name: $bodyCategory->name, sortIndex: $bodyCategory->sort, items: $items);
+            $categories[] = new CreateMenuCategoryRequest(name: $bodyCategory->name, sortIndex: $bodyCategory->sort, items: $items, isEnabled: $bodyCategory->isEnabled);
         }
 
         Validator::make($validateCocktailIds, [

@@ -72,7 +72,9 @@ class MenuPublicResource extends JsonResource
                     fn () => $this->bar->images->map(fn (Image $image) => $image->getImageUrl())->toArray(),
                 ),
             ],
-            'categories' => $this->categories->map(fn ($category) => [
+            'categories' => $this->categories
+                ->filter(fn ($category) => $category->is_enabled)
+                ->map(fn ($category) => [
                 'sort' => $category->sort,
                 'name' => $category->name,
                 'items' => $category->getMenuItems()->map(static fn (MenuItem $menuItem): array => [

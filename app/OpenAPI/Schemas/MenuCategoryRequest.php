@@ -19,6 +19,8 @@ class MenuCategoryRequest
         public string $name,
         #[OAT\Property(items: new OAT\Items(type: MenuItemRequest::class))]
         public array $items = [],
+        #[OAT\Property()]
+        public bool $isEnabled = true,
     ) {
     }
 
@@ -36,6 +38,7 @@ class MenuCategoryRequest
             sort: (int) $input['sort'],
             name: $input['name'],
             items: $items,
+            isEnabled: (bool) ($input['is_enabled'] ?? true),
         );
     }
 }

@@ -18,6 +18,7 @@ use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
     properties: [
         new OAT\Property(type: 'string', property: 'name', example: 'Category name'),
         new OAT\Property(type: 'integer', property: 'sort', example: 1),
+        new OAT\Property(type: 'boolean', property: 'is_enabled', example: true),
         new OAT\Property(type: 'array', property: 'items', items: new OAT\Items(type: 'object', properties: [
             new OAT\Property(type: 'integer', property: 'id', example: 1),
             new OAT\Property(property: 'type', ref: MenuItemTypeEnum::class),
@@ -44,6 +45,7 @@ class MenuCategoryResource extends JsonResource
         return [
             'name' => $this->name,
             'sort' => $this->sort,
+            'is_enabled' => (bool) $this->is_enabled,
             'items' => $this->getMenuItems()->map(static fn (MenuItem $menuItem): array => [
                 'id' => $menuItem->id,
                 'type' => $menuItem->type->value,

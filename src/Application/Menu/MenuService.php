@@ -52,6 +52,7 @@ final readonly class MenuService
                 name: Name::fromString($categoryRequest->name),
                 sortIndex: $categoryRequest->sortIndex,
                 items: $items,
+                isEnabled: $categoryRequest->isEnabled,
             ));
         }
 

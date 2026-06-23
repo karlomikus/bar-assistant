@@ -22,6 +22,7 @@ class MenuCategory extends BaseModel
         'menu_id',
         'sort',
         'name',
+        'is_enabled',
     ];
 
     /**

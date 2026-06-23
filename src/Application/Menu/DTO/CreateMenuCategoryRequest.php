@@ -13,6 +13,7 @@ final readonly class CreateMenuCategoryRequest
         public string $name,
         public int $sortIndex = 0,
         public array $items = [],
+        public bool $isEnabled = true,
     ) {
     }
 }

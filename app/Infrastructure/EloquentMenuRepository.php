@@ -58,6 +58,7 @@ final class EloquentMenuRepository implements MenuRepository
                 'name' => $category->getName(),
                 'menu_id' => $model->id,
                 'sort' => $category->getSortIndex(),
+                'is_enabled' => $category->isEnabled(),
             ]);
 
             foreach ($category->getItems() as $menuItem) {
@@ -131,6 +132,7 @@ final class EloquentMenuRepository implements MenuRepository
                 name: Name::fromString($modelCategory->name),
                 sortIndex: $modelCategory->sort,
                 items: $items,
+                isEnabled: (bool) $modelCategory->is_enabled,
             );
         }
 

@@ -15,27 +15,30 @@ final readonly class MenuCategory
         private Name $name,
         private int $sortIndex,
         private array $items,
+        private bool $isEnabled = true,
     ) {
     }
 
-    public static function create(Name $name, int $sortIndex = 0): self
+    public static function create(Name $name, int $sortIndex = 0, bool $isEnabled = true): self
     {
         return new self(
             name: $name,
             sortIndex: $sortIndex,
             items: [],
+            isEnabled: $isEnabled,
         );
     }
 
     /**
      * @param MenuItem[] $items
      */
-    public static function createWithItems(Name $name, int $sortIndex, array $items): self
+    public static function createWithItems(Name $name, int $sortIndex, array $items, bool $isEnabled = true): self
     {
         return new self(
             name: $name,
             sortIndex: $sortIndex,
             items: self::sortItems($items),
+            isEnabled: $isEnabled,
         );
     }
 
@@ -66,6 +69,7 @@ final readonly class MenuCategory
             name: $this->name,
             sortIndex: $this->sortIndex,
             items: self::sortItems($items),
+            isEnabled: $this->isEnabled,
         );
     }
 
@@ -75,6 +79,7 @@ final readonly class MenuCategory
             name: $name,
             sortIndex: $this->sortIndex,
             items: $this->items,
+            isEnabled: $this->isEnabled,
         );
     }
 
@@ -84,6 +89,32 @@ final readonly class MenuCategory
             name: $this->name,
             sortIndex: $sortIndex,
             items: $this->items,
+            isEnabled: $this->isEnabled,
+        );
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->isEnabled;
+    }
+
+    public function enable(): self
+    {
+        return new self(
+            name: $this->name,
+            sortIndex: $this->sortIndex,
+            items: $this->items,
+            isEnabled: true,
+        );
+    }
+
+    public function disable(): self
+    {
+        return new self(
+            name: $this->name,
+            sortIndex: $this->sortIndex,
+            items: $this->items,
+            isEnabled: false,
         );
     }
 
