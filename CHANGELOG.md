@@ -1,5 +1,5 @@
 # v6.0.0
-This is a mostly introduces a massive rewrite to backend architecture. But there is still some new stuff available.
+This release mostly introduces a big rewrite to backend architecture. But there is still some new stuff available. As always before upgrading backup all your data.
 
 ## Breaking changes
 - Removed `Moderator` role
@@ -32,12 +32,9 @@ This is a mostly introduces a massive rewrite to backend architecture. But there
     - Moved `/{id}/cocktail-favorites` for members
 
 ## New
-- **Multi-inventory per member**
+- Multi-inventory per member
     - Members can create, rename, and delete multiple named inventories
-    - CRUD: `GET/POST/PATCH/DELETE /members/{id}/inventories`
-    - Batch operations, cocktails listing, and recommendations per inventory
-- **Bar inventory** moved to `/bars/{id}/inventory/` with dedicated endpoints
-    - Added `ingredients/{idOrSlug}/extra` endpoint showing unlockable cocktails
+- Added `ingredients/{idOrSlug}/extra` endpoint showing unlockable cocktails
 - Added `is_bar_inventory_aware` to menu items
     - Shows if menu item availability depends on bar inventory
 - Added `is_enabled` to menu category
