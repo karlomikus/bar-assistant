@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,10 +13,6 @@ class BarMembership extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\BarMembershipFactory> */
     use HasFactory;
-
-    protected $casts = [
-        'is_shelf_public' => 'boolean',
-    ];
 
     /**
      * @return BelongsTo<Bar, $this>

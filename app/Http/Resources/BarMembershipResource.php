@@ -17,9 +17,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
         new OAT\Property(property: 'user_id', type: 'integer', example: 1, description: 'The ID of the user'),
         new OAT\Property(property: 'user_name', type: 'string', example: 'Bartender', description: 'The name of the user'),
         new OAT\Property(property: 'bar_id', type: 'integer', example: 1, description: 'The ID of the bar'),
-        new OAT\Property(property: 'is_shelf_public', type: 'boolean', example: true, description: 'Indicates if the shelf is public'),
+        new OAT\Property(property: 'user_role_id', type: 'integer', example: 1, description: 'The ID of the role'),
     ],
-    required: ['user_id', 'user_name', 'bar_id', 'is_shelf_public']
+    required: ['user_id', 'user_name', 'bar_id', 'user_role_id']
 )]
 class BarMembershipResource extends JsonResource
 {
@@ -36,7 +36,7 @@ class BarMembershipResource extends JsonResource
             'user_id' => $this->user->id,
             'user_name' => $this->user->name,
             'bar_id' => $this->bar_id,
-            'is_shelf_public' => $this->is_shelf_public,
+            'user_role_id' => $this->user_role_id,
         ];
     }
 }

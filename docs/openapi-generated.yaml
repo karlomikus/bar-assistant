@@ -8728,7 +8728,7 @@ components:
         - user_id
         - user_name
         - bar_id
-        - is_shelf_public
+        - user_role_id
       properties:
         user_id:
           description: 'The ID of the user'
@@ -8742,10 +8742,10 @@ components:
           description: 'The ID of the bar'
           type: integer
           example: 1
-        is_shelf_public:
-          description: 'Indicates if the shelf is public'
-          type: boolean
-          example: true
+        user_role_id:
+          description: 'The ID of the role'
+          type: integer
+          example: 1
       type: object
     Bar:
       description: 'Details about a bar'

@@ -80,7 +80,6 @@ final class CocktailQueryFilter extends QueryBuilder
                         ->join('user_ingredients', 'user_ingredients.bar_membership_id', '=', 'bar_memberships.id')
                         ->whereIn('bar_memberships.user_id', $value)
                         ->where('bar_memberships.bar_id', bar()->id)
-                        ->where('bar_memberships.is_shelf_public', true)
                         ->get();
 
                     $query->whereIn('cocktails.id', $cocktailRepo->getCocktailsByIngredients(
