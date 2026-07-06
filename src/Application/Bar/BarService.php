@@ -44,6 +44,12 @@ final readonly class BarService
             description: $request->description,
         );
 
+        if ($request->isPublic) {
+            $bar->makePublic();
+        } else {
+            $bar->makePrivate();
+        }
+
         if (count($request->images) > 0) {
             $this->assignImages($bar, $request->images);
         }
@@ -58,6 +64,12 @@ final readonly class BarService
         $bar = $this->barRepository->findById(new BarId($request->barId));
         if ($bar === null) {
             throw new EntityNotFoundException('Bar not found');
+        }
+
+        if ($request->isPublic) {
+            $bar->makePublic();
+        } else {
+            $bar->makePrivate();
         }
 
         $bar->updateDetails(

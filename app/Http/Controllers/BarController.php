@@ -158,6 +158,7 @@ class BarController extends Controller
             userId: $request->user()->id,
             subtitle: $barRequest->subtitle,
             isInviteCodeEnabled: $barRequest->invitesEnabled,
+            isPublic: $barRequest->isPublic,
             images: $barRequest->images,
             defaultCurrency: $barRequest->defaultCurrency,
             defaultUnits: $barRequest->defaultUnits,

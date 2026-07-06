@@ -117,6 +117,12 @@ final class EloquentBarRepository implements BarRepository
             description: $model->description,
         )->setId(new BarId($model->id));
 
+        if ($model->is_public) {
+            $bar->makePublic();
+        } else {
+            $bar->makePrivate();
+        }
+
         if (is_string($model->slug)) {
             $bar->setSlug(Slug::fromString($model->slug));
         }
