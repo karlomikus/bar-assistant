@@ -18,7 +18,7 @@ use Kami\Cocktail\Http\Resources\Public\CocktailResource;
 
 class CocktailController extends Controller
 {
-    #[OAT\Get(path: '/public/{slugOrId}/cocktails', tags: ['Public'], operationId: 'listPublicBarCocktails', description: 'List and filter bar cocktails. To access this endpoint the bar must be marked as public.', summary: 'List cocktails', parameters: [
+    #[OAT\Get(path: '/public/bars/{slugOrId}/cocktails', tags: ['Public'], operationId: 'listPublicBarCocktails', description: 'List and filter bar cocktails. To access this endpoint the bar must be marked as public.', summary: 'List cocktails', parameters: [
         new OAT\Parameter(name: 'slugOrId', in: 'path', required: true, description: 'Database id or slug of bar', schema: new OAT\Schema(type: 'string')),
         new BAO\Parameters\PageParameter(),
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes. You can specify multiple matching filter values by passing a comma separated list of values.', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
@@ -82,9 +82,9 @@ class CocktailController extends Controller
         return CocktailResource::collection($cocktails->withQueryString())->additional($additionalData);
     }
 
-    #[OAT\Get(path: '/public/{slugOrId}/cocktails/{cocktailSlug}', tags: ['Public'], operationId: 'showPublicBarCocktail', description: 'Show public information about cocktail.', summary: 'Show cocktail', parameters: [
+    #[OAT\Get(path: '/public/bars/{slugOrId}/cocktails/{cocktailSlug}', tags: ['Public'], operationId: 'showPublicBarCocktail', description: 'Show public information about cocktail.', summary: 'Show cocktail', parameters: [
         new OAT\Parameter(name: 'slugOrId', in: 'path', required: true, description: 'Database id of bar', schema: new OAT\Schema(type: 'string')),
-        new OAT\Parameter(name: 'cocktailSlug', in: 'path', required: true, description: 'Cocktail slug', schema: new OAT\Schema(type: 'string')),
+        new OAT\Parameter(name: 'cocktailSlug', in: 'path', required: true, description: 'Cocktail slug or public ID', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(CocktailResource::class),
@@ -97,8 +97,27 @@ class CocktailController extends Controller
             abort(404);
         }
 
-        $cocktail = Cocktail::where('slug', $cocktailSlug)
+        $cocktail = Cocktail::where(function ($query) use ($cocktailSlug) {
+            $query->where('slug', $cocktailSlug)
+                ->orWhere('public_id', $cocktailSlug);
+            })
             ->where('bar_id', $bar->id)
+            ->with('ingredients.ingredient', 'ingredients.substitutes.ingredient', 'images', 'tags', 'utensils')
+            ->firstOrFail();
+
+        return new CocktailResource($cocktail);
+    }
+
+    #[OAT\Get(path: '/public/links/cocktails/{publicId}', tags: ['Public'], operationId: 'showPublicCocktail', description: 'Show public information about cocktail via it\'s public ID.', summary: 'Show public cocktail', parameters: [
+        new OAT\Parameter(name: 'publicId', in: 'path', required: true, description: 'Public ID of cocktail', schema: new OAT\Schema(type: 'string')),
+    ], security: [])]
+    #[BAO\SuccessfulResponse(content: [
+        new BAO\WrapObjectWithData(CocktailResource::class),
+    ])]
+    #[BAO\NotFoundResponse]
+    public function showPublicLinkCocktail(string $publicId): CocktailResource
+    {
+        $cocktail = Cocktail::where('public_id', $publicId)
             ->with('ingredients.ingredient', 'ingredients.substitutes.ingredient', 'images', 'tags', 'utensils')
             ->firstOrFail();
 

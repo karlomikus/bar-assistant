@@ -6792,7 +6792,7 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
-  '/public/{slugOrId}':
+  '/public/bars/{slugOrId}':
     get:
       tags:
         - Public
@@ -6851,7 +6851,7 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
-  '/public/{slugOrId}/cocktails':
+  '/public/bars/{slugOrId}/cocktails':
     get:
       tags:
         - Public
@@ -6946,7 +6946,7 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
-  '/public/{slugOrId}/cocktails/{cocktailSlug}':
+  '/public/bars/{slugOrId}/cocktails/{cocktailSlug}':
     get:
       tags:
         - Public
@@ -6964,7 +6964,7 @@ paths:
         -
           name: cocktailSlug
           in: path
-          description: 'Cocktail slug'
+          description: 'Cocktail slug or public ID'
           required: true
           schema:
             type: string
@@ -7006,7 +7006,60 @@ paths:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
       security: []
-  '/public/{slugOrId}/menu':
+  '/public/links/cocktails/{publicId}':
+    get:
+      tags:
+        - Public
+      summary: 'Show public cocktail'
+      description: "Show public information about cocktail via it's public ID."
+      operationId: showPublicCocktail
+      parameters:
+        -
+          name: publicId
+          in: path
+          description: 'Public ID of cocktail'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/PublicCocktailResource' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+      security: []
+  '/public/bars/{slugOrId}/menu':
     get:
       tags:
         - Public
