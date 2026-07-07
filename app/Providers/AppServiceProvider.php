@@ -62,6 +62,7 @@ class AppServiceProvider extends ServiceProvider
             $event->extendSocialite('keycloak', \SocialiteProviders\Keycloak\Provider::class);
             $event->extendSocialite('pocketid', \Kami\Cocktail\Services\Auth\PocketIdProvider::class);
             $event->extendSocialite('zitadel', \SocialiteProviders\Zitadel\Provider::class);
+            $event->extendSocialite('oidc', \SocialiteProviders\OIDC\Provider::class);
         });
 
         DomainEventDispatcher::instance()->subscribe(app(GlassUpdatedSearchReindexSubscriber::class));

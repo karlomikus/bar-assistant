@@ -86,9 +86,18 @@ return [
     ],
 
     'zitadel' => [
-      'client_id' => env('ZITADEL_CLIENT_ID'),
-      'client_secret' => env('ZITADEL_CLIENT_SECRET'),
-      'redirect' => env('ZITADEL_REDIRECT_URI'),
-      'base_url' => env('ZITADEL_BASE_URL'),
+        'client_id' => env('ZITADEL_CLIENT_ID'),
+        'client_secret' => env('ZITADEL_CLIENT_SECRET'),
+        'redirect' => env('ZITADEL_REDIRECT_URI'),
+        'base_url' => env('ZITADEL_BASE_URL'),
+    ],
+
+    'oidc' => [
+        'base_url' => env('OIDC_BASE_URL'),
+        'client_id' => env('OIDC_CLIENT_ID'),
+        'client_secret' => env('OIDC_CLIENT_SECRET'),
+        'redirect' => env('OIDC_REDIRECT_URI'),
+        'verify_jwt' => env('OIDC_VERIFY_JWT', false),
+        'jwt_public_key' => env('OIDC_JWT_PUBLIC_KEY'),
     ],
 ];
