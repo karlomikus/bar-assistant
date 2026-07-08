@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
+use Throwable;
 use Kami\RecipeUtils\RecipeIngredient;
 use Kami\Cocktail\Scraper\AbstractSite;
 use Symfony\Component\DomCrawler\Crawler;
-use Throwable;
 
 class CocktailParty extends AbstractSite
 {
