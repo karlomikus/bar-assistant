@@ -90,7 +90,6 @@ class CocktailsDistilled extends AbstractSite
             'Dry Shake' => 'Shake',
             'Muddled' => 'Muddle',
             'Shaken' => 'Shake',
-            'Stirred' => 'Stir',
             'Swizzle' => 'Blend',
             'Thrown' => null,
             'Whisk' => null,
