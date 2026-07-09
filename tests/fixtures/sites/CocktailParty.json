@@ -18,14 +18,7 @@
             "glass": null,
             "method": null,
             "utensils": [],
-            "images": [
-                {
-                    "uri": "TEST",
-                    "sort": 0,
-                    "placeholder_hash": null,
-                    "copyright": "CocktailParty"
-                }
-            ],
+            "images": [],
             "ingredients": [
                 {
                     "_id": "TEST",

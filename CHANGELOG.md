@@ -1,3 +1,7 @@
+# v5.15.3
+## Fixes
+- Fix missing cocktail request validation (`amount` and `units`) when creating a new cocktail
+
 # v5.15.2
 ## Fixes
 - Increased auth endpoint rate limits :)
