@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper\Sites;
 
+use Throwable;
 use Kami\RecipeUtils\RecipeIngredient;
 use Kami\Cocktail\Scraper\AbstractSite;
 use Symfony\Component\DomCrawler\Crawler;
@@ -76,8 +77,14 @@ class CocktailParty extends AbstractSite
 
     public function image(): ?array
     {
+        try {
+            $imageUri = $this->findDescriptionContainer()->filter('.elementor-widget-image img')->first()->attr('src');
+        } catch (Throwable) {
+            $imageUri = null;
+        }
+
         return [
-            'uri' => $this->findDescriptionContainer()->filter('.elementor-widget-image img')->first()->attr('src'),
+            'uri' => $imageUri,
             'copyright' => 'CocktailParty',
         ];
     }

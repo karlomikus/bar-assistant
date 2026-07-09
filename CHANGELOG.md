@@ -42,6 +42,10 @@ This release mostly introduces a big rewrite to backend architecture. But there 
 - Added `author` field to cocktail recipes
 - OpenAPI docs now use Scalar UI (replaces Elements)
 
+# v5.15.3
+## Fixes
+- Fix missing cocktail request validation (`amount` and `units`) when creating a new cocktail
+
 # v5.15.2
 ## Fixes
 - Increased auth endpoint rate limits :)
