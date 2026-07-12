@@ -37,7 +37,7 @@ class CocktailRequest extends FormRequest
             ],
             'images.*' => 'integer',
             'ingredients.*.ingredient_id' => 'required|integer',
-            'ingredients.*.units' => 'required',
+            'ingredients.*.units' => 'required|string',
             'ingredients.*.amount' => 'required|numeric',
             'ingredients.*.amount_max' => 'nullable|numeric',
             'ingredients.*.optional' => 'boolean',
