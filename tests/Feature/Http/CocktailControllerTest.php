@@ -331,6 +331,30 @@ class CocktailControllerTest extends TestCase
         $this->assertNotNull($response->headers->get('Location', null));
     }
 
+    public function test_cocktail_create_requires_ingredient_amount_and_units(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $ingredient = Ingredient::factory()->for($membership->bar)->create();
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $response = $this->postJson('/api/cocktails', [
+            'name' => "Cocktail name",
+            'instructions' => "1. Step\n2. Step",
+            'ingredients' => [
+                ['ingredient_id' => $ingredient->id, 'sort' => 1],
+            ],
+        ]);
+
+        $response->assertUnprocessable();
+        $response->assertJsonValidationErrors([
+            'ingredients.0.amount',
+            'ingredients.0.units',
+        ]);
+    }
+
     public function test_cocktail_update_response(): void
     {
         $this->setupBar();
