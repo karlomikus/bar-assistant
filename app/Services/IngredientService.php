@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services;
 
-use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Log\LogManager;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
 
 final readonly class IngredientService
@@ -39,36 +39,42 @@ final readonly class IngredientService
      */
     public function getIngredientsOrderedByUnlockedCocktails(int $barId, array $existingIngredients): array
     {
-        $ingredientIds = array_merge($existingIngredients, $this->resolveComplexIngredients($existingIngredients));
-        $ingredientIds = array_unique($ingredientIds);
+        $ingredientIds = array_unique(array_merge(
+            $existingIngredients,
+            $this->resolveComplexIngredients($existingIngredients),
+        ));
         $availableIngredientIds = array_fill_keys($ingredientIds, true);
         $availableIngredientAncestorIds = [];
 
-        $availableIngredients = DB::table('ingredients')
-            ->where('bar_id', $barId)
-            ->whereIn('id', $ingredientIds)
-            ->select('materialized_path')
-            ->get();
+        if ($ingredientIds !== []) {
+            $availableIngredients = DB::table('ingredients')
+                ->where('bar_id', $barId)
+                ->whereIn('id', $ingredientIds)
+                ->select('materialized_path')
+                ->get();
 
-        foreach ($availableIngredients as $availableIngredient) {
-            if (!is_string($availableIngredient->materialized_path) || $availableIngredient->materialized_path === '') {
-                continue;
-            }
-
-            foreach (explode('/', trim($availableIngredient->materialized_path, '/')) as $ancestorId) {
-                if ($ancestorId === '') {
+            foreach ($availableIngredients as $availableIngredient) {
+                if (!is_string($availableIngredient->materialized_path) || $availableIngredient->materialized_path === '') {
                     continue;
                 }
 
-                $availableIngredientAncestorIds[(int) $ancestorId] = true;
+                foreach (explode('/', trim($availableIngredient->materialized_path, '/')) as $ancestorId) {
+                    if ($ancestorId === '') {
+                        continue;
+                    }
+
+                    $availableIngredientAncestorIds[(int) $ancestorId] = true;
+                }
             }
         }
 
         $barCocktails = Cocktail::where('bar_id', $barId)->with('ingredients')->get();
 
-        $unlocks = [];
+        // Count every missing required ingredient for each cocktail, not only
+        // single-missing unlocks. Empty shelf then ranks by cocktail frequency.
+        $potentialCocktails = [];
         foreach ($barCocktails as $barCocktail) {
-            $missingCocktailIngredient = null;
+            $missingIngredientIds = [];
 
             foreach ($barCocktail->ingredients as $cocktailIngredient) {
                 if ($cocktailIngredient->optional
@@ -77,24 +83,21 @@ final readonly class IngredientService
                     continue;
                 }
 
-                if ($missingCocktailIngredient !== null) {
-                    $missingCocktailIngredient = null;
-                    break;
-                }
-
-                $missingCocktailIngredient = $cocktailIngredient;
+                $missingIngredientIds[$cocktailIngredient->ingredient_id] = true;
             }
 
-            if ($missingCocktailIngredient === null) {
-                continue;
+            foreach (array_keys($missingIngredientIds) as $missingIngredientId) {
+                $potentialCocktails[$missingIngredientId] = ($potentialCocktails[$missingIngredientId] ?? 0) + 1;
             }
+        }
 
-            $unlocks[$missingCocktailIngredient->ingredient_id] = ($unlocks[$missingCocktailIngredient->ingredient_id] ?? 0) + 1;
+        if ($potentialCocktails === []) {
+            return [];
         }
 
         $ingredients = DB::table('ingredients')
             ->where('bar_id', $barId)
-            ->whereIn('id', array_keys($unlocks))
+            ->whereIn('id', array_keys($potentialCocktails))
             ->get();
 
         return $ingredients
@@ -102,7 +105,7 @@ final readonly class IngredientService
                 'id' => $ingredient->id,
                 'slug' => $ingredient->slug,
                 'name' => $ingredient->name,
-                'potential_cocktails' => $unlocks[$ingredient->id] ?? 0,
+                'potential_cocktails' => $potentialCocktails[$ingredient->id] ?? 0,
             ])
             ->sort(function (object $left, object $right): int {
                 if ($left->potential_cocktails === $right->potential_cocktails) {
