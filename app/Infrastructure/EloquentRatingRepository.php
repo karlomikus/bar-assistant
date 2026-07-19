@@ -13,7 +13,6 @@ use BarAssistant\Domain\Rating\RateableId;
 use BarAssistant\Domain\Common\RatingValue;
 use BarAssistant\Domain\Rating\RateableType;
 use BarAssistant\Domain\Rating\RatingRepository;
-use BarAssistant\Application\Exception\ApplicationServiceException;
 
 final class EloquentRatingRepository implements RatingRepository
 {

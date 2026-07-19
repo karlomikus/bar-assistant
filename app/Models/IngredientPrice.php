@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Models;
 
 use Brick\Money\Money;
 use Brick\Money\RationalMoney;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;

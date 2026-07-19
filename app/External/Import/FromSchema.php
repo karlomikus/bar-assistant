@@ -27,7 +27,6 @@ use BarAssistant\Application\Cocktail\DTO\CocktailIngredient;
 use BarAssistant\Application\Matcher\DTO\CocktailMatchRequest;
 use BarAssistant\Application\Matcher\DTO\IngredientMatchRequest;
 use BarAssistant\Application\Cocktail\DTO\CocktailIngredientSubstitute;
-use Kami\Cocktail\Models\Ingredient;
 
 final readonly class FromSchema
 {

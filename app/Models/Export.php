@@ -7,7 +7,6 @@ namespace Kami\Cocktail\Models;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;

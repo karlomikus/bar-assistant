@@ -17,7 +17,6 @@ use Kami\RecipeUtils\AmountValue;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Collection;
 use Brick\Money\Context\DefaultContext;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Models\Concerns\HasNotes;

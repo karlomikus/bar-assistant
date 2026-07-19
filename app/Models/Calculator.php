@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Models;
 
 use NXP\MathExecutor;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use Kami\Cocktail\Models\Concerns\IsExternalized;
 use Illuminate\Database\Eloquent\Relations\HasMany;

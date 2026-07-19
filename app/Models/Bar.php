@@ -8,7 +8,6 @@ use Spatie\Sluggable\HasSlug;
 use Laravel\Scout\EngineManager;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasAuthors;

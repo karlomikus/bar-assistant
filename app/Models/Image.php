@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
 use Kami\Cocktail\Models\Concerns\IsExternalized;

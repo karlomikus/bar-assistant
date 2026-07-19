@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services\Image;
 
-use BarAssistant\Application\Image\DTO\CreateImage;
-use BarAssistant\Application\Image\ImageService;
 use Throwable;
 use Psr\Log\LoggerInterface;
 use Prism\Prism\Facades\Prism;
@@ -16,6 +14,8 @@ use Kami\Cocktail\External\Model\Schema;
 use Kami\Cocktail\GenAI\GenAIProviderConfig;
 use Prism\Prism\ValueObjects\GeneratedImage;
 use Kami\Cocktail\GenAI\CocktailImageHandler;
+use BarAssistant\Application\Image\ImageService;
+use BarAssistant\Application\Image\DTO\CreateImage;
 use Illuminate\Http\Client\Response as HttpResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Kami\Cocktail\GenAI\DTO\CocktailImageRequest as CocktailImagePromptRequest;

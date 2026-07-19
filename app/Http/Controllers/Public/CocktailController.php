@@ -100,7 +100,7 @@ class CocktailController extends Controller
         $cocktail = Cocktail::where(function ($query) use ($cocktailSlug) {
             $query->where('slug', $cocktailSlug)
                 ->orWhere('public_id', $cocktailSlug);
-            })
+        })
             ->where('bar_id', $bar->id)
             ->with('ingredients.ingredient', 'ingredients.substitutes.ingredient', 'images', 'tags', 'utensils')
             ->firstOrFail();

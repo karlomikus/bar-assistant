@@ -178,12 +178,16 @@ class MenuControllerTest extends TestCase
             fn (AssertableJson $json) =>
             $json
                 ->has('data.categories', 2)
-                ->has('data.categories.0', fn (AssertableJson $json) =>
+                ->has(
+                    'data.categories.0',
+                    fn (AssertableJson $json) =>
                     $json->where('name', 'Visible')
                         ->where('is_enabled', true)
                         ->etc()
                 )
-                ->has('data.categories.1', fn (AssertableJson $json) =>
+                ->has(
+                    'data.categories.1',
+                    fn (AssertableJson $json) =>
                     $json->where('name', 'Hidden')
                         ->where('is_enabled', false)
                         ->etc()
@@ -217,7 +221,9 @@ class MenuControllerTest extends TestCase
             fn (AssertableJson $json) =>
             $json
                 ->has('data.categories', 1)
-                ->has('data.categories.0', fn (AssertableJson $json) =>
+                ->has(
+                    'data.categories.0',
+                    fn (AssertableJson $json) =>
                     $json->where('name', 'Visible')
                         ->etc()
                 )

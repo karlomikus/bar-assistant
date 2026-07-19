@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\OpenAPI\Schemas;
 
+use SensitiveParameter;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OAT;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Contracts\User;
-use SensitiveParameter;
 
 #[OAT\Schema(required: ['email', 'password', 'name'])]
 class RegisterRequest

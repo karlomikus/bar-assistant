@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Casts\Attribute;
