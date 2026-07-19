@@ -273,7 +273,7 @@ class BarController extends Controller
             abort(403);
         }
 
-        foreach ($request->user()->ownedBars as $bar) {
+        foreach ($request->user()->ownedBars ??  [] as $bar) {
             Cache::forget('ba:bar:' . $bar->id);
         }
 
