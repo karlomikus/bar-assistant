@@ -1,5 +1,9 @@
 # v6.0.0
-This release mostly introduces a big rewrite to backend architecture. But there is still some new stuff available. As always before upgrading backup all your data.
+This release mostly introduces a big rewrite to backend architecture. But there is still some new stuff available.
+
+If you are used to having two shelves, one for your personal ingredients and one for your bar, keep in mind that this is no longer the case with this release. The only thing initially available is bar shelf. User shelves will be slowly migrated to new user multi-inventory system. If you want to keep that functionality, wait for one of the next releases.
+
+⚠️ Please before upgrading backup all your data. ⚠️
 
 ## Breaking changes
 - Removed `Moderator` role
@@ -32,7 +36,7 @@ This release mostly introduces a big rewrite to backend architecture. But there 
     - Moved `/{id}/cocktail-favorites` for members
 
 ## New
-- Multi-inventory per member
+- Multi-inventory per member (WIP)
     - Members can create, rename, and delete multiple named inventories
 - Added `ingredients/{idOrSlug}/extra` endpoint showing unlockable cocktails
 - Added `is_bar_inventory_aware` to menu items
