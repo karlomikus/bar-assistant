@@ -273,6 +273,10 @@ class BarController extends Controller
             abort(403);
         }
 
+        foreach ($request->user()->ownedBars as $bar) {
+            Cache::forget('ba:bar:' . $bar->id);
+        }
+
         Cache::forget('metrics_bass_total_bars');
 
         $newStatus = $request->post('status');
