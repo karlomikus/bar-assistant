@@ -34,8 +34,8 @@ class SSOAuthController extends Controller
         /** @var \Laravel\Socialite\Two\AbstractProvider */
         $driver = Socialite::driver($validProvider->value);
 
-        // Authelia always requires a state parameter to be set
-        if ($validProvider === OauthProvider::Authelia) {
+        // Authelia and Pocket ID (>= 2.10) require a state parameter
+        if ($validProvider === OauthProvider::Authelia || $validProvider === OauthProvider::PocketId) {
             $driver->with(['state' => Str::random(40)]);
         }
 
