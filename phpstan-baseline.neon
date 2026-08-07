@@ -2413,12 +2413,6 @@ parameters:
 			path: app/Http/Resources/CollectionResource.php
 
 		-
-			message: '#^Cannot access property \$name on Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
-			identifier: property.nonObject
-			count: 2
-			path: app/Http/Resources/ExploreCocktailResource.php
-
-		-
 			message: '#^Method Kami\\Cocktail\\Http\\Resources\\Generated\\GeneratedCocktailFromTextResource\:\:toArray\(\) should return array\<string, mixed\> but returns array\<mixed\>\.$#'
 			identifier: return.type
 			count: 1
