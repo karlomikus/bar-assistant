@@ -22,3 +22,4 @@ ingredients:
     amount_max: 60.0
     note: 'Ingredient note'
     substitutes: {  }
+author: null

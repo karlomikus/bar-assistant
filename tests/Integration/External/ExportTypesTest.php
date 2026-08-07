@@ -54,7 +54,7 @@ class ExportTypesTest extends TestCase
         $cocktail = $this->setupCocktail();
         $external = SchemaExternal::fromCocktailModel($cocktail);
 
-        $result = file_get_contents(base_path('tests/fixtures/external/recipe.json'));
+        $result = trim(file_get_contents(base_path('tests/fixtures/external/recipe.json')));
 
         $this->assertSame($result, json_encode($external->toSchema4Array(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }

@@ -36,8 +36,6 @@ If you are used to having two shelves, one for your personal ingredients and one
     - Moved `/{id}/cocktail-favorites` for members
 
 ## New
-- Multi-inventory per member (WIP)
-    - Members can create, rename, and delete multiple named inventories
 - Added `ingredients/{idOrSlug}/extra` endpoint showing unlockable cocktails
 - Added `is_bar_inventory_aware` to menu items
     - Shows if menu item availability depends on bar inventory

@@ -214,7 +214,7 @@ class MenuControllerTest extends TestCase
             'is_enabled' => false,
         ]);
 
-        $response = $this->getJson('/api/public/test-public-bar/menu');
+        $response = $this->getJson('/api/public/bars/test-public-bar/menu');
 
         $response->assertSuccessful();
         $response->assertJson(

@@ -28,13 +28,7 @@
         ],
         "glass": null,
         "method": null,
-        "images": [
-            {
-                "uri": "TEST",
-                "placeholder_hash": null,
-                "copyright": "CocktailParty"
-            }
-        ],
+        "images": [],
         "ingredients": [
             {
                 "name": "Bitter orange ap\u00e9ritif",
@@ -63,6 +57,7 @@
                 "note": null,
                 "substitutes": []
             }
-        ]
+        ],
+        "author": null
     }
 }
