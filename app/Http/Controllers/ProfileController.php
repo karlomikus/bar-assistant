@@ -110,9 +110,7 @@ class ProfileController extends Controller
         return new Response(null, 204);
     }
 
-    #[OAT\Delete(path: '/profile', tags: ['Profile'], operationId: 'deleteProfile', description: 'Delete your profile and account', summary: 'Delete profile', parameters: [
-        new BAO\Parameters\DatabaseIdParameter(),
-    ])]
+    #[OAT\Delete(path: '/profile', tags: ['Profile'], operationId: 'deleteProfile', description: 'Delete your profile and account', summary: 'Delete profile')]
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]

@@ -6662,14 +6662,6 @@ paths:
       summary: 'Delete profile'
       description: 'Delete your profile and account'
       operationId: deleteProfile
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Database id of a resource'
-          required: true
-          schema:
-            type: integer
       responses:
         '204':
           description: 'Successful response'
@@ -8720,33 +8712,6 @@ components:
               example: '3-6 cl'
           type: object
       type: object
-    BarBasic:
-      description: 'Represents a bar with basic information'
-      required:
-        - id
-        - slug
-        - name
-        - subtitle
-      properties:
-        id:
-          description: 'The ID of the bar'
-          type: integer
-          example: 1
-        slug:
-          description: 'The slug of the bar'
-          type: string
-          example: bar-name-1
-        name:
-          description: 'The name of the bar'
-          type: string
-          example: 'Bar name'
-        subtitle:
-          description: 'The subtitle of the bar'
-          type:
-            - string
-            - 'null'
-          example: 'Bar subtitle'
-      type: object
     BarIngredientDistributionResource:
       description: 'Resource representing total stats for a bar'
       required:
@@ -9564,119 +9529,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CocktailBasic'
-      type: object
-    CocktailExplore:
-      description: 'Cocktail explore resource'
-      required:
-        - bar
-        - name
-        - instructions
-        - garnish
-        - description
-        - source
-        - tags
-        - glass
-        - utensils
-        - method
-        - images
-        - ingredients
-      properties:
-        bar:
-          $ref: '#/components/schemas/BarBasic'
-        name:
-          type: string
-          example: 'Cocktail name'
-        instructions:
-          type: string
-          example: 'Step by step instructions'
-        garnish:
-          type:
-            - string
-            - 'null'
-          example: Garnish
-        description:
-          type:
-            - string
-            - 'null'
-          example: 'Cocktail description'
-        source:
-          type:
-            - string
-            - 'null'
-          example: 'Source of the recipe'
-        tags:
-          type: array
-          items:
-            type: string
-        glass:
-          type:
-            - string
-            - 'null'
-        utensils:
-          type: array
-          items:
-            type: string
-        method:
-          type:
-            - string
-            - 'null'
-        images:
-          type: array
-          items:
-            properties:
-              sort:
-                type: integer
-                example: 1
-              placeholder_hash:
-                type: string
-                example: a1b2c3d4e5f6g7h8i9j0
-              url:
-                type: string
-                example: 'https://example.com/image.jpg'
-              copyright:
-                type: string
-                example: 'Image copyright'
-            type: object
-        ingredients:
-          type: array
-          items:
-            properties:
-              ingredient:
-                properties:
-                  name: { type: string, example: 'Ingredient name' }
-                type: object
-              amount:
-                type: number
-                example: 30
-              amount_max:
-                type:
-                  - number
-                  - 'null'
-                example: 45
-              units:
-                type: string
-                example: ml
-              optional:
-                type: boolean
-                example: true
-              note:
-                type:
-                  - string
-                  - 'null'
-                example: 'Ingredient note'
-              substitutes:
-                type: array
-                items:
-                  properties: { ingredient: { properties: { name: { type: string, example: 'Ingredient name' } }, type: object }, amount: { type: [number, 'null'], example: 30 }, amount_max: { type: [number, 'null'], example: 45 }, units: { type: [string, 'null'], example: ml } }
-                  type: object
-            type: object
-        abv:
-          description: 'Alcohol by volume (ABV) percentage'
-          type:
-            - number
-            - 'null'
-          format: float
-          example: 0.5
       type: object
     Export:
       description: 'Export resource'
@@ -12049,6 +11901,7 @@ components:
         - keycloak
         - pocketid
         - zitadel
+        - OpenIDConnect
   securitySchemes:
     user_token:
       type: http
