@@ -1,8 +1,8 @@
-# {{ $cocktail->name }}
+# {!! $cocktail->name !!}
 @if ($cocktail->source)
 [Recipe source]({{ $cocktail->source }})
 @endif
-{{ $cocktail->description }}
+{!! $cocktail->description !!}
 @foreach ($cocktail->images as $image)
 
 ![{{ $image->copyright }}]({{ $image->uri }})
@@ -17,11 +17,11 @@
 @endforeach
 
 ## Instructions
-{{ $cocktail->instructions }}
+{!! $cocktail->instructions !!}
 
 @if ($cocktail->garnish)
 ### Garnish
-{{ $cocktail->garnish }}
+{!! $cocktail->garnish !!}
 
 @endif
 ---
