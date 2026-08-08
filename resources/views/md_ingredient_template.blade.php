@@ -1,6 +1,6 @@
-# {{ $ingredient->name }}
+# {!! $ingredient->name !!}
 ## Description
-{{ $ingredient->description }}
+{!! $ingredient->description !!}
 @foreach ($ingredient->images as $image)
 
 ![{{ $image->copyright }}]({{ $image->uri }})
