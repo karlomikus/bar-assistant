@@ -5,7 +5,7 @@
 {!! $cocktail->description !!}
 @foreach ($cocktail->images as $image)
 
-![{{ $image->copyright }}]({{ $image->uri }})
+![{!! $image->copyright !!}]({{ $image->uri }})
 @endforeach
 
 ## Ingredients
@@ -29,11 +29,11 @@
 - ABV: {{ $cocktail->abv }}
 @endif
 @if (count($cocktail->tags) > 0)
-- Tags: {{ implode(', ', $cocktail->tags) }}
+- Tags: {!! implode(', ', $cocktail->tags) !!}
 @endif
 @if ($cocktail->glass)
-- Glass: {{ $cocktail->glass }}
+- Glass: {!! $cocktail->glass !!}
 @endif
 @if ($cocktail->method)
-- Method: {{ $cocktail->method }}
+- Method: {!! $cocktail->method !!}
 @endif
