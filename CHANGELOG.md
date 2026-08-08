@@ -44,6 +44,10 @@ If you are used to having two shelves, one for your personal ingredients and one
 - Added `author` field to cocktail recipes
 - OpenAPI docs now use Scalar UI (replaces Elements)
 
+# v5.15.4
+## Fixes
+- Fixed html entities getting encoded in markdown export
+
 # v5.15.3
 ## Fixes
 - Fix missing cocktail request validation (`amount` and `units`) when creating a new cocktail
