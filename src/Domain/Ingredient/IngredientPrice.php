@@ -16,8 +16,8 @@ final readonly class IngredientPrice
         private AmountWithUnits $amountWithUnits,
         private ?string $description = null,
     ) {
-        if ($price->getAsMinor() <= 0) {
-            throw new DomainException('Price must be greater than zero');
+        if ($price->getAsMinor() < 0) {
+            throw new DomainException('Price cannot be negative');
         }
     }
 

@@ -345,6 +345,49 @@ final class IngredientTest extends TestCase
         $this->assertEmpty($ingredient->getPrices());
     }
 
+    public function test_can_add_free_price(): void
+    {
+        $ingredient = Ingredient::create(
+            barId: new BarId(1),
+            name: Name::fromString('Vodka'),
+            authors: Authors::createdBy(new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
+        );
+
+        $ingredient->addPrice(
+            priceCategoryId: new PriceCategoryId(1),
+            price: 0.0,
+            currency: 'USD',
+            amount: 750.0,
+            units: 'ml',
+        );
+
+        $prices = $ingredient->getPrices();
+        $this->assertCount(1, $prices);
+        $this->assertSame(0, $prices[0]->getPrice()->getAsMinor());
+    }
+
+    public function test_cannot_add_negative_price(): void
+    {
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('Price cannot be negative');
+
+        $ingredient = Ingredient::create(
+            barId: new BarId(1),
+            name: Name::fromString('Vodka'),
+            authors: Authors::createdBy(new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
+        );
+
+        $ingredient->addPrice(
+            priceCategoryId: new PriceCategoryId(1),
+            price: -1.0,
+            currency: 'USD',
+            amount: 750.0,
+            units: 'ml',
+        );
+    }
+
     public function test_ingredient_tracks_creator(): void
     {
         $ingredient = Ingredient::create(
