@@ -56,7 +56,12 @@ class ImageController extends Controller
     {
         $imageIds = [];
         foreach ($request->images ?? [] as $requestImage) {
-            $imageSource = $imageResolver->resolveImageSource($requestImage['image']);
+            if (isset($requestImage['image'])) {
+                $imageSource = $imageResolver->resolveImageSource($requestImage['image']);
+            } else {
+                $imageSource = null;
+            }
+
             $uploadedImage = null;
             if ($imageSource !== null) {
                 $uploadedImage = $imageUploadService->uploadImage($imageSource);
