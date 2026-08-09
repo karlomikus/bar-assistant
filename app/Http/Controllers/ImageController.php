@@ -4,23 +4,21 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
-use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Image;
-use Illuminate\Http\UploadedFile;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
 use Kami\Cocktail\Http\Resources\ImageResource;
-use Symfony\Component\HttpFoundation\File\File;
 use BarAssistant\Application\Image\ImageService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use BarAssistant\Application\Image\DTO\CreateImage;
 use Kami\Cocktail\Services\Image\ImageUploadService;
 use Kami\Cocktail\Services\Image\ImageThumbnailService;
 use BarAssistant\Application\Image\DTO\UpdateImageRequest;
+use Kami\Cocktail\Http\Requests\ImageRequest;
+use Kami\Cocktail\Services\Image\ImageResolver;
 
 class ImageController extends Controller
 {
@@ -54,17 +52,24 @@ class ImageController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(ImageResource::class),
     ])]
-    public function store(ImageUploadService $imageUploadService, ImageService $imageService, Request $request): JsonResource
+    public function store(ImageUploadService $imageUploadService, ImageService $imageService, ImageResolver $imageResolver, ImageRequest $request): JsonResource
     {
         $imageIds = [];
         foreach ($request->images ?? [] as $requestImage) {
-            $imageSource = $this->getValidImageSource($requestImage);
+            $imageSource = $imageResolver->resolveImageSource($requestImage['image']);
             $uploadedImage = null;
             if ($imageSource !== null) {
                 $uploadedImage = $imageUploadService->uploadImage($imageSource);
             }
 
             if (isset($requestImage['id'])) {
+                $existingImage = Image::findOrFail($requestImage['id']);
+                if ($request->user()->cannot('edit', $existingImage)) {
+                    continue;
+                }
+
+                Cache::forget('image_thumb_' . $requestImage['id']);
+
                 if ($uploadedImage) {
                     $uploadedImage = $imageUploadService->changeImage((int) $requestImage['id'], $uploadedImage);
                 }
@@ -148,41 +153,5 @@ class ImageController extends Controller
             'Content-Length' => strlen((string) $responseContent),
             'Etag' => $etag
         ]);
-    }
-
-    /**
-     * @param array{image?: string|UploadedFile} $formImage
-     */
-    private function getValidImageSource(array $formImage): ?string
-    {
-        $imageSource = null;
-
-        $imageFileRules = ['image' => 'image|max:51200'];
-
-        if (isset($formImage['image']) && $formImage['image'] instanceof UploadedFile) {
-            Validator::make($formImage, $imageFileRules)->validate();
-
-            if ($sourceData = $formImage['image']->get()) {
-                $imageSource = $sourceData;
-            }
-        }
-
-        if (isset($formImage['image']) && is_string($formImage['image'])) {
-            $tempFileObject = null;
-            try {
-                if ($imageSource = file_get_contents($formImage['image'])) {
-                    $tempFileName = tempnam(sys_get_temp_dir(), 'bass');
-                    file_put_contents($tempFileName, $imageSource);
-                    $tempFileObject = new File($tempFileName);
-                } else {
-                    $imageSource = null;
-                }
-            } catch (Throwable) {
-            }
-
-            Validator::make(['image' => $tempFileObject], $imageFileRules)->validate();
-        }
-
-        return $imageSource;
     }
 }
