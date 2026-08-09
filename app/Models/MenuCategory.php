@@ -35,7 +35,7 @@ class MenuCategory extends BaseModel
     /**
      * @return Collection<int, MenuItem>
      */
-    public function getMenuItems(): Collection
+    public function getMenuItems(bool $onlyBarInventoryAvailable = false): Collection
     {
         $results = [];
         foreach ($this->menuCocktails as $menuCocktail) {
@@ -45,7 +45,15 @@ class MenuCategory extends BaseModel
             $results[] = MenuItem::fromMenuIngredient($menuIngredient);
         }
 
-        return collect($results)->sortBy('sort');
+        $menuItems = collect($results)->sortBy('sort');
+
+        if ($onlyBarInventoryAvailable) {
+            return $menuItems->reject(static function (MenuItem $menuItem) {
+                return $menuItem->isBarInventoryAware && !$menuItem->inShelf;
+            });
+        }
+
+        return $menuItems;
     }
 
     /**

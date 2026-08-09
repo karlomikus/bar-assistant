@@ -77,7 +77,7 @@ class MenuPublicResource extends JsonResource
                 ->map(fn ($category) => [
                 'sort' => $category->sort,
                 'name' => $category->name,
-                'items' => $category->getMenuItems()->map(static fn (MenuItem $menuItem): array => [
+                'items' => $category->getMenuItems(true)->map(static fn (MenuItem $menuItem): array => [
                     'type' => $menuItem->type->value,
                     'sort' => $menuItem->sort,
                     'price' => new PriceResource($menuItem->price),
