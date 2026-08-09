@@ -48,9 +48,11 @@ class MenuCategory extends BaseModel
         $menuItems = collect($results)->sortBy('sort');
 
         if ($onlyBarInventoryAvailable) {
-            return $menuItems->reject(static function (MenuItem $menuItem) {
-                return $menuItem->isBarInventoryAware && !$menuItem->inShelf;
-            });
+            return $menuItems
+                ->reject(static function (MenuItem $menuItem) {
+                    return $menuItem->isBarInventoryAware && !$menuItem->inShelf;
+                })
+                ->values();
         }
 
         return $menuItems;

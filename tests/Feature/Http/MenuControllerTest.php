@@ -10,8 +10,10 @@ use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\MenuCategory;
 use Kami\Cocktail\Models\MenuCocktail;
+use Kami\Cocktail\Models\BarIngredient;
 use Kami\Cocktail\Models\BarMembership;
 use Kami\Cocktail\Models\MenuIngredient;
+use Kami\Cocktail\Models\CocktailIngredient;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -225,6 +227,114 @@ class MenuControllerTest extends TestCase
                     'data.categories.0',
                     fn (AssertableJson $json) =>
                     $json->where('name', 'Visible')
+                        ->etc()
+                )
+                ->etc()
+        );
+    }
+
+    public function test_public_menu_filters_unavailable_inventory_items(): void
+    {
+        $bar = $this->barMembership->bar;
+        $bar->slug = 'test-public-bar-inventory';
+        $bar->save();
+
+        $menu = Menu::factory()->for($bar)->create(['is_enabled' => true]);
+        $category = MenuCategory::factory()->for($menu)->create([
+            'sort' => 1,
+            'name' => 'Category',
+            'is_enabled' => true,
+        ]);
+
+        $inShelfIngredient = Ingredient::factory()->recycle($bar)->create(['name' => 'Gin']);
+        $missingIngredient = Ingredient::factory()->recycle($bar)->create(['name' => 'Vermouth']);
+        BarIngredient::factory()->for($bar)->for($inShelfIngredient)->create();
+
+        $availableCocktail = Cocktail::factory()->recycle($bar, $this->barMembership->user)->create(['name' => 'Gin Tonic']);
+        CocktailIngredient::factory()->for($availableCocktail)->for($inShelfIngredient)->create(['optional' => false]);
+
+        $unavailableCocktail = Cocktail::factory()->recycle($bar, $this->barMembership->user)->create(['name' => 'Martini']);
+        CocktailIngredient::factory()->for($unavailableCocktail)->for($missingIngredient)->create(['optional' => false]);
+
+        MenuCocktail::factory()->for($category)->for($availableCocktail)->create([
+            'sort' => 1,
+            'is_bar_inventory_aware' => true,
+        ]);
+        MenuCocktail::factory()->for($category)->for($unavailableCocktail)->create([
+            'sort' => 2,
+            'is_bar_inventory_aware' => true,
+        ]);
+
+        MenuIngredient::factory()->for($category)->for($inShelfIngredient)->create([
+            'sort' => 3,
+            'is_bar_inventory_aware' => true,
+        ]);
+        MenuIngredient::factory()->for($category)->for($missingIngredient)->create([
+            'sort' => 4,
+            'is_bar_inventory_aware' => true,
+        ]);
+
+        $response = $this->getJson('/api/public/bars/test-public-bar-inventory/menu');
+
+        $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data.categories', 1)
+                ->has(
+                    'data.categories.0',
+                    fn (AssertableJson $json) =>
+                    $json->where('name', 'Category')
+                        ->has('items', 2)
+                        ->where('items.0.name', 'Gin Tonic')
+                        ->where('items.1.name', 'Gin')
+                        ->etc()
+                )
+                ->etc()
+        );
+    }
+
+    public function test_public_menu_keeps_non_inventory_aware_items_regardless_of_shelf_status(): void
+    {
+        $bar = $this->barMembership->bar;
+        $bar->slug = 'test-public-bar-non-aware';
+        $bar->save();
+
+        $menu = Menu::factory()->for($bar)->create(['is_enabled' => true]);
+        $category = MenuCategory::factory()->for($menu)->create([
+            'sort' => 1,
+            'name' => 'Category',
+            'is_enabled' => true,
+        ]);
+
+        $missingIngredient = Ingredient::factory()->recycle($bar)->create(['name' => 'Missing']);
+
+        $unavailableCocktail = Cocktail::factory()->recycle($bar, $this->barMembership->user)->create(['name' => 'Missing Cocktail']);
+        CocktailIngredient::factory()->for($unavailableCocktail)->for($missingIngredient)->create(['optional' => false]);
+
+        MenuCocktail::factory()->for($category)->for($unavailableCocktail)->create([
+            'sort' => 1,
+            'is_bar_inventory_aware' => false,
+        ]);
+        MenuIngredient::factory()->for($category)->for($missingIngredient)->create([
+            'sort' => 2,
+            'is_bar_inventory_aware' => false,
+        ]);
+
+        $response = $this->getJson('/api/public/bars/test-public-bar-non-aware/menu');
+
+        $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data.categories', 1)
+                ->has(
+                    'data.categories.0',
+                    fn (AssertableJson $json) =>
+                    $json->where('name', 'Category')
+                        ->has('items', 2)
+                        ->where('items.0.name', 'Missing Cocktail')
+                        ->where('items.1.name', 'Missing')
                         ->etc()
                 )
                 ->etc()
