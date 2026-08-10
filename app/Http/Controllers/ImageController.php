@@ -34,7 +34,7 @@ class ImageController extends Controller
     {
         $image = Image::findOrFail($id);
 
-        if ($request->user()->cannot('show', $image)) {
+        if ($request->user()?->cannot('show', $image)) {
             abort(403);
         }
 
@@ -55,7 +55,15 @@ class ImageController extends Controller
     public function store(ImageUploadService $imageUploadService, ImageService $imageService, ImageResolver $imageResolver, ImageRequest $request): JsonResource
     {
         $imageIds = [];
-        foreach ($request->images ?? [] as $requestImage) {
+
+        /** @var array{image?: \Illuminate\Http\UploadedFile|string, id?: int, sort?: int, copyright?: string}[] */
+        $formImages = $request->images ?? [];
+        $user = $request->user();
+        if ($user === null) {
+            abort(403);
+        }
+
+        foreach ($formImages as $requestImage) {
             if (isset($requestImage['image'])) {
                 $imageSource = $imageResolver->resolveImageSource($requestImage['image']);
             } else {
@@ -69,7 +77,7 @@ class ImageController extends Controller
 
             if (isset($requestImage['id'])) {
                 $existingImage = Image::findOrFail($requestImage['id']);
-                if ($request->user()->cannot('edit', $existingImage)) {
+                if ($user->cannot('edit', $existingImage)) {
                     continue;
                 }
 
@@ -83,7 +91,7 @@ class ImageController extends Controller
                     id: (int) $requestImage['id'],
                     imageFilePath: $uploadedImage?->path,
                     imageFileExtension: $uploadedImage?->extension,
-                    userId: $request->user()->id,
+                    userId: $user->id,
                     sort: (int) ($requestImage['sort'] ?? 0),
                     copyright: $requestImage['copyright'] ?? null,
                     placeholderHash: $uploadedImage?->placeholderHash,
@@ -96,7 +104,7 @@ class ImageController extends Controller
                 $imageResult = $imageService->createImage(new CreateImage(
                     imageFilePath: $uploadedImage->path,
                     imageFileExtension: $uploadedImage->extension,
-                    userId: $request->user()->id,
+                    userId: $user->id,
                     sort: (int) ($requestImage['sort'] ?? 0),
                     copyright: $requestImage['copyright'] ?? null,
                     placeholderHash: $uploadedImage->placeholderHash,
@@ -119,7 +127,7 @@ class ImageController extends Controller
     {
         $image = Image::findOrFail($id);
 
-        if ($request->user()->cannot('delete', $image)) {
+        if ($request->user()?->cannot('delete', $image)) {
             abort(403);
         }
 
@@ -144,7 +152,7 @@ class ImageController extends Controller
             if ($dbImage->updated_at) {
                 $etag = md5($dbImage->id . '-' . $dbImage->updated_at->format('Y-m-d H:i:s'));
             } else {
-                $etag = md5($dbImage->id . '-' . $dbImage->created_at->format('Y-m-d H:i:s'));
+                $etag = md5($dbImage->id . '-' . $dbImage->created_at?->format('Y-m-d H:i:s'));
             }
 
             return [$responseContent, $etag];
