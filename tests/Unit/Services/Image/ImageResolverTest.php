@@ -63,11 +63,11 @@ class ImageResolverTest extends TestCase
         (new ImageResolver())->resolveImageSource('file://my.local');
     }
 
-    public function test_returns_null_for_unsupported_image_source(): void
+    public function test_rejects_unsupported_image_source(): void
     {
-        $source = (new ImageResolver())->resolveImageSource('not-an-image-source');
+        $this->expectException(ValidationException::class);
 
-        $this->assertNull($source);
+        (new ImageResolver())->resolveImageSource('not-an-image-source');
     }
 
     public function test_rejects_uploaded_file_that_is_not_an_image(): void
