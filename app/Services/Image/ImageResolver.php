@@ -16,7 +16,6 @@ final readonly class ImageResolver
 
     public function resolveImageSource(string|UploadedFile $formImage): ?string
     {
-
         if ($formImage instanceof UploadedFile) {
             Log::debug('Resolving image source from uploaded file');
 
@@ -46,6 +45,8 @@ final readonly class ImageResolver
                 Log::error('Failed to fetch image from URL', ['url' => $formImage, 'error' => $e->getMessage()]);
             }
 
+            Validator::make(['image' => null], self::IMAGE_FILE_RULES)->validate();
+
             return null;
         }
 
@@ -64,6 +65,8 @@ final readonly class ImageResolver
                 extension: strtolower($type[1]),
             );
         }
+
+        Validator::make(['image' => null], self::IMAGE_FILE_RULES)->validate();
 
         return null;
     }
