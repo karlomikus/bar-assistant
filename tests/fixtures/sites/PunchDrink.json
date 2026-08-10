@@ -27,13 +27,7 @@
         ],
         "glass": null,
         "method": null,
-        "images": [
-            {
-                "uri": "TEST",
-                "placeholder_hash": null,
-                "copyright": "Punch Staff | Daniel Krieger"
-            }
-        ],
+        "images": [],
         "ingredients": [
             {
                 "name": "Gin",

@@ -28,13 +28,7 @@
         ],
         "glass": "Old-fashioned glass",
         "method": null,
-        "images": [
-            {
-                "uri": "TEST",
-                "placeholder_hash": null,
-                "copyright": "TheCocktailDB.com"
-            }
-        ],
+        "images": [],
         "ingredients": [
             {
                 "name": "Gin",

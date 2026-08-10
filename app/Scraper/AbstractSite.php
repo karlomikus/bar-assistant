@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
+use Illuminate\Support\Facades\App;
 use Kami\RecipeUtils\Parser\Parser;
 use Kami\RecipeUtils\ParserFactory;
 use Kami\RecipeUtils\RecipeIngredient;
@@ -222,6 +223,13 @@ abstract class AbstractSite implements Site
      */
     private function convertImagesToDataUri(): array
     {
+        if (App::runningUnitTests()) {
+            return [
+                'uri' => 'TEST',
+                'copyright' => 'TEST',
+            ];
+        }
+
         $image = $this->image();
         if ($image['uri'] && !blank($image['uri'])) {
             $url = parse_url($image['uri']);

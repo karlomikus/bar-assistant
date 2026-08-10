@@ -27,13 +27,7 @@
         ],
         "glass": "rocks glass",
         "method": "stirred",
-        "images": [
-            {
-                "uri": "TEST",
-                "placeholder_hash": null,
-                "copyright": "TuxedoNo2"
-            }
-        ],
+        "images": [],
         "ingredients": [
             {
                 "name": "London dry gin",

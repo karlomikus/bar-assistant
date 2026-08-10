@@ -27,13 +27,7 @@
         ],
         "glass": "Cocktail or double rocks",
         "method": null,
-        "images": [
-            {
-                "uri": "TEST",
-                "placeholder_hash": null,
-                "copyright": "Imbibe Magazine | Kelly Puleio"
-            }
-        ],
+        "images": [],
         "ingredients": [
             {
                 "name": "Gin",

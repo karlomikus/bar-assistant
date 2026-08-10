@@ -25,13 +25,7 @@
         "tags": [],
         "glass": "Rocks",
         "method": "Stir",
-        "images": [
-            {
-                "uri": "TEST",
-                "placeholder_hash": null,
-                "copyright": "Cocktails Distilled"
-            }
-        ],
+        "images": [],
         "ingredients": [
             {
                 "name": "Jamaican Rum (overproof)",

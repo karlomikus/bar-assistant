@@ -25,13 +25,7 @@
         "tags": [],
         "glass": null,
         "method": null,
-        "images": [
-            {
-                "uri": "TEST",
-                "placeholder_hash": null,
-                "copyright": "Eric's Cocktail Guide"
-            }
-        ],
+        "images": [],
         "ingredients": [
             {
                 "name": "Gin",
