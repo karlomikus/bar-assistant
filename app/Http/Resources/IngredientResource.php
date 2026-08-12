@@ -67,7 +67,7 @@ class IngredientResource extends JsonResource
             'slug' => $this->slug,
             'name' => $this->name,
             'strength' => $this->strength,
-            'description' => e($this->description),
+            'description' => $this->description,
             'origin' => $this->origin,
             'created_at' => $this->created_at->toAtomString(),
             'updated_at' => $this->updated_at?->toAtomString(),

@@ -87,9 +87,9 @@ class CocktailResource extends JsonResource
         return [
             'slug' => $this->slug,
             'name' => $this->name,
-            'instructions' => e($this->instructions),
-            'garnish' => e($this->garnish),
-            'description' => e($this->description),
+            'instructions' => $this->instructions,
+            'garnish' => $this->garnish,
+            'description' => $this->description,
             'source' => $this->source,
             'public_id' => $this->public_id,
             'public_at' => $this->public_at?->toAtomString() ?? null,

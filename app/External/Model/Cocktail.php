@@ -191,7 +191,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsSchema4, SupportsJS
         if ($mainImage) {
             $image = [
                 "@type" => "ImageObject",
-                "author" => e($mainImage->copyright),
+                "author" => $mainImage->copyright,
                 "url" => $mainImage->uri,
             ];
         }
@@ -201,12 +201,12 @@ readonly class Cocktail implements SupportsDataPack, SupportsSchema4, SupportsJS
             "@type" => "Recipe",
             "author" => [
                 '@type' => 'Organization',
-                'name' => "Bar Assistant | Source: " . e($this->source)
+                'name' => "Bar Assistant | Source: " . $this->source
             ],
-            "name" => e($this->name),
+            "name" => $this->name,
             "datePublished" => $this->createdAt,
-            "description" => e($this->description),
-            'recipeInstructions' => e($this->instructions),
+            "description" => $this->description,
+            'recipeInstructions' => $this->instructions,
             "cookingMethod" => $this->method,
             "recipeYield" => "1 drink",
             "recipeCategory" => "Drink",
