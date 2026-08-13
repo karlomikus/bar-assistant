@@ -73,7 +73,7 @@ class ShoppingListController extends Controller
 
         $ingredientQuantityPairs = [];
         foreach ($ingredients as $input) {
-            $ingredientQuantityPairs[$input['id']] = $input['quantity'] ?? 1;
+            $ingredientQuantityPairs[$input['id']] = (int) $input['quantity'];
         }
 
         $shoppingListService->addIngredientsToMemberShoppingList(new MemberShoppingListChangeRequest(
