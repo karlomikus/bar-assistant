@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -14,7 +13,7 @@ use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Glass extends Model
+class Glass extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\GlassFactory> */
     use HasFactory;

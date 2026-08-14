@@ -25,10 +25,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
         new OAT\Property(property: 'note', type: 'string', example: 'Additional notes', description: 'Additional notes about the ingredient', nullable: true),
         new OAT\Property(property: 'is_specified', type: 'boolean', example: false, description: 'Is the ingredient specified (ignores variants in matching)'),
         new OAT\Property(property: 'formatted', type: AmountFormats::class),
-        new OAT\Property(property: 'in_shelf', type: 'boolean', example: true, description: 'Is the ingredient in the user\'s shelf'),
-        new OAT\Property(property: 'in_shelf_as_variant', type: 'boolean', example: true, description: 'Is the ingredient in the user\'s shelf as a variant'),
-        new OAT\Property(property: 'in_shelf_as_substitute', type: 'boolean', example: true, description: 'Is the ingredient in the user\'s shelf as a substitute'),
-        new OAT\Property(property: 'in_shelf_as_complex_ingredient', type: 'boolean', example: true, description: 'Is the ingredient in the user\'s shelf as a complex ingredient'),
         new OAT\Property(property: 'in_bar_shelf', type: 'boolean', example: true, description: 'Is the ingredient in the bar shelf'),
         new OAT\Property(property: 'in_bar_shelf_as_substitute', type: 'boolean', example: true, description: 'Is the ingredient in the bar shelf as a substitute'),
         new OAT\Property(property: 'in_bar_shelf_as_complex_ingredient', type: 'boolean', example: true, description: 'Is the ingredient in the bar shelf as a complex ingredient'),
@@ -59,22 +55,6 @@ class CocktailIngredientResource extends JsonResource
             'note' => $this->note,
             'is_specified' => (bool) $this->is_specified,
             'formatted' => new AmountFormats($this->resource),
-            'in_shelf' => $this->when(
-                $this->relationLoaded('ingredient'),
-                fn () => $this->ingredient->userHasInShelf($request->user())
-            ),
-            'in_shelf_as_variant' => $this->when(
-                $this->ingredient->relationLoaded('descendants'),
-                fn () => !$this->is_specified && $this->ingredient->userShelfVariants($request->user())->count() > 0
-            ),
-            'in_shelf_as_substitute' => $this->when(
-                $this->relationLoaded('substitutes'),
-                fn () => $this->userHasInShelfAsSubstitute($request->user())
-            ),
-            'in_shelf_as_complex_ingredient' => $this->when(
-                $this->ingredient->relationLoaded('ingredientParts'),
-                fn () => $this->ingredient->userHasInShelfAsComplexIngredient($request->user())
-            ),
             'in_bar_shelf' => $this->when(
                 $this->relationLoaded('ingredient'),
                 fn () => $this->ingredient->barHasInShelf()

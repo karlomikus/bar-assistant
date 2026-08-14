@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
 use Kami\Cocktail\Models\Concerns\IsExternalized;
@@ -12,15 +11,15 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Exceptions\ImageFileNotFoundException;
 
-class Image extends Model implements IsExternalized
+class Image extends BaseModel implements IsExternalized
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\ImageFactory> */
     use HasFactory;
 
     #[\Override]
-    public function delete(): ?bool
+    public function delete(string $disk = 'uploads'): ?bool
     {
-        $disk = Storage::disk('uploads');
+        $disk = Storage::disk($disk);
 
         if ($disk->exists($this->file_path)) {
             $disk->delete($this->file_path);

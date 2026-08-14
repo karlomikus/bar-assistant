@@ -26,7 +26,7 @@ class ShoppingListControllerTest extends TestCase
             ->count(5)
             ->create();
 
-        $response = $this->getJson('/api/users/'. $membership->user_id .'/shopping-list', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
+        $response = $this->getJson('/api/members/'. $membership->user_id .'/shopping-list', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertOk();
         $response->assertJson(
@@ -43,7 +43,7 @@ class ShoppingListControllerTest extends TestCase
         $this->actingAs($membership->user);
         $ingredients = Ingredient::factory()->recycle($membership->bar)->count(3)->create();
 
-        $response = $this->postJson('/api/users/'. $membership->user_id .'/shopping-list/batch-store', [
+        $response = $this->postJson('/api/members/'. $membership->user_id .'/shopping-list/batch-store', [
             'ingredients' => $ingredients->map(fn ($ing) => ['id' => $ing->id])->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
@@ -57,11 +57,11 @@ class ShoppingListControllerTest extends TestCase
 
         $unOwnedIngredients = Ingredient::factory()->count(3)->create();
 
-        $response = $this->postJson('/api/users/'. $membership->user_id .'/shopping-list/batch-store', [
+        $response = $this->postJson('/api/members/'. $membership->user_id .'/shopping-list/batch-store', [
             'ingredients' => $unOwnedIngredients->map(fn ($ing) => ['id' => $ing->id])->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
-        $response->assertNoContent();
+        $response->assertUnprocessable();
         $this->assertDatabaseCount('user_shopping_lists', 0);
     }
 
@@ -77,7 +77,7 @@ class ShoppingListControllerTest extends TestCase
 
         $this->assertDatabaseCount('user_shopping_lists', 5);
 
-        $response = $this->postJson('/api/users/'. $membership->user_id .'/shopping-list/batch-delete', [
+        $response = $this->postJson('/api/members/'. $membership->user_id .'/shopping-list/batch-delete', [
             'ingredients' => $ingredients->pluck('ingredient')->map(fn ($ing) => ['id' => $ing->id])->toArray()
         ], ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
@@ -97,7 +97,7 @@ class ShoppingListControllerTest extends TestCase
             ->count(5)
             ->create();
 
-        $response = $this->getJson('/api/users/'. $membership->user_id .'/shopping-list', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
+        $response = $this->getJson('/api/members/'. $membership->user_id .'/shopping-list', ['Bar-Assistant-Bar-Id' => $membership->bar_id]);
 
         $response->assertOk();
         $response->assertJson(

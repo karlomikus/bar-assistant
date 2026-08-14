@@ -12,7 +12,7 @@ use Kami\Cocktail\Http\Resources\MenuPublicResource;
 
 class MenuController extends Controller
 {
-    #[OAT\Get(path: '/public/{slugOrId}/menu', tags: ['Public'], operationId: 'showPublicBarMenu', description: 'Show a public bar menu details. The bar must have menu enabled.', summary: 'Show public menu', parameters: [
+    #[OAT\Get(path: '/public/bars/{slugOrId}/menu', tags: ['Public'], operationId: 'showPublicBarMenu', description: 'Show a public bar menu details. The bar must have menu enabled.', summary: 'Show public menu', parameters: [
     new OAT\Parameter(name: 'slugOrId', in: 'path', required: true, description: 'Database id or slug of bar', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
     #[BAO\SuccessfulResponse(content: [
@@ -27,12 +27,6 @@ class MenuController extends Controller
             ->join('bars', 'bars.id', '=', 'menus.bar_id')
             ->with(
                 'bar.images',
-                'menuCocktails.cocktail.ingredients.ingredient',
-                'menuCocktails.cocktail.images',
-                'menuCocktails.cocktail.bar.shelfIngredients',
-                'menuIngredients.ingredient.ancestors',
-                'menuIngredients.ingredient.images',
-                'menuIngredients.ingredient.bar.shelfIngredients',
             )
             ->firstOrFail();
 

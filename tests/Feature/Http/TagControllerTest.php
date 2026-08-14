@@ -68,14 +68,6 @@ class TagControllerTest extends TestCase
 
         $response->assertCreated();
         $this->assertNotEmpty($response->headers->get('Location'));
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->has('data.id')
-                ->where('data.name', 'Test tag')
-                ->etc()
-        );
     }
 
     public function test_update_tag_response(): void
@@ -88,15 +80,7 @@ class TagControllerTest extends TestCase
             'name' => 'Test tag',
         ]);
 
-        $response->assertSuccessful();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->where('data.id', $model->id)
-                ->where('data.name', 'Test tag')
-                ->etc()
-        );
+        $response->assertNoContent();
     }
 
     public function test_delete_tag_response(): void

@@ -3,7 +3,6 @@
 namespace Kami\Cocktail\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Kami\Cocktail\Models\Export;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Kami\Cocktail\External\ExportTypeEnum;
@@ -12,7 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Kami\Cocktail\External\Export\ToDataPack;
 use Kami\Cocktail\External\Export\ToRecipeType;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
-use Illuminate\Queue\Attributes\WithoutRelations;
+use BarAssistant\Application\Export\ExportService;
 
 class StartTypedExport implements ShouldQueue
 {
@@ -24,21 +23,20 @@ class StartTypedExport implements ShouldQueue
     public function __construct(
         private readonly int $barId,
         private readonly ExportTypeEnum $type,
-        #[WithoutRelations]
-        private readonly Export $export,
+        private readonly int $exportId,
+        private readonly string $filename,
         private readonly ForceUnitConvertEnum $units,
     ) {
     }
 
-    public function handle(): void
+    public function handle(ExportService $exportService): void
     {
         if ($this->type === ExportTypeEnum::Datapack) {
-            resolve(ToDataPack::class)->process($this->barId, $this->export->filename);
+            resolve(ToDataPack::class)->process($this->barId, $this->filename);
         } else {
-            resolve(ToRecipeType::class)->process($this->barId, $this->export->filename, $this->type, $this->units);
+            resolve(ToRecipeType::class)->process($this->barId, $this->filename, $this->type, $this->units);
         }
 
-
-        $this->export->markAsDone();
+        $exportService->markAsDone($this->exportId);
     }
 }

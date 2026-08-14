@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Console\Commands;
 
 use Kami\Cocktail\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 
 class BarAnon extends Command
@@ -31,6 +32,10 @@ class BarAnon extends Command
      */
     public function handle()
     {
+        if (App::environment('production')) {
+            return Command::FAILURE;
+        }
+
         $users = User::all();
 
         foreach ($users as $user) {

@@ -17,16 +17,16 @@ trait HasRating
         return $this->morphMany(Rating::class, 'rateable');
     }
 
-    public function rate(int $ratingValue, int $userId): Rating
+    public function rate(int $ratingValue, int $barMembershipId): Rating
     {
-        $rating = $this->ratings()->where('user_id', $userId)->first();
+        $rating = $this->ratings()->where('bar_membership_id', $barMembershipId)->first();
 
         if (!$rating) {
             $rating = new Rating();
         }
 
         $rating->rating = $ratingValue;
-        $rating->user_id = $userId;
+        $rating->bar_membership_id = $barMembershipId;
 
         $this->ratings()->save($rating);
 
@@ -38,9 +38,9 @@ trait HasRating
         return $this->ratings->count();
     }
 
-    public function deleteUserRating(int $userId): void
+    public function deleteBarMembershipRating(int $barMembershipId): void
     {
-        $this->ratings()->where('user_id', $userId)->delete();
+        $this->ratings()->where('bar_membership_id', $barMembershipId)->delete();
     }
 
     public function deleteRatings(): void

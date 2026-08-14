@@ -37,6 +37,7 @@ use Kami\Cocktail\Models\CocktailIngredientSubstitute;
        new OAT\Property(property: 'in_bar_shelf', type: 'boolean', example: true, description: 'Indicates if the cocktail can be made in the current bar'),
        new OAT\Property(property: 'abv', type: 'number', format: 'float', nullable: true, example: 0.15, description: 'Alcohol by volume percentage of the cocktail'),
        new OAT\Property(property: 'year', type: 'integer', nullable: true, example: 2023, description: 'Year the cocktail was created or published'),
+       new OAT\Property(property: 'author', type: 'string', nullable: true, example: 'Jerry Thomas', description: 'Historical author of the cocktail recipe'),
        new OAT\Property(
            property: 'ingredients',
            type: 'array',
@@ -86,9 +87,9 @@ class CocktailResource extends JsonResource
         return [
             'slug' => $this->slug,
             'name' => $this->name,
-            'instructions' => e($this->instructions),
-            'garnish' => e($this->garnish),
-            'description' => e($this->description),
+            'instructions' => $this->instructions,
+            'garnish' => $this->garnish,
+            'description' => $this->description,
             'source' => $this->source,
             'public_id' => $this->public_id,
             'public_at' => $this->public_at?->toAtomString() ?? null,
@@ -106,6 +107,7 @@ class CocktailResource extends JsonResource
             'in_bar_shelf' => $this->inBarShelf(),
             'abv' => $this->abv,
             'year' => $this->year,
+            'author' => $this->author,
             'ingredients' => $this->ingredients->map(fn (CocktailIngredient $cocktailIngredient) => [
                 'name' => $cocktailIngredient->ingredient->name,
                 'amount' => $cocktailIngredient->amount,

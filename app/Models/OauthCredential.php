@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Services\Auth\OauthProvider;
 use Kami\Cocktail\Models\ValueObjects\SSOProvider;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class OauthCredential extends Model
+class OauthCredential extends BaseModel
 {
     protected $hidden = ['user_id', 'provider_id'];
 

@@ -8,19 +8,18 @@ use Spatie\Sluggable\HasSlug;
 use Laravel\Scout\EngineManager;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Database\Eloquent\Model;
 use Kami\Cocktail\Services\CocktailService;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
-use Kami\Cocktail\Services\Image\ImageService;
 use Kami\Cocktail\Services\MeilisearchService;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Kami\Cocktail\Services\Image\ImageUploadService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Bar extends Model implements UploadableInterface
+class Bar extends BaseModel implements UploadableInterface
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\BarFactory> */
     use HasFactory;
@@ -151,9 +150,9 @@ class Bar extends Model implements UploadableInterface
     #[\Override]
     public function delete(): ?bool
     {
-        /** @var ImageService */
-        $imageService = app(ImageService::class);
-        $imageService->cleanBarImages($this);
+        /** @var ImageUploadService */
+        $imageService = app(ImageUploadService::class);
+        $imageService->cleanBarImages($this->id);
 
         // Delete export files
         foreach ($this->exports as $export) {

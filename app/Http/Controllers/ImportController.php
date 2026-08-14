@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Http\Controllers;
 use Throwable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
@@ -16,20 +17,15 @@ use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\External\Model\Schema;
 use Illuminate\Support\Facades\Validator;
-use Kami\Cocktail\Services\CocktailService;
-use Kami\Cocktail\Services\IngredientService;
+use Kami\Cocktail\External\Import\FromSchema;
 use Kami\Cocktail\Http\Requests\ImportRequest;
 use Kami\Cocktail\Http\Requests\ScrapeRequest;
-use Kami\Cocktail\Services\Image\ImageService;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Jobs\StartIngredientCSVImport;
-use Kami\Cocktail\External\Import\FromJsonSchema;
-use Kami\Cocktail\Http\Resources\CocktailResource;
 use Kami\Cocktail\External\Import\DuplicateActionsEnum;
 
 class ImportController extends Controller
 {
-    #[OAT\Post(path: '/import/cocktail', tags: ['Import'], operationId: 'importCocktail', summary: 'Import recipe', description: 'Import a recipe from a JSON structure that follows Bar Assistant recipe JSON schema. Supported schemas include [Draft 2](https://barassistant.app/cocktail-02.schema.json) and [Draft 1](https://barassistant.app/cocktail-01.schema.json).', parameters: [
+    #[OAT\Post(path: '/import/cocktail', tags: ['Import'], operationId: 'importCocktail', summary: 'Import recipe', description: 'Import a recipe from a JSON structure that follows Bar Assistant recipe JSON schema v4: https://barassistant.app/cocktail-04.schema.json', parameters: [
         new BAO\Parameters\BarIdHeaderParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -40,12 +36,12 @@ class ImportController extends Controller
             ]),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(CocktailResource::class),
+    #[OAT\Response(response: 201, description: 'Successful response', headers: [
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
     #[BAO\RateLimitResponse]
-    public function cocktail(ImportRequest $request): JsonResource
+    public function cocktail(FromSchema $importer, ImportRequest $request): Response
     {
         if ($request->user()->cannot('create', Cocktail::class)) {
             abort(403);
@@ -54,21 +50,14 @@ class ImportController extends Controller
         $source = $request->input('source');
         $duplicateAction = $request->enum('duplicate_actions', DuplicateActionsEnum::class);
 
-        $importer = new FromJsonSchema(
-            resolve(CocktailService::class),
-            resolve(IngredientService::class),
-            resolve(ImageService::class),
-            bar()->id,
-            $request->user()->id,
-        );
-
-        if (is_array($source)) {
-            $cocktail = $importer->process($source, $duplicateAction);
-        } else {
-            $cocktail = $importer->process(json_decode((string) $source, true), $duplicateAction);
+        if (!is_array($source)) {
+            $source = json_decode((string) $source, true, flags: JSON_THROW_ON_ERROR);
         }
 
-        return new CocktailResource($cocktail);
+        $schema = Schema::fromSchema4Array($source);
+        $cocktail = $importer->process(bar()->id, $request->user()->id, $schema, $duplicateAction);
+
+        return new Response(status: 201, headers: ['Location' => route('cocktails.show', $cocktail->id, false)]);
     }
 
     #[OAT\Post(path: '/import/scrape', tags: ['Import'], operationId: 'scrapeRecipe', summary: 'Scrape recipe', description: 'Try to scrape a recipe from a website. Most of the well known recipe websites should work. Data returned is a valid JSON schema that you can import using import cocktail endpoint.', parameters: [
@@ -85,13 +74,12 @@ class ImportController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new OAT\JsonContent(type: 'object', properties: [
             new OAT\Property(property: 'data', type: 'object', properties: [
-                new OAT\Property(property: 'schema_version', type: 'string', example: 'draft2'),
+                new OAT\Property(property: 'schema_version', type: 'string', example: 'schema4'),
                 new OAT\Property(property: 'schema', ref: Schema::SCHEMA_URL),
                 new OAT\Property(property: 'scraper_meta', type: 'array', items: new OAT\Items(type: 'object', properties: [
-                    new OAT\Property(property: '_id', type: 'string'),
+                    new OAT\Property(property: 'ingredient_name', type: 'string'),
                     new OAT\Property(property: 'source', type: 'string'),
-                    new OAT\Property(property: 'html_content', type: 'string', nullable: true, description: 'The HTML content of the scraped page, if available.'),
-                ], required: ['_id', 'source'])),
+                ], required: ['ingredient_name', 'source'])),
             ], required: ['schema_version', 'schema', 'scraper_meta']),
         ], required: ['data']),
     ])]
@@ -153,66 +141,4 @@ class ImportController extends Controller
 
         return response()->json(status: 204);
     }
-
-    // #[OAT\Post(path: '/import/file', tags: ['Import'], summary: 'Import from zip file', requestBody: new OAT\RequestBody(
-    //     required: true,
-    //     content: [
-    //         new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(type: 'object', required: ['file'], properties: [
-    //             new OAT\Property(property: 'file', type: 'string', format: 'binary', description: 'The zip file containing the data. Max 1GB.'),
-    //             new OAT\Property(property: 'bar_id', type: 'integer', example: 1),
-    //             new OAT\Property(property: 'duplicate_actions', ref: DuplicateActionsEnum::class, example: 'none', description: 'How to handle duplicates. Cocktails are matched by lowercase name.'),
-    //         ])),
-    //     ]
-    // ))]
-    // #[OAT\Response(response: 204, description: 'Successful response')]
-    // #[BAO\NotAuthorizedResponse]
-    // public function file(ImportFileRequest $request): Response
-    // {
-    //     if ($request->user()->cannot('create', Cocktail::class)) {
-    //         abort(403);
-    //     }
-
-    //     $zipFile = $request->file('file')->store('/', 'temp');
-    //     $barId = $request->post('bar_id');
-    //     $duplicateAction = DuplicateActionsEnum::from($request->post('duplicate_actions', 'none'));
-
-    //     $bar = Bar::findOrFail($barId);
-    //     if ($request->user()->cannot('edit', $bar)) {
-    //         abort(403);
-    //     }
-
-    //     $unzippedFilesDisk = Storage::disk('temp');
-
-    //     $zip = new ZipUtils();
-    //     $zip->unzip(Storage::disk('temp')->path($zipFile));
-
-    //     // $importer = new FromJsonSchema(
-    //     //     resolve(\Kami\Cocktail\Services\CocktailService::class),
-    //     //     resolve(\Kami\Cocktail\Services\IngredientService::class),
-    //     //     resolve(\Kami\Cocktail\Services\Image\ImageService::class),
-    //     //     $bar->id,
-    //     // );
-
-    //     // \Illuminate\Support\Facades\DB::beginTransaction();
-    //     // try {
-    //     //     foreach ($unzippedFilesDisk->directories($zip->getDirName() . '/cocktails') as $diskDirPath) {
-    //     //         $importer->process(
-    //     //             json_decode(file_get_contents($unzippedFilesDisk->path($diskDirPath . '/recipe.json')), true),
-    //     //             $request->user()->id,
-    //     //             $bar->id,
-    //     //             $duplicateAction,
-    //     //             $unzippedFilesDisk->path($diskDirPath),
-    //     //         );
-    //     //     }
-    //     // } catch (Throwable $e) {
-    //     //     Log::error('Error importing from file: ' . $e->getMessage());
-    //     // } finally {
-    //     //     $zip->cleanup();
-    //     //     Storage::disk('temp')->delete($zipFile);
-    //     // }
-
-    //     \Illuminate\Support\Facades\DB::commit();
-
-    //     return new Response(null, 204);
-    // }
 }

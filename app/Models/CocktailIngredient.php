@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Models;
 
 use Brick\Money\RationalMoney;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
 
-class CocktailIngredient extends Model
+class CocktailIngredient extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\CocktailIngredientFactory> */
     use HasFactory;
@@ -48,19 +47,6 @@ class CocktailIngredient extends Model
     public function substitutes(): HasMany
     {
         return $this->hasMany(CocktailIngredientSubstitute::class);
-    }
-
-    public function userHasInShelfAsSubstitute(User $user): bool
-    {
-        $currentShelf = $user->getShelfIngredients($this->ingredient->bar_id);
-
-        foreach ($this->substitutes as $sub) {
-            if ($currentShelf->contains('ingredient_id', $sub->ingredient_id)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public function barHasInShelfAsSubstitute(): bool

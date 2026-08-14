@@ -114,6 +114,16 @@ return [
             'handler' => NullHandler::class,
         ],
 
+        'json' => [
+            'driver' => 'monolog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'handler' => \Monolog\Handler\StreamHandler::class,
+            'formatter' => \Monolog\Formatter\JsonFormatter::class,
+            'with' => [
+                'stream' => 'php://stdout',
+            ],
+        ],
+
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],

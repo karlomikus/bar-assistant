@@ -71,14 +71,7 @@ class UtensilControllerTest extends TestCase
         ]);
 
         $response->assertCreated();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data.id')
-                ->where('data.name', 'Utensil 1')
-                ->where('data.description', 'Utensil 1 Description')
-                ->etc()
-        );
+        $response->assertHeader('Location');
     }
 
     public function test_update_utensil_response(): void
@@ -95,15 +88,7 @@ class UtensilControllerTest extends TestCase
             'description' => 'Utensil updated Description',
         ]);
 
-        $response->assertOk();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data.id')
-                ->where('data.name', 'Utensil updated')
-                ->where('data.description', 'Utensil updated Description')
-                ->etc()
-        );
+        $response->assertNoContent();
     }
 
     public function test_delete_utensil_response(): void

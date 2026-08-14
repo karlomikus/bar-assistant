@@ -4,20 +4,15 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
-class BarMembership extends Model
+class BarMembership extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\BarMembershipFactory> */
     use HasFactory;
-
-    protected $casts = [
-        'is_shelf_public' => 'boolean',
-    ];
 
     /**
      * @return BelongsTo<Bar, $this>
@@ -49,6 +44,14 @@ class BarMembership extends Model
     public function userIngredients(): HasMany
     {
         return $this->hasMany(UserIngredient::class);
+    }
+
+    /**
+     * @return HasMany<MemberInventory, $this>
+     */
+    public function memberInventories(): HasMany
+    {
+        return $this->hasMany(MemberInventory::class);
     }
 
     /**

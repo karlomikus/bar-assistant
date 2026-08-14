@@ -20,7 +20,7 @@ class PriceCategoryPolicy
             $hasReachedMax = DB::table('price_categories')->where('bar_id', bar()->id)->count() < 1;
         }
 
-        return $hasReachedMax && ($user->isBarAdmin(bar()->id) || $user->isBarModerator(bar()->id));
+        return $hasReachedMax && $user->isBarAdmin(bar()->id);
     }
 
     public function show(User $user, PriceCategory $model): bool
@@ -30,13 +30,11 @@ class PriceCategoryPolicy
 
     public function edit(User $user, PriceCategory $model): bool
     {
-        return $user->isBarAdmin($model->bar_id)
-            || $user->isBarModerator($model->bar_id);
+        return $user->isBarAdmin($model->bar_id);
     }
 
     public function delete(User $user, PriceCategory $model): bool
     {
-        return $user->isBarAdmin($model->bar_id)
-            || $user->isBarModerator($model->bar_id);
+        return $user->isBarAdmin($model->bar_id);
     }
 }

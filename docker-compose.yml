@@ -56,13 +56,25 @@ services:
     volumes:
       - meilidata:/meili_data
 
-  metrics:
-    image: prom/prometheus
-    volumes:
-      - ./resources/docker/localdev/prometheus.yml:/etc/prometheus/prometheus.yml
+  rustfs:
+    image: rustfs/rustfs:latest
+    restart: unless-stopped
     ports:
-      - 9090:9090
+      - 9000:9000
+      - 9001:9001
+    environment:
+      - RUSTFS_ROOT_USER=rustfsadmin
+      - RUSTFS_ROOT_PASSWORD=rustfsadmin
+    volumes:
+      - rustfsdata:/data
+
+  # metrics:
+  #   image: prom/prometheus
+  #   volumes:
+  #     - ./resources/docker/localdev/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   ports:
+  #     - 9090:9090
 
 volumes:
   meilidata:
-  miniiodata:
+  rustfsdata:

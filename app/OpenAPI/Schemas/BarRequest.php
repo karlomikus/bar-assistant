@@ -6,9 +6,7 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Kami\Cocktail\Models\Bar;
 use OpenApi\Attributes as OAT;
-use Symfony\Component\Uid\Ulid;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\External\BarOptionsEnum;
 
@@ -64,37 +62,5 @@ class BarRequest
         $result->images = array_map(intval(...), $request->input('images', []));
 
         return $result;
-    }
-
-    public function toLaravelModel(?Bar $model = null): Bar
-    {
-        $bar = $model ?? new Bar();
-
-        $bar->name = $this->name;
-        $bar->subtitle = $this->subtitle;
-        $bar->description = $this->description;
-        $bar->is_public = $this->isPublic;
-
-        if ($this->invitesEnabled && $bar->invite_code === null) {
-            $bar->invite_code = (string) new Ulid();
-        } else {
-            $bar->invite_code = null;
-        }
-
-        $bar->slug = $this->slug;
-        if (!$bar->slug) {
-            $bar->generateSlug();
-        }
-
-        $settings = $bar->settings ?? [];
-        if ($this->defaultUnits) {
-            $settings['default_units'] = $this->defaultUnits;
-        }
-        if ($this->defaultCurrency) {
-            $settings['default_currency'] = $this->defaultCurrency;
-        }
-        $bar->settings = $settings;
-
-        return $bar;
     }
 }

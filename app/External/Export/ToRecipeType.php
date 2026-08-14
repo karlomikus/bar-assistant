@@ -43,7 +43,7 @@ class ToRecipeType
             'called_from' => self::class,
             'type' => $type->value,
             'bar_id' => $barId,
-            'schema' => $type === ExportTypeEnum::Schema ? 'https://barassistant.app/cocktail-02.schema.json' : null,
+            'schema' => $type === ExportTypeEnum::Schema ? SchemaExternal::SCHEMA_URL : null,
         ];
 
         $tempFilePath = tempnam(sys_get_temp_dir(), 'cocktail_export');
@@ -115,7 +115,7 @@ class ToRecipeType
 
             if ($type === ExportTypeEnum::Schema) {
                 $cocktailExportData = $this->prepareDataOutput(
-                    $externalSchema->toDraft2Array(),
+                    $externalSchema->toSchema4Array(),
                 );
 
                 $zip->addFromString('cocktails/' . $cocktail->getExternalId() . '/recipe.json', $cocktailExportData);

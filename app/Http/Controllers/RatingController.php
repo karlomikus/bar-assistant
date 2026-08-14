@@ -10,6 +10,8 @@ use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Http\Requests\RatingRequest;
+use BarAssistant\Application\Rating\RatingService;
+use BarAssistant\Application\Rating\DTO\RateCocktailRequest;
 
 class RatingController extends Controller
 {
@@ -26,7 +28,7 @@ class RatingController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotFoundResponse]
     #[BAO\NotAuthorizedResponse]
-    public function rateCocktail(RatingRequest $request, int $id): Response
+    public function rateCocktail(RatingService $ratingService, RatingRequest $request, int $id): Response
     {
         $cocktail = Cocktail::findOrFail($id);
 
@@ -34,14 +36,16 @@ class RatingController extends Controller
             abort(403);
         }
 
-        $cocktail->rate(
-            (int) $request->post('rating'),
-            $request->user()->id
-        );
-
-        if (!empty(config('scout.driver'))) {
-            $cocktail->searchable();
+        $barMembership = $request->user()->getBarMembership($cocktail->bar_id);
+        if ($barMembership === null) {
+            abort(403);
         }
+
+        $ratingService->rate(new RateCocktailRequest(
+            barMembershipId: $barMembership->id,
+            cocktailId: $cocktail->id,
+            value: (int) $request->post('rating'),
+        ));
 
         return new Response(null, 204);
     }
@@ -52,7 +56,7 @@ class RatingController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function deleteCocktailRating(Request $request, int $id): Response
+    public function deleteCocktailRating(RatingService $ratingService, Request $request, int $id): Response
     {
         $cocktail = Cocktail::findOrFail($id);
 
@@ -60,11 +64,12 @@ class RatingController extends Controller
             abort(403);
         }
 
-        $cocktail->deleteUserRating($request->user()->id);
-
-        if (!empty(config('scout.driver'))) {
-            $cocktail->searchable();
+        $barMembership = $request->user()->getBarMembership($cocktail->bar_id);
+        if ($barMembership === null) {
+            abort(403);
         }
+
+        $ratingService->removeRating($barMembership->id, $cocktail->id);
 
         return new Response(null, 204);
     }

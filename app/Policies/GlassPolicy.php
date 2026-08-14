@@ -14,8 +14,7 @@ class GlassPolicy
 
     public function create(User $user): bool
     {
-        return $user->isBarAdmin(bar()->id)
-            || $user->isBarModerator(bar()->id);
+        return $user->isBarAdmin(bar()->id);
     }
 
     public function show(User $user, Glass $glass): bool
@@ -25,13 +24,11 @@ class GlassPolicy
 
     public function edit(User $user, Glass $glass): bool
     {
-        return $user->isBarAdmin($glass->bar_id)
-            || $user->isBarModerator($glass->bar_id);
+        return $user->isBarAdmin($glass->bar_id);
     }
 
     public function delete(User $user, Glass $glass): bool
     {
-        return $user->isBarAdmin($glass->bar_id)
-            || $user->isBarModerator($glass->bar_id);
+        return $user->isBarAdmin($glass->bar_id);
     }
 }

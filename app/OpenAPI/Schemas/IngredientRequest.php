@@ -10,6 +10,11 @@ use OpenApi\Attributes as OAT;
 #[OAT\Schema(required: ['name'])]
 class IngredientRequest
 {
+    /**
+     * @param int[] $images
+     * @param ComplexIngredientPartRequest[] $complexIngredientParts
+     * @param IngredientPriceRequest[] $prices
+     */
     public function __construct(
         public int $barId,
         #[OAT\Property(example: 'Gin')]
@@ -25,13 +30,10 @@ class IngredientRequest
         public ?string $color = null,
         #[OAT\Property(property: 'parent_ingredient_id', example: 1)]
         public ?int $parentIngredientId = null,
-        /** @var int[] */
         #[OAT\Property(items: new OAT\Items(type: 'integer'), description: 'Existing image ids')]
         public array $images = [],
-        /** @var int[] */
-        #[OAT\Property(property: 'complex_ingredient_part_ids', items: new OAT\Items(type: 'integer'), description: 'Existing ingredient ids')]
+        #[OAT\Property(property: 'complex_ingredient_parts', items: new OAT\Items(type: ComplexIngredientPartRequest::class), description: 'Parts that make up this complex ingredient')]
         public array $complexIngredientParts = [],
-        /** @var IngredientPriceRequest[] */
         #[OAT\Property(items: new OAT\Items(type: IngredientPriceRequest::class))]
         public array $prices = [],
         #[OAT\Property(property: 'calculator_id', example: 1, description: 'Calculator you want to attach to this ingredient')]
@@ -58,6 +60,13 @@ class IngredientRequest
             }
         }
 
+        $formParts = $request->input('complex_ingredient_parts', []);
+
+        $complexIngredientParts = [];
+        foreach ($formParts as $part) {
+            $complexIngredientParts[] = ComplexIngredientPartRequest::fromArray($part);
+        }
+
         return new self(
             $barId,
             $request->input('name'),
@@ -68,7 +77,7 @@ class IngredientRequest
             $request->input('color'),
             $request->filled('parent_ingredient_id') ? $request->integer('parent_ingredient_id') : null,
             $request->input('images', []),
-            $request->input('complex_ingredient_part_ids', []),
+            $complexIngredientParts,
             $prices,
             $request->filled('calculator_id') ? $request->integer('calculator_id') : null,
             $request->filled('sugar_g_per_ml') ? $request->float('sugar_g_per_ml') : null,

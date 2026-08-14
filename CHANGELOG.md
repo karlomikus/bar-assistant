@@ -1,3 +1,49 @@
+# v6.0.0
+This release mostly introduces a big rewrite to backend architecture. But there is still some new stuff available.
+
+If you are used to having two shelves, one for your personal ingredients and one for your bar, keep in mind that this is no longer the case with this release. The only thing initially available is bar shelf. User shelves will be slowly migrated to new user multi-inventory system. If you want to keep that functionality, wait for one of the next releases.
+
+⚠️ Please before upgrading backup all your data. ⚠️
+
+## Breaking changes
+- Removed `Moderator` role
+    - Existing moderators will be migrated to Admin role
+- Removed user based shelf → replaced with multi-inventory per member
+    - Data is migrated to `member_inventory` table, members can now have multiple named inventories
+    - Shelf routes moved: `/members/{id}/inventories/*` and `/bars/{id}/inventory/*`
+    - WIP: UI integration still being tested
+- `users` route prefix has been changed to `members`
+- Profile endpoints reorganized:
+    - DELETE `/profile` now deletes user account (was DELETE `/users/{id}`)
+    - POST `/profile/change-password` added (was POST `/password-check` → removed)
+- Removed GET `/{id}/memberships` and DELETE `/{id}/memberships` from `bars` endpoint (now handled via `members` endpoint)
+- Removed DELETE `/{id}/memberships/{userId}` from `bars` endpoint
+- GET `/{id}/stats` from `bars` endpoint has been replaced by a `stats` prefix with specific endpoints (`totals`, `taste`, `ingredient-distribution`, `top`)
+- PUT `/{id}/cocktails` for collections has been renamed to `sync`
+- Reworked how menu categories are stored
+    - Menu request payload is now updated
+- Response of POST and PUT `/ingredients` no longer returns the whole object
+- Removed `POST /images/{id}` (update) and `GET /images` (list) endpoints
+- Removed `explore/*` routes (consolidated into `public/*` endpoints)
+- Removed MCP server
+- Shelf/favorites routes reorganized:
+    - Moved GET `/users` to GET `/members`
+    - Removed GET `/bars/{id}/memberships`
+    - Moved POST `/bars/{id}/memberships/{userId}` to POST `/members`
+    - Moved PUT `/bars/{id}/memberships` to PUT `/members/{userId}`
+    - Moved DELETE `/bars/{id}/memberships/{userId}` to DELETE `/members/{userId}`
+    - Moved shelf ingredients/cocktails/favorites/recommend to `/members/{id}/inventories/*` and `/bars/{id}/inventory/*`
+    - Moved `/{id}/cocktail-favorites` for members
+
+## New
+- Added `ingredients/{idOrSlug}/extra` endpoint showing unlockable cocktails
+- Added `is_bar_inventory_aware` to menu items
+    - Shows if menu item availability depends on bar inventory
+- Added `is_enabled` to menu category
+- You can now add amounts and units to ingredient parts
+- Added `author` field to cocktail recipes
+- OpenAPI docs now use Scalar UI (replaces Elements)
+
 # v5.15.4
 ## Fixes
 - Fixed html entities getting encoded in markdown export

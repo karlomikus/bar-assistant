@@ -14,8 +14,7 @@ class CocktailMethodPolicy
 
     public function create(User $user): bool
     {
-        return $user->isBarAdmin(bar()->id)
-            || $user->isBarModerator(bar()->id);
+        return $user->isBarAdmin(bar()->id);
     }
 
     public function show(User $user, CocktailMethod $method): bool
@@ -25,13 +24,11 @@ class CocktailMethodPolicy
 
     public function edit(User $user, CocktailMethod $method): bool
     {
-        return $user->isBarAdmin($method->bar_id)
-            || $user->isBarModerator($method->bar_id);
+        return $user->isBarAdmin($method->bar_id);
     }
 
     public function delete(User $user, CocktailMethod $method): bool
     {
-        return $user->isBarAdmin($method->bar_id)
-            || $user->isBarModerator($method->bar_id);
+        return $user->isBarAdmin($method->bar_id);
     }
 }

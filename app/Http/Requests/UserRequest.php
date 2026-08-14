@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Requests;
 
-use Kami\Cocktail\Models\User;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Foundation\Http\FormRequest;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
@@ -29,26 +27,9 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        $user = User::where('email', $this->post('email'))->first();
-
-        $rules = [
-            'name' => 'required',
+        return [
             'role_id' => ['required', new Enum(UserRoleEnum::class)],
-            'email' => [
-                'required',
-                'email',
-            ],
+            'email' => ['email'],
         ];
-
-        if ($this->isMethod('POST')) {
-            $rules['password'] = 'required|min:5';
-            $rules['email'][] = Rule::unique('users', 'email');
-        }
-
-        if ($this->isMethod('PUT')) {
-            $rules['email'][] = Rule::unique('users', 'email')->ignore($user);
-        }
-
-        return $rules;
     }
 }

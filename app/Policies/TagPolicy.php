@@ -14,8 +14,7 @@ class TagPolicy
 
     public function create(User $user): bool
     {
-        return $user->isBarAdmin(bar()->id)
-            || $user->isBarModerator(bar()->id);
+        return $user->isBarAdmin(bar()->id);
     }
 
     public function show(User $user, Tag $tag): bool
@@ -25,13 +24,11 @@ class TagPolicy
 
     public function edit(User $user, Tag $tag): bool
     {
-        return $user->isBarAdmin($tag->bar_id)
-            || $user->isBarModerator($tag->bar_id);
+        return $user->isBarAdmin($tag->bar_id);
     }
 
     public function delete(User $user, Tag $tag): bool
     {
-        return $user->isBarAdmin($tag->bar_id)
-            || $user->isBarModerator($tag->bar_id);
+        return $user->isBarAdmin($tag->bar_id);
     }
 }

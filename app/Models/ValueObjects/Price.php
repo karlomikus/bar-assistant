@@ -8,8 +8,20 @@ use Brick\Money\Money;
 
 readonly class Price
 {
-    public function __construct(private Money $money)
+    private function __construct(private Money $money)
     {
+    }
+
+    public static function fromMinor(int $minorPrice, string $currency): self
+    {
+        return new self(
+            Money::ofMinor($minorPrice, $currency),
+        );
+    }
+
+    public static function fromMoney(Money $money): self
+    {
+        return new self($money);
     }
 
     public function getMoney(): Money

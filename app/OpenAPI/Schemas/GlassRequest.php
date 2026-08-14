@@ -6,7 +6,6 @@ namespace Kami\Cocktail\OpenAPI\Schemas;
 
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OAT;
-use Kami\Cocktail\Models\Glass as GlassModel;
 
 #[OAT\Schema(required: ['name'])]
 class GlassRequest
@@ -32,18 +31,6 @@ class GlassRequest
         $result->volume = $request->float('volume');
         $result->volumeUnits = $request->input('volume_units');
         $result->images = array_map(intval(...), $request->input('images', []));
-
-        return $result;
-    }
-
-    public function toLaravelModel(?GlassModel $model = null): GlassModel
-    {
-        $result = $model ?? new GlassModel();
-
-        $result->name = $this->name;
-        $result->description = $this->description;
-        $result->volume = $this->volume;
-        $result->volume_units = $this->volumeUnits;
 
         return $result;
     }

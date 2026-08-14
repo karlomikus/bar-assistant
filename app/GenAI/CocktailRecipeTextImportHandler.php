@@ -26,6 +26,7 @@ final readonly class CocktailRecipeTextImportHandler
                 new StringSchema('name', 'Title of the recipe'),
                 new StringSchema('instructions', 'Step by step instructions to prepare the cocktail'),
                 new StringSchema('garnish', 'Recommended garnish for the cocktail', true),
+                new StringSchema('author', 'Historical author or creator of the cocktail recipe', true),
                 new StringSchema('method', 'Cocktail preperation method.', true),
                 new StringSchema('description', 'Helpful description of the cocktail (1-2 short paragraphs)', true),
                 new ArraySchema('ingredients', 'List of ingredients', new ObjectSchema(
@@ -87,6 +88,10 @@ final readonly class CocktailRecipeTextImportHandler
             6) description
             - One brief paragraph describing history, flavor or style
             - If missing in source, generate a neutral non-marketing summary
+
+            7) author
+            - If the source mentions a specific person who created or popularized the cocktail, output their name
+            - Otherwise null
 
             COCKTAIL RECIPE:
             {$this->request->textRecipe}

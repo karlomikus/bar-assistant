@@ -21,6 +21,7 @@ enum OauthProvider: string
     case Keycloak = 'keycloak';
     case PocketId = 'pocketid';
     case Zitadel = 'zitadel';
+    case OpenIDConnect = 'OpenIDConnect';
 
     public function getPrettyName(): string
     {
@@ -34,6 +35,7 @@ enum OauthProvider: string
             self::Keycloak => 'Keycloak',
             self::PocketId => 'PocketId',
             self::Zitadel => 'Zitadel',
+            self::OpenIDConnect => 'OpenID Connect',
         };
     }
 }

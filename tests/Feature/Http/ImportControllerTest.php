@@ -40,7 +40,8 @@ class ImportControllerTest extends TestCase
             'duplicate_actions' => 'none',
         ]);
 
-        $response->assertSuccessful();
+        $response->assertCreated();
+        $response->assertHeader('Location');
     }
 
     public function test_import_csv_ingredients_from_file(): void
@@ -123,6 +124,6 @@ class ImportControllerTest extends TestCase
         ]);
 
         $response->assertSuccessful();
-        $response->assertJsonPath('data.schema.recipe.name', 'Negroni');
+        $response->assertJsonPath('data.schema.name', 'Negroni');
     }
 }

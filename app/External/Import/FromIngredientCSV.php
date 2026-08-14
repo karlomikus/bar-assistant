@@ -21,7 +21,6 @@ class FromIngredientCSV
     public function process(
         string $filepath,
         DuplicateActionsEnum $duplicateAction = DuplicateActionsEnum::None,
-        string $imageDirectoryBasePath = '',
     ): void {
         $existingIngredientNames = Ingredient::where('bar_id', $this->barId)
             ->pluck('name')
@@ -30,7 +29,7 @@ class FromIngredientCSV
 
         DB::beginTransaction();
         try {
-            Reader::createFromPath($filepath)
+            Reader::from($filepath)
                 ->setHeaderOffset(0)
                 ->filter(function (array $record) use ($existingIngredientNames, $duplicateAction) {
                     $record = array_change_key_case($record, CASE_LOWER);

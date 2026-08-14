@@ -17,6 +17,7 @@ tests
 pint.json
 .spectral.yml
 .todo
+.opencode/
 
 Dockerfile
 Dockerfile.dev
@@ -31,3 +32,5 @@ ecs.php
 
 SECURITY.md
 CONTRIBUTING.md
+.agents/
+skills-lock.json

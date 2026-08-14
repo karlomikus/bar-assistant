@@ -34,7 +34,7 @@ class ResourceBelongsToBar implements ValidationRule
             ->count();
 
         if ($count !== count((array) $value)) {
-            $fail('Selected resources are not part of the current bar');
+            $fail('One or more of the selected resources do not belong to the specified bar');
         }
     }
 }

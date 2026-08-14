@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+namespace BarAssistant\Application\Matcher\DTO;
+
+final readonly class IngredientMatchRequest
+{
+    public function __construct(
+        public int $barId,
+        public int $userId,
+        public string $ingredientName,
+    ) {
+    }
+}

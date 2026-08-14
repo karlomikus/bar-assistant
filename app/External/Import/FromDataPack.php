@@ -23,6 +23,12 @@ use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
 use Kami\Cocktail\External\Model\Calculator as CalculatorExternal;
 use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
 
+/**
+ * Used to import a bar from a datapack, which is a zip file containing JSON files with the bar data and images.
+ *
+ * The Datapack format is bar assistant specific format, basically containing whole bar data backup.
+ * It's also used to import initial bar data (cocktails+ingredients).
+ */
 class FromDataPack
 {
     private readonly Filesystem $uploadsDisk;
@@ -38,8 +44,11 @@ class FromDataPack
         $this->uploadsDisk = Storage::disk('uploads');
     }
 
-    public function process(Filesystem $dataDisk, Bar $bar, User $user, ?BarOptionsEnum $flag = null): bool
+    public function process(Filesystem $dataDisk, int $barId, int $userId, ?BarOptionsEnum $flag = null): bool
     {
+        $bar = Bar::findOrFail($barId);
+        $user = User::findOrFail($userId);
+
         Log::debug(sprintf('Starting datapack import for "%s"', $bar->name));
 
         $timerStart = microtime(true);

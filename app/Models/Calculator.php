@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Models;
 
 use NXP\MathExecutor;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use Kami\Cocktail\Models\Concerns\IsExternalized;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,7 +16,7 @@ use Kami\Cocktail\Models\Enums\CalculatorBlockTypeEnum;
 use Kami\Cocktail\Models\ValueObjects\CalculatorResult;
 use Kami\Cocktail\OpenAPI\Schemas\CalculatorSolveRequest;
 
-class Calculator extends Model implements IsExternalized
+class Calculator extends BaseModel implements IsExternalized
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\CalculatorFactory> */
     use HasFactory;

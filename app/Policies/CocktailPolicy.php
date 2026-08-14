@@ -23,7 +23,6 @@ class CocktailPolicy
         }
 
         return ($user->isBarAdmin($barId)
-            || $user->isBarModerator($barId)
             || $user->isBarGeneral($barId)) && !$hasReachedCocktailNumberLimit;
     }
 
@@ -35,15 +34,13 @@ class CocktailPolicy
     public function edit(User $user, Cocktail $cocktail): bool
     {
         return ($user->id === $cocktail->created_user_id && $user->hasBarMembership($cocktail->bar_id))
-            || $user->isBarAdmin($cocktail->bar_id)
-            || $user->isBarModerator($cocktail->bar_id);
+            || $user->isBarAdmin($cocktail->bar_id);
     }
 
     public function delete(User $user, Cocktail $cocktail): bool
     {
         return ($user->id === $cocktail->created_user_id && $user->hasBarMembership($cocktail->bar_id))
-            || $user->isBarAdmin($cocktail->bar_id)
-            || $user->isBarModerator($cocktail->bar_id);
+            || $user->isBarAdmin($cocktail->bar_id);
     }
 
     public function addNote(User $user, Cocktail $cocktail): bool

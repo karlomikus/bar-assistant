@@ -17,7 +17,6 @@ use Kami\RecipeUtils\AmountValue;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Collection;
 use Brick\Money\Context\DefaultContext;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Models\Concerns\HasNotes;
@@ -32,7 +31,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Kami\Cocktail\Models\Collection as CocktailCollection;
 
-class Cocktail extends Model implements UploadableInterface, IsExternalized
+class Cocktail extends BaseModel implements UploadableInterface, IsExternalized
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\CocktailFactory> */
     use HasFactory;
@@ -46,6 +45,7 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
 
     protected $casts = [
         'public_at' => 'datetime',
+        'public_expires_at' => 'datetime',
     ];
 
     public function getUploadPath(): string
@@ -289,7 +289,8 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
             'user_rating' => Rating::select('rating')
                 ->whereColumn('rateable_id', 'cocktails.id')
                 ->whereColumn('rateable_type', Cocktail::class)
-                ->where('user_id', $userId),
+                ->where('bar_memberships.user_id', $userId)
+                ->join('bar_memberships', 'bar_memberships.id', '=', 'ratings.bar_membership_id'),
         ]);
     }
 
@@ -337,15 +338,6 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
         return $this->distinct()->where('bar_id', $this->bar_id)->orderBy('name', 'desc')->limit(1)->where('name', '<', $this->name)->first();
     }
 
-    public function getUserShelfMatchPercentage(User $user): float
-    {
-        $currentShelf = $user->getShelfIngredients($this->bar_id);
-        $totalIngredients = $this->ingredients->count();
-        $matchIngredients = $this->ingredients->filter(fn (CocktailIngredient $ci) => $currentShelf->contains('ingredient_id', $ci->ingredient_id))->count();
-
-        return ($matchIngredients / $totalIngredients) * 100;
-    }
-
     public function getBarShelfMatchPercentage(): float
     {
         $currentShelf = $this->bar->shelfIngredients;
@@ -353,18 +345,6 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
         $matchIngredients = $this->ingredients->filter(fn (CocktailIngredient $ci) => $currentShelf->contains('ingredient_id', $ci->ingredient_id))->count();
 
         return ($matchIngredients / $totalIngredients) * 100;
-    }
-
-    public function inUserShelf(User $user): bool
-    {
-        $currentShelf = $user->getShelfIngredients($this->bar_id);
-        foreach ($this->ingredients as $ci) {
-            if (!$currentShelf->contains('ingredient_id', $ci->ingredient_id) && !$ci->optional) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public function inBarShelf(): bool
@@ -391,15 +371,15 @@ class Cocktail extends Model implements UploadableInterface, IsExternalized
                 '@type' => 'Organization',
                 'name' => "Recipe exported from Bar Assistant"
             ],
-            "name" => e($this->name),
+            "name" => $this->name,
             "datePublished" => $this->created_at->format('Y-m-d'),
-            "description" => e($this->description),
+            "description" => $this->description,
             "image" => [
                 "@type" => "ImageObject",
-                "author" => e($this->getMainImage()?->copyright),
+                "author" => $this->getMainImage()?->copyright,
                 "url" => $this->getMainImage()?->getImageUrl(),
             ],
-            'recipeInstructions' => e($this->instructions),
+            'recipeInstructions' => $this->instructions,
             "cookingMethod" => $this->method?->name,
             "recipeYield" => "1 drink",
             "recipeCategory" => "Drink",

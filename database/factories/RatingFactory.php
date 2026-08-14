@@ -18,7 +18,7 @@ class RatingFactory extends Factory
     {
         return [
             'rating' => fake()->numberBetween(1, 5),
-            'user_id' => \Kami\Cocktail\Models\User::factory(),
+            'bar_membership_id' => \Kami\Cocktail\Models\BarMembership::factory(),
         ];
     }
 }

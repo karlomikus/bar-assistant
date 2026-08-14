@@ -6,15 +6,15 @@ namespace Kami\Cocktail\External\Model;
 
 use Illuminate\Support\Str;
 use Kami\RecipeUtils\UnitConverter\Units;
-use Kami\Cocktail\External\SupportsDraft2;
 use Kami\Cocktail\External\SupportsJSONLD;
+use Kami\Cocktail\External\SupportsSchema4;
 use Kami\Cocktail\External\SupportsDataPack;
 use Kami\Cocktail\Models\Image as ImageModel;
 use Kami\Cocktail\Models\Cocktail as CocktailModel;
 use Kami\Cocktail\Models\ValueObjects\CocktailIngredientFormatter;
 use Kami\Cocktail\Models\CocktailIngredient as CocktailIngredientModel;
 
-readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSONLD
+readonly class Cocktail implements SupportsDataPack, SupportsSchema4, SupportsJSONLD
 {
     /**
      * @param array<string> $tags
@@ -40,6 +40,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
         public array $ingredients = [],
         public ?string $parentCocktailId = null,
         public ?int $year = null,
+        public ?string $author = null,
     ) {
     }
 
@@ -67,6 +68,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             $ingredients,
             $model->parentCocktail?->getExternalId(),
             $model->year,
+            $model->author,
         );
     }
 
@@ -100,6 +102,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             $ingredients,
             $sourceArray['parent_cocktail_id'] ?? null,
             $sourceArray['year'] ?? null,
+            isset($sourceArray['author']) && is_string($sourceArray['author']) ? $sourceArray['author'] : null,
         );
     }
 
@@ -121,21 +124,22 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             'utensils' => $this->utensils,
             'parent_cocktail_id' => $this->parentCocktailId,
             'year' => $this->year,
+            'author' => $this->author,
             'images' => array_map(fn ($model) => $model->toDataPackArray(), $this->images),
             'ingredients' => array_map(fn ($model) => $model->toDataPackArray(), $this->ingredients),
         ];
     }
 
-    public static function fromDraft2Array(array $sourceArray): self
+    public static function fromSchema4Array(array $sourceArray): self
     {
         $images = [];
         foreach ($sourceArray['images'] ?? [] as $sourceImage) {
-            $images[] = Image::fromDraft2Array($sourceImage);
+            $images[] = Image::fromSchema4Array($sourceImage);
         }
 
         $ingredients = [];
         foreach ($sourceArray['ingredients'] ?? [] as $sourceIngredient) {
-            $ingredients[] = CocktailIngredient::fromDraft2Array($sourceIngredient);
+            $ingredients[] = CocktailIngredient::fromSchema4Array($sourceIngredient);
         }
 
         return new self(
@@ -143,7 +147,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             $sourceArray['name'],
             $sourceArray['instructions'],
             $sourceArray['created_at'] ?? null,
-            $sourceArray['updated_at'] ?? null,
+            null,
             $sourceArray['description'] ?? null,
             $sourceArray['source'] ?? null,
             $sourceArray['garnish'] ?? null,
@@ -151,20 +155,21 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             $sourceArray['tags'] ?? [],
             $sourceArray['glass'] ?? null,
             $sourceArray['method'] ?? null,
-            $sourceArray['utensils'] ?? [],
+            [],
             $images,
             $ingredients,
+            null,
+            null,
+            isset($sourceArray['author']) && is_string($sourceArray['author']) ? $sourceArray['author'] : null,
         );
     }
 
-    public function toDraft2Array(): array
+    public function toSchema4Array(): array
     {
         return [
-            '_id' => $this->id,
             'name' => $this->name,
             'instructions' => $this->instructions,
             'created_at' => $this->createdAt,
-            'updated_at' => $this->updatedAt,
             'description' => $this->description,
             'source' => $this->source,
             'garnish' => $this->garnish,
@@ -172,9 +177,9 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             'tags' => $this->tags,
             'glass' => $this->glass,
             'method' => $this->method,
-            'utensils' => $this->utensils,
-            'images' => array_map(fn ($model) => $model->toDraft2Array(), $this->images),
-            'ingredients' => array_map(fn ($model) => $model->toDraft2Array(), $this->ingredients),
+            'images' => array_map(fn ($model) => $model->toSchema4Array(), $this->images),
+            'ingredients' => array_map(fn ($model) => $model->toSchema4Array(), $this->ingredients),
+            'author' => $this->author,
         ];
     }
 
@@ -186,7 +191,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
         if ($mainImage) {
             $image = [
                 "@type" => "ImageObject",
-                "author" => e($mainImage->copyright),
+                "author" => $mainImage->copyright,
                 "url" => $mainImage->uri,
             ];
         }
@@ -196,12 +201,12 @@ readonly class Cocktail implements SupportsDataPack, SupportsDraft2, SupportsJSO
             "@type" => "Recipe",
             "author" => [
                 '@type' => 'Organization',
-                'name' => "Bar Assistant | Source: " . e($this->source)
+                'name' => "Bar Assistant | Source: " . $this->source
             ],
-            "name" => e($this->name),
+            "name" => $this->name,
             "datePublished" => $this->createdAt,
-            "description" => e($this->description),
-            'recipeInstructions' => e($this->instructions),
+            "description" => $this->description,
+            'recipeInstructions' => $this->instructions,
             "cookingMethod" => $this->method,
             "recipeYield" => "1 drink",
             "recipeCategory" => "Drink",

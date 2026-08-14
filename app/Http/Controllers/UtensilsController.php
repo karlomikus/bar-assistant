@@ -7,12 +7,14 @@ namespace Kami\Cocktail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
-use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\Models\Utensil;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Http\Requests\UtensilRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\UtensilResource;
+use BarAssistant\Application\Cocktail\UtensilService;
+use BarAssistant\Application\Cocktail\DTO\CreateUtensil;
+use BarAssistant\Application\Cocktail\DTO\UpdateUtensil;
 
 class UtensilsController extends Controller
 {
@@ -62,22 +64,21 @@ class UtensilsController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function store(UtensilRequest $request): JsonResponse
+    public function store(UtensilService $utensilService, UtensilRequest $request): Response
     {
         if ($request->user()->cannot('create', Utensil::class)) {
             abort(403);
         }
 
-        $utensil = new Utensil();
-        $utensil->name = $request->input('name');
-        $utensil->description = $request->input('description');
-        $utensil->bar_id = bar()->id;
-        $utensil->save();
+        $utensilRequest = BAO\Schemas\UtensilRequest::fromLaravelRequest($request);
 
-        return (new UtensilResource($utensil))
-            ->response()
-            ->setStatusCode(201)
-            ->header('Location', route('utensils.show', $utensil->id));
+        $utensilResult = $utensilService->createUtensil(new CreateUtensil(
+            barId: bar()->id,
+            name: $utensilRequest->name,
+            description: $utensilRequest->description,
+        ));
+
+        return new Response(status: 201, headers: ['Location' => route('utensils.show', $utensilResult->id, false)]);
     }
 
     #[OAT\Put(path: '/utensils/{id}', tags: ['Utensils'], operationId: 'updateUtensil', description: 'Update a single utensil', summary: 'Update utensil', parameters: [
@@ -88,12 +89,10 @@ class UtensilsController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\UtensilRequest::class),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(UtensilResource::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(int $id, UtensilRequest $request): JsonResource
+    public function update(UtensilService $utensilService, int $id, UtensilRequest $request): Response
     {
         $utensil = Utensil::findOrFail($id);
 
@@ -101,12 +100,15 @@ class UtensilsController extends Controller
             abort(403);
         }
 
-        $utensil->name = $request->input('name');
-        $utensil->description = $request->input('description');
-        $utensil->updated_at = now();
-        $utensil->save();
+        $utensilRequest = BAO\Schemas\UtensilRequest::fromLaravelRequest($request);
 
-        return new UtensilResource($utensil);
+        $utensilService->updateUtensil(new UpdateUtensil(
+            utensilId: $id,
+            name: $utensilRequest->name,
+            description: $utensilRequest->description,
+        ));
+
+        return new Response(status: 204);
     }
 
     #[OAT\Delete(path: '/utensils/{id}', tags: ['Utensils'], operationId: 'deleteUtensil', description: 'Delete a single utensil', summary: 'Delete utensil', parameters: [
@@ -115,7 +117,7 @@ class UtensilsController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function delete(Request $request, int $id): Response
+    public function delete(UtensilService $utensilService, Request $request, int $id): Response
     {
         $utensil = Utensil::findOrFail($id);
 
@@ -123,7 +125,7 @@ class UtensilsController extends Controller
             abort(403);
         }
 
-        $utensil->delete();
+        $utensilService->deleteUtensil($id);
 
         return new Response(null, 204);
     }

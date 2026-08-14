@@ -6,12 +6,11 @@ namespace Kami\Cocktail\Models;
 
 use Brick\Money\Money;
 use Brick\Money\Currency;
-use Illuminate\Database\Eloquent\Model;
 use Brick\Money\Exception\UnknownCurrencyException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class MenuCocktail extends Model
+class MenuCocktail extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\MenuCocktailFactory> */
     use HasFactory;
@@ -20,11 +19,19 @@ class MenuCocktail extends Model
 
     protected $fillable = [
         'cocktail_id',
-        'category_name',
         'sort',
         'price',
         'currency',
+        'is_bar_inventory_aware',
+        'menu_category_id',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_bar_inventory_aware' => 'boolean',
+        ];
+    }
 
     /**
      * @return BelongsTo<Cocktail, $this>
@@ -35,11 +42,11 @@ class MenuCocktail extends Model
     }
 
     /**
-     * @return BelongsTo<Menu, $this>
+     * @return BelongsTo<MenuCategory, $this>
      */
-    public function menu(): BelongsTo
+    public function menuCategory(): BelongsTo
     {
-        return $this->belongsTo(Menu::class);
+        return $this->belongsTo(MenuCategory::class);
     }
 
     public function getMoney(): Money

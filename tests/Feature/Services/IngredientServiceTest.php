@@ -17,35 +17,52 @@ class IngredientServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_it_correctly_matches_all_possible_member_ingredients(): void
+    public function test_get_ingredients_for_possible_cocktails_with_empty_shelf(): void
     {
         $membership = $this->setupBarMembership();
         $this->actingAs($membership->user);
 
-        // Random ingredients
-        Ingredient::factory()->for($membership->bar)->count(10)->create();
-        // Normal ingredient in shelf
-        $ingredient1 = Ingredient::factory()->for($membership->bar)->create();
-        // Variant ingredient in shelf
-        $ingredient2 = Ingredient::factory()->for($membership->bar)->create();
-        $ingredient3 = Ingredient::factory()->for($membership->bar)->create();
-        $ingredient3->appendAsChildOf($ingredient2);
-        // Complex ingredient in shelf
-        $ingredient4 = Ingredient::factory()->for($membership->bar)->create();
-        $ingredient5 = Ingredient::factory()->for($membership->bar)->create();
-        $ingredient6 = Ingredient::factory()->for($membership->bar)->create();
-        ComplexIngredient::factory()->for($ingredient4, 'ingredient')->for($ingredient6, 'mainIngredient')->create();
-        ComplexIngredient::factory()->for($ingredient5, 'ingredient')->for($ingredient6, 'mainIngredient')->create();
+        $vodka = Ingredient::factory()->for($membership->bar)->create(['name' => 'Vodka']);
+        $gin = Ingredient::factory()->for($membership->bar)->create(['name' => 'Gin']);
+        $limeJuice = Ingredient::factory()->for($membership->bar)->create(['name' => 'Lime Juice']);
+        $tonic = Ingredient::factory()->for($membership->bar)->create(['name' => 'Tonic Water']);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Unused Ingredient']);
 
-        UserIngredient::factory()->for($membership)->for($ingredient1)->create();
-        UserIngredient::factory()->for($membership)->for($ingredient2)->create();
-        UserIngredient::factory()->for($membership)->for($ingredient4)->create();
-        UserIngredient::factory()->for($membership)->for($ingredient5)->create();
+        // Cocktail 1: Vodka + Lime Juice
+        $cocktail1 = Cocktail::factory()->for($membership->bar)->create(['name' => 'Vodka Lime']);
+        CocktailIngredient::factory()->for($cocktail1, 'cocktail')->for($vodka, 'ingredient')->create(['sort' => 1, 'optional' => false]);
+        CocktailIngredient::factory()->for($cocktail1, 'cocktail')->for($limeJuice, 'ingredient')->create(['sort' => 2, 'optional' => false]);
 
-        $repository = resolve(IngredientService::class);
-        $ingredients = $repository->getMemberIngredients($membership->user_id, $membership->bar_id);
+        // Cocktail 2: Gin + Lime Juice
+        $cocktail2 = Cocktail::factory()->for($membership->bar)->create(['name' => 'Gin Lime']);
+        CocktailIngredient::factory()->for($cocktail2, 'cocktail')->for($gin, 'ingredient')->create(['sort' => 1, 'optional' => false]);
+        CocktailIngredient::factory()->for($cocktail2, 'cocktail')->for($limeJuice, 'ingredient')->create(['sort' => 2, 'optional' => false]);
 
-        $this->assertCount(6, $ingredients);
+        // Cocktail 3: Gin + Tonic
+        $cocktail3 = Cocktail::factory()->for($membership->bar)->create(['name' => 'Gin Tonic']);
+        CocktailIngredient::factory()->for($cocktail3, 'cocktail')->for($gin, 'ingredient')->create(['sort' => 1, 'optional' => false]);
+        CocktailIngredient::factory()->for($cocktail3, 'cocktail')->for($tonic, 'ingredient')->create(['sort' => 2, 'optional' => false]);
+
+        $service = resolve(IngredientService::class);
+        $results = $service->getIngredientsOrderedByUnlockedCocktails($membership->bar_id, []);
+
+        $this->assertNotEmpty($results);
+
+        // Lime Juice and Gin both appear in 2 cocktails; Gin sorts first by name among ties
+        $this->assertEquals($gin->id, $results[0]->id);
+        $this->assertEquals(2, $results[0]->potential_cocktails);
+
+        $this->assertEquals($limeJuice->id, $results[1]->id);
+        $this->assertEquals(2, $results[1]->potential_cocktails);
+
+        $this->assertEquals($tonic->id, $results[2]->id);
+        $this->assertEquals(1, $results[2]->potential_cocktails);
+
+        $this->assertEquals($vodka->id, $results[3]->id);
+        $this->assertEquals(1, $results[3]->potential_cocktails);
+
+        // Unused ingredients must not appear
+        $this->assertCount(4, $results);
     }
 
     public function test_get_ingredients_for_possible_cocktails(): void
@@ -66,59 +83,63 @@ class IngredientServiceTest extends TestCase
         // Create cocktails with different ingredient combinations
         // Cocktail 1: Uses ingredient1 (in shelf) + ingredient5 (not in shelf)
         $cocktail1 = Cocktail::factory()->for($membership->bar)->create(['name' => 'Vodka Lime']);
-        CocktailIngredient::factory()->for($cocktail1, 'cocktail')->for($ingredient1, 'ingredient')->create(['sort' => 1]);
-        CocktailIngredient::factory()->for($cocktail1, 'cocktail')->for($ingredient5, 'ingredient')->create(['sort' => 2]);
+        CocktailIngredient::factory()->for($cocktail1, 'cocktail')->for($ingredient1, 'ingredient')->create(['sort' => 1, 'optional' => false]);
+        CocktailIngredient::factory()->for($cocktail1, 'cocktail')->for($ingredient5, 'ingredient')->create(['sort' => 2, 'optional' => false]);
 
         // Cocktail 2: Uses ingredient1 (in shelf) + ingredient5 (not in shelf)
         $cocktail2 = Cocktail::factory()->for($membership->bar)->create(['name' => 'Vodka Lime Special']);
-        CocktailIngredient::factory()->for($cocktail2, 'cocktail')->for($ingredient1, 'ingredient')->create(['sort' => 1]);
-        CocktailIngredient::factory()->for($cocktail2, 'cocktail')->for($ingredient5, 'ingredient')->create(['sort' => 2]);
+        CocktailIngredient::factory()->for($cocktail2, 'cocktail')->for($ingredient1, 'ingredient')->create(['sort' => 1, 'optional' => false]);
+        CocktailIngredient::factory()->for($cocktail2, 'cocktail')->for($ingredient5, 'ingredient')->create(['sort' => 2, 'optional' => false]);
 
         // Cocktail 3: Uses ingredient2 (in shelf) + ingredient5 (not in shelf)
         $cocktail3 = Cocktail::factory()->for($membership->bar)->create(['name' => 'Gin Lime']);
-        CocktailIngredient::factory()->for($cocktail3, 'cocktail')->for($ingredient2, 'ingredient')->create(['sort' => 1]);
-        CocktailIngredient::factory()->for($cocktail3, 'cocktail')->for($ingredient5, 'ingredient')->create(['sort' => 2]);
+        CocktailIngredient::factory()->for($cocktail3, 'cocktail')->for($ingredient2, 'ingredient')->create(['sort' => 1, 'optional' => false]);
+        CocktailIngredient::factory()->for($cocktail3, 'cocktail')->for($ingredient5, 'ingredient')->create(['sort' => 2, 'optional' => false]);
 
         // Cocktail 4: Uses ingredient1 (in shelf) + ingredient6 (not in shelf)
         $cocktail4 = Cocktail::factory()->for($membership->bar)->create(['name' => 'Vodka Simple']);
-        CocktailIngredient::factory()->for($cocktail4, 'cocktail')->for($ingredient1, 'ingredient')->create(['sort' => 1]);
-        CocktailIngredient::factory()->for($cocktail4, 'cocktail')->for($ingredient6, 'ingredient')->create(['sort' => 2]);
+        CocktailIngredient::factory()->for($cocktail4, 'cocktail')->for($ingredient1, 'ingredient')->create(['sort' => 1, 'optional' => false]);
+        CocktailIngredient::factory()->for($cocktail4, 'cocktail')->for($ingredient6, 'ingredient')->create(['sort' => 2, 'optional' => false]);
 
         // Cocktail 5: Uses ingredient7 (not in shelf) + ingredient8 (not in shelf)
         $cocktail5 = Cocktail::factory()->for($membership->bar)->create(['name' => 'Triple Sec Tonic']);
-        CocktailIngredient::factory()->for($cocktail5, 'cocktail')->for($ingredient7, 'ingredient')->create(['sort' => 1]);
-        CocktailIngredient::factory()->for($cocktail5, 'cocktail')->for($ingredient8, 'ingredient')->create(['sort' => 2]);
+        CocktailIngredient::factory()->for($cocktail5, 'cocktail')->for($ingredient7, 'ingredient')->create(['sort' => 1, 'optional' => false]);
+        CocktailIngredient::factory()->for($cocktail5, 'cocktail')->for($ingredient8, 'ingredient')->create(['sort' => 2, 'optional' => false]);
 
         // User has ingredient1 (Vodka) and ingredient2 (Gin) in their shelf
         UserIngredient::factory()->for($membership)->for($ingredient1)->create();
         UserIngredient::factory()->for($membership)->for($ingredient2)->create();
 
         $service = resolve(IngredientService::class);
-        $results = $service->getIngredientsForPossibleCocktails($membership->bar_id, [$ingredient1->id, $ingredient2->id]);
+        $results = $service->getIngredientsOrderedByUnlockedCocktails($membership->bar_id, [$ingredient1->id, $ingredient2->id]);
 
-        // ingredient5 (Lime Juice) should unlock 3 cocktails (cocktail1, cocktail2, cocktail3)
-        // ingredient6 (Simple Syrup) should unlock 1 cocktail (cocktail4)
-        // ingredient7 and ingredient8 should unlock 0 cocktails (cocktail5 needs both)
+        // ingredient5 (Lime Juice) is missing from 3 cocktails (cocktail1, cocktail2, cocktail3)
+        // ingredient6/7/8 are each missing from 1 cocktail
 
         $this->assertIsArray($results);
         $this->assertNotEmpty($results);
 
-        // Find Lime Juice in results
         $limeJuiceResult = collect($results)->firstWhere('id', $ingredient5->id);
         $this->assertNotNull($limeJuiceResult);
         $this->assertEquals('Lime Juice', $limeJuiceResult->name);
         $this->assertEquals(3, $limeJuiceResult->potential_cocktails);
 
-        // Find Simple Syrup in results
         $simpleSyrupResult = collect($results)->firstWhere('id', $ingredient6->id);
         $this->assertNotNull($simpleSyrupResult);
         $this->assertEquals('Simple Syrup', $simpleSyrupResult->name);
         $this->assertEquals(1, $simpleSyrupResult->potential_cocktails);
 
-        // Verify results are ordered by potential_cocktails DESC
-        $firstResult = $results[0];
-        $this->assertEquals($ingredient5->id, $firstResult->id);
-        $this->assertEquals(3, $firstResult->potential_cocktails);
+        $tripleSecResult = collect($results)->firstWhere('id', $ingredient7->id);
+        $this->assertNotNull($tripleSecResult);
+        $this->assertEquals(1, $tripleSecResult->potential_cocktails);
+
+        $tonicResult = collect($results)->firstWhere('id', $ingredient8->id);
+        $this->assertNotNull($tonicResult);
+        $this->assertEquals(1, $tonicResult->potential_cocktails);
+
+        // Ordered by potential_cocktails DESC
+        $this->assertEquals($ingredient5->id, $results[0]->id);
+        $this->assertEquals(3, $results[0]->potential_cocktails);
     }
 
     public function test_get_ingredients_for_possible_cocktails_with_complex_ingredients(): void
@@ -139,8 +160,8 @@ class IngredientServiceTest extends TestCase
 
         // Create a cocktail that uses the complex ingredient
         $cocktail = Cocktail::factory()->for($membership->bar)->create(['name' => 'Complex Cocktail']);
-        CocktailIngredient::factory()->for($cocktail, 'cocktail')->for($ingredient1, 'ingredient')->create(['sort' => 1]);
-        CocktailIngredient::factory()->for($cocktail, 'cocktail')->for($complexIngredient, 'ingredient')->create(['sort' => 2]);
+        CocktailIngredient::factory()->for($cocktail, 'cocktail')->for($ingredient1, 'ingredient')->create(['sort' => 1, 'optional' => false]);
+        CocktailIngredient::factory()->for($cocktail, 'cocktail')->for($complexIngredient, 'ingredient')->create(['sort' => 2, 'optional' => false]);
 
         // User has base spirit, Part A, and Part B (which means they can make the complex ingredient)
         UserIngredient::factory()->for($membership)->for($ingredient1)->create();
@@ -148,7 +169,7 @@ class IngredientServiceTest extends TestCase
         UserIngredient::factory()->for($membership)->for($ingredient3)->create();
 
         $service = resolve(IngredientService::class);
-        $results = $service->getIngredientsForPossibleCocktails(
+        $results = $service->getIngredientsOrderedByUnlockedCocktails(
             $membership->bar_id,
             [$ingredient1->id, $ingredient2->id, $ingredient3->id]
         );
@@ -174,20 +195,58 @@ class IngredientServiceTest extends TestCase
 
         // Create cocktails in both bars
         $bar1Cocktail = Cocktail::factory()->for($membership1->bar)->create();
-        CocktailIngredient::factory()->for($bar1Cocktail, 'cocktail')->for($bar1Ingredient1, 'ingredient')->create();
-        CocktailIngredient::factory()->for($bar1Cocktail, 'cocktail')->for($bar1Ingredient2, 'ingredient')->create();
+        CocktailIngredient::factory()->for($bar1Cocktail, 'cocktail')->for($bar1Ingredient1, 'ingredient')->create(['optional' => false]);
+        CocktailIngredient::factory()->for($bar1Cocktail, 'cocktail')->for($bar1Ingredient2, 'ingredient')->create(['optional' => false]);
 
         $bar2Cocktail = Cocktail::factory()->for($membership2->bar)->create();
-        CocktailIngredient::factory()->for($bar2Cocktail, 'cocktail')->for($bar2Ingredient1, 'ingredient')->create();
-        CocktailIngredient::factory()->for($bar2Cocktail, 'cocktail')->for($bar2Ingredient2, 'ingredient')->create();
+        CocktailIngredient::factory()->for($bar2Cocktail, 'cocktail')->for($bar2Ingredient1, 'ingredient')->create(['optional' => false]);
+        CocktailIngredient::factory()->for($bar2Cocktail, 'cocktail')->for($bar2Ingredient2, 'ingredient')->create(['optional' => false]);
 
         $service = resolve(IngredientService::class);
-        $results = $service->getIngredientsForPossibleCocktails($membership1->bar_id, [$bar1Ingredient1->id]);
+        $results = $service->getIngredientsOrderedByUnlockedCocktails($membership1->bar_id, [$bar1Ingredient1->id]);
 
         // Should only return ingredients from bar 1
         $resultIds = collect($results)->pluck('id')->toArray();
         $this->assertContains($bar1Ingredient2->id, $resultIds);
         $this->assertNotContains($bar2Ingredient1->id, $resultIds);
         $this->assertNotContains($bar2Ingredient2->id, $resultIds);
+    }
+
+    public function test_get_ingredients_for_possible_cocktails_matches_descendant_ingredients_for_unspecified_requirements(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $baseSpirit = Ingredient::factory()->for($membership->bar)->create(['name' => 'Base Spirit']);
+        $citrus = Ingredient::factory()->for($membership->bar)->create(['name' => 'Citrus']);
+        $limeJuice = Ingredient::factory()->for($membership->bar)->create([
+            'name' => 'Lime Juice',
+            'parent_ingredient_id' => $citrus->id,
+        ]);
+        $simpleSyrup = Ingredient::factory()->for($membership->bar)->create(['name' => 'Simple Syrup']);
+
+        $service = resolve(IngredientService::class);
+        $service->rebuildMaterializedPath($membership->bar_id);
+
+        $cocktail = Cocktail::factory()->for($membership->bar)->create(['name' => 'Citrus Sour']);
+        CocktailIngredient::factory()->for($cocktail, 'cocktail')->for($baseSpirit, 'ingredient')->create(['sort' => 1, 'optional' => false]);
+        CocktailIngredient::factory()->for($cocktail, 'cocktail')->for($citrus, 'ingredient')->create([
+            'sort' => 2,
+            'optional' => false,
+            'is_specified' => false,
+        ]);
+        CocktailIngredient::factory()->for($cocktail, 'cocktail')->for($simpleSyrup, 'ingredient')->create(['sort' => 3, 'optional' => false]);
+
+        UserIngredient::factory()->for($membership)->for($baseSpirit)->create();
+        UserIngredient::factory()->for($membership)->for($limeJuice)->create();
+
+        $results = $service->getIngredientsOrderedByUnlockedCocktails($membership->bar_id, [$baseSpirit->id, $limeJuice->id]);
+
+        $simpleSyrupResult = collect($results)->firstWhere('id', $simpleSyrup->id);
+        $this->assertNotNull($simpleSyrupResult);
+        $this->assertEquals(1, $simpleSyrupResult->potential_cocktails);
+
+        $citrusResult = collect($results)->firstWhere('id', $citrus->id);
+        $this->assertNull($citrusResult);
     }
 }

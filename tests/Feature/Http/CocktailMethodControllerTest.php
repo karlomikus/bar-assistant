@@ -68,16 +68,15 @@ class CocktailMethodControllerTest extends TestCase
         ], ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
         $response->assertCreated();
-        $this->assertNotEmpty($response->headers->get('Location'));
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->has('data.id')
-                ->where('data.name', 'Test method')
-                ->where('data.dilution_percentage', 32)
-                ->etc()
-        );
+        $response->assertHeader('Location');
+
+        $method = CocktailMethod::query()->where('name', 'Test method')->firstOrFail();
+        $this->assertDatabaseHas('cocktail_methods', [
+            'id' => $method->id,
+            'name' => 'Test method',
+            'dilution_percentage' => 32,
+            'bar_id' => $this->barMembership->bar_id,
+        ]);
     }
 
     public function test_update_method_response(): void
@@ -92,16 +91,12 @@ class CocktailMethodControllerTest extends TestCase
             'dilution_percentage' => 12,
         ]);
 
-        $response->assertSuccessful();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data')
-                ->where('data.id', $model->id)
-                ->where('data.name', 'Test method')
-                ->where('data.dilution_percentage', 12)
-                ->etc()
-        );
+        $response->assertNoContent();
+        $this->assertDatabaseHas('cocktail_methods', [
+            'id' => $model->id,
+            'name' => 'Test method',
+            'dilution_percentage' => 12,
+        ]);
     }
 
     public function test_delete_method_response(): void

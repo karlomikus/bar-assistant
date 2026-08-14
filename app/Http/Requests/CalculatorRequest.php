@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Kami\Cocktail\Models\Enums\CalculatorBlockTypeEnum;
 
 class CalculatorRequest extends FormRequest
 {
@@ -27,6 +29,10 @@ class CalculatorRequest extends FormRequest
     {
         return [
             'name' => 'required',
+            'blocks' => 'array',
+            'blocks.*.label' => 'required',
+            'blocks.*.variable_name' => 'required',
+            'blocks.*.type' => ['required', Rule::enum(CalculatorBlockTypeEnum::class)],
         ];
     }
 }

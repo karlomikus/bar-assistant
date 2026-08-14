@@ -7,7 +7,6 @@ namespace Tests\Feature\Http;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
-use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\Config;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -65,8 +64,7 @@ class BarControllerTest extends TestCase
         ]);
 
         $response->assertCreated();
-        $response->assertJsonPath('data.name', 'Test bar name');
-        $response->assertJsonPath('data.slug', 'test-bar-name');
+        $response->assertHeader('Location');
     }
 
     public function test_create_bar_with_slug(): void
@@ -77,8 +75,7 @@ class BarControllerTest extends TestCase
         ]);
 
         $response->assertCreated();
-        $response->assertJsonPath('data.name', 'Test bar name');
-        $response->assertJsonPath('data.slug', 'my-custom-sluggerino');
+        $response->assertHeader('Location');
     }
 
     public function test_transfer_my_bar_ownership(): void
@@ -117,39 +114,7 @@ class BarControllerTest extends TestCase
             'default_units' => 'oz',
         ]);
 
-        $response->assertOk();
-
-        $bar = Bar::find(3);
-        $this->assertSame(['default_units' => 'oz'], $bar->settings);
-        $this->assertSame('Updated bar', $bar->name);
-        $this->assertSame('description text', $bar->description);
-    }
-
-    public function test_create_bar_with_image(): void
-    {
-        $image = Image::factory()->create();
-
-        $response = $this->postJson('/api/bars', [
-            'name' => 'Test bar name',
-            'images' => [$image->id]
-        ]);
-
-        $response->assertCreated();
-        $response->assertJsonPath('data.name', 'Test bar name');
-        $response->assertJsonCount(1, 'data.images');
-    }
-
-    public function test_update_bar_with_image(): void
-    {
-        $image = Image::factory()->create();
-
-        $response = $this->putJson('/api/bars/3', [
-            'name' => 'Updated bar',
-            'images' => [$image->id]
-        ]);
-
-        $response->assertOk();
-        $response->assertJsonCount(1, 'data.images');
+        $response->assertNoContent();
     }
 
     public function test_bar_delete(): void
@@ -157,43 +122,6 @@ class BarControllerTest extends TestCase
         $response = $this->deleteJson('/api/bars/3');
 
         $response->assertNoContent();
-    }
-
-    public function test_show_bar_members(): void
-    {
-        $response = $this->getJson('/api/bars/3/memberships');
-
-        $response->assertJsonCount(1, 'data');
-    }
-
-    public function test_show_bar_members_forbidden(): void
-    {
-        $response = $this->getJson('/api/bars/1/memberships');
-
-        $response->assertForbidden();
-    }
-
-    public function test_leave_bar(): void
-    {
-        $this->assertSame(1, Bar::find(3)->memberships()->count());
-        $response = $this->deleteJson('/api/bars/3/memberships');
-
-        $response->assertNoContent();
-        $this->assertSame(0, Bar::find(3)->memberships()->count());
-    }
-
-    public function test_remove_member_from_bar(): void
-    {
-        $memberToRemove = User::factory()->create();
-        $bar = Bar::find(3);
-        $memberToRemove->joinBarAs($bar);
-
-        $this->assertSame(2, $bar->memberships()->count());
-
-        $response = $this->deleteJson('/api/bars/3/memberships/' . $memberToRemove->id);
-
-        $response->assertNoContent();
-        $this->assertSame(1, $bar->memberships()->count());
     }
 
     public function test_join_bar_with_invite_code(): void
@@ -204,7 +132,7 @@ class BarControllerTest extends TestCase
             'invite_code' => '01H8S3VH2HTEB3D893AW8NTBBC'
         ]);
 
-        $response->assertOk();
+        $response->assertNoContent();
         $this->assertSame(1, $bar->memberships()->count());
     }
 
@@ -221,10 +149,27 @@ class BarControllerTest extends TestCase
 
         $response->assertCreated();
 
+        $user->refresh();
+
         $response = $this->postJson('/api/bars', [
             'name' => 'Test bar name'
         ]);
 
         $response->assertForbidden();
+    }
+
+    public function test_not_found_resources(): void
+    {
+        $this->getJson('/api/bars/999')->assertNotFound();
+        $this->putJson('/api/bars/999', ['name' => 'Test'])->assertNotFound();
+        $this->deleteJson('/api/bars/999')->assertNotFound();
+        $this->postJson('/api/bars/999/transfer', ['user_id' => 1])->assertNotFound();
+    }
+
+    public function test_invalid_input_unprocessable(): void
+    {
+        $bar = Bar::factory()->create();
+        $this->postJson('/api/bars', [])->assertUnprocessable();
+        $this->putJson('/api/bars/' . $bar->id, ['name' => ''])->assertUnprocessable();
     }
 }

@@ -39,7 +39,7 @@ readonly class CalculatorBlockRequest
         $settings = new CalculatorBlockSettings();
         $settings->suffix = $source['settings']['suffix'] ?? null;
         $settings->prefix = $source['settings']['prefix'] ?? null;
-        $settings->decimalPlaces = $source['settings']['decimal_places'] ?? null;
+        $settings->decimalPlaces = isset($source['settings']['decimal_places']) ? (int) $source['settings']['decimal_places'] : null;
 
         return new self(
             $source['label'],

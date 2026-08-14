@@ -60,16 +60,6 @@ final class CocktailQueryFilter extends QueryBuilder
                         $query->userFavorites($barMembership->id);
                     }
                 }),
-                AllowedFilter::callback('on_shelf', function ($query, $value) {
-                    if ($value === true) {
-                        $query->whereIn('cocktails.id', $this->request->user()->getShelfCocktailsOnce(bar()->id));
-                    }
-                }),
-                AllowedFilter::callback('locked_user_cocktails', function ($query, $value) {
-                    if ($value === true) {
-                        $query->whereNotIn('cocktails.id', $this->request->user()->getShelfCocktailsOnce(bar()->id));
-                    }
-                }),
                 AllowedFilter::callback('bar_shelf', function ($query, $value) {
                     if ($value === true) {
                         $query->whereIn('cocktails.id', bar()->getShelfCocktailsOnce());
@@ -90,7 +80,6 @@ final class CocktailQueryFilter extends QueryBuilder
                         ->join('user_ingredients', 'user_ingredients.bar_membership_id', '=', 'bar_memberships.id')
                         ->whereIn('bar_memberships.user_id', $value)
                         ->where('bar_memberships.bar_id', bar()->id)
-                        ->where('bar_memberships.is_shelf_public', true)
                         ->get();
 
                     $query->whereIn('cocktails.id', $cocktailRepo->getCocktailsByIngredients(

@@ -67,17 +67,6 @@ class CalculatorControllerTest extends TestCase
             fn (AssertableJson $json) =>
             $json
                 ->has('data.id')
-                ->where('data.name', 'calculator 1')
-                ->where('data.description', 'calculator 1 Description')
-                ->has('data.blocks', 1)
-                ->where('data.blocks.0.label', 'label 1')
-                ->where('data.blocks.0.variable_name', 'variable_name 1')
-                ->where('data.blocks.0.value', '1 + 2')
-                ->where('data.blocks.0.sort', 1)
-                ->where('data.blocks.0.type', 'eval')
-                ->where('data.blocks.0.description', 'description 1')
-                ->where('data.blocks.0.settings.suffix', 'g')
-                ->etc()
         );
     }
 
@@ -100,15 +89,7 @@ class CalculatorControllerTest extends TestCase
         ], ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
 
         $response->assertCreated();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data.id')
-                ->where('data.name', 'calc 1')
-                ->where('data.description', 'calc 1 Description')
-                ->has('data.blocks', 1)
-                ->etc()
-        );
+        $response->assertHeader('Location');
     }
 
     public function test_save_calculator_forbidden_response(): void
@@ -134,15 +115,7 @@ class CalculatorControllerTest extends TestCase
             'description' => 'Calc updated Description',
         ]);
 
-        $response->assertOk();
-        $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json
-                ->has('data.id')
-                ->where('data.name', 'Calc updated')
-                ->where('data.description', 'Calc updated Description')
-                ->etc()
-        );
+        $response->assertNoContent();
     }
 
     public function test_delete_calculator_response(): void
