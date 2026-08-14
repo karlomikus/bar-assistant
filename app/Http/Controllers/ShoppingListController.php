@@ -65,6 +65,7 @@ class ShoppingListController extends Controller
             abort(403);
         }
 
+        /** @var array<int, array{id: int, quantity?: int}> $ingredients */
         $ingredients = $request->input('ingredients', []);
 
         Validator::make($ingredients, [

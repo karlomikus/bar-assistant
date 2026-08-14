@@ -1657,26 +1657,8 @@ parameters:
 			path: app/Http/Controllers/ServerController.php
 
 		-
-			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: app/Http/Controllers/ShoppingListController.php
-
-		-
 			message: '#^Binary operation "\." between ''Requested type "'' and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
-			count: 1
-			path: app/Http/Controllers/ShoppingListController.php
-
-		-
-			message: '#^Cannot access offset ''id'' on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: app/Http/Controllers/ShoppingListController.php
-
-		-
-			message: '#^Cannot access offset ''quantity'' on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: app/Http/Controllers/ShoppingListController.php
 
@@ -1693,26 +1675,8 @@ parameters:
 			path: app/Http/Controllers/ShoppingListController.php
 
 		-
-			message: '#^Parameter \#1 \$data of static method Illuminate\\Support\\Facades\\Validator\:\:make\(\) expects array, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Http/Controllers/ShoppingListController.php
-
-		-
 			message: '#^Parameter \$ingredientIds of class BarAssistant\\Application\\Bar\\DTO\\MemberShoppingListRemoveIngredientRequest constructor expects array\<int\>, array\<mixed\> given\.$#'
 			identifier: argument.type
-			count: 1
-			path: app/Http/Controllers/ShoppingListController.php
-
-		-
-			message: '#^Parameter \$ingredientQuantities of class BarAssistant\\Application\\Bar\\DTO\\MemberShoppingListChangeRequest constructor expects array\<int, int\>, array\<mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Http/Controllers/ShoppingListController.php
-
-		-
-			message: '#^Possibly invalid array key type mixed\.$#'
-			identifier: offsetAccess.invalidOffset
 			count: 1
 			path: app/Http/Controllers/ShoppingListController.php
 
