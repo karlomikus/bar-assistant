@@ -8,12 +8,13 @@ use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Kami\Cocktail\Models\Concerns\IsExternalized;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Glass extends BaseModel
+class Glass extends BaseModel implements IsExternalized
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\GlassFactory> */
     use HasFactory;
@@ -24,6 +25,11 @@ class Glass extends BaseModel
     public function getUploadPath(): string
     {
         return 'glasses/' . $this->bar_id . '/';
+    }
+
+    public function getExternalId(): string
+    {
+        return Str::slug($this->name) . '_' . $this->id;
     }
 
     public function getSlugAttribute(): string
