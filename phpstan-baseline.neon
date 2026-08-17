@@ -1059,7 +1059,7 @@ parameters:
 		-
 			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
 			identifier: method.nonObject
-			count: 8
+			count: 9
 			path: app/Http/Controllers/BarController.php
 
 		-
@@ -1843,18 +1843,6 @@ parameters:
 			path: app/Http/Controllers/UtensilsController.php
 
 		-
-			message: '#^Cannot access property \$bar_id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
-			identifier: property.nonObject
-			count: 4
-			path: app/Http/Filters/CocktailQueryFilter.php
-
-		-
-			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
-			identifier: property.nonObject
-			count: 4
-			path: app/Http/Filters/CocktailQueryFilter.php
-
-		-
 			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
 			identifier: property.nonObject
 			count: 1
@@ -1941,7 +1929,7 @@ parameters:
 		-
 			message: '#^Cannot call method userFavorites\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 1
+			count: 2
 			path: app/Http/Filters/CocktailQueryFilter.php
 
 		-
@@ -1977,7 +1965,7 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
-			count: 11
+			count: 12
 			path: app/Http/Filters/CocktailQueryFilter.php
 
 		-
@@ -3044,24 +3032,6 @@ parameters:
 
 		-
 			message: '#^Cannot call method format\(\) on Carbon\\Carbon\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Models/Cocktail.php
-
-		-
-			message: '#^Cannot call method from\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Models/Cocktail.php
-
-		-
-			message: '#^Cannot call method select\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Models/Cocktail.php
-
-		-
-			message: '#^Cannot call method where\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
 			path: app/Models/Cocktail.php

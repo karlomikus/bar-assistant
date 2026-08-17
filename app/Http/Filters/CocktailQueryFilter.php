@@ -9,6 +9,7 @@ use Kami\Cocktail\Models\Cocktail;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
+use Kami\Cocktail\Models\BarMembership;
 use Spatie\QueryBuilder\AllowedInclude;
 use Kami\Cocktail\Services\CocktailService;
 
@@ -22,6 +23,9 @@ final class CocktailQueryFilter extends QueryBuilder
         parent::__construct(Cocktail::query());
 
         $barMembership = $this->request->user()->getBarMembership(bar()->id);
+        if (!$barMembership) {
+            abort(403, 'No bar membership');
+        }
 
         $this
             ->allowedFilters([
@@ -56,9 +60,34 @@ final class CocktailQueryFilter extends QueryBuilder
                     });
                 }),
                 AllowedFilter::callback('favorites', function ($query, $value) use ($barMembership) {
+                    // TODO: Deprecate this filter in favor of favorited_by_user
                     if ($value === true) {
-                        $query->userFavorites($barMembership->id);
+                        $query->userFavorites([$barMembership->id]);
                     }
+                }),
+                AllowedFilter::callback('favorited_by_user', function ($query, $value) use ($barMembership) {
+                    if (!is_array($value)) {
+                        $rawValues = [$value];
+                    } else {
+                        $rawValues = $value;
+                    }
+
+                    $userIds = array_values(array_unique(array_filter(
+                        array_map(fn ($v) => (int) $v, $rawValues),
+                        fn ($v) => $v > 0,
+                    )));
+
+                    if ($userIds === []) {
+                        return;
+                    }
+
+                    $resolvedBarMembershipIds = BarMembership::query()
+                        ->whereIn('user_id', $userIds)
+                        ->where('bar_id', $barMembership->bar_id)
+                        ->pluck('id')
+                        ->all();
+
+                    $query->userFavorites($resolvedBarMembershipIds);
                 }),
                 AllowedFilter::callback('bar_shelf', function ($query, $value) {
                     if ($value === true) {
