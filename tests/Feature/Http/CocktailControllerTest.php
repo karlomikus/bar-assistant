@@ -892,10 +892,10 @@ class CocktailControllerTest extends TestCase
         $response->assertOk();
         $response->assertJsonCount(2, 'data');
 
-        // Two users returns the intersection (user2 AND user3 -> A only)
+        // Two users returns the union
         $response = $this->getJson('/api/cocktails?filter[favorited_by_user]=' . $user2->id . ',' . $user3->id);
         $response->assertOk();
-        $response->assertJsonCount(1, 'data');
+        $response->assertJsonCount(2, 'data');
         $response->assertJsonPath('data.0.name', 'Cocktail A');
 
         // A user with no favorites yields empty (using membership->user who has not favorited anything)

@@ -61,7 +61,7 @@ final class CocktailQueryFilter extends QueryBuilder
                 }),
                 AllowedFilter::callback('favorites', function ($query, $value) use ($barMembership) {
                     if ($value === true) {
-                        $query->userFavorites($barMembership->id);
+                        $query->userFavorites([$barMembership->id]);
                     }
                 }),
                 AllowedFilter::callback('favorited_by_user', function ($query, $value) use ($barMembership) {
@@ -86,9 +86,7 @@ final class CocktailQueryFilter extends QueryBuilder
                         ->pluck('id')
                         ->all();
 
-                    foreach ($resolvedBarMembershipIds as $bmId) {
-                        $query->userFavorites($bmId);
-                    }
+                    $query->userFavorites($resolvedBarMembershipIds);
                 }),
                 AllowedFilter::callback('bar_shelf', function ($query, $value) {
                     if ($value === true) {

@@ -2983,24 +2983,6 @@ parameters:
 			path: app/Models/Cocktail.php
 
 		-
-			message: '#^Cannot call method from\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Models/Cocktail.php
-
-		-
-			message: '#^Cannot call method select\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Models/Cocktail.php
-
-		-
-			message: '#^Cannot call method where\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Models/Cocktail.php
-
-		-
 			message: '#^Cannot cast mixed to string\.$#'
 			identifier: cast.string
 			count: 1
