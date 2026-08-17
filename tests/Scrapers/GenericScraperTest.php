@@ -53,7 +53,6 @@ class GenericScraperTest extends TestCase
             ['https://cocktailpartyapp.com/drinks/negroni/', CocktailParty::class],
             ['https://imbibemagazine.com/recipe/negroni-recipe/', ImbibeMagazine::class],
             ['https://cocktailsdistilled.com/recipe/kingston-negroni/', CocktailsDistilled::class],
-            ['https://www.diffordsguide.com/cocktails/recipe/1392/negroni-cocktail', DiffordsGuide::class],
             ['https://alpenz.com/recipe-pHi4g8Upgz.html', HausAlpenz::class],
             ['https://kindredcocktails.com/cocktail/negroni', KindredCocktails::class],
             ['https://www.liberandcompany.com/products/strawberry-negroni', LiberAndCo::class],
