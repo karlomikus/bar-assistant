@@ -9,6 +9,7 @@ use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
 use Illuminate\Support\Facades\Config;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class BarControllerTest extends TestCase
@@ -171,5 +172,63 @@ class BarControllerTest extends TestCase
         $bar = Bar::factory()->create();
         $this->postJson('/api/bars', [])->assertUnprocessable();
         $this->putJson('/api/bars/' . $bar->id, ['name' => ''])->assertUnprocessable();
+    }
+
+    public function test_list_bar_members_minimal_returns_only_id_and_name(): void
+    {
+        $owner = User::factory()->create(['name' => 'Zeta Owner']);
+        $bar = Bar::factory()->create(['created_user_id' => $owner->id]);
+        $owner->joinBarAs($bar, UserRoleEnum::Admin);
+
+        // Non-admin member requesting the list
+        $member = User::factory()->create(['name' => 'Alpha Member']);
+        $member->joinBarAs($bar, UserRoleEnum::General);
+
+        // Another member
+        $member2 = User::factory()->create(['name' => 'Beta Member']);
+        $member2->joinBarAs($bar, UserRoleEnum::General);
+
+        $this->actingAs($member);
+
+        $response = $this->getJson('/api/bars/' . $bar->id . '/members');
+
+        $response->assertOk();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has('data', 3)
+                ->has('data.0', fn (AssertableJson $item) =>
+                    $item
+                        ->hasAll(['id', 'name'])
+                        ->missing('email')
+                        ->missing('is_subscribed')
+                        ->missing('role')
+                        ->etc()
+                )
+                ->where('data.0.name', 'Alpha Member')
+                ->where('data.1.name', 'Beta Member')
+                ->where('data.2.name', 'Zeta Owner')
+                ->etc()
+        );
+    }
+
+    public function test_list_bar_members_forbidden_for_non_member(): void
+    {
+        $owner = User::factory()->create();
+        $bar = Bar::factory()->create(['created_user_id' => $owner->id]);
+        $owner->joinBarAs($bar, UserRoleEnum::Admin);
+
+        $nonMember = User::factory()->create();
+        $this->actingAs($nonMember);
+
+        $this->getJson('/api/bars/' . $bar->id . '/members')->assertForbidden();
+    }
+
+    public function test_list_bar_members_not_found_for_unknown_bar(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $this->getJson('/api/bars/9999/members')->assertNotFound();
     }
 }

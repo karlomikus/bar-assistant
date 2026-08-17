@@ -514,6 +514,75 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+  '/bars/{id}/members':
+    get:
+      tags:
+        - Bars
+      summary: 'List bar members'
+      description: 'Show a minimal list of bar members (id and name only). Accessible to any member of the bar.'
+      operationId: listBarMembers
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/BarMember' } }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /bars/join:
     post:
       tags:
@@ -1592,6 +1661,9 @@ paths:
               favorites:
                 description: 'Show only user favorites'
                 type: boolean
+              favorited_by_user:
+                description: 'Show only cocktails favorited by every given user. Comma separated list of user IDs'
+                type: string
               on_shelf:
                 description: "Show only cocktails on the user's shelf"
                 type: boolean
@@ -8739,6 +8811,21 @@ components:
                 type: integer
                 example: 12
             type: object
+      type: object
+    BarMember:
+      description: 'Represents a bar member with minimal, privacy-safe fields'
+      required:
+        - id
+        - name
+      properties:
+        id:
+          description: 'User ID'
+          type: integer
+          example: 1
+        name:
+          description: 'User name'
+          type: string
+          example: Bartender
       type: object
     BarMembership:
       description: 'Represents a bar membership'

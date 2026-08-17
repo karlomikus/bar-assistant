@@ -56,6 +56,7 @@ class CocktailController extends Controller
             new OAT\Property(property: 'cocktail_method_id', type: 'string', description: 'Filter by cocktail method ID(s)'),
             new OAT\Property(property: 'collection_id', type: 'string', description: 'Filter by collection ID(s)'),
             new OAT\Property(property: 'favorites', type: 'boolean', description: 'Show only user favorites'),
+            new OAT\Property(property: 'favorited_by_user', type: 'string', description: 'Show only cocktails favorited by every given user. Comma separated list of user IDs'),
             new OAT\Property(property: 'on_shelf', type: 'boolean', description: 'Show only cocktails on the user\'s shelf'),
             new OAT\Property(property: 'bar_shelf', type: 'boolean', description: 'Show only cocktails on the bar shelf'),
             new OAT\Property(property: 'user_shelves', type: 'string', description: 'Show only cocktails on the user\'s shelves. Comma separated list of user IDs'),
