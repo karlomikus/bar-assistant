@@ -6,6 +6,7 @@ namespace Kami\Cocktail\External\Export;
 
 use ZipArchive;
 use Carbon\Carbon;
+use Kami\Cocktail\Models\Glass;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
@@ -17,6 +18,7 @@ use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Container\Attributes\Storage;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
 use Kami\Cocktail\Exceptions\ImageFileNotFoundException;
+use Kami\Cocktail\External\Model\Glass as GlassExternal;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
 use Kami\Cocktail\External\Model\Calculator as CalculatorExternal;
@@ -67,6 +69,7 @@ class ToDataPack
 
             $this->dumpCocktails($barId, $zip, $toUnits);
             $this->dumpIngredients($barId, $zip, $toUnits);
+            $this->dumpGlasses($barId, $zip);
             $this->dumpBaseData($barId, $zip);
             $this->dumpCalculators($barId, $zip);
 
@@ -149,6 +152,29 @@ class ToDataPack
         }
     }
 
+    private function dumpGlasses(int $barId, ZipArchive &$zip): void
+    {
+        $glasses = Glass::with('images.imageable')->where('bar_id', $barId)->get();
+
+        /** @var Glass $glass */
+        foreach ($glasses as $glass) {
+            $data = GlassExternal::fromModel($glass, true);
+
+            /** @var \Kami\Cocktail\Models\Image $img */
+            foreach ($glass->images as $img) {
+                try {
+                    $zip->addFile($img->getPath(), 'glasses/' . $glass->getExternalId() . '/' . $img->getExternalId());
+                } catch (ImageFileNotFoundException $e) {
+                    Log::warning($e->getMessage());
+                }
+            }
+
+            $glassExportData = $this->prepareDataOutput($data->toDataPackArray());
+
+            $zip->addFromString('glasses/' . $glass->getExternalId() . '/data.json', $glassExportData);
+        }
+    }
+
     private function dumpCalculators(int $barId, ZipArchive &$zip): void
     {
         $calculators = Calculator::with('blocks')->where('bar_id', $barId)->get();
@@ -167,7 +193,6 @@ class ToDataPack
     private function dumpBaseData(int $barId, ZipArchive &$zip): void
     {
         $baseDataFiles = [
-            'base_glasses' => DB::table('glasses')->select('name', 'description', 'volume', 'volume_units')->where('bar_id', $barId)->get()->toArray(),
             'base_methods' => DB::table('cocktail_methods')->select('name', 'dilution_percentage')->where('bar_id', $barId)->get()->toArray(),
             'base_utensils' => DB::table('utensils')->select('name', 'description')->where('bar_id', $barId)->get()->toArray(),
             'base_price_categories' => DB::table('price_categories')->select('name', 'currency', 'description')->where('bar_id', $barId)->get()->toArray(),

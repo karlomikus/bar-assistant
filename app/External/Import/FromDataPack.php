@@ -9,6 +9,7 @@ use Throwable;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\Glass;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
@@ -19,6 +20,7 @@ use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Kami\Cocktail\External\Model\Glass as GlassExternal;
 use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
 use Kami\Cocktail\External\Model\Calculator as CalculatorExternal;
 use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
@@ -55,7 +57,6 @@ class FromDataPack
         $bar->setStatus(BarStatusEnum::Provisioning)->save();
 
         $baseDataFiles = [
-            'glasses' => 'base_glasses.json',
             'cocktail_methods' => 'base_methods.json',
             'utensils' => 'base_utensils.json',
             'price_categories' => 'base_price_categories.json',
@@ -65,6 +66,12 @@ class FromDataPack
             if ($dataDisk->exists($file)) {
                 $this->importBaseData($table, $dataDisk->path($file), $bar->id);
             }
+        }
+
+        if ($dataDisk->exists('glasses')) {
+            $this->importGlasses($dataDisk, $bar, $user);
+        } elseif ($dataDisk->exists('base_glasses.json')) {
+            $this->importBaseData('glasses', $dataDisk->path('base_glasses.json'), $bar->id);
         }
 
         if ($dataDisk->exists('bar_shelf.json')) {
@@ -320,6 +327,101 @@ class FromDataPack
 
         $timerEnd = microtime(true);
         Log::debug(sprintf('Ingredients import completed in %d ms', ($timerEnd - $timerStart) * 1000));
+    }
+
+    private function importGlasses(Filesystem $dataDisk, Bar $bar, User $user): void
+    {
+        $timerStart = microtime(true);
+
+        $existingGlasses = DB::table('glasses')
+            ->select('name')
+            ->where('bar_id', $bar->id)
+            ->get()
+            ->map(fn ($glass) => Str::slug((string) $glass->name))
+            ->values()
+            ->all();
+
+        $glassesToInsert = [];
+        $glassImages = [];
+        $barImagesDir = 'glasses/' . $bar->id . '/';
+        $this->uploadsDisk->makeDirectory($barImagesDir);
+
+        $imagesTimer = 0.0;
+        foreach ($this->getDataFromDir('glasses', $dataDisk) as $fromYield) {
+            [$glassArray, $filePath] = $fromYield;
+            $externalGlass = GlassExternal::fromDataPackArray($glassArray);
+            $slugKey = Str::slug((string) $externalGlass->name);
+            if (in_array($slugKey, $existingGlasses, true)) {
+                continue;
+            }
+            $existingGlasses[] = $slugKey;
+
+            $glassesToInsert[$slugKey] = [
+                'bar_id' => $bar->id,
+                'name' => $externalGlass->name,
+                'description' => $externalGlass->description,
+                'volume' => $externalGlass->volume,
+                'volume_units' => $externalGlass->volumeUnits,
+                'created_at' => now(),
+                'updated_at' => null,
+            ];
+
+            $imagesTimerStart = microtime(true);
+            foreach ($externalGlass->images as $image) {
+                $baseSrcImagePath = $filePath . $image->getLocalFilePath();
+                $fileExtension = File::extension($dataDisk->path($baseSrcImagePath));
+                $targetImagePath = $barImagesDir . $slugKey . '_' . Str::random(6) . '.' . $fileExtension;
+
+                $this->copyResourceImage($dataDisk, $baseSrcImagePath, $targetImagePath);
+
+                $glassImages[$slugKey][] = [
+                    'imageable_type' => Glass::class,
+                    'copyright' => $image->copyright,
+                    'file_path' => $targetImagePath,
+                    'file_extension' => $fileExtension,
+                    'created_user_id' => $user->id,
+                    'sort' => $image->sort,
+                    'placeholder_hash' => $image->placeholderHash,
+                    'created_at' => now(),
+                    'updated_at' => null,
+                ];
+            }
+            $imageTimerEnd = microtime(true);
+            $imagesTimer += ($imageTimerEnd - $imagesTimerStart);
+        }
+
+        Log::debug(sprintf('Glass image copy completed in %d ms', $imagesTimer * 1000));
+
+        if (empty($glassesToInsert)) {
+            Log::debug('No glasses to import');
+
+            return;
+        }
+
+        DB::beginTransaction();
+        DB::table('glasses')->insert(array_values($glassesToInsert));
+
+        $glasses = DB::table('glasses')->select('id', 'name')->where('bar_id', $bar->id)->get();
+
+        $imagesToInsert = [];
+        foreach ($glasses as $glass) {
+            $slugKey = Str::slug((string) $glass->name);
+            if (isset($glassImages[$slugKey])) {
+                foreach ($glassImages[$slugKey] as $imageRow) {
+                    $imageRow['imageable_id'] = $glass->id;
+                    $imagesToInsert[] = $imageRow;
+                }
+            }
+        }
+
+        if (count($imagesToInsert) > 0) {
+            DB::table('images')->insert($imagesToInsert);
+        }
+
+        DB::commit();
+
+        $timerEnd = microtime(true);
+        Log::debug(sprintf('Glasses import completed in %d ms', ($timerEnd - $timerStart) * 1000));
     }
 
     private function importBaseCocktails(Filesystem $dataDisk, Bar $bar, User $user): void

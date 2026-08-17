@@ -1,0 +1,15 @@
+{
+    "_id": "test-glass",
+    "name": "glass 1",
+    "description": "glass 1 description",
+    "volume": 350.0,
+    "volume_units": "ml",
+    "images": [
+        {
+            "uri": "file:///g-1-img.jpg",
+            "sort": 1,
+            "placeholder_hash": null,
+            "copyright": "Glass image copyright"
+        }
+    ]
+}

@@ -44,9 +44,12 @@ class ToDataPackTest extends TestCase
         Utensil::factory()->for($membership->bar)->count(3)->create();
         $cocktail = Cocktail::factory()->for($membership->bar)->create(['name' => 'Gin and Tonic']);
         $ingredient = Ingredient::factory()->for($membership->bar)->create(['name' => 'Jack Daniels']);
+        $glassWithImage = Glass::factory()->for($membership->bar)->create(['name' => 'Highball']);
+        $glassWithoutImage = Glass::factory()->for($membership->bar)->create(['name' => 'Coupe']);
 
         $imageCocktailFile = UploadedFile::fake()->createWithContent('image1.jpg', $this->getFakeImageContent('jpg'));
         $ingredientCocktailFile = UploadedFile::fake()->createWithContent('image2.jpg', $this->getFakeImageContent('png'));
+        $glassImageFile = UploadedFile::fake()->createWithContent('image3.jpg', $this->getFakeImageContent('jpg'));
         Image::factory()->for($cocktail, 'imageable')->create([
             'file_path' => $imageCocktailFile->storeAs('', 'c-1-img.jpg', 'uploads'),
             'file_extension' => $imageCocktailFile->extension(),
@@ -54,6 +57,12 @@ class ToDataPackTest extends TestCase
         Image::factory()->for($ingredient, 'imageable')->create([
             'file_path' => $ingredientCocktailFile->storeAs('', 'i-1-img.png', 'uploads'),
             'file_extension' => $ingredientCocktailFile->extension(),
+        ]);
+        Image::factory()->for($glassWithImage, 'imageable')->create([
+            'file_path' => $glassImageFile->storeAs('glasses/' . $membership->bar->id, 'g-1-img.jpg', 'uploads'),
+            'file_extension' => 'jpg',
+            'copyright' => 'Glass image copyright',
+            'sort' => 1,
         ]);
 
         $exporter = new ToDataPack($exportMock);
@@ -71,7 +80,6 @@ class ToDataPackTest extends TestCase
 
         $expectedFiles = [
             '_meta.json',
-            'base_glasses.json',
             'base_methods.json',
             'base_price_categories.json',
             'base_utensils.json',
@@ -81,10 +89,32 @@ class ToDataPackTest extends TestCase
             $this->assertFileExists($unzippedFilesDisk->path($file));
         }
 
+        $this->assertFileDoesNotExist($unzippedFilesDisk->path('base_glasses.json'));
+
         $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic_1/data.json'));
         $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic_1/c-1-img.jpg'));
         $this->assertFileExists($unzippedFilesDisk->path('ingredients/jack-daniels_1/data.json'));
         $this->assertFileExists($unzippedFilesDisk->path('ingredients/jack-daniels_1/i-1-img.png'));
+
+        $glassWithImageDir = 'glasses/' . $glassWithImage->getExternalId();
+        $glassWithoutImageDir = 'glasses/' . $glassWithoutImage->getExternalId();
+        $this->assertFileExists($unzippedFilesDisk->path($glassWithImageDir . '/data.json'));
+        $this->assertFileExists($unzippedFilesDisk->path($glassWithImageDir . '/g-1-img.jpg'));
+        $this->assertFileExists($unzippedFilesDisk->path($glassWithoutImageDir . '/data.json'));
+
+        $glassWithImageExport = [];
+        if ($glassFixture = file_get_contents($unzippedFilesDisk->path($glassWithImageDir . '/data.json'))) {
+            $glassWithImageExport = json_decode($glassFixture, true);
+        }
+        $glassWithoutImageExport = [];
+        if ($glassFixture = file_get_contents($unzippedFilesDisk->path($glassWithoutImageDir . '/data.json'))) {
+            $glassWithoutImageExport = json_decode($glassFixture, true);
+        }
+
+        $this->assertCount(1, $glassWithImageExport['images']);
+        $this->assertSame('file:///g-1-img.jpg', $glassWithImageExport['images'][0]['uri']);
+        $this->assertSame('Glass image copyright', $glassWithImageExport['images'][0]['copyright']);
+        $this->assertSame([], $glassWithoutImageExport['images']);
 
         $cocktailExport = [];
         if ($cocktailFixture = file_get_contents($unzippedFilesDisk->path('cocktails/gin-and-tonic_1/data.json'))) {
