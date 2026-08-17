@@ -24,7 +24,7 @@ final class CocktailQueryFilter extends QueryBuilder
 
         $barMembership = $this->request->user()->getBarMembership(bar()->id);
         if (!$barMembership) {
-            return;
+            abort(403, 'No bar membership');
         }
 
         $this
@@ -60,6 +60,7 @@ final class CocktailQueryFilter extends QueryBuilder
                     });
                 }),
                 AllowedFilter::callback('favorites', function ($query, $value) use ($barMembership) {
+                    // TODO: Deprecate this filter in favor of favorited_by_user
                     if ($value === true) {
                         $query->userFavorites([$barMembership->id]);
                     }
