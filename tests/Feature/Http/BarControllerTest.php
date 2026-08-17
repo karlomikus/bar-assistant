@@ -197,7 +197,9 @@ class BarControllerTest extends TestCase
             fn (AssertableJson $json) =>
             $json
                 ->has('data', 3)
-                ->has('data.0', fn (AssertableJson $item) =>
+                ->has(
+                    'data.0',
+                    fn (AssertableJson $item) =>
                     $item
                         ->hasAll(['id', 'name'])
                         ->missing('email')
