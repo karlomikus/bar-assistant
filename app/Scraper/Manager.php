@@ -30,7 +30,6 @@ final class Manager
         \Kami\Cocktail\Scraper\Sites\ImbibeMagazine::class,
         \Kami\Cocktail\Scraper\Sites\EricsCocktailGuide::class,
         \Kami\Cocktail\Scraper\Sites\HausAlpenz::class,
-        \Kami\Cocktail\Scraper\Sites\DiffordsGuide::class,
         \Kami\Cocktail\Scraper\Sites\TheCocktailDB::class,
         \Kami\Cocktail\Scraper\Sites\CocktailParty::class,
         \Kami\Cocktail\Scraper\Sites\LiberAndCo::class,
@@ -50,6 +49,10 @@ final class Manager
 
     public static function scrape(string $url, ?string $content = null): AbstractSite
     {
+        if (str_contains($url, 'diffordsguide')) {
+            throw new ScraperMissingException('By request, Difford\'s Guide is not supported for scraping.');
+        }
+
         return (new self($url))->matchFirst($content);
     }
 

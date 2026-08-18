@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Kami\Cocktail\OpenAPI as BAO;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\CocktailPrice;
@@ -52,10 +53,12 @@ class CocktailController extends Controller
             new OAT\Property(property: 'ingredient_name', type: 'string', description: 'Filter by cocktail ingredient names(s) (fuzzy search)'),
             new OAT\Property(property: 'tag_id', type: 'string', description: 'Filter by tag ID(s)'),
             new OAT\Property(property: 'created_user_id', type: 'string', description: 'Filter by creator ID(s)'),
+            new OAT\Property(property: 'author', type: 'string', description: 'Filter by cocktail author name(s). Comma separated list of author names. Exact match.'),
             new OAT\Property(property: 'glass_id', type: 'string', description: 'Filter by glass ID(s)'),
             new OAT\Property(property: 'cocktail_method_id', type: 'string', description: 'Filter by cocktail method ID(s)'),
             new OAT\Property(property: 'collection_id', type: 'string', description: 'Filter by collection ID(s)'),
             new OAT\Property(property: 'favorites', type: 'boolean', description: 'Show only user favorites'),
+            new OAT\Property(property: 'favorited_by_user', type: 'string', description: 'Show only cocktails favorited by any of the given users. Comma separated list of user IDs'),
             new OAT\Property(property: 'on_shelf', type: 'boolean', description: 'Show only cocktails on the user\'s shelf'),
             new OAT\Property(property: 'bar_shelf', type: 'boolean', description: 'Show only cocktails on the bar shelf'),
             new OAT\Property(property: 'user_shelves', type: 'string', description: 'Show only cocktails on the user\'s shelves. Comma separated list of user IDs'),
@@ -82,7 +85,13 @@ class CocktailController extends Controller
         new OAT\Parameter(name: 'include', in: 'query', description: 'Include additional relationships. Available relations: `glass`, `method`, `user`, `navigation`, `utensils`, `createdUser`, `updatedUser`, `images`, `tags`, `ingredients.ingredient`, `ratings`.', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(CocktailResource::class),
+        new BAO\PaginateData(CocktailResource::class, [
+            new OAT\Property(property: 'filters', type: 'object', required: ['authors'], properties: [
+                new OAT\Property(property: 'authors', type: 'array', required: ['name'], items: new OAT\Items(type: 'object', properties: [
+                    new OAT\Property(property: 'name', type: 'string'),
+                ])),
+            ]),
+        ]),
     ])]
     #[BAO\NotAuthorizedResponse]
     public function index(InfrastructureCocktailService $service, Request $request): JsonResource
@@ -95,7 +104,22 @@ class CocktailController extends Controller
 
         $cocktails = $cocktails->paginate($request->input('per_page', 25));
 
-        return CocktailResource::collection($cocktails->withQueryString());
+        $authors = DB::table('cocktails')
+            ->where('bar_id', bar()->id)
+            ->whereNotNull('author')
+            ->where('author', '!=', '')
+            ->distinct()
+            ->orderBy('author')
+            ->pluck('author')
+            ->map(fn ($name) => ['name' => $name]);
+
+        return CocktailResource::collection($cocktails->withQueryString())->additional([
+            'meta' => [
+                'filters' => [
+                    'authors' => $authors,
+                ],
+            ],
+        ]);
     }
 
     #[OAT\Get(path: '/cocktails/{id}', tags: ['Cocktails'], operationId: 'showCocktail', description: 'Show details of a specific cocktail', summary: 'Show cocktail', parameters: [

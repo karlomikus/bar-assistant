@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Integration\External;
 
 use Tests\TestCase;
+use Kami\Cocktail\Models\Glass;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Storage;
@@ -33,8 +35,28 @@ class FromDataPackTest extends TestCase
         $importer = resolve(FromDataPack::class);
         $importer->process($datapackFolder, $membership->bar_id, $membership->user_id, BarOptionsEnum::Cocktails);
 
-        $this->assertDatabaseHas('glasses', ['name' => 'glass 1', 'description' => 'glass 1 description']);
-        $this->assertDatabaseHas('glasses', ['name' => 'glass 2', 'description' => null]);
+        $glass1 = DB::table('glasses')->where('name', 'glass 1')->first();
+        $this->assertNotNull($glass1);
+        $this->assertSame('glass 1 description', $glass1->description);
+        $this->assertSame(350.0, (float) $glass1->volume);
+        $this->assertSame('ml', $glass1->volume_units);
+
+        $glass2 = DB::table('glasses')->where('name', 'glass 2')->first();
+        $this->assertNotNull($glass2);
+        $this->assertNull($glass2->description);
+
+        $this->assertDatabaseHas('images', [
+            'imageable_type' => Glass::class,
+            'imageable_id' => $glass1->id,
+            'copyright' => 'Glass image copyright',
+            'sort' => 1,
+            'placeholder_hash' => null,
+        ]);
+        $glass1Image = DB::table('images')->where('imageable_type', Glass::class)->where('imageable_id', $glass1->id)->first();
+        $this->assertNotNull($glass1Image);
+        $this->assertStringStartsWith('glasses/' . $membership->bar->id . '/', $glass1Image->file_path);
+        $this->assertTrue(Storage::disk('uploads')->exists($glass1Image->file_path));
+        $this->assertDatabaseMissing('images', ['imageable_type' => Glass::class, 'imageable_id' => $glass2->id]);
 
         $this->assertDatabaseHas('cocktail_methods', ['name' => 'method 1', 'dilution_percentage' => 15]);
         $this->assertDatabaseHas('cocktail_methods', ['name' => 'method 2', 'dilution_percentage' => 0]);
@@ -70,6 +92,7 @@ class FromDataPackTest extends TestCase
             'sort' => 1,
             'placeholder_hash' => null,
         ]);
+        $glass2 = DB::table('glasses')->where('name', 'glass 2')->first();
         $this->assertDatabaseHas('cocktails', [
             'bar_id' => $membership->bar->id,
             'created_user_id' => $membership->user->id,
@@ -81,8 +104,27 @@ class FromDataPackTest extends TestCase
             'abv' => 37.77,
             'created_at' => '1979-12-23T09:07:48+00:00',
             'updated_at' => '1983-01-24T11:37:19+00:00',
-            'glass_id' => 2,
+            'glass_id' => $glass2->id,
             'cocktail_method_id' => 1,
         ]);
+    }
+
+    public function test_import_legacy_glasses_datapack_imports_without_images(): void
+    {
+        $membership = $this->setupBarMembership();
+
+        $datapackFolder = Storage::build([
+            'driver' => 'local',
+            'root' => base_path('tests/fixtures/datapack-legacy'),
+        ]);
+
+        $this->assertDatabaseEmpty('glasses');
+
+        $importer = resolve(FromDataPack::class);
+        $importer->process($datapackFolder, $membership->bar_id, $membership->user_id);
+
+        $this->assertDatabaseHas('glasses', ['name' => 'glass 1', 'description' => 'glass 1 description', 'bar_id' => $membership->bar->id]);
+        $this->assertDatabaseHas('glasses', ['name' => 'glass 2', 'description' => null, 'bar_id' => $membership->bar->id]);
+        $this->assertDatabaseMissing('images', ['imageable_type' => Glass::class]);
     }
 }

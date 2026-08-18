@@ -21,6 +21,7 @@ use Kami\Cocktail\Http\Resources\BarResource;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use BarAssistant\Application\Bar\MemberService;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kami\Cocktail\Http\Resources\UserBasicResource;
 use BarAssistant\Application\Bar\DTO\CreateBarRequest;
 use BarAssistant\Application\Bar\DTO\UpdateBarRequest;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
@@ -71,6 +72,27 @@ class BarController extends Controller
         $bar->load('createdUser', 'updatedUser', 'images');
 
         return new BarResource($bar);
+    }
+
+    #[OAT\Get(path: '/bars/{id}/members', tags: ['Bars'], operationId: 'listBarMembers', description: 'Show a minimal list of bar members (id and name only). Accessible to any member of the bar.', summary: 'List bar members', parameters: [
+        new BAO\Parameters\DatabaseIdParameter(),
+    ])]
+    #[BAO\SuccessfulResponse(content: [
+        new BAO\WrapItemsWithData(UserBasicResource::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    public function members(Request $request, int $id): JsonResource
+    {
+        $bar = Bar::findOrFail($id);
+
+        if ($request->user()->cannot('show', $bar)) {
+            abort(403);
+        }
+
+        $users = $bar->users()->orderBy('users.name')->get();
+
+        return UserBasicResource::collection($users);
     }
 
     #[OAT\Post(path: '/bars', tags: ['Bars'], operationId: 'saveBar', description: 'Create a new bar with optional default data included. Assigns current authenticated user as a member with admin role.', summary: 'Create bar', requestBody: new OAT\RequestBody(

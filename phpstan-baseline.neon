@@ -99,7 +99,7 @@ parameters:
 		-
 			message: '#^Binary operation "\." between mixed and string results in an error\.$#'
 			identifier: binaryOp.invalid
-			count: 2
+			count: 3
 			path: app/External/Import/FromDataPack.php
 
 		-
@@ -183,13 +183,13 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to string\.$#'
 			identifier: cast.string
-			count: 4
+			count: 6
 			path: app/External/Import/FromDataPack.php
 
 		-
 			message: '#^Cannot use array destructuring on mixed\.$#'
 			identifier: offsetAccess.nonArray
-			count: 2
+			count: 3
 			path: app/External/Import/FromDataPack.php
 
 		-
@@ -224,6 +224,12 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$sourceArray of static method Kami\\Cocktail\\External\\Model\\Cocktail\:\:fromDataPackArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Import/FromDataPack.php
+
+		-
+			message: '#^Parameter \#1 \$sourceArray of static method Kami\\Cocktail\\External\\Model\\Glass\:\:fromDataPackArray\(\) expects array\<mixed\>, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: app/External/Import/FromDataPack.php
@@ -715,6 +721,54 @@ parameters:
 			path: app/External/Model/CocktailIngredientSubstitute.php
 
 		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: app/External/Model/Glass.php
+
+		-
+			message: '#^Parameter \#1 \$sourceArray of static method Kami\\Cocktail\\External\\Model\\Image\:\:fromDataPackArray\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Glass.php
+
+		-
+			message: '#^Parameter \$description of class Kami\\Cocktail\\External\\Model\\Glass constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Glass.php
+
+		-
+			message: '#^Parameter \$id of class Kami\\Cocktail\\External\\Model\\Glass constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Glass.php
+
+		-
+			message: '#^Parameter \$images of class Kami\\Cocktail\\External\\Model\\Glass constructor expects array\<Kami\\Cocktail\\External\\Model\\Image\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Glass.php
+
+		-
+			message: '#^Parameter \$name of class Kami\\Cocktail\\External\\Model\\Glass constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Glass.php
+
+		-
+			message: '#^Parameter \$volume of class Kami\\Cocktail\\External\\Model\\Glass constructor expects float\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Glass.php
+
+		-
+			message: '#^Parameter \$volumeUnits of class Kami\\Cocktail\\External\\Model\\Glass constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Glass.php
+
+		-
 			message: '#^Parameter \#1 \$uri of class Kami\\Cocktail\\External\\Model\\Image constructor expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 2
@@ -1005,7 +1059,7 @@ parameters:
 		-
 			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
 			identifier: method.nonObject
-			count: 8
+			count: 9
 			path: app/Http/Controllers/BarController.php
 
 		-
@@ -1789,18 +1843,6 @@ parameters:
 			path: app/Http/Controllers/UtensilsController.php
 
 		-
-			message: '#^Cannot access property \$bar_id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
-			identifier: property.nonObject
-			count: 4
-			path: app/Http/Filters/CocktailQueryFilter.php
-
-		-
-			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
-			identifier: property.nonObject
-			count: 4
-			path: app/Http/Filters/CocktailQueryFilter.php
-
-		-
 			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
 			identifier: property.nonObject
 			count: 1
@@ -1887,7 +1929,7 @@ parameters:
 		-
 			message: '#^Cannot call method userFavorites\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 1
+			count: 2
 			path: app/Http/Filters/CocktailQueryFilter.php
 
 		-
@@ -1923,7 +1965,7 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
-			count: 11
+			count: 12
 			path: app/Http/Filters/CocktailQueryFilter.php
 
 		-
@@ -2995,24 +3037,6 @@ parameters:
 			path: app/Models/Cocktail.php
 
 		-
-			message: '#^Cannot call method from\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Models/Cocktail.php
-
-		-
-			message: '#^Cannot call method select\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Models/Cocktail.php
-
-		-
-			message: '#^Cannot call method where\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Models/Cocktail.php
-
-		-
 			message: '#^Cannot cast mixed to string\.$#'
 			identifier: cast.string
 			count: 1
@@ -3097,9 +3121,9 @@ parameters:
 			path: app/Models/Glass.php
 
 		-
-			message: '#^Cannot access property \$bar_id on Kami\\Cocktail\\Models\\Cocktail\|Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			message: '#^Cannot access property \$bar_id on Kami\\Cocktail\\Models\\Cocktail\|Kami\\Cocktail\\Models\\Glass\|Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
 			identifier: property.nonObject
-			count: 2
+			count: 3
 			path: app/Models/Image.php
 
 		-
@@ -4225,18 +4249,6 @@ parameters:
 			path: app/Scraper/Sites/DefaultScraper.php
 
 		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
-			count: 1
-			path: app/Scraper/Sites/DiffordsGuide.php
-
-		-
-			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\DiffordsGuide\:\:garnish\(\) should return string\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Scraper/Sites/DiffordsGuide.php
-
-		-
 			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 2
@@ -4621,7 +4633,7 @@ parameters:
 			path: app/Services/Image/ImageHashingService.php
 
 		-
-			message: '#^Cannot call method generateImagePath\(\) on Kami\\Cocktail\\Models\\Cocktail\|Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
+			message: '#^Cannot call method generateImagePath\(\) on Kami\\Cocktail\\Models\\Cocktail\|Kami\\Cocktail\\Models\\Glass\|Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
 			identifier: method.nonObject
 			count: 1
 			path: app/Services/Image/ImageUploadService.php

@@ -259,15 +259,15 @@ class Cocktail extends BaseModel implements UploadableInterface, IsExternalized
      * Only user favorites
      *
      * @param Builder<Cocktail> $baseQuery
-     * @param int $barMembershipId
+     * @param array<int> $barMembershipIds
      * @return Builder<Cocktail>
      */
-    public function scopeUserFavorites(Builder $baseQuery, int $barMembershipId): Builder
+    public function scopeUserFavorites(Builder $baseQuery, array $barMembershipIds): Builder
     {
-        return $baseQuery->whereIn('cocktails.id', function ($query) use ($barMembershipId) {
+        return $baseQuery->whereIn('cocktails.id', function (\Illuminate\Database\Query\Builder $query) use ($barMembershipIds) {
             $query->select('cocktail_id')
                 ->from('cocktail_favorites')
-                ->where('bar_membership_id', $barMembershipId);
+                ->whereIn('bar_membership_id', $barMembershipIds);
         });
     }
 

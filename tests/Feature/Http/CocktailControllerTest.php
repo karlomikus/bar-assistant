@@ -26,6 +26,7 @@ use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\Models\IngredientPrice;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
+use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -855,11 +856,181 @@ class CocktailControllerTest extends TestCase
         $membership->user->refresh();
 
         $response = $this->postJson('/api/cocktails', [
-            'name' => "Cocktail name",
-            'instructions' => "1. Step\n2. Step",
-            'description' => "Cocktail description",
-            'images' => [$image1->id, $image2->id, $image3->id],
+            "name" => "Cocktail name",
+            "instructions" => "1. Step\n2. Step",
+            "description" => "Cocktail description",
+            "images" => [$image1->id, $image2->id, $image3->id],
         ]);
         $response->assertCreated();
+    }
+
+    public function test_cocktails_filter_favorited_by_user(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        // Two additional members of the same bar
+        $user2 = User::factory()->create();
+        $user3 = User::factory()->create();
+        $barMembership2 = BarMembership::factory()->recycle($user2, $membership->bar)->create();
+        $barMembership3 = BarMembership::factory()->recycle($user3, $membership->bar)->create();
+
+        // Cocktails in the bar
+        $cocktailA = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Cocktail A']);
+        $cocktailB = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Cocktail B']);
+        $cocktailC = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Cocktail C']);
+
+        // user2 favorites A and B; user3 favorites only A
+        CocktailFavorite::factory()->recycle($cocktailA, $barMembership2)->create();
+        CocktailFavorite::factory()->recycle($cocktailB, $barMembership2)->create();
+        CocktailFavorite::factory()->recycle($cocktailA, $barMembership3)->create();
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        // Single user returns their favorites (user2 -> A, B)
+        $response = $this->getJson('/api/cocktails?filter[favorited_by_user]=' . $user2->id);
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+
+        // Two users returns the union
+        $response = $this->getJson('/api/cocktails?filter[favorited_by_user]=' . $user2->id . ',' . $user3->id);
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+        $response->assertJsonPath('data.0.name', 'Cocktail A');
+
+        // A user with no favorites yields empty (using membership->user who has not favorited anything)
+        $response = $this->getJson('/api/cocktails?filter[favorited_by_user]=' . $membership->user->id);
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        // A non-member user id yields empty
+        $nonMemberUser = User::factory()->create();
+        $response = $this->getJson('/api/cocktails?filter[favorited_by_user]=' . $nonMemberUser->id);
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        // Omitted/empty value is a no-op (returns all 3 cocktails)
+        $response = $this->getJson('/api/cocktails?filter[favorited_by_user]=');
+        $response->assertOk();
+        $response->assertJsonCount(3, 'data');
+    }
+
+    public function test_cocktails_filter_favorited_by_user_accessible_to_non_admin_member(): void
+    {
+        $membership = $this->setupBarMembership(UserRoleEnum::General);
+        $this->actingAs($membership->user);
+
+        $otherUser = User::factory()->create();
+        $otherMembership = BarMembership::factory()->recycle($otherUser, $membership->bar)->create();
+
+        $cocktail = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Fave']);
+        CocktailFavorite::factory()->recycle($cocktail, $otherMembership)->create();
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        // Non-admin member can use the filter (not 403)
+        $response = $this->getJson('/api/cocktails?filter[favorited_by_user]=' . $otherUser->id);
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+    }
+
+    public function test_cocktails_filter_by_author(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        // Cocktails in the bar
+        $cocktail1 = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Cocktail 1', 'author' => 'Jerry Thomas']);
+        $cocktail2 = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Cocktail 2', 'author' => 'Audrey Saunders']);
+        $cocktail3 = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Cocktail 3', 'author' => 'Ada Coleman']);
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Cocktail Null', 'author' => null]);
+
+        // Cocktail in another bar with same author
+        $otherBar = Bar::factory()->create();
+        Cocktail::factory()->recycle($otherBar)->create(['name' => 'Cocktail Other', 'author' => 'Jerry Thomas']);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        // Single author match
+        $response = $this->getJson('/api/cocktails?filter[author]=Jerry Thomas');
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.name', 'Cocktail 1');
+
+        // Multiple authors (OR match)
+        $response = $this->getJson('/api/cocktails?filter[author]=Jerry Thomas,Audrey Saunders');
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+
+        // Exact match required (partial does not match)
+        $response = $this->getJson('/api/cocktails?filter[author]=Jerry');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        // Nonexistent author
+        $response = $this->getJson('/api/cocktails?filter[author]=Nonexistent');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        // Cocktails with null author are never returned when author filter is active
+        $response = $this->getJson('/api/cocktails?filter[author]=null');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        // Omitted/empty value is a no-op (returns all 4 cocktails in this bar)
+        $response = $this->getJson('/api/cocktails?filter[author]=');
+        $response->assertOk();
+        $response->assertJsonCount(4, 'data');
+    }
+
+    public function test_cocktails_meta_filters_authors(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        // Cocktails in the bar (with duplicate author and null author and empty author)
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Drink 1', 'author' => 'Jerry Thomas']);
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Drink 2', 'author' => 'Audrey Saunders']);
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Drink 3', 'author' => 'Jerry Thomas']);
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Drink 4', 'author' => null]);
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Drink 5', 'author' => '']);
+
+        // Cocktail in another bar
+        $otherBar = Bar::factory()->create();
+        Cocktail::factory()->recycle($otherBar)->create(['name' => 'Other Drink', 'author' => 'Dale DeGroff']);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        // Unfiltered request lists distinct authors for this bar only, sorted alphabetically
+        $response = $this->getJson('/api/cocktails');
+        $response->assertOk();
+        $response->assertJsonPath('meta.filters.authors', [
+            ['name' => 'Audrey Saunders'],
+            ['name' => 'Jerry Thomas'],
+        ]);
+
+        // Filtered request still includes all distinct authors for the bar
+        $response = $this->getJson('/api/cocktails?filter[author]=Jerry Thomas');
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+        $response->assertJsonPath('meta.filters.authors', [
+            ['name' => 'Audrey Saunders'],
+            ['name' => 'Jerry Thomas'],
+        ]);
+    }
+
+    public function test_cocktails_filter_author_accessible_to_non_admin_member(): void
+    {
+        $membership = $this->setupBarMembership(UserRoleEnum::General);
+        $this->actingAs($membership->user);
+
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Drink A', 'author' => 'Jerry Thomas']);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $response = $this->getJson('/api/cocktails?filter[author]=Jerry Thomas');
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('meta.filters.authors.0.name', 'Jerry Thomas');
     }
 }

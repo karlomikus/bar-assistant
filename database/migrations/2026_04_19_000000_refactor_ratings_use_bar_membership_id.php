@@ -16,16 +16,22 @@ return new class () extends Migration {
             $table->foreignId('bar_membership_id')->nullable()->constrained()->onDelete('cascade');
         });
 
-        // Populate bar_membership_id from user_id via join with bar_memberships
-        DB::statement('
+        // Resolve the bar_membership matching both the rater's user_id and the bar of the rated cocktail.
+        DB::statement("
             UPDATE ratings
             SET bar_membership_id = (
                 SELECT bm.id
                 FROM bar_memberships bm
+                JOIN cocktails c ON c.id = ratings.rateable_id
                 WHERE bm.user_id = ratings.user_id
-                LIMIT 1
+                  AND bm.bar_id = c.bar_id
             )
-        ');
+            WHERE rateable_type = 'Kami\\Cocktail\\Models\\Cocktail'
+        ");
+
+        // The new bar_membership_id FK cascades on delete; ratings whose membership was deleted are
+        // orphaned and unrecoverable once user_id is dropped, so remove them before enforcing NOT NULL.
+        DB::table('ratings')->whereNull('bar_membership_id')->delete();
 
         // Drop the old unique constraint
         Schema::table('ratings', function (Blueprint $table) {

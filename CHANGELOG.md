@@ -1,11 +1,23 @@
+# v6.1.0
+## New
+- Added `favorited_by_user` cocktail filtering
+- Added `author` cocktail filtering
+- Glass images are now exported in datapack export
+
+## Fixes
+- Fixed migration issue when bar had members that were deleted
+
 # v6.0.0
-This release mostly introduces a big rewrite to backend architecture. But there is still some new stuff available.
+⚠️ **Backup your existing data before upgrading.**
 
-If you are used to having two shelves, one for your personal ingredients and one for your bar, keep in mind that this is no longer the case with this release. The only thing initially available is bar shelf. User shelves will be slowly migrated to new user multi-inventory system. If you want to keep that functionality, wait for one of the next releases.
+There is no specific migration steps you need to follow.
 
-⚠️ Please before upgrading backup all your data. ⚠️
+This release mostly introduces a big code refactoring. But there is still some new stuff available.
 
 ## Breaking changes
+### Please note
+If you are used to having two shelves, one for your personal ingredients and one for your bar, keep in mind that this is no longer the case with this release. The only thing initially available is bar shelf. User shelves will be slowly migrated to new user multi-inventory system. If you want to keep that functionality, wait for one of the next releases.
+
 - Removed `Moderator` role
     - Existing moderators will be migrated to Admin role
 - Removed user based shelf → replaced with multi-inventory per member
@@ -43,6 +55,7 @@ If you are used to having two shelves, one for your personal ingredients and one
 - You can now add amounts and units to ingredient parts
 - Added `author` field to cocktail recipes
 - OpenAPI docs now use Scalar UI (replaces Elements)
+- Added generic OIDC SSO provider #594
 
 # v5.15.4
 ## Fixes

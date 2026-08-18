@@ -71,12 +71,13 @@ class Image extends BaseModel implements IsExternalized
         return match ($this->imageable_type) {
             Cocktail::class => str_replace('cocktails/' . $this->imageable->bar_id . '/', '', $this->file_path),
             Ingredient::class => str_replace('ingredients/' . $this->imageable->bar_id . '/', '', $this->file_path),
+            Glass::class => str_replace('glasses/' . $this->imageable->bar_id . '/', '', $this->file_path),
             default => null,
         };
     }
 
     /**
-     * @return MorphTo<Ingredient|Cocktail, $this>
+     * @return MorphTo<Ingredient|Cocktail|Glass, $this>
      */
     public function imageable(): MorphTo
     {
@@ -100,17 +101,22 @@ class Image extends BaseModel implements IsExternalized
      */
     public function getAllBarImages(int $barId): Collection
     {
-        $cocktailImages = $this->where('imageable_type', Cocktail::class)
+        $cocktailImages = $this->select('images.*')->where('imageable_type', Cocktail::class)
             ->join('cocktails', 'cocktails.id', '=', 'images.imageable_id')
             ->where('cocktails.bar_id', $barId)
             ->get();
 
-        $ingredientImages = $this->where('imageable_type', Ingredient::class)
+        $ingredientImages = $this->select('images.*')->where('imageable_type', Ingredient::class)
             ->join('ingredients', 'ingredients.id', '=', 'images.imageable_id')
             ->where('ingredients.bar_id', $barId)
             ->get();
 
-        return $cocktailImages->merge($ingredientImages);
+        $glassImages = $this->select('images.*')->where('imageable_type', Glass::class)
+            ->join('glasses', 'glasses.id', '=', 'images.imageable_id')
+            ->where('glasses.bar_id', $barId)
+            ->get();
+
+        return $cocktailImages->merge($ingredientImages)->merge($glassImages);
     }
 
     public function isTemporaryImage(): bool
