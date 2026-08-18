@@ -4,6 +4,9 @@
 - Added `author` cocktail filtering
 - Glass images are now exported in datapack export
 
+## Fixes
+- Fixed migration issue when bar had members that were deleted
+
 # v6.0.0
 ⚠️ **Backup your existing data before upgrading.**
 
