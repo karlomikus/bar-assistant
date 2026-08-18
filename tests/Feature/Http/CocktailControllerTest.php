@@ -933,4 +933,104 @@ class CocktailControllerTest extends TestCase
         $response->assertOk();
         $response->assertJsonCount(1, 'data');
     }
+
+    public function test_cocktails_filter_by_author(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        // Cocktails in the bar
+        $cocktail1 = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Cocktail 1', 'author' => 'Jerry Thomas']);
+        $cocktail2 = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Cocktail 2', 'author' => 'Audrey Saunders']);
+        $cocktail3 = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Cocktail 3', 'author' => 'Ada Coleman']);
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Cocktail Null', 'author' => null]);
+
+        // Cocktail in another bar with same author
+        $otherBar = Bar::factory()->create();
+        Cocktail::factory()->recycle($otherBar)->create(['name' => 'Cocktail Other', 'author' => 'Jerry Thomas']);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        // Single author match
+        $response = $this->getJson('/api/cocktails?filter[author]=Jerry Thomas');
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.name', 'Cocktail 1');
+
+        // Multiple authors (OR match)
+        $response = $this->getJson('/api/cocktails?filter[author]=Jerry Thomas,Audrey Saunders');
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+
+        // Exact match required (partial does not match)
+        $response = $this->getJson('/api/cocktails?filter[author]=Jerry');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        // Nonexistent author
+        $response = $this->getJson('/api/cocktails?filter[author]=Nonexistent');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        // Cocktails with null author are never returned when author filter is active
+        $response = $this->getJson('/api/cocktails?filter[author]=null');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        // Omitted/empty value is a no-op (returns all 4 cocktails in this bar)
+        $response = $this->getJson('/api/cocktails?filter[author]=');
+        $response->assertOk();
+        $response->assertJsonCount(4, 'data');
+    }
+
+    public function test_cocktails_meta_filters_authors(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        // Cocktails in the bar (with duplicate author and null author and empty author)
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Drink 1', 'author' => 'Jerry Thomas']);
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Drink 2', 'author' => 'Audrey Saunders']);
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Drink 3', 'author' => 'Jerry Thomas']);
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Drink 4', 'author' => null]);
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Drink 5', 'author' => '']);
+
+        // Cocktail in another bar
+        $otherBar = Bar::factory()->create();
+        Cocktail::factory()->recycle($otherBar)->create(['name' => 'Other Drink', 'author' => 'Dale DeGroff']);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        // Unfiltered request lists distinct authors for this bar only, sorted alphabetically
+        $response = $this->getJson('/api/cocktails');
+        $response->assertOk();
+        $response->assertJsonPath('meta.filters.authors', [
+            ['name' => 'Audrey Saunders'],
+            ['name' => 'Jerry Thomas'],
+        ]);
+
+        // Filtered request still includes all distinct authors for the bar
+        $response = $this->getJson('/api/cocktails?filter[author]=Jerry Thomas');
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+        $response->assertJsonPath('meta.filters.authors', [
+            ['name' => 'Audrey Saunders'],
+            ['name' => 'Jerry Thomas'],
+        ]);
+    }
+
+    public function test_cocktails_filter_author_accessible_to_non_admin_member(): void
+    {
+        $membership = $this->setupBarMembership(UserRoleEnum::General);
+        $this->actingAs($membership->user);
+
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Drink A', 'author' => 'Jerry Thomas']);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $response = $this->getJson('/api/cocktails?filter[author]=Jerry Thomas');
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('meta.filters.authors.0.name', 'Jerry Thomas');
+    }
 }

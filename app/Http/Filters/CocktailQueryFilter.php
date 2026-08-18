@@ -44,6 +44,7 @@ final class CocktailQueryFilter extends QueryBuilder
                 }),
                 AllowedFilter::exact('tag_id', 'tags.id'),
                 AllowedFilter::exact('created_user_id'),
+                AllowedFilter::exact('author'),
                 AllowedFilter::exact('glass_id'),
                 AllowedFilter::exact('cocktail_method_id'),
                 AllowedFilter::callback('collection_id', function ($query, $value) use ($barMembership) {

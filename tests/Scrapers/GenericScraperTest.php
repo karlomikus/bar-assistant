@@ -10,7 +10,6 @@ use Kami\Cocktail\Scraper\Sites\HausAlpenz;
 use Kami\Cocktail\Scraper\Sites\LiberAndCo;
 use Kami\Cocktail\Scraper\Sites\PunchDrink;
 use Kami\Cocktail\Scraper\Sites\CocktailParty;
-use Kami\Cocktail\Scraper\Sites\DiffordsGuide;
 use Kami\Cocktail\Scraper\Sites\TheCocktailDB;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Kami\Cocktail\Scraper\Sites\ImbibeMagazine;

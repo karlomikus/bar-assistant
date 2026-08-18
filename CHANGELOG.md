@@ -1,6 +1,7 @@
 # v6.1.0
 ## New
 - Added `favorited_by_user` cocktail filtering
+- Added `author` cocktail filtering
 - Glass images are now exported in datapack export
 
 # v6.0.0

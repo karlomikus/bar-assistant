@@ -4249,18 +4249,6 @@ parameters:
 			path: app/Scraper/Sites/DefaultScraper.php
 
 		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
-			count: 1
-			path: app/Scraper/Sites/DiffordsGuide.php
-
-		-
-			message: '#^Method Kami\\Cocktail\\Scraper\\Sites\\DiffordsGuide\:\:garnish\(\) should return string\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Scraper/Sites/DiffordsGuide.php
-
-		-
 			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 2
