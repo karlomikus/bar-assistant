@@ -49,6 +49,10 @@ final class Manager
 
     public static function scrape(string $url, ?string $content = null): AbstractSite
     {
+        if (str_contains($url, 'diffordsguide')) {
+            throw new ScraperMissingException('By request, Difford\'s Guide is not supported for scraping.');
+        }
+
         return (new self($url))->matchFirst($content);
     }
 
