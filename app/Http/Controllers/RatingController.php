@@ -21,7 +21,7 @@ class RatingController extends Controller
         required: true,
         content: [
             new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(property: 'rating', type: 'integer'),
+                new OAT\Property(property: 'rating', type: 'number', description: 'Rating value on a 0.5 step (1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0)'),
             ]),
         ]
     ))]
@@ -44,7 +44,7 @@ class RatingController extends Controller
         $ratingService->rate(new RateCocktailRequest(
             barMembershipId: $barMembership->id,
             cocktailId: $cocktail->id,
-            value: (int) $request->post('rating'),
+            value: (float) $request->post('rating'),
         ));
 
         return new Response(null, 204);

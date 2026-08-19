@@ -29,8 +29,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
             new OAT\Property(property: 'name', type: 'string', example: 'Tag name', description: 'Tag name'),
         ], required: ['id', 'name']), description: 'Cocktail tags'),
         new OAT\Property(property: 'rating', type: 'object', required: ['user', 'average', 'total_votes'], properties: [
-            new OAT\Property(type: 'integer', property: 'user', example: 1, nullable: true, description: 'Current user\'s rating'),
-            new OAT\Property(type: 'integer', property: 'average', example: 4, description: 'Average rating'),
+            new OAT\Property(type: 'number', property: 'user', example: 1, nullable: true, description: 'Current user\'s rating on a 0.5 step'),
+            new OAT\Property(type: 'number', property: 'average', example: 4, description: 'Average rating rounded to the nearest 0.5'),
             new OAT\Property(type: 'integer', property: 'total_votes', example: 12),
         ]),
         new OAT\Property(property: 'glass', type: GlassResource::class, description: 'Cocktail glass', nullable: true),
@@ -114,7 +114,7 @@ class CocktailResource extends JsonResource
                 $this->relationLoaded('ratings'),
                 fn () => [
                     'user' => $this->user_rating ?? null,
-                    'average' => (int) round($this->average_rating ?? 0),
+                    'average' => round(($this->average_rating ?? 0) * 2) / 2,
                     'total_votes' => $this->totalRatedCount(),
                 ]
             ),

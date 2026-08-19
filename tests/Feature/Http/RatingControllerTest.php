@@ -51,6 +51,70 @@ class RatingControllerTest extends TestCase
         ]);
     }
 
+    public function test_rating_cocktail_accepts_half_value(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $cocktail = Cocktail::factory()->for($membership->bar)->create();
+
+        $response = $this->postJson('/api/cocktails/' . $cocktail->id . '/ratings', [
+            'rating' => 3.5
+        ]);
+
+        $response->assertNoContent();
+        $this->assertDatabaseHas('ratings', [
+            'rateable_id' => $cocktail->id,
+            'bar_membership_id' => $membership->id,
+            'rating' => 3.5,
+        ]);
+    }
+
+    public function test_rating_cocktail_rejects_off_grid_value(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $cocktail = Cocktail::factory()->for($membership->bar)->create();
+
+        $response = $this->postJson('/api/cocktails/' . $cocktail->id . '/ratings', [
+            'rating' => 3.7
+        ]);
+
+        $response->assertUnprocessable();
+        $this->assertDatabaseMissing('ratings', [
+            'rateable_id' => $cocktail->id,
+            'bar_membership_id' => $membership->id,
+        ]);
+    }
+
+    public function test_rating_cocktail_toggles_off_when_same_half_value_submitted(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $cocktail = Cocktail::factory()->for($membership->bar)->create();
+
+        $first = $this->postJson('/api/cocktails/' . $cocktail->id . '/ratings', [
+            'rating' => 3.5
+        ]);
+        $first->assertNoContent();
+        $this->assertDatabaseHas('ratings', [
+            'rateable_id' => $cocktail->id,
+            'bar_membership_id' => $membership->id,
+            'rating' => 3.5,
+        ]);
+
+        $second = $this->postJson('/api/cocktails/' . $cocktail->id . '/ratings', [
+            'rating' => 3.5
+        ]);
+        $second->assertNoContent();
+        $this->assertDatabaseMissing('ratings', [
+            'rateable_id' => $cocktail->id,
+            'bar_membership_id' => $membership->id,
+        ]);
+    }
+
     public function test_delete_cocktail_rating(): void
     {
         $membership = $this->setupBarMembership();
