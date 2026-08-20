@@ -90,11 +90,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $barMemberShip;
     }
 
-    public function leaveBar(Bar $bar): void
-    {
-        $this->getBarMembership($bar->id)->delete();
-    }
-
     /**
      * @return HasMany<Bar, $this>
      */
