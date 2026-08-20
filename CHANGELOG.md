@@ -4,6 +4,7 @@
 
 ## Fixes
 - Fixed wrong openapi schema for leave member
+- Fixed quantity exception in cocktail recommender
 
 # v6.1.0
 ## New
