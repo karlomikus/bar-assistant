@@ -1963,15 +1963,15 @@ parameters:
 			path: app/Http/Filters/CocktailQueryFilter.php
 
 		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 8
-			path: app/Http/Filters/CocktailQueryFilter.php
-
-		-
 			message: '#^Cannot cast mixed to float\.$#'
 			identifier: cast.double
 			count: 4
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 8
 			path: app/Http/Filters/CocktailQueryFilter.php
 
 		-
@@ -2311,6 +2311,12 @@ parameters:
 			path: app/Http/Resources/CocktailPriceResource.php
 
 		-
+			message: '#^Binary operation "\*" between mixed and 2 results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: app/Http/Resources/CocktailResource.php
+
+		-
 			message: '#^Cannot access property \$cocktailFavorites on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
 			identifier: property.nonObject
 			count: 1
@@ -2337,12 +2343,6 @@ parameters:
 		-
 			message: '#^Cannot call method toAtomString\(\) on Carbon\\Carbon\|null\.$#'
 			identifier: method.nonObject
-			count: 1
-			path: app/Http/Resources/CocktailResource.php
-
-		-
-			message: '#^Binary operation "\*" between mixed and 2 results in an error\.$#'
-			identifier: binaryOp.invalid
 			count: 1
 			path: app/Http/Resources/CocktailResource.php
 
@@ -3227,12 +3227,6 @@ parameters:
 			identifier: method.nonObject
 			count: 1
 			path: app/Models/Relations/HasManyDescendants.php
-
-		-
-			message: '#^Cannot call method delete\(\) on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Models/User.php
 
 		-
 			message: '#^Cannot access property \$name on Kami\\Cocktail\\Models\\Cocktail\|null\.$#'
