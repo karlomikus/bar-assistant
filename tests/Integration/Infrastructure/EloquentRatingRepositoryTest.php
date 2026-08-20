@@ -50,10 +50,42 @@ final class EloquentRatingRepositoryTest extends TestCase
 
         $this->assertNotNull($foundRating);
         $this->assertSame($savedRating->getId()?->value, $foundRating->getId()?->value);
-        $this->assertSame(4, $foundRating->getValue()->value);
+        $this->assertSame(4.0, $foundRating->getValue()->value);
 
         $repository->delete($savedRating->getId() ?? new \BarAssistant\Domain\Rating\RatingId(0));
 
         $this->assertDatabaseMissing('ratings', ['id' => $savedRating->getId()?->value]);
+    }
+
+    public function test_it_round_trips_half_value_rating(): void
+    {
+        $membership = $this->setupBarMembership();
+        $cocktail = Cocktail::factory()->for($membership->bar)->create();
+        $rating = Rating::create(
+            rateableId: new RateableId($cocktail->id),
+            type: RateableType::Cocktail,
+            memberId: new MemberId($membership->id),
+            value: RatingValue::create(3.5),
+        );
+
+        $repository = new EloquentRatingRepository();
+        $savedRating = $repository->save($rating);
+
+        $this->assertDatabaseHas('ratings', [
+            'id' => $savedRating->getId()?->value,
+            'rateable_id' => $cocktail->id,
+            'rateable_type' => ModelCocktail::class,
+            'bar_membership_id' => $membership->id,
+            'rating' => 3.5,
+        ]);
+
+        $foundRating = $repository->findMemberRating(
+            new RateableId($cocktail->id),
+            RateableType::Cocktail,
+            new MemberId($membership->id),
+        );
+
+        $this->assertNotNull($foundRating);
+        $this->assertSame(3.5, $foundRating->getValue()->value);
     }
 }

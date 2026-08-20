@@ -21,7 +21,7 @@ final readonly class RatingService
     ) {
     }
 
-    public function rate(RateCocktailRequest $request): RatingResult
+    public function rate(RateCocktailRequest $request): ?RatingResult
     {
         $memberId = new MemberId($request->barMembershipId);
         $cocktailId = new RateableId($request->cocktailId);
@@ -29,6 +29,18 @@ final readonly class RatingService
         $existingRating = $this->ratingRepository->findMemberRating($cocktailId, RateableType::Cocktail, $memberId);
 
         if ($existingRating !== null) {
+            // Toggle behavior: submitting the same value that is already stored
+            // removes the member's rating. Compare via *2 normalization to avoid
+            // any float-equality drift across the DB round-trip.
+            if ((int) round($existingRating->getValue()->value * 2) === (int) round($request->value * 2)) {
+                $existingId = $existingRating->getId();
+                if ($existingId !== null) {
+                    $this->ratingRepository->delete($existingId);
+                }
+
+                return null;
+            }
+
             $existingRating->updateValue(RatingValue::create($request->value));
             $savedRating = $this->ratingRepository->save($existingRating);
         } else {

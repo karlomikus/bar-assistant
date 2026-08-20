@@ -17,7 +17,7 @@ trait HasRating
         return $this->morphMany(Rating::class, 'rateable');
     }
 
-    public function rate(int $ratingValue, int $barMembershipId): Rating
+    public function rate(float $ratingValue, int $barMembershipId): Rating
     {
         $rating = $this->ratings()->where('bar_membership_id', $barMembershipId)->first();
 

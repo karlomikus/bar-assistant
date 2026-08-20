@@ -10,7 +10,7 @@ final readonly class RatingResult
         public int $id,
         public int $cocktailId,
         public int $barMembershipId,
-        public int $value,
+        public float $value,
         public string $createdAt,
         public string $updatedAt,
     ) {

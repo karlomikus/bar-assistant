@@ -13,7 +13,7 @@ use BarAssistant\Domain\Rating\RateableType;
 
 final class RatingTest extends TestCase
 {
-    private function makeRating(int $cocktailId = 1, int $memberId = 10, int $value = 3): Rating
+    private function makeRating(int $cocktailId = 1, int $memberId = 10, float $value = 3): Rating
     {
         return Rating::create(
             rateableId: new RateableId($cocktailId),
@@ -56,6 +56,6 @@ final class RatingTest extends TestCase
     {
         $rating = $this->makeRating(value: 4);
 
-        $this->assertSame(4, $rating->getValue()->value);
+        $this->assertSame(4.0, $rating->getValue()->value);
     }
 }

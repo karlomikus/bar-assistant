@@ -1965,7 +1965,13 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
-			count: 12
+			count: 8
+			path: app/Http/Filters/CocktailQueryFilter.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 4
 			path: app/Http/Filters/CocktailQueryFilter.php
 
 		-
@@ -2335,8 +2341,8 @@ parameters:
 			path: app/Http/Resources/CocktailResource.php
 
 		-
-			message: '#^Parameter \#1 \$num of function round expects float\|int, mixed given\.$#'
-			identifier: argument.type
+			message: '#^Binary operation "\*" between mixed and 2 results in an error\.$#'
+			identifier: binaryOp.invalid
 			count: 1
 			path: app/Http/Resources/CocktailResource.php
 

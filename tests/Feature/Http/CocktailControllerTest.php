@@ -243,7 +243,7 @@ class CocktailControllerTest extends TestCase
                 ->where('data.created_user.name', $membership->user->name)
                 ->has('data.updated_user')
                 ->where('data.rating.user', 4)
-                ->where('data.rating.average', 3)
+                ->where('data.rating.average', 2.5)
                 ->where('data.rating.total_votes', 2)
                 ->where('data.glass.id', $glass->id)
                 ->where('data.method.id', $method->id)
@@ -1032,5 +1032,63 @@ class CocktailControllerTest extends TestCase
         $response->assertOk();
         $response->assertJsonCount(1, 'data');
         $response->assertJsonPath('meta.filters.authors.0.name', 'Jerry Thomas');
+    }
+
+    public function test_cocktail_show_returns_half_value_user_and_average_ratings(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+        $otherMembership = BarMembership::factory()->recycle($membership->bar)->create();
+        $anotherMembership = BarMembership::factory()->recycle($membership->bar)->create();
+
+        $cocktail = Cocktail::factory()->recycle($membership->bar)->create();
+        $cocktail->rate(3.5, $membership->id);
+        $cocktail->rate(3, $otherMembership->id);
+        $cocktail->rate(4, $anotherMembership->id);
+
+        $response = $this->getJson('/api/cocktails/' . $cocktail->id);
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.rating.user', 3.5);
+        $response->assertJsonPath('data.rating.average', 3.5);
+        $response->assertJsonPath('data.rating.total_votes', 3);
+    }
+
+    public function test_cocktail_show_average_rounds_half_up(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+        $otherMembership = BarMembership::factory()->recycle($membership->bar)->create();
+        $anotherMembership = BarMembership::factory()->recycle($membership->bar)->create();
+
+        $cocktail = Cocktail::factory()->recycle($membership->bar)->create();
+        $cocktail->rate(4, $membership->id);
+        $cocktail->rate(4, $otherMembership->id);
+        $cocktail->rate(5, $anotherMembership->id);
+
+        $response = $this->getJson('/api/cocktails/' . $cocktail->id);
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.rating.average', 4.5);
+    }
+
+    public function test_cocktails_filter_by_half_user_rating_min(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+        $otherMembership = BarMembership::factory()->recycle($membership->bar)->create();
+
+        $cocktailLow = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Low rated']);
+        $cocktailLow->rate(3, $membership->id);
+
+        $cocktailHigh = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'High rated']);
+        $cocktailHigh->rate(3.5, $membership->id);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $response = $this->getJson('/api/cocktails?filter[user_rating_min]=3.5');
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.name', 'High rated');
     }
 }

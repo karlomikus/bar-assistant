@@ -9,7 +9,7 @@ final readonly class RateCocktailRequest
     public function __construct(
         public int $barMembershipId,
         public int $cocktailId,
-        public int $value,
+        public float $value,
     ) {
     }
 }

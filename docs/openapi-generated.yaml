@@ -7201,7 +7201,8 @@ paths:
             schema:
               properties:
                 rating:
-                  type: integer
+                  description: 'Rating value on a 0.5 step (1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0)'
+                  type: number
               type: object
       responses:
         '204':
@@ -8988,7 +8989,7 @@ components:
                 type: string
                 example: Gin
               avg_rating:
-                type: integer
+                type: number
                 example: 1
               votes:
                 type: integer
@@ -9430,14 +9431,14 @@ components:
             - total_votes
           properties:
             user:
-              description: "Current user's rating"
+              description: "Current user's rating on a 0.5 step"
               type:
-                - integer
+                - number
                 - 'null'
               example: 1
             average:
-              description: 'Average rating'
-              type: integer
+              description: 'Average rating rounded to the nearest 0.5'
+              type: number
               example: 4
             total_votes:
               type: integer

@@ -49,7 +49,7 @@ final class EloquentRatingRepository implements RatingRepository
             rateableId: new RateableId((int) $model->rateable_id),
             type: RateableType::Cocktail,
             memberId: new MemberId((int) $model->bar_membership_id),
-            value: RatingValue::create((int) $model->rating),
+            value: RatingValue::create((float) $model->rating),
         )->setId(new RatingId((int) $model->id));
 
         return $rating;
