@@ -15,7 +15,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
             new OAT\Property(property: 'id', type: 'integer', example: 1),
             new OAT\Property(property: 'slug', type: 'string', example: 'gin'),
             new OAT\Property(property: 'name', type: 'string', example: 'Gin'),
-            new OAT\Property(property: 'avg_rating', type: 'integer', example: 1),
+            new OAT\Property(property: 'avg_rating', type: 'number', example: 1),
             new OAT\Property(property: 'votes', type: 'integer', example: 1),
         ])),
         new OAT\Property(property: 'top_member_ingredients', type: 'array', items: new OAT\Items(type: 'object', required: ['id', 'slug', 'name', 'cocktails_count'], properties: [

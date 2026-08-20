@@ -90,6 +90,9 @@ final class EloquentMemberRepository implements MemberRepository
     {
         $shoppingListIngredients = [];
         foreach ($model->shoppingListIngredients as $modelShoppingListIngredient) {
+            if ($modelShoppingListIngredient->quantity < 1) {
+                continue;
+            }
             $shoppingListIngredients[] = ShoppingListItem::create(new IngredientId($modelShoppingListIngredient->ingredient_id), $modelShoppingListIngredient->quantity);
         }
 

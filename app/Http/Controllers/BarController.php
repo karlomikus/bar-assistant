@@ -219,9 +219,7 @@ class BarController extends Controller
             ]),
         ]
     ))]
-    #[BAO\SuccessfulResponse(content: [
-        new BAO\WrapObjectWithData(BarResource::class),
-    ])]
+    #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     public function join(MemberService $memberService, Request $request): Response

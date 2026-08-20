@@ -32,10 +32,25 @@ final class RatingServiceTest extends TestCase
 
         $result = $this->service->rate($request);
 
+        $this->assertNotNull($result);
         $this->assertSame(100, $result->cocktailId);
         $this->assertSame(1, $result->barMembershipId);
-        $this->assertSame(5, $result->value);
+        $this->assertSame(5.0, $result->value);
         $this->assertNotNull($result->id);
+    }
+
+    public function test_rate_creates_new_half_value_rating(): void
+    {
+        $request = new RateCocktailRequest(
+            barMembershipId: 1,
+            cocktailId: 100,
+            value: 3.5,
+        );
+
+        $result = $this->service->rate($request);
+
+        $this->assertNotNull($result);
+        $this->assertSame(3.5, $result->value);
     }
 
     public function test_rate_updates_existing_rating(): void
@@ -46,7 +61,7 @@ final class RatingServiceTest extends TestCase
             value: 3,
         );
         $result1 = $this->service->rate($request1);
-        $firstId = $result1->id;
+        $firstId = $result1?->id;
 
         $request2 = new RateCocktailRequest(
             barMembershipId: 1,
@@ -55,8 +70,24 @@ final class RatingServiceTest extends TestCase
         );
         $result2 = $this->service->rate($request2);
 
+        $this->assertNotNull($result2);
         $this->assertSame($firstId, $result2->id);
-        $this->assertSame(5, $result2->value);
+        $this->assertSame(5.0, $result2->value);
+    }
+
+    public function test_rate_toggles_off_when_same_half_value_submitted(): void
+    {
+        $request = new RateCocktailRequest(
+            barMembershipId: 1,
+            cocktailId: 100,
+            value: 3.5,
+        );
+        $this->service->rate($request);
+
+        $toggleResult = $this->service->rate($request);
+
+        $this->assertNull($toggleResult);
+        $this->assertCount(0, $this->ratingRepository->all());
     }
 
     public function test_delete_removes_rating(): void
@@ -102,6 +133,18 @@ final class RatingServiceTest extends TestCase
             barMembershipId: 1,
             cocktailId: 100,
             value: 0,
+        ));
+    }
+
+    public function test_rate_throws_exception_for_off_grid_value(): void
+    {
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Rating value must be on a 0.5 step');
+
+        $this->service->rate(new RateCocktailRequest(
+            barMembershipId: 1,
+            cocktailId: 100,
+            value: 3.7,
         ));
     }
 }

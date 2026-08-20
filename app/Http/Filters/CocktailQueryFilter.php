@@ -133,16 +133,16 @@ final class CocktailQueryFilter extends QueryBuilder
                     }
                 }),
                 AllowedFilter::callback('user_rating_min', function ($query, $value) {
-                    $query->where('user_rating', '>=', (int) $value);
+                    $query->where('user_rating', '>=', (float) $value);
                 }),
                 AllowedFilter::callback('user_rating_max', function ($query, $value) {
-                    $query->where('user_rating', '<=', (int) $value);
+                    $query->where('user_rating', '<=', (float) $value);
                 }),
                 AllowedFilter::callback('average_rating_min', function ($query, $value) {
-                    $query->where('average_rating', '>=', (int) $value);
+                    $query->where('average_rating', '>=', (float) $value);
                 }),
                 AllowedFilter::callback('average_rating_max', function ($query, $value) {
-                    $query->where('average_rating', '<=', (int) $value);
+                    $query->where('average_rating', '<=', (float) $value);
                 }),
                 AllowedFilter::callback('abv_min', function ($query, $value) {
                     $query->where('abv', '>=', $value);

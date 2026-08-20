@@ -601,25 +601,8 @@ paths:
                   example: 01H8S3VH2HTEB3D893AW8NTBBC
               type: object
       responses:
-        '200':
+        '204':
           description: 'Successful response'
-          headers:
-            x-ratelimit-limit:
-              description: 'Max number of attempts.'
-              schema:
-                type: integer
-            x-ratelimit-remaining:
-              description: 'Remaining number of attempts.'
-              schema:
-                type: integer
-          content:
-            application/json:
-              schema:
-                required:
-                  - data
-                properties:
-                  data: { $ref: '#/components/schemas/Bar' }
-                type: object
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -5091,6 +5074,13 @@ paths:
       operationId: removeMember
       parameters:
         -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+        -
           name: id
           in: path
           description: 'Database id of a resource'
@@ -7201,7 +7191,8 @@ paths:
             schema:
               properties:
                 rating:
-                  type: integer
+                  description: 'Rating value on a 0.5 step (1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0)'
+                  type: number
               type: object
       responses:
         '204':
@@ -8988,7 +8979,7 @@ components:
                 type: string
                 example: Gin
               avg_rating:
-                type: integer
+                type: number
                 example: 1
               votes:
                 type: integer
@@ -9430,14 +9421,14 @@ components:
             - total_votes
           properties:
             user:
-              description: "Current user's rating"
+              description: "Current user's rating on a 0.5 step"
               type:
-                - integer
+                - number
                 - 'null'
               example: 1
             average:
-              description: 'Average rating'
-              type: integer
+              description: 'Average rating rounded to the nearest 0.5'
+              type: number
               example: 4
             total_votes:
               type: integer

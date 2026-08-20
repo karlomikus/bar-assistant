@@ -1,3 +1,11 @@
+# v6.2.0
+## New
+- Added support for half-star ratings
+
+## Fixes
+- Fixed wrong openapi schema for leave member
+- Fixed quantity exception in cocktail recommender
+
 # v6.1.0
 ## New
 - Added `favorited_by_user` cocktail filtering
