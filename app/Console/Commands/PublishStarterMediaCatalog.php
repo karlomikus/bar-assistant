@@ -21,7 +21,7 @@ final class PublishStarterMediaCatalog extends Command
         $catalog = Storage::disk('catalog');
 
         try {
-            $version = $catalogService->releaseVersion();
+            $version = $catalogService->releaseVersion($source);
             $objects = $catalogService->sourceObjects($source);
             $completionManifestPath = $catalogService->completionManifestPath($version);
 

@@ -140,7 +140,7 @@ class FromDataPackTest extends TestCase
             'root' => base_path('tests/fixtures/datapack'),
         ]);
         $catalogService = resolve(StarterMediaCatalogService::class);
-        $version = $catalogService->releaseVersion();
+        $version = $catalogService->releaseVersion($datapackFolder);
         $objects = $catalogService->sourceObjects($datapackFolder);
 
         foreach ($objects as $sourcePath => $object) {
@@ -184,7 +184,7 @@ class FromDataPackTest extends TestCase
             'root' => base_path('tests/fixtures/datapack'),
         ]);
         $catalogService = resolve(StarterMediaCatalogService::class);
-        $version = $catalogService->releaseVersion();
+        $version = $catalogService->releaseVersion($datapackFolder);
         $objects = $catalogService->sourceObjects($datapackFolder);
         Storage::disk('catalog')->put(
             $catalogService->completionManifestPath($version),
@@ -209,7 +209,7 @@ class FromDataPackTest extends TestCase
             'root' => base_path('tests/fixtures/datapack'),
         ]);
         $catalogService = resolve(StarterMediaCatalogService::class);
-        $version = $catalogService->releaseVersion();
+        $version = $catalogService->releaseVersion($datapackFolder);
         $objects = $catalogService->sourceObjects($datapackFolder);
 
         foreach ($objects as $sourcePath => $object) {

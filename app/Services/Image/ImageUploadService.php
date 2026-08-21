@@ -18,6 +18,7 @@ final readonly class ImageUploadService
         #[Storage('uploads')]
         private Filesystem $filesystem,
         private LoggerInterface $log,
+        private ImageStorageService $imageStorageService,
     ) {
     }
 
@@ -59,7 +60,7 @@ final readonly class ImageUploadService
 
         // For temporary images we can just use the new image that is also temporary
         if ($imageModel->isTemporaryImage()) {
-            app(ImageStorageService::class)->delete($imageModel);
+            $this->imageStorageService->delete($imageModel);
 
             return $newImage;
         }
@@ -72,7 +73,7 @@ final readonly class ImageUploadService
             $this->filesystem->move($newImage->path, $newImagePath);
         }
 
-        app(ImageStorageService::class)->delete($imageModel);
+        $this->imageStorageService->delete($imageModel);
 
         return new ImageUploadResult(
             path: $newImagePath,

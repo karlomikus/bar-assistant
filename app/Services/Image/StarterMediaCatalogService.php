@@ -9,9 +9,9 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 
 final class StarterMediaCatalogService
 {
-    public function releaseVersion(): string
+    public function releaseVersion(Filesystem $source): string
     {
-        $manifest = json_decode((string) file_get_contents(resource_path('data/starter-media-release.json')), true);
+        $manifest = json_decode((string) $source->get('starter-media-release.json'), true);
         if (!is_array($manifest)) {
             throw new RuntimeException('Starter media release manifest is invalid');
         }

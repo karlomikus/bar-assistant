@@ -56,7 +56,7 @@ class FromDataPack
 
         $catalogVersion = null;
         if ($mediaMode === DataPackMediaMode::StarterCatalog) {
-            $catalogVersion = $this->catalogService->releaseVersion();
+            $catalogVersion = $this->catalogService->releaseVersion($dataDisk);
             $this->catalogService->assertCompletedRelease(
                 catalog: Storage::disk('catalog'),
                 version: $catalogVersion,
