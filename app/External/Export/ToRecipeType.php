@@ -26,7 +26,7 @@ class ToRecipeType
     public function __construct(
         #[Storage('exports')]
         private readonly Cloud $file,
-        private readonly ?ImageStorageService $imageStorage = null,
+        private readonly ImageStorageService $imageStorage,
     ) {
     }
 
@@ -71,7 +71,7 @@ class ToRecipeType
         } finally {
             $zip->close();
             foreach ($this->temporaryImagePaths as $path) {
-                $this->storage()->deleteTemporaryFile($path);
+                $this->imageStorage->deleteTemporaryFile($path);
             }
             $this->temporaryImagePaths = [];
         }
@@ -114,9 +114,9 @@ class ToRecipeType
         foreach ($cocktails as $cocktail) {
             foreach ($cocktail->images as $img) {
                 try {
-                    $temporaryPath = $this->storage()->materialize($img);
+                    $temporaryPath = $this->imageStorage->materialize($img);
                     $this->temporaryImagePaths[] = $temporaryPath;
-                    $zip->addFile($this->storage()->temporaryPath($temporaryPath), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getFileName());
+                    $zip->addFile($this->imageStorage->temporaryPath($temporaryPath), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getFileName());
                 } catch (ImageFileNotFoundException $e) {
                     Log::warning($e->getMessage());
                 }
@@ -170,10 +170,5 @@ class ToRecipeType
         }
 
         return '';
-    }
-
-    private function storage(): ImageStorageService
-    {
-        return $this->imageStorage ?? app(ImageStorageService::class);
     }
 }

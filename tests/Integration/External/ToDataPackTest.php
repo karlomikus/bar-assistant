@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration\External;
 
+use Kami\Cocktail\Services\Image\ImageStorageService;
 use ZipArchive;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Glass;
@@ -26,7 +27,7 @@ class ToDataPackTest extends TestCase
     {
         $membership = $this->setupBarMembership();
 
-        $exporter = new ToDataPack($this->getFileMock());
+        $exporter = new ToDataPack($this->getFileMock(), new ImageStorageService());
         $filename = $exporter->process($membership->bar->id, 'datapack-test.zip');
 
         $this->assertSame($filename, '1/datapack-test.zip');
@@ -74,7 +75,7 @@ class ToDataPackTest extends TestCase
             'sort' => 1,
         ]);
 
-        $exporter = new ToDataPack($exportMock);
+        $exporter = new ToDataPack($exportMock, new ImageStorageService());
         $filename = $exporter->process($membership->bar->id, 'datapack-test.zip');
         $filename = $exportMock->path($filename);
 

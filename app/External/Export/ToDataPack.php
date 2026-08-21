@@ -38,7 +38,7 @@ class ToDataPack
     public function __construct(
         #[Storage('exports')]
         private readonly Cloud $file,
-        private readonly ?ImageStorageService $imageStorage = null,
+        private readonly ImageStorageService $imageStorage,
     ) {
     }
 
@@ -84,7 +84,7 @@ class ToDataPack
         } finally {
             $zip->close();
             foreach ($this->temporaryImagePaths as $path) {
-                $this->storage()->deleteTemporaryFile($path);
+                $this->imageStorage->deleteTemporaryFile($path);
             }
             $this->temporaryImagePaths = [];
         }
@@ -227,13 +227,8 @@ class ToDataPack
 
     private function addImage(ZipArchive $zip, \Kami\Cocktail\Models\Image $image, string $archivePath): void
     {
-        $temporaryPath = $this->storage()->materialize($image);
+        $temporaryPath = $this->imageStorage->materialize($image);
         $this->temporaryImagePaths[] = $temporaryPath;
-        $zip->addFile($this->storage()->temporaryPath($temporaryPath), $archivePath);
-    }
-
-    private function storage(): ImageStorageService
-    {
-        return $this->imageStorage ?? app(ImageStorageService::class);
+        $zip->addFile($this->imageStorage->temporaryPath($temporaryPath), $archivePath);
     }
 }

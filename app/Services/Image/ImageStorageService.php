@@ -91,6 +91,8 @@ final class ImageStorageService
 
     public function materialize(Image $image): string
     {
+        // Copies the image onto the temp disk so downstream tooling (e.g. vips
+        // image processing) can operate on a real local path instead of a stream.
         $temporaryPath = 'image-materialization/' . Str::uuid() . '.' . $image->file_extension;
         $temporaryDisk = $this->disk('temp');
         $stream = $this->readStream($image);
