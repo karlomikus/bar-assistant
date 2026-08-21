@@ -13,6 +13,8 @@ readonly class CreateImage
         public int $sort = 1,
         public ?string $copyright = null,
         public ?string $placeholderHash = null,
+        public string $disk = 'uploads',
+        public string $storageOrigin = 'owned',
     ) {
     }
 }

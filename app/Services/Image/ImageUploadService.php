@@ -7,9 +7,7 @@ namespace Kami\Cocktail\Services\Image;
 use Throwable;
 use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface;
-use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Image;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Container\Attributes\Storage;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Kami\Cocktail\Services\Image\DTO\ImageUploadResult;
@@ -20,6 +18,7 @@ final readonly class ImageUploadService
         #[Storage('uploads')]
         private Filesystem $filesystem,
         private LoggerInterface $log,
+        private ImageStorageService $imageStorageService,
     ) {
     }
 
@@ -59,13 +58,10 @@ final readonly class ImageUploadService
     {
         $imageModel = Image::findOrFail($imageId);
 
-        // Delete old image file
-        if ($this->filesystem->exists($imageModel->file_path)) {
-            $this->filesystem->delete($imageModel->file_path);
-        }
-
         // For temporary images we can just use the new image that is also temporary
         if ($imageModel->isTemporaryImage()) {
+            $this->imageStorageService->delete($imageModel);
+
             return $newImage;
         }
 
@@ -77,41 +73,12 @@ final readonly class ImageUploadService
             $this->filesystem->move($newImage->path, $newImagePath);
         }
 
+        $this->imageStorageService->delete($imageModel);
+
         return new ImageUploadResult(
             path: $newImagePath,
             extension: $newImage->extension,
             placeholderHash: $newImage->placeholderHash,
         );
-    }
-
-    public function cleanBarImages(int $barId): void
-    {
-        $bar = Bar::findOrFail($barId);
-        $cocktailIds = $bar->cocktails()->pluck('id');
-        $ingredientIds = $bar->ingredients()->pluck('id');
-        $barLogoPath = $bar->images->first()?->file_path;
-
-        DB::transaction(function () use ($cocktailIds, $ingredientIds, $bar) {
-            DB::table('images')
-                ->where('imageable_type', \Kami\Cocktail\Models\Cocktail::class)
-                ->whereIn('imageable_id', $cocktailIds)
-                ->delete();
-
-            DB::table('images')
-                ->where('imageable_type', \Kami\Cocktail\Models\Ingredient::class)
-                ->whereIn('imageable_id', $ingredientIds)
-                ->delete();
-
-            DB::table('images')
-                ->where('imageable_type', \Kami\Cocktail\Models\Bar::class)
-                ->where('imageable_id', $bar->id)
-                ->delete();
-        });
-
-        $this->filesystem->deleteDirectory('cocktails/' . $bar->id . '/');
-        $this->filesystem->deleteDirectory('ingredients/' . $bar->id . '/');
-        if ($barLogoPath) {
-            $this->filesystem->delete($barLogoPath);
-        }
     }
 }

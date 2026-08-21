@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration\External;
 
+use Kami\Cocktail\Services\Image\ImageStorageService;
 use ZipArchive;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Glass;
@@ -26,7 +27,7 @@ class ToRecipeTypeTest extends TestCase
     {
         $membership = $this->setupBarMembership();
 
-        $exporter = new ToRecipeType($this->getFileMock());
+        $exporter = new ToRecipeType($this->getFileMock(), new ImageStorageService());
         $filename = $exporter->process($membership->bar->id, 'recipes.zip');
 
         $this->assertSame($filename, '1/recipes.zip');
@@ -56,7 +57,7 @@ class ToRecipeTypeTest extends TestCase
             'file_extension' => $ingredientCocktailFile->extension(),
         ]);
 
-        $exporter = new ToRecipeType($exportMock);
+        $exporter = new ToRecipeType($exportMock, new ImageStorageService());
         $filename = $exporter->process($membership->bar->id, 'recipes.zip');
         $filename = $exportMock->path($filename);
 

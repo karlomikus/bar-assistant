@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -20,6 +22,8 @@ class ImageFactory extends Factory
             'copyright' => fake()->paragraph(),
             'file_path' => fake()->filePath(),
             'file_extension' => fake()->fileExtension(),
+            'disk' => 'uploads',
+            'storage_origin' => 'owned',
             'created_user_id' => \Kami\Cocktail\Models\User::factory(),
         ];
     }

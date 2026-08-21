@@ -15,7 +15,7 @@ use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Kami\Cocktail\Services\MeilisearchService;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Kami\Cocktail\Services\Image\ImageUploadService;
+use Kami\Cocktail\Services\Image\ImageStorageService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -150,9 +150,9 @@ class Bar extends BaseModel implements UploadableInterface
     #[\Override]
     public function delete(): ?bool
     {
-        /** @var ImageUploadService */
-        $imageService = app(ImageUploadService::class);
-        $imageService->cleanBarImages($this->id);
+        /** @var ImageStorageService */
+        $imageService = app(ImageStorageService::class);
+        $imageService->deleteBarOwnedImages($this);
 
         // Delete export files
         foreach ($this->exports as $export) {

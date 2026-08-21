@@ -14,6 +14,8 @@ readonly class UpdateImageRequest
         public ?string $imageFileExtension = null,
         public ?string $copyright = null,
         public ?string $placeholderHash = null,
+        public ?string $disk = null,
+        public ?string $storageOrigin = null,
     ) {
     }
 }

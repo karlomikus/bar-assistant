@@ -11,6 +11,8 @@ readonly class ImageResult
     public function __construct(
         public int $id,
         public string $path,
+        public string $disk,
+        public string $storageOrigin,
     ) {
     }
 
@@ -19,6 +21,8 @@ readonly class ImageResult
         return new self(
             id: $image->getId()->value ?? 0,
             path: $image->getFile()->path,
+            disk: $image->getFile()->disk,
+            storageOrigin: $image->getFile()->storageOrigin,
         );
     }
 }

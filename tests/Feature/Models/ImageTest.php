@@ -89,4 +89,24 @@ class ImageTest extends TestCase
         $this->assertContains(Ingredient::class, $types);
         $this->assertContains(Glass::class, $types);
     }
+
+    public function test_deleting_catalog_image_keeps_catalog_object(): void
+    {
+        Storage::fake('catalog');
+        $bar = Bar::factory()->create();
+        $cocktail = Cocktail::factory()->for($bar)->create();
+        $path = 'catalog/2026.08.21/cocktails/example/image.jpg';
+        Storage::disk('catalog')->put($path, 'catalog image');
+
+        $image = Image::factory()->for($cocktail, 'imageable')->create([
+            'file_path' => $path,
+            'disk' => 'catalog',
+            'storage_origin' => 'catalog',
+        ]);
+
+        $image->delete();
+
+        Storage::disk('catalog')->assertExists($path);
+        $this->assertDatabaseMissing('images', ['id' => $image->id]);
+    }
 }

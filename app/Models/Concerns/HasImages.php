@@ -71,6 +71,8 @@ trait HasImages
                 $disk->move($oldFilePath, $newFilePath);
 
                 $image->file_path = $newFilePath;
+                $image->disk = 'uploads';
+                $image->storage_origin = 'owned';
                 $image->save();
             } else {
                 $image->delete();

@@ -27,6 +27,7 @@ use BarAssistant\Application\Image\DTO\CreateImage;
 use Kami\Cocktail\Http\Filters\CocktailQueryFilter;
 use Kami\Cocktail\Services\Image\ImageUploadService;
 use BarAssistant\Application\Bar\DTO\FavoriteRequest;
+use Kami\Cocktail\Services\Image\ImageStorageService;
 use BarAssistant\Application\Cocktail\CocktailService;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use BarAssistant\Application\Cocktail\DTO\CopyCocktail;
@@ -507,7 +508,7 @@ class CocktailController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotAuthorizedResponse]
-    public function copy(string $idOrSlug, CocktailService $cocktailService, ImageUploadService $imageUploadService, ImageService $imageService, Request $request): Response
+    public function copy(string $idOrSlug, CocktailService $cocktailService, ImageUploadService $imageUploadService, ImageService $imageService, ImageStorageService $imageStorage, Request $request): Response
     {
         $cocktail = Cocktail::where('slug', $idOrSlug)
             ->orWhere('id', $idOrSlug)
@@ -519,7 +520,14 @@ class CocktailController extends Controller
 
         $images = [];
         foreach ($cocktail->images as $image) {
-            if ($imageContents = file_get_contents($image->getPath())) {
+            $stream = $imageStorage->readStream($image);
+            try {
+                $imageContents = stream_get_contents($stream);
+            } finally {
+                fclose($stream);
+            }
+
+            if ($imageContents !== false) {
                 $uploadedImage = $imageUploadService->uploadImage($imageContents);
                 $imageResult = $imageService->createImage(new CreateImage(
                     imageFilePath: $uploadedImage->path,
